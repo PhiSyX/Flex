@@ -8,80 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { STORAGE_REMEMBER_ME_KEY } from "./constant";
+import { Room } from "./Room";
 
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class RememberMeStorage {
-	// ------ //
-	// Static //
-	// ------ //
-
-	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
-
+export class ServerCustomRoom extends Room<"server-custom-room"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
-	constructor() {
-		try {
-			this.rememberMe = JSON.parse(
-				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(RememberMeStorage.KEY),
-				this.fromJSON,
-			);
-		} catch {}
-	}
-
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	private rememberMe = false;
-
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
-
-	get value(): boolean {
-		return this.get();
-	}
-
-	set value($1: boolean) {
-		this.set($1);
-	}
-
-	// ------- //
-	// Méthode // -> API Publique
-	// ------- //
-
-	get(): boolean {
-		return this.rememberMe;
-	}
-
-	/**
-	 * Définit une nouvelle valeur.
-	 */
-	set(rememberMeValue: boolean) {
-		this.rememberMe = rememberMeValue;
-
-		try {
-			localStorage.setItem(RememberMeStorage.KEY, this.toString());
-		} catch {}
-	}
-
-	/**
-	 * Validation du JSON
-	 */
-	fromJSON(key: string, value: unknown) {
-		if (key.length === 0 && typeof value === "boolean") {
-			return value;
-		}
-	}
-
-	toString() {
-		return JSON.stringify(this.rememberMe);
+	constructor(name: string) {
+		super("server-custom-room", name);
 	}
 }

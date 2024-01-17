@@ -8,21 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { loginFormData } from "./state";
+export function assert<T>(
+	condition: boolean,
+	reason?: string,
+): asserts condition is boolean & T {
+	if (!condition)
+		throw new Error(reason || "L'assertion ne remplie par la condition");
+}
 
-import { useChatStore } from "~/store/ChatStore";
-
-const chatStore = useChatStore();
-
-// ----- //
-// Hooks //
-// ----- //
-
-/**
- * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
- */
-export function useRememberMe() {
-	if (loginFormData.rememberMe.value) {
-		chatStore.connect(loginFormData);
-	}
+export function assert_non_null<T>(
+	value: T,
+	reason?: string,
+): asserts value is NonNullable<T> {
+	if (value == null) throw new Error(reason || "L'assertion est nil");
 }

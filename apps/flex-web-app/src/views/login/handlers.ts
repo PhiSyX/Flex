@@ -10,9 +10,10 @@
 
 import type { ModelRef } from "vue";
 
-import { advancedInfo, loginFormData } from "./state";
+import { advancedInfo, errors, loginFormData } from "./state";
 
 import { useChatStore } from "~/store/ChatStore";
+import { GenericReply } from "~/types/replies";
 
 const chatStore = useChatStore();
 
@@ -30,16 +31,46 @@ export function displayAdvancedInfoHandler() {
 /**
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
-export function connectSubmit(_model: ModelRef<boolean | undefined, string>) {
+export function connectSubmit(
+	isConnectedModel: ModelRef<boolean | undefined, string>,
+) {
 	function connectSubmitHandler(evt: Event) {
 		evt.preventDefault();
 
 		chatStore.connect(loginFormData);
 
-		//chatStore.listen("RPL_WELCOME", () => {
-		//	model.value = true;
-		//});
+		chatStore.listen(
+			"RPL_WELCOME",
+			() => replyWelcomeHandler(isConnectedModel),
+			{ once: true },
+		);
+
+		chatStore.listen("ERR_NICKNAMEINUSE", (data) =>
+			errorNicknameinuseHandler(data),
+		);
 	}
 
 	return connectSubmitHandler;
+}
+
+/**
+ * Écoute de l'événement `RPL_WELCOME`.
+ */
+function replyWelcomeHandler(
+	isConnectedModel: ModelRef<boolean | undefined, string>,
+) {
+	isConnectedModel.value = true;
+}
+
+/**
+ * Écoute de l'événement `ERR_NICKNAMEINUSE`.
+ */
+function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
+	if (data.nickname === loginFormData.alternativeNickname) {
+		errors.alternativeNickname = data.reason.slice(
+			loginFormData.alternativeNickname.length + 2,
+		);
+	} else {
+		errors.nickname = data.reason.slice(loginFormData.nickname.length + 2);
+	}
 }

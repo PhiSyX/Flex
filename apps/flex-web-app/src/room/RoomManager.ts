@@ -8,80 +8,53 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { STORAGE_REMEMBER_ME_KEY } from "./constant";
+import { None, Option } from "@phisyx/flex-safety";
+
+import { Room, RoomID } from "./Room";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RememberMeStorage {
-	// ------ //
-	// Static //
-	// ------ //
-
-	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor() {
-		try {
-			this.rememberMe = JSON.parse(
-				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(RememberMeStorage.KEY),
-				this.fromJSON,
-			);
-		} catch {}
-	}
-
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	private rememberMe = false;
-
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
-
-	get value(): boolean {
-		return this.get();
-	}
-
-	set value($1: boolean) {
-		this.set($1);
-	}
-
-	// ------- //
-	// Méthode // -> API Publique
-	// ------- //
-
-	get(): boolean {
-		return this.rememberMe;
-	}
+export class RoomManager {
+	_currentRoom: Option<RoomID> = None();
+	_rooms: Map<RoomID, Room> = new Map();
 
 	/**
-	 * Définit une nouvelle valeur.
+	 * Définit les rooms de la classe à partir d'un itérable.
 	 */
-	set(rememberMeValue: boolean) {
-		this.rememberMe = rememberMeValue;
-
-		try {
-			localStorage.setItem(RememberMeStorage.KEY, this.toString());
-		} catch {}
-	}
-
-	/**
-	 * Validation du JSON
-	 */
-	fromJSON(key: string, value: unknown) {
-		if (key.length === 0 && typeof value === "boolean") {
-			return value;
+	extends(rooms: Iterable<[RoomID, Room]>) {
+		for (const [roomID, room] of rooms) {
+			this._rooms.set(roomID.toLowerCase(), room);
 		}
 	}
 
-	toString() {
-		return JSON.stringify(this.rememberMe);
+	/**
+	 * Chambre courante
+	 */
+	current(): Room {
+		return this._currentRoom
+			.and_then((current_room) => this.get(current_room))
+			.expect("La chambre courante");
+	}
+
+	/**
+	 * Récupère un chambre à partir de son ID.
+	 */
+	get(roomID: RoomID): Option<Room> {
+		return Option.from(this._rooms.get(roomID.toLowerCase()));
+	}
+
+	/**
+	 * Définit une chambre courante.
+	 */
+	setCurrent(roomID: RoomID) {
+		if (this._currentRoom.is_some()) {
+			this.current().setActive(false);
+		}
+
+		this._currentRoom.replace(roomID.toLowerCase());
+
+		this.current().setActive(true);
 	}
 }

@@ -8,18 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { STORAGE_REMEMBER_ME_KEY } from "./constant";
+import { None, Option } from "@phisyx/flex-safety";
+import { STORAGE_CLIENT_ID_KEY } from "./constant";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RememberMeStorage {
+export class ClientIDStorage {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
+	static readonly KEY = STORAGE_CLIENT_ID_KEY;
 
 	// ----------- //
 	// Constructor //
@@ -27,11 +28,8 @@ export class RememberMeStorage {
 
 	constructor() {
 		try {
-			this.rememberMe = JSON.parse(
-				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(RememberMeStorage.KEY),
-				this.fromJSON,
-			);
+			const clientID = localStorage.getItem(ClientIDStorage.KEY);
+			this.clientID = Option.from(clientID);
 		} catch {}
 	}
 
@@ -39,49 +37,29 @@ export class RememberMeStorage {
 	// Propriété //
 	// --------- //
 
-	private rememberMe = false;
-
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
-
-	get value(): boolean {
-		return this.get();
-	}
-
-	set value($1: boolean) {
-		this.set($1);
-	}
+	private clientID: Option<string> = None();
 
 	// ------- //
-	// Méthode // -> API Publique
+	// Méthode //
 	// ------- //
 
-	get(): boolean {
-		return this.rememberMe;
+	maybe() {
+		return this.clientID;
 	}
 
-	/**
-	 * Définit une nouvelle valeur.
-	 */
-	set(rememberMeValue: boolean) {
-		this.rememberMe = rememberMeValue;
+	get() {
+		return this.clientID.expect("ID du client stocké dans le localStorage");
+	}
+
+	set($1: string) {
+		this.clientID.replace($1);
 
 		try {
-			localStorage.setItem(RememberMeStorage.KEY, this.toString());
+			localStorage.setItem(ClientIDStorage.KEY, this.toString());
 		} catch {}
 	}
 
-	/**
-	 * Validation du JSON
-	 */
-	fromJSON(key: string, value: unknown) {
-		if (key.length === 0 && typeof value === "boolean") {
-			return value;
-		}
-	}
-
 	toString() {
-		return JSON.stringify(this.rememberMe);
+		return this.clientID.unwrap();
 	}
 }

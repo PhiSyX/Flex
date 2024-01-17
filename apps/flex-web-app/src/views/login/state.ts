@@ -27,3 +27,7 @@ export const loginFormData = reactive({
 	passwordServer: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
 	websocketServerURL: import.meta.env.VITE_APP_WEBSOCKET_URL,
 });
+export const errors = reactive({
+	nickname: null as string | null,
+	alternativeNickname: null as string | null,
+});

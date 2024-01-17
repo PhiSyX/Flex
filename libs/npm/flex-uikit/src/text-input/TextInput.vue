@@ -2,7 +2,7 @@
 import { type Icons, LabelIcon } from "../icons";
 
 interface Props {
-	error?: string;
+	error?: string | null;
 	label: Icons;
 	modelValue: string;
 	name: string;
@@ -48,6 +48,7 @@ p {
 	margin: 0;
 	margin-left: fx.space(4);
 
+	font-size: 13px;
 	font-style: italic;
 }
 

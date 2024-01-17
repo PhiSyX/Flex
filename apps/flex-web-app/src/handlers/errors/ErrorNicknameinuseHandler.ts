@@ -8,80 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { STORAGE_REMEMBER_ME_KEY } from "./constant";
+import { ChatStore } from "~/store/ChatStore";
+import { GenericReply } from "~/types/replies";
+import { SocketEventInterface } from "~/types/socket";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RememberMeStorage {
-	// ------ //
-	// Static //
-	// ------ //
+export class ErrorNicknameinuseHandler
+	implements SocketEventInterface<"ERR_NICKNAMEINUSE">
+{
+	constructor(private store: ChatStore) {}
 
-	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor() {
-		try {
-			this.rememberMe = JSON.parse(
-				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(RememberMeStorage.KEY),
-				this.fromJSON,
-			);
-		} catch {}
+	listen() {
+		this.store.on("ERR_NICKNAMEINUSE", (data) => this.handle(data));
 	}
 
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	private rememberMe = false;
-
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
-
-	get value(): boolean {
-		return this.get();
-	}
-
-	set value($1: boolean) {
-		this.set($1);
-	}
-
-	// ------- //
-	// Méthode // -> API Publique
-	// ------- //
-
-	get(): boolean {
-		return this.rememberMe;
-	}
-
-	/**
-	 * Définit une nouvelle valeur.
-	 */
-	set(rememberMeValue: boolean) {
-		this.rememberMe = rememberMeValue;
-
-		try {
-			localStorage.setItem(RememberMeStorage.KEY, this.toString());
-		} catch {}
-	}
-
-	/**
-	 * Validation du JSON
-	 */
-	fromJSON(key: string, value: unknown) {
-		if (key.length === 0 && typeof value === "boolean") {
-			return value;
+	handle(data: GenericReply<"ERR_NICKNAMEINUSE">) {
+		if (!this.store.isConnected()) {
+			if (
+				data.nickname ===
+				this.store.getConnectUserInfo().alternativeNickname
+			) {
+				this.store.off("ERR_NICKNAMEINUSE");
+			} else {
+				this.store.emit("NICK (unregistered)", {
+					nickname:
+						this.store.getConnectUserInfo().alternativeNickname,
+				});
+			}
+			return;
 		}
-	}
 
-	toString() {
-		return JSON.stringify(this.rememberMe);
+		console.debug("ERR_NICKNAMEINUSE", { data });
 	}
 }

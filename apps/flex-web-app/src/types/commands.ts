@@ -8,21 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { loginFormData } from "./state";
+// ---- //
+// Type //
+// ---- //
 
-import { useChatStore } from "~/store/ChatStore";
+export type Commands = {
+	/**
+	 * Unregistered client.
+	 */
 
-const chatStore = useChatStore();
+	PASS: { password: string };
+	"NICK (unregistered)": { nickname: string };
+	USER: { user: string; mode: number; realname: string };
 
-// ----- //
-// Hooks //
-// ----- //
+	/**
+	 * Registered client.
+	 */
 
-/**
- * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
- */
-export function useRememberMe() {
-	if (loginFormData.rememberMe.value) {
-		chatStore.connect(loginFormData);
-	}
-}
+	NICK: { nickname: string };
+};
+
+export type CommandsNames = keyof Commands;
+export type Command<T extends keyof Commands> = Commands[T];

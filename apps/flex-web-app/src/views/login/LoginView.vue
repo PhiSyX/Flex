@@ -7,7 +7,7 @@ import {
 	VALIDATION_NICKNAME_INFO,
 } from "./constant";
 import { connectSubmit, displayAdvancedInfoHandler } from "./handlers";
-import { advancedInfo, loginFormData } from "./state";
+import { advancedInfo, errors, loginFormData } from "./state";
 import { useRememberMe } from "./hooks";
 
 // ---- //
@@ -63,6 +63,7 @@ useRememberMe();
 					v-model="loginFormData.nickname"
 					label="user"
 					name="nickname"
+					:error="errors.nickname"
 					:maxlength="MAXLENGTH_NICKNAME"
 					:placeholder="PLACEHOLDER_NICKNAME"
 					:title="VALIDATION_NICKNAME_INFO"
@@ -73,6 +74,7 @@ useRememberMe();
 					v-model="loginFormData.alternativeNickname"
 					label="user"
 					name="alternative_nickname"
+					:error="errors.alternativeNickname"
 					placeholder="Pseudonyme alternatif"
 					:maxlength="MAXLENGTH_NICKNAME"
 					:title="VALIDATION_NICKNAME_INFO"
@@ -114,7 +116,11 @@ useRememberMe();
 				/>
 			</div>
 
-			<button class="btn" form="chat-login-form" type="submit">
+			<button
+				class="btn"
+				form="chat-login-form"
+				type="submit"
+			>
 				Accéder au Chat
 			</button>
 		</section>
@@ -196,6 +202,14 @@ useRememberMe();
 					--login-button-submit-bg: var(
 						-- login-button-submit-bg-hover
 					);
+				}
+			}
+		}
+
+		&[disabled] {
+			@include fx.theme using ($name) {
+				@if $name == ice {
+					--disabled-color: var(--color-blue-grey500);
 				}
 			}
 		}

@@ -1,5 +1,5 @@
 {
-	"name": "@flex/code-quality",
+	"name": "@phisyx/flex-code-quality",
 	"version": "0.1.0",
 	"private": true,
 	"publishConfig": {

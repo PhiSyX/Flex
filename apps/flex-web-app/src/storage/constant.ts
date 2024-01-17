@@ -16,3 +16,8 @@
  * Clé localStorage "Se souvenir de moi".
  */
 export const STORAGE_REMEMBER_ME_KEY = "flex.remember_me";
+
+/**
+ * Clé localStorage de l'ID du client courant connecté.
+ */
+export const STORAGE_CLIENT_ID_KEY = "flex.client_id";

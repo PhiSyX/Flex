@@ -8,21 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { loginFormData } from "./state";
+import type { Command, CommandsNames } from "./commands";
+import type { GenericReply, RepliesNames } from "./replies";
 
-import { useChatStore } from "~/store/ChatStore";
+// --------- //
+// Interface //
+// --------- //
 
-const chatStore = useChatStore();
+export interface SocketEventInterface<R extends RepliesNames> {
+	listen(): void;
 
-// ----- //
-// Hooks //
-// ----- //
-
-/**
- * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
- */
-export function useRememberMe() {
-	if (loginFormData.rememberMe.value) {
-		chatStore.connect(loginFormData);
-	}
+	handle(data: GenericReply<R>, ...user_data: Array<unknown>): void;
 }
+
+// Socket Event
+
+export type ServerToClientEvent = {
+	[K in RepliesNames]: (_: GenericReply<K>) => void;
+};
+
+export type ClientToServerEvent = {
+	[C in CommandsNames]: (data: Command<C>) => void;
+};

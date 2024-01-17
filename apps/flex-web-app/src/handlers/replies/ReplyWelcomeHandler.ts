@@ -8,80 +8,45 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { STORAGE_REMEMBER_ME_KEY } from "./constant";
+import { ChatStore } from "~/store/ChatStore";
+import { GenericReply } from "~/types/replies";
+import { SocketEventInterface } from "~/types/socket";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RememberMeStorage {
-	// ------ //
-	// Static //
-	// ------ //
+export class ReplyWelcomeHandler
+	implements SocketEventInterface<"RPL_WELCOME">
+{
+	constructor(private store: ChatStore) {}
 
-	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor() {
-		try {
-			this.rememberMe = JSON.parse(
-				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(RememberMeStorage.KEY),
-				this.fromJSON,
-			);
-		} catch {}
+	listen() {
+		this.store.once("RPL_WELCOME", (data) => {
+			this.handle(data, {
+				channels: this.store.getAutoJoinChannels(),
+			});
+		});
 	}
 
-	// --------- //
-	// Propriété //
-	// --------- //
+	handle(
+		data: GenericReply<"RPL_WELCOME">,
+		payload: { channels: Array<string> },
+	) {
+		const { channels } = payload;
 
-	private rememberMe = false;
+		this.store.setConnected(true);
+		this.store.setClientID(data.tags.client_id);
+		this.store.setMe({
+			nickname: data.nickname,
+			host: { cloaked: data.host },
+			ident: data.ident,
+		});
 
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
+		const network_room = this.store.network();
+		network_room.addConnectEvent(data, data.message);
 
-	get value(): boolean {
-		return this.get();
-	}
-
-	set value($1: boolean) {
-		this.set($1);
-	}
-
-	// ------- //
-	// Méthode // -> API Publique
-	// ------- //
-
-	get(): boolean {
-		return this.rememberMe;
-	}
-
-	/**
-	 * Définit une nouvelle valeur.
-	 */
-	set(rememberMeValue: boolean) {
-		this.rememberMe = rememberMeValue;
-
-		try {
-			localStorage.setItem(RememberMeStorage.KEY, this.toString());
-		} catch {}
-	}
-
-	/**
-	 * Validation du JSON
-	 */
-	fromJSON(key: string, value: unknown) {
-		if (key.length === 0 && typeof value === "boolean") {
-			return value;
-		}
-	}
-
-	toString() {
-		return JSON.stringify(this.rememberMe);
+		// TODO: Join Channels
+		console.debug("RPL_WELCOME", { channels });
 	}
 }

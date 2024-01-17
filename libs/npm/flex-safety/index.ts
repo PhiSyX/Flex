@@ -8,21 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { loginFormData } from "./state";
-
-import { useChatStore } from "~/store/ChatStore";
-
-const chatStore = useChatStore();
-
-// ----- //
-// Hooks //
-// ----- //
-
-/**
- * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
- */
-export function useRememberMe() {
-	if (loginFormData.rememberMe.value) {
-		chatStore.connect(loginFormData);
-	}
-}
+export * from "./src/asserts";
+export * from "./src/option";
+export * from "./src/result";
