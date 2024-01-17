@@ -1,0 +1,21 @@
+[package]
+name = "flex-web-framework"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = { version = "0.7.4" }
+chrono = { version = "0.4.31", features = ["clock", "serde"] }
+console = { version = "0.15.8" }
+email_address = { version = "0.2.4", features = ["serde"] }
+flex-crypto = { workspace = true }
+hyper = { version = "1.1.0" }
+lexa-kernel = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+time = { version = "0.3.31", features = ["serde"] }
+tokio = { workspace = true }
+tower-http = { version = "0.5.1", features = ["cors", "fs"] }
+url = { version = "2.5.0", features = ["serde"] }
+uuid = { version = "1.6.1", features = ["v4", "serde"] }

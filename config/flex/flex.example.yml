@@ -1,0 +1,27 @@
+cors:
+  preset: "permissive"
+
+network:
+  name: "Nom d'example"
+
+admin:
+  name: "John Doe"
+  email: "johndoe@example.org"
+  nick: "JohnDoe"
+
+server:
+  name: "chat.example.org"
+
+  #
+  # Mot de passe
+  #
+  # 1. Dé-commenter le champ `password`.
+  # 2. Lancer dans le terminal: `./flex make-generate <password>`
+  # 3. Copier le mot de passe généré et le coller dans le champ `password`.
+  #
+  #password: "$argon2id..."
+
+  #
+  # Date de création du serveur.
+  #
+  #created_at: 1635185135

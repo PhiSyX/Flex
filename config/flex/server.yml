@@ -1,0 +1,5 @@
+ip: 127.0.0.1
+port: 8888
+static_resources:
+  - url_path: /public
+    dir_path: public/
