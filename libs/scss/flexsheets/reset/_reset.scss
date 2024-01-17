@@ -1,0 +1,45 @@
+@mixin use-reset {
+	@layer flexsheets {
+		* {
+			font: inherit;
+			position: relative;
+			min-width: 0;
+		}
+
+		html {
+			color-scheme: dark light;
+			hanging-punctuation: first last;
+		}
+
+		body {
+			min-height: 100svh;
+		}
+
+		img,
+		picture,
+		svg,
+		video {
+			display: inline-block;
+			max-width: 100%;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			text-wrap: balance;
+		}
+
+		p {
+			text-wrap: pretty;
+		}
+
+		@media (prefers-reduced-motion: no-preferences) {
+			:has(:target) {
+				scroll-behavior: smooth;
+			}
+		}
+	}
+}

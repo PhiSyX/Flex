@@ -1,0 +1,40 @@
+@use "./string-replace" as fn;
+
+@function escape_selector($selector) {
+	$escape_chars: (
+		"!",
+		'"',
+		"#",
+		"$",
+		"%",
+		"&",
+		"'",
+		"(",
+		")",
+		"*",
+		"+",
+		".",
+		"/",
+		":",
+		";",
+		"<",
+		"=",
+		">",
+		"?",
+		"@",
+		"[",
+		"]",
+		"^",
+		"\`",
+		"{",
+		"|",
+		"}",
+		"~"
+	);
+
+	@each $escape_char in $escape_chars {
+		$selector: fn.str_replace($selector, $escape_char, "\\#{$escape_char}");
+	}
+
+	@return $selector;
+}

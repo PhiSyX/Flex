@@ -1,0 +1,15 @@
+@use "../mixins/selector" as sel;
+
+@mixin use-overflow {
+	@include sel.class("scroll:y") {
+		height: 100%;
+		overflow: hidden;
+		overflow-y: auto !important;
+		overscroll-behavior-y: contain;
+		scroll-snap-type: y mandatory;
+
+		&.scroll\:hidden {
+			margin-right: -1px !important;
+		}
+	}
+}

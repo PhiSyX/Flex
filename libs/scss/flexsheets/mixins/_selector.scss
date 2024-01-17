@@ -1,0 +1,12 @@
+@use "../functions/escape" as fn;
+
+/**
+ * @example ```scss
+ * 	@include class("py=1") { ... } // -> .py\=1 { ... }
+ * ```
+ */
+@mixin class($selector) {
+	.#{fn.escape_selector($selector)} {
+		@content;
+	}
+}

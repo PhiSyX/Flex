@@ -1,0 +1,108 @@
+// ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
+// ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
+// ┃                                                                           ┃
+// ┃  This Source Code Form is subject to the terms of the Mozilla Public      ┃
+// ┃  License, v. 2.0. If a copy of the MPL was not distributed with this      ┃
+// ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
+// ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+@use "./variables" as var;
+
+@use "scss:~/flexsheets" as fx with($spacing: var.$spacing);
+
+@layer flexsheets, userland;
+
+@import "scss:~/normalizer.css" layer(reset);
+
+@include fx.use-reset;
+
+@import "./variables";
+@import "./fonts";
+@import "./button";
+@import "./input";
+
+:root {
+	/* Couleurs globales */
+	--color-ultra-black: #000000;
+	--color-ultra-white: #ffffff;
+
+	--color-black: #212121;
+	--color-white: #e9f2f4;
+	--color-white_hsl: 191, 33%, 94%;
+
+	--color-grey50: #fafafa;
+	--color-grey50_hsl: 0, 0%, 98%;
+	--color-grey800: #424242;
+
+	--color-blue-grey400: #78909c;
+	--color-blue-grey500: #677c86;
+	--color-blue-grey600: #546e7a;
+	--color-blue-grey700: #455a64;
+
+	/* Paramètres d'application */
+
+	@include fx.theme(true) using ($name) {
+		@if $name == ice {
+			--default-border-color: var(--color-blue-grey500);
+			--default-text-color: var(--color-white);
+
+			--body-bg: linear-gradient(
+				var(--color-blue-grey600),
+				var(--color-blue-grey400)
+			);
+
+			--text-input-color-error: #4dd2d4;
+
+			--login-form-bg: var(--color-blue-grey600);
+			--login-form-shadow: var(--color-blue-grey700);
+			--login-form-color: hsl(var(--color-white_hsl), 0.75);
+			--login-form-hover-color: var(--color-white);
+			--login-button-submit-bg: linear-gradient(
+				hsl(var(--color-grey50_hsl), 55%),
+				hsl(var(--color-grey50_hsl), 15%)
+			);
+			--login-button-submit-bg-hover: linear-gradient(
+				hsl(var(--color-grey50_hsl), 55%),
+				hsl(var(--color-grey50_hsl), 25%)
+			);
+			--login-button-submit-color: var(--color-grey800);
+			--login-button-submit-outline-color: var(--color-blue-grey600);
+		}
+	}
+}
+
+html,
+body {
+	width: 100svw;
+	height: 100svh;
+
+	font-family: Roboto, Nunito, sans-serif;
+	font-size: 16px;
+}
+
+#🆔,
+#app {
+	width: 100%;
+	height: 100%;
+
+	overflow: hidden;
+}
+
+#🆔 {
+	transition: box-shadow 0.2s;
+
+	color: var(--default-text-color);
+}
+
+#app {
+	padding: fx.space(1);
+
+	background: var(--body-bg);
+
+	box-shadow: inset 0 0 0 fx.space(1) var(--default-border-color),
+		inset 5px 5px 5px var(--default-border-color);
+}
+
+@include fx.use-overflow();
