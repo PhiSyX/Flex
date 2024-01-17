@@ -17,6 +17,7 @@ import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseH
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
+import { RoomMessage } from "~/room/RoomMessage";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { Commands } from "~/types/commands";
@@ -79,7 +80,6 @@ export class ChatStore {
 		};
 	}> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
-	private _isClientConnected = false;
 	private _network: Option<string> = None();
 	private _roomManager: RoomManager = new RoomManager();
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> =
@@ -126,7 +126,7 @@ export class ChatStore {
 	}
 
 	isConnected(): boolean {
-		return this._isClientConnected;
+		return this.network().isConnected();
 	}
 
 	getAutoJoinChannels(): Array<string> {
@@ -201,7 +201,7 @@ export class ChatStore {
 	}
 
 	setConnected(b: boolean): void {
-		this._isClientConnected = b;
+		this.network().setConnected(b);
 	}
 
 	setClientID(client_id: string): void {
@@ -230,6 +230,24 @@ export class ChatStore {
 
 export const useChatStore = defineStore(ChatStore.NAME, () => {
 	const store = ChatStore.default();
+
+	function changeRoom(name: string) {
+		if (!store.roomManager().has(name)) {
+			return;
+		}
+		store.roomManager().setCurrent(name);
+
+		const current = store.roomManager().current();
+
+		current.unsetTotalUnreadEvents();
+		current.unsetTotalUnreadMessages();
+	}
+
+	function closeRoom(name: string, message?: string) {
+		store.roomManager().remove(name);
+
+		console.debug("fermeture de la chambre avec le message: %s", message);
+	}
 
 	function connect(connectUserInfo: ConnectUserInfo) {
 		store.setConnectUserInfo(connectUserInfo);
@@ -268,5 +286,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 	}
 
-	return { connect, listen };
+	return {
+		changeRoom,
+		closeRoom,
+		connect,
+		listen,
+		store,
+	};
 });

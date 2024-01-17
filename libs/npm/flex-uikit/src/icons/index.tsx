@@ -19,11 +19,16 @@ import { resolveComponent } from "vue";
 // ---- //
 
 export type Icons =
+	| "arrow-down"
+	| "arrow-left"
+	| "arrow-right"
 	| "channel"
+	| "close"
+	| "logoff"
 	| "password"
 	| "plus"
+	| "settings"
 	| "url"
-	// new line
 	| "user";
 
 interface ButtonProps {

@@ -46,6 +46,35 @@ export class RoomManager {
 	}
 
 	/**
+	 * Vérifie qu'une chambre existe.
+	 */
+	has(roomID: RoomID): boolean {
+		return this.get(roomID).is_some();
+	}
+
+	/**
+	 * Supprime une chambre à partir de son ID.
+	 */
+	remove(roomID: RoomID) {
+		if (this._currentRoom.is_some()) {
+			if (this.current().eq(roomID)) {
+				this.unsetCurrent();
+			}
+		}
+		this._rooms.delete(roomID.toLowerCase());
+		if (this._currentRoom.is_none()) {
+			this.setCurrentToLast();
+		}
+	}
+
+	/**
+	 * Toutes les chambres.
+	 */
+	rooms(): IterableIterator<Room> {
+		return this._rooms.values();
+	}
+
+	/**
 	 * Définit une chambre courante.
 	 */
 	setCurrent(roomID: RoomID) {
@@ -56,5 +85,21 @@ export class RoomManager {
 		this._currentRoom.replace(roomID.toLowerCase());
 
 		this.current().setActive(true);
+	}
+
+	/**
+	 * Définit la chambre courante à la dernière chambre.
+	 */
+	setCurrentToLast() {
+		const arr = Array.from(this._rooms.keys());
+		const last = arr[arr.length - 1];
+		if (last) this.setCurrent(last);
+	}
+
+	/**
+	 * Définit la chambre courante comme vide.
+	 */
+	unsetCurrent() {
+		this._currentRoom = None();
 	}
 }

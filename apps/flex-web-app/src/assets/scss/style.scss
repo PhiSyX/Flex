@@ -34,12 +34,22 @@
 
 	--color-grey50: #fafafa;
 	--color-grey50_hsl: 0, 0%, 98%;
+	--color-grey600: #757575;
 	--color-grey800: #424242;
+
+	--color-blue300: #64b5f6;
+	--color-blue500: #2196f3;
 
 	--color-blue-grey400: #78909c;
 	--color-blue-grey500: #677c86;
 	--color-blue-grey600: #546e7a;
 	--color-blue-grey700: #455a64;
+
+	--color-lime500: #cddc39;
+	--color-lime700: #afb42b;
+
+	--color-orange400: #ffa726;
+	--color-orange700: #f57c00;
 
 	/* Paramètres d'application */
 
@@ -69,6 +79,9 @@
 			);
 			--login-button-submit-color: var(--color-grey800);
 			--login-button-submit-outline-color: var(--color-blue-grey600);
+
+			--room-bg: var(--color-blue-grey700);
+			--room-bg-hover: var(--color-grey800);
 		}
 	}
 }
@@ -106,3 +119,4 @@ body {
 }
 
 @include fx.use-overflow();
+@include fx.use-ulist-element();

@@ -8,36 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { App } from "vue";
+import { Room } from "./Room";
 
-// biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const iconsImports = import.meta.glob<{ default: any }>(
-	"./src/icons/Icon*.vue",
-	{ eager: true },
-);
+// -------------- //
+// Implémentation //
+// -------------- //
 
-const iconsComponents = Object.entries(iconsImports).map(
-	([iconComponentFilepath, iconComponent]) => {
-		const iconComponentName = iconComponentFilepath.slice(
-			"./src/icons/".length,
-			0 - ".vue".length,
-		);
-		return [iconComponentName, iconComponent.default];
-	},
-);
-
-export { default as Badge } from "./src/badge/Badge.vue";
-export { default as InputSwitch } from "./src/input-switch/InputSwitch.vue";
-export { default as TextInput } from "./src/text-input/TextInput.vue";
-
-export { ButtonIcon, LabelIcon } from "./src/icons";
-export type { Icons } from "./src/icons";
-
-// NOTE(phisyx): plugin Vue.
-export default {
-	install(app: App<Element>) {
-		for (const [iconComponentName, iconComponent] of iconsComponents) {
-			app.component(iconComponentName, iconComponent);
-		}
-	},
-};
+export class ChannelRoom extends Room<"channel"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(name: string) {
+		super("channel", name);
+	}
+}

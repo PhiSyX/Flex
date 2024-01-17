@@ -18,4 +18,27 @@ export class ServerCustomRoom extends Room<"server-custom-room"> {
 	constructor(name: string) {
 		super("server-custom-room", name);
 	}
+
+	// ---------- //
+	// Properties //
+	// ---------- //
+
+	/**
+	 * Connecté ou non
+	 */
+	connected = false;
+
+	/**
+	 * Est-ce que le serveur est connecté?
+	 */
+	isConnected(): boolean {
+		return this.connected;
+	}
+
+	/**
+	 * Définit le serveur comme étant connecté ou non.
+	 */
+	setConnected(bool: boolean) {
+		this.connected = bool;
+	}
 }

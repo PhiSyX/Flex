@@ -1,9 +1,19 @@
 <script setup lang="ts">
-// --------- //
-// Composant //
-// --------- //
+import Navigation from "~/components/navigation/Navigation.vue";
 </script>
 
 <template>
-	<main id="chat-view">Page de Chat.</main>
+	<main id="chat-view">
+		<Navigation />
+	</main>
 </template>
+
+<style scoped lang="scss">
+@use "scss:~/flexsheets" as fx;
+
+main {
+	display: flex;
+
+	height: 100%;
+}
+</style>

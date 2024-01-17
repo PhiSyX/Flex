@@ -19,7 +19,7 @@ type MessageProperties = {
 	id: string;
 	message: string;
 	isMe: boolean;
-	nick: string;
+	nickname: string;
 	target: string;
 	time: {
 		datetime: string;
@@ -48,7 +48,7 @@ export class RoomMessage {
 	declare id: MessageProperties["id"];
 	declare message: MessageProperties["message"];
 	isMe: MessageProperties["isMe"] = false;
-	declare nick: MessageProperties["nick"];
+	declare nickname: MessageProperties["nickname"];
 	declare target: MessageProperties["target"];
 	declare time: MessageProperties["time"];
 	declare type: MessageProperties["type"];
@@ -68,8 +68,8 @@ export class RoomMessage {
 		return this;
 	}
 
-	withNickname(nick: this["nick"]): this {
-		this.nick = nick;
+	withNickname(nickname: this["nickname"]): this {
+		this.nickname = nickname;
 		return this;
 	}
 

@@ -49,23 +49,32 @@ export class Room<Type extends string = string> {
 	/**
 	 * Le total des événements reçus.
 	 */
-	total_unread_events = 0;
+	totalUnreadEvents = 0;
 
 	/**
 	 * Le total des messages reçus.
 	 */
-	total_unread_messages = 0;
+	totalUnreadMessages = 0;
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
-	constructor(
-		public type: Type,
-		public name: string,
-	) {
-		this.#id = name.toLowerCase();
-		this.customName.replace(name);
+	constructor(public type: Type, protected _name: string) {
+		this.#id = _name.toLowerCase();
+		this.customName.replace(_name);
+	}
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get lastMessage(): Option<RoomMessage> {
+		return Option.from(this.messages.at(-1));
+	}
+
+	get name(): string {
+		return this.customName.unwrap_or(this._name);
 	}
 
 	// ------- //
@@ -80,14 +89,14 @@ export class Room<Type extends string = string> {
 			origin: Origin;
 			tags: { msgid: string };
 		},
-		message_text: string,
+		message_text: string
 	) {
 		const message = new RoomMessage()
 			.withID(payload.tags.msgid)
 			.withType("event:connect")
 			.withNickname(payload.origin.nickname)
 			.withMessage(message_text)
-			.withTarget(this.name)
+			.withTarget(this._name)
 			.withTime(new Date())
 			.withData(payload);
 		this.addMessage(message);
@@ -105,11 +114,21 @@ export class Room<Type extends string = string> {
 
 		if (!this.active) {
 			if (message.type.startsWith("event")) {
-				this.total_unread_events += 1;
+				this.totalUnreadEvents += 1;
 			} else {
-				this.total_unread_messages += 1;
+				this.totalUnreadMessages += 1;
 			}
 		}
+	}
+
+	eq($1: string | Room<Type>): boolean {
+		if (typeof $1 === "string") {
+			return (
+				this.id.toString().toLowerCase() === $1.toLowerCase() ||
+				this.name.toLowerCase() === $1.toLowerCase()
+			);
+		}
+		return $1.id === this.id;
 	}
 
 	/**
@@ -120,9 +139,30 @@ export class Room<Type extends string = string> {
 	}
 
 	/**
+	 * Est-ce que la chambre est active?
+	 */
+	public isActive(): boolean {
+		return this.active;
+	}
+
+	/**
 	 * Définit la chambre comme étant active.
 	 */
 	public setActive(b: boolean) {
 		this.active = b;
+	}
+
+	/**
+	 * Définit le total des événements reçus à 0.
+	 */
+	public unsetTotalUnreadEvents() {
+		this.totalUnreadEvents = 0;
+	}
+
+	/**
+	 * Définit le total des messages reçus à 0.
+	 */
+	public unsetTotalUnreadMessages() {
+		this.totalUnreadMessages = 0;
 	}
 }
