@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RoomMessage } from "~/room/RoomMessage";
 
+import { Emits, sendMessage } from "./ServerCustomRoom";
+
 import Room from "#/sys/room/Room.vue";
 
 // ---- //
@@ -14,10 +16,6 @@ interface Props {
 	vademecumUrl: string;
 }
 
-type Emits = {
-	(evtName: "send-message", name: string, message: string): void;
-};
-
 // --------- //
 // Composant //
 // --------- //
@@ -25,14 +23,16 @@ type Emits = {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-function send_message(message: string) {
-	emit("send-message", props.name, message);
-}
+const sendMessageHandler = sendMessage(emit, props.name);
 </script>
 
 <template>
 	<div class="server/window">
-		<Room :messages="messages" :name="name" @send-message="send_message">
+		<Room
+			:messages="messages"
+			:name="name"
+			@send-message="sendMessageHandler"
+		>
 			<template #topic>
 				<p>Bienvenue sur le Chat de {{ name }} !</p>
 			</template>

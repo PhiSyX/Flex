@@ -10,7 +10,7 @@
 
 import type { ModelRef } from "vue";
 
-import { advancedInfo, errors, loginFormData } from "./state";
+import { advancedInfo, errors, loginFormData } from "./LoginView.state";
 
 import { useChatStore } from "~/store/ChatStore";
 import { GenericReply } from "~/types/replies";

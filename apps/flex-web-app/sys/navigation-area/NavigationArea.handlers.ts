@@ -8,21 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { loginFormData } from "./state";
+// ---- //
+// Type //
+// ---- //
 
-import { useChatStore } from "~/store/ChatStore";
+export interface Emits {
+	(evtName: "change-room", name: string): void;
+	(evtName: "close-room", name: string): void;
+}
 
-const chatStore = useChatStore();
+// -------- //
+// Handlers //
+// -------- //
 
-// ----- //
-// Hooks //
-// ----- //
-
-/**
- * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
- */
-export function useRememberMe() {
-	if (loginFormData.rememberMe.value) {
-		chatStore.connect(loginFormData);
+export function changeRoom(emit: Emits) {
+	function changeRoomHandler(name: string) {
+		emit("change-room", name);
 	}
+	return changeRoomHandler;
+}
+
+export function closeRoom(emit: Emits) {
+	function closeRoomHandler(name: string) {
+		emit("close-room", name);
+	}
+	return closeRoomHandler;
 }

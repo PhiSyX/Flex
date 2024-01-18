@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import { Badge, ButtonIcon } from "@phisyx/flex-uikit";
+
+import { type Emits, openRoom, closeRoom } from "./NavigationRoom.handlers";
+import {
+	computeTotalUnread,
+	computeHasUnreadEvents,
+	computeHasUnreadMessages,
+} from "./NavigationRoom.state";
 
 // ---- //
 // Type //
@@ -14,12 +19,7 @@ interface Props {
 	highlight?: boolean;
 	totalUnreadEvents?: number;
 	totalUnreadMessages?: number;
-};
-
-type Emits = {
-	(evtName: "open-room", name: string): void;
-	(evtName: "close-room", name: string): void;
-};
+}
 
 // --------- //
 // Composant //
@@ -29,30 +29,19 @@ defineOptions({ inheritAttrs: false });
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const totalUnread = computed(() => {
-	// FIXME
-	// return toUserFriendly(
-	// 	props.totalUnreadMessages || props.totalUnreadEvents || 0
-	// );
-	return props.totalUnreadMessages || props.totalUnreadEvents || 0;
-});
+const openRoomHandler = openRoom(emit, props.name);
+const closeRoomHandler = closeRoom(emit, props.name);
 
-function openRoomHandler(evt: Event) {
-	evt.stopPropagation();
-	emit("open-room", props.name);
-}
-
-function closeRoomHandler(evt: MouseEvent) {
-	evt.stopPropagation();
-	emit("close-room", props.name);
-}
+const hasEvents = computeHasUnreadEvents(props);
+const hasMessages = computeHasUnreadMessages(props);
+const totalUnread = computeTotalUnread(props);
 </script>
 
 <template>
 	<li
 		:class="{
-			'has-events': totalUnreadEvents || 0 > 0,
-			'has-messages': totalUnreadMessages || 0 > 0,
+			'has-events': hasEvents,
+			'has-messages': hasMessages,
 			'is-active': active,
 			'is-highlight': highlight,
 		}"
@@ -67,7 +56,7 @@ function closeRoomHandler(evt: MouseEvent) {
 
 		<div>
 			<Badge
-				v-if="totalUnreadMessages || totalUnreadEvents"
+				v-if="hasEvents || hasMessages"
 				v-show="!folded"
 				class="total-unread"
 			>

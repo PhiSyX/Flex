@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed, onActivated, ref } from "vue";
-
 import { ButtonIcon } from "@phisyx/flex-uikit";
+
+import { onActivated } from "vue";
+
+import { onSubmit } from "./RoomEditbox.handlers";
+import { $input, computeFormAction, inputModel } from "./RoomEditbox.state";
 
 // ---- //
 // Type //
@@ -27,27 +30,8 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-let $input = ref<HTMLInputElement>();
-let inputModel = ref("");
-
-const formAction = computed(() => {
-	let target = props.target.startsWith("#")
-		? `%23${props.target.slice(1).toLowerCase()}`
-		: props.target.toLowerCase();
-	return `/privmsg/${target}`;
-});
-
-// -------- //
-// Fonction //
-// -------- //
-
-function submitHandler() {
-	if (props.disableInput || inputModel.value.length === 0) {
-		return;
-	}
-	emit("submit", inputModel.value);
-	inputModel.value = "";
-}
+const formAction = computeFormAction(props);
+const submitHandler = onSubmit(emit, props);
 
 onActivated(() => {
 	$input.value?.focus();

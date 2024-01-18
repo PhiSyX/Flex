@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import { onActivated, ref } from "vue";
+import { onActivated } from "vue";
 
 import { RoomMessage } from "~/room/RoomMessage";
+
+import { $root } from "./RoomHistoryLogs.state";
+import {
+	type Emits,
+	selectNick,
+	scrollHandler,
+	scroll,
+} from "./RoomHistoryLogs.handlers";
 
 import RoomMessageComponent from "#/sys/room-message/RoomMessage.vue";
 
@@ -13,10 +21,6 @@ interface Props {
 	messages: Array<RoomMessage>;
 }
 
-interface Emits {
-	(evtName: "select-nick", nickname: string): void;
-}
-
 // --------- //
 // Composant //
 // --------- //
@@ -24,28 +28,7 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-let $root = ref();
-
-let containerNeedsScroll = ref(true);
-
-function selectNickHandler(nickname: string) {
-	emit("select-nick", nickname);
-}
-
-function scrollToBottom() {
-	if (containerNeedsScroll.value) scroll();
-}
-
-function scroll() {
-	$root.value.scrollTop = $root.value.scrollHeight;
-}
-
-function scrollHandler() {
-	containerNeedsScroll.value =
-		$root.value.clientHeight + $root.value.scrollTop + 50 >=
-		$root.value.scrollHeight;
-	scrollToBottom();
-}
+const selectNickHandler = selectNick(emit);
 
 onActivated(() => scroll());
 </script>

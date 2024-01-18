@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-
 import { ButtonIcon } from "@phisyx/flex-uikit";
 
-import NavigationServer from "#/sys/navigation-server/NavigationServer.vue";
 import { Room } from "~/room/Room";
+
+import { folded, navWidth } from "./NavigationArea.state";
+import { type Emits, changeRoom, closeRoom } from "./NavigationArea.handlers";
+
+import NavigationServer from "#/sys/navigation-server/NavigationServer.vue";
 
 // ---- //
 // Type //
@@ -22,27 +24,14 @@ interface Server {
 	rooms: Array<Room>;
 }
 
-interface Emits {
-	(evtName: "change-room", name: string): void;
-	(evtName: "close-room", name: string): void;
-}
-
 // --------- //
 // Composant //
 // --------- //
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const folded = ref(false);
-const navWidth = computed(() => (folded.value ? "42px" : "255px"));
-
-function changeRoomHandler(name: string) {
-	emit("change-room", name);
-}
-
-function closeRoomHandler(name: string) {
-	emit("close-room", name);
-}
+const changeRoomHandler = changeRoom(emit);
+const closeRoomHandler = closeRoom(emit);
 </script>
 
 <template>

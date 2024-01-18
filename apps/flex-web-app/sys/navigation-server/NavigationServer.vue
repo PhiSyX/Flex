@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { Room } from "~/room/Room";
 
+import {
+	changeRoom,
+	closeRoom,
+	openRoom,
+	type Emits,
+	toggleFold,
+} from "./NavigationServer.handlers";
+
 import Match from "#/sys/match/Match.vue";
 import NavigationRoom from "#/sys/navigation-room/NavigationRoom.vue";
 
@@ -17,36 +25,18 @@ interface Props {
 	rooms: Array<Room>;
 }
 
-interface Emits {
-	(evtName: "change-room", name: string): void;
-	(evtName: "close-room", name: string): void;
-}
-
 // --------- //
 // Composant //
 // --------- //
+
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+const folded = defineModel<boolean>("folded");
 
-const folded = defineModel("folded");
-
-function changeRoomHandler(evt: MouseEvent) {
-	evt.preventDefault();
-
-	emit("change-room", props.name);
-}
-
-function openRoomHandler(name: string) {
-	emit("change-room", name);
-}
-
-function closeRoomHandler(name: string) {
-	emit("close-room", name);
-}
-
-function toggleFoldHandler() {
-	folded.value = !folded.value;
-}
+const changeRoomHandler = changeRoom(emit, props.name);
+const openRoomHandler = openRoom(emit);
+const closeRoomHandler = closeRoom(emit);
+const toggleFoldHandler = toggleFold(folded);
 </script>
 
 <template>

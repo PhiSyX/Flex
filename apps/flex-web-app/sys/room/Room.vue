@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import { RoomMessage } from "~/room/RoomMessage";
+
+import { Emits, openPrivate, selectNick, sendMessage } from "./Room.handler";
+import { computeInputPlaceholder } from "./Room.state";
 
 import RoomTopic from "#/sys/room-topic/RoomTopic.vue";
 import RoomHistoryLogs from "#/sys/room-history-logs/RoomHistoryLogs.vue";
@@ -18,12 +19,6 @@ interface Props {
 	messages: Array<RoomMessage>;
 }
 
-type Emits = {
-	(evtName: "open-private", nickname: string): void;
-	(evtName: "select-nick", nickname: string): void;
-	(evtName: "send-message", message: string): void;
-};
-
 // --------- //
 // Composant //
 // --------- //
@@ -34,27 +29,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-const inputPlaceholder = computed(() => {
-	return props.disableInput
-		? `La chambre « ${props.name} » est en mode lecture uniquement.`
-		: "Commencez à taper / pour obtenir la liste des commandes disponibles...";
-});
-
-// -------- //
-// Handlers //
-// -------- //
-
-function openPrivateHandler(nickname: string) {
-	emit("open-private", nickname);
-}
-
-function selectNickHandler(nickname: string) {
-	emit("select-nick", nickname);
-}
-
-function sendMessageHandler(message: string) {
-	emit("send-message", message);
-}
+const inputPlaceholder = computeInputPlaceholder(props);
+const openPrivateHandler = openPrivate(emit);
+const selectNickHandler = selectNick(emit);
+const sendMessageHandler = sendMessage(emit);
 </script>
 
 <template>

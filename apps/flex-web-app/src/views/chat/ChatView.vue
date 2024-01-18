@@ -1,24 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
-import { useChatStore } from "~/store/ChatStore";
+import { rooms, forumURL, vademecumURL } from "./ChatView.state";
+import { sendMessageHandler } from "./ChatView.handlers";
 
 import Navigation from "~/components/navigation/Navigation.vue";
 import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
-
-const chatStore = useChatStore();
-
-const rooms = computed(() => chatStore.store.roomManager().rooms());
-const forumURL = import.meta.env.VITE_APP_FORUM_URL || "#";
-const vademecumURL = import.meta.env.VITE_APP_VADEMECUM_URL || "#";
-
-// -------- //
-// Handlers //
-// -------- //
-
-function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
 </script>
 
 <template>

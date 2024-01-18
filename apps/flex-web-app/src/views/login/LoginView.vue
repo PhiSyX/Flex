@@ -5,10 +5,13 @@ import {
 	MAXLENGTH_NICKNAME,
 	PLACEHOLDER_NICKNAME,
 	VALIDATION_NICKNAME_INFO,
-} from "./constant";
-import { connectSubmit, displayAdvancedInfoHandler } from "./handlers";
-import { advancedInfo, errors, loginFormData } from "./state";
-import { useRememberMe } from "./hooks";
+} from "./LoginView.constants";
+import {
+	connectSubmit,
+	displayAdvancedInfoHandler,
+} from "./LoginView.handlers";
+import { advancedInfo, errors, loginFormData } from "./LoginView.state";
+import { useRememberMe } from "./LoginView.hooks";
 
 // ---- //
 // Type //
@@ -116,11 +119,7 @@ useRememberMe();
 				/>
 			</div>
 
-			<button
-				class="btn"
-				form="chat-login-form"
-				type="submit"
-			>
+			<button class="btn" form="chat-login-form" type="submit">
 				Accéder au Chat
 			</button>
 		</section>
