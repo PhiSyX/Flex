@@ -8,28 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Command, CommandsNames } from "./commands";
-import type { GenericReply, RepliesNames } from "./replies";
+import { ChatStore } from "~/store/ChatStore";
+import { GenericReply } from "~/types/replies";
+import { SocketEventInterface } from "~/types/socket";
 
-// --------- //
-// Interface //
-// --------- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export interface SocketEventHandler {
-	listen(): void;
+export class ReplyCreatedHandler
+	implements SocketEventInterface<"RPL_CREATED">
+{
+	constructor(private store: ChatStore) {}
+
+	listen() {
+		this.store.once("RPL_CREATED", (data) => {
+			this.handle(data);
+		});
+	}
+
+	handle(data: GenericReply<"RPL_CREATED">) {
+		const network_room = this.store.network();
+		network_room.addConnectEvent(data, data.message);
+	}
 }
-
-export interface SocketEventInterface<R extends RepliesNames>
-	extends SocketEventHandler {
-	handle(data: GenericReply<R>, ...user_data: Array<unknown>): void;
-}
-
-// Socket Event
-
-export type ServerToClientEvent = {
-	[K in RepliesNames]: (_: GenericReply<K>) => void;
-};
-
-export type ClientToServerEvent = {
-	[C in CommandsNames]: (data: Command<C>) => void;
-};

@@ -14,14 +14,19 @@ import { Socket, io } from "socket.io-client";
 import { reactive } from "vue";
 
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
+import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
+import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
-import { RoomMessage } from "~/room/RoomMessage";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { Commands } from "~/types/commands";
-import { ClientToServerEvent, ServerToClientEvent } from "~/types/socket";
+import {
+	ClientToServerEvent,
+	ServerToClientEvent,
+	SocketEventHandler,
+} from "~/types/socket";
 
 // ---- //
 // Type //
@@ -50,8 +55,12 @@ export class ChatStore {
 	static default(): ChatStore {
 		const self = reactive(new ChatStore()) as ChatStore;
 
-		self.replyWelcomeHandler = new ReplyWelcomeHandler(self);
-		self.errorNicknameinuseHandler = new ErrorNicknameinuseHandler(self);
+		self.repliesHandlers
+			.add(new ReplyWelcomeHandler(self))
+			.add(new ReplyCreatedHandler(self))
+			.add(new ReplyYourhostHandler(self));
+
+		self.errorsHandlers.add(new ErrorNicknameinuseHandler(self));
 
 		const thisServer = new ServerCustomRoom("Flex");
 		const rooms: Map<RoomID, Room> = new Map([
@@ -85,16 +94,21 @@ export class ChatStore {
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> =
 		None();
 
-	declare replyWelcomeHandler: ReplyWelcomeHandler;
-	declare errorNicknameinuseHandler: ErrorNicknameinuseHandler;
+	private repliesHandlers: Set<SocketEventHandler> = new Set();
+	private errorsHandlers: Set<SocketEventHandler> = new Set();
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	listenAllEvents() {
-		this.replyWelcomeHandler.listen();
-		this.errorNicknameinuseHandler.listen();
+		for (const handler of this.repliesHandlers) {
+			handler.listen();
+		}
+
+		for (const handler of this.errorsHandlers) {
+			handler.listen();
+		}
 	}
 
 	connectWebsocket(websocketServerURL: string) {
