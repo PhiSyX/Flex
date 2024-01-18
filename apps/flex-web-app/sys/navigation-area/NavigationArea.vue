@@ -9,6 +9,7 @@ import { Room } from "~/room/Room";
 // ---- //
 // Type //
 // ---- //
+
 interface Props {
 	servers: Array<Server>;
 }

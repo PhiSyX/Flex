@@ -5,22 +5,18 @@ import type { Option } from "@phisyx/flex-safety";
 // Type //
 // ---- //
 
-type Props = {
+interface Props {
 	maybe: Option<T>;
-};
+}
 
-type Slots = {
+interface Slots {
 	some?: (props: { data: NonNullable<T> }) => NonNullable<T>;
 	none?: (props: unknown) => unknown;
-};
+}
 
 // --------- //
 // Composant //
 // --------- //
-
-defineOptions({
-	name: "Match",
-});
 
 defineProps<Props>();
 defineSlots<Slots>();

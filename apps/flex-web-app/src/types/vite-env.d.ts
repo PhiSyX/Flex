@@ -20,4 +20,6 @@ declare interface ImportMetaEnv {
 	VITE_APP_PASSWORD_SERVER: string;
 	VITE_APP_REALNAME: string;
 	VITE_APP_WEBSOCKET_URL: string;
+	VITE_APP_FORUM_URL: string;
+	VITE_APP_VADEMECUM_URL: string;
 }

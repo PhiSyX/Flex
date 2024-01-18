@@ -27,7 +27,9 @@ export type Icons =
 	| "logoff"
 	| "password"
 	| "plus"
+	| "send"
 	| "settings"
+	| "text-color"
 	| "url"
 	| "user";
 

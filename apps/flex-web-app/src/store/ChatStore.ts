@@ -286,11 +286,21 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 	}
 
+	function sendMessage(name: string, message: string) {
+		console.debug(
+			"[%s]: message à envoyer sur « %s ». Message: « %s »",
+			ChatStore.NAME,
+			name,
+			message,
+		);
+	}
+
 	return {
 		changeRoom,
 		closeRoom,
 		connect,
 		listen,
+		sendMessage,
 		store,
 	};
 });

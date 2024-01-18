@@ -1,11 +1,11 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-type Props = {
+interface Props {
 	form?: string;
 	labelN?: string;
 	labelY?: string;

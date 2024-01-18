@@ -23,7 +23,7 @@ type MessageProperties = {
 	target: string;
 	time: {
 		datetime: string;
-		formatted_time: string;
+		formattedTime: string;
 	};
 	type:
 		| "action"
@@ -52,6 +52,10 @@ export class RoomMessage {
 	declare target: MessageProperties["target"];
 	declare time: MessageProperties["time"];
 	declare type: MessageProperties["type"];
+
+	get isEventType(): boolean {
+		return this.type.startsWith("event");
+	}
 
 	withData(data: this["data"]): this {
 		this.data = data;
@@ -86,7 +90,7 @@ export class RoomMessage {
 	withTime(date: Date): this {
 		const time = {
 			datetime: date.toISOString(),
-			formatted_time: formatDate("`H:i:s`", new Date()),
+			formattedTime: formatDate("`H:i:s`", new Date()),
 		};
 
 		this.time = time;

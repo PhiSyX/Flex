@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed } from "vue";
 
 import { Badge, ButtonIcon } from "@phisyx/flex-uikit";
@@ -7,7 +7,7 @@ import { Badge, ButtonIcon } from "@phisyx/flex-uikit";
 // Type //
 // ---- //
 
-type Props = {
+interface Props {
 	active: boolean;
 	name: string;
 	folded?: boolean;

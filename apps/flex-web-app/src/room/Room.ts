@@ -44,7 +44,7 @@ export class Room<Type extends string = string> {
 	 * La taille maximale des messages est définit par la constante
 	 * [MESSAGES_LIMIT].
 	 */
-	private messages: Array<RoomMessage> = [];
+	messages: Array<RoomMessage> = [];
 
 	/**
 	 * Le total des événements reçus.
@@ -60,7 +60,10 @@ export class Room<Type extends string = string> {
 	// Constructor //
 	// ----------- //
 
-	constructor(public type: Type, protected _name: string) {
+	constructor(
+		public type: Type,
+		protected _name: string,
+	) {
 		this.#id = _name.toLowerCase();
 		this.customName.replace(_name);
 	}
@@ -89,7 +92,7 @@ export class Room<Type extends string = string> {
 			origin: Origin;
 			tags: { msgid: string };
 		},
-		message_text: string
+		message_text: string,
 	) {
 		const message = new RoomMessage()
 			.withID(payload.tags.msgid)

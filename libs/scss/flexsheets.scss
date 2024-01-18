@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 @import "./flexsheets/functions/space";
+@import "./flexsheets/mixins/selector";
 @import "./flexsheets/mixins/theme";
 
 @import "./flexsheets/reset/ulist";
