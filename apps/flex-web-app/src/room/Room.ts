@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { None, Option } from "@phisyx/flex-safety";
-import { Origin } from "~/types/replies";
 import { MESSAGES_LIMIT, RoomMessage } from "./RoomMessage";
 
 // ---- //
@@ -108,7 +107,7 @@ export class Room<Type extends string = string> {
 	/**
 	 * Ajoute un message au tableau de messages.
 	 */
-	public addMessage(message: RoomMessage): void {
+	public addMessage(message: RoomMessage) {
 		if (this.messages.length === MESSAGES_LIMIT) {
 			this.messages.shift();
 		}

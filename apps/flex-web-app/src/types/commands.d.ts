@@ -12,7 +12,7 @@
 // Type //
 // ---- //
 
-export type Commands = {
+declare interface Commands {
 	/**
 	 * Unregistered client.
 	 */
@@ -26,7 +26,7 @@ export type Commands = {
 	 */
 
 	NICK: { nickname: string };
-};
+}
 
-export type CommandsNames = keyof Commands;
-export type Command<T extends keyof Commands> = Commands[T];
+declare type CommandsNames = keyof Commands;
+declare type Command<T extends keyof Commands> = Commands[T];

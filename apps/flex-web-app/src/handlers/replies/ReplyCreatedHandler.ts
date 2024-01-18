@@ -9,8 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ChatStore } from "~/store/ChatStore";
-import { GenericReply } from "~/types/replies";
-import { SocketEventInterface } from "~/types/socket";
 
 // -------------- //
 // Implémentation //
@@ -22,9 +20,7 @@ export class ReplyCreatedHandler
 	constructor(private store: ChatStore) {}
 
 	listen() {
-		this.store.once("RPL_CREATED", (data) => {
-			this.handle(data);
-		});
+		this.store.once("RPL_CREATED", (data) => this.handle(data));
 	}
 
 	handle(data: GenericReply<"RPL_CREATED">) {

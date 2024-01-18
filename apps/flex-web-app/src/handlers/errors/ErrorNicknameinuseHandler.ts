@@ -9,8 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ChatStore } from "~/store/ChatStore";
-import { GenericReply } from "~/types/replies";
-import { SocketEventInterface } from "~/types/socket";
 
 // -------------- //
 // Implémentation //

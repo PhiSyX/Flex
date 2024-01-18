@@ -8,28 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Command, CommandsNames } from "./commands";
-import type { GenericReply, RepliesNames } from "./replies";
-
 // --------- //
 // Interface //
 // --------- //
 
-export interface SocketEventHandler {
+declare interface SocketEventHandler {
 	listen(): void;
 }
 
-export interface SocketEventInterface<R extends RepliesNames>
+declare interface SocketEventInterface<R extends RepliesNames>
 	extends SocketEventHandler {
 	handle(data: GenericReply<R>, ...user_data: Array<unknown>): void;
 }
 
 // Socket Event
 
-export type ServerToClientEvent = {
+declare type ServerToClientEvent = {
 	[K in RepliesNames]: (_: GenericReply<K>) => void;
 };
 
-export type ClientToServerEvent = {
+declare type ClientToServerEvent = {
 	[C in CommandsNames]: (data: Command<C>) => void;
 };

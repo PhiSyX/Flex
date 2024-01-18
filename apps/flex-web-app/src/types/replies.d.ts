@@ -12,23 +12,23 @@
 // Type //
 // ---- //
 
-export type Origin = {
+declare interface Origin {
 	nickname: string;
 	ident: string;
 	host: {
 		cloaked: string;
 		vhost?: string;
 	};
-};
+}
 
-export type CommandResponsesFromServer = {
+declare interface CommandResponsesFromServer {
 	NICK: {
 		new_nickname: string;
 		old_nickname: string;
 	};
-};
+}
 
-export type CommandResponsesReplies = {
+declare interface CommandResponsesReplies {
 	RPL_WELCOME: {
 		nickname: string;
 		ident: string;
@@ -44,24 +44,24 @@ export type CommandResponsesReplies = {
 	RPL_CREATED: {
 		date: string;
 	};
-};
+}
 
-export type ErrorReplies = {
+declare interface ErrorReplies {
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_ALREADYREGISTERED: {};
-	ERR_ERRONEUSNICKNAME: { nickname: string };
 	ERR_NICKNAMEINUSE: { nickname: string };
-};
+	ERR_ERRONEUSNICKNAME: { nickname: string };
+}
 
-export type RepliesNames = keyof (CommandResponsesFromServer &
-	CommandResponsesReplies &
-	ErrorReplies);
-export type Replies = CommandResponsesFromServer &
-	CommandResponsesReplies &
-	ErrorReplies;
-export type Reply<T> = T extends keyof Replies ? Replies[T] : never;
+declare interface Replies
+	extends CommandResponsesFromServer,
+		CommandResponsesReplies,
+		ErrorReplies {}
 
-export type GenericCommandResponseFromServer<
+declare type RepliesNames = keyof Replies;
+declare type Reply<T> = T extends keyof Replies ? Replies[T] : never;
+
+declare type GenericCommandResponseFromServer<
 	T extends keyof CommandResponsesFromServer,
 > = CommandResponsesFromServer[T] & {
 	name: T;
@@ -69,7 +69,7 @@ export type GenericCommandResponseFromServer<
 	origin: Origin;
 };
 
-export type GenericCommandResponseReply<
+declare type GenericCommandResponseReply<
 	T extends keyof CommandResponsesReplies,
 > = CommandResponsesReplies[T] & {
 	name: T;
@@ -79,7 +79,7 @@ export type GenericCommandResponseReply<
 	origin: Origin;
 };
 
-export type GenericErrorReply<T extends keyof ErrorReplies> =
+declare type GenericErrorReply<T extends keyof ErrorReplies> =
 	ErrorReplies[T] & {
 		name: T;
 		code: number;
@@ -88,7 +88,7 @@ export type GenericErrorReply<T extends keyof ErrorReplies> =
 		origin: Origin;
 	};
 
-export type GenericReply<T extends RepliesNames> =
+declare type GenericReply<T extends RepliesNames> =
 	T extends keyof CommandResponsesFromServer
 		? GenericCommandResponseFromServer<T>
 		: T extends keyof CommandResponsesReplies

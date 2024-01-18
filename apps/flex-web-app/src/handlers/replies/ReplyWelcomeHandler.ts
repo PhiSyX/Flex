@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Module } from "~/modules/interface";
+import { JoinModule } from "~/modules/join/module";
 import { ChatStore } from "~/store/ChatStore";
-import { GenericReply } from "~/types/replies";
-import { SocketEventInterface } from "~/types/socket";
 
 // -------------- //
 // Implémentation //
