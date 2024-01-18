@@ -10,12 +10,13 @@
 
 mod socket;
 
+use std::collections::HashSet;
 use std::net;
 
 use flex_web_framework::types::uuid;
 
 pub use self::socket::{ClientSocketInterface, Socket};
-use super::user;
+use super::{channel, user};
 
 // ---- //
 // Type //
@@ -41,6 +42,8 @@ pub struct Client
 	connected: bool,
 	/// Structure utilisateur au client.
 	user: user::User,
+	/// Les salons qu'à rejoint le client.
+	pub channels: HashSet<channel::ChannelID>,
 }
 
 // -------------- //
@@ -58,6 +61,7 @@ impl Client
 			id: uuid::Uuid::new_v4(),
 			registered: Default::default(),
 			user: user::User::new(ip),
+			channels: Default::default(),
 		}
 	}
 }

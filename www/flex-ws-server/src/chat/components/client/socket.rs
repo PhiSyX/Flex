@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::src::chat::components::channel;
+
 // --------- //
 // Interface //
 // --------- //
@@ -53,6 +55,17 @@ pub enum Socket<'a>
 
 impl<'a> Socket<'a>
 {
+	/// Les salons de la socket.
+	pub fn channels_rooms(&self) -> Vec<String>
+	{
+		self.socket()
+			.rooms()
+			.iter()
+			.flatten()
+			.filter_map(|room| room.starts_with("channel:").then_some(room.to_string()))
+			.collect()
+	}
+
 	/// Vérifie si le pseudonyme donné est le même que celui sauvegardé dans
 	/// l'instance du client courant.
 	pub fn check_nickname(&self, nickname: &str) -> bool
@@ -75,6 +88,42 @@ impl<'a> Socket<'a>
 
 impl<'a> Socket<'a>
 {
+	/// Émet au client les réponses liées à la commande /JOIN.
+	pub fn emit_join(
+		&self,
+		channel: &channel::Channel,
+		forced: bool,
+		map_member: impl FnMut(
+			&channel::nick::ChannelNick,
+		) -> Option<crate::src::chat::replies::ChannelNickClient>,
+	)
+	{
+		use crate::src::chat::features::JoinCommandResponse;
+
+		// NOTE: Émettre la réponse de la commande JOIN à tous les membres de la
+		// room, y compris le client courant lui-même.
+		let cmd_join = JoinCommandResponse {
+			origin: Some(self.user()),
+			channel: &channel.name,
+			forced,
+			tags: JoinCommandResponse::default_tags(),
+		};
+
+		let channel_room = format!("channel:{}", channel.name.to_lowercase());
+		_ = self.socket().join(channel_room.clone());
+		_ = self.socket().emit(cmd_join.name(), &cmd_join);
+		_ = self
+			.socket()
+			.to(channel_room)
+			.emit(cmd_join.name(), cmd_join);
+
+		// TODO: Émettre le sujet du salon au client courant.
+		// TODO: Émettre les paramètres du salon au client courant.
+
+		// NOTE: Émettre au client courant les membres du salon.
+		self.send_rpl_namreply(channel, map_member);
+	}
+
 	/// Émet au client les réponses liées à la commande /NICK.
 	pub fn emit_nick(&self)
 	{
@@ -111,6 +160,27 @@ impl<'a> Socket<'a>
 			.leave(format!("private:{}", old_nickname.to_lowercase()));
 	}
 
+	/// Émet au client les réponses liées à la commande /PART.
+	pub fn emit_part(&self, channel: &str, message: Option<&str>)
+	{
+		use crate::src::chat::features::PartCommandResponse;
+
+		let cmd_part = PartCommandResponse {
+			origin: Some(self.user()),
+			channel,
+			message,
+			tags: PartCommandResponse::default_tags(),
+		};
+
+		let channel_room = format!("channel:{}", channel.to_lowercase());
+		_ = self.socket().emit(cmd_part.name(), &cmd_part);
+		_ = self
+			.socket()
+			.to(channel_room.clone())
+			.emit(cmd_part.name(), cmd_part);
+		_ = self.socket().leave(channel_room);
+	}
+
 	/// Émet au client les réponses liées à la commande /QUIT.
 	pub fn emit_quit(self, reason: impl ToString)
 	{
@@ -135,6 +205,46 @@ impl<'a> Socket<'a>
 
 impl<'a> Socket<'a>
 {
+	/// Émet au client les membres d'un salon par chunk de 300.
+	pub fn send_rpl_namreply(
+		&self,
+		channel: &channel::Channel,
+		mut map_member: impl FnMut(
+			&channel::nick::ChannelNick,
+		) -> Option<crate::src::chat::replies::ChannelNickClient>,
+	)
+	{
+		use crate::src::chat::replies::{RplEndofnamesReply, RplNamreplyCommandResponse};
+
+		let rpl_names = Vec::from_iter(channel.members());
+		let rpl_names = rpl_names.chunks(300).map(|members| {
+			RplNamreplyCommandResponse {
+				origin: Some(self.user()),
+				channel: channel.name.as_ref(),
+				code: RplNamreplyCommandResponse::code(),
+				users: members
+					.iter()
+					.filter_map(|(_, channel_nick)| map_member(channel_nick))
+					.collect::<Vec<_>>(),
+				tags: RplNamreplyCommandResponse::default_tags(),
+			}
+		});
+
+		for rpl_name in rpl_names {
+			_ = self.socket().emit(rpl_name.name(), rpl_name);
+		}
+
+		let rpl_endofnames = RplEndofnamesReply {
+			origin: Some(self.user()),
+			channel: &channel.name,
+			tags: RplEndofnamesReply::default_tags(),
+		};
+		_ = self.socket().emit(rpl_endofnames.name(), rpl_endofnames);
+	}
+}
+
+impl<'a> Socket<'a>
+{
 	/// Émet au client l'erreur
 	/// [crate::src::chat::replies::ErrAlreadyregisteredError].
 	pub fn send_err_alreadyregistered(&self)
@@ -149,6 +259,22 @@ impl<'a> Socket<'a>
 		_ = self
 			.socket()
 			.emit(err_alreadyregistered.name(), err_alreadyregistered);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrBadchannelkeyError].
+	pub fn send_err_badchannelkey(&self, channel: &str)
+	{
+		use crate::src::chat::replies::ErrBadchannelkeyError;
+
+		let err_badchannelkey = ErrBadchannelkeyError {
+			channel,
+			tags: ErrBadchannelkeyError::default_tags(),
+			origin: Some(self.user()),
+		};
+		_ = self
+			.socket()
+			.emit(err_badchannelkey.name(), err_badchannelkey);
 	}
 
 	/// Émet au client l'erreur

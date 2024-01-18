@@ -25,7 +25,7 @@ use crate::src::ChatApplication;
 pub struct ClientsSession
 {
 	/// Les clients de session.
-	clients: DashMap<client::ClientID, client::Client>,
+	pub(super) clients: DashMap<client::ClientID, client::Client>,
 }
 
 // -------------- //
@@ -100,6 +100,7 @@ impl ChatApplication
 	/// Déconnecte un client de session.
 	pub fn disconnect_client(&self, client_socket: client::Socket, reason: impl ToString)
 	{
+		self.remove_client_from_all_his_channels(&client_socket);
 		self.clients.unregister(client_socket.cid());
 		client_socket.emit_quit(reason);
 	}

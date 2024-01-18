@@ -46,6 +46,40 @@ macro_rules! command_formdata {
 	}
 }
 
+pub fn validate_channel<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+	D: serde::Deserializer<'de>,
+{
+	use serde::Deserialize;
+	let s = String::deserialize(deserializer)?;
+	let c = s.trim();
+	if c.is_empty() || c.len() > 30 || !c.starts_with('#') {
+		return Err(serde::de::Error::custom(format!(
+			"Le nom du salon « {s} » est incorrect"
+		)));
+	}
+
+	Ok(c.to_owned())
+}
+
+pub fn validate_channels<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
+where
+	D: serde::Deserializer<'de>,
+{
+	use serde::Deserialize;
+	let v = Vec::<String>::deserialize(deserializer)?;
+
+	let chans = v
+		.iter()
+		.filter_map(|s| {
+			let c = s.trim();
+			(!c.is_empty() || c.len() <= 30 || c.starts_with('#')).then_some(c.to_owned())
+		})
+		.collect();
+
+	Ok(chans)
+}
+
 pub fn validate_nickname<'de, D>(deserializer: D) -> Result<String, D::Error>
 where
 	D: serde::Deserializer<'de>,

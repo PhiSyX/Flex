@@ -21,6 +21,7 @@ use crate::config;
 #[derive(Default)]
 pub struct ChatApplication
 {
+	pub(crate) channels: sessions::ChannelsSession,
 	pub(crate) clients: sessions::ClientsSession,
 }
 
@@ -54,6 +55,7 @@ impl Feature for ChatApplication
 				ConnectionRegistrationHandler::handle_connect(&socket, state, data);
 
 				socket.on(NickHandler::COMMAND_NAME, NickHandler::handle);
+				socket.on(JoinHandler::COMMAND_NAME, JoinHandler::handle);
 				socket.on(QuitHandler::COMMAND_NAME, QuitHandler::handle);
 			},
 		);
