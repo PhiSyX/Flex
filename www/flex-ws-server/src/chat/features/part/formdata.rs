@@ -8,99 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod components
-{
-	pub(crate) mod channel;
-	pub(crate) mod client;
-	pub(crate) mod user;
+use crate::command_formdata;
+use crate::macro_rules::command_formdata::validate_channels;
 
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-	pub(crate) use self::user::*;
-}
-
-mod feature;
-
-mod features
-{
-	lexa_kernel::public_using! {
-		connect / {
-			formdata,
-			handler,
-		};
-
-		join / {
-			formdata,
-			handler,
-			response,
-		};
-
-		nick / {
-			formdata,
-			handler,
-			response,
-		};
-
-		part / {
-			formdata,
-			handler,
-			response,
-		};
-
-		pass / {
-			formdata,
-			handler,
-		};
-
-		quit / {
-			formdata,
-			handler,
-			response,
-		};
-
-		user / {
-			formdata,
-			handler,
-		};
+command_formdata! {
+	struct PART
+	{
+		/// Salons à quitter.
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		/// Message part du client.
+		message: Option<String>,
 	}
-}
-
-mod replies
-{
-	lexa_kernel::public_using! {
-		errors / {
-			err_alreadyregistered,
-			err_badchannelkey,
-			err_erroneusnickname,
-			err_nicknameinuse,
-			err_nosuchchannel,
-			err_notonchannel,
-		};
-
-		reserved_numerics / {
-			rpl_created,
-			rpl_namreply,
-			rpl_yourhost,
-			rpl_welcome,
-		};
-	}
-}
-
-mod routes;
-
-mod sessions
-{
-	mod channel;
-	mod client;
-
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-}
-
-pub use self::feature::*;
-
-lexa_kernel::using! {
-	controllers / {
-		pub home,
-	};
 }
