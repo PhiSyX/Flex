@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option } from "@phisyx/flex-safety";
+import { None, Option, Some } from "@phisyx/flex-safety";
 
 import { Room, RoomID } from "./Room";
 
@@ -34,7 +34,7 @@ export class RoomManager {
 	 */
 	current(): Room {
 		return this._currentRoom
-			.and_then((current_room) => this.get(current_room))
+			.and_then((currentRoom) => this.get(currentRoom))
 			.expect("La chambre courante");
 	}
 
@@ -46,10 +46,32 @@ export class RoomManager {
 	}
 
 	/**
+	 * Récupère une chambre en fonction de son ID ou insère une nouvelle chambre
+	 * si la chambre demandée n'existe pas.
+	 */
+	getOrInsert(roomID: RoomID, fallback: () => Room): Room {
+		return this.get(roomID)
+			.or_else(() => {
+				const room = fallback();
+				this.insert(roomID, room);
+				return Some(room);
+			})
+			.unwrap();
+	}
+
+	/**
 	 * Vérifie qu'une chambre existe.
 	 */
 	has(roomID: RoomID): boolean {
 		return this.get(roomID).is_some();
+	}
+
+	/**
+	 * Ajoute une nouvelle chambre.
+	 */
+	insert(roomID: RoomID, room: Room): Room {
+		this._rooms.set(roomID.toLowerCase(), room);
+		return room;
 	}
 
 	/**
@@ -70,8 +92,8 @@ export class RoomManager {
 	/**
 	 * Toutes les chambres.
 	 */
-	rooms(): IterableIterator<Room> {
-		return this._rooms.values();
+	rooms(): Array<Room> {
+		return Array.from(this._rooms.values());
 	}
 
 	/**

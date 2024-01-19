@@ -9,8 +9,10 @@
 		"preview": "vite preview --config config/vite.config.ts"
 	},
 	"dependencies": {
+		"@phisyx/flex-capitalization": "workspace:*",
 		"@phisyx/flex-date": "workspace:*",
 		"@phisyx/flex-safety": "workspace:*",
+		"@phisyx/flex-search": "workspace:*",
 		"@phisyx/flex-uikit": "workspace:*",
 		"pinia": "^2.1.7",
 		"socket.io-client": "^4.7.4",

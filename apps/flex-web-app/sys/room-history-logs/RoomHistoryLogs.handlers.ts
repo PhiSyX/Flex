@@ -11,14 +11,6 @@
 import { assert_non_null } from "@phisyx/flex-safety";
 import { $root, containerNeedsScroll } from "./RoomHistoryLogs.state";
 
-// ---- //
-// Type //
-// ---- //
-
-export interface Emits {
-	(evtName: "select-nick", nickname: string): void;
-}
-
 // -------- //
 // Fonction //
 // -------- //
@@ -35,14 +27,6 @@ export function scroll() {
 // -------- //
 // Handlers //
 // -------- //
-
-export function selectNick(emit: Emits) {
-	function selectNickHandler(nickname: string) {
-		emit("select-nick", nickname);
-	}
-
-	return selectNickHandler;
-}
 
 export function scrollHandler() {
 	assert_non_null($root.value);

@@ -28,5 +28,34 @@ for (const plugin of Object.values(plugins)) {
 	plugin.install(app);
 }
 
+// Chargement des composants (events)
+
+// biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
+const eventsComponents = import.meta.glob<{ default: any }>(
+	"../sys/room-events/RoomEvent*.vue",
+	{ eager: true },
+);
+
+app.provide(
+	"eventsComponents",
+	Object.keys(eventsComponents).map((eventFilepath) => {
+		const componentName = eventFilepath.slice(
+			"../sys/room-events/".length,
+			0 - ".vue".length,
+		);
+		return componentName;
+	}),
+);
+
+for (const [eventFilepath, eventComponent] of Object.entries(
+	eventsComponents,
+)) {
+	const componentName = eventFilepath.slice(
+		"../sys/room-events/".length,
+		0 - ".vue".length,
+	);
+	app.component(componentName, eventComponent.default);
+}
+
 // 2. Run
 app.mount("#🆔");

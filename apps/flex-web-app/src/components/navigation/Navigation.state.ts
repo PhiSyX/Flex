@@ -21,7 +21,7 @@ export const servers = computed(() => {
 			connected: network.isConnected(),
 			folded: false,
 			name: network.name,
-			rooms: Array.from(chatStore.store.roomManager().rooms()),
+			rooms: chatStore.store.roomManager().rooms(),
 		},
 	];
 });

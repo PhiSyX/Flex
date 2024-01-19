@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { ChannelRoom } from "~/channel/ChannelRoom";
+
 import { rooms, forumURL, vademecumURL } from "./ChatView.state";
 import { sendMessageHandler } from "./ChatView.handlers";
 
 import Navigation from "~/components/navigation/Navigation.vue";
+import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
+
 import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 </script>
 
@@ -24,6 +28,17 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 							:name="room.name"
 							:vademecum-url="vademecumURL"
 							@send-message="sendMessageHandler"
+						/>
+					</KeepAlive>
+				</template>
+				<template
+					v-else-if="room.type === 'channel'"
+					:key="room.type + ':' + room.name"
+				>
+					<KeepAlive :key="room.type + ':' + room.name">
+						<ChannelRoomComponent
+							v-if="room.isActive()"
+							:room="(room as ChannelRoom)"
 						/>
 					</KeepAlive>
 				</template>

@@ -24,7 +24,7 @@ export class ReplyCreatedHandler
 	}
 
 	handle(data: GenericReply<"RPL_CREATED">) {
-		const network_room = this.store.network();
-		network_room.addConnectEvent(data, data.message);
+		const networkRoom = this.store.network();
+		networkRoom.addConnectEvent(data, data.message);
 	}
 }

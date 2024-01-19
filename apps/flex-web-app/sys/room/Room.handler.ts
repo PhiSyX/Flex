@@ -14,7 +14,6 @@
 
 export interface Emits {
 	(evtName: "open-private", nickname: string): void;
-	(evtName: "select-nick", nickname: string): void;
 	(evtName: "send-message", message: string): void;
 }
 
@@ -28,14 +27,6 @@ export function openPrivate(emit: Emits) {
 	}
 
 	return openPrivateHandler;
-}
-
-export function selectNick(emit: Emits) {
-	function selectNickHandler(nickname: string) {
-		emit("select-nick", nickname);
-	}
-
-	return selectNickHandler;
 }
 
 export function sendMessage(emit: Emits) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RoomMessage } from "~/room/RoomMessage";
 
-import { Emits, openPrivate, selectNick, sendMessage } from "./Room.handler";
+import { Emits, openPrivate, sendMessage } from "./Room.handler";
 import { computeInputPlaceholder } from "./Room.state";
 
 import RoomTopic from "#/sys/room-topic/RoomTopic.vue";
@@ -31,7 +31,6 @@ const emit = defineEmits<Emits>();
 
 const inputPlaceholder = computeInputPlaceholder(props);
 const openPrivateHandler = openPrivate(emit);
-const selectNickHandler = selectNick(emit);
 const sendMessageHandler = sendMessage(emit);
 </script>
 
@@ -56,7 +55,6 @@ const sendMessageHandler = sendMessage(emit);
 					:messages="messages"
 					class="room/history-logs"
 					@open-private="openPrivateHandler"
-					@select-nick="selectNickHandler"
 				/>
 			</slot>
 			<slot name="after-history" />
@@ -72,7 +70,7 @@ const sendMessageHandler = sendMessage(emit);
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("room/area") {

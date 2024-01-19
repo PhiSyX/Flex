@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Option } from "@phisyx/flex-safety";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
 import { ChatStore } from "~/store/ChatStore";
@@ -43,10 +44,14 @@ export class ReplyWelcomeHandler
 			ident: data.ident,
 		});
 
-		const network_room = this.store.network();
-		network_room.addConnectEvent(data, data.message);
+		const networkRoom = this.store.network();
+		networkRoom.addConnectEvent(data, data.message);
 
-		// TODO: Join Channels
-		console.debug("RPL_WELCOME", { channels });
+		const joinModuleUnsafe = this.store.modules.get(JoinModule.NAME);
+		const maybeJoinModule = Option.from(joinModuleUnsafe);
+		const joinModule = maybeJoinModule.expect(
+			"Récupération du module `JOIN`",
+		) as Module<JoinModule>;
+		joinModule.send({ channels });
 	}
 }

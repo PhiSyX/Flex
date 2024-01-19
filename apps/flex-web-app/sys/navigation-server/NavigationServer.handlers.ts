@@ -25,6 +25,7 @@ export interface Emits {
 
 export function changeRoom(emit: Emits, name: string) {
 	function onEventHandler(evt: Event) {
+		evt.preventDefault();
 		evt.stopPropagation();
 		openRoom(emit)(name);
 	}

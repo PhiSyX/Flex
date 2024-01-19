@@ -18,7 +18,7 @@ declare interface SocketEventHandler {
 
 declare interface SocketEventInterface<R extends RepliesNames>
 	extends SocketEventHandler {
-	handle(data: GenericReply<R>, ...user_data: Array<unknown>): void;
+	handle(data: GenericReply<R>, ...userData: Array<unknown>): void;
 }
 
 // Socket Event

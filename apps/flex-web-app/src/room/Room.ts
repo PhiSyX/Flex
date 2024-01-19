@@ -25,7 +25,7 @@ export class Room<Type extends string = string> {
 	/**
 	 * ID de la chambre.
 	 */
-	#id: RoomID;
+	declare _id: RoomID;
 
 	/**
 	 * Définit l'état de la fenêtre, active ou non.
@@ -63,7 +63,7 @@ export class Room<Type extends string = string> {
 		public type: Type,
 		protected _name: string,
 	) {
-		this.#id = _name.toLowerCase();
+		this._id = _name.toLowerCase();
 		this.customName.replace(_name);
 	}
 
@@ -84,24 +84,47 @@ export class Room<Type extends string = string> {
 	// ------- //
 
 	/**
-	 * Ajoute un événement de connexion à la liste des messages de la chambre.
+	 * Ajoute un événement de connexion au tableau de messages.
 	 */
 	public addConnectEvent(
 		payload: {
 			origin: Origin;
 			tags: { msgid: string };
 		},
-		message_text: string,
+		messageText: string,
 	) {
 		const message = new RoomMessage()
 			.withID(payload.tags.msgid)
 			.withType("event:connect")
 			.withNickname(payload.origin.nickname)
-			.withMessage(message_text)
+			.withMessage(messageText)
 			.withTarget(this._name)
 			.withTime(new Date())
 			.withData(payload);
 		this.addMessage(message);
+	}
+
+	/**
+	 * Ajoute un événement au tableau de messages.
+	 */
+	public addEvent<R extends RepliesNames>(
+		evtName:
+			| `error:${Lowercase<R>}`
+			| `event:${Lowercase<R>}`
+			| `error:${Uppercase<R>}`
+			| `event:${Uppercase<R>}`,
+		payload: GenericReply<Uppercase<R>> & { isMe: boolean },
+	) {
+		const msg = new RoomMessage()
+			.withData(payload)
+			.withID(payload.tags.msgid)
+			.withMessage(evtName)
+			.withNickname(payload.origin.nickname)
+			.withTarget(this.id())
+			.withTime(new Date())
+			.withType(evtName)
+			.withIsMe(payload.isMe);
+		this.addMessage(msg);
 	}
 
 	/**
@@ -137,7 +160,7 @@ export class Room<Type extends string = string> {
 	 * ID de la chambre.
 	 */
 	public id(): RoomID {
-		return this.#id;
+		return this._id;
 	}
 
 	/**

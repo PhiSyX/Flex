@@ -10,7 +10,8 @@
 		"build": "pnpm run -r build",
 		"lint": "biome lint --config-path=tools/code-quality . && pnpm run -r lint",
 		"fmt": "biome format --config-path=tools/code-quality . --write && pnpm run -r fmt",
-		"fix": "biome check --config-path=tools/code-quality --apply . && pnpm run -r fix"
+		"fix": "biome check --config-path=tools/code-quality --apply . && pnpm run -r fix",
+		"test:unit": "pnpm run -r test:unit"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.5.2"

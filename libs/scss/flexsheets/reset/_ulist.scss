@@ -1,6 +1,6 @@
 @use "../mixins/selector" as sel;
 
-@mixin use-ulist-element {
+@mixin use-ulist-reset {
 	@include sel.class("list:reset") {
 		padding: 0;
 		margin: 0;

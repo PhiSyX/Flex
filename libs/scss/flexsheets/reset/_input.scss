@@ -1,0 +1,11 @@
+@use "../mixins/selector" as sel;
+
+@mixin use-input-reset {
+	@include sel.class("input:reset") {
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: inherit;
+		outline: none;
+	}
+}

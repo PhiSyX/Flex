@@ -75,7 +75,7 @@ const totalUnread = computeTotalUnread(props);
 	</li>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
 li {

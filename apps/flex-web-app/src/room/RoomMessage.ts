@@ -67,6 +67,11 @@ export class RoomMessage {
 		return this;
 	}
 
+	withIsMe(bool: boolean): this {
+		this.isMe = bool;
+		return this;
+	}
+
 	withMessage(message: this["message"]): this {
 		this.message = message;
 		return this;

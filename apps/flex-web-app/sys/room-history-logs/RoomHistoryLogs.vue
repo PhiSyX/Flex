@@ -4,12 +4,7 @@ import { onActivated } from "vue";
 import { RoomMessage } from "~/room/RoomMessage";
 
 import { $root } from "./RoomHistoryLogs.state";
-import {
-	type Emits,
-	selectNick,
-	scrollHandler,
-	scroll,
-} from "./RoomHistoryLogs.handlers";
+import { scrollHandler, scroll } from "./RoomHistoryLogs.handlers";
 
 import RoomMessageComponent from "#/sys/room-message/RoomMessage.vue";
 
@@ -26,9 +21,6 @@ interface Props {
 // --------- //
 
 defineProps<Props>();
-const emit = defineEmits<Emits>();
-
-const selectNickHandler = selectNick(emit);
 
 onActivated(() => scroll());
 </script>
@@ -40,7 +32,6 @@ onActivated(() => scroll());
 				v-for="message in messages"
 				:key="message.id"
 				v-bind="message"
-				@select-nick="selectNickHandler"
 				@vue:mounted="scrollHandler"
 			/>
 		</ul>

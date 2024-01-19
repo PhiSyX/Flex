@@ -54,6 +54,7 @@ onActivated(() => {
 				:disabled="disableInput"
 				:placeholder="placeholder"
 				type="text"
+				class="[ input:reset ]"
 			/>
 
 			<ButtonIcon icon="text-color" :disabled="disableInput" />
@@ -90,16 +91,8 @@ div {
 
 input[type="text"] {
 	flex-grow: 1;
-
 	font-size: 14px;
-
 	height: 100%;
-
-	padding: 0;
 	padding-block: fx.space(1);
-	border: 0;
-	background: transparent;
-	color: inherit;
-	outline: none;
 }
 </style>

@@ -1,66 +1,54 @@
 <script setup lang="ts">
+import { inject } from "vue";
+import {
+	Props,
+	computeComponentEventExists,
+	computeComponentEventName,
+	computeIsEvent,
+} from "./RoomMessage.state";
+
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
-	data: object;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
-}
-
 interface Emits {
 	(evtName: "open-private", nickname: string): void;
-	(evtName: "select-nick", nickname: string): void;
 }
 
 // --------- //
 // Composant //
 // --------- //
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+const eventsComponents = inject<Array<string>>("eventsComponents");
 
-// -------- //
-// Handlers //
-// -------- //
-
-// function openPrivateHandler(nickname: string) {
-// 	emit("open-private", nickname);
-// }
-
-// function selectNickHandler(nickname: string) {
-// 	emit("select-nick", nickname);
-// }
+const isEvent = computeIsEvent(props);
+const componentEventExists = computeComponentEventExists(
+	props,
+	eventsComponents
+);
+const componentEventName = computeComponentEventName(props);
 </script>
 
 <template>
-	<li :data-type="type" :data-myself="isMe">
-		<time :datetime="time.datetime">
-			{{ time.formattedTime }}
-		</time>
-
-		<p>{{ message }}</p>
+	<li :data-type="type" :data-myself="isMe" class="room/echo">
+		<template v-if="componentEventExists && isEvent">
+			<component :is="componentEventName" v-bind="props" />
+		</template>
+		<template v-else>
+			<time :datetime="time.datetime">
+				{{ time.formattedTime }}
+			</time>
+			<p>{{ message }}</p>
+		</template>
 	</li>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-li {
+@include fx.class("room/echo") {
 	display: inline-block;
 
 	&[data-type="action"] {
@@ -77,17 +65,21 @@ li {
 	> *:not(:last-child) {
 		margin-right: fx.space(1);
 	}
-}
 
-time {
-	cursor: default;
-	color: var(--room-message-time-color);
-}
+	time {
+		cursor: default;
+		color: var(--room-message-time-color);
+	}
 
-p {
-	display: inline;
-	line-height: 1.4rem;
-	word-break: break-all;
-	hyphens: manual;
+	p {
+		display: inline;
+		line-height: 1.4rem;
+		word-break: break-all;
+		hyphens: manual;
+	}
+
+	strong {
+		font-weight: 800;
+	}
 }
 </style>

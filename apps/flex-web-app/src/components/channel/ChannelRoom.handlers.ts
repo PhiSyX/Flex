@@ -8,17 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Room } from "./Room";
+import { useChatStore } from "~/store/ChatStore";
 
-// -------------- //
-// Implémentation //
-// -------------- //
+const chatStore = useChatStore();
 
-export class ChannelRoom extends Room<"channel"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(name: string) {
-		super("channel", name);
-	}
+// -------- //
+// Handlers //
+// -------- //
+
+export function changeRoomHandler(name: string) {
+	chatStore.changeRoom(name);
+}
+
+export function closeRoomHandler(name: string) {
+	chatStore.closeRoom(name);
+}
+
+export function sendMessageHandler(name: string, message: string) {
+	chatStore.sendMessage(name, message);
 }

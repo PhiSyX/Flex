@@ -17,16 +17,12 @@ import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseH
 import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
+import { Module } from "~/modules/interface";
+import { JoinModule } from "~/modules/join/module";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
-import { Commands } from "~/types/commands";
-import {
-	ClientToServerEvent,
-	ServerToClientEvent,
-	SocketEventHandler,
-} from "~/types/socket";
 
 // ---- //
 // Type //
@@ -62,6 +58,8 @@ export class ChatStore {
 
 		self.errorsHandlers.add(new ErrorNicknameinuseHandler(self));
 
+		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+
 		const thisServer = new ServerCustomRoom("Flex");
 		const rooms: Map<RoomID, Room> = new Map([
 			[thisServer.id(), thisServer],
@@ -78,16 +76,8 @@ export class ChatStore {
 	// Propriété //
 	// --------- //
 
-	private _autoJoinChannels: Array<string> = [];
 	private _connectUserInfo: Option<ConnectUserInfo> = None();
-	private _client: Option<{
-		nickname: string;
-		ident: string;
-		host: {
-			cloaked: string;
-			vhost?: string;
-		};
-	}> = None();
+	private _client: Option<Origin> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
 	private _network: Option<string> = None();
 	private _roomManager: RoomManager = new RoomManager();
@@ -96,6 +86,8 @@ export class ChatStore {
 
 	private repliesHandlers: Set<SocketEventHandler> = new Set();
 	private errorsHandlers: Set<SocketEventHandler> = new Set();
+
+	public modules: Map<string, Module> = new Map();
 
 	// ------- //
 	// Méthode //
@@ -108,6 +100,14 @@ export class ChatStore {
 
 		for (const handler of this.errorsHandlers) {
 			handler.listen();
+		}
+
+		for (const [moduleName, module] of this.modules) {
+			console.info(
+				"Le module « %s » est maintenant en écoute.",
+				moduleName,
+			);
+			module.listen();
 		}
 	}
 
@@ -131,12 +131,12 @@ export class ChatStore {
 	}
 
 	emit<E extends keyof Commands>(
-		event_name: E,
+		eventName: E,
 		...payload: Parameters<ClientToServerEvent[E]>
 	): void {
 		this._ws
 			.expect("Instance WebSocket connecté au serveur")
-			.emit(event_name, ...payload);
+			.emit(eventName, ...payload);
 	}
 
 	isConnected(): boolean {
@@ -144,7 +144,7 @@ export class ChatStore {
 	}
 
 	getAutoJoinChannels(): Array<string> {
-		return this._autoJoinChannels;
+		return this.getConnectUserInfo().channels.split(",");
 	}
 
 	getConnectUserInfo() {
@@ -153,14 +153,13 @@ export class ChatStore {
 		);
 	}
 
-	me(): {
-		nickname: string;
-		ident: string;
-		host: {
-			cloaked: string;
-			vhost?: string;
-		};
-	} {
+	isMe(origin: Origin): boolean {
+		return (
+			this.me().nickname.toLowerCase() === origin.nickname.toLowerCase()
+		);
+	}
+
+	me(): Origin {
 		return this._client.expect("Le client courant connecté");
 	}
 
@@ -174,29 +173,29 @@ export class ChatStore {
 		return this._network.expect("Nom du réseau");
 	}
 
-	off<K extends keyof ServerToClientEvent>(event_name: K) {
+	off<K extends keyof ServerToClientEvent>(eventName: K) {
 		this._ws
 			.expect("Instance WebSocket connecté au serveur")
-			.off(event_name);
+			.off(eventName);
 	}
 
 	on<K extends keyof ServerToClientEvent>(
-		event_name: K,
+		eventName: K,
 		listener: ServerToClientEvent[K],
 	) {
 		this._ws.expect("Instance WebSocket connecté au serveur").on(
-			event_name,
+			eventName,
 			// @ts-expect-error : listener
 			listener,
 		);
 	}
 
 	once<K extends keyof ServerToClientEvent>(
-		event_name: K,
+		eventName: K,
 		listener: ServerToClientEvent[K],
 	) {
 		this._ws.expect("Instance WebSocket connecté au serveur").once(
-			event_name,
+			eventName,
 			// @ts-expect-error : listener
 			listener,
 		);
@@ -204,10 +203,6 @@ export class ChatStore {
 
 	roomManager(): RoomManager {
 		return this._roomManager;
-	}
-
-	setAutoJoinChannels(channels: Array<string>) {
-		this._autoJoinChannels = channels;
 	}
 
 	setConnectUserInfo(connectUserInfo: ConnectUserInfo) {
@@ -218,23 +213,16 @@ export class ChatStore {
 		this.network().setConnected(b);
 	}
 
-	setClientID(client_id: string): void {
-		this._clientIDStorage.set(client_id);
+	setClientID(clientID: string): void {
+		this._clientIDStorage.set(clientID);
 	}
 
-	setMe(me: {
-		nickname: string;
-		ident: string;
-		host: {
-			cloaked: string;
-			vhost?: string;
-		};
-	}) {
+	setMe(me: Origin) {
 		this._client.replace(me);
 	}
 
-	setNetworkName(network_name: string): void {
-		this._network.replace(network_name);
+	setNetworkName(networkName: string): void {
+		this._network.replace(networkName);
 	}
 
 	websocket(): Socket<ServerToClientEvent, ClientToServerEvent> {
@@ -289,24 +277,44 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	function listen<K extends keyof ServerToClientEvent>(
-		event_name: K,
+		eventName: K,
 		listener: ServerToClientEvent[K],
 		options: { once: boolean } = { once: false },
-	): void {
+	) {
 		if (options.once) {
-			store.once(event_name, listener);
+			store.once(eventName, listener);
 		} else {
-			store.on(event_name, listener);
+			store.on(eventName, listener);
 		}
 	}
 
 	function sendMessage(name: string, message: string) {
-		console.debug(
-			"[%s]: message à envoyer sur « %s ». Message: « %s »",
-			ChatStore.NAME,
-			name,
-			message,
-		);
+		if (!message.startsWith("/")) {
+			console.debug(
+				"[%s]: message à envoyer sur « %s ». Message: « %s »",
+				ChatStore.NAME,
+				name,
+				message,
+			);
+
+			return;
+		}
+
+		const words = message.slice(1).split(" ");
+		const [commandName, ...args] = words;
+
+		const module = store.modules.get(commandName.toUpperCase());
+
+		if (!module) {
+			console.error(
+				"[%s]: le module « %s » n'a pas été trouvé.",
+				ChatStore.NAME,
+				commandName,
+			);
+			return;
+		}
+
+		module.input(...args);
 	}
 
 	return {

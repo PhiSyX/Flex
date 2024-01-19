@@ -31,7 +31,9 @@ export type Icons =
 	| "settings"
 	| "text-color"
 	| "url"
-	| "user";
+	| "user"
+	| "users"
+	| "view-list";
 
 interface ButtonProps {
 	disabled?: boolean;
