@@ -50,5 +50,9 @@ impl QuitHandler
 	{
 		let client_socket = app.current_client(&socket);
 		app.disconnect_client(client_socket, reason);
+		socket
+			.extensions
+			.remove::<crate::src::chat::components::Client>();
+		drop(socket);
 	}
 }

@@ -14,6 +14,7 @@ use flex_web_framework::types::secret;
 
 use super::ClientsSession;
 use crate::src::chat::components::channel::nick;
+use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
 use crate::src::ChatApplication;
 
@@ -98,11 +99,8 @@ impl ChatApplication
 	/// Supprime le client courant de tous ses salons.
 	pub fn remove_client_from_all_his_channels(&self, client_socket: &client::Socket)
 	{
-		let Some(client) = self.find_client(client_socket.cid()) else {
-			return;
-		};
-
-		self.channels.remove_client_from_all_his_channels(&client);
+		self.channels
+			.remove_client_from_all_his_channels(client_socket.client());
 
 		for channel_room in client_socket.channels_rooms() {
 			let channel_name = &channel_room[8..];

@@ -18,7 +18,6 @@ pub trait ClientSocketInterface
 {
 	fn client(&self) -> &super::Client;
 	fn client_mut(&mut self) -> &mut super::Client;
-	fn free(self);
 	fn socket(&self) -> &socketioxide::extract::SocketRef;
 	fn user(&self) -> &crate::src::chat::components::User;
 	fn user_mut(&mut self) -> &mut crate::src::chat::components::User;
@@ -198,8 +197,6 @@ impl<'a> Socket<'a>
 			.socket()
 			.broadcast()
 			.emit(quit_command.name(), quit_command);
-
-		self.free()
 	}
 }
 
@@ -335,12 +332,6 @@ impl<'a> ClientSocketInterface for Socket<'a>
 				panic!("Le client NE PEUT PAS être mutable")
 			}
 		}
-	}
-
-	fn free(self)
-	{
-		self.socket().extensions.remove::<super::Client>();
-		drop(self);
 	}
 
 	fn socket(&self) -> &socketioxide::extract::SocketRef
