@@ -41,9 +41,10 @@ export class PartModule implements Module<PartModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelsRaw: string) {
+	input(channelsRaw: string, ...words: Array<string>) {
 		const channels = channelsRaw.split(",");
-		this.send({ channels });
+		const message = words.join(" ");
+		this.send({ channels, message });
 	}
 
 	send(payload: Command<"PART">) {
