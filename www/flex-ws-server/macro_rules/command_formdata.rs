@@ -73,7 +73,10 @@ where
 		.iter()
 		.filter_map(|s| {
 			let c = s.trim();
-			(!c.is_empty() || c.len() <= 30 || c.starts_with('#')).then_some(c.to_owned())
+			if c.is_empty() || c.len() > 30 || !c.starts_with('#') {
+				return None;
+			}
+			Some(c.to_owned())
 		})
 		.collect();
 
