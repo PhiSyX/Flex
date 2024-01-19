@@ -8,99 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod components
-{
-	pub(crate) mod channel;
-	pub(crate) mod client;
-	pub(crate) mod user;
+use crate::error_replies;
 
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-	pub(crate) use self::user::*;
-}
-
-mod feature;
-
-mod features
-{
-	lexa_kernel::public_using! {
-		connect / {
-			formdata,
-			handler,
-		};
-
-		join / {
-			formdata,
-			handler,
-			response,
-		};
-
-		nick / {
-			formdata,
-			handler,
-			response,
-		};
-
-		part / {
-			formdata,
-			handler,
-			response,
-		};
-
-		pass / {
-			formdata,
-			handler,
-		};
-
-		quit / {
-			formdata,
-			handler,
-			response,
-		};
-
-		user / {
-			formdata,
-			handler,
-		};
-	}
-}
-
-mod replies
-{
-	lexa_kernel::public_using! {
-		errors / {
-			err_alreadyregistered,
-			err_badchannelkey,
-			err_erroneusnickname,
-			err_nicknameinuse,
-			err_nosuchchannel,
-			err_notonchannel,
-		};
-
-		reserved_numerics / {
-			rpl_created,
-			rpl_namreply,
-			rpl_yourhost,
-			rpl_welcome,
-		};
-	}
-}
-
-mod routes;
-
-mod sessions
-{
-	mod channel;
-	mod client;
-
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-}
-
-pub use self::feature::*;
-
-lexa_kernel::using! {
-	controllers / {
-		pub home,
-	};
+error_replies! {
+	/// Renvoyé par le serveur chaque fois qu'un client tente d'exécuter une
+	/// commande affectant un salon dont il n'est pas membre.
+	| 442 <-> ERR_NOTONCHANNEL { channel: str }
+		=> "{channel} :Vous n'êtes pas dans ce salon"
 }
