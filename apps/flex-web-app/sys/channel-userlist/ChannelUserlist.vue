@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ButtonIcon } from "@phisyx/flex-uikit";
+import { UiButton } from "@phisyx/flex-uikit";
 
 import { Props, UserlistModeView } from "./ChannelUserlist.state";
 import { useFilterView, useInputFilterUserlist } from "./ChannelUserlist.hooks";
@@ -25,7 +25,7 @@ const { filterView, view } = useFilterView();
 		/>
 
 		<div class="room/userlist:filter-view">
-			<ButtonIcon
+			<UiButton
 				v-model:selected="filterView"
 				:value="UserlistModeView.Default"
 				icon="view-list"

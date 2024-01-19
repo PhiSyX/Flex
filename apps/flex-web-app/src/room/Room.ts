@@ -114,11 +114,12 @@ export class Room<Type extends string = string> {
 			| `error:${Uppercase<R>}`
 			| `event:${Uppercase<R>}`,
 		payload: GenericReply<Uppercase<R>> & { isMe: boolean },
+		messageText?: string,
 	) {
 		const msg = new RoomMessage()
 			.withData(payload)
 			.withID(payload.tags.msgid)
-			.withMessage(evtName)
+			.withMessage(messageText || evtName)
 			.withNickname(payload.origin.nickname)
 			.withTarget(this.id())
 			.withTime(new Date())

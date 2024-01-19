@@ -37,3 +37,7 @@ declare interface CommandResponsesReplies {
 		users: Array<Origin & { access_level: Array<string> }>;
 	};
 }
+
+declare interface ErrorReplies {
+	ERR_BADCHANNELKEY: { channel: string };
+}
