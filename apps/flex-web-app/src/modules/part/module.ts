@@ -8,99 +8,50 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod components
-{
-	pub(crate) mod channel;
-	pub(crate) mod client;
-	pub(crate) mod user;
+import { ChatStore } from "~/store/ChatStore";
 
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-	pub(crate) use self::user::*;
-}
+import { Module } from "../interface";
+import { PartCommand } from "./command";
+import { PartHandler } from "./handler";
 
-mod feature;
+// -------------- //
+// Implémentation //
+// -------------- //
 
-mod features
-{
-	lexa_kernel::public_using! {
-		connect / {
-			formdata,
-			handler,
-		};
+export class PartModule implements Module<PartModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
 
-		join / {
-			formdata,
-			handler,
-			response,
-		};
+	static NAME = "PART";
 
-		nick / {
-			formdata,
-			handler,
-			response,
-		};
-
-		part / {
-			formdata,
-			handler,
-			response,
-		};
-
-		pass / {
-			formdata,
-			handler,
-		};
-
-		quit / {
-			formdata,
-			handler,
-			response,
-		};
-
-		user / {
-			formdata,
-			handler,
-		};
+	static create(store: ChatStore): PartModule {
+		return new PartModule(new PartCommand(store), new PartHandler(store));
 	}
-}
 
-mod replies
-{
-	lexa_kernel::public_using! {
-		errors / {
-			err_alreadyregistered,
-			err_badchannelkey,
-			err_erroneusnickname,
-			err_nicknameinuse,
-			err_nosuchchannel,
-			err_notonchannel,
-		};
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(
+		private command: PartCommand,
+		private handler: PartHandler,
+	) {}
 
-		reserved_numerics / {
-			rpl_created,
-			rpl_namreply,
-			rpl_yourhost,
-			rpl_welcome,
-		};
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(channelsRaw: string, ...words: Array<string>) {
+		const channels = channelsRaw.split(",");
+		const message = words.join(" ");
+		this.send({ channels, message });
 	}
-}
 
-mod routes;
+	send(payload: Command<"PART">) {
+		this.command.send(payload);
+	}
 
-mod sessions
-{
-	mod channel;
-	mod client;
-
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-}
-
-pub use self::feature::*;
-
-lexa_kernel::using! {
-	controllers / {
-		pub home,
-	};
+	listen() {
+		this.handler.listen();
+	}
 }

@@ -307,6 +307,38 @@ impl<'a> Socket<'a>
 			.socket()
 			.emit(err_nicknameinuse.name(), err_nicknameinuse);
 	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrNosuchchannelError].
+	pub fn send_err_nosuchchannel(&self, channel_name: &str)
+	{
+		use crate::src::chat::replies::ErrNosuchchannelError;
+
+		let err_nosuchchannel = ErrNosuchchannelError {
+			origin: Some(self.user()),
+			channel_name,
+			tags: ErrNosuchchannelError::default_tags(),
+		};
+		_ = self
+			.socket()
+			.emit(err_nosuchchannel.name(), err_nosuchchannel);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrNotonchannelError].
+	pub fn send_err_notonchannel(&self, channel: &str)
+	{
+		use crate::src::chat::replies::ErrNotonchannelError;
+
+		let err_notonchannel = ErrNotonchannelError {
+			origin: Some(self.user()),
+			channel,
+			tags: ErrNotonchannelError::default_tags(),
+		};
+		_ = self
+			.socket()
+			.emit(err_notonchannel.name(), err_notonchannel);
+	}
 }
 
 // -------------- //

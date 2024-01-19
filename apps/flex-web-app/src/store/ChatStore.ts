@@ -14,12 +14,15 @@ import { Socket, io } from "socket.io-client";
 import { reactive } from "vue";
 
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
+import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
+import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
 import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
 import { NickModule } from "~/modules/nick/module";
+import { PartModule } from "~/modules/part/module";
 import { QuitModule } from "~/modules/quit/module";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
@@ -58,10 +61,14 @@ export class ChatStore {
 			.add(new ReplyCreatedHandler(self))
 			.add(new ReplyYourhostHandler(self));
 
-		self.errorsHandlers.add(new ErrorNicknameinuseHandler(self));
+		self.errorsHandlers
+			.add(new ErrorNicknameinuseHandler(self))
+			.add(new ErrorNosuchchannelHandler(self))
+			.add(new ErrorNotonchannelHandler(self));
 
-		self.modules.set(NickModule.NAME, NickModule.create(self));
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+		self.modules.set(NickModule.NAME, NickModule.create(self));
+		self.modules.set(PartModule.NAME, PartModule.create(self));
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex");
@@ -254,9 +261,16 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	function closeRoom(name: string, message?: string) {
-		store.roomManager().remove(name);
-
-		console.debug("fermeture de la chambre avec le message: %s", message);
+		if (name.startsWith("#")) {
+			const partModuleUnsafe = store.modules.get(PartModule.NAME);
+			const maybePartModule = Option.from(partModuleUnsafe);
+			const partModule = maybePartModule.expect(
+				"Récupération du module `PART`",
+			) as Module<PartModule>;
+			partModule.send({ channels: [name], message });
+		} else {
+			store.roomManager().remove(name);
+		}
 	}
 
 	function connect(connectUserInfo: ConnectUserInfo) {

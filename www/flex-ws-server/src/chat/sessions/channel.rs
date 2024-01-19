@@ -107,6 +107,32 @@ impl ChatApplication
 			client_socket.emit_part(channel_name, Some("/partall"));
 		}
 	}
+
+	/// Part d'un salon
+	pub fn part_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		message: Option<&str>,
+	)
+	{
+		if !self.channels.has(channel_name) {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return;
+		}
+
+		if !self.channels.has_client(channel_name, client_socket.cid()) {
+			client_socket.send_err_notonchannel(channel_name);
+			return;
+		}
+
+		self.channels
+			.remove_client(channel_name, client_socket.cid());
+		self.clients
+			.remove_channel(client_socket.cid(), channel_name);
+
+		client_socket.emit_part(channel_name, message)
+	}
 }
 
 impl ChannelsSession
@@ -223,6 +249,30 @@ impl ChannelsSession
 		channel_entity
 	}
 
+	/// Supprime un salon.
+	pub fn remove(&self, channel_id: channel::ChannelIDRef) -> Option<(String, channel::Channel)>
+	{
+		let channel_id_lower = channel_id.to_lowercase();
+		self.0.remove(&channel_id_lower)
+	}
+
+	/// Supprime un client d'un salon. Supprime le salon s'il n'y a plus aucun
+	/// membres dedans.
+	pub fn remove_client(
+		&self,
+		channel_id: channel::ChannelIDRef,
+		client_id: &client::ClientID,
+	) -> Option<()>
+	{
+		let mut channel_entity = self.get_mut(channel_id)?;
+		channel_entity.users.remove(client_id);
+		if channel_entity.users.is_empty() {
+			drop(channel_entity);
+			self.remove(channel_id);
+		}
+		Some(())
+	}
+
 	/// Supprime un client de tous ses salons.
 	pub fn remove_client_from_all_his_channels(&self, client: &client::Client) -> Option<()>
 	{
@@ -241,5 +291,13 @@ impl ClientsSession
 	{
 		let mut client = self.clients.get_mut(client_id).unwrap();
 		client.channels.insert(channel_id.to_lowercase());
+	}
+
+	/// Supprime un salon pour un client.
+	pub fn remove_channel(&self, client_id: &client::ClientID, channel_id: channel::ChannelIDRef)
+	{
+		let channel_id_lower = channel_id.to_lowercase();
+		let mut client = self.clients.get_mut(client_id).unwrap();
+		client.channels.remove(&channel_id_lower);
 	}
 }
