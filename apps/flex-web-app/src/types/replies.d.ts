@@ -33,22 +33,17 @@ declare interface CommandResponsesReplies {
 		host: string;
 		tags: { client_id: string };
 	};
-
-	RPL_YOURHOST: {
-		servername: string;
-		version: string;
-	};
-
-	RPL_CREATED: {
-		date: string;
-	};
+	RPL_YOURHOST: { servername: string; version: string };
+	RPL_CREATED: { date: string };
 }
 
 declare interface ErrorReplies {
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_ALREADYREGISTERED: {};
-	ERR_NICKNAMEINUSE: { nickname: string };
 	ERR_ERRONEUSNICKNAME: { nickname: string };
+	ERR_NICKNAMEINUSE: { nickname: string };
+	ERR_NOSUCHCHANNEL: { channel_name: string };
+	ERR_NOTONCHANNEL: { channel: string };
 }
 
 declare interface Replies

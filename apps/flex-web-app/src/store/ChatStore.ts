@@ -14,6 +14,8 @@ import { Socket, io } from "socket.io-client";
 import { reactive } from "vue";
 
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
+import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
+import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
 import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
@@ -59,7 +61,10 @@ export class ChatStore {
 			.add(new ReplyCreatedHandler(self))
 			.add(new ReplyYourhostHandler(self));
 
-		self.errorsHandlers.add(new ErrorNicknameinuseHandler(self));
+		self.errorsHandlers
+			.add(new ErrorNicknameinuseHandler(self))
+			.add(new ErrorNosuchchannelHandler(self))
+			.add(new ErrorNotonchannelHandler(self));
 
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
