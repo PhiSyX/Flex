@@ -113,9 +113,9 @@ export class RoomManager {
 	 * Définit la chambre courante à la dernière chambre.
 	 */
 	setCurrentToLast() {
-		const arr = Array.from(this._rooms.keys());
-		const last = arr[arr.length - 1];
-		if (last) this.setCurrent(last);
+		const roomsIDs = Array.from(this._rooms.keys());
+		const maybeLastRoomID = Option.from(roomsIDs.at(-1));
+		maybeLastRoomID.then((id) => this.setCurrent(id));
 	}
 
 	/**

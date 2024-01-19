@@ -67,3 +67,25 @@ de répertoire.
 	"include": ["path/to/DIRECTORY/**"]
 }
 ```
+
+## Déstructuration des `props` de Vue.
+
+La déstructuration des propriétés fait perdre le signal de la réactivité.
+
+**EXEMPLE** INCORRECT:
+
+```ts
+interface Props {
+	num: number;
+}
+const derivedProps = ({ num }: Props) => computed(() => num * 2);
+```
+
+**EXEMPLE** CORRECT:
+
+```ts
+interface Props {
+	num: number;
+}
+const derivedProps = (props: Props) => computed(() => props.num * 2);
+```

@@ -21,8 +21,8 @@ export interface Props {
 	selected?: unknown;
 }
 
-export const computeValue$ = ({ value, trueValue }: Props) =>
-	computed(() => value ?? trueValue);
+export const computeValue$ = (props: Props) =>
+	computed(() => props.value ?? props.trueValue);
 
 export const computeIsSelected = (props: Props) =>
 	computed(() => {

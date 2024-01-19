@@ -13,10 +13,10 @@ import { computed, ref } from "vue";
 export const $input = ref<HTMLInputElement>();
 export const inputModel = ref("");
 
-export const computeFormAction = ({ target }: { target: string }) =>
+export const computeFormAction = (props: { target: string }) =>
 	computed(() => {
-		const targetPath = target.startsWith("#")
-			? `%23${target.slice(1).toLowerCase()}`
-			: target.toLowerCase();
+		const targetPath = props.target.startsWith("#")
+			? `%23${props.target.slice(1).toLowerCase()}`
+			: props.target.toLowerCase();
 		return `/privmsg/${targetPath}`;
 	});

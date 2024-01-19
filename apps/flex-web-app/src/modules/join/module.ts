@@ -50,7 +50,6 @@ export class JoinModule implements Module<JoinModule> {
 	input(channelsRaw: string, keysRaw?: string) {
 		const channels = channelsRaw.split(",");
 		const keys = keysRaw?.split(",");
-		console.log({ channels, keys });
 		this.send({ channels, keys });
 	}
 

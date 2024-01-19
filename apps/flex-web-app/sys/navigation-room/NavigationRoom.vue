@@ -3,23 +3,11 @@ import { Badge, ButtonIcon } from "@phisyx/flex-uikit";
 
 import { type Emits, openRoom, closeRoom } from "./NavigationRoom.handlers";
 import {
+	type Props,
 	computeTotalUnread,
 	computeHasUnreadEvents,
 	computeHasUnreadMessages,
 } from "./NavigationRoom.state";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	active: boolean;
-	name: string;
-	folded?: boolean;
-	highlight?: boolean;
-	totalUnreadEvents?: number;
-	totalUnreadMessages?: number;
-}
 
 // --------- //
 // Composant //
