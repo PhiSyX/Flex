@@ -10,60 +10,25 @@
 
 import { ChatStore } from "~/store/ChatStore";
 
-import { Module } from "../interface";
-import { JoinCommand } from "./command";
-import { JoinHandler } from "./handler";
-
-import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
-import { ReplyNamreplyHandler } from "~/handlers/replies/ReplyNamreplyHandler";
-
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class JoinModule implements Module<JoinModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "JOIN";
-
-	static create(store: ChatStore): JoinModule {
-		return new JoinModule(
-			new JoinCommand(store),
-			new JoinHandler(store),
-			new ReplyNamreplyHandler(store),
-			new ErrorBadchannelkeyHandler(store),
-		);
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: JoinCommand,
-		private handler: JoinHandler,
-		private numericNamreplyHandler: ReplyNamreplyHandler,
-		private numericErrorBadchannelkeyHandler: ErrorBadchannelkeyHandler,
-	) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(channelsRaw: string, keysRaw?: string) {
-		const channels = channelsRaw.split(",");
-		const keys = keysRaw?.split(",");
-		this.send({ channels, keys });
-	}
-
-	send(payload: Command<"JOIN">) {
-		this.command.send(payload);
-	}
+export class ErrorBadchannelkeyHandler
+	implements SocketEventInterface<"ERR_BADCHANNELKEY">
+{
+	constructor(private store: ChatStore) {}
 
 	listen() {
-		this.handler.listen();
-		this.numericNamreplyHandler.listen();
-		this.numericErrorBadchannelkeyHandler.listen();
+		this.store.on("ERR_BADCHANNELKEY", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERR_BADCHANNELKEY">) {
+		const room = this.store.roomManager().current();
+		room.addEvent(
+			"error:err_badchannelkey",
+			{ ...data, isMe: true },
+			data.reason,
+		);
 	}
 }

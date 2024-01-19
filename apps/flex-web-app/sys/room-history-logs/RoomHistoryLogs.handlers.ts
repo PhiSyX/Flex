@@ -8,7 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assert_non_null } from "@phisyx/flex-safety";
 import { $root, containerNeedsScroll } from "./RoomHistoryLogs.state";
 
 // -------- //
@@ -20,7 +19,10 @@ function scrollToBottom() {
 }
 
 export function scroll() {
-	assert_non_null($root.value);
+	if (!$root.value) {
+		return;
+	}
+
 	$root.value.scrollTop = $root.value.scrollHeight;
 }
 
@@ -29,7 +31,10 @@ export function scroll() {
 // -------- //
 
 export function scrollHandler() {
-	assert_non_null($root.value);
+	if (!$root.value) {
+		return;
+	}
+
 	containerNeedsScroll.value =
 		$root.value.clientHeight + $root.value.scrollTop + 50 >=
 		$root.value.scrollHeight;

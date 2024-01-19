@@ -69,6 +69,7 @@
 	--color-orange500: #ff9800;
 	--color-orange700: #f57c00;
 
+	--color-red300: #e57373;
 	--color-red500: #f44336;
 	--color-red600: #e53935;
 
@@ -107,7 +108,7 @@
 			--room-editbox-bg: var(--room-bg);
 			--room-message-time-color: var(--color-grey500);
 			--room-message-action-color: var(--color-orange400);
-			--room-message-error-color: var(--color-red600);
+			--room-message-error-color: var(--color-red300);
 
 			--room-userlist-bg: var(--body-bg);
 			--room-userlist-search-bg: var(--room-bg);
