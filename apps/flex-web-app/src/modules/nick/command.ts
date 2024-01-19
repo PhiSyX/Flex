@@ -8,18 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ---- //
-// Type //
-// ---- //
+import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
-declare interface Commands {
-	/**
-	 * Unregistered client.
-	 */
-	PASS: { password: string };
-	"NICK (unregistered)": { nickname: string };
-	USER: { user: string; mode: number; realname: string };
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class NickCommand implements CommandInterface<"NICK"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"NICK">): void {
+		this.store.emit("NICK", payload);
+	}
 }
-
-declare type CommandsNames = keyof Commands;
-declare type Command<T extends keyof Commands> = Commands[T];

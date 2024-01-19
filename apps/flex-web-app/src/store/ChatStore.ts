@@ -19,6 +19,7 @@ import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
+import { NickModule } from "~/modules/nick/module";
 import { QuitModule } from "~/modules/quit/module";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
@@ -59,6 +60,7 @@ export class ChatStore {
 
 		self.errorsHandlers.add(new ErrorNicknameinuseHandler(self));
 
+		self.modules.set(NickModule.NAME, NickModule.create(self));
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 
@@ -135,7 +137,7 @@ export class ChatStore {
 	emit<E extends keyof Commands>(
 		eventName: E,
 		...payload: Parameters<ClientToServerEvent[E]>
-	): void {
+	) {
 		this._ws
 			.expect("Instance WebSocket connecté au serveur")
 			.emit(eventName, ...payload);
@@ -211,11 +213,11 @@ export class ChatStore {
 		this._connectUserInfo.replace(connectUserInfo);
 	}
 
-	setConnected(b: boolean): void {
+	setConnected(b: boolean) {
 		this.network().setConnected(b);
 	}
 
-	setClientID(clientID: string): void {
+	setClientID(clientID: string) {
 		this._clientIDStorage.set(clientID);
 	}
 
@@ -223,8 +225,12 @@ export class ChatStore {
 		this._client.replace(me);
 	}
 
-	setNetworkName(networkName: string): void {
+	setNetworkName(networkName: string) {
 		this._network.replace(networkName);
+	}
+
+	setNickname(nickname: string) {
+		this.me().nickname = nickname;
 	}
 
 	websocket(): Socket<ServerToClientEvent, ClientToServerEvent> {

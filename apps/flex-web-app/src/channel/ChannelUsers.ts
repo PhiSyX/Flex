@@ -96,6 +96,16 @@ export class ChannelUsers {
 	}
 
 	/**
+	 * Change le pseudonyme d'un membre par un nouveau pseudonyme.
+	 */
+	changeNickname(oldNickname: string, newNickname: string) {
+		this.remove(oldNickname).then((oldChannelNick) => {
+			oldChannelNick.nickname = newNickname;
+			this.add(oldChannelNick);
+		});
+	}
+
+	/**
 	 * Récupère le pseudo du salon en fonction d'un pseudonyme donné, s'il
 	 * existe.
 	 */

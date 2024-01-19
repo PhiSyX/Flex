@@ -8,18 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ---- //
-// Type //
-// ---- //
-
-declare interface Commands {
-	/**
-	 * Unregistered client.
-	 */
-	PASS: { password: string };
-	"NICK (unregistered)": { nickname: string };
-	USER: { user: string; mode: number; realname: string };
+declare interface NickFormData {
+	nickname: string;
 }
 
-declare type CommandsNames = keyof Commands;
-declare type Command<T extends keyof Commands> = Commands[T];
+declare interface NickDataResponse {
+	new_nickname: string;
+	old_nickname: string;
+}
+
+declare interface Commands {
+	NICK: NickFormData;
+}
+
+declare interface CommandResponsesFromServer {
+	NICK: NickDataResponse;
+}

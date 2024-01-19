@@ -8,18 +8,45 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ---- //
-// Type //
-// ---- //
+import { assertChannelRoom } from "~/asserts/room";
+import { ChatStore } from "~/store/ChatStore";
 
-declare interface Commands {
-	/**
-	 * Unregistered client.
-	 */
-	PASS: { password: string };
-	"NICK (unregistered)": { nickname: string };
-	USER: { user: string; mode: number; realname: string };
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class NickHandler implements SocketEventInterface<"NICK"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("NICK", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"NICK">) {
+		const isMe = this.store.isMe(data.origin);
+		if (isMe) {
+			this.store.setNickname(data.new_nickname);
+		}
+
+		for (const room of this.store.roomManager().rooms()) {
+			if (room.type === "channel") {
+				assertChannelRoom(room);
+
+				if (!room.users.has(data.old_nickname)) {
+					continue;
+				}
+
+				room.users.changeNickname(data.old_nickname, data.new_nickname);
+			}
+
+			room.addEvent("event:nick", { ...data, isMe });
+		}
+	}
 }
-
-declare type CommandsNames = keyof Commands;
-declare type Command<T extends keyof Commands> = Commands[T];
