@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Props, isSelected } from "./Button.state";
+import { type Props, computeIsSelected } from "./Button.state";
 import { handleClick } from "./Button.handler";
 
 const props = withDefaults(defineProps<Props>(), {
@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<Props>(), {
 const selectedModel = defineModel("selected");
 
 const handleClickHandler = handleClick(props, selectedModel);
+const isSelected = computeIsSelected(props);
 </script>
 
 <template>

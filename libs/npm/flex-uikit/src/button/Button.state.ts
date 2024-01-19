@@ -21,13 +21,13 @@ export interface Props {
 	selected?: unknown;
 }
 
-export const value$ = ({ value, trueValue }: Props) =>
+export const computeValue$ = ({ value, trueValue }: Props) =>
 	computed(() => value ?? trueValue);
 
-export const isSelected = (props: Props) =>
+export const computeIsSelected = (props: Props) =>
 	computed(() => {
-		if (value$(props).value == null && props.selected == null) {
+		if (computeValue$(props).value == null && props.selected == null) {
 			return false;
 		}
-		return value$(props).value === props.selected;
+		return computeValue$(props).value === props.selected;
 	});

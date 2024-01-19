@@ -14,4 +14,4 @@ import { ref } from "vue";
 // Local State //
 // ----------- //
 
-export const showUserlist = ref(true);
+export const displayUserlist = ref(true);

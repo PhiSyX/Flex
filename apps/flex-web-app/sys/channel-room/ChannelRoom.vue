@@ -4,7 +4,7 @@ import { UiButton, ButtonIcon } from "@phisyx/flex-uikit";
 import { ChannelUsers } from "~/channel/ChannelUsers";
 import { RoomMessage } from "~/room/RoomMessage";
 
-import { showUserlist } from "./ChannelRoom.state";
+import { displayUserlist } from "./ChannelRoom.state";
 import { openPrivate, type Emits, sendMessage } from "./ChannelRoom.handler";
 
 import ChannelUserlist from "#/sys/channel-userlist/ChannelUserlist.vue";
@@ -44,7 +44,7 @@ const sendMessageHandler = sendMessage(emit, props.name);
 
 			<template #topic-action>
 				<UiButton
-					v-model:selected="showUserlist"
+					v-model:selected="displayUserlist"
 					:true-value="true"
 					:false-value="false"
 					icon="users"
@@ -53,7 +53,7 @@ const sendMessageHandler = sendMessage(emit, props.name);
 				<ButtonIcon class="close" icon="close" />
 			</template>
 
-			<template #room-info v-if="showUserlist">
+			<template #room-info v-if="displayUserlist">
 				<aside class="room/info">
 					<ChannelUserlist
 						:name="name"

@@ -9,22 +9,22 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ModelRef } from "vue";
-import { type Props, isSelected, value$ } from "./Button.state";
+import { type Props, computeIsSelected, computeValue$ } from "./Button.state";
 
 export function handleClick(
 	props: Props,
 	selectedModel: ModelRef<unknown, string>,
 ) {
 	function handleClickHandler(_: MouseEvent) {
-		if (value$(props).value == null && props.selected == null) {
+		if (computeValue$(props).value == null && props.selected == null) {
 			return;
 		}
 
-		if (isSelected(props).value) {
+		if (computeIsSelected(props).value) {
 			if (props.falseValue != null) {
 				selectedModel.value = props.falseValue;
 			} else {
-				selectedModel.value = value$(props).value;
+				selectedModel.value = computeValue$(props).value;
 			}
 		} else {
 			if (props.trueValue != null) {
@@ -32,7 +32,7 @@ export function handleClick(
 			} else if (props.falseValue != null) {
 				selectedModel.value = props.falseValue;
 			} else {
-				selectedModel.value = value$(props).value;
+				selectedModel.value = computeValue$(props).value;
 			}
 		}
 	}
