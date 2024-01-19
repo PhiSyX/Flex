@@ -78,6 +78,10 @@ const componentEventName = computeComponentEventName(props);
 		hyphens: manual;
 	}
 
+	em {
+		font-style: italic;
+	}
+
 	strong {
 		font-weight: 800;
 	}

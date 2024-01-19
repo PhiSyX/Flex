@@ -19,6 +19,7 @@ import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
+import { QuitModule } from "~/modules/quit/module";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
@@ -59,6 +60,7 @@ export class ChatStore {
 		self.errorsHandlers.add(new ErrorNicknameinuseHandler(self));
 
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex");
 		const rooms: Map<RoomID, Room> = new Map([

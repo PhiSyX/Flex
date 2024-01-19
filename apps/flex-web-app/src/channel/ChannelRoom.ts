@@ -58,10 +58,17 @@ export class ChannelRoom extends Room<"channel"> {
 	}
 
 	/**
-	 * Récupère le utilisateur du salon.
+	 * Récupère un utilisateur du salon.
 	 */
 	getUser(nickname: string): Option<ChannelNick> {
 		return this.users.get(nickname);
+	}
+
+	/**
+	 * Supprime un utilisateur du salon.
+	 */
+	removeUser(nickname: string): boolean {
+		return this.users.remove(nickname).is_some();
 	}
 
 	/**

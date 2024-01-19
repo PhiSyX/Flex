@@ -108,6 +108,15 @@ export class ChannelUsers {
 	}
 
 	/**
+	 * Est-ce que la liste des membres contient le pseudonyme donné.
+	 */
+	has(nickname: string): boolean {
+		return Object.values(this.members).some((map) =>
+			map.has(nickname.toLowerCase()),
+		);
+	}
+
+	/**
 	 * Supprime un pseudo de la liste des membres, en fonction d'un pseudonyme
 	 * donné, s'il existe.
 	 */
