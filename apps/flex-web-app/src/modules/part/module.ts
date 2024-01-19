@@ -46,7 +46,7 @@ export class PartModule implements Module<PartModule> {
 		this.send({ channels });
 	}
 
-	send(payload: Command<"JOIN">) {
+	send(payload: Command<"PART">) {
 		this.command.send(payload);
 	}
 
