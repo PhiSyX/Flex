@@ -256,9 +256,16 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	function closeRoom(name: string, message?: string) {
-		store.roomManager().remove(name);
-
-		console.debug("fermeture de la chambre avec le message: %s", message);
+		if (name.startsWith("#")) {
+			const partModuleUnsafe = store.modules.get(PartModule.NAME);
+			const maybePartModule = Option.from(partModuleUnsafe);
+			const partModule = maybePartModule.expect(
+				"Récupération du module `PART`",
+			) as Module<PartModule>;
+			partModule.send({ channels: [name], message });
+		} else {
+			store.roomManager().remove(name);
+		}
 	}
 
 	function connect(connectUserInfo: ConnectUserInfo) {
