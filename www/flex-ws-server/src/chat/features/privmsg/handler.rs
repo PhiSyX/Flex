@@ -65,12 +65,12 @@ impl PrivmsgHandler
 			client_socket.emit_privmsg_to_nickname(target, &data.text, client_socket.user());
 
 			if client_socket.check_nickname(target) {
-				return;
+				continue;
 			}
 
 			let Some(target_client_socket) = app.find_socket_by_nickname(&socket, target) else {
 				client_socket.send_err_nosuchnick(target);
-				return;
+				continue;
 			};
 
 			target_client_socket.emit_privmsg_to_nickname(target, &data.text, client_socket.user());
