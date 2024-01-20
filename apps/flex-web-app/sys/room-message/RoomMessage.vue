@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { inject } from "vue";
+
 import {
 	Props,
 	computeComponentEventExists,
 	computeComponentEventName,
 	computeIsEvent,
+	computeChannelNick
 } from "./RoomMessage.state";
+
+import ChannelNickComponent from "#/sys/channel-nick/ChannelNick.vue";
+import Match from "../match/Match.vue";
 
 // ---- //
 // Type //
@@ -29,10 +34,12 @@ const componentEventExists = computeComponentEventExists(
 	eventsComponents
 );
 const componentEventName = computeComponentEventName(props);
+
+const maybeChannelNick = computeChannelNick(props);
 </script>
 
 <template>
-	<li :data-type="type" :data-myself="isMe" class="room/echo">
+	<li :id="id" :data-type="type" :data-myself="isMe" class="room/echo">
 		<template v-if="componentEventExists && isEvent">
 			<component :is="componentEventName" v-bind="props" />
 		</template>
@@ -40,6 +47,24 @@ const componentEventName = computeComponentEventName(props);
 			<time :datetime="time.datetime">
 				{{ time.formattedTime }}
 			</time>
+
+			<Match :maybe="maybeChannelNick">
+				<template #some="{ data: channelNick }">
+					<ChannelNickComponent
+						tag="span"
+						:nickname="channelNick.nickname"
+						:symbol="channelNick.highestAccessLevel.symbol"
+						:classes="channelNick.highestAccessLevel.className"
+						:is-me="isMe"
+						prefix="<"
+						suffix=">"
+					/>
+				</template>
+				<template #none>
+					<p v-if="nickname !== '*'">{{ nickname }} :</p>
+				</template>
+			</Match>
+
 			<p>{{ message }}</p>
 		</template>
 	</li>
