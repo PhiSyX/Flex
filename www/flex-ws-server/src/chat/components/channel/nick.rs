@@ -74,4 +74,38 @@ impl ChannelNick
 	{
 		&self.client_id
 	}
+
+	/// Le niveau le plus élevé qu'à le lient
+	pub fn highest_access_level(&self) -> Option<&ChannelAccessLevel>
+	{
+		if self.access_level.is_empty() {
+			return None;
+		}
+
+		let last = self.access_level.iter().last();
+
+		let highest: Option<&ChannelAccessLevel> =
+			self.access_level.iter().fold(last, |maybe_level, level| {
+				(level.flag() >= maybe_level?.flag())
+					.then_some(level)
+					.or(maybe_level)
+			});
+
+		highest
+	}
+}
+
+impl ChannelAccessLevel
+{
+	/// Drapeau d'un mode de salon pour un utilisateur.
+	pub fn flag(&self) -> u32
+	{
+		match self {
+			| Self::Owner => 1 << 7,
+			| Self::AdminOperator => 1 << 6,
+			| Self::Operator => 1 << 5,
+			| Self::HalfOperator => 1 << 4,
+			| Self::Vip => 1 << 3,
+		}
+	}
 }

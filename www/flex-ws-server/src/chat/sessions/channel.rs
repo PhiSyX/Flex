@@ -14,6 +14,7 @@ use flex_web_framework::types::secret;
 
 use super::ClientsSession;
 use crate::src::chat::components::channel::nick;
+use crate::src::chat::components::channel::permission::ChannelPermissionWrite;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
 use crate::src::ChatApplication;
@@ -41,6 +42,52 @@ pub enum ChannelJoinError
 
 impl ChatApplication
 {
+	/// Récupère un salon à partir de son nom.
+	pub fn get_channel(
+		&self,
+		channel_name: channel::ChannelIDRef,
+	) -> Option<Ref<'_, channel::ChannelID, channel::Channel>>
+	{
+		self.channels.get(channel_name)
+	}
+
+	/// Le client peut-il écrire sur le salon?
+	pub fn is_client_able_to_write_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+	) -> ChannelPermissionWrite
+	{
+		let Some(channel) = self.get_channel(channel_name) else {
+			return ChannelPermissionWrite::No;
+		};
+
+		let moderate_flag = channel.modes_settings.has_moderate_flag();
+		let no_external_messages_flag = channel.modes_settings.has_no_external_messages_flag();
+
+		// NOTE(phisyx): pour le futur, vérifier que celui qui essaie d'écrire
+		// dans le salon n'est pas bannie.
+
+		let Some(member) = channel.member(client_socket.cid()) else {
+			if moderate_flag || no_external_messages_flag {
+				return ChannelPermissionWrite::No;
+			}
+
+			return ChannelPermissionWrite::Bypass;
+		};
+
+		if moderate_flag
+			&& member
+				.highest_access_level()
+				.filter(|level| level.flag() >= nick::ChannelAccessLevel::Vip.flag())
+				.is_none()
+		{
+			return ChannelPermissionWrite::No;
+		}
+
+		ChannelPermissionWrite::Yes(member.clone())
+	}
+
 	/// Rejoint un salon.
 	pub fn join_channel(&self, client_socket: &client::Socket, channel: &channel::Channel)
 	{

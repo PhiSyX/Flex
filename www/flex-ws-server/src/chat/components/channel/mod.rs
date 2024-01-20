@@ -10,6 +10,7 @@
 
 pub mod mode;
 pub mod nick;
+pub mod permission;
 
 use std::collections::HashMap;
 
@@ -60,6 +61,12 @@ impl Channel
 	pub fn add_member(&mut self, id: client::ClientID, nick: nick::ChannelNick)
 	{
 		self.users.insert(id, nick);
+	}
+
+	/// Récupère un membre du salon.
+	pub fn member(&self, id: &client::ClientID) -> Option<&nick::ChannelNick>
+	{
+		self.users.get(id)
 	}
 
 	/// Tous les membres du salon.
