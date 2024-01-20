@@ -32,6 +32,9 @@ import { RoomManager } from "~/room/RoomManager";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { User } from "~/user/User";
+import { ErrorCannotsendtochanHandler } from "../handlers/errors/ErrorCannotsendtochanHandler";
+import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
+import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
 
 // ---- //
 // Type //
@@ -66,8 +69,11 @@ export class ChatStore {
 			.add(new ReplyYourhostHandler(self));
 
 		self.errorsHandlers
+			.add(new ErrorBadchannelkeyHandler(self))
+			.add(new ErrorCannotsendtochanHandler(self))
 			.add(new ErrorNicknameinuseHandler(self))
 			.add(new ErrorNosuchchannelHandler(self))
+			.add(new ErrorNosuchnickHandler(self))
 			.add(new ErrorNotonchannelHandler(self));
 
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
