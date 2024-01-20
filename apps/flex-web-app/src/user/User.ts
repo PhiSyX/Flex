@@ -32,6 +32,10 @@ export class User {
 
 	channels: Set<string> = new Set();
 
+	get hostname() {
+		return this.host.vhost || this.host.cloaked;
+	}
+
 	// ------- //
 	// Méthode // -> API Publique
 	// ------- //

@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import Room from "#/sys/room/Room.vue";
-import { ButtonIcon } from "@phisyx/flex-uikit";
-import { RoomMessage } from "~/room/RoomMessage";
-import { PrivateNick } from "~/private/PrivateNick";
-import { closeRoom, sendMessage, type Emits } from "./PrivateRoom.handler";
+import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	me: PrivateNick;
-	messages: Array<RoomMessage>;
-	recipient: PrivateNick;
-}
+import {
+	closeRoom,
+	sendMessage,
+	toggleIgnoreUser,
+	type Emits,
+} from "./PrivateRoom.handler";
+import {
+	Props,
+	computeIsMe,
+	computeTitleIgnoreButton,
+} from "./PrivateRoom.state";
 
 // --------- //
 // Composant //
@@ -24,11 +23,16 @@ const emit = defineEmits<Emits>();
 
 const closeRoomHandler = closeRoom(emit);
 const sendMessageHandler = sendMessage(emit, props.recipient.nickname);
+const toggleIgnoreUserHandler = toggleIgnoreUser(emit, props);
+
+const isMe = computeIsMe(props);
+const titleIgnoreButton = computeTitleIgnoreButton(props);
 </script>
 
 <template>
 	<div class="room/private" :data-room="recipient.nickname">
 		<Room
+			:disable-input="disableInput"
 			:messages="messages"
 			:name="recipient.nickname"
 			@send-message="sendMessageHandler"
@@ -38,6 +42,15 @@ const sendMessageHandler = sendMessage(emit, props.recipient.nickname);
 			</template>
 
 			<template #topic-action>
+				<UiButton
+					v-if="!isMe"
+					icon="user-block"
+					:selected="disableInput"
+					:false-value="false"
+					:true-value="true"
+					:title="titleIgnoreButton"
+					@click="toggleIgnoreUserHandler()"
+				/>
 				<ButtonIcon
 					icon="close"
 					@click="closeRoomHandler(recipient.nickname)"

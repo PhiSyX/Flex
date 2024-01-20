@@ -10,10 +10,27 @@
 
 import { computed, ref } from "vue";
 
+// ---- //
+// Type //
+// ---- //
+
+export interface Props {
+	disableInput?: boolean;
+	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes
+	//background: color;
+	//foreground: color;
+	placeholder?: string;
+	target: string;
+}
+
+// ----------- //
+// Local State //
+// ----------- //
+
 export const $input = ref<HTMLInputElement>();
 export const inputModel = ref("");
 
-export const computeFormAction = (props: { target: string }) =>
+export const computeFormAction = (props: Props) =>
 	computed(() => {
 		const targetPath = props.target.startsWith("#")
 			? `%23${props.target.slice(1).toLowerCase()}`

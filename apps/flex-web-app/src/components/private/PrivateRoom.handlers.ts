@@ -23,3 +23,11 @@ export function closeRoomHandler(name: string) {
 export function sendMessageHandler(name: string, message: string) {
 	chatStore.sendMessage(name, message);
 }
+
+export function ignoreUserHandler(nickname: string) {
+	chatStore.ignoreUser(nickname);
+}
+
+export function unignoreUserHandler(nickname: string) {
+	chatStore.unignoreUser(nickname);
+}

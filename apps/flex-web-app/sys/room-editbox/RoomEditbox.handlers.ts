@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { inputModel } from "./RoomEditbox.state";
+import { Props, inputModel } from "./RoomEditbox.state";
 
 // ---- //
 // Type //
@@ -22,12 +22,9 @@ interface Emits {
 // Handlers //
 // -------- //
 
-export function onSubmit(
-	emit: Emits,
-	{ disableInput }: { disableInput: boolean },
-) {
+export function onSubmit(emit: Emits, props: Props) {
 	function onSubmitHandler() {
-		if (disableInput || inputModel.value.length === 0) {
+		if (props.disableInput || inputModel.value.length === 0) {
 			return;
 		}
 		emit("submit", inputModel.value);
