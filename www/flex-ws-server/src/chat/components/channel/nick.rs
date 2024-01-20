@@ -12,6 +12,31 @@ use std::collections::HashSet;
 
 use crate::src::chat::components::client;
 
+// ---- //
+// Type //
+// ---- //
+
+pub type CHANNEL_ACCESS_LEVEL_FLAG = u32;
+
+// -------- //
+// Constant //
+// -------- //
+
+/// Le drapeau du niveau d'accès des propriétaires de salon.
+pub const CHANNEL_ACCESS_LEVEL_OWNER_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 7;
+
+/// Le drapeau du niveau d'accès des admins de salon.
+pub const CHANNEL_ACCESS_LEVEL_ADMIN_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 6;
+
+/// Le drapeau du niveau d'accès des opérateurs de salon.
+pub const CHANNEL_ACCESS_LEVEL_OPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 5;
+
+/// Le drapeau du niveau d'accès des (demi) opérateurs de salon.
+pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 4;
+
+/// Le drapeau du niveau d'accès des VIP's de salon.
+pub const CHANNEL_ACCESS_LEVEL_VIP_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 3;
+
 // --------- //
 // Structure //
 // --------- //
@@ -30,18 +55,19 @@ pub struct ChannelNick
 #[derive(Copy, Clone)]
 #[derive(serde::Serialize, serde::Deserialize)]
 #[derive(PartialEq, Eq, Hash)]
+#[repr(u32)]
 pub enum ChannelAccessLevel
 {
 	/// Niveau d'accès Propriétaire.
-	Owner,
+	Owner = CHANNEL_ACCESS_LEVEL_OWNER_FLAG,
 	/// Niveau d'accès Opérateur Admin.
-	AdminOperator,
+	AdminOperator = CHANNEL_ACCESS_LEVEL_ADMIN_FLAG,
 	/// Niveau d'accès Opérateur.
-	Operator,
+	Operator = CHANNEL_ACCESS_LEVEL_OPERATOR_FLAG,
 	/// Niveau d'accès Demi Opérateur.
-	HalfOperator,
+	HalfOperator = CHANNEL_ACCESS_LEVEL_HALFOPERATOR_FLAG,
 	/// Niveau d'accès Voice / VIP.
-	Vip,
+	Vip = CHANNEL_ACCESS_LEVEL_VIP_FLAG,
 }
 
 // -------------- //
@@ -98,14 +124,14 @@ impl ChannelNick
 impl ChannelAccessLevel
 {
 	/// Drapeau d'un mode de salon pour un utilisateur.
-	pub fn flag(&self) -> u32
+	pub fn flag(&self) -> CHANNEL_ACCESS_LEVEL_FLAG
 	{
 		match self {
-			| Self::Owner => 1 << 7,
-			| Self::AdminOperator => 1 << 6,
-			| Self::Operator => 1 << 5,
-			| Self::HalfOperator => 1 << 4,
-			| Self::Vip => 1 << 3,
+			| Self::Owner => CHANNEL_ACCESS_LEVEL_OWNER_FLAG,
+			| Self::AdminOperator => CHANNEL_ACCESS_LEVEL_ADMIN_FLAG,
+			| Self::Operator => CHANNEL_ACCESS_LEVEL_OPERATOR_FLAG,
+			| Self::HalfOperator => CHANNEL_ACCESS_LEVEL_HALFOPERATOR_FLAG,
+			| Self::Vip => CHANNEL_ACCESS_LEVEL_VIP_FLAG,
 		}
 	}
 }
