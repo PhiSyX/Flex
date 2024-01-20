@@ -40,9 +40,11 @@ declare interface CommandResponsesReplies {
 declare interface ErrorReplies {
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_ALREADYREGISTERED: {};
+	ERR_CANNOTSENDTOCHAN: { channel_name: string };
 	ERR_ERRONEUSNICKNAME: { nickname: string };
 	ERR_NICKNAMEINUSE: { nickname: string };
 	ERR_NOSUCHCHANNEL: { channel_name: string };
+	ERR_NOSUCHNICK: { nickname: string };
 	ERR_NOTONCHANNEL: { channel: string };
 }
 
