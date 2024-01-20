@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::{channel, self};
+use crate::src::chat::components;
 
 // --------- //
 // Interface //
@@ -96,10 +96,10 @@ impl<'a> Socket<'a>
 	/// Émet au client les réponses liées à la commande /JOIN.
 	pub fn emit_join(
 		&self,
-		channel: &channel::Channel,
+		channel: &components::Channel,
 		forced: bool,
 		map_member: impl FnMut(
-			&channel::nick::ChannelNick,
+			&components::nick::ChannelNick,
 		) -> Option<crate::src::chat::replies::ChannelNickClient>,
 	)
 	{
@@ -233,30 +233,6 @@ impl<'a> Socket<'a>
 			tags: PrivmsgCommandResponse::default_tags(),
 		};
 
-		_ = self
-			.socket()
-			.except(self.useless_people_room())
-			.emit(privmsg.name(), &privmsg);
-	}
-
-	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
-	pub fn emit_privmsg_to_nickname_bypass_exception<User>(
-		&self,
-		target: &str,
-		text: &str,
-		by: User,
-	) where
-		User: serde::Serialize,
-	{
-		use crate::src::chat::features::PrivmsgCommandResponse;
-
-		let privmsg = PrivmsgCommandResponse {
-			origin: Some(&by),
-			target,
-			text,
-			tags: PrivmsgCommandResponse::default_tags(),
-		};
-
 		_ = self.socket().emit(privmsg.name(), &privmsg);
 	}
 
@@ -299,9 +275,9 @@ impl<'a> Socket<'a>
 	/// Émet au client les membres d'un salon par chunk de 300.
 	pub fn send_rpl_namreply(
 		&self,
-		channel: &channel::Channel,
+		channel: &components::Channel,
 		mut map_member: impl FnMut(
-			&channel::nick::ChannelNick,
+			&components::nick::ChannelNick,
 		) -> Option<crate::src::chat::replies::ChannelNickClient>,
 	)
 	{

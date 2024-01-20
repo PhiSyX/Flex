@@ -85,7 +85,7 @@ impl ChatApplication
 	}
 
 	/// Est-ce que le client (2) est dans la liste des clients bloqués du
-	/// client(1) et inversement ?
+	/// client(1) ?
 	pub fn client_isin_blocklist(
 		&self,
 		client_socket: &client::Socket,
@@ -94,9 +94,6 @@ impl ChatApplication
 	{
 		self.clients
 			.isin_blocklist(client_socket.cid(), other_client_socket.cid())
-			|| self
-				.clients
-				.isin_blocklist(other_client_socket.cid(), client_socket.cid())
 	}
 
 	/// Crée une nouvelle session d'un client à partir d'une socket.
