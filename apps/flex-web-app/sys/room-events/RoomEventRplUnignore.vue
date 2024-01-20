@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { computeHostname } from "./RoomEvent.state";
-
 // ---- //
 // Type //
 // ---- //
 
 interface Props {
-	data: GenericReply<"QUIT">;
+	data: GenericReply<"RPL_IGNORE">;
 	id: string;
 	message: string;
 	isMe: boolean;
@@ -27,25 +25,16 @@ interface Props {
 // --------- //
 // Composant //
 // --------- //
-const props = defineProps<Props>();
-
-const hostname = computeHostname(props.data.origin);
+defineProps<Props>();
 </script>
 
 <template>
 	<time :datetime="time.datetime">
 		{{ time.formattedTime }}
 	</time>
-	<p>
-		* Quits: <span>{{ data.origin.nickname }}</span> (<span>{{
-			data.origin.ident
-		}}</span
-		>@<span>{{ hostname }}</span
-		>)
-		<em v-if="data.message">
-			(<span>{{ data.message }}</span
-			>)</em
-		>
+	<p v-for="user of data.users">
+		* <span>{{ user.nickname }}</span> n'est désormais
+		<strong>plus ignoré</strong>.
 	</p>
 </template>
 
