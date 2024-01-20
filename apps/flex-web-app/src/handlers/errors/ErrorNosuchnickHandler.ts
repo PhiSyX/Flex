@@ -25,6 +25,10 @@ export class ErrorNosuchnickHandler
 
 	handle(data: GenericReply<"ERR_NOSUCHNICK">) {
 		const room = this.store.roomManager().current();
-		room.addEvent("error:err_nosuchnick", { ...data, isMe: true }, data.reason);
+		room.addEvent(
+			"error:err_nosuchnick",
+			{ ...data, isMe: true },
+			data.reason,
+		);
 	}
 }

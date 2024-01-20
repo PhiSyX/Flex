@@ -9,11 +9,13 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
+import { Some, None } from "@phisyx/flex-safety";
 
 import { computed } from "vue";
+import { ChannelNick } from "~/channel/ChannelNick";
 
 export interface Props {
-	data: object;
+	data: object & { origin: Origin };
 	id: string;
 	message: string;
 	isMe: boolean;
@@ -49,4 +51,19 @@ export const computeComponentEventExists = (
 				}),
 			) ?? false
 		);
+	});
+
+export const computeIsChannel = (props: Props) =>
+	computed(() => props.target.startsWith("#"));
+
+export const computeChannelNick = (props: Props) =>
+	computed(() => {
+		return computeIsChannel(props).value
+			? Some(
+					new ChannelNick(props.data.origin).withRawAccessLevel(
+						// @ts-expect-error : type à corriger
+						props.data.origin.access_level,
+					),
+			  )
+			: None();
 	});

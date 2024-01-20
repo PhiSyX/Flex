@@ -10,6 +10,8 @@ interface Props {
 	hits?: Array<SearchHits>;
 	isMe?: boolean;
 	nickname: string;
+	prefix?: string;
+	suffix?: string;
 	symbol: string;
 	tag: keyof HTMLElementTagNameMap;
 }
@@ -23,6 +25,7 @@ defineProps<Props>();
 
 <template>
 	<component :is="tag" :data-myself="isMe" :class="classes">
+		<span class="prefix">{{ prefix }}</span>
 		<span class="channel/nick:symbol">{{ symbol }}</span>
 		<bdi v-if="hits && hits.length > 0" :class="classes">
 			<template v-for="(substring, idx) of hits" :key="idx">
@@ -39,6 +42,7 @@ defineProps<Props>();
 		<bdi v-else :class="classes">
 			{{ nickname }}
 		</bdi>
+		<span class="suffix">{{ suffix }}</span>
 	</component>
 </template>
 

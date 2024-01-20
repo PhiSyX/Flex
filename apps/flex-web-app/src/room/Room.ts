@@ -38,6 +38,12 @@ export class Room<Type extends string = string> {
 	private customName: Option<string> = None();
 
 	/**
+	 * TODO: trouver une meilleur nomenclature.
+	 * Highlight de la chambre
+	 */
+	highlight = false;
+
+	/**
 	 * Les messages liées à la fenêtre.
 	 *
 	 * La taille maximale des messages est définit par la constante
@@ -96,7 +102,7 @@ export class Room<Type extends string = string> {
 		const message = new RoomMessage()
 			.withID(payload.tags.msgid)
 			.withType("event:connect")
-			.withNickname(payload.origin.nickname)
+			.withNickname("*")
 			.withMessage(messageText)
 			.withTarget(this._name)
 			.withTime(new Date())
@@ -176,6 +182,13 @@ export class Room<Type extends string = string> {
 	 */
 	public setActive(b: boolean) {
 		this.active = b;
+	}
+
+	/**
+	 * Définit la chambre comme étant "highlight".
+	 */
+	public setHighlight(bool: boolean) {
+		this.highlight = bool;
 	}
 
 	/**
