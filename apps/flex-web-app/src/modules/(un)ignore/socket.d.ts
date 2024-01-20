@@ -23,7 +23,10 @@ declare interface Commands {
 
 declare interface CommandResponsesReplies {
 	RPL_IGNORE: {
+		users: Array<Origin>;
+		updated: boolean;
 	};
 	RPL_UNIGNORE: {
+		users: Array<Origin>;
 	};
 }
