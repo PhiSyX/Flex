@@ -8,11 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::error_replies;
+use crate::reserved_numerics;
+use crate::src::chat::components::User;
 
-error_replies! {
-	/// Utilisé pour indiquer que le paramètre "nickname" fourni à une commande
-	/// est actuellement inutilisé.
-	| 401 <-> ERR_NOSUCHNICK { nickname: str }
-		=> "{nickname} :Aucun pseudonyme de ce type"
+reserved_numerics! {
+	| 396 <-> RPL_IGNORE {
+		users: [&'a User],
+		updated: bool
+	} => "Liste des utilisateurs ignorés a été mis à jour."
+
+	| 397 <-> RPL_UNIGNORE {
+		users: [&'a User]
+	} => "Liste des utilisateurs ignorés a été mis à jour."
 }

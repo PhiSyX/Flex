@@ -73,6 +73,15 @@ impl PrivmsgHandler
 				continue;
 			};
 
+			if app.client_isin_blocklist(&client_socket, &target_client_socket) {
+				client_socket.emit_privmsg_to_nickname_bypass_exception(
+					target,
+					&data.text,
+					client_socket.user(),
+				);
+				return;
+			}
+
 			target_client_socket.emit_privmsg_to_nickname(target, &data.text, client_socket.user());
 		}
 	}

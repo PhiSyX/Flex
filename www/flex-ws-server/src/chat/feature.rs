@@ -54,11 +54,13 @@ impl Feature for ChatApplication
 			 data: socketioxide::extract::TryData<RememberUserFormData>| {
 				ConnectionRegistrationHandler::handle_connect(&socket, state, data);
 
+				socket.on(IgnoreHandler::COMMAND_NAME, IgnoreHandler::handle);
 				socket.on(JoinHandler::COMMAND_NAME, JoinHandler::handle);
 				socket.on(NickHandler::COMMAND_NAME, NickHandler::handle);
 				socket.on(PartHandler::COMMAND_NAME, PartHandler::handle);
 				socket.on(PrivmsgHandler::COMMAND_NAME, PrivmsgHandler::handle);
 				socket.on(QuitHandler::COMMAND_NAME, QuitHandler::handle);
+				socket.on(UnignoreHandler::COMMAND_NAME, UnignoreHandler::handle);
 			},
 		);
 
