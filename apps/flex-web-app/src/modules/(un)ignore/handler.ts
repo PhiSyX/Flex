@@ -30,6 +30,22 @@ export class ReplyIgnoreHandler implements SocketEventInterface<"RPL_IGNORE"> {
 	}
 
 	handle(data: GenericReply<"RPL_IGNORE">) {
+		const currentRoom = this.store.roomManager().current();
+
+		if (data.updated) {
+			currentRoom.addConnectEvent(data, data.message);
+		}
+
+		for (const user of data.users) {
+			this.store.addUserToBlocklist(new User(user));
+
+			if (data.updated) {
+				currentRoom.addEvent("event:rpl_ignore", {
+					...data,
+					isMe: true,
+				});
+			}
+		}
 	}
 }
 
@@ -50,5 +66,17 @@ export class ReplyUnignoreHandler
 	}
 
 	handle(data: GenericReply<"RPL_UNIGNORE">) {
+		const currentRoom = this.store.roomManager().current();
+
+		currentRoom.addConnectEvent(data, data.message);
+
+		for (const user of data.users) {
+			this.store.removeUserToBlocklist(new User(user));
+
+			currentRoom.addEvent("event:rpl_unignore", {
+				...data,
+				isMe: true,
+			});
+		}
 	}
 }
