@@ -102,6 +102,8 @@ export class Room<Type extends string = string> {
 		const message = new RoomMessage()
 			.withID(payload.tags.msgid)
 			.withType("event:connect")
+			// NOTE(phisyx): Les événements de connexions n'ont pas besoin
+			// d'être annotés d'un pseudonyme.
 			.withNickname("*")
 			.withMessage(messageText)
 			.withTarget(this._name)
