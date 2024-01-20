@@ -12,6 +12,7 @@ import { assertChannelRoom } from "~/asserts/room";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChatStore } from "~/store/ChatStore";
+import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
@@ -59,6 +60,8 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 	}
 
 	handleUser(data: GenericReply<"JOIN">) {
+		this.store.addUser(new User(data.origin));
+
 		const maybeChannel = this.store.roomManager().get(data.channel);
 
 		if (maybeChannel.is_none()) return;

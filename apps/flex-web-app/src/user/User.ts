@@ -8,45 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
-
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyNamreplyHandler
-	implements SocketEventInterface<"RPL_NAMREPLY">
-{
-	constructor(private store: ChatStore) {}
-
-	listen() {
-		this.store.on("RPL_NAMREPLY", (data) => this.handle(data));
-		// this.store.on("RPL_ENDOFNAMES", (_data) => {});
+export class User {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(user: Origin) {
+		this.nickname = user.nickname;
+		this.ident = user.ident;
+		this.host = user.host;
 	}
 
-	handle(data: GenericReply<"RPL_NAMREPLY">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
+	// -------- //
+	// Property //
+	// -------- //
 
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
+	declare nickname: Origin["nickname"];
+	declare ident: Origin["ident"];
+	declare host: Origin["host"];
 
-		for (const user of data.users) {
-			this.store.addUser(new User(user).withChannel(channel.id()));
+	channels: Set<string> = new Set();
 
-			const newNick = new ChannelNick(user).withRawAccessLevel(
-				user.access_level,
-			);
+	// ------- //
+	// Méthode // -> API Publique
+	// ------- //
 
-			const maybeNick = channel.getUser(user.nickname);
-			if (maybeNick.is_some()) {
-				channel.upgradeUser(maybeNick.unwrap(), newNick);
-			} else {
-				channel.addUser(newNick);
-			}
-		}
+	withChannel(channelID: string): this {
+		this.channels.add(channelID);
+		return this;
 	}
 }
