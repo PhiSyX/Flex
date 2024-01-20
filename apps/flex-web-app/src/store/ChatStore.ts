@@ -23,6 +23,7 @@ import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
 import { NickModule } from "~/modules/nick/module";
 import { PartModule } from "~/modules/part/module";
+import { PrivmsgModule } from "~/modules/privmsg/module";
 import { QuitModule } from "~/modules/quit/module";
 import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
@@ -72,10 +73,13 @@ export class ChatStore {
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
 		self.modules.set(PartModule.NAME, PartModule.create(self));
+		self.modules.set(PrivmsgModule.NAME, PrivmsgModule.create(self));
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex");
-		const rooms: Map<RoomID, Room> = new Map([[thisServer.id(), thisServer]]);
+		const rooms: Map<RoomID, Room> = new Map([
+			[thisServer.id(), thisServer],
+		]);
 
 		self.setNetworkName(thisServer.id());
 		self.roomManager().extends(rooms);
@@ -123,13 +127,17 @@ export class ChatStore {
 			websocketServerURL,
 		);
 
-		let clientID = this._clientIDStorage.maybe().unwrap_or("") as string | null;
+		let clientID = this._clientIDStorage.maybe().unwrap_or("") as
+			| string
+			| null;
 
 		if (clientID?.length === 0) {
 			clientID = null;
 		}
 
-		this._ws.replace(io(websocketServerURL, { auth: { client_id: clientID } }));
+		this._ws.replace(
+			io(websocketServerURL, { auth: { client_id: clientID } }),
+		);
 	}
 
 	emit<E extends keyof Commands>(
@@ -160,7 +168,9 @@ export class ChatStore {
 	}
 
 	isMe(origin: Origin): boolean {
-		return this.me().nickname.toLowerCase() === origin.nickname.toLowerCase();
+		return (
+			this.me().nickname.toLowerCase() === origin.nickname.toLowerCase()
+		);
 	}
 
 	listenAllEvents() {
@@ -173,7 +183,10 @@ export class ChatStore {
 		}
 
 		for (const [moduleName, module] of this.modules) {
-			console.info("Le module « %s » est maintenant en écoute.", moduleName);
+			console.info(
+				"Le module « %s » est maintenant en écoute.",
+				moduleName,
+			);
 			module.listen();
 		}
 	}
@@ -197,7 +210,9 @@ export class ChatStore {
 	}
 
 	off<K extends keyof ServerToClientEvent>(eventName: K) {
-		this._ws.expect("Instance WebSocket connecté au serveur").off(eventName);
+		this._ws
+			.expect("Instance WebSocket connecté au serveur")
+			.off(eventName);
 	}
 
 	on<K extends keyof ServerToClientEvent>(
@@ -325,7 +340,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			const priv = new PrivateRoom(name);
 			priv.addParticipant(new PrivateNick(store.me()));
 			const maybeUser = store.findUser(name);
-			maybeUser.then((user) => priv.addParticipant(new PrivateNick(user)));
+			maybeUser.then((user) =>
+				priv.addParticipant(new PrivateNick(user)),
+			);
 			return priv;
 		});
 
@@ -339,13 +356,12 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 
 	function sendMessage(name: string, message: string) {
 		if (!message.startsWith("/")) {
-			console.debug(
-				"[%s]: message à envoyer sur « %s ». Message: « %s »",
-				ChatStore.NAME,
-				name,
-				message,
-			);
+			const words = message.split(" ");
+			const privmsgModule = store.modules.get(
+				PrivmsgModule.NAME,
+			) as PrivmsgModule;
 
+			privmsgModule.input(name, ...words);
 			return;
 		}
 
