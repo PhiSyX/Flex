@@ -12,7 +12,7 @@ interface Props {
 	nickname: string;
 	prefix?: string;
 	suffix?: string;
-	symbol: string;
+	symbol?: string;
 	tag: keyof HTMLElementTagNameMap;
 }
 
