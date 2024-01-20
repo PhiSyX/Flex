@@ -13,6 +13,7 @@ import { None, Some } from "@phisyx/flex-safety";
 
 import { computed } from "vue";
 import { ChannelNick } from "~/channel/ChannelNick";
+import { PrivateNick } from "~/private/PrivateNick";
 
 export interface Props {
 	data: object & { origin: Origin };
@@ -56,6 +57,9 @@ export const computeComponentEventExists = (
 export const computeIsChannel = (props: Props) =>
 	computed(() => props.target.startsWith("#"));
 
+export const computeIsPrivate = (props: Props) =>
+	computed(() => props.nickname !== "*" && !computeIsChannel(props).value);
+
 export const computeChannelNick = (props: Props) =>
 	computed(() => {
 		return computeIsChannel(props).value
@@ -65,5 +69,12 @@ export const computeChannelNick = (props: Props) =>
 						props.data.origin.access_level,
 					),
 			  )
+			: None();
+	});
+
+export const computePrivateNick = (props: Props) =>
+	computed(() => {
+		return computeIsPrivate(props).value
+			? Some(new PrivateNick(props.data.origin).withIsMe(props.isMe))
 			: None();
 	});

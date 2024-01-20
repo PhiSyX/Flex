@@ -16,6 +16,12 @@ export class PrivateNick {
 	// ----------- //
 	constructor(private origin: Origin) {}
 
+	// -------- //
+	// Property //
+	// -------- //
+
+	isMe = false;
+
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
@@ -54,5 +60,10 @@ export class PrivateNick {
 			ident: this.ident,
 			nickname: this.nickname,
 		});
+	}
+
+	withIsMe(bool: boolean): this {
+		this.isMe = bool;
+		return this;
 	}
 }

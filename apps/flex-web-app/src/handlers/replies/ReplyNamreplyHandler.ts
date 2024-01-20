@@ -37,9 +37,9 @@ export class ReplyNamreplyHandler
 		for (const user of data.users) {
 			this.store.addUser(new User(user).withChannel(channel.id()));
 
-			const newNick = new ChannelNick(user).withRawAccessLevel(
-				user.access_level,
-			);
+			const newNick = new ChannelNick(user)
+				.withIsMe(this.store.isMe(user))
+				.withRawAccessLevel(user.access_level);
 
 			const maybeNick = channel.getUser(user.nickname);
 			if (maybeNick.is_some()) {

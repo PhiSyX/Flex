@@ -71,7 +71,9 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 					.addEvent("event:query", { ...data, isMe: false });
 				const room = new PrivateRoom(data.origin.nickname);
 				room.addParticipant(new PrivateNick(data.origin));
-				room.addParticipant(new PrivateNick(this.store.me()));
+				room.addParticipant(
+					new PrivateNick(this.store.me()).withIsMe(true),
+				);
 				return room;
 			});
 

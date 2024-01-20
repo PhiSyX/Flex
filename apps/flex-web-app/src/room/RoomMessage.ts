@@ -15,7 +15,7 @@ import { formatDate } from "@phisyx/flex-date";
 // ---- //
 
 type MessageProperties = {
-	data: object;
+	data: object & { origin: Origin };
 	id: string;
 	message: string;
 	isMe: boolean;

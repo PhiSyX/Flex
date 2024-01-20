@@ -56,6 +56,11 @@ export class ChannelNick {
 	 */
 	accessLevel: Set<ChannelAccessLevel> = new Set();
 
+	/**
+	 * Est-ce le pseudonyme est le pseudonyme courant connecté.
+	 */
+	isMe = false;
+
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
@@ -79,6 +84,15 @@ export class ChannelNick {
 	 */
 	withAccessLevel(level: ChannelAccessLevel): this {
 		this.accessLevel.add(level);
+		return this;
+	}
+
+	/**
+	 * Définit le pseudo comme étant celui actuellement connecté en tant que
+	 * client.
+	 */
+	withIsMe(bool: boolean): this {
+		this.isMe = bool;
 		return this;
 	}
 

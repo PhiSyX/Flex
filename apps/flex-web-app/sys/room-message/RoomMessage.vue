@@ -6,11 +6,14 @@ import {
 	computeComponentEventExists,
 	computeComponentEventName,
 	computeIsEvent,
-	computeChannelNick
+	computeChannelNick,
+	computePrivateNick,
 } from "./RoomMessage.state";
 
+import Match from "#/sys/match/Match.vue";
+
 import ChannelNickComponent from "#/sys/channel-nick/ChannelNick.vue";
-import Match from "../match/Match.vue";
+import PrivateNickComponent from "#/sys/private-nick/PrivateNick.vue";
 
 // ---- //
 // Type //
@@ -36,6 +39,7 @@ const componentEventExists = computeComponentEventExists(
 const componentEventName = computeComponentEventName(props);
 
 const maybeChannelNick = computeChannelNick(props);
+const maybePrivateNick = computePrivateNick(props);
 </script>
 
 <template>
@@ -55,13 +59,20 @@ const maybeChannelNick = computeChannelNick(props);
 						:nickname="channelNick.nickname"
 						:symbol="channelNick.highestAccessLevel.symbol"
 						:classes="channelNick.highestAccessLevel.className"
-						:is-me="isMe"
+						:is-me="channelNick.isMe"
 						prefix="<"
 						suffix=">"
 					/>
 				</template>
-				<template #none>
-					<p v-if="nickname !== '*'">{{ nickname }} :</p>
+			</Match>
+			<Match :maybe="maybePrivateNick">
+				<template #some="{ data: privateNick }">
+					<PrivateNickComponent
+						tag="span"
+						:nickname="privateNick.nickname"
+						:is-me="privateNick.isMe"
+						suffix=" :"
+					/>
 				</template>
 			</Match>
 
