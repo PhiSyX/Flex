@@ -10,12 +10,19 @@
 
 use std::net;
 
-use dashmap::DashMap;
+use dashmap::{DashMap, DashSet};
 use flex_web_framework::http::request;
 use socketioxide::extract::SocketRef;
 
 use crate::src::chat::components::client;
 use crate::src::ChatApplication;
+
+// ---- //
+// Type //
+// ---- //
+
+pub type BlockedByID = client::ClientID;
+pub type BlockedID = client::ClientID;
 
 // --------- //
 // Structure //
@@ -24,6 +31,8 @@ use crate::src::ChatApplication;
 #[derive(Default)]
 pub struct ClientsSession
 {
+	/// Les utilisateurs bloqués pour chaque utilisateur.
+	pub(super) blocklist: DashMap<BlockedByID, DashSet<BlockedID>>,
 	/// Les clients de session.
 	pub(super) clients: DashMap<client::ClientID, client::Client>,
 }
@@ -34,6 +43,18 @@ pub struct ClientsSession
 
 impl ChatApplication
 {
+	/// Ajoute un client (2) à la liste des clients bloqués/ignorés du client
+	/// (1).
+	pub fn add_client_to_blocklist(
+		&self,
+		client: &client::Socket,
+		to_ignore_client: &client::Socket,
+	)
+	{
+		self.clients
+			.add_to_block(client.cid(), to_ignore_client.cid());
+	}
+
 	/// Peut-on localiser un client de session via un pseudonyme ?
 	pub fn can_locate_client_by_nickname(&self, nickname: &str) -> bool
 	{
@@ -61,6 +82,21 @@ impl ChatApplication
 		self.clients.change_nickname(client_socket.cid(), nickname);
 
 		client_socket.emit_nick();
+	}
+
+	/// Est-ce que le client (2) est dans la liste des clients bloqués du
+	/// client(1) et inversement ?
+	pub fn client_isin_blocklist(
+		&self,
+		client_socket: &client::Socket,
+		other_client_socket: &client::Socket,
+	) -> bool
+	{
+		self.clients
+			.isin_blocklist(client_socket.cid(), other_client_socket.cid())
+			|| self
+				.clients
+				.isin_blocklist(other_client_socket.cid(), client_socket.cid())
 	}
 
 	/// Crée une nouvelle session d'un client à partir d'une socket.
@@ -132,6 +168,18 @@ impl ChatApplication
 		self.clients.upgrade(client);
 		self.clients.register(client);
 	}
+
+	/// Supprime un client (2) de la liste des clients bloqués/ignorés du client
+	/// (1).
+	pub fn remove_client_to_blocklist(
+		&self,
+		client: &client::Socket,
+		to_ignore_client: &client::Socket,
+	)
+	{
+		self.clients
+			.remove_to_block(client.cid(), to_ignore_client.cid());
+	}
 }
 
 // -------------- //
@@ -140,6 +188,20 @@ impl ChatApplication
 
 impl ClientsSession
 {
+	/// Ajoute un client dans la liste des bloqués/ignorés pour les deux
+	/// clients.
+	pub fn add_to_block(&self, client_id: &client::ClientID, to_ignore_client_id: &client::ClientID)
+	{
+		let Some(blocklist) = self.blocklist.get_mut(client_id) else {
+			self.blocklist.insert(
+				client_id.to_owned(),
+				DashSet::from_iter([to_ignore_client_id.to_owned()]),
+			);
+			return;
+		};
+		blocklist.insert(to_ignore_client_id.to_owned());
+	}
+
 	/// Peut-on localiser un client par son pseudonyme.
 	pub fn can_locate_by_nickname(&self, nickname: &str) -> bool
 	{
@@ -190,6 +252,20 @@ impl ClientsSession
 		})
 	}
 
+	/// Est-ce que le client (2) est dans la liste des clients bloqués du client
+	/// (1).
+	pub fn isin_blocklist(
+		&self,
+		client_id: &client::ClientID,
+		other_client_id: &client::ClientID,
+	) -> bool
+	{
+		let Some(blocklist) = self.blocklist.get(client_id) else {
+			return false;
+		};
+		blocklist.contains(other_client_id)
+	}
+
 	/// Enregistre un client.
 	pub fn register(&self, client: &client::Client)
 	{
@@ -197,6 +273,20 @@ impl ClientsSession
 		session_client.set_sid(client.sid());
 		session_client.set_connected();
 		session_client.set_registered();
+	}
+
+	/// Supprime un client (2) de la liste des clients bloqués/ignorés d'un
+	/// client (1)
+	pub fn remove_to_block(
+		&self,
+		client_id: &client::ClientID,
+		to_ignore_client_id: &client::ClientID,
+	)
+	{
+		let Some(blocklist) = self.blocklist.get_mut(client_id) else {
+			return;
+		};
+		blocklist.remove(to_ignore_client_id);
 	}
 
 	/// Dés-enregistre un client.

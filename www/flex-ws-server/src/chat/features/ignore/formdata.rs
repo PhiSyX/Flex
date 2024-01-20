@@ -8,11 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::error_replies;
 
-error_replies! {
-	/// Utilisé pour indiquer que le paramètre "nickname" fourni à une commande
-	/// est actuellement inutilisé.
-	| 401 <-> ERR_NOSUCHNICK { nickname: str }
-		=> "{nickname} :Aucun pseudonyme de ce type"
+
+use crate::command_formdata;
+use crate::macro_rules::command_formdata::validate_nickname;
+
+command_formdata! {
+	struct IGNORE
+	{
+		/// Pseudonyme à ignorer pour le client.
+		#[serde(deserialize_with = "validate_nickname")]
+		nickname: String,
+	}
 }
