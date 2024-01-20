@@ -29,6 +29,12 @@ mod features
 			handler,
 		};
 
+		ignore / {
+			formdata,
+			handler,
+			response,
+		};
+
 		join / {
 			formdata,
 			handler,

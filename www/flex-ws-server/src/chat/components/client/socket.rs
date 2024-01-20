@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::channel;
+use crate::src::chat::components::{channel, self};
 
 // --------- //
 // Interface //
@@ -82,6 +82,12 @@ impl<'a> Socket<'a>
 	pub fn sid(&self) -> socketioxide::socket::Sid
 	{
 		self.client().sid()
+	}
+
+	/// La chambre des ignorés/bloqués du client courant.
+	pub fn useless_people_room(&self) -> String
+	{
+		format!("{}/ignore", self.cid())
 	}
 }
 
@@ -206,12 +212,40 @@ impl<'a> Socket<'a>
 			target.to_lowercase()
 		);
 
-		_ = self.socket().to(target_room).emit(privmsg.name(), privmsg);
+		_ = self
+			.socket()
+			.except(self.useless_people_room())
+			.to(target_room)
+			.emit(privmsg.name(), privmsg);
 	}
 
 	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
 	pub fn emit_privmsg_to_nickname<User>(&self, target: &str, text: &str, by: User)
 	where
+		User: serde::Serialize,
+	{
+		use crate::src::chat::features::PrivmsgCommandResponse;
+
+		let privmsg = PrivmsgCommandResponse {
+			origin: Some(&by),
+			target,
+			text,
+			tags: PrivmsgCommandResponse::default_tags(),
+		};
+
+		_ = self
+			.socket()
+			.except(self.useless_people_room())
+			.emit(privmsg.name(), &privmsg);
+	}
+
+	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
+	pub fn emit_privmsg_to_nickname_bypass_exception<User>(
+		&self,
+		target: &str,
+		text: &str,
+		by: User,
+	) where
 		User: serde::Serialize,
 	{
 		use crate::src::chat::features::PrivmsgCommandResponse;
@@ -248,6 +282,20 @@ impl<'a> Socket<'a>
 
 impl<'a> Socket<'a>
 {
+	/// Émet au client les réponses liées à la commande /IGNORE.
+	pub fn send_rpl_ignore(&self, users: &[&components::User], updated: bool)
+	{
+		use crate::src::chat::features::RplIgnoreReply;
+
+		let rpl_ignore = RplIgnoreReply {
+			origin: Some(self.user()),
+			users,
+			tags: RplIgnoreReply::default_tags(),
+			updated: &updated,
+		};
+		_ = self.socket().emit(rpl_ignore.name(), rpl_ignore);
+	}
+
 	/// Émet au client les membres d'un salon par chunk de 300.
 	pub fn send_rpl_namreply(
 		&self,
@@ -283,6 +331,19 @@ impl<'a> Socket<'a>
 			tags: RplEndofnamesReply::default_tags(),
 		};
 		_ = self.socket().emit(rpl_endofnames.name(), rpl_endofnames);
+	}
+
+	/// Émet au client les réponses liées à la commande /UNIGNORE.
+	pub fn send_rpl_unignore(&self, users: &[&components::User])
+	{
+		use crate::src::chat::features::RplUnignoreReply;
+
+		let rpl_unignore = RplUnignoreReply {
+			origin: Some(self.user()),
+			users,
+			tags: RplUnignoreReply::default_tags(),
+		};
+		_ = self.socket().emit(rpl_unignore.name(), rpl_unignore);
 	}
 }
 
