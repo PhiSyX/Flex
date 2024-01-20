@@ -181,6 +181,25 @@ impl ConnectionRegistrationHandler
 		_ = socket.emit(yourhost_002.name(), yourhost_002);
 		_ = socket.emit(created_003.name(), created_003);
 
+		// Transmet les utilisateurs bloqués/ignorés du client (au client
+		// lui-même ;-))
+		let users: Vec<_> = app
+			.clients
+			.blocklist(client.id())
+			.into_iter()
+			.map(|client| client.user().to_owned())
+			.collect();
+		if !users.is_empty() {
+			let users: Vec<_> = users.iter().collect();
+			let rpl_ignore = RplIgnoreReply {
+				origin: Some(client_user),
+				tags: RplIgnoreReply::default_tags(),
+				users: users.as_slice(),
+				updated: &false,
+			};
+			_ = socket.emit(rpl_ignore.name(), rpl_ignore);
+		}
+
 		Some(())
 	}
 }

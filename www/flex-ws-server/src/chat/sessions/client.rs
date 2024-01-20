@@ -138,7 +138,7 @@ impl ChatApplication
 		client_socket.emit_quit(reason);
 	}
 
-	/// Récupère un client de session à partir de son ID.
+	/// Trouve un client de session à partir de son ID.
 	pub fn find_client(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
 		self.clients.find(client_id)
@@ -197,6 +197,15 @@ impl ClientsSession
 			return;
 		};
 		blocklist.insert(to_ignore_client_id.to_owned());
+	}
+
+	/// La liste des clients bloqués d'un client.
+	pub fn blocklist(&self, client_id: &client::ClientID) -> Vec<client::Client>
+	{
+		self.blocklist
+			.get(client_id)
+			.map(|l| l.value().iter().filter_map(|bid| self.find(&bid)).collect())
+			.unwrap_or_default()
 	}
 
 	/// Peut-on localiser un client par son pseudonyme.
