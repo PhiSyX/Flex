@@ -7,6 +7,7 @@
 	"license": "MPL-2.0",
 	"scripts": {
 		"webapp": "pnpm --filter @phisyx/flex-web-app dev",
+		"story:webapp": "pnpm --filter @phisyx/flex-web-app story:dev",
 		"build": "pnpm run -r build",
 		"lint": "biome lint --config-path=tools/code-quality . && pnpm run -r lint",
 		"fmt": "biome format --config-path=tools/code-quality . --write && pnpm run -r fmt",
