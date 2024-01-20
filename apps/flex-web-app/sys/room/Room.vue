@@ -1,23 +1,10 @@
 <script setup lang="ts">
-import { RoomMessage } from "~/room/RoomMessage";
-
 import { Emits, openPrivate, sendMessage } from "./Room.handler";
-import { computeInputPlaceholder } from "./Room.state";
+import { type Props, computeInputPlaceholder } from "./Room.state";
 
 import RoomTopic from "#/sys/room-topic/RoomTopic.vue";
 import RoomHistoryLogs from "#/sys/room-history-logs/RoomHistoryLogs.vue";
 import RoomEditbox from "#/sys/room-editbox/RoomEditbox.vue";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	displayInput?: boolean;
-	disableInput?: boolean;
-	name: string;
-	messages: Array<RoomMessage>;
-}
 
 // --------- //
 // Composant //

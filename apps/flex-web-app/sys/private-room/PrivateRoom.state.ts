@@ -8,67 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { JSX } from "vue/jsx-runtime";
+import { computed } from "vue";
 
-// @ts-expect-error : `h` à corriger.
-import { h } from "vue";
-import { resolveComponent } from "vue";
+import { PrivateNick } from "~/private/PrivateNick";
+import { RoomMessage } from "~/room/RoomMessage";
 
 // ---- //
 // Type //
 // ---- //
 
-export type Icons =
-	| "arrow-down"
-	| "arrow-left"
-	| "arrow-right"
-	| "channel"
-	| "close"
-	| "logoff"
-	| "password"
-	| "plus"
-	| "send"
-	| "settings"
-	| "text-color"
-	| "url"
-	| "user"
-	| "user-block"
-	| "users"
-	| "view-list";
-
-interface ButtonProps {
-	disabled?: boolean;
-	icon: Icons;
+export interface Props {
+	disableInput: boolean;
+	me: PrivateNick;
+	messages: Array<RoomMessage>;
+	recipient: PrivateNick;
 }
 
-interface LabelProps {
-	for: string;
-	icon: Icons;
-}
+// ----------- //
+// Local State //
+// ----------- //
 
-// -------- //
-// Fonction //
-// -------- //
+export const computeIsMe = (props: Props) =>
+	computed(() => props.me.partialEq(props.recipient));
 
-// HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assertIcon(_value: unknown): asserts _value is string {}
-
-export function ButtonIcon(props: ButtonProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<button disabled={props.disabled} class="btn" type="button">
-			<IconName />
-		</button>
-	);
-}
-
-export function LabelIcon(props: LabelProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<label for={props.for}>
-			<IconName />
-		</label>
-	);
-}
+export const computeTitleIgnoreButton = (props: Props) =>
+	computed(() => {
+		return props.disableInput
+			? `Ne plus ignorer ${props.recipient.nickname}`
+			: `Ignorer ${props.recipient.nickname}`;
+	});

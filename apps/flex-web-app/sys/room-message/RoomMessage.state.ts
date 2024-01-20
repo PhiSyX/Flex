@@ -44,13 +44,13 @@ export const computeComponentEventExists = (
 	eventsComponents: Array<string> = [],
 ) =>
 	computed(() => {
-		return (
-			eventsComponents.includes(
-				camelCase(computeComponentEventName(props).value, {
-					includes_separators: false,
-				}),
-			) ?? false
+		const componentName = camelCase(
+			computeComponentEventName(props).value,
+			{
+				includes_separators: false,
+			},
 		);
+		return eventsComponents.includes(componentName) ?? false;
 	});
 
 export const computeIsChannel = (props: Props) =>

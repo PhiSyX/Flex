@@ -8,67 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { JSX } from "vue/jsx-runtime";
+import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
-// @ts-expect-error : `h` à corriger.
-import { h } from "vue";
-import { resolveComponent } from "vue";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// ---- //
-// Type //
-// ---- //
+export class IgnoreCommand implements CommandInterface<"IGNORE"> {
+	constructor(private store: ChatStore) {}
 
-export type Icons =
-	| "arrow-down"
-	| "arrow-left"
-	| "arrow-right"
-	| "channel"
-	| "close"
-	| "logoff"
-	| "password"
-	| "plus"
-	| "send"
-	| "settings"
-	| "text-color"
-	| "url"
-	| "user"
-	| "user-block"
-	| "users"
-	| "view-list";
-
-interface ButtonProps {
-	disabled?: boolean;
-	icon: Icons;
+	send(payload: Command<"IGNORE">): void {
+		this.store.emit("IGNORE", payload);
+	}
 }
 
-interface LabelProps {
-	for: string;
-	icon: Icons;
-}
+export class UnignoreCommand implements CommandInterface<"UNIGNORE"> {
+	constructor(private store: ChatStore) {}
 
-// -------- //
-// Fonction //
-// -------- //
-
-// HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assertIcon(_value: unknown): asserts _value is string {}
-
-export function ButtonIcon(props: ButtonProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<button disabled={props.disabled} class="btn" type="button">
-			<IconName />
-		</button>
-	);
-}
-
-export function LabelIcon(props: LabelProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<label for={props.for}>
-			<IconName />
-		</label>
-	);
+	send(payload: Command<"UNIGNORE">): void {
+		this.store.emit("UNIGNORE", payload);
+	}
 }

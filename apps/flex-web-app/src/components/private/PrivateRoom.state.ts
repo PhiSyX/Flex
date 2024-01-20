@@ -10,8 +10,11 @@
 
 import { computed } from "vue";
 
+import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { useChatStore } from "~/store/ChatStore";
+
+const chatStore = useChatStore();
 
 // ---- //
 // Type //
@@ -25,11 +28,12 @@ export interface Props {
 // Local State //
 // ----------- //
 
-const chatStore = useChatStore();
-
 export const computeMe = (props: Props) =>
 	computed(() =>
 		props.room.getParticipant(chatStore.store.nickname()).unwrap(),
 	);
 export const computeRecipient = (props: Props) =>
 	computed(() => props.room.getParticipant(props.room.name).unwrap());
+
+export const computeRecipientIsBlocked = (nick: PrivateNick) =>
+	computed(() => chatStore.checkUserIsBlocked(nick.intoUser()));

@@ -8,67 +8,47 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { JSX } from "vue/jsx-runtime";
+import { ChatStore } from "~/store/ChatStore";
+import { User } from "~/user/User";
 
-// @ts-expect-error : `h` à corriger.
-import { h } from "vue";
-import { resolveComponent } from "vue";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// ---- //
-// Type //
-// ---- //
+export class ReplyIgnoreHandler implements SocketEventInterface<"RPL_IGNORE"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
 
-export type Icons =
-	| "arrow-down"
-	| "arrow-left"
-	| "arrow-right"
-	| "channel"
-	| "close"
-	| "logoff"
-	| "password"
-	| "plus"
-	| "send"
-	| "settings"
-	| "text-color"
-	| "url"
-	| "user"
-	| "user-block"
-	| "users"
-	| "view-list";
+	// ------- //
+	// Méthode //
+	// ------- //
 
-interface ButtonProps {
-	disabled?: boolean;
-	icon: Icons;
+	listen() {
+		this.store.on("RPL_IGNORE", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"RPL_IGNORE">) {
+	}
 }
 
-interface LabelProps {
-	for: string;
-	icon: Icons;
-}
+export class ReplyUnignoreHandler
+	implements SocketEventInterface<"RPL_UNIGNORE">
+{
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
 
-// -------- //
-// Fonction //
-// -------- //
+	// ------- //
+	// Méthode //
+	// ------- //
 
-// HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assertIcon(_value: unknown): asserts _value is string {}
+	listen() {
+		this.store.on("RPL_UNIGNORE", (data) => this.handle(data));
+	}
 
-export function ButtonIcon(props: ButtonProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<button disabled={props.disabled} class="btn" type="button">
-			<IconName />
-		</button>
-	);
-}
-
-export function LabelIcon(props: LabelProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<label for={props.for}>
-			<IconName />
-		</label>
-	);
+	handle(data: GenericReply<"RPL_UNIGNORE">) {
+	}
 }

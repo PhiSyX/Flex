@@ -10,19 +10,26 @@
 
 import { computed } from "vue";
 
+import { RoomMessage } from "~/room/RoomMessage";
+
+// ---- //
+// Type //
+// ---- //
+
+export interface Props {
+	displayInput?: boolean;
+	disableInput?: boolean;
+	name: string;
+	messages: Array<RoomMessage>;
+}
+
 // ----------- //
 // Local State //
 // ----------- //
 
-export const computeInputPlaceholder = ({
-	disableInput,
-	name,
-}: {
-	disableInput: boolean;
-	name: string;
-}) =>
+export const computeInputPlaceholder = (props: Props) =>
 	computed(() => {
-		return disableInput
-			? `La chambre « ${name} » est en mode lecture uniquement.`
+		return props.disableInput
+			? `La chambre « ${props.name} » est en mode lecture uniquement.`
 			: "Commencez à taper / pour obtenir la liste des commandes disponibles...";
 	});

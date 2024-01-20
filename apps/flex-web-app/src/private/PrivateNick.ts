@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { User } from "~/user/User";
+
 export class PrivateNick {
 	// ----------- //
 	// Constructor //
@@ -28,5 +30,29 @@ export class PrivateNick {
 
 	get hostname() {
 		return this.origin.host.vhost || this.origin.host.cloaked;
+	}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	public eq(other: this) {
+		return (
+			other.nickname === this.nickname &&
+			other.ident === this.ident &&
+			other.hostname === this.hostname
+		);
+	}
+
+	public partialEq(other: this) {
+		return other.nickname.toLowerCase() === this.nickname.toLowerCase();
+	}
+
+	public intoUser(): User {
+		return new User({
+			host: this.origin.host,
+			ident: this.ident,
+			nickname: this.nickname,
+		});
 	}
 }

@@ -35,6 +35,7 @@ import { User } from "~/user/User";
 import { ErrorCannotsendtochanHandler } from "../handlers/errors/ErrorCannotsendtochanHandler";
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
 import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
+import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 
 // ---- //
 // Type //
@@ -76,11 +77,13 @@ export class ChatStore {
 			.add(new ErrorNosuchnickHandler(self))
 			.add(new ErrorNotonchannelHandler(self));
 
+		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
 		self.modules.set(PartModule.NAME, PartModule.create(self));
 		self.modules.set(PrivmsgModule.NAME, PrivmsgModule.create(self));
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
+		self.modules.set(UnignoreModule.NAME, UnignoreModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex");
 		const rooms: Map<RoomID, Room> = new Map([
@@ -106,6 +109,7 @@ export class ChatStore {
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> =
 		None();
 	private _users: Map<string, User> = new Map();
+	private _usersBlocked: Map<string, User> = new Map();
 
 	private repliesHandlers: Set<SocketEventHandler> = new Set();
 	private errorsHandlers: Set<SocketEventHandler> = new Set();
@@ -125,6 +129,10 @@ export class ChatStore {
 		} else {
 			this._users.set(user.nickname.toLowerCase(), user);
 		}
+	}
+
+	addUserToBlocklist(user: User) {
+		this._usersBlocked.set(user.nickname.toLowerCase(), user);
 	}
 
 	connectWebsocket(websocketServerURL: string) {
@@ -171,6 +179,10 @@ export class ChatStore {
 
 	isConnected(): boolean {
 		return this.network().isConnected();
+	}
+
+	isUserBlocked(user: User): boolean {
+		return this._usersBlocked.has(user.nickname.toLowerCase());
 	}
 
 	isMe(origin: Origin): boolean {
@@ -243,6 +255,10 @@ export class ChatStore {
 		);
 	}
 
+	removeUserToBlocklist(user: User): boolean {
+		return this._usersBlocked.delete(user.nickname.toLowerCase());
+	}
+
 	roomManager(): RoomManager {
 		return this._roomManager;
 	}
@@ -291,6 +307,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		current.unsetTotalUnreadMessages();
 	}
 
+	function checkUserIsBlocked(user: User): boolean {
+		return store.isUserBlocked(user);
+	}
+
 	function closeRoom(name: string, message?: string) {
 		if (name.startsWith("#")) {
 			const partModuleUnsafe = store.modules.get(PartModule.NAME);
@@ -327,6 +347,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		});
 
 		store.listenAllEvents();
+	}
+
+	function ignoreUser(nickname: string) {
+		const ignoreModule = store.modules.get(
+			IgnoreModule.NAME,
+		) as IgnoreModule;
+		ignoreModule.send({ nickname });
 	}
 
 	function listen<K extends keyof ServerToClientEvent>(
@@ -388,13 +415,24 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		module.input(...args);
 	}
 
+	function unignoreUser(nickname: string) {
+		const unignoreModule = store.modules.get(
+			UnignoreModule.NAME,
+		) as UnignoreModule;
+		unignoreModule.send({ nickname });
+	}
+
 	return {
+		store,
+
 		changeRoom,
+		checkUserIsBlocked,
 		closeRoom,
 		connect,
+		ignoreUser,
 		listen,
 		openPrivateOrCreate,
 		sendMessage,
-		store,
+		unignoreUser,
 	};
 });

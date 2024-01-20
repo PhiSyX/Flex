@@ -4,20 +4,12 @@ import { ButtonIcon } from "@phisyx/flex-uikit";
 import { onActivated } from "vue";
 
 import { onSubmit } from "./RoomEditbox.handlers";
-import { $input, computeFormAction, inputModel } from "./RoomEditbox.state";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	disableInput?: boolean;
-	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes
-	//background: color;
-	//foreground: color;
-	placeholder?: string;
-	target: string;
-}
+import {
+	type Props,
+	$input,
+	computeFormAction,
+	inputModel,
+} from "./RoomEditbox.state";
 
 interface Emits {
 	(evtName: "submit", inputModel: string): void;
