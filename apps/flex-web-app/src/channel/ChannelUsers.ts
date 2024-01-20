@@ -92,16 +92,15 @@ export class ChannelUsers {
 	 */
 	add(nick: ChannelNick) {
 		const group = this.members[nick.highestAccessLevel.group];
-		group.set(nick.nickname.toLowerCase(), nick);
+		group.set(nick.id, nick);
 	}
 
 	/**
 	 * Change le pseudonyme d'un membre par un nouveau pseudonyme.
 	 */
-	changeNickname(oldNickname: string, newNickname: string) {
-		this.remove(oldNickname).then((oldChannelNick) => {
+	changeNickname(id: string, _oldNickname: string, newNickname: string) {
+		this.get(id).then((oldChannelNick) => {
 			oldChannelNick.nickname = newNickname;
-			this.add(oldChannelNick);
 		});
 	}
 
@@ -109,9 +108,9 @@ export class ChannelUsers {
 	 * Récupère le pseudo du salon en fonction d'un pseudonyme donné, s'il
 	 * existe.
 	 */
-	get(nickname: string): Option<ChannelNick> {
+	get(id: string): Option<ChannelNick> {
 		for (const map of Object.values(this.members)) {
-			const nick = map.get(nickname.toLowerCase());
+			const nick = map.get(id);
 			if (nick) return Some(nick);
 		}
 		return None();
@@ -120,23 +119,21 @@ export class ChannelUsers {
 	/**
 	 * Est-ce que la liste des membres contient le pseudonyme donné.
 	 */
-	has(nickname: string): boolean {
-		return Object.values(this.members).some((map) =>
-			map.has(nickname.toLowerCase()),
-		);
+	has(id: string): boolean {
+		return Object.values(this.members).some((map) => map.has(id));
 	}
 
 	/**
 	 * Supprime un pseudo de la liste des membres, en fonction d'un pseudonyme
 	 * donné, s'il existe.
 	 */
-	remove(nickname: string): Option<ChannelNick> {
+	remove(id: string): Option<ChannelNick> {
 		const foundNick: Option<ChannelNick> = None();
 		for (const map of Object.values(this.members)) {
-			const nick = map.get(nickname.toLowerCase());
+			const nick = map.get(id);
 			if (nick) {
 				foundNick.replace(nick);
-				map.delete(nickname.toLowerCase());
+				map.delete(id);
 				break;
 			}
 		}

@@ -54,7 +54,10 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	}
 
 	handleMe(data: GenericReply<"PRIVMSG">) {
-		const maybeRoom = this.store.roomManager().get(data.target);
+		const user = this.store
+			.findUserByNickname(data.target)
+			.expect(`"L'utilisateur cible ${data.target}."`);
+		const maybeRoom = this.store.roomManager().get(user.id);
 		if (maybeRoom.is_none()) return;
 		const room = maybeRoom.unwrap();
 		this.handleMessage(room, data);
@@ -63,13 +66,15 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	handleUser(data: GenericReply<"PRIVMSG">) {
 		const priv = this.store
 			.roomManager()
-			.getOrInsert(data.origin.nickname, () => {
+			.getOrInsert(data.origin.id, () => {
 				this.store
 					.roomManager()
 					.current()
 					// @ts-expect-error : type à corriger
 					.addEvent("event:query", { ...data, isMe: false });
-				const room = new PrivateRoom(data.origin.nickname);
+				const room = new PrivateRoom(data.origin.nickname).withID(
+					data.origin.id,
+				);
 				room.addParticipant(new PrivateNick(data.origin));
 				room.addParticipant(
 					new PrivateNick(this.store.me()).withIsMe(true),

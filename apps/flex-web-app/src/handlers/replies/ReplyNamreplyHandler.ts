@@ -41,7 +41,7 @@ export class ReplyNamreplyHandler
 				.withIsMe(this.store.isMe(user))
 				.withRawAccessLevel(user.access_level);
 
-			const maybeNick = channel.getUser(user.nickname);
+			const maybeNick = channel.getUser(user.id);
 			if (maybeNick.is_some()) {
 				channel.upgradeUser(maybeNick.unwrap(), newNick);
 			} else {

@@ -30,10 +30,10 @@ export interface Props {
 
 export const computeMe = (props: Props) =>
 	computed(() =>
-		props.room.getParticipant(chatStore.store.nickname()).unwrap(),
+		props.room.getParticipant(chatStore.store.clientID()).unwrap(),
 	);
 export const computeRecipient = (props: Props) =>
-	computed(() => props.room.getParticipant(props.room.name).unwrap());
+	computed(() => props.room.getParticipant(props.room.id()).unwrap());
 
 export const computeRecipientIsBlocked = (nick: PrivateNick) =>
 	computed(() => chatStore.checkUserIsBlocked(nick.intoUser()));

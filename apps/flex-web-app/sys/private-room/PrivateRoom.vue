@@ -53,7 +53,7 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 				/>
 				<ButtonIcon
 					icon="close"
-					@click="closeRoomHandler(recipient.nickname)"
+					@click="closeRoomHandler(recipient)"
 				/>
 			</template>
 		</Room>

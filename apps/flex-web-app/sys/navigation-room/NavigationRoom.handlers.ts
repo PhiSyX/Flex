@@ -13,35 +13,35 @@
 // ---- //
 
 export interface Emits {
-	(evtName: "open-room", name: string): void;
-	(evtName: "close-room", name: string): void;
+	(evtName: "open-room", origin: Origin | string): void;
+	(evtName: "close-room", origin: Origin | string): void;
 }
 
 // -------- //
 // Handlers //
 // -------- //
 
-export function openRoom(emit: Emits, name: string) {
-	function openRoomHandler(name: string) {
-		emit("open-room", name);
+export function openRoom(emit: Emits, origin: Origin | string) {
+	function openRoomHandler() {
+		emit("open-room", origin);
 	}
 
 	function onEventHandler(evt: Event) {
 		evt.stopPropagation();
-		openRoomHandler(name);
+		openRoomHandler();
 	}
 
 	return onEventHandler;
 }
 
-export function closeRoom(emit: Emits, name: string) {
-	function closeRoomHandler(name: string) {
-		emit("close-room", name);
+export function closeRoom(emit: Emits, origin: Origin | string) {
+	function closeRoomHandler() {
+		emit("close-room", origin);
 	}
 
 	function onEventHandler(evt: Event) {
 		evt.stopPropagation();
-		closeRoomHandler(name);
+		closeRoomHandler();
 	}
 
 	return onEventHandler;

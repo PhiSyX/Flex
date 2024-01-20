@@ -16,6 +16,7 @@ import { computed } from "vue";
 
 export interface Props {
 	active: boolean;
+	id: string;
 	name: string;
 	folded?: boolean;
 	highlight?: boolean;

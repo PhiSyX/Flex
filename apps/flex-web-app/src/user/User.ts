@@ -17,6 +17,7 @@ export class User {
 	// Constructor //
 	// ----------- //
 	constructor(user: Origin) {
+		this.id = user.id;
 		this.nickname = user.nickname;
 		this.ident = user.ident;
 		this.host = user.host;
@@ -26,6 +27,7 @@ export class User {
 	// Property //
 	// -------- //
 
+	declare id: Origin["id"];
 	declare nickname: Origin["nickname"];
 	declare ident: Origin["ident"];
 	declare host: Origin["host"];

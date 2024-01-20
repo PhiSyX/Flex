@@ -85,7 +85,7 @@ export class ChatStore {
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 		self.modules.set(UnignoreModule.NAME, UnignoreModule.create(self));
 
-		const thisServer = new ServerCustomRoom("Flex");
+		const thisServer = new ServerCustomRoom("Flex").withID("Flex");
 		const rooms: Map<RoomID, Room> = new Map([
 			[thisServer.id(), thisServer],
 		]);
@@ -109,6 +109,7 @@ export class ChatStore {
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> =
 		None();
 	private _users: Map<string, User> = new Map();
+	private _nicksUsers: Map<string, string> = new Map();
 	private _usersBlocked: Map<string, User> = new Map();
 
 	private repliesHandlers: Set<SocketEventHandler> = new Set();
@@ -121,18 +122,28 @@ export class ChatStore {
 	// ------- //
 
 	addUser(user: User) {
-		const fuser = this._users.get(user.nickname.toLowerCase());
+		const fuser = this._users.get(user.id);
 		if (fuser) {
 			for (const channel of user.channels) {
 				fuser.channels.add(channel);
 			}
 		} else {
-			this._users.set(user.nickname.toLowerCase(), user);
+			this._users.set(user.id, user);
 		}
 	}
 
 	addUserToBlocklist(user: User) {
-		this._usersBlocked.set(user.nickname.toLowerCase(), user);
+		this._usersBlocked.set(user.id, user);
+	}
+
+	changeUserNickname(oldNickname: string, newNickname: string) {
+		const user = this.findUserByNickname(oldNickname).unwrap();
+		this._nicksUsers.delete(oldNickname);
+		user.nickname = newNickname;
+	}
+
+	clientID() {
+		return this.me().id;
 	}
 
 	connectWebsocket(websocketServerURL: string) {
@@ -164,7 +175,27 @@ export class ChatStore {
 	}
 
 	findUser(userID: string): Option<User> {
-		return Option.from(this._users.get(userID.toLowerCase()));
+		return Option.from(this._users.get(userID));
+	}
+
+	findUserByNickname(nickname: string): Option<User> {
+		if (this._nicksUsers.has(nickname.toLowerCase())) {
+			const userID = this._nicksUsers.get(
+				nickname.toLowerCase(),
+			) as string;
+			return this.findUser(userID);
+		}
+
+		const maybeUser = Option.from(
+			Array.from(this._users.values()).find(
+				(user) =>
+					user.nickname.toLowerCase() === nickname.toLowerCase(),
+			),
+		);
+		maybeUser.then((user) => {
+			this._nicksUsers.set(user.nickname.toLowerCase(), user.id);
+		});
+		return maybeUser;
 	}
 
 	getAutoJoinChannels(): Array<string> {
@@ -182,13 +213,11 @@ export class ChatStore {
 	}
 
 	isUserBlocked(user: User): boolean {
-		return this._usersBlocked.has(user.nickname.toLowerCase());
+		return this._usersBlocked.has(user.id);
 	}
 
 	isMe(origin: Origin): boolean {
-		return (
-			this.me().nickname.toLowerCase() === origin.nickname.toLowerCase()
-		);
+		return this.me().id === origin.id;
 	}
 
 	listenAllEvents() {
@@ -256,7 +285,7 @@ export class ChatStore {
 	}
 
 	removeUserToBlocklist(user: User): boolean {
-		return this._usersBlocked.delete(user.nickname.toLowerCase());
+		return this._usersBlocked.delete(user.id);
 	}
 
 	roomManager(): RoomManager {
@@ -295,11 +324,19 @@ export class ChatStore {
 export const useChatStore = defineStore(ChatStore.NAME, () => {
 	const store = ChatStore.default();
 
-	function changeRoom(name: string) {
-		if (!store.roomManager().has(name)) {
+	function changeRoom(target: Origin | string) {
+		let roomID: string;
+
+		if (typeof target === "string") {
+			roomID = target;
+		} else {
+			roomID = target.id;
+		}
+
+		if (!store.roomManager().has(roomID)) {
 			return;
 		}
-		store.roomManager().setCurrent(name);
+		store.roomManager().setCurrent(roomID);
 
 		const current = store.roomManager().current();
 
@@ -311,16 +348,23 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		return store.isUserBlocked(user);
 	}
 
-	function closeRoom(name: string, message?: string) {
-		if (name.startsWith("#")) {
+	function closeRoom(target: Origin | string, message?: string) {
+		let roomID: string;
+		if (typeof target === "string") {
+			roomID = target;
+		} else {
+			roomID = target.id;
+		}
+
+		if (roomID.startsWith("#")) {
 			const partModuleUnsafe = store.modules.get(PartModule.NAME);
 			const maybePartModule = Option.from(partModuleUnsafe);
 			const partModule = maybePartModule.expect(
 				"Récupération du module `PART`",
 			) as Module<PartModule>;
-			partModule.send({ channels: [name], message });
+			partModule.send({ channels: [roomID], message });
 		} else {
-			store.roomManager().remove(name);
+			store.roomManager().remove(roomID);
 		}
 	}
 
@@ -368,11 +412,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 	}
 
-	function openPrivateOrCreate(name: string) {
-		const room = store.roomManager().getOrInsert(name, () => {
-			const priv = new PrivateRoom(name);
+	function openPrivateOrCreate(origin: Origin) {
+		const room = store.roomManager().getOrInsert(origin.id, () => {
+			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
 			priv.addParticipant(new PrivateNick(store.me()).withIsMe(true));
-			const maybeUser = store.findUser(name);
+			const maybeUser = store.findUser(origin.id);
 			maybeUser.then((user) =>
 				priv.addParticipant(new PrivateNick(user)),
 			);
@@ -382,7 +426,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		room.unsetTotalUnreadEvents();
 		room.unsetTotalUnreadMessages();
 
-		store.roomManager().setCurrent(room.name);
+		store.roomManager().setCurrent(room.id());
 
 		// store.emit("QUERY", { nickname: name });
 	}

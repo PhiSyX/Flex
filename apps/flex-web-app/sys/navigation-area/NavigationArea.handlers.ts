@@ -13,8 +13,8 @@
 // ---- //
 
 export interface Emits {
-	(evtName: "change-room", name: string): void;
-	(evtName: "close-room", name: string): void;
+	(evtName: "change-room", origin: Origin): void;
+	(evtName: "close-room", origin: Origin): void;
 }
 
 // -------- //
@@ -22,15 +22,15 @@ export interface Emits {
 // -------- //
 
 export function changeRoom(emit: Emits) {
-	function changeRoomHandler(name: string) {
-		emit("change-room", name);
+	function changeRoomHandler(origin: Origin) {
+		emit("change-room", origin);
 	}
 	return changeRoomHandler;
 }
 
 export function closeRoom(emit: Emits) {
-	function closeRoomHandler(name: string) {
-		emit("close-room", name);
+	function closeRoomHandler(origin: Origin) {
+		emit("close-room", origin);
 	}
 	return closeRoomHandler;
 }

@@ -46,12 +46,12 @@ export class QuitHandler implements SocketEventInterface<"QUIT"> {
 	}
 
 	handleChannel(data: GenericReply<"QUIT">, channel: ChannelRoom) {
-		if (!channel.users.has(data.origin.nickname)) return;
+		if (!channel.users.has(data.origin.id)) return;
 
 		channel.addEvent("event:quit", { ...data, isMe: false });
 
 		setTimeout(() => {
-			channel.removeUser(data.origin.nickname);
+			channel.removeUser(data.origin.id);
 		}, 1 << 6);
 	}
 }

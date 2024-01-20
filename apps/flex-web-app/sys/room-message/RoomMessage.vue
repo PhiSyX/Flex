@@ -20,7 +20,7 @@ import PrivateNickComponent from "#/sys/private-nick/PrivateNick.vue";
 // ---- //
 
 interface Emits {
-	(evtName: "open-private", nickname: string): void;
+	(evtName: "open-private", origin: Origin): void;
 }
 
 // --------- //

@@ -27,7 +27,7 @@ export class ChannelRoom extends Room<"channel"> {
 	 * Crée un salon avec un propriétaire.
 	 */
 	static createWithOwner(name: string, origin: Origin): ChannelRoom {
-		return new ChannelRoom(name).withOwner(origin);
+		return new ChannelRoom(name).withID(name).withOwner(origin);
 	}
 
 	// ----------- //
@@ -60,22 +60,22 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Récupère un utilisateur du salon.
 	 */
-	getUser(nickname: string): Option<ChannelNick> {
-		return this.users.get(nickname);
+	getUser(id: string): Option<ChannelNick> {
+		return this.users.get(id);
 	}
 
 	/**
 	 * Supprime un utilisateur du salon.
 	 */
-	removeUser(nickname: string): boolean {
-		return this.users.remove(nickname).is_some();
+	removeUser(id: string): boolean {
+		return this.users.remove(id).is_some();
 	}
 
 	/**
 	 * Met à jour un utilisateur.
 	 */
 	upgradeUser(oldNick: ChannelNick, newNick: ChannelNick) {
-		this.users.remove(oldNick.nickname);
+		this.users.remove(oldNick.id);
 		newNick.highestAccessLevel;
 		this.users.add(newNick);
 	}

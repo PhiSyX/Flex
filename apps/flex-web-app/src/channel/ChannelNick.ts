@@ -24,6 +24,7 @@ export class ChannelNick {
 	// Constructor //
 	// ----------- //
 	constructor(origin: Origin) {
+		this.id = origin.id;
 		this.nickname = origin.nickname;
 		this.ident = origin.ident;
 		this.host = origin.host;
@@ -35,6 +36,10 @@ export class ChannelNick {
 
 	private declare _highestAccessLevel: HighestAccessLevelOutput;
 
+	/**
+	 * ID.
+	 */
+	declare id: string;
 	/**
 	 * Pseudonyme.
 	 */

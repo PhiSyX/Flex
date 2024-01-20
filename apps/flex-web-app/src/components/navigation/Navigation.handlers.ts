@@ -16,10 +16,10 @@ const chatStore = useChatStore();
 // Handlers //
 // -------- //
 
-export function changeRoomHandler(name: string) {
-	chatStore.changeRoom(name);
+export function changeRoomHandler(origin: Origin) {
+	chatStore.changeRoom(origin);
 }
 
-export function closeRoomHandler(name: string) {
-	chatStore.closeRoom(name);
+export function closeRoomHandler(origin: Origin) {
+	chatStore.closeRoom(origin);
 }

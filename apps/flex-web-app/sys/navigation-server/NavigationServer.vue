@@ -65,6 +65,7 @@ const toggleFoldHandler = toggleFold(folded);
 			<template v-for="room in rooms" :key="room.type + ':' + room.name">
 				<NavigationRoom
 					v-if="room.type === 'channel'"
+					:id="room.id()"
 					:active="room.isActive()"
 					:highlight="false"
 					:name="room.name"
@@ -81,6 +82,7 @@ const toggleFoldHandler = toggleFold(folded);
 
 				<NavigationRoom
 					v-if="room.type === 'private'"
+					:id="room.id()"
 					:active="room.isActive()"
 					:highlight="false"
 					:name="room.name"

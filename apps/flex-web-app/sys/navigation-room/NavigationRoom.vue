@@ -17,8 +17,8 @@ defineOptions({ inheritAttrs: false });
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const openRoomHandler = openRoom(emit, props.name);
-const closeRoomHandler = closeRoom(emit, props.name);
+const openRoomHandler = openRoom(emit, props.id);
+const closeRoomHandler = closeRoom(emit, props.id);
 
 const hasEvents = computeHasUnreadEvents(props);
 const hasMessages = computeHasUnreadMessages(props);
@@ -40,7 +40,9 @@ const totalUnread = computeTotalUnread(props);
 	>
 		<slot name="icon" />
 
-		<bdi v-show="!folded">{{ name }}</bdi>
+		<bdi v-show="!folded" :class="{ 'auto:scroll': !name.startsWith('#') }">
+			{{ name }}
+		</bdi>
 
 		<div>
 			<Badge
@@ -157,6 +159,34 @@ li:hover > div > .total-unread {
 @keyframes blink {
 	50% {
 		opacity: var(--blink-opacity, 0.5);
+	}
+}
+
+@include fx.class("auto:scroll") {
+	--direction: ltr;
+	--text-overflow: ellipsis;
+
+	overflow-x: hidden;
+	animation: autoScrollAnimation 2s step-start 0s infinite;
+	direction: var(--direction);
+	text-overflow: var(--text-overflow);
+	white-space: nowrap;
+
+	&:active,
+	&:hover {
+		--direction: rtl;
+		--text-overflow: clip;
+		animation: none;
+		&:after {
+			content: "\200E‎";
+		}
+	}
+}
+
+@keyframes autoScrollAnimation {
+	50% {
+		--direction: rtl;
+		--text-overflow: clip;
 	}
 }
 </style>

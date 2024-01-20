@@ -16,8 +16,8 @@ const chatStore = useChatStore();
 // Handlers //
 // -------- //
 
-export function closeRoomHandler(name: string) {
-	chatStore.closeRoom(name);
+export function closeRoomHandler(origin: Origin) {
+	chatStore.closeRoom(origin);
 }
 
 export function sendMessageHandler(name: string, message: string) {

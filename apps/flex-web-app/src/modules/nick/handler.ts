@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "~/asserts/room";
+import { assertChannelRoom, assertPrivateRoom } from "~/asserts/room";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -30,23 +30,41 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 	}
 
 	handle(data: GenericReply<"NICK">) {
+		this.store.changeUserNickname(data.old_nickname, data.new_nickname);
+
 		const isMe = this.store.isMe(data.origin);
 		if (isMe) {
 			this.store.setNickname(data.new_nickname);
 		}
 
 		for (const room of this.store.roomManager().rooms()) {
+			room.addEvent("event:nick", { ...data, isMe });
+
 			if (room.type === "channel") {
 				assertChannelRoom(room);
 
-				if (!room.users.has(data.old_nickname)) {
+				const user = this.store
+					.findUserByNickname(data.new_nickname)
+					.expect(`L'utilisateur ${data.new_nickname}.`);
+
+				if (!room.users.has(user.id)) {
 					continue;
 				}
 
-				room.users.changeNickname(data.old_nickname, data.new_nickname);
-			}
+				room.users.changeNickname(
+					data.origin.id,
+					data.old_nickname,
+					data.new_nickname,
+				);
+			} else if (room.type === "private") {
+				if (!room.eq(data.old_nickname)) {
+					continue;
+				}
 
-			room.addEvent("event:nick", { ...data, isMe });
+				assertPrivateRoom(room);
+
+				room.changeName(data.new_nickname);
+			}
 		}
 	}
 }

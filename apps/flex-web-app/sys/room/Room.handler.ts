@@ -13,7 +13,7 @@
 // ---- //
 
 export interface Emits {
-	(evtName: "open-private", nickname: string): void;
+	(evtName: "open-private", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
 }
 
@@ -22,8 +22,8 @@ export interface Emits {
 // -------- //
 
 export function openPrivate(emit: Emits) {
-	function openPrivateHandler(nickname: string) {
-		emit("open-private", nickname);
+	function openPrivateHandler(origin: Origin) {
+		emit("open-private", origin);
 	}
 
 	return openPrivateHandler;

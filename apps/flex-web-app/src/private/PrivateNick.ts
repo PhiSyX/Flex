@@ -26,6 +26,10 @@ export class PrivateNick {
 	// Getter | Setter //
 	// --------------- //
 
+	get id() {
+		return this.origin.id;
+	}
+
 	get nickname() {
 		return this.origin.nickname;
 	}
@@ -34,8 +38,12 @@ export class PrivateNick {
 		return this.origin.ident;
 	}
 
+	get host() {
+		return this.origin.host;
+	}
+
 	get hostname() {
-		return this.origin.host.vhost || this.origin.host.cloaked;
+		return this.host.vhost || this.host.cloaked;
 	}
 
 	// ------- //
@@ -44,6 +52,7 @@ export class PrivateNick {
 
 	public eq(other: this) {
 		return (
+			other.id === this.id &&
 			other.nickname === this.nickname &&
 			other.ident === this.ident &&
 			other.hostname === this.hostname
@@ -51,12 +60,13 @@ export class PrivateNick {
 	}
 
 	public partialEq(other: this) {
-		return other.nickname.toLowerCase() === this.nickname.toLowerCase();
+		return other.id === this.id;
 	}
 
 	public intoUser(): User {
 		return new User({
-			host: this.origin.host,
+			id: this.id,
+			host: this.host,
 			ident: this.ident,
 			nickname: this.nickname,
 		});

@@ -13,8 +13,8 @@
 // ---- //
 
 export interface Emits {
-	(evtName: "close-room", name: string): void;
-	(evtName: "open-private", nickname: string): void;
+	(evtName: "close-room", origin: Origin): void;
+	(evtName: "open-private", origin: Origin): void;
 	(evtName: "send-message", name: string, message: string): void;
 }
 
@@ -23,15 +23,15 @@ export interface Emits {
 // -------- //
 
 export function closeRoom(emit: Emits) {
-	function closeRoomHandler(name: string) {
-		emit("close-room", name);
+	function closeRoomHandler(origin: Origin) {
+		emit("close-room", origin);
 	}
 	return closeRoomHandler;
 }
 
 export function openPrivate(emit: Emits) {
-	function openPrivateHandler(nickname: string) {
-		emit("open-private", nickname);
+	function openPrivateHandler(origin: Origin) {
+		emit("open-private", origin);
 	}
 	return openPrivateHandler;
 }

@@ -15,35 +15,35 @@ import { ModelRef } from "vue";
 // ---- //
 
 export interface Emits {
-	(evtName: "change-room", name: string): void;
-	(evtName: "close-room", name: string): void;
+	(evtName: "change-room", origin: Origin | string): void;
+	(evtName: "close-room", origin: Origin | string): void;
 }
 
 // -------- //
 // Handlers //
 // -------- //
 
-export function changeRoom(emit: Emits, name: string) {
+export function changeRoom(emit: Emits, origin: Origin | string) {
 	function onEventHandler(evt: Event) {
 		evt.preventDefault();
 		evt.stopPropagation();
-		openRoom(emit)(name);
+		openRoom(emit)(origin);
 	}
 
 	return onEventHandler;
 }
 
 export function openRoom(emit: Emits) {
-	function openRoomHandler(name: string) {
-		emit("change-room", name);
+	function openRoomHandler(origin: Origin | string) {
+		emit("change-room", origin);
 	}
 
 	return openRoomHandler;
 }
 
 export function closeRoom(emit: Emits) {
-	function closeRoomHandler(name: string) {
-		emit("close-room", name);
+	function closeRoomHandler(origin: Origin | string) {
+		emit("close-room", origin);
 	}
 
 	return closeRoomHandler;

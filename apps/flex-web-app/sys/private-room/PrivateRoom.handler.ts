@@ -15,7 +15,7 @@ import type { Props } from "./PrivateRoom.state";
 // ---- //
 
 export interface Emits {
-	(evtName: "close-room", name: string): void;
+	(evtName: "close-room", origin: Origin): void;
 	(evtName: "send-message", name: string, message: string): void;
 	(evtName: "ignore-user", nickname: string): void;
 	(evtName: "unignore-user", nickname: string): void;
@@ -26,8 +26,8 @@ export interface Emits {
 // -------- //
 
 export function closeRoom(emit: Emits) {
-	function closeRoomHandler(name: string) {
-		emit("close-room", name);
+	function closeRoomHandler(origin: Origin) {
+		emit("close-room", origin);
 	}
 	return closeRoomHandler;
 }

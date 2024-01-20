@@ -16,12 +16,12 @@ const chatStore = useChatStore();
 // Handlers //
 // -------- //
 
-export function openPrivateHandler(name: string) {
-	chatStore.openPrivateOrCreate(name);
+export function openPrivateHandler(origin: Origin) {
+	chatStore.openPrivateOrCreate(origin);
 }
 
-export function closeRoomHandler(name: string) {
-	chatStore.closeRoom(name);
+export function closeRoomHandler(origin: Origin) {
+	chatStore.closeRoom(origin);
 }
 
 export function sendMessageHandler(name: string, message: string) {

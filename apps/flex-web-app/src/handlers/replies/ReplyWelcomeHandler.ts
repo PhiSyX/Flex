@@ -39,6 +39,7 @@ export class ReplyWelcomeHandler
 		this.store.setConnected(true);
 		this.store.setClientID(data.tags.client_id);
 		this.store.setMe({
+			id: data.tags.client_id,
 			nickname: data.nickname,
 			host: { cloaked: data.host },
 			ident: data.ident,

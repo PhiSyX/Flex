@@ -47,14 +47,14 @@ const openPrivateHandler = openPrivate(emit);
 				<ChannelNickComponent
 					tag="li"
 					v-for="nick in moderators.filtered"
-					:key="nick.nickname"
+					:key="nick.id"
 					:classes="nick.highestAccessLevel.className"
 					:hits="nick.searchHits"
 					:is-me="nick.isMe"
 					:nickname="nick.nickname"
 					:symbol="nick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(nick.nickname)"
+					@dblclick="openPrivateHandler(nick)"
 				/>
 			</ul>
 		</details>
@@ -69,14 +69,14 @@ const openPrivateHandler = openPrivate(emit);
 				<ChannelNickComponent
 					tag="li"
 					v-for="nick in vips.filtered"
-					:key="nick.nickname"
+					:key="nick.id"
 					:classes="nick.highestAccessLevel.className"
 					:hits="nick.searchHits"
 					:is-me="nick.isMe"
 					:nickname="nick.nickname"
 					:symbol="nick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(nick.nickname)"
+					@dblclick="openPrivateHandler(nick)"
 				/>
 			</ul>
 		</details>
@@ -91,14 +91,14 @@ const openPrivateHandler = openPrivate(emit);
 				<ChannelNickComponent
 					tag="li"
 					v-for="nick in users.filtered"
-					:key="nick.nickname"
+					:key="nick.id"
 					:classes="nick.highestAccessLevel.className"
 					:hits="nick.searchHits"
 					:is-me="nick.isMe"
 					:nickname="nick.nickname"
 					:symbol="nick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(nick.nickname)"
+					@dblclick="openPrivateHandler(nick)"
 				/>
 			</ul>
 		</details>

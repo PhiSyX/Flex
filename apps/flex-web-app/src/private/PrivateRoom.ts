@@ -38,13 +38,13 @@ export class PrivateRoom extends Room<"private"> {
 	 * Ajoute un participant à la chambre privé.
 	 */
 	addParticipant(participant: PrivateNick) {
-		this.participants.set(participant.nickname.toLowerCase(), participant);
+		this.participants.set(participant.id, participant);
 	}
 
 	/**
 	 * Récupère un participant de la chambre privé.
 	 */
-	getParticipant(nickname: string): Option<PrivateNick> {
-		return Option.from(this.participants.get(nickname.toLowerCase()));
+	getParticipant(id: string): Option<PrivateNick> {
+		return Option.from(this.participants.get(id));
 	}
 }

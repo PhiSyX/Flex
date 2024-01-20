@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { ChannelRoom } from "~/channel/ChannelRoom";
+import type { PrivateRoom } from "~/private/PrivateRoom";
 
 // -------- //
 // Fonction //
@@ -24,6 +25,20 @@ export function assertChannelRoom(room: {
 	if (room.type !== "channel") {
 		throw new Error(
 			`« ${room} » n'est pas une chambre de type « channel »`,
+		);
+	}
+}
+
+/**
+ * Certifie que l'argument donné est une chambre de type PrivateRoom aka
+ * "private".
+ */
+export function assertPrivateRoom(room: {
+	type: string;
+}): asserts room is PrivateRoom {
+	if (room.type !== "private") {
+		throw new Error(
+			`« ${room} » n'est pas une chambre de type « private »`,
 		);
 	}
 }

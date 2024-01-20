@@ -68,10 +68,7 @@ export class Room<Type extends string = string> {
 	constructor(
 		public type: Type,
 		protected _name: string,
-	) {
-		this._id = _name.toLowerCase();
-		this.customName.replace(_name);
-	}
+	) {}
 
 	// --------------- //
 	// Getter | Setter //
@@ -155,14 +152,20 @@ export class Room<Type extends string = string> {
 		}
 	}
 
-	eq($1: string | Room<Type>): boolean {
+	/**
+	 * Définit un nom.
+	 */
+	public changeName(name: string) {
+		this._name = name;
+	}
+
+	public eq($1: string | Room<Type>): boolean {
 		if (typeof $1 === "string") {
 			return (
-				this.id.toString().toLowerCase() === $1.toLowerCase() ||
-				this.name.toLowerCase() === $1.toLowerCase()
+				this.id() === $1 || this.name.toLowerCase() === $1.toLowerCase()
 			);
 		}
-		return $1.id === this.id;
+		return $1.id() === this.id();
 	}
 
 	/**
@@ -170,6 +173,11 @@ export class Room<Type extends string = string> {
 	 */
 	public id(): RoomID {
 		return this._id;
+	}
+
+	public withID(id: RoomID): this {
+		this._id = id;
+		return this;
 	}
 
 	/**
@@ -184,6 +192,10 @@ export class Room<Type extends string = string> {
 	 */
 	public setActive(b: boolean) {
 		this.active = b;
+	}
+
+	public setCustomName(name: string) {
+		this.customName.replace(name);
 	}
 
 	/**

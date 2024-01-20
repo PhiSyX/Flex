@@ -13,6 +13,7 @@
 // ---- //
 
 declare interface Origin {
+	id: string;
 	nickname: string;
 	ident: string;
 	host: {
