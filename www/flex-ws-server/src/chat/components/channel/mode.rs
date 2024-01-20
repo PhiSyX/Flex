@@ -128,7 +128,18 @@ impl Default for ChannelModes<SettingsFlags>
 	fn default() -> Self
 	{
 		let settings = HashSet::from_iter([
-			// NOTE(phisyx): ajouter ici des paramètres de salon.
+			ChannelMode {
+				flag: SettingsFlags::Moderate,
+				args: Default::default(),
+				updated_at: Utc::now(),
+				updated_by: "*".into(),
+			},
+			ChannelMode {
+				flag: SettingsFlags::NoExternalMessages,
+				args: Default::default(),
+				updated_at: Utc::now(),
+				updated_by: "*".into(),
+			},
 		]);
 
 		Self { modes: settings }
