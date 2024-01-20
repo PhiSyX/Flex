@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
-import { Some, None } from "@phisyx/flex-safety";
+import { None, Some } from "@phisyx/flex-safety";
 
 import { computed } from "vue";
 import { ChannelNick } from "~/channel/ChannelNick";

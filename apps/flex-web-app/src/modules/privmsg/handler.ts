@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "~/asserts/room";
-import { ChannelRoom } from "~/channel/ChannelRoom";
 import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room } from "~/room/Room";

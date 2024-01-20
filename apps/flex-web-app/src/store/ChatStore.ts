@@ -13,12 +13,15 @@ import { defineStore } from "pinia";
 import { Socket, io } from "socket.io-client";
 import { reactive } from "vue";
 
+import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
+import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
 import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
 import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
+import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
 import { NickModule } from "~/modules/nick/module";
@@ -33,9 +36,6 @@ import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { User } from "~/user/User";
 import { ErrorCannotsendtochanHandler } from "../handlers/errors/ErrorCannotsendtochanHandler";
-import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
-import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
-import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 
 // ---- //
 // Type //
