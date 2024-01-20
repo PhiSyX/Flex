@@ -55,6 +55,11 @@ pub enum SettingsFlags
 {
 	/// Clé du salon, pour le rejoindre.
 	Key(secret::Secret<String>),
+
+	/// Salon en modéré.
+	Moderate,
+	/// Interdire les messages provenant des utilisateurs externes au salon.
+	NoExternalMessages,
 }
 
 // -------------- //
@@ -79,6 +84,34 @@ impl ChannelModes<SettingsFlags>
 				mode,
 				ChannelMode {
 					flag: SettingsFlags::Key(_),
+					..
+				}
+			)
+		})
+	}
+
+	/// Est-ce que les paramètres du salon contiennent le drapeau +m
+	pub fn has_moderate_flag(&self) -> bool
+	{
+		self.modes.iter().any(|mode| {
+			matches!(
+				mode,
+				ChannelMode {
+					flag: SettingsFlags::Moderate,
+					..
+				}
+			)
+		})
+	}
+
+	/// Est-ce que les paramètres du salon contiennent le drapeau +n
+	pub fn has_no_external_messages_flag(&self) -> bool
+	{
+		self.modes.iter().any(|mode| {
+			matches!(
+				mode,
+				ChannelMode {
+					flag: SettingsFlags::NoExternalMessages,
 					..
 				}
 			)

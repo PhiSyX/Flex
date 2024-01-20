@@ -8,107 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod components
+use super::nick;
+
+// ----------- //
+// Énumération //
+// ----------- //
+
+pub enum ChannelPermissionWrite
 {
-	pub(crate) mod channel;
-	pub(crate) mod client;
-	pub(crate) mod user;
-
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-	pub(crate) use self::user::*;
-}
-
-mod feature;
-
-mod features
-{
-	lexa_kernel::public_using! {
-		connect / {
-			formdata,
-			handler,
-		};
-
-		join / {
-			formdata,
-			handler,
-			response,
-		};
-
-		nick / {
-			formdata,
-			handler,
-			response,
-		};
-
-		part / {
-			formdata,
-			handler,
-			response,
-		};
-
-		pass / {
-			formdata,
-			handler,
-		};
-
-		privmsg / {
-			formdata,
-			handler,
-			response,
-		};
-
-		quit / {
-			formdata,
-			handler,
-			response,
-		};
-
-		user / {
-			formdata,
-			handler,
-		};
-	}
-}
-
-mod replies
-{
-	lexa_kernel::public_using! {
-		errors / {
-			err_alreadyregistered,
-			err_badchannelkey,
-			err_cannotsendtochan,
-			err_erroneusnickname,
-			err_nicknameinuse,
-			err_nosuchchannel,
-			err_nosuchnick,
-			err_notonchannel,
-		};
-
-		reserved_numerics / {
-			rpl_created,
-			rpl_namreply,
-			rpl_yourhost,
-			rpl_welcome,
-		};
-	}
-}
-
-mod routes;
-
-mod sessions
-{
-	mod channel;
-	mod client;
-
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-}
-
-pub use self::feature::*;
-
-lexa_kernel::using! {
-	controllers / {
-		pub home,
-	};
+	Yes(nick::ChannelNick),
+	Bypass,
+	No,
 }

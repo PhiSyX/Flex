@@ -180,6 +180,52 @@ impl<'a> Socket<'a>
 		_ = self.socket().leave(channel_room);
 	}
 
+	/// Émet au client les réponses liées à la commande /PRIVMSG <channel>
+	pub fn emit_privmsg_to_channel<User>(&self, target: &str, text: &str, by: User)
+	where
+		User: serde::Serialize,
+	{
+		use crate::src::chat::features::PrivmsgCommandResponse;
+
+		let privmsg = PrivmsgCommandResponse {
+			origin: Some(&by),
+			tags: PrivmsgCommandResponse::default_tags(),
+			target,
+			text,
+		};
+
+		_ = self.socket().emit(privmsg.name(), &privmsg);
+
+		let target_room = format!(
+			"{}:{}",
+			if target.starts_with('#') {
+				"channel"
+			} else {
+				"private"
+			},
+			target.to_lowercase()
+		);
+
+		_ = self.socket().to(target_room).emit(privmsg.name(), privmsg);
+	}
+
+	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
+	pub fn emit_privmsg_to_nickname<User>(&self, target: &str, text: &str, by: User)
+	where
+		User: serde::Serialize,
+	{
+		use crate::src::chat::features::PrivmsgCommandResponse;
+
+		let privmsg = PrivmsgCommandResponse {
+			origin: Some(&by),
+			target,
+			text,
+			tags: PrivmsgCommandResponse::default_tags(),
+		};
+
+		_ = self.socket().emit(privmsg.name(), &privmsg);
+	}
+
 	/// Émet au client les réponses liées à la commande /QUIT.
 	pub fn emit_quit(self, reason: impl ToString)
 	{
@@ -275,6 +321,22 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrCannotsendtochanError].
+	pub fn send_err_cannotsendtochan(&self, channel_name: &str)
+	{
+		use crate::src::chat::replies::ErrCannotsendtochanError;
+
+		let err_cannotsendtochan = ErrCannotsendtochanError {
+			channel_name,
+			origin: Some(self.user()),
+			tags: ErrCannotsendtochanError::default_tags(),
+		};
+		_ = self
+			.socket()
+			.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
+	}
+
+	/// Émet au client l'erreur
 	/// [crate::src::chat::replies::ErrErroneusnicknameError].
 	pub fn send_err_erroneusnickname(&self, nickname: &str)
 	{
@@ -322,6 +384,20 @@ impl<'a> Socket<'a>
 		_ = self
 			.socket()
 			.emit(err_nosuchchannel.name(), err_nosuchchannel);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrNosuchnickError].
+	pub fn send_err_nosuchnick(&self, nickname: &str)
+	{
+		use crate::src::chat::replies::ErrNosuchnickError;
+
+		let err_nosuchnick = ErrNosuchnickError {
+			origin: Some(self.user()),
+			nickname,
+			tags: ErrNosuchnickError::default_tags(),
+		};
+		_ = self.socket().emit(err_nosuchnick.name(), err_nosuchnick);
 	}
 
 	/// Émet au client l'erreur

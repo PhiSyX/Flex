@@ -111,6 +111,21 @@ impl ChatApplication
 		self.clients.find(client_id)
 	}
 
+	/// Cherche un [client::Socket] à partir d'un pseudonyme.
+	pub fn find_socket_by_nickname(
+		&self,
+		socket: &socketioxide::extract::SocketRef,
+		nickname: &str,
+	) -> Option<client::Socket>
+	{
+		let to_ignore_client = self.clients.find_by_nickname(nickname)?;
+		let to_ignore_socket = socket.broadcast().get_socket(to_ignore_client.sid())?;
+		Some(client::Socket::Owned {
+			client: Box::new(to_ignore_client),
+			socket: to_ignore_socket,
+		})
+	}
+
 	/// Enregistre le client en session.
 	pub fn register_client(&self, client: &client::Client)
 	{
@@ -162,6 +177,16 @@ impl ClientsSession
 		self.clients.iter().find_map(|rm| {
 			let (cid, client) = (rm.key(), rm.value());
 			(cid == client_id && client.is_registered()).then_some(client.clone())
+		})
+	}
+
+	/// Trouve un client en fonction de son ID.
+	pub fn find_by_nickname(&self, nickname: &str) -> Option<client::Client>
+	{
+		let nickname = nickname.to_lowercase();
+		self.clients.iter().find_map(|rm| {
+			let client = rm.value();
+			(client.user().nickname.to_lowercase().eq(&nickname)).then_some(client.clone())
 		})
 	}
 
