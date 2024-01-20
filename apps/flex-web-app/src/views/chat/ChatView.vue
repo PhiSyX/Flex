@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ChannelRoom } from "~/channel/ChannelRoom";
+import { PrivateRoom } from "~/private/PrivateRoom";
 
 import { rooms, forumURL, vademecumURL } from "./ChatView.state";
 import { sendMessageHandler } from "./ChatView.handlers";
 
 import Navigation from "~/components/navigation/Navigation.vue";
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
+import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 
 import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 </script>
@@ -18,9 +20,9 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 			<template v-for="room in rooms" :key="room.id">
 				<template
 					v-if="room.type === 'server-custom-room'"
-					:key="room.type + '-' + room.name"
+					:key="room.type + '@' + room.name"
 				>
-					<KeepAlive :key="room.type + '-' + room.name">
+					<KeepAlive :key="room.type + '@' + room.name">
 						<ServerCustomRoom
 							v-if="room.isActive()"
 							:forum-url="forumURL"
@@ -39,6 +41,17 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 						<ChannelRoomComponent
 							v-if="room.isActive()"
 							:room="(room as ChannelRoom)"
+						/>
+					</KeepAlive>
+				</template>
+				<template
+					v-else-if="room.type === 'private'"
+					:key="room.type + '/' + room.name"
+				>
+					<KeepAlive :key="room.type + '/' + room.name">
+						<PrivateRoomComponent
+							v-if="room.isActive()"
+							:room="(room as PrivateRoom)"
 						/>
 					</KeepAlive>
 				</template>

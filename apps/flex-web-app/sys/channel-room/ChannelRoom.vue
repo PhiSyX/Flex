@@ -59,6 +59,7 @@ const sendMessageHandler = sendMessage(emit, props.name);
 						:name="name"
 						:users="users"
 						class="room/userlist"
+						@open-private="openPrivateHandler"
 					/>
 
 					<slot name="userlist-menu" />

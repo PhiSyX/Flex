@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChannelRoom } from "~/channel/ChannelRoom";
 import {
-	changeRoomHandler,
+	openPrivateHandler,
 	closeRoomHandler,
 	sendMessageHandler,
 } from "./ChannelRoom.handlers";
@@ -29,7 +29,7 @@ defineProps<Props>();
 		:name="room.name"
 		:users="room.users"
 		@close-room="closeRoomHandler"
-		@open-private="changeRoomHandler"
+		@open-private="openPrivateHandler"
 		@send-message="sendMessageHandler"
 	/>
 </template>

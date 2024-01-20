@@ -24,10 +24,13 @@ import { JoinModule } from "~/modules/join/module";
 import { NickModule } from "~/modules/nick/module";
 import { PartModule } from "~/modules/part/module";
 import { QuitModule } from "~/modules/quit/module";
+import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
+import { User } from "~/user/User";
 
 // ---- //
 // Type //
@@ -72,9 +75,7 @@ export class ChatStore {
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex");
-		const rooms: Map<RoomID, Room> = new Map([
-			[thisServer.id(), thisServer],
-		]);
+		const rooms: Map<RoomID, Room> = new Map([[thisServer.id(), thisServer]]);
 
 		self.setNetworkName(thisServer.id());
 		self.roomManager().extends(rooms);
@@ -94,6 +95,7 @@ export class ChatStore {
 	private _roomManager: RoomManager = new RoomManager();
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> =
 		None();
+	private _users: Map<string, User> = new Map();
 
 	private repliesHandlers: Set<SocketEventHandler> = new Set();
 	private errorsHandlers: Set<SocketEventHandler> = new Set();
@@ -104,21 +106,14 @@ export class ChatStore {
 	// Méthode //
 	// ------- //
 
-	listenAllEvents() {
-		for (const handler of this.repliesHandlers) {
-			handler.listen();
-		}
-
-		for (const handler of this.errorsHandlers) {
-			handler.listen();
-		}
-
-		for (const [moduleName, module] of this.modules) {
-			console.info(
-				"Le module « %s » est maintenant en écoute.",
-				moduleName,
-			);
-			module.listen();
+	addUser(user: User) {
+		const fuser = this._users.get(user.nickname.toLowerCase());
+		if (fuser) {
+			for (const channel of user.channels) {
+				fuser.channels.add(channel);
+			}
+		} else {
+			this._users.set(user.nickname.toLowerCase(), user);
 		}
 	}
 
@@ -128,17 +123,13 @@ export class ChatStore {
 			websocketServerURL,
 		);
 
-		let clientID = this._clientIDStorage.maybe().unwrap_or("") as
-			| string
-			| null;
+		let clientID = this._clientIDStorage.maybe().unwrap_or("") as string | null;
 
 		if (clientID?.length === 0) {
 			clientID = null;
 		}
 
-		this._ws.replace(
-			io(websocketServerURL, { auth: { client_id: clientID } }),
-		);
+		this._ws.replace(io(websocketServerURL, { auth: { client_id: clientID } }));
 	}
 
 	emit<E extends keyof Commands>(
@@ -150,24 +141,41 @@ export class ChatStore {
 			.emit(eventName, ...payload);
 	}
 
-	isConnected(): boolean {
-		return this.network().isConnected();
+	findUser(userID: string): Option<User> {
+		return Option.from(this._users.get(userID.toLowerCase()));
 	}
 
 	getAutoJoinChannels(): Array<string> {
 		return this.getConnectUserInfo().channels.split(",");
 	}
 
-	getConnectUserInfo() {
+	getConnectUserInfo(): ConnectUserInfo {
 		return this._connectUserInfo.expect(
 			"Information de connexion de l'utilisateur",
 		);
 	}
 
+	isConnected(): boolean {
+		return this.network().isConnected();
+	}
+
 	isMe(origin: Origin): boolean {
-		return (
-			this.me().nickname.toLowerCase() === origin.nickname.toLowerCase()
-		);
+		return this.me().nickname.toLowerCase() === origin.nickname.toLowerCase();
+	}
+
+	listenAllEvents() {
+		for (const handler of this.repliesHandlers) {
+			handler.listen();
+		}
+
+		for (const handler of this.errorsHandlers) {
+			handler.listen();
+		}
+
+		for (const [moduleName, module] of this.modules) {
+			console.info("Le module « %s » est maintenant en écoute.", moduleName);
+			module.listen();
+		}
 	}
 
 	me(): Origin {
@@ -184,10 +192,12 @@ export class ChatStore {
 		return this._network.expect("Nom du réseau");
 	}
 
+	nickname(): string {
+		return this.me().nickname;
+	}
+
 	off<K extends keyof ServerToClientEvent>(eventName: K) {
-		this._ws
-			.expect("Instance WebSocket connecté au serveur")
-			.off(eventName);
+		this._ws.expect("Instance WebSocket connecté au serveur").off(eventName);
 	}
 
 	on<K extends keyof ServerToClientEvent>(
@@ -310,6 +320,23 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 	}
 
+	function openPrivateOrCreate(name: string) {
+		const room = store.roomManager().getOrInsert(name, () => {
+			const priv = new PrivateRoom(name);
+			priv.addParticipant(new PrivateNick(store.me()));
+			const maybeUser = store.findUser(name);
+			maybeUser.then((user) => priv.addParticipant(new PrivateNick(user)));
+			return priv;
+		});
+
+		room.unsetTotalUnreadEvents();
+		room.unsetTotalUnreadMessages();
+
+		store.roomManager().setCurrent(room.name);
+
+		// store.emit("QUERY", { nickname: name });
+	}
+
 	function sendMessage(name: string, message: string) {
 		if (!message.startsWith("/")) {
 			console.debug(
@@ -344,6 +371,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		closeRoom,
 		connect,
 		listen,
+		openPrivateOrCreate,
 		sendMessage,
 		store,
 	};

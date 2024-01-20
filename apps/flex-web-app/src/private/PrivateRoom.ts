@@ -8,17 +8,43 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Room } from "./Room";
+import { Option } from "@phisyx/flex-safety";
+
+import { PrivateNick } from "~/private/PrivateNick";
+import { Room } from "~/room/Room";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class PrivateRoom extends Room<"private"> {
+	/**
+	 * Liste des participant de la chambre privé.
+	 */
+	participants: Map<string, PrivateNick> = new Map();
+
 	// ----------- //
 	// Constructor //
 	// ----------- //
 	constructor(name: string) {
 		super("private", name);
+	}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	/**
+	 * Ajoute un participant à la chambre privé.
+	 */
+	addParticipant(participant: PrivateNick) {
+		this.participants.set(participant.nickname.toLowerCase(), participant);
+	}
+
+	/**
+	 * Récupère un participant de la chambre privé.
+	 */
+	getParticipant(nickname: string): Option<PrivateNick> {
+		return Option.from(this.participants.get(nickname.toLowerCase()));
 	}
 }

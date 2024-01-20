@@ -16,8 +16,8 @@ const chatStore = useChatStore();
 // Handlers //
 // -------- //
 
-export function changeRoomHandler(name: string) {
-	chatStore.changeRoom(name);
+export function openPrivateHandler(name: string) {
+	chatStore.openPrivateOrCreate(name);
 }
 
 export function closeRoomHandler(name: string) {
