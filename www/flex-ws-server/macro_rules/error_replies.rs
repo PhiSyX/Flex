@@ -28,9 +28,9 @@ macro_rules! error_replies {
 
 	#[derive(Clone)]
 	$(#[$attr])*
-	pub struct [ < $numeric:camel Error > ] <'a, U = $crate::src::chat::components::user::User>
+	pub struct [ < $numeric:camel Error > ] <'a, O = $crate::src::chat::components::Origin>
 	{
-		pub origin: Option<&'a U>,
+		pub origin: &'a O,
 		pub tags: std::collections::HashMap<String, String>,
 		$($(
 			$(#[$attr_field])*
@@ -58,7 +58,7 @@ macro_rules! error_replies {
 		}
 	}
 
-	impl<'a, U> [ < $numeric:camel Error > ] <'a,  U>
+	impl<'a, O> [ < $numeric:camel Error > ] <'a,  O>
 	{
 		#[allow(dead_code)]
 		pub fn with_tags<K, V>(
@@ -124,18 +124,15 @@ impl<'a> serde::Serialize for [ < $numeric:camel Error > ] <'a>
 	{
 		use serde::ser::SerializeStruct;
 		let fields = self.fields();
-		let maybe_origin = self.origin.is_some() as usize;
 		let mut serde_struct = S::serialize_struct(
 			serializer,
 			stringify!([ < $numeric:camel Error > ]),
-			4 + fields.len() + maybe_origin
+			5 + fields.len()
 		)?;
 		$($(
 			serde_struct.serialize_field(stringify!($field), self . $field)?;
 		)*)?
-		if let Some(origin) = self.origin {
-			serde_struct.serialize_field("origin", &origin)?;
-		}
+		serde_struct.serialize_field("origin", &self.origin)?;
 		serde_struct.serialize_field("tags", &self.tags)?;
 		serde_struct.serialize_field("name", self.name())?;
 		serde_struct.serialize_field("code", &self.code())?;

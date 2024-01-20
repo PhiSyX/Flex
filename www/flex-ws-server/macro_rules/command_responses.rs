@@ -28,10 +28,9 @@ macro_rules! command_response {
 	#[derive(Clone)]
 	#[derive(serde::Serialize)]
 	$(#[$doc_struct])*
-	pub struct [ < $command:camel CommandResponse > ] <'a $(, $generic)?, U = $crate::src::chat::components::user::User>
+	pub struct [ < $command:camel CommandResponse > ] <'a $(, $generic)?, O = $crate::src::chat::components::Origin>
 	{
-		#[serde(skip_serializing_if = "Option::is_none")]
-		pub origin: Option<&'a U>,
+		pub origin: &'a O,
 		pub tags: std::collections::HashMap<String, String>,
 		$($(
 			$(#[$doc_field])*
@@ -58,7 +57,7 @@ macro_rules! command_response {
 		}
 	}
 
-	impl<'a $(, $generic)?, U> [ < $command:camel CommandResponse > ] <'a $(, $generic)?, U>
+	impl<'a $(, $generic)?, O> [ < $command:camel CommandResponse > ] <'a $(, $generic)?, O>
 	{
 		#[allow(dead_code)]
 		pub fn with_tags<K, V>(
@@ -77,7 +76,7 @@ macro_rules! command_response {
 		}
 	}
 
-	impl<'a $(, $generic)?, U> [ < $command:camel CommandResponse > ] <'a $(, $generic)?, U>
+	impl<'a $(, $generic)?, O> [ < $command:camel CommandResponse > ] <'a $(, $generic)?, O>
 	{
 		pub const fn name(&self) -> &'static str { stringify!($command) }
 	}

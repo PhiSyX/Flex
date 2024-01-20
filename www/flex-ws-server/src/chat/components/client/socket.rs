@@ -8,7 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components;
+use crate::src::chat::components::client::origin::Origin;
+use crate::src::chat::components::{self};
 
 // --------- //
 // Interface //
@@ -105,10 +106,12 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::features::JoinCommandResponse;
 
+		let origin = Origin::from(self.client());
+
 		// NOTE: Émettre la réponse de la commande JOIN à tous les membres de la
 		// room, y compris le client courant lui-même.
 		let cmd_join = JoinCommandResponse {
-			origin: Some(self.user()),
+			origin: &origin,
 			channel: &channel.name,
 			forced,
 			tags: JoinCommandResponse::default_tags(),
@@ -139,8 +142,10 @@ impl<'a> Socket<'a>
 			self.user().nickname.as_ref(),
 		);
 
+		let origin = Origin::from(self.client());
+
 		let cmd_nick = NickCommandResponse {
-			origin: Some(self.user()),
+			origin: &origin,
 			tags: NickCommandResponse::default_tags(),
 			old_nickname,
 			new_nickname,
@@ -154,11 +159,10 @@ impl<'a> Socket<'a>
 		// NOTE: notifier toutes les rooms dont fait partie le client que le
 		// pseudonyme du client a été changé.
 
+		_ = self.socket().emit(cmd_nick.name(), &cmd_nick);
 		// FIXME(phisyx): À améliorer pour n'envoyer qu'une seul événement à
 		// tous les client en communs.
-		for room in self.socket().rooms().unwrap() {
-			_ = self.socket().within(room).emit(cmd_nick.name(), &cmd_nick);
-		}
+		_ = self.socket().broadcast().emit(cmd_nick.name(), &cmd_nick);
 
 		_ = self
 			.socket()
@@ -170,8 +174,10 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::features::PartCommandResponse;
 
+		let origin = Origin::from(self.client());
+
 		let cmd_part = PartCommandResponse {
-			origin: Some(self.user()),
+			origin: &origin,
 			channel,
 			message,
 			tags: PartCommandResponse::default_tags(),
@@ -194,7 +200,7 @@ impl<'a> Socket<'a>
 		use crate::src::chat::features::PrivmsgCommandResponse;
 
 		let privmsg = PrivmsgCommandResponse {
-			origin: Some(&by),
+			origin: &by,
 			tags: PrivmsgCommandResponse::default_tags(),
 			target,
 			text,
@@ -227,7 +233,7 @@ impl<'a> Socket<'a>
 		use crate::src::chat::features::PrivmsgCommandResponse;
 
 		let privmsg = PrivmsgCommandResponse {
-			origin: Some(&by),
+			origin: &by,
 			target,
 			text,
 			tags: PrivmsgCommandResponse::default_tags(),
@@ -243,8 +249,9 @@ impl<'a> Socket<'a>
 
 		let msg = reason.to_string();
 
+		let origin = Origin::from(self.client());
 		let quit_command = QuitCommandResponse {
-			origin: Some(self.user()),
+			origin: &origin,
 			tags: QuitCommandResponse::default_tags(),
 			message: msg.as_str(),
 		};
@@ -263,8 +270,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::features::RplIgnoreReply;
 
+		let origin = Origin::from(self.client());
 		let rpl_ignore = RplIgnoreReply {
-			origin: Some(self.user()),
+			origin: &origin,
 			users,
 			tags: RplIgnoreReply::default_tags(),
 			updated: &updated,
@@ -283,10 +291,11 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::{RplEndofnamesReply, RplNamreplyCommandResponse};
 
+		let origin = Origin::from(self.client());
 		let rpl_names = Vec::from_iter(channel.members());
 		let rpl_names = rpl_names.chunks(300).map(|members| {
 			RplNamreplyCommandResponse {
-				origin: Some(self.user()),
+				origin: &origin,
 				channel: channel.name.as_ref(),
 				code: RplNamreplyCommandResponse::code(),
 				users: members
@@ -302,7 +311,7 @@ impl<'a> Socket<'a>
 		}
 
 		let rpl_endofnames = RplEndofnamesReply {
-			origin: Some(self.user()),
+			origin: &origin,
 			channel: &channel.name,
 			tags: RplEndofnamesReply::default_tags(),
 		};
@@ -314,8 +323,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::features::RplUnignoreReply;
 
+		let origin = Origin::from(self.client());
 		let rpl_unignore = RplUnignoreReply {
-			origin: Some(self.user()),
+			origin: &origin,
 			users,
 			tags: RplUnignoreReply::default_tags(),
 		};
@@ -331,8 +341,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrAlreadyregisteredError;
 
+		let origin = Origin::from(self.client());
 		let err_alreadyregistered = ErrAlreadyregisteredError {
-			origin: Some(self.user()),
+			origin: &origin,
 			tags: ErrAlreadyregisteredError::default_tags(),
 		};
 
@@ -347,10 +358,11 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrBadchannelkeyError;
 
+		let origin = Origin::from(self.client());
 		let err_badchannelkey = ErrBadchannelkeyError {
 			channel,
 			tags: ErrBadchannelkeyError::default_tags(),
-			origin: Some(self.user()),
+			origin: &origin,
 		};
 		_ = self
 			.socket()
@@ -363,9 +375,10 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrCannotsendtochanError;
 
+		let origin = Origin::from(self.client());
 		let err_cannotsendtochan = ErrCannotsendtochanError {
 			channel_name,
-			origin: Some(self.user()),
+			origin: &origin,
 			tags: ErrCannotsendtochanError::default_tags(),
 		};
 		_ = self
@@ -379,8 +392,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrErroneusnicknameError;
 
+		let origin = Origin::from(self.client());
 		let err_erroneusnickname = ErrErroneusnicknameError {
-			origin: Some(self.user()),
+			origin: &origin,
 			nickname,
 			tags: ErrErroneusnicknameError::default_tags(),
 		};
@@ -396,8 +410,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrNicknameinuseError;
 
+		let origin = Origin::from(self.client());
 		let err_nicknameinuse = ErrNicknameinuseError {
-			origin: Some(self.user()),
+			origin: &origin,
 			nickname,
 			tags: ErrNicknameinuseError::default_tags(),
 		};
@@ -413,8 +428,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrNosuchchannelError;
 
+		let origin = Origin::from(self.client());
 		let err_nosuchchannel = ErrNosuchchannelError {
-			origin: Some(self.user()),
+			origin: &origin,
 			channel_name,
 			tags: ErrNosuchchannelError::default_tags(),
 		};
@@ -429,8 +445,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrNosuchnickError;
 
+		let origin = Origin::from(self.client());
 		let err_nosuchnick = ErrNosuchnickError {
-			origin: Some(self.user()),
+			origin: &origin,
 			nickname,
 			tags: ErrNosuchnickError::default_tags(),
 		};
@@ -443,8 +460,9 @@ impl<'a> Socket<'a>
 	{
 		use crate::src::chat::replies::ErrNotonchannelError;
 
+		let origin = Origin::from(self.client());
 		let err_notonchannel = ErrNotonchannelError {
-			origin: Some(self.user()),
+			origin: &origin,
 			channel,
 			tags: ErrNotonchannelError::default_tags(),
 		};

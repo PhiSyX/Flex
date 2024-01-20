@@ -51,6 +51,7 @@ impl<'c> RplNamreplyCommandResponse<'c>
 #[derive(Clone)]
 pub struct ChannelNickClient
 {
+	pub id: client::ClientID,
 	#[serde(flatten)]
 	pub user: user::User,
 	/// Les modes de salon d'un pseudo.
@@ -66,6 +67,7 @@ impl From<(client::Client, nick::ChannelNick)> for ChannelNickClient
 	fn from((client, channel_nick): (client::Client, nick::ChannelNick)) -> Self
 	{
 		Self {
+			id: client.cid(),
 			access_level: channel_nick.access_level,
 			user: client.user().to_owned(),
 		}
@@ -77,6 +79,7 @@ impl From<(&client::Client, nick::ChannelNick)> for ChannelNickClient
 	fn from((client, channel_nick): (&client::Client, nick::ChannelNick)) -> Self
 	{
 		Self {
+			id: client.cid(),
 			access_level: channel_nick.access_level,
 			user: client.user().to_owned(),
 		}
@@ -88,6 +91,7 @@ impl From<(client::Client, &nick::ChannelNick)> for ChannelNickClient
 	fn from((client, channel_nick): (client::Client, &nick::ChannelNick)) -> Self
 	{
 		Self {
+			id: client.cid(),
 			access_level: channel_nick.access_level.clone(),
 			user: client.user().to_owned(),
 		}
@@ -99,6 +103,7 @@ impl From<(&client::Client, &nick::ChannelNick)> for ChannelNickClient
 	fn from((client, channel_nick): (&client::Client, &nick::ChannelNick)) -> Self
 	{
 		Self {
+			id: client.cid(),
 			access_level: channel_nick.access_level.clone(),
 			user: client.user().to_owned(),
 		}
@@ -110,6 +115,7 @@ impl From<(client::Client, &&nick::ChannelNick)> for ChannelNickClient
 	fn from((client, channel_nick): (client::Client, &&nick::ChannelNick)) -> Self
 	{
 		Self {
+			id: client.cid(),
 			access_level: channel_nick.access_level.clone(),
 			user: client.user().to_owned(),
 		}

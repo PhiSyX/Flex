@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod origin;
 mod socket;
 
 use std::collections::HashSet;
@@ -15,6 +16,7 @@ use std::net;
 
 use flex_web_framework::types::uuid;
 
+pub use self::origin::Origin;
 pub use self::socket::{ClientSocketInterface, Socket};
 use super::{channel, user};
 

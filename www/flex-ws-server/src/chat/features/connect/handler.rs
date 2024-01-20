@@ -146,8 +146,9 @@ impl ConnectionRegistrationHandler
 		// Welcome
 		let client_user = client.user();
 		let user_host = client_user.host.to_string();
+		let origin = components::Origin::from(&*client);
 		let welcome_001 = RplWelcomeReply {
-			origin: Some(client_user),
+			origin: &origin,
 			nickname: &client_user.nickname,
 			ident: &client_user.ident,
 			host: &user_host,
@@ -158,7 +159,7 @@ impl ConnectionRegistrationHandler
 		// Version
 		let program_version = format!("v{}", env!("CARGO_PKG_VERSION"));
 		let yourhost_002 = RplYourhostReply {
-			origin: Some(client_user),
+			origin: &origin,
 			servername: &config.server.name,
 			version: &program_version,
 			tags: RplYourhostReply::default_tags(),
@@ -171,7 +172,7 @@ impl ConnectionRegistrationHandler
 			time::Utc::now()
 		};
 		let created_003 = RplCreatedReply {
-			origin: Some(client_user),
+			origin: &origin,
 			date: &server_created_at,
 			tags: RplCreatedReply::default_tags(),
 		};
@@ -192,7 +193,7 @@ impl ConnectionRegistrationHandler
 		if !users.is_empty() {
 			let users: Vec<_> = users.iter().collect();
 			let rpl_ignore = RplIgnoreReply {
-				origin: Some(client_user),
+				origin: &origin,
 				tags: RplIgnoreReply::default_tags(),
 				users: users.as_slice(),
 				updated: &false,

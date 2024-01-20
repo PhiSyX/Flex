@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::src::chat::components::Origin;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::permission::ChannelPermissionWrite;
 use crate::src::chat::replies::*;
@@ -62,7 +63,8 @@ impl PrivmsgHandler
 				continue;
 			}
 
-			client_socket.emit_privmsg_to_nickname(target, &data.text, client_socket.user());
+			let origin = Origin::from(client_socket.client());
+			client_socket.emit_privmsg_to_nickname(target, &data.text, &origin);
 
 			if client_socket.check_nickname(target) {
 				continue;
@@ -77,7 +79,7 @@ impl PrivmsgHandler
 				continue;
 			}
 
-			target_client_socket.emit_privmsg_to_nickname(target, &data.text, client_socket.user());
+			target_client_socket.emit_privmsg_to_nickname(target, &data.text, &origin);
 		}
 	}
 }

@@ -8,24 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod extension;
-pub mod http;
-mod interface;
-pub mod routing;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
+use super::{Client, ClientID};
+use crate::src::chat::components::User;
 
-pub use axum::{Extension, Router};
+// --------- //
+// Structure //
+// --------- //
 
-pub use self::extension::*;
-pub use self::interface::*;
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct Origin
+{
+	id: ClientID,
+	#[serde(flatten)]
+	user: User,
+}
 
-// ---- //
-// Type //
-// ---- //
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
 
-pub type AxumApplicationState = ();
-pub type AxumApplication<E = (), C = ()> = lexa_kernel::Kernel<adapter::Adapter<E, C>, E, C>;
+impl From<&Client> for Origin
+{
+	fn from(client: &Client) -> Self
+	{
+		Self {
+			id: client.cid(),
+			user: client.user.to_owned(),
+		}
+	}
+}
