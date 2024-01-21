@@ -4,7 +4,7 @@
 // ---- //
 
 interface Props {
-	data: GenericReply<"RPL_IGNORE">;
+	data: GenericReply<"RPL_UNIGNORE">;
 	id: string;
 	message: string;
 	isMe: boolean;

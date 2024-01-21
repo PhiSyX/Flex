@@ -5,6 +5,8 @@ import RoomEventNick from "./RoomEventNick.vue";
 import RoomEventPart from "./RoomEventPart.vue";
 import RoomEventQuery from "./RoomEventQuery.vue";
 import RoomEventQuit from "./RoomEventQuit.vue";
+import RoomEventRplIgnore from "./RoomEventRplIgnore.vue";
+import RoomEventRplUnignore from "./RoomEventRplUnignore.vue";
 
 type Payload = {
 	id: string;
@@ -97,6 +99,33 @@ const eventQuit: Payload & {
 	},
 	...payload,
 };
+const eventRplIgnore: Payload & {
+	data: GenericReply<"RPL_IGNORE">;
+} = {
+	data: {
+		message: "message",
+		code: 1,
+		name: "RPL_IGNORE",
+		updated: true,
+		users: [origin],
+		origin,
+		tags,
+	},
+	...payload,
+};
+const eventRplUnignore: Payload & {
+	data: GenericReply<"RPL_UNIGNORE">;
+} = {
+	data: {
+		message: "message",
+		code: 1,
+		name: "RPL_UNIGNORE",
+		users: [origin],
+		origin,
+		tags,
+	},
+	...payload,
+};
 </script>
 
 <template>
@@ -132,6 +161,17 @@ const eventQuit: Payload & {
 		<Variant title="Quit Event">
 			<div class="room/echo">
 				<RoomEventQuit v-bind="eventQuit" />
+			</div>
+		</Variant>
+
+		<Variant title="Reply Ignore Event">
+			<div class="room/echo">
+				<RoomEventRplIgnore v-bind="eventRplIgnore" />
+			</div>
+		</Variant>
+		<Variant title="Reply Unignore Event">
+			<div class="room/echo">
+				<RoomEventRplUnignore v-bind="eventRplUnignore" />
 			</div>
 		</Variant>
 	</Story>
