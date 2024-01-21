@@ -16,33 +16,19 @@ function initState() {
 	>
 		<Variant title="Default" :init-state="initState">
 			<template #default="{ state }">
-				<ChannelNick
-					tag="span"
-					from="channel"
-					:nickname="state.nickname"
-				/>
+				<ChannelNick tag="span" :nickname="state.nickname" />
 			</template>
 		</Variant>
 
 		<Variant title="Prefix" :init-state="initState">
 			<template #default="{ state }">
-				<ChannelNick
-					tag="span"
-					from="channel"
-					:nickname="state.nickname"
-					prefix="*"
-				/>
+				<ChannelNick tag="span" :nickname="state.nickname" prefix="*" />
 			</template>
 		</Variant>
 
 		<Variant title="Suffix" :init-state="initState">
 			<template #default="{ state }">
-				<ChannelNick
-					tag="span"
-					from="channel"
-					:nickname="state.nickname"
-					suffix=":"
-				/>
+				<ChannelNick tag="span" :nickname="state.nickname" suffix=":" />
 			</template>
 		</Variant>
 
@@ -50,7 +36,6 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
 					prefix="<"
 					suffix=">"
@@ -62,8 +47,7 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
-					:myself="true"
+					:is-me="true"
 					:nickname="state.nickname"
 				/>
 			</template>
@@ -73,9 +57,8 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
-					mode-symbol="~"
+					symbol="~"
 					classes="is-owner"
 				/>
 			</template>
@@ -85,9 +68,8 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
-					mode-symbol="&"
+					symbol="&"
 					classes="is-admin-operator"
 				/>
 			</template>
@@ -97,9 +79,8 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
-					mode-symbol="@"
+					symbol="@"
 					classes="is-operator"
 				/>
 			</template>
@@ -109,9 +90,8 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
-					mode-symbol="%"
+					symbol="%"
 					classes="is-half-operator"
 				/>
 			</template>
@@ -121,9 +101,8 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
-					mode-symbol="+"
+					symbol="+"
 					classes="is-vip"
 				/>
 			</template>
@@ -131,11 +110,7 @@ function initState() {
 
 		<Variant title="Channel: User" :init-state="initState">
 			<template #default="{ state }">
-				<ChannelNick
-					tag="span"
-					from="channel"
-					:nickname="state.nickname"
-				/>
+				<ChannelNick tag="span" :nickname="state.nickname" />
 			</template>
 		</Variant>
 
@@ -143,7 +118,6 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
 					classes="is-away"
 				/>
@@ -154,7 +128,6 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					from="channel"
 					:nickname="state.nickname"
 					classes="is-busy"
 				/>
