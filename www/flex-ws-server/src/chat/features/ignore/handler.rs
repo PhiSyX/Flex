@@ -10,7 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::src::chat::components::ClientSocketInterface;
+use crate::src::chat::components::{ClientSocketInterface, Origin};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -55,7 +55,7 @@ impl IgnoreHandler
 			.socket()
 			.join(to_ignore_client_socket.useless_people_room());
 
-		let users = [to_ignore_client_socket.user()];
+		let users = [&Origin::from(to_ignore_client_socket.client())];
 		client_socket.send_rpl_ignore(&users, true);
 	}
 }
@@ -90,7 +90,7 @@ impl UnignoreHandler
 			.socket()
 			.leave(to_unignore_client_socket.useless_people_room());
 
-		let users = [to_unignore_client_socket.user()];
+		let users = [&Origin::from(to_unignore_client_socket.client())];
 		client_socket.send_rpl_unignore(&users)
 	}
 }

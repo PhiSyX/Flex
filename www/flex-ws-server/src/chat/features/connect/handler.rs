@@ -16,6 +16,7 @@ use socketioxide::extract::{SocketRef, State, TryData};
 
 use crate::config::flex::flex_config;
 use crate::src::chat::components;
+use crate::src::chat::components::Origin;
 use crate::src::chat::features::*;
 use crate::src::chat::replies::*;
 use crate::src::ChatApplication;
@@ -187,8 +188,8 @@ impl ConnectionRegistrationHandler
 		let users: Vec<_> = app
 			.clients
 			.blocklist(client.id())
-			.into_iter()
-			.map(|client| client.user().to_owned())
+			.iter()
+			.map(Origin::from)
 			.collect();
 		if !users.is_empty() {
 			let users: Vec<_> = users.iter().collect();

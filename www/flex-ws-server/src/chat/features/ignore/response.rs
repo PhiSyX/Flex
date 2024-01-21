@@ -9,15 +9,15 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::reserved_numerics;
-use crate::src::chat::components::User;
+use crate::src::chat::components::Origin;
 
 reserved_numerics! {
 	| 396 <-> RPL_IGNORE {
-		users: [&'a User],
+		users: [&'a Origin],
 		updated: bool
 	} => "Liste des utilisateurs ignorés a été mis à jour."
 
 	| 397 <-> RPL_UNIGNORE {
-		users: [&'a User]
+		users: [&'a Origin]
 	} => "Liste des utilisateurs ignorés a été mis à jour."
 }

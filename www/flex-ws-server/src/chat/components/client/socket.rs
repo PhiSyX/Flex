@@ -266,7 +266,7 @@ impl<'a> Socket<'a>
 impl<'a> Socket<'a>
 {
 	/// Émet au client les réponses liées à la commande /IGNORE.
-	pub fn send_rpl_ignore(&self, users: &[&components::User], updated: bool)
+	pub fn send_rpl_ignore(&self, users: &[&components::Origin], updated: bool)
 	{
 		use crate::src::chat::features::RplIgnoreReply;
 
@@ -319,7 +319,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client les réponses liées à la commande /UNIGNORE.
-	pub fn send_rpl_unignore(&self, users: &[&components::User])
+	pub fn send_rpl_unignore(&self, users: &[&components::Origin])
 	{
 		use crate::src::chat::features::RplUnignoreReply;
 
