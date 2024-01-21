@@ -9,9 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { defineSetupVue3 } from "@histoire/plugin-vue";
+import useFlexUIKit from "@phisyx/flex-uikit";
 
 import "~/assets/scss/style.scss";
 
 export const setupVue3 = defineSetupVue3(({ app, story, variant }) => {
+	app.use(useFlexUIKit);
+
 	document.documentElement.dataset.theme = "ice";
 });
