@@ -32,7 +32,10 @@ export class ChannelNickFiltered {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(cnick: ChannelNick, searchHits: Array<ChannelNickSearchHits> = []) {
+	constructor(
+		cnick: ChannelNick,
+		searchHits: Array<ChannelNickSearchHits> = [],
+	) {
 		this.cnick = cnick;
 		this.searchHits = searchHits;
 	}
