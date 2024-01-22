@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from "vue";
-import { Option } from "@phisyx/flex-safety";
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
-import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
-import { ChannelTopic } from "~/channel/ChannelTopic";
-import { ChannelUsers } from "~/channel/ChannelUsers";
-import { RoomMessage } from "~/room/RoomMessage";
-import { ChannelNick } from "~/channel/ChannelNick";
 import {
 	ignoreUser,
 	openPrivate,
@@ -15,25 +8,13 @@ import {
 	type Emits,
 	unignoreUser,
 } from "./ChannelRoom.handler";
-import { displayUserlist } from "./ChannelRoom.state";
+import { type Props, displayUserlist } from "./ChannelRoom.state";
 
 import ChannelUserlistMenu from "#/sys/channel-userlist-menu/ChannelUserlistMenu.vue";
 import ChannelUserlist from "#/sys/channel-userlist/ChannelUserlist.vue";
 import Match from "#/sys/match/Match.vue";
 import Room from "#/sys/room/Room.vue";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	me: ChannelNick;
-	messages: Array<RoomMessage>;
-	name: string;
-	selectedUser: Option<ChannelSelectedUser>;
-	topic: ChannelTopic;
-	users: ChannelUsers;
-}
+import { useChannelTopic } from "./ChannelRoom.hooks";
 
 // --------- //
 // Composant //
@@ -41,37 +22,19 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-let $topic = ref<HTMLInputElement>();
-let topicEditMode = ref(false);
-let topicInput = ref("");
-
 const ignoreUserHandler = ignoreUser(emit);
 const openPrivateHandler = openPrivate(emit);
 const selectUserHandler = selectUser(emit);
 const sendMessageHandler = sendMessage(emit, props.name);
 const unignoreUserHandler = unignoreUser(emit);
 
-function submitTopicHandler(evt: Event) {
-	topicEditMode.value = false;
-
-	evt.preventDefault();
-
-	if (topicInput.value === props.topic.get()) {
-		return;
-	}
-
-	emit("update-topic", props.name, topicInput.value);
-}
-
-function enableTopicEditModeHandler() {
-	topicEditMode.value = true;
-}
-
-watchEffect(() => {
-	if (topicEditMode.value === false) {
-		topicInput.value = props.topic.get();
-	}
-});
+const {
+	$topic,
+	enableTopicEditModeHandler,
+	submitTopicHandler,
+	topicEditMode,
+	topicInput,
+} = useChannelTopic(props, emit);
 </script>
 
 <template>

@@ -8,7 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Option } from "@phisyx/flex-safety";
 import { ref } from "vue";
+
+import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { ChannelTopic } from "~/channel/ChannelTopic";
+import { ChannelUsers } from "~/channel/ChannelUsers";
+import { RoomMessage } from "~/room/RoomMessage";
+
+// ---- //
+// Type //
+// ---- //
+
+export interface Props {
+	me: ChannelNick;
+	messages: Array<RoomMessage>;
+	name: string;
+	selectedUser: Option<ChannelSelectedUser>;
+	topic: ChannelTopic;
+	users: ChannelUsers;
+}
 
 // ----------- //
 // Local State //

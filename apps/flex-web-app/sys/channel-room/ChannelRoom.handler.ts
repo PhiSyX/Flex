@@ -8,6 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Ref } from "vue";
+import { Props } from "./ChannelRoom.state";
+
 // ---- //
 // Type //
 // ---- //
@@ -66,4 +69,41 @@ export function sendMessage(emit: Emits, name: string) {
 		emit("send-message", name, message);
 	}
 	return sendMessageHandler;
+}
+
+export function submitTopic(
+	emit: Emits,
+	props: Props,
+	{
+		topicEditMode,
+		topicInput,
+	}: {
+		topicEditMode: Ref<boolean>;
+		topicInput: Ref<string>;
+	},
+) {
+	function submitTopicHandler(evt: Event) {
+		topicEditMode.value = false;
+
+		evt.preventDefault();
+
+		if (topicInput.value === props.topic.get()) {
+			return;
+		}
+
+		emit("update-topic", props.name, topicInput.value);
+	}
+
+	return submitTopicHandler;
+}
+
+export function enableTopicEditMode({
+	topicEditMode,
+}: {
+	topicEditMode: Ref<boolean>;
+}) {
+	function enableTopicEditModeHandler() {
+		topicEditMode.value = true;
+	}
+	return enableTopicEditModeHandler;
 }
