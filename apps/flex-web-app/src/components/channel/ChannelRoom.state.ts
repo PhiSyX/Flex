@@ -33,5 +33,8 @@ export const compute$me = (props: Props) =>
 			.expect("Récupération du client dans le salon courant"),
 	);
 
+export const computeCanEditTopic = (props: Props) =>
+	computed(() => props.room.canEditTopic($me.value));
+
 export const computeSelectedUser = (props: Props) =>
 	computed(() => chatStore.getSelectedUser(props.room));
