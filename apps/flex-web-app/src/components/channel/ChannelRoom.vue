@@ -2,6 +2,7 @@
 import {
 	compute$me,
 	computeSelectedUser,
+	computeCanEditTopic,
 	type Props,
 } from "./ChannelRoom.state";
 
@@ -16,7 +17,6 @@ import {
 } from "./ChannelRoom.handlers";
 
 import ChannelRoomComponent from "#/sys/channel-room/ChannelRoom.vue";
-import { computed } from "vue";
 
 // --------- //
 // Composant //
@@ -26,8 +26,8 @@ const props = defineProps<Props>();
 
 const $me = compute$me(props);
 const selectedUser = computeSelectedUser(props);
+const canEditTopic = computeCanEditTopic(props);
 
-const canEditTopic = computed(() => props.room.canEditTopic($me.value));
 const toggleSelectedUserHandler = toggleSelectedUser(props);
 </script>
 
