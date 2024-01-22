@@ -8,55 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+import { ref, watchEffect } from "vue";
+import { Emits, enableTopicEditMode, submitTopic } from "./ChannelRoom.handler";
+import { Props } from "./ChannelRoom.state";
 
-import { Module } from "../interface";
-import { TopicCommand } from "./command";
-import { ReplyNotopicHandler, ReplyTopicHandler } from "./handler";
+// ----- //
+// Hooks //
+// ----- //
 
-// -------------- //
-// Implémentation //
-// -------------- //
+export function useChannelTopic(props: Props, emits: Emits) {
+	const $topic = ref<HTMLInputElement>();
+	const topicEditMode = ref(false);
+	const topicInput = ref("");
 
-export class TopicModule implements Module<TopicModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
+	const submitTopicHandler = submitTopic(emits, props, {
+		topicEditMode,
+		topicInput,
+	});
 
-	static NAME = "TOPIC";
+	const enableTopicEditModeHandler = enableTopicEditMode({ topicEditMode });
 
-	static create(store: ChatStore): TopicModule {
-		return new TopicModule(
-			new TopicCommand(store),
-			new ReplyTopicHandler(store),
-			new ReplyNotopicHandler(store),
-		);
-	}
+	watchEffect(() => {
+		if (topicEditMode.value === false) {
+			topicInput.value = props.topic.get();
+		}
+	});
 
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: TopicCommand,
-		private numericTopicHandler: ReplyTopicHandler,
-		private numericNoTopicHandler: ReplyNotopicHandler,
-	) {}
+	return {
+		$topic,
+		topicEditMode,
+		topicInput,
 
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(channel: string, ...words: Array<string>) {
-		const topic = words.join(" ");
-		this.send({ channel, topic });
-	}
-
-	send(payload: Command<"TOPIC">) {
-		this.command.send(payload);
-	}
-
-	listen() {
-		this.numericTopicHandler.listen();
-		this.numericNoTopicHandler.listen();
-	}
+		enableTopicEditModeHandler,
+		submitTopicHandler,
+	};
 }
