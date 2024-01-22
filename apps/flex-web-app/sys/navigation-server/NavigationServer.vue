@@ -42,23 +42,29 @@ const toggleFoldHandler = toggleFold(folded);
 <template>
 	<details open class="navigation-server [ list:reset }">
 		<summary :class="{ 'is-active': active }" @click="changeRoomHandler">
-			<span style="visibility: hidden">****</span>
+			<icon-home />
 
 			<span v-show="!containerFolded">{{ name }}</span>
 
 			<icon-arrow-down
 				v-if="connected === true && folded === false"
 				key="arrow-down"
+				v-show="!containerFolded"
 				@click.stop="toggleFoldHandler()"
 			/>
 			<icon-arrow-right
 				v-else
 				key="arrow-right"
+				v-show="!containerFolded"
 				class="btn"
 				@click.stop="toggleFoldHandler()"
 			/>
 
-			<icon-logoff v-if="connected == false" key="logoff" />
+			<icon-logoff
+				v-if="connected == false"
+				key="logoff"
+				v-show="!containerFolded"
+			/>
 		</summary>
 
 		<ul class="[ list:reset }">

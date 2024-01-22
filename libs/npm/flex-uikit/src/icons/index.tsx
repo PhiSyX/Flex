@@ -24,6 +24,7 @@ export type Icons =
 	| "arrow-right"
 	| "channel"
 	| "close"
+	| "home"
 	| "logoff"
 	| "password"
 	| "plus"
