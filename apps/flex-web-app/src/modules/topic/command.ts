@@ -8,43 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
-import { Props } from "./ChannelRoom.state";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-const chatStore = useChatStore();
+export class TopicCommand implements CommandInterface<"TOPIC"> {
+	constructor(private store: ChatStore) {}
 
-// -------- //
-// Handlers //
-// -------- //
-
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
-}
-
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
-
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
+	send(payload: Command<"TOPIC">): void {
+		this.store.emit("TOPIC", payload);
 	}
-	return toggleSelectedUserHandler;
-}
-
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
-}
-
-export function updateTopicHandler(name: string, topic: string) {
-	chatStore.updateTopic(name, topic);
 }

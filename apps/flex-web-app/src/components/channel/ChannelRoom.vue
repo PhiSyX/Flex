@@ -12,6 +12,7 @@ import {
 	toggleSelectedUser,
 	sendMessageHandler,
 	unignoreUserHandler,
+updateTopicHandler,
 } from "./ChannelRoom.handlers";
 
 import ChannelRoomComponent from "#/sys/channel-room/ChannelRoom.vue";
@@ -35,11 +36,13 @@ const toggleSelectedUserHandler = toggleSelectedUser(props);
 		:name="room.name"
 		:users="room.users"
 		:selected-user="selectedUser"
+		:topic="room.topic"
 		@close-room="closeRoomHandler"
 		@ignore-user="ignoreUserHandler"
 		@unignore-user="unignoreUserHandler"
 		@open-private="openPrivateHandler"
 		@select-user="toggleSelectedUserHandler"
 		@send-message="sendMessageHandler"
+		@update-topic="updateTopicHandler"
 	/>
 </template>

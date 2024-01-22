@@ -8,43 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { ChatStore } from "~/store/ChatStore";
 
-import { Props } from "./ChannelRoom.state";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-const chatStore = useChatStore();
+export class TopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
 
-// -------- //
-// Handlers //
-// -------- //
+	// ------- //
+	// Méthode //
+	// ------- //
 
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
-}
-
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
-
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
+	listen() {
+		this.store.on("RPL_TOPIC", (data) => this.handle(data));
 	}
-	return toggleSelectedUserHandler;
-}
 
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
-}
-
-export function updateTopicHandler(name: string, topic: string) {
-	chatStore.updateTopic(name, topic);
+	handle(data: GenericReply<"RPL_TOPIC">) {}
 }

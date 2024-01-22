@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { ChannelUsers } from "~/channel/ChannelUsers";
-import ChannelRoom from "./ChannelRoom.vue";
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { RoomMessage } from "~/room/RoomMessage";
 import { None } from "@phisyx/flex-safety";
+import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelTopic } from "~/channel/ChannelTopic";
+import { ChannelUsers } from "~/channel/ChannelUsers";
+import { RoomMessage } from "~/room/RoomMessage";
+
+import ChannelRoom from "./ChannelRoom.vue";
 
 const channelName = "#channel";
+
+const topic = new ChannelTopic();
+topic.set("Mon super topic");
 
 const messages = [];
 
@@ -61,6 +66,7 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 				:name="channelName"
 				:users="users"
 				:selected-user="None()"
+				:topic="topic"
 			/>
 		</Variant>
 	</Story>

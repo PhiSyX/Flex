@@ -8,43 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { None, Option } from "@phisyx/flex-safety";
 
-import { Props } from "./ChannelRoom.state";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-const chatStore = useChatStore();
+export class ChannelTopic {
+	private text: Option<string> = None();
+	private editable = true;
 
-// -------- //
-// Handlers //
-// -------- //
-
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
-}
-
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
-
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
+	is_editable(): boolean {
+		return this.editable;
 	}
-	return toggleSelectedUserHandler;
-}
 
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
-}
+	get(): string {
+		return this.text.unwrap_or("");
+	}
 
-export function updateTopicHandler(name: string, topic: string) {
-	chatStore.updateTopic(name, topic);
+	set(topic: string, options?: { force: boolean }) {
+		if (this.editable || options?.force) {
+			this.text.replace(topic);
+		}
+	}
+
+	set_editable(b: boolean) {
+		this.editable = b;
+	}
+
+	unset(options?: { force: boolean }) {
+		if (this.editable || options?.force) {
+			this.text = None();
+		}
+	}
 }
