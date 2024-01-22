@@ -16,7 +16,7 @@ import { ChannelNick } from "~/channel/ChannelNick";
 import { PrivateNick } from "~/private/PrivateNick";
 
 export interface Props {
-	data: object & { origin: Origin };
+	data: object & { origin: Origin | ChannelOrigin };
 	id: string;
 	message: string;
 	isMe: boolean;
@@ -55,21 +55,18 @@ export const computeComponentEventExists = (
 	});
 
 export const computeIsChannel = (props: Props) =>
-	computed(() => props.target.startsWith("#"));
+	computed(() => props.nickname !== "*" && props.target.startsWith("#"));
 
 export const computeIsPrivate = (props: Props) =>
 	computed(() => props.nickname !== "*" && !computeIsChannel(props).value);
 
 export const computeChannelNick = (props: Props) =>
 	computed(() => {
-		return computeIsChannel(props).value
-			? Some(
-					new ChannelNick(props.data.origin).withRawAccessLevel(
-						// @ts-expect-error : type à corriger
-						props.data.origin.access_level,
-					),
-			  )
-			: None();
+		const cnick = new ChannelNick(props.data.origin);
+		if ("access_level" in props.data.origin) {
+			cnick.withRawAccessLevel(props.data.origin.access_level);
+		}
+		return computeIsChannel(props).value ? Some(cnick) : None();
 	});
 
 export const computePrivateNick = (props: Props) =>

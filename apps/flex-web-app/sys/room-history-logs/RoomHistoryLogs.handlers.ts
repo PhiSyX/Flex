@@ -36,7 +36,8 @@ export function scrollHandler() {
 	}
 
 	containerNeedsScroll.value =
-		$root.value.clientHeight + $root.value.scrollTop + 50 >=
+		$root.value.clientHeight + $root.value.scrollTop + 150 >=
 		$root.value.scrollHeight;
+
 	scrollToBottom();
 }
