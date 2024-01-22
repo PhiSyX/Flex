@@ -7,6 +7,7 @@
 		"dev": "vite --config config/vite.config.ts",
 		"story:dev": "histoire dev -c ./config/histoire.config.ts",
 		"build": "vue-tsc && vite build --config config/vite.config.ts",
+		"lint": "vue-tsc",
 		"preview": "vite preview --config config/vite.config.ts"
 	},
 	"dependencies": {

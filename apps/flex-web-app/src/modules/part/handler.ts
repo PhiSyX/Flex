@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChatStore } from "~/store/ChatStore";
 
