@@ -55,8 +55,6 @@ export class PartHandler implements SocketEventInterface<"PART"> {
 
 	handleUser(data: GenericReply<"PART">, channel: ChannelRoom) {
 		channel.addEvent("event:part", { ...data, isMe: false });
-		setTimeout(() => {
-			channel.removeUser(data.origin.id);
-		}, 1 << 6);
+		channel.removeUser(data.origin.id);
 	}
 }

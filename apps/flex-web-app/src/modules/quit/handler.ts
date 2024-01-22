@@ -50,8 +50,6 @@ export class QuitHandler implements SocketEventInterface<"QUIT"> {
 
 		channel.addEvent("event:quit", { ...data, isMe: false });
 
-		setTimeout(() => {
-			channel.removeUser(data.origin.id);
-		}, 1 << 6);
+		channel.removeUser(data.origin.id);
 	}
 }

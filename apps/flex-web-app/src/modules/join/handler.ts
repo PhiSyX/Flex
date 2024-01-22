@@ -54,9 +54,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 			this.store.roomManager().setCurrent(data.channel);
 		}
 
-		setTimeout(() => {
-			channel.addEvent("event:join", { ...data, isMe: true });
-		}, 1 << 6);
+		channel.addEvent("event:join", { ...data, isMe: true });
 	}
 
 	handleUser(data: GenericReply<"JOIN">) {
@@ -71,8 +69,6 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 		const nick = new ChannelNick(data.origin);
 		channel.addUser(nick);
 
-		setTimeout(() => {
-			channel.addEvent("event:join", { ...data, isMe: false });
-		}, 1 << 6);
+		channel.addEvent("event:join", { ...data, isMe: false });
 	}
 }
