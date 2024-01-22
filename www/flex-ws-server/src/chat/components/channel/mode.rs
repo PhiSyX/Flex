@@ -14,6 +14,15 @@ use std::ops;
 use flex_web_framework::types::secret;
 use flex_web_framework::types::time::{DateTime, Utc};
 
+// -------- //
+// Constant //
+// -------- //
+
+pub const CHANNEL_MODE_SETTINGS_KEY: char = 'k';
+pub const CHANNEL_MODE_SETTINGS_MODERATE: char = 'm';
+pub const CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES: char = 'n';
+pub const CHANNEL_MODE_SETTINGS_NOTOPIC: char = 't';
+
 // --------- //
 // Structure //
 // --------- //
@@ -50,7 +59,7 @@ pub struct ChannelMode<F>
 #[derive(Clone)]
 #[derive(PartialEq, Eq, Hash)]
 #[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "snake_case")]
 pub enum SettingsFlags
 {
 	/// Clé du salon, pour le rejoindre.
@@ -134,6 +143,22 @@ impl ChannelModes<SettingsFlags>
 				}
 			)
 		})
+	}
+}
+
+impl SettingsFlags
+{
+	/**
+	 * Lettre associée au paramètre.
+	 */
+	pub fn letter(&self) -> char
+	{
+		match self {
+			| Self::Key(_) => CHANNEL_MODE_SETTINGS_KEY,
+			| Self::Moderate => CHANNEL_MODE_SETTINGS_MODERATE,
+			| Self::NoExternalMessages => CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES,
+			| Self::NoTopic => CHANNEL_MODE_SETTINGS_NOTOPIC,
+		}
 	}
 }
 
