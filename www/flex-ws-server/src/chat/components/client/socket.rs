@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::src::chat::components;
 use crate::src::chat::components::client::origin::Origin;
-use crate::src::chat::components::{self};
 
 // --------- //
 // Interface //
@@ -128,10 +128,31 @@ impl<'a> Socket<'a>
 		// NOTE: Émettre le sujet du salon au client courant.
 		self.send_rpl_topic(channel, false);
 
-		// TODO: Émettre les paramètres du salon au client courant.
+		// NOTE: Émettre les paramètres du salon au client courant.
+		self.emit_mode_settings(channel, false);
 
 		// NOTE: Émettre au client courant les membres du salon.
 		self.send_rpl_namreply(channel, map_member);
+	}
+
+	/// Émet au client courant les paramètres un salon.
+	pub fn emit_mode_settings(&self, channel: &components::channel::Channel, updated: bool)
+	{
+		use crate::src::chat::features::ModeCommandResponse;
+
+		let origin = Origin::from(self.client());
+
+		let channel_settings = ModeCommandResponse {
+			origin: &origin,
+			tags: ModeCommandResponse::<()>::default_tags(),
+			target: &channel.name,
+			removed: Default::default(),
+			added: channel.settings().into_iter().collect(),
+			updated,
+		};
+		_ = self
+			.socket()
+			.emit(channel_settings.name(), channel_settings);
 	}
 
 	/// Émet au client les réponses liées à la commande /NICK.

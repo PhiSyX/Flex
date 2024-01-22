@@ -42,6 +42,10 @@ mod features
 			response,
 		};
 
+		mode / {
+			response,
+		};
+
 		nick / {
 			formdata,
 			handler,

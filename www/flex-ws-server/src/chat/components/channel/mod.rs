@@ -67,6 +67,12 @@ impl Channel
 		self.users.insert(id, nick);
 	}
 
+	/// ID du salon.
+	pub fn id(&self) -> String
+	{
+		self.name.to_lowercase()
+	}
+
 	/// Récupère un membre du salon.
 	pub fn member(&self, id: &client::ClientID) -> Option<&nick::ChannelNick>
 	{
@@ -79,10 +85,10 @@ impl Channel
 		&self.users
 	}
 
-	/// ID du salon.
-	pub fn id(&self) -> String
+	/// Room Socket
+	pub fn room(&self) -> String
 	{
-		self.name.to_lowercase()
+		format!("channel:{}", self.name.to_lowercase())
 	}
 
 	/// Définit la clé du salon.
@@ -96,10 +102,13 @@ impl Channel
 		});
 	}
 
-	/// Room Socket
-	pub fn room(&self) -> String
+	/// Paramètres du salon.
+	pub fn settings(&self) -> HashMap<char, mode::ChannelMode<mode::SettingsFlags>>
 	{
-		format!("channel:{}", self.name.to_lowercase())
+		self.modes_settings
+			.iter()
+			.map(|mode| (mode.flag.letter(), mode.clone()))
+			.collect()
 	}
 
 	/// Accès à la structure du sujet.
