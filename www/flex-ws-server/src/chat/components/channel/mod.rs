@@ -11,6 +11,7 @@
 pub mod mode;
 pub mod nick;
 pub mod permission;
+pub mod topic;
 
 use std::collections::HashMap;
 
@@ -39,6 +40,8 @@ pub struct Channel
 	pub(crate) modes_settings: mode::ChannelModes<mode::SettingsFlags>,
 	/// Liste des utilisateurs du salon.
 	pub(crate) users: HashMap<client::ClientID, nick::ChannelNick>,
+	/// Topic du salon.
+	pub(crate) topic: topic::ChannelTopic,
 }
 
 // -------------- //
@@ -54,6 +57,7 @@ impl Channel
 			name: name.to_string(),
 			users: Default::default(),
 			modes_settings: Default::default(),
+			topic: Default::default(),
 		}
 	}
 
@@ -96,5 +100,17 @@ impl Channel
 	pub fn room(&self) -> String
 	{
 		format!("channel:{}", self.name.to_lowercase())
+	}
+
+	/// Accès à la structure du sujet.
+	pub fn topic(&self) -> &topic::ChannelTopic
+	{
+		&self.topic
+	}
+
+	/// Sujet du salon.
+	pub fn topic_text(&self) -> &str
+	{
+		self.topic.get()
 	}
 }

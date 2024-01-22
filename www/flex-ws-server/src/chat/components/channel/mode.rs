@@ -60,6 +60,10 @@ pub enum SettingsFlags
 	Moderate,
 	/// Interdire les messages provenant des utilisateurs externes au salon.
 	NoExternalMessages,
+	/// Interdire le changement du sujet (topic) par les utilisateurs non
+	/// opérateurs. Le niveau requis pour le changement: HalfOperator
+	/// [AccessLevelFlag::HalfOperator].
+	NoTopic,
 }
 
 // -------------- //
@@ -112,6 +116,20 @@ impl ChannelModes<SettingsFlags>
 				mode,
 				ChannelMode {
 					flag: SettingsFlags::NoExternalMessages,
+					..
+				}
+			)
+		})
+	}
+
+	/// Est-ce que les paramètres du salon contiennent le drapeau +t
+	pub fn has_topic_flag(&self) -> bool
+	{
+		self.modes.iter().any(|mode| {
+			matches!(
+				mode,
+				ChannelMode {
+					flag: SettingsFlags::NoTopic,
 					..
 				}
 			)

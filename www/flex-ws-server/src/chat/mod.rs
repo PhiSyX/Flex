@@ -70,6 +70,12 @@ mod features
 			response,
 		};
 
+		topic / {
+			formdata,
+			handler,
+			response,
+		};
+
 		user / {
 			formdata,
 			handler,
@@ -84,6 +90,7 @@ mod replies
 			err_alreadyregistered,
 			err_badchannelkey,
 			err_cannotsendtochan,
+			err_chanoprivsneeded,
 			err_erroneusnickname,
 			err_nicknameinuse,
 			err_nosuchchannel,
