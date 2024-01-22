@@ -2,6 +2,7 @@
 import { ChannelNick } from "~/channel/ChannelNick";
 import ChannelNicklist from "./ChannelNicklist.vue";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
 
 const origin1: Origin = {
 	id: "uuid0",
@@ -30,7 +31,7 @@ const moderatorsOriginal = [
 ];
 const moderators = {
 	original: moderatorsOriginal,
-	filtered: moderatorsOriginal,
+	filtered: moderatorsOriginal.map((cnick) => new ChannelNickFiltered(cnick)),
 };
 
 const vipsOriginal = [
@@ -38,14 +39,14 @@ const vipsOriginal = [
 ];
 const vips = {
 	original: vipsOriginal,
-	filtered: vipsOriginal,
+	filtered: vipsOriginal.map((cnick) => new ChannelNickFiltered(cnick)),
 };
 const usersOriginal = [
 	new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User),
 ];
 const users = {
 	original: usersOriginal,
-	filtered: usersOriginal,
+	filtered: usersOriginal.map((cnick) => new ChannelNickFiltered(cnick)),
 };
 </script>
 

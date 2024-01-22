@@ -4,7 +4,7 @@ import { ChannelNick } from "~/channel/ChannelNick";
 import { openPrivate, type Emits } from "./ChannelNicklist.handler";
 
 import ChannelNickComponent from "#/sys/channel-nick/ChannelNick.vue";
-import { SearchHits } from "#/sys/channel-userlist/ChannelUserlist.hooks";
+import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
 
 // ---- //
 // Type //
@@ -13,15 +13,15 @@ import { SearchHits } from "#/sys/channel-userlist/ChannelUserlist.hooks";
 interface Props {
 	moderators: {
 		original: Array<ChannelNick>;
-		filtered: Array<ChannelNick & { searchHits?: Array<SearchHits> }>;
+		filtered: Array<ChannelNickFiltered>;
 	};
 	vips: {
 		original: Array<ChannelNick>;
-		filtered: Array<ChannelNick & { searchHits?: Array<SearchHits> }>;
+		filtered: Array<ChannelNickFiltered>;
 	};
 	users: {
 		original: Array<ChannelNick>;
-		filtered: Array<ChannelNick & { searchHits?: Array<SearchHits> }>;
+		filtered: Array<ChannelNickFiltered>;
 	};
 }
 
@@ -46,15 +46,15 @@ const openPrivateHandler = openPrivate(emit);
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="nick in moderators.filtered"
-					:key="nick.id"
-					:classes="nick.highestAccessLevel.className"
-					:hits="nick.searchHits"
-					:is-me="nick.isMe"
-					:nickname="nick.nickname"
-					:symbol="nick.highestAccessLevel.symbol"
+					v-for="filteredNick in moderators.filtered"
+					:key="filteredNick.cnick.id"
+					:classes="filteredNick.cnick.highestAccessLevel.className"
+					:hits="filteredNick.searchHits"
+					:is-me="filteredNick.cnick.isMe"
+					:nickname="filteredNick.cnick.nickname"
+					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(nick)"
+					@dblclick="openPrivateHandler(filteredNick.cnick)"
 				/>
 			</ul>
 		</details>
@@ -68,15 +68,15 @@ const openPrivateHandler = openPrivate(emit);
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="nick in vips.filtered"
-					:key="nick.id"
-					:classes="nick.highestAccessLevel.className"
-					:hits="nick.searchHits"
-					:is-me="nick.isMe"
-					:nickname="nick.nickname"
-					:symbol="nick.highestAccessLevel.symbol"
+					v-for="filteredNick in vips.filtered"
+					:key="filteredNick.cnick.id"
+					:classes="filteredNick.cnick.highestAccessLevel.className"
+					:hits="filteredNick.searchHits"
+					:is-me="filteredNick.cnick.isMe"
+					:nickname="filteredNick.cnick.nickname"
+					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(nick)"
+					@dblclick="openPrivateHandler(filteredNick.cnick)"
 				/>
 			</ul>
 		</details>
@@ -90,15 +90,15 @@ const openPrivateHandler = openPrivate(emit);
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="nick in users.filtered"
-					:key="nick.id"
-					:classes="nick.highestAccessLevel.className"
-					:hits="nick.searchHits"
-					:is-me="nick.isMe"
-					:nickname="nick.nickname"
-					:symbol="nick.highestAccessLevel.symbol"
+					v-for="filteredNick in users.filtered"
+					:key="filteredNick.cnick.id"
+					:classes="filteredNick.cnick.highestAccessLevel.className"
+					:hits="filteredNick.searchHits"
+					:is-me="filteredNick.cnick.isMe"
+					:nickname="filteredNick.cnick.nickname"
+					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(nick)"
+					@dblclick="openPrivateHandler(filteredNick.cnick)"
 				/>
 			</ul>
 		</details>
