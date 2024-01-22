@@ -88,6 +88,17 @@ impl ChatApplication
 		ChannelPermissionWrite::Yes(member.clone())
 	}
 
+	/// Est-ce que le client PEUT éditer le sujet d'un salon.
+	pub fn is_client_can_edit_topic(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+	) -> bool
+	{
+		self.channels
+			.is_client_can_edit_topic(channel_name, client_socket.cid())
+	}
+
 	/// Rejoint un salon.
 	pub fn join_channel(&self, client_socket: &client::Socket, channel: &channel::Channel)
 	{
@@ -180,6 +191,24 @@ impl ChatApplication
 
 		client_socket.emit_part(channel_name, message)
 	}
+
+	/// Met à jour le sujet d'un salon.
+	pub fn update_topic(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		topic: &str,
+	)
+	{
+		self.channels
+			.update_topic(channel_name, topic, &client_socket.user().nickname);
+
+		let Some(channel) = self.get_channel(channel_name) else {
+			return;
+		};
+
+		client_socket.send_rpl_topic(&channel, true);
+	}
 }
 
 impl ChannelsSession
@@ -261,22 +290,6 @@ impl ChannelsSession
 		self.add(&channel_id, channel_entity)
 	}
 
-	/// Vérifie qu'un salon est existant ou non.
-	pub fn has(&self, channel_id: &str) -> bool
-	{
-		let channel_id_lower = channel_id.to_lowercase();
-		self.0.contains_key(&channel_id_lower)
-	}
-
-	/// Vérifie qu'un client est existant dans un salon.
-	pub fn has_client(&self, channel_id: &str, client_id: &client::ClientID) -> bool
-	{
-		let Some(channel) = self.get(channel_id) else {
-			return false;
-		};
-		channel.members().contains_key(client_id)
-	}
-
 	/// Récupère un salon.
 	pub fn get(&self, channel_id: &str) -> Option<Ref<'_, channel::ChannelID, channel::Channel>>
 	{
@@ -294,6 +307,42 @@ impl ChannelsSession
 		let channel_id_lower = channel_id.to_lowercase();
 		let channel_entity = self.0.get_mut(&channel_id_lower);
 		channel_entity
+	}
+
+	/// Vérifie qu'un salon est existant ou non.
+	pub fn has(&self, channel_id: &str) -> bool
+	{
+		let channel_id_lower = channel_id.to_lowercase();
+		self.0.contains_key(&channel_id_lower)
+	}
+
+	/// Vérifie qu'un client est existant dans un salon.
+	pub fn has_client(&self, channel_id: &str, client_id: &client::ClientID) -> bool
+	{
+		let Some(channel) = self.get(channel_id) else {
+			return false;
+		};
+		channel.members().contains_key(client_id)
+	}
+
+	/// Est-ce qu'un client PEUT éditer un topic.
+	pub fn is_client_can_edit_topic(&self, channel_id: &str, client_id: &client::ClientID) -> bool
+	{
+		let Some(channel) = self.get(channel_id) else {
+			return false;
+		};
+
+		let topic_flag = channel.modes_settings.has_topic_flag();
+
+		let Some(channel_nick) = channel.members().get(client_id) else {
+			return !topic_flag;
+		};
+
+		let level_access = channel_nick
+			.access_level()
+			.iter()
+			.fold(0, |acc, mode| mode.flag() | acc);
+		!topic_flag || level_access > nick::ChannelAccessLevel::Vip.flag()
 	}
 
 	/// Supprime un salon.
@@ -328,6 +377,26 @@ impl ChannelsSession
 			channel.users.remove(client.id());
 		}
 		Some(())
+	}
+
+	/// Met à jour un topic.
+	pub fn update_topic(
+		&self,
+		channel_id: &str,
+		topic: &str,
+		updated_by: &str,
+	) -> Option<channel::topic::ChannelTopic>
+	{
+		let mut channel = self.get_mut(channel_id)?;
+		if topic == channel.topic.get() {
+			return Some(channel.topic.clone());
+		}
+		if topic.trim().is_empty() {
+			channel.topic.unset(updated_by);
+		} else {
+			channel.topic.set(topic, updated_by);
+		}
+		Some(channel.topic.clone())
 	}
 }
 

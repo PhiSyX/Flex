@@ -125,7 +125,9 @@ impl<'a> Socket<'a>
 			.to(channel_room)
 			.emit(cmd_join.name(), cmd_join);
 
-		// TODO: Émettre le sujet du salon au client courant.
+		// NOTE: Émettre le sujet du salon au client courant.
+		self.send_rpl_topic(channel, false);
+
 		// TODO: Émettre les paramètres du salon au client courant.
 
 		// NOTE: Émettre au client courant les membres du salon.
@@ -318,6 +320,47 @@ impl<'a> Socket<'a>
 		_ = self.socket().emit(rpl_endofnames.name(), rpl_endofnames);
 	}
 
+	/// Émet au client le sujet du salon.
+	pub fn send_rpl_topic(&self, channel: &components::channel::Channel, updated: bool)
+	{
+		use crate::src::chat::features::{RplNotopicReply, RplTopicReply};
+
+		let origin = Origin::from(self.client());
+		if channel.topic_text().is_empty() {
+			let rpl_notopic = RplNotopicReply {
+				origin: &origin,
+				channel: &channel.name,
+				tags: RplNotopicReply::default_tags(),
+			};
+			_ = self.socket().emit(rpl_notopic.name(), &rpl_notopic);
+
+			if updated {
+				_ = self
+					.socket()
+					.to(channel.room())
+					.emit(rpl_notopic.name(), rpl_notopic);
+			}
+		} else {
+			let rpl_topic = RplTopicReply {
+				origin: &origin,
+				channel: channel.name.as_ref(),
+				topic: channel.topic_text(),
+				updated: &updated,
+				updated_by: channel.topic().updated_by(),
+				updated_at: channel.topic().updated_at(),
+				tags: RplTopicReply::default_tags(),
+			};
+			_ = self.socket().emit(rpl_topic.name(), &rpl_topic);
+
+			if updated {
+				_ = self
+					.socket()
+					.to(channel.room())
+					.emit(rpl_topic.name(), rpl_topic);
+			}
+		};
+	}
+
 	/// Émet au client les réponses liées à la commande /UNIGNORE.
 	pub fn send_rpl_unignore(&self, users: &[&components::Origin])
 	{
@@ -384,6 +427,23 @@ impl<'a> Socket<'a>
 		_ = self
 			.socket()
 			.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrChanoprivsneededError].
+	pub fn send_err_chanoprivsneeded(&self, channel: &str)
+	{
+		use crate::src::chat::replies::ErrChanoprivsneededError;
+
+		let origin = Origin::from(self.client());
+		let err_chanoprivsneeded = ErrChanoprivsneededError {
+			channel,
+			origin: &origin,
+			tags: ErrChanoprivsneededError::default_tags(),
+		};
+		_ = self
+			.socket()
+			.emit(err_chanoprivsneeded.name(), err_chanoprivsneeded);
 	}
 
 	/// Émet au client l'erreur

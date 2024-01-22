@@ -101,6 +101,12 @@ impl ChannelNick
 		&self.client_id
 	}
 
+	/// Les niveaux d'access d'un pseudo d'un salon.
+	pub fn access_level(&self) -> &HashSet<ChannelAccessLevel>
+	{
+		&self.access_level
+	}
+
 	/// Le niveau le plus élevé qu'à le lient
 	pub fn highest_access_level(&self) -> Option<&ChannelAccessLevel>
 	{
