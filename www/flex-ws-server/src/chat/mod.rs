@@ -36,6 +36,7 @@ mod features
 		};
 
 		join / {
+			error,
 			formdata,
 			handler,
 			response,
@@ -71,6 +72,7 @@ mod features
 		};
 
 		topic / {
+			error,
 			formdata,
 			handler,
 			response,

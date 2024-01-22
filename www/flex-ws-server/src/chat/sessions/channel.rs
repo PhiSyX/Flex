@@ -17,6 +17,7 @@ use crate::src::chat::components::channel::nick;
 use crate::src::chat::components::channel::permission::ChannelPermissionWrite;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
+use crate::src::chat::features::{ChannelJoinError, ChannelTopicError};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -25,16 +26,6 @@ use crate::src::ChatApplication;
 
 #[derive(Default)]
 pub struct ChannelsSession(DashMap<channel::ChannelID, channel::Channel>);
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-pub enum ChannelJoinError
-{
-	BadChannelKey,
-	HasAlreadyClient,
-}
 
 // -------------- //
 // Implémentation //
@@ -95,8 +86,23 @@ impl ChatApplication
 		channel_name: channel::ChannelIDRef,
 	) -> bool
 	{
-		self.channels
+		match self
+			.channels
 			.is_client_can_edit_topic(channel_name, client_socket.cid())
+		{
+			| Ok(_) => true,
+			| Err(err) => {
+				match err {
+					| ChannelTopicError::Notonchannel => {
+						client_socket.send_err_notonchannel(channel_name);
+					}
+					| ChannelTopicError::Chanoprivsneeded => {
+						client_socket.send_err_chanoprivsneeded(channel_name);
+					}
+				};
+				false
+			}
+		}
 	}
 
 	/// Rejoint un salon.
@@ -326,23 +332,34 @@ impl ChannelsSession
 	}
 
 	/// Est-ce qu'un client PEUT éditer un topic.
-	pub fn is_client_can_edit_topic(&self, channel_id: &str, client_id: &client::ClientID) -> bool
+	pub fn is_client_can_edit_topic(
+		&self,
+		channel_id: &str,
+		client_id: &client::ClientID,
+	) -> Result<(), ChannelTopicError>
 	{
 		let Some(channel) = self.get(channel_id) else {
-			return false;
+			return Err(ChannelTopicError::Notonchannel);
 		};
 
 		let topic_flag = channel.modes_settings.has_topic_flag();
 
 		let Some(channel_nick) = channel.members().get(client_id) else {
-			return !topic_flag;
+			if topic_flag {
+				return Err(ChannelTopicError::Chanoprivsneeded);
+			}
+			return Ok(());
 		};
 
 		let level_access = channel_nick
 			.access_level()
 			.iter()
 			.fold(0, |acc, mode| mode.flag() | acc);
-		!topic_flag || level_access > nick::ChannelAccessLevel::Vip.flag()
+
+		if level_access <= nick::ChannelAccessLevel::Vip.flag() {
+			return Err(ChannelTopicError::Chanoprivsneeded);
+		}
+		Ok(())
 	}
 
 	/// Supprime un salon.
