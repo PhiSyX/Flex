@@ -26,7 +26,10 @@ export function useChannelTopic(props: Props, emits: Emits) {
 		topicInput,
 	});
 
-	const enableTopicEditModeHandler = enableTopicEditMode({ topicEditMode });
+	const enableTopicEditModeHandler = enableTopicEditMode(props, {
+		$topic,
+		topicEditMode,
+	});
 
 	watchEffect(() => {
 		if (topicEditMode.value === false) {

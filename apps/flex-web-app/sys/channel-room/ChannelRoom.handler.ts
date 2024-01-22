@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Ref } from "vue";
+import { Ref, nextTick } from "vue";
 import { Props } from "./ChannelRoom.state";
 
 // ---- //
@@ -87,6 +87,10 @@ export function submitTopic(
 
 		evt.preventDefault();
 
+		if (!props.canEditTopic) {
+			return;
+		}
+
 		if (topicInput.value === props.topic.get()) {
 			return;
 		}
@@ -97,13 +101,26 @@ export function submitTopic(
 	return submitTopicHandler;
 }
 
-export function enableTopicEditMode({
-	topicEditMode,
-}: {
-	topicEditMode: Ref<boolean>;
-}) {
+export function enableTopicEditMode(
+	props: Props,
+	{
+		$topic,
+		topicEditMode,
+	}: {
+		$topic: Ref<HTMLInputElement | undefined>;
+		topicEditMode: Ref<boolean>;
+	},
+) {
 	function enableTopicEditModeHandler() {
+		if (!props.canEditTopic) {
+			return;
+		}
+
 		topicEditMode.value = true;
+
+		nextTick(() => {
+			$topic.value?.focus();
+		});
 	}
 	return enableTopicEditModeHandler;
 }

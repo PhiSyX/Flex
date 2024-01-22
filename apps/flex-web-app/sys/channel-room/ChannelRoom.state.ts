@@ -22,6 +22,7 @@ import { RoomMessage } from "~/room/RoomMessage";
 // ---- //
 
 export interface Props {
+	canEditTopic: boolean;
 	me: ChannelNick;
 	messages: Array<RoomMessage>;
 	name: string;
