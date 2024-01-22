@@ -14,6 +14,7 @@
 
 export interface Emits {
 	(evtName: "open-private", origin: Origin): void;
+	(evtName: "select-user", origin: Origin): void;
 }
 
 // -------- //
@@ -25,4 +26,11 @@ export function openPrivate(emit: Emits) {
 		emit("open-private", origin);
 	}
 	return openPrivateHandler;
+}
+
+export function selectUser(emit: Emits) {
+	function selectUser(origin: Origin) {
+		emit("select-user", origin);
+	}
+	return selectUser;
 }

@@ -14,6 +14,12 @@ import { ChannelUsers } from "~/channel/ChannelUsers";
 import { Room } from "../room/Room";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 
+// ---- //
+// Type //
+// ---- //
+
+export type ChannelID = string;
+
 // -------------- //
 // Implémentation //
 // -------------- //

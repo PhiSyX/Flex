@@ -8,39 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { computed } from "vue";
+import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 
-import { Props } from "./ChannelRoom.state";
+// ---- //
+// Type //
+// ---- //
 
-const chatStore = useChatStore();
-
-// -------- //
-// Handlers //
-// -------- //
-
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
+export interface Props {
+	disabled?: boolean;
+	me: ChannelNick;
+	user: ChannelSelectedUser;
 }
 
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
+// ----------- //
+// Local State //
+// ----------- //
 
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
-	}
-	return toggleSelectedUserHandler;
-}
-
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
-}
+export const computeIsMe = (props: Props) =>
+	computed(() => props.me.partialEq(props.user.cnick));

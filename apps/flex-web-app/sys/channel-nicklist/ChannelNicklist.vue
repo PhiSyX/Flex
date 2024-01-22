@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChannelNick } from "~/channel/ChannelNick";
 
-import { openPrivate, type Emits } from "./ChannelNicklist.handler";
+import { openPrivate, type Emits, selectUser } from "./ChannelNicklist.handler";
 
 import ChannelNickComponent from "#/sys/channel-nick/ChannelNick.vue";
 import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
@@ -33,6 +33,7 @@ defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const openPrivateHandler = openPrivate(emit);
+const selectUserHandler = selectUser(emit);
 </script>
 
 <template>
@@ -55,6 +56,7 @@ const openPrivateHandler = openPrivate(emit);
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
 					@dblclick="openPrivateHandler(filteredNick.cnick)"
+					@click="selectUserHandler(filteredNick.cnick)"
 				/>
 			</ul>
 		</details>
@@ -77,6 +79,7 @@ const openPrivateHandler = openPrivate(emit);
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
 					@dblclick="openPrivateHandler(filteredNick.cnick)"
+					@click="selectUserHandler(filteredNick.cnick)"
 				/>
 			</ul>
 		</details>
@@ -99,6 +102,7 @@ const openPrivateHandler = openPrivate(emit);
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
 					@dblclick="openPrivateHandler(filteredNick.cnick)"
+					@click="selectUserHandler(filteredNick.cnick)"
 				/>
 			</ul>
 		</details>

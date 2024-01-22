@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { User } from "~/user/User";
 import {
 	ChannelAccessLevel,
 	HighestAccessLevelOutput,
@@ -80,9 +81,33 @@ export class ChannelNick {
 		return this._highestAccessLevel;
 	}
 
+	/**
+	 * Nom d'hôte du pseudo.
+	 */
+	get hostname() {
+		return this.host.vhost || this.host.cloaked;
+	}
+
 	// ------- //
 	// Méthode //
 	// ------- //
+
+	eq(cnick: this): boolean {
+		return cnick.id === this.id;
+	}
+
+	partialEq(cnick: this): boolean {
+		return cnick.nickname.toLowerCase() === this.nickname.toLowerCase();
+	}
+
+	intoUser(): User {
+		return new User({
+			host: this.host,
+			id: this.id,
+			ident: this.ident,
+			nickname: this.nickname,
+		});
+	}
 
 	/**
 	 * Définit le niveau d'accès du pseudo.

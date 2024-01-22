@@ -13,6 +13,9 @@ import { defineStore } from "pinia";
 import { Socket, io } from "socket.io-client";
 import { reactive } from "vue";
 
+import { assertChannelRoom } from "~/asserts/room";
+import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
+import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
@@ -34,7 +37,7 @@ import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
-import { User } from "~/user/User";
+import { User, UserID } from "~/user/User";
 import { ErrorCannotsendtochanHandler } from "../handlers/errors/ErrorCannotsendtochanHandler";
 
 // ---- //
@@ -104,6 +107,7 @@ export class ChatStore {
 	private _connectUserInfo: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
+	private _selectedUser: Option<[ChannelID, UserID]> = None();
 	private _network: Option<string> = None();
 	private _roomManager: RoomManager = new RoomManager();
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> =
@@ -192,9 +196,11 @@ export class ChatStore {
 					user.nickname.toLowerCase() === nickname.toLowerCase(),
 			),
 		);
+
 		maybeUser.then((user) => {
 			this._nicksUsers.set(user.nickname.toLowerCase(), user.id);
 		});
+
 		return maybeUser;
 	}
 
@@ -206,6 +212,25 @@ export class ChatStore {
 		return this._connectUserInfo.expect(
 			"Information de connexion de l'utilisateur",
 		);
+	}
+
+	getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
+		return this._selectedUser
+			.and_then(([channelID, userID]) => {
+				return this.roomManager()
+					.get(channelID)
+					.filter((channel) => channel.eq(room))
+					.filter_map((channel) => {
+						assertChannelRoom(channel);
+						return channel.getUser(userID);
+					});
+			})
+			.map((cnick) => {
+				return new ChannelSelectedUser(
+					cnick,
+					this.isUserBlocked(cnick.intoUser()),
+				);
+			});
 	}
 
 	isConnected(): boolean {
@@ -316,6 +341,14 @@ export class ChatStore {
 		this.me().nickname = nickname;
 	}
 
+	setSelectedUser(room: ChannelRoom, origin: Origin) {
+		this._selectedUser.replace([room.id(), origin.id]);
+	}
+
+	unsetSelectedUser() {
+		this._selectedUser = None();
+	}
+
 	websocket(): Socket<ServerToClientEvent, ClientToServerEvent> {
 		return this._ws.expect("Instance WebSocket connecté au serveur");
 	}
@@ -393,6 +426,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		store.listenAllEvents();
 	}
 
+	function getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
+		return store.getSelectedUser(room);
+	}
+
 	function ignoreUser(nickname: string) {
 		const ignoreModule = store.modules.get(
 			IgnoreModule.NAME,
@@ -429,6 +466,20 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		store.roomManager().setCurrent(room.id());
 
 		// store.emit("QUERY", { nickname: name });
+	}
+
+	function toggleSelectUser(room: ChannelRoom, origin: Origin) {
+		const maybeSelectedUser = store.getSelectedUser(room);
+		if (maybeSelectedUser.is_some()) {
+			const selectedUser = maybeSelectedUser.unwrap();
+			if (selectedUser.cnick.id === origin.id) {
+				store.unsetSelectedUser();
+			} else {
+				store.setSelectedUser(room, origin);
+			}
+		} else {
+			store.setSelectedUser(room, origin);
+		}
 	}
 
 	function sendMessage(name: string, message: string) {
@@ -473,9 +524,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		checkUserIsBlocked,
 		closeRoom,
 		connect,
+		getSelectedUser,
 		ignoreUser,
 		listen,
 		openPrivateOrCreate,
+		toggleSelectUser,
 		sendMessage,
 		unignoreUser,
 	};

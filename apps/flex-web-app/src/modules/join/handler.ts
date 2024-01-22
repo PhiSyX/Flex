@@ -60,7 +60,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 	}
 
 	handleUser(data: GenericReply<"JOIN">) {
-		this.store.addUser(new User(data.origin));
+		this.store.addUser(new User(data.origin).withChannel(data.channel));
 
 		const maybeChannel = this.store.roomManager().get(data.channel);
 

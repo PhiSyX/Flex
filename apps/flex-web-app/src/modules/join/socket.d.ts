@@ -34,7 +34,7 @@ declare interface CommandResponsesReplies {
 	RPL_NAMREPLY: {
 		channel: string;
 		code: number;
-		users: Array<Origin & { access_level: Array<string> }>;
+		users: Array<ChannelOrigin>;
 	};
 }
 

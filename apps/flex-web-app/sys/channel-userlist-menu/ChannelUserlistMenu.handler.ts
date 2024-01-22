@@ -8,39 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { Props } from "./ChannelUserlistMenu.state";
 
-import { Props } from "./ChannelRoom.state";
+// ---- //
+// Type //
+// ---- //
 
-const chatStore = useChatStore();
+export interface Emits {
+	(evtName: "open-private", user: Origin): void;
+	(evtName: "ignore-user", user: Origin): void;
+	(evtName: "unignore-user", user: Origin): void;
+}
 
 // -------- //
-// Handlers //
+// Fonction //
 // -------- //
 
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
-}
-
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
-
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
+export function openPrivate(emit: Emits, props: Props) {
+	function openPrivateHandler() {
+		emit("open-private", props.user.cnick);
 	}
-	return toggleSelectedUserHandler;
+	return openPrivateHandler;
 }
 
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
+export function ignoreUser(emit: Emits, props: Props) {
+	function ignoreUserHandler() {
+		emit("ignore-user", props.user.cnick);
+	}
+	return ignoreUserHandler;
+}
+
+export function unignoreUser(emit: Emits, props: Props) {
+	function unignoreUserHandler() {
+		emit("unignore-user", props.user.cnick);
+	}
+	return unignoreUserHandler;
 }

@@ -8,39 +8,30 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { computed } from "vue";
+import { ChannelRoom } from "~/channel/ChannelRoom";
 import { useChatStore } from "~/store/ChatStore";
-
-import { Props } from "./ChannelRoom.state";
 
 const chatStore = useChatStore();
 
-// -------- //
-// Handlers //
-// -------- //
+// ---- //
+// Type //
+// ---- //
 
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
+export interface Props {
+	room: ChannelRoom;
 }
 
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
+// ----------- //
+// Local State //
+// ----------- //
 
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
+export const compute$me = (props: Props) =>
+	computed(() =>
+		props.room
+			.getUser(chatStore.store.me().id)
+			.expect("Récupération du client dans le salon courant"),
+	);
 
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
-	}
-	return toggleSelectedUserHandler;
-}
-
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
-}
+export const computeSelectedUser = (props: Props) =>
+	computed(() => chatStore.getSelectedUser(props.room));

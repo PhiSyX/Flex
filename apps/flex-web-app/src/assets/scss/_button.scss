@@ -51,3 +51,21 @@
 	opacity: 1;
 	filter: drop-shadow(0px 0px 4.5px var(--btn-svg-color, currentColor));
 }
+
+.btn\/primary {
+	background: var(--btn-primary-bg);
+	color: var(--btn-primary-color);
+	&:hover {
+		background: var(--btn-primary-bg-hover, var(--btn-primary-bg));
+		color: var(--btn-primary-color-hover, var(--btn-primary-color));
+	}
+}
+
+.btn\/danger {
+	background: var(--btn-danger-bg, var(--color-red500));
+	color: var(--btn-danger-color);
+	&:hover {
+		background-color: var(--btn-danger-bg-hover, var(--color-red600));
+		color: var(--btn-danger-color-hover, var(--btn-danger-color));
+	}
+}

@@ -8,39 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { ChannelNick } from "./ChannelNick";
 
-import { Props } from "./ChannelRoom.state";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-const chatStore = useChatStore();
+export class ChannelSelectedUser {
+	declare cnick: ChannelNick;
+	declare isBlocked: boolean;
 
-// -------- //
-// Handlers //
-// -------- //
-
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
-}
-
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
-
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(cnick: ChannelNick, isBlocked: boolean) {
+		this.cnick = cnick;
+		this.isBlocked = isBlocked;
 	}
-	return toggleSelectedUserHandler;
-}
-
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
 }

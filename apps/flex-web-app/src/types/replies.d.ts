@@ -22,6 +22,17 @@ declare interface Origin {
 	};
 }
 
+declare interface ChannelOrigin {
+	access_level: Array<string>;
+	id: string;
+	nickname: string;
+	ident: string;
+	host: {
+		cloaked: string;
+		vhost?: string;
+	};
+}
+
 // NOTE(phisyx): les réponses des commandes sont déclarées dans chaque modules
 //  	EXAMPLE: ~/modules/<module>/socket.d.ts
 // biome-ignore lint/suspicious/noEmptyInterface: lire NOTE ci-haut.

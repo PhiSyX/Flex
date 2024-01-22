@@ -4,7 +4,11 @@ import { UiButton } from "@phisyx/flex-uikit";
 import { Props, UserlistModeView } from "./ChannelUserlist.state";
 import { useFilterView, useInputFilterUserlist } from "./ChannelUserlist.hooks";
 
-import { type Emits, openPrivate } from "./ChannelUserlist.handlers";
+import {
+	type Emits,
+	openPrivate,
+	selectUser,
+} from "./ChannelUserlist.handlers";
 
 // --------- //
 // Composant //
@@ -18,6 +22,7 @@ const { filterNick, moderatorsFiltered, vipsFiltered, usersFiltered } =
 const { filterView, view } = useFilterView();
 
 const openPrivateHandler = openPrivate(emit);
+const selectUserHandler = selectUser(emit);
 </script>
 
 <template>
@@ -53,6 +58,7 @@ const openPrivateHandler = openPrivate(emit);
 					filtered: usersFiltered,
 				}"
 				@open-private="openPrivateHandler"
+				@select-user="selectUserHandler"
 			/>
 		</KeepAlive>
 	</div>

@@ -4,18 +4,21 @@ import ChannelRoom from "./ChannelRoom.vue";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { RoomMessage } from "~/room/RoomMessage";
+import { None } from "@phisyx/flex-safety";
 
 const channelName = "#channel";
 
 const messages = [];
 
-const origin1: Origin = {
+const origin1: ChannelOrigin = {
 	access_level: ["Owner"],
 	id: "uuid0",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 };
+
+const me = new ChannelNick(origin1);
 
 messages.push(
 	new RoomMessage()
@@ -53,9 +56,11 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 	<Story title="Molecules/ChannelRoom" responsive-disabled>
 		<Variant title="Default">
 			<ChannelRoom
+				:me="me"
 				:messages="messages"
 				:name="channelName"
 				:users="users"
+				:selected-user="None()"
 			/>
 		</Variant>
 	</Story>

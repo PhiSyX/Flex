@@ -33,8 +33,8 @@ const recipientIsBlocked = computeRecipientIsBlocked(recipient.value);
 		:messages="room.messages"
 		:recipient="recipient"
 		@close-room="closeRoomHandler"
-		@send-message="sendMessageHandler"
 		@ignore-user="ignoreUserHandler"
+		@send-message="sendMessageHandler"
 		@unignore-user="unignoreUserHandler"
 	/>
 </template>

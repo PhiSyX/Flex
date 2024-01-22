@@ -1,13 +1,23 @@
 <script setup lang="ts">
-import { UiButton, ButtonIcon } from "@phisyx/flex-uikit";
-
+import { Option } from "@phisyx/flex-safety";
+import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ChannelUsers } from "~/channel/ChannelUsers";
 import { RoomMessage } from "~/room/RoomMessage";
-
+import { ChannelNick } from "~/channel/ChannelNick";
+import {
+	ignoreUser,
+	openPrivate,
+	selectUser,
+	sendMessage,
+	type Emits,
+	unignoreUser,
+} from "./ChannelRoom.handler";
 import { displayUserlist } from "./ChannelRoom.state";
-import { openPrivate, type Emits, sendMessage } from "./ChannelRoom.handler";
 
+import ChannelUserlistMenu from "#/sys/channel-userlist-menu/ChannelUserlistMenu.vue";
 import ChannelUserlist from "#/sys/channel-userlist/ChannelUserlist.vue";
+import Match from "#/sys/match/Match.vue";
 import Room from "#/sys/room/Room.vue";
 
 // ---- //
@@ -15,8 +25,10 @@ import Room from "#/sys/room/Room.vue";
 // ---- //
 
 interface Props {
+	me: ChannelNick;
 	messages: Array<RoomMessage>;
 	name: string;
+	selectedUser: Option<ChannelSelectedUser>;
 	users: ChannelUsers;
 }
 
@@ -26,8 +38,11 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const ignoreUserHandler = ignoreUser(emit);
 const openPrivateHandler = openPrivate(emit);
+const selectUserHandler = selectUser(emit);
 const sendMessageHandler = sendMessage(emit, props.name);
+const unignoreUserHandler = unignoreUser(emit);
 </script>
 
 <template>
@@ -60,9 +75,21 @@ const sendMessageHandler = sendMessage(emit, props.name);
 						:users="users"
 						class="room/userlist"
 						@open-private="openPrivateHandler"
+						@select-user="selectUserHandler"
 					/>
 
-					<slot name="userlist-menu" />
+					<!-- <slot name="userlist-menu" /> -->
+					<Match :maybe="selectedUser">
+						<template #some="{ data: selectedUser }">
+							<ChannelUserlistMenu
+								:me="me"
+								:user="selectedUser"
+								@ignore-user="ignoreUserHandler"
+								@open-private="openPrivateHandler"
+								@unignore-user="unignoreUserHandler"
+							/>
+						</template>
+					</Match>
 				</aside>
 			</template>
 		</Room>
@@ -101,7 +128,7 @@ const sendMessageHandler = sendMessage(emit, props.name);
 	}
 
 	@include fx.class("room/userlist") {
-		flew-grow: 1;
+		flex-grow: 1;
 		overflow: hidden;
 	}
 }
