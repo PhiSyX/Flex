@@ -7,6 +7,7 @@ import RoomEventQuery from "./RoomEventQuery.vue";
 import RoomEventQuit from "./RoomEventQuit.vue";
 import RoomEventRplIgnore from "./RoomEventRplIgnore.vue";
 import RoomEventRplUnignore from "./RoomEventRplUnignore.vue";
+import RoomEventMode from "./RoomEventMode.vue";
 
 type Payload = {
 	id: string;
@@ -54,6 +55,50 @@ const eventJoin: Payload & { data: GenericReply<"JOIN"> } = {
 		channel: "#channel",
 		forced: false,
 		name: "JOIN",
+		origin,
+		tags,
+	},
+	...payload,
+};
+const eventMode1: Payload & { data: GenericReply<"MODE"> } = {
+	data: {
+		added: [
+			[
+				"t",
+				{
+					flag: "no_topic",
+					args: [],
+					updated_at: new Date().toString(),
+					updated_by: "Nickname",
+				},
+			],
+		],
+		removed: [],
+		target: "#channel",
+		updated: false,
+		name: "MODE",
+		origin,
+		tags,
+	},
+	...payload,
+};
+const eventMode2: Payload & { data: GenericReply<"MODE"> } = {
+	data: {
+		added: [
+			[
+				"t",
+				{
+					flag: "no_topic",
+					args: [],
+					updated_at: new Date().toString(),
+					updated_by: "PhiSyX",
+				},
+			],
+		],
+		removed: [],
+		target: "#channel",
+		updated: true,
+		name: "MODE",
 		origin,
 		tags,
 	},
@@ -137,6 +182,18 @@ const eventRplUnignore: Payload & {
 		<Variant title="Join Event">
 			<div class="room/echo">
 				<RoomEventJoin v-bind="eventJoin" />
+			</div>
+		</Variant>
+
+		<Variant title="Mode Event">
+			<div class="room/echo">
+				<RoomEventMode v-bind="eventMode1" />
+			</div>
+		</Variant>
+
+		<Variant title="Mode Event">
+			<div class="room/echo">
+				<RoomEventMode v-bind="eventMode2" />
 			</div>
 		</Variant>
 
