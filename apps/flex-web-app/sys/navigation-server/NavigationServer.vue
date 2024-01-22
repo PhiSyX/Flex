@@ -56,7 +56,6 @@ const toggleFoldHandler = toggleFold(folded);
 				v-else
 				key="arrow-right"
 				v-show="!containerFolded"
-				class="btn"
 				@click.stop="toggleFoldHandler()"
 			/>
 

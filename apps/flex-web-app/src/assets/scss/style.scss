@@ -71,6 +71,7 @@
 	--color-red300: #e57373;
 	--color-red500: #f44336;
 	--color-red600: #e53935;
+	--color-red900: #b71c1c;
 
 	/* Paramètres d'application */
 
@@ -97,7 +98,7 @@
 				hsl(var(--color-grey50_hsl), 15%)
 			);
 			--login-button-submit-bg-hover: linear-gradient(
-				hsl(var(--color-grey50_hsl), 55%),
+				hsl(var(--color-grey50_hsl), 75%),
 				hsl(var(--color-grey50_hsl), 25%)
 			);
 			--login-button-submit-color: var(--color-grey800);

@@ -53,8 +53,8 @@ const closeRoomHandler = closeRoom(emit);
 				@click="folded = !folded"
 			/>
 
-			<div v-show="!folded">
-				<ButtonIcon icon="settings" />
+			<div v-show="!folded" title="TODO">
+				<ButtonIcon icon="settings" disabled />
 			</div>
 		</footer>
 	</section>

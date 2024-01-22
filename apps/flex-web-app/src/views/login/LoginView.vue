@@ -199,7 +199,7 @@ useRememberMe();
 			@include fx.theme using($name) {
 				@if $name == ice {
 					--login-button-submit-bg: var(
-						-- login-button-submit-bg-hover
+						--login-button-submit-bg-hover
 					);
 				}
 			}
