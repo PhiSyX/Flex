@@ -145,12 +145,20 @@ impl Default for ChannelModes<SettingsFlags>
 {
 	fn default() -> Self
 	{
-		let settings = HashSet::from_iter([ChannelMode {
-			flag: SettingsFlags::NoExternalMessages,
-			args: Default::default(),
-			updated_at: Utc::now(),
-			updated_by: "*".into(),
-		}]);
+		let settings = HashSet::from_iter([
+			ChannelMode {
+				flag: SettingsFlags::NoExternalMessages,
+				args: Default::default(),
+				updated_at: Utc::now(),
+				updated_by: "*".into(),
+			},
+			ChannelMode {
+				flag: SettingsFlags::NoTopic,
+				args: Default::default(),
+				updated_at: Utc::now(),
+				updated_by: "*".into(),
+			},
+		]);
 
 		Self { modes: settings }
 	}
