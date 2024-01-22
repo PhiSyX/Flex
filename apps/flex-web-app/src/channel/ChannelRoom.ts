@@ -84,6 +84,20 @@ export class ChannelRoom extends Room<"channel"> {
 	}
 
 	/**
+	 * Définit le sujet d'un salon.
+	 */
+	setTopic(topic: string) {
+		this.topic.set(topic, { force: true });
+	}
+
+	/**
+	 * Définit un sujet vide pour le salon.
+	 */
+	unsetTopic() {
+		this.topic.unset({ force: true });
+	}
+
+	/**
 	 * Met à jour un utilisateur.
 	 */
 	upgradeUser(oldNick: ChannelNick, newNick: ChannelNick) {
