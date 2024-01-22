@@ -15,8 +15,8 @@ import { ChannelNick } from "~/channel/ChannelNick";
 
 import { Props, UserlistModeView } from "./ChannelUserlist.state";
 
-import ChannelNicklist from "#/sys/channel-nicklist/ChannelNicklist.vue";
 import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
+import ChannelNicklist from "#/sys/channel-nicklist/ChannelNicklist.vue";
 
 // -------- //
 // Fonction //
@@ -41,12 +41,16 @@ export function useInputFilterUserlist(props: Props) {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
 					.or_else(() =>
-						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
-							map_search_record(true),
-						),
+						fuzzy_search(
+							filterNick.value,
+							nick.highestAccessLevel.symbol,
+						).map(map_search_record(true)),
 					)
 					.unwrap_or([]);
-				return new ChannelNickFiltered(nick, test.length === 0 ? [] : test);
+				return new ChannelNickFiltered(
+					nick,
+					test.length === 0 ? [] : test,
+				);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
 		const filteredVips = props.users.vips
@@ -54,12 +58,16 @@ export function useInputFilterUserlist(props: Props) {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
 					.or_else(() =>
-						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
-							map_search_record(true),
-						),
+						fuzzy_search(
+							filterNick.value,
+							nick.highestAccessLevel.symbol,
+						).map(map_search_record(true)),
 					)
 					.unwrap_or([]);
-				return new ChannelNickFiltered(nick, test.length === 0 ? [] : test);
+				return new ChannelNickFiltered(
+					nick,
+					test.length === 0 ? [] : test,
+				);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
 		const filteredUsers = props.users.users
@@ -67,12 +75,16 @@ export function useInputFilterUserlist(props: Props) {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
 					.or_else(() =>
-						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
-							map_search_record(true),
-						),
+						fuzzy_search(
+							filterNick.value,
+							nick.highestAccessLevel.symbol,
+						).map(map_search_record(true)),
 					)
 					.unwrap_or([]);
-				return new ChannelNickFiltered(nick, test.length === 0 ? [] : test);
+				return new ChannelNickFiltered(
+					nick,
+					test.length === 0 ? [] : test,
+				);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
 
