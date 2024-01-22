@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Room from "#/sys/room/Room.vue";
-import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 
 import {
 	closeRoom,
@@ -51,10 +51,15 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 					:title="titleIgnoreButton"
 					@click="toggleIgnoreUserHandler()"
 				/>
-				<ButtonIcon
-					icon="close"
-					@click="closeRoomHandler(recipient)"
-				/>
+				<ButtonIcon icon="close" @click="closeRoomHandler(recipient)" />
+			</template>
+
+			<template #after-topic-before-main>
+				<Alert type="warning">
+					Ne communique <strong>jamais</strong> tes coordonnées
+					personnelles (nom, adresse, n° de téléphone...), ni tes
+					identifiants de connexion.
+				</Alert>
 			</template>
 		</Room>
 	</div>

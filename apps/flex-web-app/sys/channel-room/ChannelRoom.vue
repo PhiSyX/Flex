@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Option } from "@phisyx/flex-safety";
-import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ChannelUsers } from "~/channel/ChannelUsers";
 import { RoomMessage } from "~/room/RoomMessage";
@@ -66,6 +66,14 @@ const unignoreUserHandler = unignoreUser(emit);
 				/>
 
 				<ButtonIcon class="close" icon="close" />
+			</template>
+
+			<template #after-topic-before-main>
+				<Alert type="warning">
+					Ne communique <strong>jamais</strong> tes coordonnées
+					personnelles (nom, adresse, n° de téléphone...), ni tes
+					identifiants de connexion.
+				</Alert>
 			</template>
 
 			<template #room-info v-if="displayUserlist">
