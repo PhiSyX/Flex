@@ -17,6 +17,7 @@ import { assertChannelRoom } from "~/asserts/room";
 import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
+import { ErrorChanoprivsneeded } from "~/handlers/errors/ErrorChanoprivsneeded";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
 import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
@@ -75,6 +76,7 @@ export class ChatStore {
 
 		self.errorsHandlers
 			.add(new ErrorBadchannelkeyHandler(self))
+			.add(new ErrorChanoprivsneeded(self))
 			.add(new ErrorCannotsendtochanHandler(self))
 			.add(new ErrorNicknameinuseHandler(self))
 			.add(new ErrorNosuchchannelHandler(self))
