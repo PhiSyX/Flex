@@ -18,7 +18,7 @@ export class ChannelTopic {
 	private text: Option<string> = None();
 	private editable = true;
 
-	is_editable(): boolean {
+	isEditable(): boolean {
 		return this.editable;
 	}
 
@@ -32,7 +32,7 @@ export class ChannelTopic {
 		}
 	}
 
-	set_editable(b: boolean) {
+	setEditable(b: boolean) {
 		this.editable = b;
 	}
 

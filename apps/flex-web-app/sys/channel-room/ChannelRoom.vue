@@ -8,13 +8,13 @@ import {
 	type Emits,
 	unignoreUser,
 } from "./ChannelRoom.handler";
+import { useChannelTopic } from "./ChannelRoom.hooks";
 import { type Props, displayUserlist } from "./ChannelRoom.state";
 
 import ChannelUserlistMenu from "#/sys/channel-userlist-menu/ChannelUserlistMenu.vue";
 import ChannelUserlist from "#/sys/channel-userlist/ChannelUserlist.vue";
 import Match from "#/sys/match/Match.vue";
 import Room from "#/sys/room/Room.vue";
-import { useChannelTopic } from "./ChannelRoom.hooks";
 
 // --------- //
 // Composant //
@@ -58,10 +58,21 @@ const {
 				/>
 				<output
 					v-else-if="topic.get().length > 0"
+					:class="{
+						'cursor:pointer': canEditTopic,
+					}"
 					@dblclick="enableTopicEditModeHandler()"
 				>
 					{{ topic.get() }}
 				</output>
+				<p
+					v-else-if="canEditTopic"
+					class="[ cursor:pointer ]"
+					@dblclick="enableTopicEditModeHandler()"
+				>
+					Appuyez deux fois sur cette section pour mettre à jour le
+					sujet.
+				</p>
 				<p v-else>Aucun sujet</p>
 			</template>
 
@@ -115,6 +126,10 @@ const {
 <style lang="scss">
 @use "scss:~/flexsheets" as fx;
 
+.cursor\:pointer {
+	cursor: pointer !important;
+}
+
 @include fx.class("room/channel") {
 	display: flex;
 
@@ -128,7 +143,8 @@ const {
 			width: 100%;
 			height: 100%;
 			padding: fx.space(1);
-			cursor: pointer;
+			user-select: none;
+			cursor: default;
 		}
 		p {
 			display: flex;
@@ -137,6 +153,8 @@ const {
 			height: 100%;
 			margin-block: 0;
 			user-select: none;
+			cursor: default;
+			color: var(--color-blue-grey200);
 		}
 	}
 

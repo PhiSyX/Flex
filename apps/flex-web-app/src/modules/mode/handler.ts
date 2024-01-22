@@ -51,9 +51,9 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 		assertChannelRoom(channel);
 
 		if (data.added.some(([mode]) => mode === "t")) {
-			channel.topic.set_editable(false);
+			channel.topic.setEditable(false);
 		} else if (data.removed.some(([mode]) => mode === "t")) {
-			channel.topic.set_editable(true);
+			channel.topic.setEditable(true);
 		}
 
 		channel.addEvent("event:mode", {

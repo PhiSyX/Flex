@@ -70,6 +70,22 @@ export class ChannelRoom extends Room<"channel"> {
 	}
 
 	/**
+	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
+	 */
+	canEditTopic(cnick: ChannelNick): boolean {
+		return (
+			this.topic.isEditable() || this.cnickHasChannelOperatorLevelAccess(cnick)
+		);
+	}
+
+	/**
+	 * Est-ce que le pseudo a des droits d'opérateurs (HalfOperator min).
+	 */
+	cnickHasChannelOperatorLevelAccess(cnick: ChannelNick): boolean {
+		return cnick.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator;
+	}
+
+	/**
 	 * Récupère un utilisateur du salon.
 	 */
 	getUser(id: string): Option<ChannelNick> {
