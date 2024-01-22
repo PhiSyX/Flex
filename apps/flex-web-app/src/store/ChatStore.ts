@@ -28,6 +28,7 @@ import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
+import { ModeModule } from "~/modules/mode/module";
 import { NickModule } from "~/modules/nick/module";
 import { PartModule } from "~/modules/part/module";
 import { PrivmsgModule } from "~/modules/privmsg/module";
@@ -85,6 +86,7 @@ export class ChatStore {
 
 		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
 		self.modules.set(PartModule.NAME, PartModule.create(self));
 		self.modules.set(PrivmsgModule.NAME, PrivmsgModule.create(self));
@@ -245,7 +247,14 @@ export class ChatStore {
 		return this._usersBlocked.has(user.id);
 	}
 
-	isMe(origin: Origin): boolean {
+	isMe(origin: Origin | string): boolean {
+		if (typeof origin === "string") {
+			return (
+				this.me().id === origin ||
+				this.me().nickname.toLowerCase() === origin.toLowerCase()
+			);
+		}
+
 		return this.me().id === origin.id;
 	}
 
