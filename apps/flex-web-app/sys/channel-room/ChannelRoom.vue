@@ -97,7 +97,7 @@ watchEffect(() => {
 					v-else-if="topic.get().length > 0"
 					@dblclick="enableTopicEditModeHandler()"
 				>
-					{{ topic }}
+					{{ topic.get() }}
 				</output>
 				<p v-else>Aucun sujet</p>
 			</template>

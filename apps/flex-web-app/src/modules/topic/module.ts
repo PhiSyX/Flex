@@ -12,7 +12,7 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { TopicCommand } from "./command";
-import { TopicHandler } from "./handler";
+import { ReplyTopicHandler, ReplyNotopicHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
@@ -28,7 +28,8 @@ export class TopicModule implements Module<TopicModule> {
 	static create(store: ChatStore): TopicModule {
 		return new TopicModule(
 			new TopicCommand(store),
-			new TopicHandler(store),
+			new ReplyTopicHandler(store),
+			new ReplyNotopicHandler(store),
 		);
 	}
 
@@ -37,7 +38,8 @@ export class TopicModule implements Module<TopicModule> {
 	// ----------- //
 	constructor(
 		private command: TopicCommand,
-		private handler: TopicHandler,
+		private numericTopicHandler: ReplyTopicHandler,
+		private numericNoTopicHandler: ReplyNotopicHandler,
 	) {}
 
 	// ------- //
@@ -54,6 +56,7 @@ export class TopicModule implements Module<TopicModule> {
 	}
 
 	listen() {
-		this.handler.listen();
+		this.numericTopicHandler.listen();
+		this.numericNoTopicHandler.listen();
 	}
 }

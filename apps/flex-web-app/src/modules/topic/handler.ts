@@ -8,13 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { assertChannelRoom } from "~/asserts/room";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class TopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
+export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -28,5 +29,42 @@ export class TopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
 		this.store.on("RPL_TOPIC", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_TOPIC">) {}
+	handle(data: GenericReply<"RPL_TOPIC">) {
+		const maybeChannel = this.store.roomManager().get(data.channel);
+		if (maybeChannel.is_none()) return;
+		const channel = maybeChannel.unwrap();
+		assertChannelRoom(channel);
+		channel.setTopic(data.topic);
+
+		// @ts-expect-error : type à corriger
+		channel.addEvent("event:topic", {
+			...data,
+			isMe: this.store.isMe(data.origin),
+		});
+	}
+}
+
+export class ReplyNotopicHandler
+	implements SocketEventInterface<"RPL_NOTOPIC">
+{
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("RPL_NOTOPIC", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"RPL_NOTOPIC">) {
+		const maybeChannel = this.store.roomManager().get(data.channel);
+		if (maybeChannel.is_none()) return;
+		const channel = maybeChannel.unwrap();
+		assertChannelRoom(channel);
+		channel.unsetTopic();
+	}
 }
