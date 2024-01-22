@@ -28,6 +28,7 @@ export type Icons =
 	| "logoff"
 	| "password"
 	| "plus"
+	| "report"
 	| "send"
 	| "settings"
 	| "text-color"

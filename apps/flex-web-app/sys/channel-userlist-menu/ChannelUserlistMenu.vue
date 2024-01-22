@@ -38,7 +38,7 @@ const unignoreUserHandler = unignoreUser(emit, props);
 				icon="user"
 				position="right"
 				title="Commande /query"
-				class="btn/primary"
+				type="primary"
 				@click="openPrivateHandler()"
 			>
 				<span v-if="!isMe">Discuter en privé</span>
@@ -51,7 +51,7 @@ const unignoreUserHandler = unignoreUser(emit, props);
 				icon="user-block"
 				position="right"
 				title="Commande /ignore <nickname>"
-				class="btn/primary"
+				type="primary"
 				@click="ignoreUserHandler()"
 			>
 				<span>Ignorer</span>
@@ -61,13 +61,24 @@ const unignoreUserHandler = unignoreUser(emit, props);
 				icon="user-block"
 				position="right"
 				title="Commande /unignore <nickname>"
-				class="btn/primary"
+				type="primary"
 				:selected="user.isBlocked"
 				:true-value="true"
 				:false-value="false"
 				@click="unignoreUserHandler()"
 			>
 				<span>Ne plus ignorer</span>
+			</UiButton>
+		</li>
+		<li v-if="!isMe" title="TODO">
+			<UiButton
+				disabled
+				icon="report"
+				position="right"
+				:with-opacity="true"
+				type="danger"
+			>
+				Signaler
 			</UiButton>
 		</li>
 	</menu>
@@ -88,6 +99,7 @@ const unignoreUserHandler = unignoreUser(emit, props);
 			--btn-primary-bg-hover: var(--color-blue-grey700);
 			--btn-secondary-bg: var(--room-bg);
 			--btn-secondary-bg-hover: var(--body-bg_alt);
+			--btn-danger-disabled-color: var(--color-red900);
 		}
 	}
 
