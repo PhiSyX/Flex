@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { computed } from "vue";
+
 import { Icons } from "../icons";
 
 export interface Props {
@@ -19,6 +20,7 @@ export interface Props {
 	trueValue?: unknown;
 	falseValue?: unknown;
 	selected?: unknown;
+	type?: "primary" | "danger";
 }
 
 export const computeValue$ = (props: Props) =>
