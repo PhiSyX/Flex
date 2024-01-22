@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ref, watchEffect } from "vue";
 import { Option } from "@phisyx/flex-safety";
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { ChannelTopic } from "~/channel/ChannelTopic";
 import { ChannelUsers } from "~/channel/ChannelUsers";
 import { RoomMessage } from "~/room/RoomMessage";
 import { ChannelNick } from "~/channel/ChannelNick";
@@ -29,6 +31,7 @@ interface Props {
 	messages: Array<RoomMessage>;
 	name: string;
 	selectedUser: Option<ChannelSelectedUser>;
+	topic: ChannelTopic;
 	users: ChannelUsers;
 }
 
@@ -38,11 +41,37 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+let $topic = ref<HTMLInputElement>();
+let topicEditMode = ref(false);
+let topicInput = ref("");
+
 const ignoreUserHandler = ignoreUser(emit);
 const openPrivateHandler = openPrivate(emit);
 const selectUserHandler = selectUser(emit);
 const sendMessageHandler = sendMessage(emit, props.name);
 const unignoreUserHandler = unignoreUser(emit);
+
+function submitTopicHandler(evt: Event) {
+	topicEditMode.value = false;
+
+	evt.preventDefault();
+
+	if (topicInput.value === props.topic.get()) {
+		return;
+	}
+
+	emit("update-topic", props.name, topicInput.value);
+}
+
+function enableTopicEditModeHandler() {
+	topicEditMode.value = true;
+}
+
+watchEffect(() => {
+	if (topicEditMode.value === false) {
+		topicInput.value = props.topic.get();
+	}
+});
 </script>
 
 <template>
@@ -54,7 +83,23 @@ const unignoreUserHandler = unignoreUser(emit);
 			@send-message="sendMessageHandler"
 		>
 			<template #topic>
-				<p>Aucun sujet</p>
+				<input
+					v-if="topicEditMode"
+					ref="$topic"
+					v-model="topicInput"
+					class="[ input:reset ]"
+					type="text"
+					@blur="submitTopicHandler"
+					@keydown.enter="submitTopicHandler"
+					@keydown.esc="submitTopicHandler"
+				/>
+				<output
+					v-else-if="topic.get().length > 0"
+					@dblclick="enableTopicEditModeHandler()"
+				>
+					{{ topic }}
+				</output>
+				<p v-else>Aucun sujet</p>
 			</template>
 
 			<template #topic-action>
@@ -111,6 +156,17 @@ const unignoreUserHandler = unignoreUser(emit);
 	display: flex;
 
 	@include fx.class("room/topic") {
+		input {
+			width: 100%;
+			height: 100%;
+		}
+		output {
+			display: inline-block;
+			width: 100%;
+			height: 100%;
+			padding: fx.space(1);
+			cursor: pointer;
+		}
 		p {
 			display: flex;
 			place-content: center;

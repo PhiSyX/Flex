@@ -31,6 +31,7 @@ import { NickModule } from "~/modules/nick/module";
 import { PartModule } from "~/modules/part/module";
 import { PrivmsgModule } from "~/modules/privmsg/module";
 import { QuitModule } from "~/modules/quit/module";
+import { TopicModule } from "~/modules/topic/module";
 import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
@@ -86,6 +87,7 @@ export class ChatStore {
 		self.modules.set(PartModule.NAME, PartModule.create(self));
 		self.modules.set(PrivmsgModule.NAME, PrivmsgModule.create(self));
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
+		self.modules.set(TopicModule.NAME, TopicModule.create(self));
 		self.modules.set(UnignoreModule.NAME, UnignoreModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex").withID("Flex");
@@ -517,6 +519,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		unignoreModule.send({ nickname });
 	}
 
+	function updateTopic(channelName: string, topic: string) {
+		const topicModule = store.modules.get(TopicModule.NAME) as TopicModule;
+		topicModule.send({ channel: channelName, topic });
+	}
+
 	return {
 		store,
 
@@ -531,5 +538,6 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		toggleSelectUser,
 		sendMessage,
 		unignoreUser,
+		updateTopic,
 	};
 });

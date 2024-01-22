@@ -84,7 +84,7 @@ const isSelected = computeIsSelected(props);
 
 .btn\:active svg,
 .btn:not(:disabled):hover svg:hover {
-	opacity: 1;
+	opacity: 1 !important;
 	filter: drop-shadow(0px 0px 4.5px var(--btn-svg-color, currentColor));
 }
 

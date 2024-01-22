@@ -13,6 +13,7 @@ import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelUsers } from "~/channel/ChannelUsers";
 import { Room } from "../room/Room";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
+import { ChannelTopic } from "./ChannelTopic";
 
 // ---- //
 // Type //
@@ -46,6 +47,11 @@ export class ChannelRoom extends Room<"channel"> {
 	// --------- //
 	// Propriété //
 	// --------- //
+
+	/**
+	 * Sujet du salon.
+	 */
+	topic = new ChannelTopic();
 
 	/**
 	 * Liste des utilisateurs d'un salon.

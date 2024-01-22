@@ -8,43 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
-
-import { Props } from "./ChannelRoom.state";
-
-const chatStore = useChatStore();
-
-// -------- //
-// Handlers //
-// -------- //
-
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
+declare interface TopicFormData {
+	channel: string;
+	topic?: string;
 }
 
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
+declare interface Commands {
+	TOPIC: TopicFormData;
 }
 
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
+declare interface CommandResponsesReplies {
+	RPL_NOTOPIC: {
+		channel: string;
+	};
 
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
-	}
-	return toggleSelectedUserHandler;
-}
-
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
-}
-
-export function updateTopicHandler(name: string, topic: string) {
-	chatStore.updateTopic(name, topic);
+	RPL_TOPIC: {
+		channel: string;
+		topic: string;
+		updated: boolean;
+		updated_by: string;
+		updated_at: string;
+	};
 }

@@ -8,43 +8,52 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { ChatStore } from "~/store/ChatStore";
 
-import { Props } from "./ChannelRoom.state";
+import { Module } from "../interface";
+import { TopicCommand } from "./command";
+import { TopicHandler } from "./handler";
 
-const chatStore = useChatStore();
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// -------- //
-// Handlers //
-// -------- //
+export class TopicModule implements Module<TopicModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
 
-export function closeRoomHandler(origin: Origin) {
-	chatStore.closeRoom(origin);
-}
+	static NAME = "TOPIC";
 
-export function openPrivateHandler(origin: Origin) {
-	chatStore.openPrivateOrCreate(origin);
-}
-
-export function ignoreUserHandler(origin: Origin) {
-	chatStore.ignoreUser(origin.nickname);
-}
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}
-
-export function toggleSelectedUser(props: Props) {
-	function toggleSelectedUserHandler(origin: Origin) {
-		chatStore.toggleSelectUser(props.room, origin);
+	static create(store: ChatStore): TopicModule {
+		return new TopicModule(
+			new TopicCommand(store),
+			new TopicHandler(store),
+		);
 	}
-	return toggleSelectedUserHandler;
-}
 
-export function unignoreUserHandler(origin: Origin) {
-	chatStore.unignoreUser(origin.nickname);
-}
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(
+		private command: TopicCommand,
+		private handler: TopicHandler,
+	) {}
 
-export function updateTopicHandler(name: string, topic: string) {
-	chatStore.updateTopic(name, topic);
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(channel: string, ...words: Array<string>) {
+		const topic = words.join(" ");
+		this.send({ channel, topic });
+	}
+
+	send(payload: Command<"TOPIC">) {
+		this.command.send(payload);
+	}
+
+	listen() {
+		this.handler.listen();
+	}
 }

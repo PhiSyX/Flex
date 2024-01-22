@@ -19,6 +19,7 @@ export interface Emits {
 	(evtName: "open-private", origin: Origin): void;
 	(evtName: "select-user", origin: Origin): void;
 	(evtName: "send-message", name: string, message: string): void;
+	(evtName: "update-topic", name: string, topic: string): void;
 }
 
 // -------- //
