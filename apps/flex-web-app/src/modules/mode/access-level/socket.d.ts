@@ -8,29 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ---- //
-// Type //
-// ---- //
+declare interface Commands {
+	QOP: { channel: string; nicknames: Array<string> };
+	DEQOP: Commands["QOP"];
 
-export interface Emits {
-	(evtName: "change-room", origin: Origin | string): void;
-	(evtName: "close-room", origin: Origin | string): void;
+	OP: { channel: string; nicknames: Array<string> };
+	DEOP: Commands["OP"];
+
+	AOP: { channel: string; nicknames: Array<string> };
+	DEAOP: Commands["AOP"];
+
+	HOP: { channel: string; nicknames: Array<string> };
+	DEHOP: Commands["HOP"];
+
+	VIP: { channel: string; nicknames: Array<string> };
+	DEVIP: Commands["VIP"];
 }
 
-// -------- //
-// Handlers //
-// -------- //
+declare interface CommandResponsesFromServer {
+	MODE: {
+		target: string;
+		updated: boolean;
 
-export function changeRoom(emit: Emits) {
-	function changeRoomHandler(origin: Origin | string) {
-		emit("change-room", origin);
-	}
-	return changeRoomHandler;
-}
+		added: [
+			(
+				| ["o", ModeApplyFlag<"owner">]
+				| ["a", ModeApplyFlag<"admin_operator">]
+				| ["o", ModeApplyFlag<"operator">]
+			),
+			["h", ModeApplyFlag<"half_operator">],
+			["v", ModeApplyFlag<"vip">],
+		];
 
-export function closeRoom(emit: Emits) {
-	function closeRoomHandler(origin: Origin | string) {
-		emit("close-room", origin);
-	}
-	return closeRoomHandler;
+		removed: CommandResponsesFromServer["MODE"]["added"];
+	};
 }

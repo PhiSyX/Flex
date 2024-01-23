@@ -148,9 +148,7 @@ impl ChannelModes<SettingsFlags>
 
 impl SettingsFlags
 {
-	/**
-	 * Lettre associée au paramètre.
-	 */
+	/// Lettre associée au paramètre.
 	pub fn letter(&self) -> char
 	{
 		match self {

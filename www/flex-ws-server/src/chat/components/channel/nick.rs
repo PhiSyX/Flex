@@ -24,18 +24,23 @@ pub type CHANNEL_ACCESS_LEVEL_FLAG = u32;
 
 /// Le drapeau du niveau d'accès des propriétaires de salon.
 pub const CHANNEL_ACCESS_LEVEL_OWNER_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 7;
+pub const CHANNEL_ACCESS_LEVEL_OWNER: char = 'q';
 
 /// Le drapeau du niveau d'accès des admins de salon.
 pub const CHANNEL_ACCESS_LEVEL_ADMIN_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 6;
+pub const CHANNEL_ACCESS_LEVEL_ADMIN: char = 'a';
 
 /// Le drapeau du niveau d'accès des opérateurs de salon.
 pub const CHANNEL_ACCESS_LEVEL_OPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 5;
+pub const CHANNEL_ACCESS_LEVEL_OPERATOR: char = 'o';
 
 /// Le drapeau du niveau d'accès des (demi) opérateurs de salon.
 pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 4;
+pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR: char = 'h';
 
 /// Le drapeau du niveau d'accès des VIP's de salon.
 pub const CHANNEL_ACCESS_LEVEL_VIP_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 3;
+pub const CHANNEL_ACCESS_LEVEL_VIP: char = 'v';
 
 // --------- //
 // Structure //
@@ -55,6 +60,7 @@ pub struct ChannelNick
 #[derive(Copy, Clone)]
 #[derive(serde::Serialize, serde::Deserialize)]
 #[derive(PartialEq, Eq, Hash)]
+#[serde(rename_all = "snake_case")]
 #[repr(u32)]
 pub enum ChannelAccessLevel
 {
@@ -125,10 +131,34 @@ impl ChannelNick
 
 		highest
 	}
+
+	/// Supprime le niveau d'accès du pseudo.
+	pub fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
+	{
+		self.access_level.remove(&access_level)
+	}
+
+	/// Met à jour le niveau d'accès du pseudo.
+	pub fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
+	{
+		self.access_level.insert(access_level)
+	}
 }
 
 impl ChannelAccessLevel
 {
+	/// Lettre lié à un mode de salon pour utilisateur.
+	pub fn letter(&self) -> char
+	{
+		match self {
+			| Self::Owner => CHANNEL_ACCESS_LEVEL_OWNER,
+			| Self::AdminOperator => CHANNEL_ACCESS_LEVEL_ADMIN,
+			| Self::Operator => CHANNEL_ACCESS_LEVEL_OPERATOR,
+			| Self::HalfOperator => CHANNEL_ACCESS_LEVEL_HALFOPERATOR,
+			| Self::Vip => CHANNEL_ACCESS_LEVEL_VIP,
+		}
+	}
+
 	/// Drapeau d'un mode de salon pour un utilisateur.
 	pub fn flag(&self) -> CHANNEL_ACCESS_LEVEL_FLAG
 	{

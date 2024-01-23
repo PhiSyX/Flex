@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { computed } from "vue";
+import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 
@@ -28,3 +29,6 @@ export interface Props {
 
 export const computeIsMe = (props: Props) =>
 	computed(() => props.me.partialEq(props.user.cnick));
+
+export const computeIHaveAccessLevel = (props: Props) =>
+	computed(() => props.me.highestAccessLevel.level > ChannelAccessLevel.Vip);

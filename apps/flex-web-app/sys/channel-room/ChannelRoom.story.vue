@@ -13,6 +13,7 @@ const channelName = "#channel";
 const topic = new ChannelTopic();
 topic.set("Mon super topic");
 
+// @ts-expect-error : ?
 const messages = [];
 
 const origin1: ChannelOrigin = {
@@ -61,6 +62,7 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 	<Story title="Molecules/ChannelRoom" responsive-disabled>
 		<Variant title="Default">
 			<ChannelRoom
+				:can-edit-topic="false"
 				:me="me"
 				:messages="messages"
 				:name="channelName"

@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelNick } from "~/channel/ChannelNick";
 import { Props } from "./ChannelUserlistMenu.state";
 
 // ---- //
@@ -18,6 +20,16 @@ export interface Emits {
 	(evtName: "open-private", user: Origin): void;
 	(evtName: "ignore-user", user: Origin): void;
 	(evtName: "unignore-user", user: Origin): void;
+	(
+		evtName: "set-access-level",
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	): void;
+	(
+		evtName: "unset-access-level",
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	): void;
 }
 
 // -------- //
@@ -43,4 +55,24 @@ export function unignoreUser(emit: Emits, props: Props) {
 		emit("unignore-user", props.user.cnick);
 	}
 	return unignoreUserHandler;
+}
+
+export function setAccessLevel(emit: Emits) {
+	function setAccessLevelHandler(
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		emit("set-access-level", cnick, accessLevel);
+	}
+	return setAccessLevelHandler;
+}
+
+export function unsetAccessLevel(emit: Emits) {
+	function unsetAccessLevelHandler(
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		emit("unset-access-level", cnick, accessLevel);
+	}
+	return unsetAccessLevelHandler;
 }

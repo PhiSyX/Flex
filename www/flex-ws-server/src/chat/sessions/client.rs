@@ -14,7 +14,7 @@ use dashmap::{DashMap, DashSet};
 use flex_web_framework::http::request;
 use socketioxide::extract::SocketRef;
 
-use crate::src::chat::components::client;
+use crate::src::chat::components::{channel, client, nick};
 use crate::src::ChatApplication;
 
 // ---- //
@@ -164,6 +164,21 @@ impl ChatApplication
 	{
 		self.clients.upgrade(client);
 		self.clients.register(client);
+	}
+
+	/// Supprime un niveau d'accès pour un pseudo d'un salon.
+	pub fn remove_client_access_level_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		unset_access_level: nick::ChannelAccessLevel,
+	) -> Option<nick::ChannelNick>
+	{
+		self.channels.remove_client_access_level(
+			channel_name,
+			client_socket.cid(),
+			unset_access_level,
+		)
 	}
 
 	/// Supprime un client (2) de la liste des clients bloqués/ignorés du client

@@ -14,6 +14,8 @@ import { Socket, io } from "socket.io-client";
 import { reactive } from "vue";
 
 import { assertChannelRoom } from "~/asserts/room";
+import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
@@ -28,6 +30,13 @@ import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
+import {
+	AccessLevelAOPModule,
+	AccessLevelHOPModule,
+	AccessLevelOPModule,
+	AccessLevelQOPModule,
+	AccessLevelVIPModule,
+} from "~/modules/mode/access-level/module";
 import { ModeModule } from "~/modules/mode/module";
 import { NickModule } from "~/modules/nick/module";
 import { PartModule } from "~/modules/part/module";
@@ -93,6 +102,28 @@ export class ChatStore {
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 		self.modules.set(TopicModule.NAME, TopicModule.create(self));
 		self.modules.set(UnignoreModule.NAME, UnignoreModule.create(self));
+
+		/** Channel access level */
+		self.modules.set(
+			AccessLevelQOPModule.NAME,
+			AccessLevelQOPModule.create(self),
+		);
+		self.modules.set(
+			AccessLevelAOPModule.NAME,
+			AccessLevelAOPModule.create(self),
+		);
+		self.modules.set(
+			AccessLevelOPModule.NAME,
+			AccessLevelOPModule.create(self),
+		);
+		self.modules.set(
+			AccessLevelHOPModule.NAME,
+			AccessLevelHOPModule.create(self),
+		);
+		self.modules.set(
+			AccessLevelVIPModule.NAME,
+			AccessLevelVIPModule.create(self),
+		);
 
 		const thisServer = new ServerCustomRoom("Flex").withID("Flex");
 		const rooms: Map<RoomID, Room> = new Map([
@@ -523,6 +554,106 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		module.input(...args);
 	}
 
+	function sendSetAccessLevel(
+		channel: ChannelRoom,
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
+		switch (accessLevel) {
+			case ChannelAccessLevel.Owner:
+				{
+					const module = store.modules.get(
+						AccessLevelQOPModule.NAME,
+					) as AccessLevelQOPModule;
+					module.sendSet(payload);
+				}
+				break;
+			case ChannelAccessLevel.AdminOperator:
+				{
+					const module = store.modules.get(
+						AccessLevelAOPModule.NAME,
+					) as AccessLevelAOPModule;
+					module.sendSet(payload);
+				}
+				break;
+			case ChannelAccessLevel.Operator:
+				{
+					const module = store.modules.get(
+						AccessLevelOPModule.NAME,
+					) as AccessLevelOPModule;
+					module.sendSet(payload);
+				}
+				break;
+			case ChannelAccessLevel.HalfOperator:
+				{
+					const module = store.modules.get(
+						AccessLevelHOPModule.NAME,
+					) as AccessLevelHOPModule;
+					module.sendSet(payload);
+				}
+				break;
+			case ChannelAccessLevel.Vip:
+				{
+					const module = store.modules.get(
+						AccessLevelVIPModule.NAME,
+					) as AccessLevelVIPModule;
+					module.sendSet(payload);
+				}
+				break;
+		}
+	}
+
+	function sendUnsetAccessLevel(
+		channel: ChannelRoom,
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
+		switch (accessLevel) {
+			case ChannelAccessLevel.Owner:
+				{
+					const module = store.modules.get(
+						AccessLevelQOPModule.NAME,
+					) as AccessLevelQOPModule;
+					module.sendUnset(payload);
+				}
+				break;
+			case ChannelAccessLevel.AdminOperator:
+				{
+					const module = store.modules.get(
+						AccessLevelAOPModule.NAME,
+					) as AccessLevelAOPModule;
+					module.sendUnset(payload);
+				}
+				break;
+			case ChannelAccessLevel.Operator:
+				{
+					const module = store.modules.get(
+						AccessLevelOPModule.NAME,
+					) as AccessLevelOPModule;
+					module.sendUnset(payload);
+				}
+				break;
+			case ChannelAccessLevel.HalfOperator:
+				{
+					const module = store.modules.get(
+						AccessLevelHOPModule.NAME,
+					) as AccessLevelHOPModule;
+					module.sendUnset(payload);
+				}
+				break;
+			case ChannelAccessLevel.Vip:
+				{
+					const module = store.modules.get(
+						AccessLevelVIPModule.NAME,
+					) as AccessLevelVIPModule;
+					module.sendUnset(payload);
+				}
+				break;
+		}
+	}
+
 	function unignoreUser(nickname: string) {
 		const unignoreModule = store.modules.get(
 			UnignoreModule.NAME,
@@ -548,6 +679,8 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		openPrivateOrCreate,
 		toggleSelectUser,
 		sendMessage,
+		sendSetAccessLevel,
+		sendUnsetAccessLevel,
 		unignoreUser,
 		updateTopic,
 	};

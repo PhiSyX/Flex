@@ -33,6 +33,25 @@ pub struct ChannelsSession(DashMap<channel::ChannelID, channel::Channel>);
 
 impl ChatApplication
 {
+	/// Est-ce que le client courant a le droit demandé sur le salon.
+	pub fn does_client_have_rights_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		min_access_level: nick::ChannelAccessLevel,
+	) -> bool
+	{
+		let is_ok = self.channels.does_client_have_rights(
+			channel_name,
+			client_socket.cid(),
+			min_access_level,
+		);
+		if !is_ok {
+			client_socket.send_err_chanoprivsneeded(channel_name);
+		}
+		is_ok
+	}
+
 	/// Récupère un salon à partir de son nom.
 	pub fn get_channel(
 		&self,
@@ -40,6 +59,11 @@ impl ChatApplication
 	) -> Option<Ref<'_, channel::ChannelID, channel::Channel>>
 	{
 		self.channels.get(channel_name)
+	}
+
+	pub fn get_client_by_id(&self, client_id: &client::ClientID) -> Option<client::Client>
+	{
+		self.clients.find(client_id)
 	}
 
 	/// Le client peut-il écrire sur le salon?
@@ -198,6 +222,18 @@ impl ChatApplication
 		client_socket.emit_part(channel_name, message)
 	}
 
+	/// Met à jour les niveaux d'accès d'un client sur un salon.
+	pub fn update_client_access_level_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel: channel::ChannelIDRef,
+		set_access_level: nick::ChannelAccessLevel,
+	) -> Option<nick::ChannelNick>
+	{
+		self.channels
+			.update_client_access_level(channel, client_socket.cid(), set_access_level)
+	}
+
 	/// Met à jour le sujet d'un salon.
 	pub fn update_topic(
 		&self,
@@ -296,6 +332,24 @@ impl ChannelsSession
 		self.add(&channel_id, channel_entity)
 	}
 
+	/// Est-ce qu'un client à des droits minimal.
+	pub fn does_client_have_rights(
+		&self,
+		channel_id: channel::ChannelIDRef,
+		client_id: &client::ClientID,
+		min_access_level: nick::ChannelAccessLevel,
+	) -> bool
+	{
+		let Some(client) = self.get_client(channel_id, client_id) else {
+			return false;
+		};
+
+		client
+			.access_level()
+			.iter()
+			.any(|access_level| access_level.flag() >= min_access_level.flag())
+	}
+
 	/// Récupère un salon.
 	pub fn get(&self, channel_id: &str) -> Option<Ref<'_, channel::ChannelID, channel::Channel>>
 	{
@@ -313,6 +367,17 @@ impl ChannelsSession
 		let channel_id_lower = channel_id.to_lowercase();
 		let channel_entity = self.0.get_mut(&channel_id_lower);
 		channel_entity
+	}
+
+	/// Récupère un client d'un salon.
+	pub fn get_client(
+		&self,
+		channel_id: &str,
+		client_id: &client::ClientID,
+	) -> Option<nick::ChannelNick>
+	{
+		let channel_entity = self.get(channel_id)?;
+		channel_entity.members().get(client_id).cloned()
 	}
 
 	/// Vérifie qu'un salon est existant ou non.
@@ -386,6 +451,21 @@ impl ChannelsSession
 		Some(())
 	}
 
+	/// Supprime le niveau d'accès d'un pseudo.
+	pub fn remove_client_access_level(
+		&self,
+		channel_id: &str,
+		client_id: &client::ClientID,
+		access_level: nick::ChannelAccessLevel,
+	) -> Option<nick::ChannelNick>
+	{
+		let mut channel = self.get_mut(channel_id)?;
+		let channel_nick = channel.member_mut(client_id)?;
+		channel_nick
+			.remove_access_level(access_level)
+			.then_some(channel_nick.clone())
+	}
+
 	/// Supprime un client de tous ses salons.
 	pub fn remove_client_from_all_his_channels(&self, client: &client::Client) -> Option<()>
 	{
@@ -394,6 +474,21 @@ impl ChannelsSession
 			channel.users.remove(client.id());
 		}
 		Some(())
+	}
+
+	/// Met à jour le niveau d'accès d'un pseudo.
+	pub fn update_client_access_level(
+		&self,
+		channel_id: &str,
+		client_id: &client::ClientID,
+		access_level: nick::ChannelAccessLevel,
+	) -> Option<nick::ChannelNick>
+	{
+		let mut channel = self.get_mut(channel_id)?;
+		let channel_nick = channel.member_mut(client_id)?;
+		channel_nick
+			.update_access_level(access_level)
+			.then_some(channel_nick.clone())
 	}
 
 	/// Met à jour un topic.

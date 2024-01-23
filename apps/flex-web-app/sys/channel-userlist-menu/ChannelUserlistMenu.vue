@@ -6,8 +6,20 @@ import {
 	ignoreUser,
 	unignoreUser,
 	type Emits,
+	setAccessLevel,
+	unsetAccessLevel,
 } from "./ChannelUserlistMenu.handler";
-import { type Props, computeIsMe } from "./ChannelUserlistMenu.state";
+
+import {
+	type Props,
+	computeIsMe,
+	computeIHaveAccessLevel,
+} from "./ChannelUserlistMenu.state";
+
+import ChannelUserlistOwnerMenu from "./ChannelUserlistAccessLevelQOPMenu.vue";
+import ChannelUserlistAdminOperatorMenu from "./ChannelUserlistAccessLevelAOPMenu.vue";
+import ChannelUserlistOperatorMenu from "./ChannelUserlistAccessLevelOPMenu.vue";
+import ChannelUserlistHalfOperatorMenu from "./ChannelUserlistAccessLevelHOPMenu.vue";
 
 // --------- //
 // Composant //
@@ -16,10 +28,13 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const isMe = computeIsMe(props);
+const iHaveAccessLevel = computeIHaveAccessLevel(props);
 
 const openPrivateHandler = openPrivate(emit, props);
 const ignoreUserHandler = ignoreUser(emit, props);
 const unignoreUserHandler = unignoreUser(emit, props);
+const setAccessLevelHandler = setAccessLevel(emit);
+const unsetAccessLevelHandler = unsetAccessLevel(emit);
 </script>
 
 <template>
@@ -38,7 +53,7 @@ const unignoreUserHandler = unignoreUser(emit, props);
 				icon="user"
 				position="right"
 				title="Commande /query"
-				type="primary"
+				variant="primary"
 				@click="openPrivateHandler()"
 			>
 				<span v-if="!isMe">Discuter en privé</span>
@@ -51,7 +66,7 @@ const unignoreUserHandler = unignoreUser(emit, props);
 				icon="user-block"
 				position="right"
 				title="Commande /ignore <nickname>"
-				type="primary"
+				variant="primary"
 				@click="ignoreUserHandler()"
 			>
 				<span>Ignorer</span>
@@ -61,7 +76,7 @@ const unignoreUserHandler = unignoreUser(emit, props);
 				icon="user-block"
 				position="right"
 				title="Commande /unignore <nickname>"
-				type="primary"
+				variant="primary"
 				:selected="user.isBlocked"
 				:true-value="true"
 				:false-value="false"
@@ -70,13 +85,49 @@ const unignoreUserHandler = unignoreUser(emit, props);
 				<span>Ne plus ignorer</span>
 			</UiButton>
 		</li>
+
+		<li v-if="iHaveAccessLevel" class="room/userlist:menu/level-access">
+			<ChannelUserlistOwnerMenu
+				:disabled="disabled"
+				:is-me="isMe"
+				:me="me"
+				:user="user"
+				@set-access-level="setAccessLevelHandler"
+				@unset-access-level="unsetAccessLevelHandler"
+			/>
+			<ChannelUserlistAdminOperatorMenu
+				:disabled="disabled"
+				:is-me="isMe"
+				:me="me"
+				:user="user"
+				@set-access-level="setAccessLevelHandler"
+				@unset-access-level="unsetAccessLevelHandler"
+			/>
+			<ChannelUserlistOperatorMenu
+				:disabled="disabled"
+				:is-me="isMe"
+				:me="me"
+				:user="user"
+				@set-access-level="setAccessLevelHandler"
+				@unset-access-level="unsetAccessLevelHandler"
+			/>
+			<ChannelUserlistHalfOperatorMenu
+				:disabled="disabled"
+				:is-me="isMe"
+				:me="me"
+				:user="user"
+				@set-access-level="setAccessLevelHandler"
+				@unset-access-level="unsetAccessLevelHandler"
+			/>
+		</li>
+
 		<li v-if="!isMe" title="TODO">
 			<UiButton
 				disabled
 				icon="report"
 				position="right"
 				:with-opacity="true"
-				type="danger"
+				variant="danger"
 			>
 				Signaler
 			</UiButton>
@@ -97,8 +148,8 @@ const unignoreUserHandler = unignoreUser(emit, props);
 		@if $name == ice {
 			--btn-primary-bg: var(--color-blue-grey600);
 			--btn-primary-bg-hover: var(--color-blue-grey700);
-			--btn-secondary-bg: var(--room-bg);
-			--btn-secondary-bg-hover: var(--body-bg_alt);
+			--btn-secondary-bg: var(--color-blue-grey700);
+			--btn-secondary-bg-hover: var(--color-blue-grey500);
 			--btn-danger-disabled-color: var(--color-red900);
 		}
 	}
@@ -144,5 +195,9 @@ const unignoreUserHandler = unignoreUser(emit, props);
 	button > svg {
 		width: auto;
 	}
+}
+
+@include fx.class("room/userlist:menu/level-access") {
+	display: flex;
 }
 </style>

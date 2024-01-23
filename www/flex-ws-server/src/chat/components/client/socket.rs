@@ -135,6 +135,37 @@ impl<'a> Socket<'a>
 		self.send_rpl_namreply(channel, map_member);
 	}
 
+	/// Émet au client courant les membres avec leurs niveaux d'accès sur un
+	/// salon.
+	pub fn emit_mode_access_level(
+		&self,
+		channel: &components::channel::Channel,
+		added_flags: Vec<(
+			char,
+			components::mode::ChannelMode<components::nick::ChannelAccessLevel>,
+		)>,
+		removed_flags: Vec<(
+			char,
+			components::mode::ChannelMode<components::nick::ChannelAccessLevel>,
+		)>,
+		updated: bool,
+	)
+	{
+		use crate::src::chat::features::ModeCommandResponse;
+
+		let origin = Origin::from(self.client());
+
+		let mode = ModeCommandResponse {
+			origin: &origin,
+			tags: ModeCommandResponse::<()>::default_tags(),
+			added: added_flags,
+			removed: removed_flags,
+			target: &channel.name,
+			updated,
+		};
+		_ = self.socket().within(channel.room()).emit(mode.name(), mode);
+	}
+
 	/// Émet au client courant les paramètres un salon.
 	pub fn emit_mode_settings(&self, channel: &components::channel::Channel, updated: bool)
 	{

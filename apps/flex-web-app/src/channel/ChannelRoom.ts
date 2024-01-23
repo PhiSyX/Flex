@@ -74,15 +74,18 @@ export class ChannelRoom extends Room<"channel"> {
 	 */
 	canEditTopic(cnick: ChannelNick): boolean {
 		return (
-			this.topic.isEditable() || this.cnickHasChannelOperatorLevelAccess(cnick)
+			this.topic.isEditable() ||
+			this.cnickHasChannelOperatorAccessLevel(cnick)
 		);
 	}
 
 	/**
 	 * Est-ce que le pseudo a des droits d'opérateurs (HalfOperator min).
 	 */
-	cnickHasChannelOperatorLevelAccess(cnick: ChannelNick): boolean {
-		return cnick.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator;
+	cnickHasChannelOperatorAccessLevel(cnick: ChannelNick): boolean {
+		return (
+			cnick.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator
+		);
 	}
 
 	/**

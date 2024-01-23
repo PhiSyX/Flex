@@ -62,6 +62,48 @@ impl Feature for ChatApplication
 				socket.on(QuitHandler::COMMAND_NAME, QuitHandler::handle);
 				socket.on(TopicHandler::COMMAND_NAME, TopicHandler::handle);
 				socket.on(UnignoreHandler::COMMAND_NAME, UnignoreHandler::handle);
+
+				/* Channel Access Level */
+				socket.on(
+					ModeAccessLevelQOPHandler::SET_COMMAND_NAME,
+					ModeAccessLevelQOPHandler::handle,
+				);
+				socket.on(
+					ModeAccessLevelQOPHandler::UNSET_COMMAND_NAME,
+					ModeAccessLevelQOPHandler::handle_remove,
+				);
+				socket.on(
+					ModeAccessLevelAOPHandler::SET_COMMAND_NAME,
+					ModeAccessLevelAOPHandler::handle,
+				);
+				socket.on(
+					ModeAccessLevelAOPHandler::UNSET_COMMAND_NAME,
+					ModeAccessLevelAOPHandler::handle_remove,
+				);
+				socket.on(
+					ModeAccessLevelOPHandler::SET_COMMAND_NAME,
+					ModeAccessLevelOPHandler::handle,
+				);
+				socket.on(
+					ModeAccessLevelOPHandler::UNSET_COMMAND_NAME,
+					ModeAccessLevelOPHandler::handle_remove,
+				);
+				socket.on(
+					ModeAccessLevelHOPHandler::SET_COMMAND_NAME,
+					ModeAccessLevelHOPHandler::handle,
+				);
+				socket.on(
+					ModeAccessLevelHOPHandler::UNSET_COMMAND_NAME,
+					ModeAccessLevelHOPHandler::handle_remove,
+				);
+				socket.on(
+					ModeAccessLevelVIPHandler::SET_COMMAND_NAME,
+					ModeAccessLevelVIPHandler::handle,
+				);
+				socket.on(
+					ModeAccessLevelVIPHandler::UNSET_COMMAND_NAME,
+					ModeAccessLevelVIPHandler::handle_remove,
+				);
 			},
 		);
 

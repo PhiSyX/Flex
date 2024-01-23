@@ -13,14 +13,15 @@ import { computed } from "vue";
 import { Icons } from "../icons";
 
 export interface Props {
-	icon: Icons;
+	icon?: Icons;
 	position?: "left" | "right";
 	withOpacity?: boolean;
 	value?: unknown;
 	trueValue?: unknown;
 	falseValue?: unknown;
 	selected?: unknown;
-	type?: "primary" | "danger";
+	type?: "button" | "submit";
+	variant?: "primary" | "secondary" | "danger";
 }
 
 export const computeValue$ = (props: Props) =>

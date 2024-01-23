@@ -9,6 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Ref, nextTick } from "vue";
+import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelNick } from "~/channel/ChannelNick";
 import { Props } from "./ChannelRoom.state";
 
 // ---- //
@@ -23,6 +25,16 @@ export interface Emits {
 	(evtName: "select-user", origin: Origin): void;
 	(evtName: "send-message", name: string, message: string): void;
 	(evtName: "update-topic", name: string, topic: string): void;
+	(
+		evtName: "set-access-level",
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	): void;
+	(
+		evtName: "unset-access-level",
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	): void;
 }
 
 // -------- //
@@ -123,4 +135,24 @@ export function enableTopicEditMode(
 		});
 	}
 	return enableTopicEditModeHandler;
+}
+
+export function setAccessLevel(emit: Emits) {
+	function setAccessLevelHandler(
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		emit("set-access-level", cnick, accessLevel);
+	}
+	return setAccessLevelHandler;
+}
+
+export function unsetAccessLevel(emit: Emits) {
+	function unsetAccessLevelHandler(
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		emit("unset-access-level", cnick, accessLevel);
+	}
+	return unsetAccessLevelHandler;
 }

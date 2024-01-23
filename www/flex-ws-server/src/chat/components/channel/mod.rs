@@ -79,6 +79,12 @@ impl Channel
 		self.users.get(id)
 	}
 
+	/// Récupère un membre du salon.
+	pub fn member_mut(&mut self, id: &client::ClientID) -> Option<&mut nick::ChannelNick>
+	{
+		self.users.get_mut(id)
+	}
+
 	/// Tous les membres du salon.
 	pub fn members(&self) -> &HashMap<client::ClientID, nick::ChannelNick>
 	{
