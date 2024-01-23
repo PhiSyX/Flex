@@ -24,6 +24,8 @@ pub struct KickHandler;
 
 impl KickHandler
 {
+	pub const COMMAND_NAME: &'static str = "KICK";
+
 	/// La commande KICK peut être utilisée pour demander le retrait forcé d'un
 	/// utilisateur d'un salon. Elle entraîne le retrait forcé de l'<user> du
 	/// <salon>. Pour que le message soit syntaxiquement correct, il DOIT y

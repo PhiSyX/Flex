@@ -359,6 +359,10 @@ export class ChatStore {
 		return this._usersBlocked.delete(user.id);
 	}
 
+	removeChannelForUser(channelID: ChannelID, userID: UserID) {
+		this._users.get(userID)?.channels.delete(channelID);
+	}
+
 	roomManager(): RoomManager {
 		return this._roomManager;
 	}

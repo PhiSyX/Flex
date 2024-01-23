@@ -17,7 +17,7 @@ declare interface KickFormData {
 declare interface KickDataResponse {
 	channel: string;
 	reason: string;
-	knick: ChannelOrigin;
+	knick: Origin;
 }
 
 declare interface Commands {

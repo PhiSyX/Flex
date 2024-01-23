@@ -26,15 +26,17 @@ export interface Props {
 // Local State //
 // ----------- //
 
+// NOTE: retourne une Option, car l'utilisateur courant PEUT être sanctionné à
+// tout moment.
 export const compute$me = (props: Props) =>
-	computed(() =>
-		props.room
-			.getUser(chatStore.store.me().id)
-			.expect("Récupération du client dans le salon courant"),
-	);
+	computed(() => props.room.getUser(chatStore.store.me().id));
 
 export const computeCanEditTopic = (props: Props) =>
-	computed(() => props.room.canEditTopic(compute$me(props).value));
+	computed(() =>
+		compute$me(props)
+			.value.map((cnick) => props.room.canEditTopic(cnick))
+			.unwrap_or(false),
+	);
 
 export const computeSelectedUser = (props: Props) =>
 	computed(() => chatStore.getSelectedUser(props.room));

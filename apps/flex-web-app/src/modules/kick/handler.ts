@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { assertChannelRoom } from "~/asserts/room";
+import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -28,5 +30,28 @@ export class KickHandler implements SocketEventInterface<"KICK"> {
 		this.store.on("KICK", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"KICK">) {}
+	handle(data: GenericReply<"KICK">) {
+		const maybeChannel = this.store.roomManager().get(data.channel);
+		if (maybeChannel.is_none()) return;
+		const channel = maybeChannel.unwrap();
+		assertChannelRoom(channel);
+		if (this.store.isMe(data.knick)) {
+			this.handleMe(data, channel);
+			return;
+		}
+		this.handleUser(data, channel);
+	}
+
+	handleMe(data: GenericReply<"KICK">, channel: ChannelRoom) {
+		channel.addEvent("event:kick", { ...data, isMe: true });
+		channel.removeUser(data.knick.id);
+		channel.setKicked(true);
+		this.store.removeChannelForUser(data.channel, data.knick.id);
+	}
+
+	handleUser(data: GenericReply<"KICK">, channel: ChannelRoom) {
+		channel.addEvent("event:kick", { ...data, isMe: false });
+		channel.removeUser(data.knick.id);
+		this.store.removeChannelForUser(data.channel, data.knick.id);
+	}
 }

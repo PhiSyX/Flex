@@ -46,6 +46,7 @@ const {
 <template>
 	<div class="room/channel" :data-room="name">
 		<Room
+			:disable-input="disableInput"
 			:messages="messages"
 			:name="name"
 			@open-private="openPrivateHandler"
@@ -112,8 +113,8 @@ const {
 					/>
 
 					<!-- <slot name="userlist-menu" /> -->
-					<Match :maybe="selectedUser">
-						<template #some="{ data: selectedUser }">
+					<Match :maybe="me.zip(selectedUser)">
+						<template #some="{ data: [me, selectedUser] }">
 							<ChannelUserlistMenu
 								:me="me"
 								:user="selectedUser"
