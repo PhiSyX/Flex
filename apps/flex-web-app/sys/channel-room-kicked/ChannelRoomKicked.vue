@@ -1,36 +1,29 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { RoomMessage } from "~/room/RoomMessage";
+import { type Emits, joinChannel } from "./ChannelRoomKicked.handlers";
 
-// ---- //
-// Type //
-// ---- //
-interface Props {
-	lastMessage: RoomMessage;
-}
-
-interface Emits {
-	(evtName: "join-channel", channelName: string): void;
-}
+import {
+	type Props,
+	computeReason,
+	computeChannel,
+	computeNickname,
+	displayJoinButton,
+	toRawLastMessage,
+} from "./ChannelRoomKicked.state";
 
 // --------- //
 // Composant //
 // --------- //
+
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const displayJoinButton = ref(true);
+const lastMessage = toRawLastMessage(props);
 
-const lastMessage = computed(
-	() => props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> }
-);
-const nickname = computed(() => lastMessage.value.data.origin.nickname);
-const channel = computed(() => lastMessage.value.data.channel);
-const reason = computed(() => lastMessage.value.data.reason);
+const nickname = computeNickname(props);
+const channel = computeChannel(props);
+const reason = computeReason(props);
 
-function joinChannelHandler() {
-	emit("join-channel", lastMessage.value.data.channel);
-}
+const joinChannelHandler = joinChannel(emit, { lastMessage });
 </script>
 
 <template>
@@ -42,7 +35,7 @@ function joinChannelHandler() {
 			<strong>{{ reason }}</strong> » !
 		</p>
 
-		<button v-if="displayJoinButton" @click="joinChannelHandler">
+		<button v-if="displayJoinButton" @click="joinChannelHandler()">
 			Rejoindre le salon
 		</button>
 	</div>
