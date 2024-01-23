@@ -39,6 +39,9 @@ const emit = defineEmits<Emits>();
 const imOwner = computed(() =>
 	props.me.accessLevel.has(ChannelAccessLevel.Owner)
 );
+const isUserOwner = computed(() =>
+	props.user.cnick.accessLevel.has(ChannelAccessLevel.Owner)
+);
 
 function setAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 	emit("set-access-level", props.user.cnick, accessLevel);
@@ -62,7 +65,7 @@ function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 	</template>
 	<template v-else-if="imOwner">
 		<UiButton
-			v-if="!isMe"
+			v-if="!isUserOwner"
 			:disabled="disabled"
 			variant="secondary"
 			class="is-owner"
