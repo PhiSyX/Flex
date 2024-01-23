@@ -9,6 +9,7 @@ import {
 	unignoreUser,
 	setAccessLevel,
 	unsetAccessLevel,
+	kickUser,
 } from "./ChannelRoom.handlers";
 import { useChannelTopic } from "./ChannelRoom.hooks";
 import { type Props, displayUserlist } from "./ChannelRoom.state";
@@ -25,11 +26,12 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const ignoreUserHandler = ignoreUser(emit);
+const kickUserHandler = kickUser(emit);
 const openPrivateHandler = openPrivate(emit);
 const selectUserHandler = selectUser(emit);
 const sendMessageHandler = sendMessage(emit, props.name);
-const unignoreUserHandler = unignoreUser(emit);
 const setAccessLevelHandler = setAccessLevel(emit);
+const unignoreUserHandler = unignoreUser(emit);
 const unsetAccessLevelHandler = unsetAccessLevel(emit);
 
 const {
@@ -116,9 +118,10 @@ const {
 								:me="me"
 								:user="selectedUser"
 								@ignore-user="ignoreUserHandler"
+								@kick-user="kickUserHandler"
 								@open-private="openPrivateHandler"
-								@unignore-user="unignoreUserHandler"
 								@set-access-level="setAccessLevelHandler"
+								@unignore-user="unignoreUserHandler"
 								@unset-access-level="unsetAccessLevelHandler"
 							/>
 						</template>

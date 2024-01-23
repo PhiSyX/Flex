@@ -17,14 +17,15 @@ import { Props } from "./ChannelUserlistMenu.state";
 // ---- //
 
 export interface Emits {
-	(evtName: "open-private", user: Origin): void;
 	(evtName: "ignore-user", user: Origin): void;
-	(evtName: "unignore-user", user: Origin): void;
+	(evtName: "kick-user", cnick: ChannelNick): void;
+	(evtName: "open-private", user: Origin): void;
 	(
 		evtName: "set-access-level",
 		cnick: ChannelNick,
 		accessLevel: ChannelAccessLevel,
 	): void;
+	(evtName: "unignore-user", user: Origin): void;
 	(
 		evtName: "unset-access-level",
 		cnick: ChannelNick,
@@ -48,6 +49,13 @@ export function ignoreUser(emit: Emits, props: Props) {
 		emit("ignore-user", props.user.cnick);
 	}
 	return ignoreUserHandler;
+}
+
+export function kickUser(emit: Emits, props: Props) {
+	function kickUserHandler() {
+		emit("kick-user", props.user.cnick);
+	}
+	return kickUserHandler;
 }
 
 export function unignoreUser(emit: Emits, props: Props) {

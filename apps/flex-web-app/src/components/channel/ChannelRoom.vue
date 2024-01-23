@@ -9,11 +9,12 @@ import {
 import {
 	closeRoomHandler,
 	ignoreUserHandler,
+	kickUser,
 	openPrivateHandler,
-	toggleSelectedUser,
 	sendMessageHandler,
 	sendSetAccessLevel,
 	sendUnsetAccessLevel,
+	toggleSelectedUser,
 	unignoreUserHandler,
 	updateTopicHandler,
 } from "./ChannelRoom.handlers";
@@ -30,9 +31,10 @@ const $me = compute$me(props);
 const selectedUser = computeSelectedUser(props);
 const canEditTopic = computeCanEditTopic(props);
 
-const toggleSelectedUserHandler = toggleSelectedUser(props);
+const kickUserHandler = kickUser(props);
 const sendSetAccessLevelHandler = sendSetAccessLevel(props);
 const sendUnsetAccessLevelHandler = sendUnsetAccessLevel(props);
+const toggleSelectedUserHandler = toggleSelectedUser(props);
 </script>
 
 <template>
@@ -46,12 +48,13 @@ const sendUnsetAccessLevelHandler = sendUnsetAccessLevel(props);
 		:topic="room.topic"
 		@close-room="closeRoomHandler"
 		@ignore-user="ignoreUserHandler"
-		@unignore-user="unignoreUserHandler"
+		@kick-user="kickUserHandler"
 		@open-private="openPrivateHandler"
 		@select-user="toggleSelectedUserHandler"
 		@send-message="sendMessageHandler"
-		@update-topic="updateTopicHandler"
 		@set-access-level="sendSetAccessLevelHandler"
+		@unignore-user="unignoreUserHandler"
 		@unset-access-level="sendUnsetAccessLevelHandler"
+		@update-topic="updateTopicHandler"
 	/>
 </template>

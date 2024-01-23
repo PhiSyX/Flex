@@ -8,45 +8,56 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ref, watchEffect } from "vue";
-import {
-	Emits,
-	enableTopicEditMode,
-	submitTopic,
-} from "./ChannelRoom.handlers";
-import { Props } from "./ChannelRoom.state";
+import { ChatStore } from "~/store/ChatStore";
 
-// ----- //
-// Hooks //
-// ----- //
+import { Module } from "../interface";
+import { KickCommand } from "./command";
+import { KickHandler } from "./handler";
 
-export function useChannelTopic(props: Props, emits: Emits) {
-	const $topic = ref<HTMLInputElement>();
-	const topicEditMode = ref(false);
-	const topicInput = ref("");
+// -------------- //
+// Implémentation //
+// -------------- //
 
-	const submitTopicHandler = submitTopic(emits, props, {
-		topicEditMode,
-		topicInput,
-	});
+export class KickModule implements Module<KickModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
 
-	const enableTopicEditModeHandler = enableTopicEditMode(props, {
-		$topic,
-		topicEditMode,
-	});
+	static NAME = "KICK";
 
-	watchEffect(() => {
-		if (topicEditMode.value === false) {
-			topicInput.value = props.topic.get();
+	static create(store: ChatStore): KickModule {
+		return new KickModule(new KickCommand(store), new KickHandler(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(
+		private command: KickCommand,
+		private handler: KickHandler,
+	) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(channelsRaw?: string, knicksRaw?: string, ...words: Array<string>) {
+		const channels = channelsRaw?.split(",");
+		const knicks = knicksRaw?.split(",");
+
+		if (!channels || !knicks) {
+			return;
 		}
-	});
 
-	return {
-		$topic,
-		topicEditMode,
-		topicInput,
+		const comment = words.join(" ") || "Kick.";
+		this.send({ channels, knicks, comment });
+	}
 
-		enableTopicEditModeHandler,
-		submitTopicHandler,
-	};
+	send(payload: Command<"KICK">) {
+		this.command.send(payload);
+	}
+
+	listen() {
+		this.handler.listen();
+	}
 }

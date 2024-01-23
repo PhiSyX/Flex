@@ -8,45 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ref, watchEffect } from "vue";
-import {
-	Emits,
-	enableTopicEditMode,
-	submitTopic,
-} from "./ChannelRoom.handlers";
-import { Props } from "./ChannelRoom.state";
+import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
-// ----- //
-// Hooks //
-// ----- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export function useChannelTopic(props: Props, emits: Emits) {
-	const $topic = ref<HTMLInputElement>();
-	const topicEditMode = ref(false);
-	const topicInput = ref("");
+export class KickCommand implements CommandInterface<"KICK"> {
+	constructor(private store: ChatStore) {}
 
-	const submitTopicHandler = submitTopic(emits, props, {
-		topicEditMode,
-		topicInput,
-	});
-
-	const enableTopicEditModeHandler = enableTopicEditMode(props, {
-		$topic,
-		topicEditMode,
-	});
-
-	watchEffect(() => {
-		if (topicEditMode.value === false) {
-			topicInput.value = props.topic.get();
-		}
-	});
-
-	return {
-		$topic,
-		topicEditMode,
-		topicInput,
-
-		enableTopicEditModeHandler,
-		submitTopicHandler,
-	};
+	send(payload: Command<"KICK">): void {
+		this.store.emit("KICK", payload);
+	}
 }

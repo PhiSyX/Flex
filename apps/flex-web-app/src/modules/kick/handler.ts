@@ -8,45 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ref, watchEffect } from "vue";
-import {
-	Emits,
-	enableTopicEditMode,
-	submitTopic,
-} from "./ChannelRoom.handlers";
-import { Props } from "./ChannelRoom.state";
+import { ChatStore } from "~/store/ChatStore";
 
-// ----- //
-// Hooks //
-// ----- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export function useChannelTopic(props: Props, emits: Emits) {
-	const $topic = ref<HTMLInputElement>();
-	const topicEditMode = ref(false);
-	const topicInput = ref("");
+export class KickHandler implements SocketEventInterface<"KICK"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
 
-	const submitTopicHandler = submitTopic(emits, props, {
-		topicEditMode,
-		topicInput,
-	});
+	// ------- //
+	// Méthode //
+	// ------- //
 
-	const enableTopicEditModeHandler = enableTopicEditMode(props, {
-		$topic,
-		topicEditMode,
-	});
+	listen() {
+		this.store.on("KICK", (data) => this.handle(data));
+	}
 
-	watchEffect(() => {
-		if (topicEditMode.value === false) {
-			topicInput.value = props.topic.get();
-		}
-	});
-
-	return {
-		$topic,
-		topicEditMode,
-		topicInput,
-
-		enableTopicEditModeHandler,
-		submitTopicHandler,
-	};
+	handle(data: GenericReply<"KICK">) {}
 }

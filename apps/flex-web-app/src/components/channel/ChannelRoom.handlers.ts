@@ -33,6 +33,14 @@ export function ignoreUserHandler(origin: Origin) {
 	chatStore.ignoreUser(origin.nickname);
 }
 
+export function kickUser(props: Props) {
+	function kickUserHandler(cnick: ChannelNick) {
+		chatStore.kickUser(props.room, cnick);
+	}
+
+	return kickUserHandler;
+}
+
 export function sendMessageHandler(name: string, message: string) {
 	chatStore.sendMessage(name, message);
 }

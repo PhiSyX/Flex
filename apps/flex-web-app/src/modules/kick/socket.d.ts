@@ -8,45 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ref, watchEffect } from "vue";
-import {
-	Emits,
-	enableTopicEditMode,
-	submitTopic,
-} from "./ChannelRoom.handlers";
-import { Props } from "./ChannelRoom.state";
+declare interface KickFormData {
+	channels: Array<string>;
+	knicks: Array<string>;
+	comment?: string;
+}
 
-// ----- //
-// Hooks //
-// ----- //
+declare interface KickDataResponse {
+	channel: string;
+	reason: string;
+	knick: ChannelOrigin;
+}
 
-export function useChannelTopic(props: Props, emits: Emits) {
-	const $topic = ref<HTMLInputElement>();
-	const topicEditMode = ref(false);
-	const topicInput = ref("");
+declare interface Commands {
+	KICK: KickFormData;
+}
 
-	const submitTopicHandler = submitTopic(emits, props, {
-		topicEditMode,
-		topicInput,
-	});
-
-	const enableTopicEditModeHandler = enableTopicEditMode(props, {
-		$topic,
-		topicEditMode,
-	});
-
-	watchEffect(() => {
-		if (topicEditMode.value === false) {
-			topicInput.value = props.topic.get();
-		}
-	});
-
-	return {
-		$topic,
-		topicEditMode,
-		topicInput,
-
-		enableTopicEditModeHandler,
-		submitTopicHandler,
-	};
+declare interface CommandResponsesFromServer {
+	KICK: KickDataResponse;
 }

@@ -30,6 +30,7 @@ import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { Module } from "~/modules/interface";
 import { JoinModule } from "~/modules/join/module";
+import { KickModule } from "~/modules/kick/module";
 import {
 	AccessLevelAOPModule,
 	AccessLevelHOPModule,
@@ -95,6 +96,7 @@ export class ChatStore {
 
 		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+		self.modules.set(KickModule.NAME, KickModule.create(self));
 		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
 		self.modules.set(PartModule.NAME, PartModule.create(self));
@@ -481,6 +483,19 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		ignoreModule.send({ nickname });
 	}
 
+	function kickUser(
+		channel: ChannelRoom,
+		cnick: ChannelNick,
+		comment = "Kick.",
+	) {
+		const ignoreModule = store.modules.get(KickModule.NAME) as KickModule;
+		ignoreModule.send({
+			channels: [channel.name],
+			knicks: [cnick.nickname],
+			comment,
+		});
+	}
+
 	function listen<K extends keyof ServerToClientEvent>(
 		eventName: K,
 		listener: ServerToClientEvent[K],
@@ -675,12 +690,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		connect,
 		getSelectedUser,
 		ignoreUser,
+		kickUser,
 		listen,
 		openPrivateOrCreate,
-		toggleSelectUser,
 		sendMessage,
 		sendSetAccessLevel,
 		sendUnsetAccessLevel,
+		toggleSelectUser,
 		unignoreUser,
 		updateTopic,
 	};
