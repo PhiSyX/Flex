@@ -8,27 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+declare interface Commands {
+	QOP: { channel: string; nicknames: Array<string> };
+	DEQOP: Commands["QOP"];
 
-// ---- //
-// Type //
-// ---- //
+	OP: { channel: string; nicknames: Array<string> };
+	DEOP: Commands["OP"];
 
-export interface Props {
-	disabled?: boolean;
-	me: ChannelNick;
-	user: ChannelSelectedUser;
+	AOP: { channel: string; nicknames: Array<string> };
+	DEAOP: Commands["AOP"];
+
+	HOP: { channel: string; nicknames: Array<string> };
+	DEHOP: Commands["HOP"];
+
+	VIP: { channel: string; nicknames: Array<string> };
+	DEVIP: Commands["VIP"];
 }
 
-// ----------- //
-// Local State //
-// ----------- //
+declare interface CommandResponsesFromServer {
+	MODE: {
+		target: string;
+		updated: boolean;
 
-export const computeIsMe = (props: Props) =>
-	computed(() => props.me.partialEq(props.user.cnick));
+		added: [
+			(
+				| ["o", ModeApplyFlag<"owner">]
+				| ["a", ModeApplyFlag<"admin_operator">]
+				| ["o", ModeApplyFlag<"operator">]
+			),
+			["h", ModeApplyFlag<"half_operator">],
+			["v", ModeApplyFlag<"vip">],
+		];
 
-export const computeIHaveAccessLevel = (props: Props) =>
-	computed(() => props.me.highestAccessLevel.level > ChannelAccessLevel.Vip);
+		removed: CommandResponsesFromServer["MODE"]["added"];
+	};
+}

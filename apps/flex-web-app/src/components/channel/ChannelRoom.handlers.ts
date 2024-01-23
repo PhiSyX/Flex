@@ -10,6 +10,10 @@
 
 import { useChatStore } from "~/store/ChatStore";
 
+import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelNick } from "~/channel/ChannelNick";
+
+import { ChannelRoom } from "~/channel/ChannelRoom";
 import { Props } from "./ChannelRoom.state";
 
 const chatStore = useChatStore();
@@ -32,6 +36,26 @@ export function ignoreUserHandler(origin: Origin) {
 
 export function sendMessageHandler(name: string, message: string) {
 	chatStore.sendMessage(name, message);
+}
+
+export function sendSetAccessLevel(props: Props) {
+	function sendSetAccessLevelHandler(
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		chatStore.sendSetAccessLevel(props.room, cnick, accessLevel);
+	}
+	return sendSetAccessLevelHandler;
+}
+
+export function sendUnsetAccessLevel(props: Props) {
+	function sendUnsetAccessLevelHandler(
+		cnick: ChannelNick,
+		accessLevel: ChannelAccessLevel,
+	) {
+		chatStore.sendUnsetAccessLevel(props.room, cnick, accessLevel);
+	}
+	return sendUnsetAccessLevelHandler;
 }
 
 export function toggleSelectedUser(props: Props) {

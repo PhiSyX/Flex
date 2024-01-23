@@ -34,7 +34,7 @@ export const compute$me = (props: Props) =>
 	);
 
 export const computeCanEditTopic = (props: Props) =>
-	computed(() => props.room.canEditTopic($me.value));
+	computed(() => props.room.canEditTopic(compute$me(props).value));
 
 export const computeSelectedUser = (props: Props) =>
 	computed(() => chatStore.getSelectedUser(props.room));

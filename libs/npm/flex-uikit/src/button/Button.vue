@@ -5,6 +5,7 @@ import { handleClick } from "./Button.handler";
 const props = withDefaults(defineProps<Props>(), {
 	position: "left",
 	withOpacity: true,
+	type: "button",
 });
 
 const selectedModel = defineModel("selected");
@@ -19,16 +20,16 @@ const isSelected = computeIsSelected(props);
 		:class="{
 			'btn:active': isSelected,
 			'btn/without-opacity': withOpacity === false,
-			[`btn/${type}`]: type,
+			[`btn/${variant}`]: variant,
 		}"
-		type="button"
+		:type="type"
 		@click="handleClickHandler"
 	>
-		<template v-if="position === 'left'">
+		<template v-if="position === 'left' && icon">
 			<component :is="`icon-${icon}`" />
 		</template>
 		<slot />
-		<template v-if="position === 'right'">
+		<template v-if="position === 'right' && icon">
 			<component :is="`icon-${icon}`" />
 		</template>
 	</button>
@@ -94,6 +95,15 @@ const isSelected = computeIsSelected(props);
 	&:hover {
 		background: var(--btn-primary-bg-hover, var(--btn-primary-bg));
 		color: var(--btn-primary-color-hover, var(--btn-primary-color));
+	}
+}
+
+.btn\/secondary {
+	background: var(--btn-secondary-bg);
+	color: var(--btn-secondary-color);
+	&:hover {
+		background: var(--btn-secondary-bg-hover, var(--btn-secondary-bg));
+		color: var(--btn-secondary-color-hover, var(--btn-secondary-color));
 	}
 }
 
