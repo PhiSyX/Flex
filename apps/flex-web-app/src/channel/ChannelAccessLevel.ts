@@ -183,7 +183,7 @@ export function parseAccessLevel(level: string): ChannelAccessLevel {
 			return ChannelAccessLevel.Owner;
 		case "&":
 		case "a":
-		case "adminoperator":
+		case "admin_operator":
 			return ChannelAccessLevel.AdminOperator;
 		case "@":
 		case "o":
@@ -191,11 +191,11 @@ export function parseAccessLevel(level: string): ChannelAccessLevel {
 			return ChannelAccessLevel.Operator;
 		case "%":
 		case "h":
-		case "halfoperator":
+		case "half_operator":
 			return ChannelAccessLevel.HalfOperator;
 		case "+":
 		case "v":
-		case "voice":
+		case "vip":
 			return ChannelAccessLevel.Vip;
 		default:
 			return ChannelAccessLevel.User;
