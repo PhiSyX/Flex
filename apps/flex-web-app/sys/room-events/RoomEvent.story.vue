@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { formatDate } from "@phisyx/flex-date";
 import RoomEventJoin from "./RoomEventJoin.vue";
+import RoomEventKick from "./RoomEventKick.vue";
+import RoomEventMode from "./RoomEventMode.vue";
 import RoomEventNick from "./RoomEventNick.vue";
 import RoomEventPart from "./RoomEventPart.vue";
 import RoomEventQuery from "./RoomEventQuery.vue";
 import RoomEventQuit from "./RoomEventQuit.vue";
 import RoomEventRplIgnore from "./RoomEventRplIgnore.vue";
 import RoomEventRplUnignore from "./RoomEventRplUnignore.vue";
-import RoomEventMode from "./RoomEventMode.vue";
 
 type Payload = {
 	id: string;
@@ -60,6 +61,17 @@ const eventJoin: Payload & { data: GenericReply<"JOIN"> } = {
 	},
 	...payload,
 };
+const eventKick: Payload & { data: GenericReply<"KICK"> } = {
+	data: {
+		channel: "#channel",
+		name: "KICK",
+		knick: origin,
+		reason: "Dehors !",
+		origin,
+		tags,
+	},
+	...payload,
+};
 const eventMode1: Payload & { data: GenericReply<"MODE"> } = {
 	data: {
 		added: [
@@ -73,7 +85,7 @@ const eventMode1: Payload & { data: GenericReply<"MODE"> } = {
 				},
 			],
 		],
-		removed: []  as unknown as GenericReply<"MODE">["removed"],
+		removed: [] as unknown as GenericReply<"MODE">["removed"],
 		target: "#channel",
 		updated: false,
 		name: "MODE",
@@ -182,6 +194,12 @@ const eventRplUnignore: Payload & {
 		<Variant title="Join Event">
 			<div class="room/echo">
 				<RoomEventJoin v-bind="eventJoin" />
+			</div>
+		</Variant>
+
+		<Variant title="Kick Event">
+			<div class="room/echo">
+				<RoomEventKick v-bind="eventKick" />
 			</div>
 		</Variant>
 
