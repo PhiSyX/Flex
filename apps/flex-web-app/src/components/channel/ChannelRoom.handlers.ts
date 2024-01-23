@@ -13,7 +13,6 @@ import { useChatStore } from "~/store/ChatStore";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 
-import { ChannelRoom } from "~/channel/ChannelRoom";
 import { Props } from "./ChannelRoom.state";
 
 const chatStore = useChatStore();

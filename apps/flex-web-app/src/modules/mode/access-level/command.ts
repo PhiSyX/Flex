@@ -18,7 +18,7 @@ import { CommandInterface } from "../../interface";
 export class AccessLevelQOPCommand implements CommandInterface<"QOP"> {
 	constructor(private store: ChatStore) {}
 
-	send(payload: Command<"QOP">): void {}
+	send(_payload: Command<"QOP">): void {}
 
 	sendSet(payload: Command<"QOP">): void {
 		this.store.emit("QOP", payload);
@@ -32,7 +32,7 @@ export class AccessLevelQOPCommand implements CommandInterface<"QOP"> {
 export class AccessLevelAOPCommand implements CommandInterface<"AOP"> {
 	constructor(private store: ChatStore) {}
 
-	send(payload: Command<"AOP">): void {}
+	send(_payload: Command<"AOP">): void {}
 
 	sendSet(payload: Command<"AOP">): void {
 		this.store.emit("AOP", payload);
@@ -46,7 +46,7 @@ export class AccessLevelAOPCommand implements CommandInterface<"AOP"> {
 export class AccessLevelOPCommand implements CommandInterface<"OP"> {
 	constructor(private store: ChatStore) {}
 
-	send(payload: Command<"OP">): void {}
+	send(_payload: Command<"OP">): void {}
 
 	sendSet(payload: Command<"OP">): void {
 		this.store.emit("OP", payload);
@@ -60,7 +60,7 @@ export class AccessLevelOPCommand implements CommandInterface<"OP"> {
 export class AccessLevelHOPCommand implements CommandInterface<"HOP"> {
 	constructor(private store: ChatStore) {}
 
-	send(payload: Command<"HOP">): void {}
+	send(_payload: Command<"HOP">): void {}
 
 	sendSet(payload: Command<"HOP">): void {
 		this.store.emit("HOP", payload);
@@ -74,7 +74,7 @@ export class AccessLevelHOPCommand implements CommandInterface<"HOP"> {
 export class AccessLevelVIPCommand implements CommandInterface<"VIP"> {
 	constructor(private store: ChatStore) {}
 
-	send(payload: Command<"VIP">): void {}
+	send(_payload: Command<"VIP">): void {}
 
 	sendSet(payload: Command<"VIP">): void {
 		this.store.emit("VIP", payload);

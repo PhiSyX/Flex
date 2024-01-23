@@ -9,7 +9,7 @@ import {
 	unignoreUser,
 	setAccessLevel,
 	unsetAccessLevel,
-} from "./ChannelRoom.handler";
+} from "./ChannelRoom.handlers";
 import { useChannelTopic } from "./ChannelRoom.hooks";
 import { type Props, displayUserlist } from "./ChannelRoom.state";
 
