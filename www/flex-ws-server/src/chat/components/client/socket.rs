@@ -135,6 +135,34 @@ impl<'a> Socket<'a>
 		self.send_rpl_namreply(channel, map_member);
 	}
 
+	/// Émet au client les réponses liées à la commande /KICK.
+	pub fn emit_kick(
+		&self,
+		channel: &components::channel::Channel,
+		knick_client_socket: &Self,
+		reason: Option<&str>,
+	)
+	{
+		use crate::src::chat::features::KickCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let knick_origin = Origin::from(knick_client_socket.client());
+
+		let cmd_kick = KickCommandResponse {
+			origin: &origin,
+			knick: &knick_origin,
+			channel: &channel.name,
+			reason: reason.or(Some("Kick!")),
+			tags: KickCommandResponse::default_tags(),
+		};
+
+		_ = self
+			.socket()
+			.within(channel.room())
+			.emit(cmd_kick.name(), cmd_kick);
+		_ = knick_client_socket.socket().leave(channel.room());
+	}
+
 	/// Émet au client courant les membres avec leurs niveaux d'accès sur un
 	/// salon.
 	pub fn emit_mode_access_level(
@@ -581,6 +609,25 @@ impl<'a> Socket<'a>
 		_ = self
 			.socket()
 			.emit(err_notonchannel.name(), err_notonchannel);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrUsernotinchannelError].
+	pub fn send_err_usernotinchannel(&self, channel: &str, nick: &str)
+	{
+		use crate::src::chat::replies::ErrUsernotinchannelError;
+
+		let origin = Origin::from(self.client());
+		let err_usernotinchannel = ErrUsernotinchannelError {
+			origin: &origin,
+			tags: ErrUsernotinchannelError::default_tags(),
+			channel,
+			nick,
+		};
+
+		_ = self
+			.socket()
+			.emit(err_usernotinchannel.name(), err_usernotinchannel);
 	}
 }
 

@@ -59,6 +59,12 @@ mod features
 			response,
 		};
 
+		kick / {
+			formdata,
+			handler,
+			response,
+		};
+
 		nick / {
 			formdata,
 			handler,
@@ -115,6 +121,7 @@ mod replies
 			err_nosuchchannel,
 			err_nosuchnick,
 			err_notonchannel,
+			err_usernotinchannel,
 		};
 
 		reserved_numerics / {
