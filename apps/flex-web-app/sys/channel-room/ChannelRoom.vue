@@ -102,6 +102,10 @@ const {
 				</Alert>
 			</template>
 
+			<template #history>
+				<slot name="history" />
+			</template>
+
 			<template #room-info v-if="displayUserlist">
 				<aside class="room/info">
 					<ChannelUserlist

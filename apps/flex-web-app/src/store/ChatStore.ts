@@ -487,6 +487,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		ignoreModule.send({ nickname });
 	}
 
+	function joinChannel(name: string) {
+		const joinModule = store.modules.get(JoinModule.NAME) as JoinModule;
+		joinModule.send({ channels: [name] });
+	}
+
 	function kickUser(
 		channel: ChannelRoom,
 		cnick: ChannelNick,
@@ -694,6 +699,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		connect,
 		getSelectedUser,
 		ignoreUser,
+		joinChannel,
 		kickUser,
 		listen,
 		openPrivateOrCreate,

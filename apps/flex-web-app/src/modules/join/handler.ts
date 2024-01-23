@@ -50,6 +50,8 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 
 		assertChannelRoom(channel);
 
+		channel.setKicked(false);
+
 		if (!data.forced) {
 			this.store.roomManager().setCurrent(data.channel);
 		}

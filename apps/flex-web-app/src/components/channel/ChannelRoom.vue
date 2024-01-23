@@ -10,6 +10,7 @@ import {
 	closeRoomHandler,
 	ignoreUserHandler,
 	kickUser,
+	joinChannelHandler,
 	openPrivateHandler,
 	sendMessageHandler,
 	sendSetAccessLevel,
@@ -20,6 +21,7 @@ import {
 } from "./ChannelRoom.handlers";
 
 import ChannelRoomComponent from "#/sys/channel-room/ChannelRoom.vue";
+import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
 
 // --------- //
 // Composant //
@@ -57,5 +59,12 @@ const toggleSelectedUserHandler = toggleSelectedUser(props);
 		@unignore-user="unignoreUserHandler"
 		@unset-access-level="sendUnsetAccessLevelHandler"
 		@update-topic="updateTopicHandler"
-	/>
+	>
+		<template v-if="room.kicked" #history>
+			<ChannelRoomKicked
+				:last-message="room.lastMessage.unwrap()"
+				@join-channel="joinChannelHandler"
+			/>
+		</template>
+	</ChannelRoomComponent>
 </template>
