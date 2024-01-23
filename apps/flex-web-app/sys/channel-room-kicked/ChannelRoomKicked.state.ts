@@ -8,35 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
-import { ChannelRoom } from "~/channel/ChannelRoom";
-import { useChatStore } from "~/store/ChatStore";
+import { computed, ref, toRaw } from "vue";
 
-const chatStore = useChatStore();
+import { RoomMessage } from "~/room/RoomMessage";
 
 // ---- //
 // Type //
 // ---- //
 
 export interface Props {
-	room: ChannelRoom;
+	lastMessage: RoomMessage;
 }
 
 // ----------- //
 // Local State //
 // ----------- //
 
-// NOTE: retourne une Option, car l'utilisateur courant PEUT être sanctionné à
-// tout moment.
-export const compute$me = (props: Props) =>
-	computed(() => props.room.getUser(chatStore.store.me().id));
+export const displayJoinButton = ref(true);
 
-export const computeCanEditTopic = (props: Props) =>
-	computed(() =>
-		compute$me(props)
-			.value.map((cnick) => props.room.canEditTopic(cnick))
-			.unwrap_or(false),
-	);
+// NOTE: Nous voulons récupérer le dernier événement du salon juste avant le
+//       KICK, car il contient les données du KICK, mais pas les nouveaux
+//       événements/messages qui pourraient être ajoutés. De nouveaux événements
+//       peuvent être ajoutés au salon au fur & à mesure que le salon en état de
+//       KICK mais actif. Exemple, Lorsqu'un utilisateur entre en contact avec
+//       l'utilisateur qui a été KICK, l'événement "QUERY" est ajouté à la
+//       chambre active.
+export const toRawLastMessage = (props: Props) =>
+	toRaw(props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> });
 
-export const computeSelectedUser = (props: Props) =>
-	computed(() => chatStore.getSelectedUser(props.room));
+export const computeNickname = (props: Props) =>
+	computed(() => toRawLastMessage(props).data.origin.nickname);
+export const computeChannel = (props: Props) =>
+	computed(() => toRawLastMessage(props).data.channel);
+export const computeReason = (props: Props) =>
+	computed(() => toRawLastMessage(props).data.reason);

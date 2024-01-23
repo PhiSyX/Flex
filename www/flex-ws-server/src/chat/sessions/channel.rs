@@ -184,6 +184,70 @@ impl ChatApplication
 		}
 	}
 
+	/// Sanctionne un membre d'un salon
+	pub fn kick_clients_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		knicks: &[String],
+		comment: Option<&str>,
+	)
+	{
+		if !self.channels.has_client(channel_name, client_socket.cid()) {
+			client_socket.send_err_notonchannel(channel_name);
+			return;
+		}
+
+		if !self.channels.does_client_have_rights(
+			channel_name,
+			client_socket.cid(),
+			nick::ChannelAccessLevel::HalfOperator,
+		) {
+			client_socket.send_err_chanoprivsneeded(channel_name);
+			return;
+		}
+
+		for nickname in knicks.iter() {
+			let Some(kick_client_socket) =
+				self.find_socket_by_nickname(client_socket.socket(), nickname)
+			else {
+				client_socket.send_err_nosuchnick(nickname);
+				continue;
+			};
+
+			if !self
+				.channels
+				.has_client(channel_name, kick_client_socket.cid())
+			{
+				client_socket.send_err_usernotinchannel(channel_name, nickname);
+				continue;
+			}
+
+			if !self
+				.channels
+				.does_client_have_rights_to_operate_on_another_client(
+					channel_name,
+					client_socket.cid(),
+					kick_client_socket.cid(),
+				) {
+				client_socket.send_err_chanoprivsneeded(channel_name);
+				continue;
+			}
+
+			self.channels
+				.remove_client(channel_name, kick_client_socket.cid());
+			self.clients
+				.remove_channel(kick_client_socket.cid(), channel_name);
+
+			let Some(channel) = self.channels.get(channel_name) else {
+				client_socket.send_err_nosuchchannel(channel_name);
+				continue;
+			};
+
+			client_socket.emit_kick(&channel, &kick_client_socket, comment);
+		}
+	}
+
 	/// Supprime le client courant de tous ses salons.
 	pub fn remove_client_from_all_his_channels(&self, client_socket: &client::Socket)
 	{
@@ -348,6 +412,56 @@ impl ChannelsSession
 			.access_level()
 			.iter()
 			.any(|access_level| access_level.flag() >= min_access_level.flag())
+	}
+
+	/// Le client PEUT-il effectuer des tâches sur un autre client?
+	pub fn does_client_have_rights_to_operate_on_another_client(
+		&self,
+		channel_id: channel::ChannelIDRef,
+		client_id: &client::ClientID,
+		user_id: &client::ClientID,
+	) -> bool
+	{
+		let Some((client, user)) = self
+			.get_client(channel_id, client_id)
+			.zip(self.get_client(channel_id, user_id))
+		else {
+			return false;
+		};
+
+		let Some(chal) = client.highest_access_level() else {
+			return false;
+		};
+		let Some(uhal) = user.highest_access_level() else {
+			return chal.flag() >= nick::ChannelAccessLevel::HalfOperator.flag();
+		};
+
+		match chal {
+			| nick::ChannelAccessLevel::Owner => true,
+			| nick::ChannelAccessLevel::AdminOperator => {
+				match uhal {
+					| nick::ChannelAccessLevel::Owner | nick::ChannelAccessLevel::AdminOperator => {
+						false
+					}
+					| _ => true,
+				}
+			}
+			| nick::ChannelAccessLevel::Operator => {
+				match uhal {
+					| nick::ChannelAccessLevel::Owner | nick::ChannelAccessLevel::AdminOperator => {
+						false
+					}
+					| _ => true,
+				}
+			}
+			| nick::ChannelAccessLevel::HalfOperator => {
+				match uhal {
+					| nick::ChannelAccessLevel::Vip => true,
+					| _ => false,
+				}
+			}
+			| nick::ChannelAccessLevel::Vip => false,
+		}
 	}
 
 	/// Récupère un salon.

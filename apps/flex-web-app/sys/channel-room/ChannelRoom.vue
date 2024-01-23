@@ -9,6 +9,7 @@ import {
 	unignoreUser,
 	setAccessLevel,
 	unsetAccessLevel,
+	kickUser,
 } from "./ChannelRoom.handlers";
 import { useChannelTopic } from "./ChannelRoom.hooks";
 import { type Props, displayUserlist } from "./ChannelRoom.state";
@@ -25,11 +26,12 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const ignoreUserHandler = ignoreUser(emit);
+const kickUserHandler = kickUser(emit);
 const openPrivateHandler = openPrivate(emit);
 const selectUserHandler = selectUser(emit);
 const sendMessageHandler = sendMessage(emit, props.name);
-const unignoreUserHandler = unignoreUser(emit);
 const setAccessLevelHandler = setAccessLevel(emit);
+const unignoreUserHandler = unignoreUser(emit);
 const unsetAccessLevelHandler = unsetAccessLevel(emit);
 
 const {
@@ -44,6 +46,7 @@ const {
 <template>
 	<div class="room/channel" :data-room="name">
 		<Room
+			:disable-input="disableInput"
 			:messages="messages"
 			:name="name"
 			@open-private="openPrivateHandler"
@@ -99,6 +102,10 @@ const {
 				</Alert>
 			</template>
 
+			<template #history>
+				<slot name="history" />
+			</template>
+
 			<template #room-info v-if="displayUserlist">
 				<aside class="room/info">
 					<ChannelUserlist
@@ -110,15 +117,16 @@ const {
 					/>
 
 					<!-- <slot name="userlist-menu" /> -->
-					<Match :maybe="selectedUser">
-						<template #some="{ data: selectedUser }">
+					<Match :maybe="me.zip(selectedUser)">
+						<template #some="{ data: [me, selectedUser] }">
 							<ChannelUserlistMenu
 								:me="me"
 								:user="selectedUser"
 								@ignore-user="ignoreUserHandler"
+								@kick-user="kickUserHandler"
 								@open-private="openPrivateHandler"
-								@unignore-user="unignoreUserHandler"
 								@set-access-level="setAccessLevelHandler"
+								@unignore-user="unignoreUserHandler"
 								@unset-access-level="unsetAccessLevelHandler"
 							/>
 						</template>

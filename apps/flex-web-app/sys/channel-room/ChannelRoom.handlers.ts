@@ -20,16 +20,17 @@ import { Props } from "./ChannelRoom.state";
 export interface Emits {
 	(evtName: "close-room", origin: Origin): void;
 	(evtName: "ignore-user", origin: Origin): void;
-	(evtName: "unignore-user", origin: Origin): void;
+	(evtName: "kick-user", cnick: ChannelNick): void;
 	(evtName: "open-private", origin: Origin): void;
 	(evtName: "select-user", origin: Origin): void;
-	(evtName: "send-message", name: string, message: string): void;
-	(evtName: "update-topic", name: string, topic: string): void;
+	(evtName: "send-message", target: string, message: string): void;
 	(
 		evtName: "set-access-level",
 		cnick: ChannelNick,
 		accessLevel: ChannelAccessLevel,
 	): void;
+	(evtName: "unignore-user", origin: Origin): void;
+	(evtName: "update-topic", name: string, topic: string): void;
 	(
 		evtName: "unset-access-level",
 		cnick: ChannelNick,
@@ -53,6 +54,13 @@ export function ignoreUser(emit: Emits) {
 		emit("ignore-user", origin);
 	}
 	return ignoreUserHandler;
+}
+
+export function kickUser(emit: Emits) {
+	function kickUserHandler(cnick: ChannelNick) {
+		emit("kick-user", cnick);
+	}
+	return kickUserHandler;
 }
 
 export function unignoreUser(emit: Emits) {

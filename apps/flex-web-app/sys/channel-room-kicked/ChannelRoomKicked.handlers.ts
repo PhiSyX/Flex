@@ -8,35 +8,28 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
-import { ChannelRoom } from "~/channel/ChannelRoom";
-import { useChatStore } from "~/store/ChatStore";
-
-const chatStore = useChatStore();
+import { RoomMessage } from "~/room/RoomMessage";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface Props {
-	room: ChannelRoom;
+export interface Emits {
+	(evtName: "join-channel", channelName: string): void;
 }
 
-// ----------- //
-// Local State //
-// ----------- //
+// -------- //
+// Fonction //
+// -------- //
 
-// NOTE: retourne une Option, car l'utilisateur courant PEUT être sanctionné à
-// tout moment.
-export const compute$me = (props: Props) =>
-	computed(() => props.room.getUser(chatStore.store.me().id));
-
-export const computeCanEditTopic = (props: Props) =>
-	computed(() =>
-		compute$me(props)
-			.value.map((cnick) => props.room.canEditTopic(cnick))
-			.unwrap_or(false),
-	);
-
-export const computeSelectedUser = (props: Props) =>
-	computed(() => chatStore.getSelectedUser(props.room));
+export function joinChannel(
+	emit: Emits,
+	{
+		lastMessage,
+	}: { lastMessage: RoomMessage & { data: GenericReply<"KICK"> } },
+) {
+	function joinChannelHandler() {
+		emit("join-channel", lastMessage.data.channel);
+	}
+	return joinChannelHandler;
+}

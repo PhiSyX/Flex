@@ -2,11 +2,12 @@
 import { UiButton } from "@phisyx/flex-uikit";
 
 import {
-	openPrivate,
 	ignoreUser,
-	unignoreUser,
-	type Emits,
+	kickUser,
+	openPrivate,
 	setAccessLevel,
+	type Emits,
+	unignoreUser,
 	unsetAccessLevel,
 } from "./ChannelUserlistMenu.handler";
 
@@ -30,10 +31,11 @@ const emit = defineEmits<Emits>();
 const isMe = computeIsMe(props);
 const iHaveAccessLevel = computeIHaveAccessLevel(props);
 
-const openPrivateHandler = openPrivate(emit, props);
 const ignoreUserHandler = ignoreUser(emit, props);
-const unignoreUserHandler = unignoreUser(emit, props);
+const kickUserHandler = kickUser(emit, props);
+const openPrivateHandler = openPrivate(emit, props);
 const setAccessLevelHandler = setAccessLevel(emit);
+const unignoreUserHandler = unignoreUser(emit, props);
 const unsetAccessLevelHandler = unsetAccessLevel(emit);
 </script>
 
@@ -83,6 +85,17 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 				@click="unignoreUserHandler()"
 			>
 				<span>Ne plus ignorer</span>
+			</UiButton>
+		</li>
+
+		<li v-if="iHaveAccessLevel && !isMe">
+			<UiButton
+				:disabled="disabled"
+				variant="secondary"
+				title="Commande /kick"
+				@click="kickUserHandler()"
+			>
+				Kick
 			</UiButton>
 		</li>
 

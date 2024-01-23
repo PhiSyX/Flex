@@ -9,16 +9,14 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class JoinHandler implements SocketEventInterface<"JOIN"> {
+export class KickHandler implements SocketEventInterface<"KICK"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -29,48 +27,31 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 	// ------- //
 
 	listen() {
-		this.store.on("JOIN", (data) => this.handle(data));
+		this.store.on("KICK", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"JOIN">) {
-		if (this.store.isMe(data.origin)) {
-			this.handleMe(data);
-			return;
-		}
-
-		this.handleUser(data);
-	}
-
-	handleMe(data: GenericReply<"JOIN">) {
-		const channel = this.store
-			.roomManager()
-			.getOrInsert(data.channel, () =>
-				ChannelRoom.createWithOwner(data.channel, data.origin),
-			);
-
-		assertChannelRoom(channel);
-
-		channel.setKicked(false);
-
-		if (!data.forced) {
-			this.store.roomManager().setCurrent(data.channel);
-		}
-
-		channel.addEvent("event:join", { ...data, isMe: true });
-	}
-
-	handleUser(data: GenericReply<"JOIN">) {
-		this.store.addUser(new User(data.origin).withChannel(data.channel));
-
+	handle(data: GenericReply<"KICK">) {
 		const maybeChannel = this.store.roomManager().get(data.channel);
-
 		if (maybeChannel.is_none()) return;
-
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
-		const nick = new ChannelNick(data.origin);
-		channel.addUser(nick);
+		if (this.store.isMe(data.knick)) {
+			this.handleMe(data, channel);
+			return;
+		}
+		this.handleUser(data, channel);
+	}
 
-		channel.addEvent("event:join", { ...data, isMe: false });
+	handleMe(data: GenericReply<"KICK">, channel: ChannelRoom) {
+		channel.addEvent("event:kick", { ...data, isMe: true });
+		channel.removeUser(data.knick.id);
+		channel.setKicked(true);
+		this.store.removeChannelForUser(data.channel, data.knick.id);
+	}
+
+	handleUser(data: GenericReply<"KICK">, channel: ChannelRoom) {
+		channel.addEvent("event:kick", { ...data, isMe: false });
+		channel.removeUser(data.knick.id);
+		this.store.removeChannelForUser(data.channel, data.knick.id);
 	}
 }

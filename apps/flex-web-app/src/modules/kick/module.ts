@@ -8,69 +8,56 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
+
+import { Module } from "../interface";
+import { KickCommand } from "./command";
+import { KickHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class JoinHandler implements SocketEventInterface<"JOIN"> {
+export class KickModule implements Module<KickModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "KICK";
+
+	static create(store: ChatStore): KickModule {
+		return new KickModule(new KickCommand(store), new KickHandler(store));
+	}
+
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStore) {}
+	constructor(
+		private command: KickCommand,
+		private handler: KickHandler,
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
-		this.store.on("JOIN", (data) => this.handle(data));
-	}
+	input(channelsRaw?: string, knicksRaw?: string, ...words: Array<string>) {
+		const channels = channelsRaw?.split(",");
+		const knicks = knicksRaw?.split(",");
 
-	handle(data: GenericReply<"JOIN">) {
-		if (this.store.isMe(data.origin)) {
-			this.handleMe(data);
+		if (!channels || !knicks) {
 			return;
 		}
 
-		this.handleUser(data);
+		const comment = words.join(" ") || "Kick.";
+		this.send({ channels, knicks, comment });
 	}
 
-	handleMe(data: GenericReply<"JOIN">) {
-		const channel = this.store
-			.roomManager()
-			.getOrInsert(data.channel, () =>
-				ChannelRoom.createWithOwner(data.channel, data.origin),
-			);
-
-		assertChannelRoom(channel);
-
-		channel.setKicked(false);
-
-		if (!data.forced) {
-			this.store.roomManager().setCurrent(data.channel);
-		}
-
-		channel.addEvent("event:join", { ...data, isMe: true });
+	send(payload: Command<"KICK">) {
+		this.command.send(payload);
 	}
 
-	handleUser(data: GenericReply<"JOIN">) {
-		this.store.addUser(new User(data.origin).withChannel(data.channel));
-
-		const maybeChannel = this.store.roomManager().get(data.channel);
-
-		if (maybeChannel.is_none()) return;
-
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-		const nick = new ChannelNick(data.origin);
-		channel.addUser(nick);
-
-		channel.addEvent("event:join", { ...data, isMe: false });
+	listen() {
+		this.handler.listen();
 	}
 }

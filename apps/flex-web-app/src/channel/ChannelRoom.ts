@@ -49,6 +49,11 @@ export class ChannelRoom extends Room<"channel"> {
 	// --------- //
 
 	/**
+	 * Le salon rejoint est en état de sanction.
+	 */
+	kicked = false;
+
+	/**
 	 * Sujet du salon.
 	 */
 	topic = new ChannelTopic();
@@ -100,6 +105,13 @@ export class ChannelRoom extends Room<"channel"> {
 	 */
 	removeUser(id: string): boolean {
 		return this.users.remove(id).is_some();
+	}
+
+	/**
+	 * Définit (ou non) le salon comme étant en sanctionné.
+	 */
+	setKicked(bool: boolean) {
+		this.kicked = bool;
 	}
 
 	/**

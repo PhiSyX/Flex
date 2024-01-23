@@ -8,35 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
-import { ChannelRoom } from "~/channel/ChannelRoom";
-import { useChatStore } from "~/store/ChatStore";
-
-const chatStore = useChatStore();
-
-// ---- //
-// Type //
-// ---- //
-
-export interface Props {
-	room: ChannelRoom;
+declare interface KickFormData {
+	channels: Array<string>;
+	knicks: Array<string>;
+	comment?: string;
 }
 
-// ----------- //
-// Local State //
-// ----------- //
+declare interface KickDataResponse {
+	channel: string;
+	reason: string;
+	knick: Origin;
+}
 
-// NOTE: retourne une Option, car l'utilisateur courant PEUT être sanctionné à
-// tout moment.
-export const compute$me = (props: Props) =>
-	computed(() => props.room.getUser(chatStore.store.me().id));
+declare interface Commands {
+	KICK: KickFormData;
+}
 
-export const computeCanEditTopic = (props: Props) =>
-	computed(() =>
-		compute$me(props)
-			.value.map((cnick) => props.room.canEditTopic(cnick))
-			.unwrap_or(false),
-	);
-
-export const computeSelectedUser = (props: Props) =>
-	computed(() => chatStore.getSelectedUser(props.room));
+declare interface CommandResponsesFromServer {
+	KICK: KickDataResponse;
+}

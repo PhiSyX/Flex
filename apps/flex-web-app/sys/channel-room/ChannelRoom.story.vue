@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { None } from "@phisyx/flex-safety";
+import { None, Some } from "@phisyx/flex-safety";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelTopic } from "~/channel/ChannelTopic";
 import { ChannelUsers } from "~/channel/ChannelUsers";
 import { RoomMessage } from "~/room/RoomMessage";
 
+import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
 import ChannelRoom from "./ChannelRoom.vue";
 
 const channelName = "#channel";
@@ -24,7 +25,14 @@ const origin1: ChannelOrigin = {
 	nickname: "ModeratorUser",
 };
 
-const me = new ChannelNick(origin1);
+const origin2: Origin = {
+	id: "uuid1",
+	host: { cloaked: "*" },
+	ident: "ident",
+	nickname: "VipUser",
+};
+
+const me = Some(new ChannelNick(origin1));
 
 messages.push(
 	new RoomMessage()
@@ -35,17 +43,27 @@ messages.push(
 		.withNickname("ModeratorUser")
 		.withTarget(channelName)
 		.withTime(new Date())
-		.withType("privmsg")
+		.withType("privmsg"),
+	new RoomMessage()
+		.withData({
+			origin: origin1,
+			channel: "#channel",
+			knick: origin2,
+			name: "KICK",
+			reason: "Dehors !",
+			tags: { msgid: "id" },
+		} as GenericReply<"KICK">)
+		.withID("id2")
+		.withIsMe(false)
+		.withMessage("Hello World")
+		.withNickname("ModeratorUser")
+		.withTarget(channelName)
+		.withTime(new Date())
+		.withType("event:kick")
 );
 
 const users = new ChannelUsers();
 
-const origin2: Origin = {
-	id: "uuid1",
-	host: { cloaked: "*" },
-	ident: "ident",
-	nickname: "VipUser",
-};
 const origin3: Origin = {
 	id: "uuid3",
 	host: { cloaked: "*" },
@@ -63,6 +81,7 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 		<Variant title="Default">
 			<ChannelRoom
 				:can-edit-topic="false"
+				:disable-input="false"
 				:me="me"
 				:messages="messages"
 				:name="channelName"
@@ -70,6 +89,23 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 				:selected-user="None()"
 				:topic="topic"
 			/>
+		</Variant>
+
+		<Variant title="Kicked">
+			<ChannelRoom
+				:can-edit-topic="false"
+				:disable-input="false"
+				:me="me"
+				:messages="messages"
+				:name="channelName"
+				:users="users"
+				:selected-user="None()"
+				:topic="topic"
+			>
+				<template #history>
+					<ChannelRoomKicked :last-message="messages.at(-1)" />
+				</template>
+			</ChannelRoom>
 		</Variant>
 	</Story>
 </template>
