@@ -24,9 +24,7 @@ export interface Emits {
 
 export function joinChannel(
 	emit: Emits,
-	{
-		lastMessage,
-	}: { lastMessage: RoomMessage & { data: GenericReply<"KICK"> } },
+	{ lastMessage }: { lastMessage: RoomMessage & { data: GenericReply<"KICK"> } },
 ) {
 	function joinChannelHandler() {
 		emit("join-channel", lastMessage.data.channel);

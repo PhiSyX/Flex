@@ -244,8 +244,7 @@ function year_formats(this: Date): DateKeyFormat {
 		/**
 		 * 1 si bissextile, 0 sinon.
 		 */
-		L: (): number =>
-			~~(year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)),
+		L: (): number => ~~(year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)),
 
 		o: (): number => {
 			const target = new Date(this.valueOf());
@@ -304,8 +303,7 @@ function hour_formats(this: Date): DateKeyFormat {
 			),
 		g: (): number => hours % 12 || 12,
 		G: (): number => hours,
-		h: (): number =>
-			Number(((hours % 12 || 12) < 10 ? "0" : "") + (hours % 12 || 12)),
+		h: (): number => Number(((hours % 12 || 12) < 10 ? "0" : "") + (hours % 12 || 12)),
 		H: (): number => Number((hours < 10 ? "0" : "") + hours),
 		i: (): number => Number((minutes < 10 ? "0" : "") + minutes),
 		s: (): number => Number((seconds < 10 ? "0" : "") + seconds),
@@ -347,9 +345,7 @@ function tz_formats(this: Date): DateKeyFormat {
 				(-offset < 0 ? "-" : "+") +
 				(offsetD60 < 10 ? "0" : "") +
 				Math.floor(offsetD60) +
-				(offsetM60 === 0
-					? "00"
-					: (offsetM60 < 10 ? "0" : "") + offsetM60)
+				(offsetM60 === 0 ? "00" : (offsetM60 < 10 ? "0" : "") + offsetM60)
 			);
 		},
 		P: (): string => {
@@ -361,13 +357,10 @@ function tz_formats(this: Date): DateKeyFormat {
 				(offsetD60 < 10 ? "0" : "") +
 				Math.floor(offsetD60) +
 				":" +
-				(offsetM60 === 0
-					? "00"
-					: (offsetM60 < 10 ? "0" : "") + offsetM60)
+				(offsetM60 === 0 ? "00" : (offsetM60 < 10 ? "0" : "") + offsetM60)
 			);
 		},
-		T: (): string =>
-			this.toTimeString().replace(/^.+ \(?([^)]+)\)?$/, "$1"),
+		T: (): string => this.toTimeString().replace(/^.+ \(?([^)]+)\)?$/, "$1"),
 		Z: (): number => offset * 60,
 	};
 }
@@ -411,9 +404,7 @@ function format_date(format = "[H:i:s]", time: Date = new Date()): string {
 	};
 
 	return format.replace(/(\\?)(.)/g, (_, $esc, $chr) =>
-		$esc === "" && replace_chars[$chr]
-			? zero_padding(replace_chars[$chr].call([]))
-			: $chr,
+		$esc === "" && replace_chars[$chr] ? zero_padding(replace_chars[$chr].call([])) : $chr,
 	);
 }
 

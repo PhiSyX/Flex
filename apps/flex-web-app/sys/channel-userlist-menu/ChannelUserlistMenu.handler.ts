@@ -20,17 +20,9 @@ export interface Emits {
 	(evtName: "ignore-user", user: Origin): void;
 	(evtName: "kick-user", cnick: ChannelNick): void;
 	(evtName: "open-private", user: Origin): void;
-	(
-		evtName: "set-access-level",
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	): void;
+	(evtName: "set-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
 	(evtName: "unignore-user", user: Origin): void;
-	(
-		evtName: "unset-access-level",
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	): void;
+	(evtName: "unset-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
 }
 
 // -------- //
@@ -66,20 +58,14 @@ export function unignoreUser(emit: Emits, props: Props) {
 }
 
 export function setAccessLevel(emit: Emits) {
-	function setAccessLevelHandler(
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	) {
+	function setAccessLevelHandler(cnick: ChannelNick, accessLevel: ChannelAccessLevel) {
 		emit("set-access-level", cnick, accessLevel);
 	}
 	return setAccessLevelHandler;
 }
 
 export function unsetAccessLevel(emit: Emits) {
-	function unsetAccessLevelHandler(
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	) {
+	function unsetAccessLevelHandler(cnick: ChannelNick, accessLevel: ChannelAccessLevel) {
 		emit("unset-access-level", cnick, accessLevel);
 	}
 	return unsetAccessLevelHandler;

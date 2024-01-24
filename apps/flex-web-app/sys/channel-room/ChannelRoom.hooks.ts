@@ -9,11 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ref, watchEffect } from "vue";
-import {
-	Emits,
-	enableTopicEditMode,
-	submitTopic,
-} from "./ChannelRoom.handlers";
+import { Emits, enableTopicEditMode, submitTopic } from "./ChannelRoom.handlers";
 import { Props } from "./ChannelRoom.state";
 
 // ----- //

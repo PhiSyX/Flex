@@ -78,19 +78,14 @@ export class ChannelRoom extends Room<"channel"> {
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
 	canEditTopic(cnick: ChannelNick): boolean {
-		return (
-			this.topic.isEditable() ||
-			this.cnickHasChannelOperatorAccessLevel(cnick)
-		);
+		return this.topic.isEditable() || this.cnickHasChannelOperatorAccessLevel(cnick);
 	}
 
 	/**
 	 * Est-ce que le pseudo a des droits d'opérateurs (HalfOperator min).
 	 */
 	cnickHasChannelOperatorAccessLevel(cnick: ChannelNick): boolean {
-		return (
-			cnick.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator
-		);
+		return cnick.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator;
 	}
 
 	/**
@@ -141,9 +136,7 @@ export class ChannelRoom extends Room<"channel"> {
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
 	withOwner(origin: Origin): this {
-		this.addUser(
-			new ChannelNick(origin).withAccessLevel(ChannelAccessLevel.Owner),
-		);
+		this.addUser(new ChannelNick(origin).withAccessLevel(ChannelAccessLevel.Owner));
 		return this;
 	}
 }

@@ -14,9 +14,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorChanoprivsneeded
-	implements SocketEventInterface<"ERR_CHANOPRIVSNEEDED">
-{
+export class ErrorChanoprivsneeded implements SocketEventInterface<"ERR_CHANOPRIVSNEEDED"> {
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -27,10 +25,6 @@ export class ErrorChanoprivsneeded
 		const maybeChannel = this.store.roomManager().get(data.channel);
 		if (maybeChannel.is_none()) return;
 		const channel = maybeChannel.unwrap();
-		channel.addEvent(
-			"error:err_chanoprivsneeded",
-			{ ...data, isMe: true },
-			data.reason,
-		);
+		channel.addEvent("error:err_chanoprivsneeded", { ...data, isMe: true }, data.reason);
 	}
 }

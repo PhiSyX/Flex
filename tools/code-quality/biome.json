@@ -27,6 +27,6 @@
 		"ignore": [".vscode", "dist", "target", "public", "tests"],
 		"indentWidth": 4,
 		"indentStyle": "tab",
-		"lineWidth": 80
+		"lineWidth": 100
 	}
 }

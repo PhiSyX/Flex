@@ -24,18 +24,10 @@ export interface Emits {
 	(evtName: "open-private", origin: Origin): void;
 	(evtName: "select-user", origin: Origin): void;
 	(evtName: "send-message", target: string, message: string): void;
-	(
-		evtName: "set-access-level",
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	): void;
+	(evtName: "set-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
 	(evtName: "unignore-user", origin: Origin): void;
 	(evtName: "update-topic", name: string, topic: string): void;
-	(
-		evtName: "unset-access-level",
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	): void;
+	(evtName: "unset-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
 }
 
 // -------- //
@@ -146,20 +138,14 @@ export function enableTopicEditMode(
 }
 
 export function setAccessLevel(emit: Emits) {
-	function setAccessLevelHandler(
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	) {
+	function setAccessLevelHandler(cnick: ChannelNick, accessLevel: ChannelAccessLevel) {
 		emit("set-access-level", cnick, accessLevel);
 	}
 	return setAccessLevelHandler;
 }
 
 export function unsetAccessLevel(emit: Emits) {
-	function unsetAccessLevelHandler(
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	) {
+	function unsetAccessLevelHandler(cnick: ChannelNick, accessLevel: ChannelAccessLevel) {
 		emit("unset-access-level", cnick, accessLevel);
 	}
 	return unsetAccessLevelHandler;

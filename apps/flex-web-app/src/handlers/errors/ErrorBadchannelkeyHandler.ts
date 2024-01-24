@@ -14,9 +14,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorBadchannelkeyHandler
-	implements SocketEventInterface<"ERR_BADCHANNELKEY">
-{
+export class ErrorBadchannelkeyHandler implements SocketEventInterface<"ERR_BADCHANNELKEY"> {
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -25,10 +23,6 @@ export class ErrorBadchannelkeyHandler
 
 	handle(data: GenericReply<"ERR_BADCHANNELKEY">) {
 		const room = this.store.roomManager().current();
-		room.addEvent(
-			"error:err_badchannelkey",
-			{ ...data, isMe: true },
-			data.reason,
-		);
+		room.addEvent("error:err_badchannelkey", { ...data, isMe: true }, data.reason);
 	}
 }

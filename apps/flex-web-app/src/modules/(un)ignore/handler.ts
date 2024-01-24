@@ -49,9 +49,7 @@ export class ReplyIgnoreHandler implements SocketEventInterface<"RPL_IGNORE"> {
 	}
 }
 
-export class ReplyUnignoreHandler
-	implements SocketEventInterface<"RPL_UNIGNORE">
-{
+export class ReplyUnignoreHandler implements SocketEventInterface<"RPL_UNIGNORE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //

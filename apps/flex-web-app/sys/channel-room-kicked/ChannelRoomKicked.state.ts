@@ -40,5 +40,4 @@ export const computeNickname = (props: Props) =>
 	computed(() => toRawLastMessage(props).data.origin.nickname);
 export const computeChannel = (props: Props) =>
 	computed(() => toRawLastMessage(props).data.channel);
-export const computeReason = (props: Props) =>
-	computed(() => toRawLastMessage(props).data.reason);
+export const computeReason = (props: Props) => computed(() => toRawLastMessage(props).data.reason);

@@ -14,9 +14,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorNosuchchannelHandler
-	implements SocketEventInterface<"ERR_NOSUCHCHANNEL">
-{
+export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -25,10 +23,6 @@ export class ErrorNosuchchannelHandler
 
 	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
 		const room = this.store.roomManager().current();
-		room.addEvent(
-			"error:err_nosuchchannel",
-			{ ...data, isMe: true },
-			data.reason,
-		);
+		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
 	}
 }

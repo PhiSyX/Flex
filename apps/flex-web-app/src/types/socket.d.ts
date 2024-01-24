@@ -16,8 +16,7 @@ declare interface SocketEventHandler {
 	listen(): void;
 }
 
-declare interface SocketEventInterface<R extends RepliesNames>
-	extends SocketEventHandler {
+declare interface SocketEventInterface<R extends RepliesNames> extends SocketEventHandler {
 	handle(data: GenericReply<R>, ...userData: Array<unknown>): void;
 }
 

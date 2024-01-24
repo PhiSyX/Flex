@@ -102,22 +102,18 @@ export const CHANNEL_ACCESS_LEVEL_SYMBOLS_FLAGS = {
 
 export const CHANNEL_ACCESS_LEVEL_SYMBOLS_LETTERS = {
 	[ChannelAccessLevelSymbol.Owner]: ChannelAccessLevelLetter.Owner,
-	[ChannelAccessLevelSymbol.AdminOperator]:
-		ChannelAccessLevelLetter.AdminOperator,
+	[ChannelAccessLevelSymbol.AdminOperator]: ChannelAccessLevelLetter.AdminOperator,
 	[ChannelAccessLevelSymbol.Operator]: ChannelAccessLevelLetter.Operator,
-	[ChannelAccessLevelSymbol.HalfOperator]:
-		ChannelAccessLevelLetter.HalfOperator,
+	[ChannelAccessLevelSymbol.HalfOperator]: ChannelAccessLevelLetter.HalfOperator,
 	[ChannelAccessLevelSymbol.Vip]: ChannelAccessLevelLetter.Vip,
 	[ChannelAccessLevelSymbol.User]: ChannelAccessLevelLetter.User,
 };
 
 export const CHANNEL_ACCESS_LEVEL_SYMBOLS_CLASSNAMES = {
 	[ChannelAccessLevelSymbol.Owner]: ChannelAccessLevelClassName.Owner,
-	[ChannelAccessLevelSymbol.AdminOperator]:
-		ChannelAccessLevelClassName.AdminOperator,
+	[ChannelAccessLevelSymbol.AdminOperator]: ChannelAccessLevelClassName.AdminOperator,
 	[ChannelAccessLevelSymbol.Operator]: ChannelAccessLevelClassName.Operator,
-	[ChannelAccessLevelSymbol.HalfOperator]:
-		ChannelAccessLevelClassName.HalfOperator,
+	[ChannelAccessLevelSymbol.HalfOperator]: ChannelAccessLevelClassName.HalfOperator,
 	[ChannelAccessLevelSymbol.Vip]: ChannelAccessLevelClassName.Vip,
 	[ChannelAccessLevelSymbol.User]: ChannelAccessLevelClassName.User,
 };
@@ -137,9 +133,7 @@ export const CHANNEL_ACCESS_LEVEL_GROUPS = {
 /**
  * Récupère le mode le plus haut gradé d'un pseudo.
  */
-export function highestAccessLevel(
-	modes: Set<ChannelAccessLevel>,
-): HighestAccessLevelOutput {
+export function highestAccessLevel(modes: Set<ChannelAccessLevel>): HighestAccessLevelOutput {
 	if (modes.size === 0) {
 		return {
 			className: ChannelAccessLevelClassName.User,
@@ -166,9 +160,7 @@ export function highestAccessLevel(
 /**
  * Analyse les niveaux d'access d'un pseudo.
  */
-export function parseAccessLevels(
-	levels: Array<string>,
-): Array<ChannelAccessLevel> {
+export function parseAccessLevels(levels: Array<string>): Array<ChannelAccessLevel> {
 	return levels.map(parseAccessLevel);
 }
 

@@ -24,8 +24,7 @@ export interface Props {
 	variant?: "primary" | "secondary" | "danger";
 }
 
-export const computeValue$ = (props: Props) =>
-	computed(() => props.value ?? props.trueValue);
+export const computeValue$ = (props: Props) => computed(() => props.value ?? props.trueValue);
 
 export const computeIsSelected = (props: Props) =>
 	computed(() => {

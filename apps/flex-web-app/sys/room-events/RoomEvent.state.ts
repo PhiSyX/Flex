@@ -32,7 +32,6 @@ export interface Props<E extends keyof Replies> {
 // Local State //
 // ----------- //
 
-
 // INFO: hostname
 export const computeHostname = (origin: Origin) =>
 	computed(() => origin.host.vhost || origin.host.cloaked);

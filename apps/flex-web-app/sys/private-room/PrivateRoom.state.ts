@@ -28,8 +28,7 @@ export interface Props {
 // Local State //
 // ----------- //
 
-export const computeIsMe = (props: Props) =>
-	computed(() => props.me.partialEq(props.recipient));
+export const computeIsMe = (props: Props) => computed(() => props.me.partialEq(props.recipient));
 
 export const computeTitleIgnoreButton = (props: Props) =>
 	computed(() => {

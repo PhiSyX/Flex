@@ -30,23 +30,17 @@ export function displayAdvancedInfoHandler() {
 /**
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
-export function connectSubmit(
-	isConnectedModel: ModelRef<boolean | undefined, string>,
-) {
+export function connectSubmit(isConnectedModel: ModelRef<boolean | undefined, string>) {
 	function connectSubmitHandler(evt: Event) {
 		evt.preventDefault();
 
 		chatStore.connect(loginFormData);
 
-		chatStore.listen(
-			"RPL_WELCOME",
-			() => replyWelcomeHandler(isConnectedModel),
-			{ once: true },
-		);
+		chatStore.listen("RPL_WELCOME", () => replyWelcomeHandler(isConnectedModel), {
+			once: true,
+		});
 
-		chatStore.listen("ERR_NICKNAMEINUSE", (data) =>
-			errorNicknameinuseHandler(data),
-		);
+		chatStore.listen("ERR_NICKNAMEINUSE", (data) => errorNicknameinuseHandler(data));
 	}
 
 	return connectSubmitHandler;
@@ -55,9 +49,7 @@ export function connectSubmit(
 /**
  * Écoute de l'événement `RPL_WELCOME`.
  */
-function replyWelcomeHandler(
-	isConnectedModel: ModelRef<boolean | undefined, string>,
-) {
+function replyWelcomeHandler(isConnectedModel: ModelRef<boolean | undefined, string>) {
 	isConnectedModel.value = true;
 }
 

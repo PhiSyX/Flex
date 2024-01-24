@@ -26,10 +26,7 @@ export class IgnoreModule implements Module<IgnoreModule> {
 	static NAME = "IGNORE";
 
 	static create(store: ChatStore): IgnoreModule {
-		return new IgnoreModule(
-			new IgnoreCommand(store),
-			new ReplyIgnoreHandler(store),
-		);
+		return new IgnoreModule(new IgnoreCommand(store), new ReplyIgnoreHandler(store));
 	}
 
 	// ----------- //
@@ -66,10 +63,7 @@ export class UnignoreModule implements Module<UnignoreModule> {
 	static NAME = "UNIGNORE";
 
 	static create(store: ChatStore): UnignoreModule {
-		return new UnignoreModule(
-			new UnignoreCommand(store),
-			new ReplyUnignoreHandler(store),
-		);
+		return new UnignoreModule(new UnignoreCommand(store), new ReplyUnignoreHandler(store));
 	}
 
 	// ----------- //

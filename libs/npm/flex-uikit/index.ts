@@ -11,10 +11,7 @@
 import { App } from "vue";
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const iconsImports = import.meta.glob<{ default: any }>(
-	"./src/icons/Icon*.vue",
-	{ eager: true },
-);
+const iconsImports = import.meta.glob<{ default: any }>("./src/icons/Icon*.vue", { eager: true });
 
 const iconsComponents = Object.entries(iconsImports).map(
 	([iconComponentFilepath, iconComponent]) => {

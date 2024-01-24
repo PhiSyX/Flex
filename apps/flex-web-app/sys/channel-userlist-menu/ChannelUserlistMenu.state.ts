@@ -27,8 +27,7 @@ export interface Props {
 // Local State //
 // ----------- //
 
-export const computeIsMe = (props: Props) =>
-	computed(() => props.me.partialEq(props.user.cnick));
+export const computeIsMe = (props: Props) => computed(() => props.me.partialEq(props.user.cnick));
 
 export const computeIHaveAccessLevel = (props: Props) =>
 	computed(() => props.me.highestAccessLevel.level > ChannelAccessLevel.Vip);

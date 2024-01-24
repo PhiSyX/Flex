@@ -51,11 +51,7 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 					continue;
 				}
 
-				room.users.changeNickname(
-					data.origin.id,
-					data.old_nickname,
-					data.new_nickname,
-				);
+				room.users.changeNickname(data.origin.id, data.old_nickname, data.new_nickname);
 			} else if (room.type === "private") {
 				if (!room.eq(data.old_nickname)) {
 					continue;

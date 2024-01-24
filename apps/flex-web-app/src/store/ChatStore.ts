@@ -108,31 +108,14 @@ export class ChatStore {
 		self.modules.set(UnignoreModule.NAME, UnignoreModule.create(self));
 
 		/** Channel access level */
-		self.modules.set(
-			AccessLevelQOPModule.NAME,
-			AccessLevelQOPModule.create(self),
-		);
-		self.modules.set(
-			AccessLevelAOPModule.NAME,
-			AccessLevelAOPModule.create(self),
-		);
-		self.modules.set(
-			AccessLevelOPModule.NAME,
-			AccessLevelOPModule.create(self),
-		);
-		self.modules.set(
-			AccessLevelHOPModule.NAME,
-			AccessLevelHOPModule.create(self),
-		);
-		self.modules.set(
-			AccessLevelVIPModule.NAME,
-			AccessLevelVIPModule.create(self),
-		);
+		self.modules.set(AccessLevelQOPModule.NAME, AccessLevelQOPModule.create(self));
+		self.modules.set(AccessLevelAOPModule.NAME, AccessLevelAOPModule.create(self));
+		self.modules.set(AccessLevelOPModule.NAME, AccessLevelOPModule.create(self));
+		self.modules.set(AccessLevelHOPModule.NAME, AccessLevelHOPModule.create(self));
+		self.modules.set(AccessLevelVIPModule.NAME, AccessLevelVIPModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex").withID("Flex");
-		const rooms: Map<RoomID, Room> = new Map([
-			[thisServer.id(), thisServer],
-		]);
+		const rooms: Map<RoomID, Room> = new Map([[thisServer.id(), thisServer]]);
 
 		self.setNetworkName(thisServer.id());
 		self.roomManager().extends(rooms);
@@ -151,8 +134,7 @@ export class ChatStore {
 	private _selectedUser: Option<[ChannelID, UserID]> = None();
 	private _network: Option<string> = None();
 	private _roomManager: RoomManager = new RoomManager();
-	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> =
-		None();
+	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
 	private _users: Map<string, User> = new Map();
 	private _nicksUsers: Map<string, string> = new Map();
 	private _usersBlocked: Map<string, User> = new Map();
@@ -192,31 +174,19 @@ export class ChatStore {
 	}
 
 	connectWebsocket(websocketServerURL: string) {
-		console.info(
-			"Connexion au serveur de WebSocket « %s »",
-			websocketServerURL,
-		);
+		console.info("Connexion au serveur de WebSocket « %s »", websocketServerURL);
 
-		let clientID = this._clientIDStorage.maybe().unwrap_or("") as
-			| string
-			| null;
+		let clientID = this._clientIDStorage.maybe().unwrap_or("") as string | null;
 
 		if (clientID?.length === 0) {
 			clientID = null;
 		}
 
-		this._ws.replace(
-			io(websocketServerURL, { auth: { client_id: clientID } }),
-		);
+		this._ws.replace(io(websocketServerURL, { auth: { client_id: clientID } }));
 	}
 
-	emit<E extends keyof Commands>(
-		eventName: E,
-		...payload: Parameters<ClientToServerEvent[E]>
-	) {
-		this._ws
-			.expect("Instance WebSocket connecté au serveur")
-			.emit(eventName, ...payload);
+	emit<E extends keyof Commands>(eventName: E, ...payload: Parameters<ClientToServerEvent[E]>) {
+		this._ws.expect("Instance WebSocket connecté au serveur").emit(eventName, ...payload);
 	}
 
 	findUser(userID: string): Option<User> {
@@ -225,16 +195,13 @@ export class ChatStore {
 
 	findUserByNickname(nickname: string): Option<User> {
 		if (this._nicksUsers.has(nickname.toLowerCase())) {
-			const userID = this._nicksUsers.get(
-				nickname.toLowerCase(),
-			) as string;
+			const userID = this._nicksUsers.get(nickname.toLowerCase()) as string;
 			return this.findUser(userID);
 		}
 
 		const maybeUser = Option.from(
 			Array.from(this._users.values()).find(
-				(user) =>
-					user.nickname.toLowerCase() === nickname.toLowerCase(),
+				(user) => user.nickname.toLowerCase() === nickname.toLowerCase(),
 			),
 		);
 
@@ -250,9 +217,7 @@ export class ChatStore {
 	}
 
 	getConnectUserInfo(): ConnectUserInfo {
-		return this._connectUserInfo.expect(
-			"Information de connexion de l'utilisateur",
-		);
+		return this._connectUserInfo.expect("Information de connexion de l'utilisateur");
 	}
 
 	getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
@@ -267,10 +232,7 @@ export class ChatStore {
 					});
 			})
 			.map((cnick) => {
-				return new ChannelSelectedUser(
-					cnick,
-					this.isUserBlocked(cnick.intoUser()),
-				);
+				return new ChannelSelectedUser(cnick, this.isUserBlocked(cnick.intoUser()));
 			});
 	}
 
@@ -285,8 +247,7 @@ export class ChatStore {
 	isMe(origin: Origin | string): boolean {
 		if (typeof origin === "string") {
 			return (
-				this.me().id === origin ||
-				this.me().nickname.toLowerCase() === origin.toLowerCase()
+				this.me().id === origin || this.me().nickname.toLowerCase() === origin.toLowerCase()
 			);
 		}
 
@@ -303,10 +264,7 @@ export class ChatStore {
 		}
 
 		for (const [moduleName, module] of this.modules) {
-			console.info(
-				"Le module « %s » est maintenant en écoute.",
-				moduleName,
-			);
+			console.info("Le module « %s » est maintenant en écoute.", moduleName);
 			module.listen();
 		}
 	}
@@ -316,9 +274,7 @@ export class ChatStore {
 	}
 
 	network(): ServerCustomRoom {
-		return this.roomManager()
-			.get(this.networkName())
-			.unwrap_unchecked() as ServerCustomRoom;
+		return this.roomManager().get(this.networkName()).unwrap_unchecked() as ServerCustomRoom;
 	}
 
 	networkName(): string {
@@ -330,15 +286,10 @@ export class ChatStore {
 	}
 
 	off<K extends keyof ServerToClientEvent>(eventName: K) {
-		this._ws
-			.expect("Instance WebSocket connecté au serveur")
-			.off(eventName);
+		this._ws.expect("Instance WebSocket connecté au serveur").off(eventName);
 	}
 
-	on<K extends keyof ServerToClientEvent>(
-		eventName: K,
-		listener: ServerToClientEvent[K],
-	) {
+	on<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
 		this._ws.expect("Instance WebSocket connecté au serveur").on(
 			eventName,
 			// @ts-expect-error : listener
@@ -346,10 +297,7 @@ export class ChatStore {
 		);
 	}
 
-	once<K extends keyof ServerToClientEvent>(
-		eventName: K,
-		listener: ServerToClientEvent[K],
-	) {
+	once<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
 		this._ws.expect("Instance WebSocket connecté au serveur").once(
 			eventName,
 			// @ts-expect-error : listener
@@ -483,9 +431,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	function ignoreUser(nickname: string) {
-		const ignoreModule = store.modules.get(
-			IgnoreModule.NAME,
-		) as IgnoreModule;
+		const ignoreModule = store.modules.get(IgnoreModule.NAME) as IgnoreModule;
 		ignoreModule.send({ nickname });
 	}
 
@@ -494,11 +440,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		joinModule.send({ channels: [name] });
 	}
 
-	function kickUser(
-		channel: ChannelRoom,
-		cnick: ChannelNick,
-		comment = "Kick.",
-	) {
+	function kickUser(channel: ChannelRoom, cnick: ChannelNick, comment = "Kick.") {
 		const ignoreModule = store.modules.get(KickModule.NAME) as KickModule;
 		ignoreModule.send({
 			channels: [channel.name],
@@ -524,9 +466,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
 			priv.addParticipant(new PrivateNick(store.me()).withIsMe(true));
 			const maybeUser = store.findUser(origin.id);
-			maybeUser.then((user) =>
-				priv.addParticipant(new PrivateNick(user)),
-			);
+			maybeUser.then((user) => priv.addParticipant(new PrivateNick(user)));
 			return priv;
 		});
 
@@ -555,9 +495,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function sendMessage(name: string, message: string) {
 		if (!message.startsWith("/")) {
 			const words = message.split(" ");
-			const privmsgModule = store.modules.get(
-				PrivmsgModule.NAME,
-			) as PrivmsgModule;
+			const privmsgModule = store.modules.get(PrivmsgModule.NAME) as PrivmsgModule;
 
 			privmsgModule.input(name, ...words);
 			return;
@@ -681,9 +619,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	function unignoreUser(nickname: string) {
-		const unignoreModule = store.modules.get(
-			UnignoreModule.NAME,
-		) as UnignoreModule;
+		const unignoreModule = store.modules.get(UnignoreModule.NAME) as UnignoreModule;
 		unignoreModule.send({ nickname });
 	}
 

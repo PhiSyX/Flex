@@ -27,31 +27,19 @@ export interface Props {
 		datetime: string;
 		formattedTime: string;
 	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
+	type: "action" | `error:${string}` | "event" | `event:${string}` | "privmsg";
 }
 
-export const computeIsEvent = (props: Props) =>
-	computed(() => props.type.startsWith("event:"));
+export const computeIsEvent = (props: Props) => computed(() => props.type.startsWith("event:"));
 
 export const computeComponentEventName = (props: Props) =>
 	computed(() => kebabcase(`room:${props.type}`));
 
-export const computeComponentEventExists = (
-	props: Props,
-	eventsComponents: Array<string> = [],
-) =>
+export const computeComponentEventExists = (props: Props, eventsComponents: Array<string> = []) =>
 	computed(() => {
-		const componentName = camelCase(
-			computeComponentEventName(props).value,
-			{
-				includes_separators: false,
-			},
-		);
+		const componentName = camelCase(computeComponentEventName(props).value, {
+			includes_separators: false,
+		});
 		return eventsComponents.includes(componentName) ?? false;
 	});
 

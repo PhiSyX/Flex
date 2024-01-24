@@ -11,10 +11,7 @@
 import { ModelRef } from "vue";
 import { type Props, computeIsSelected, computeValue$ } from "./Button.state";
 
-export function handleClick(
-	props: Props,
-	selectedModel: ModelRef<unknown, string>,
-) {
+export function handleClick(props: Props, selectedModel: ModelRef<unknown, string>) {
 	function handleClickHandler(_: MouseEvent) {
 		if (computeValue$(props).value == null && props.selected == null) {
 			return;

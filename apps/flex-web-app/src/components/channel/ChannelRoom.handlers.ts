@@ -50,20 +50,14 @@ export function sendMessageHandler(name: string, message: string) {
 }
 
 export function sendSetAccessLevel(props: Props) {
-	function sendSetAccessLevelHandler(
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	) {
+	function sendSetAccessLevelHandler(cnick: ChannelNick, accessLevel: ChannelAccessLevel) {
 		chatStore.sendSetAccessLevel(props.room, cnick, accessLevel);
 	}
 	return sendSetAccessLevelHandler;
 }
 
 export function sendUnsetAccessLevel(props: Props) {
-	function sendUnsetAccessLevelHandler(
-		cnick: ChannelNick,
-		accessLevel: ChannelAccessLevel,
-	) {
+	function sendUnsetAccessLevelHandler(cnick: ChannelNick, accessLevel: ChannelAccessLevel) {
 		chatStore.sendUnsetAccessLevel(props.room, cnick, accessLevel);
 	}
 	return sendUnsetAccessLevelHandler;

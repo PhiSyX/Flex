@@ -14,9 +14,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorUsernotinchannelHandler
-	implements SocketEventInterface<"ERR_USERNOTINCHANNEL">
-{
+export class ErrorUsernotinchannelHandler implements SocketEventInterface<"ERR_USERNOTINCHANNEL"> {
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -25,10 +23,6 @@ export class ErrorUsernotinchannelHandler
 
 	handle(data: GenericReply<"ERR_USERNOTINCHANNEL">) {
 		const room = this.store.roomManager().current();
-		room.addEvent(
-			"error:err_usernotinchannel",
-			{ ...data, isMe: true },
-			data.reason,
-		);
+		room.addEvent("error:err_usernotinchannel", { ...data, isMe: true }, data.reason);
 	}
 }

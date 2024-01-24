@@ -185,8 +185,7 @@ class Option<T> {
 	 * Retourne la valeur contenue dans [Some]
 	 */
 	unwrap(): safe<T> {
-		const ERROR_MESSAGE: string =
-			"La fonction `.unwrap()` est appelée sur une valeur `None`.";
+		const ERROR_MESSAGE: string = "La fonction `.unwrap()` est appelée sur une valeur `None`.";
 		return this.expect(ERROR_MESSAGE);
 	}
 

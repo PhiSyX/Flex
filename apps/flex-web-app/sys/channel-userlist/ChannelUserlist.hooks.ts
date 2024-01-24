@@ -28,12 +28,8 @@ export function useInputFilterUserlist(props: Props) {
 	const moderatorsFiltered = ref(props.users.moderators) as unknown as Ref<
 		Array<ChannelNickFiltered>
 	>;
-	const vipsFiltered = ref(props.users.vips) as unknown as Ref<
-		Array<ChannelNickFiltered>
-	>;
-	const usersFiltered = ref(props.users.users) as unknown as Ref<
-		Array<ChannelNickFiltered>
-	>;
+	const vipsFiltered = ref(props.users.vips) as unknown as Ref<Array<ChannelNickFiltered>>;
+	const usersFiltered = ref(props.users.users) as unknown as Ref<Array<ChannelNickFiltered>>;
 
 	watchEffect(() => {
 		const filteredModerators = props.users.moderators
@@ -41,16 +37,12 @@ export function useInputFilterUserlist(props: Props) {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
 					.or_else(() =>
-						fuzzy_search(
-							filterNick.value,
-							nick.highestAccessLevel.symbol,
-						).map(map_search_record(true)),
+						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
+							map_search_record(true),
+						),
 					)
 					.unwrap_or([]);
-				return new ChannelNickFiltered(
-					nick,
-					test.length === 0 ? [] : test,
-				);
+				return new ChannelNickFiltered(nick, test.length === 0 ? [] : test);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
 		const filteredVips = props.users.vips
@@ -58,16 +50,12 @@ export function useInputFilterUserlist(props: Props) {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
 					.or_else(() =>
-						fuzzy_search(
-							filterNick.value,
-							nick.highestAccessLevel.symbol,
-						).map(map_search_record(true)),
+						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
+							map_search_record(true),
+						),
 					)
 					.unwrap_or([]);
-				return new ChannelNickFiltered(
-					nick,
-					test.length === 0 ? [] : test,
-				);
+				return new ChannelNickFiltered(nick, test.length === 0 ? [] : test);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
 		const filteredUsers = props.users.users
@@ -75,16 +63,12 @@ export function useInputFilterUserlist(props: Props) {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
 					.or_else(() =>
-						fuzzy_search(
-							filterNick.value,
-							nick.highestAccessLevel.symbol,
-						).map(map_search_record(true)),
+						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
+							map_search_record(true),
+						),
 					)
 					.unwrap_or([]);
-				return new ChannelNickFiltered(
-					nick,
-					test.length === 0 ? [] : test,
-				);
+				return new ChannelNickFiltered(nick, test.length === 0 ? [] : test);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
 
@@ -96,12 +80,8 @@ export function useInputFilterUserlist(props: Props) {
 			moderatorsFiltered.value = props.users.moderators.map(
 				(cnick) => new ChannelNickFiltered(cnick),
 			);
-			vipsFiltered.value = props.users.vips.map(
-				(cnick) => new ChannelNickFiltered(cnick),
-			);
-			usersFiltered.value = props.users.users.map(
-				(cnick) => new ChannelNickFiltered(cnick),
-			);
+			vipsFiltered.value = props.users.vips.map((cnick) => new ChannelNickFiltered(cnick));
+			usersFiltered.value = props.users.users.map((cnick) => new ChannelNickFiltered(cnick));
 		} else {
 			moderatorsFiltered.value = filteredModerators;
 			vipsFiltered.value = filteredVips;

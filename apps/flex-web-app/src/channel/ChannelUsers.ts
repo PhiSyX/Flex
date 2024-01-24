@@ -24,15 +24,14 @@ export class ChannelUsers {
 	/**
 	 * Les membres du salon organisé par groupes de niveaux d'access.
 	 */
-	private members: Record<ChannelAccessLevelGroup, Map<string, ChannelNick>> =
-		{
-			owners: new Map(),
-			adminOperators: new Map(),
-			operators: new Map(),
-			halfOperators: new Map(),
-			vips: new Map(),
-			users: new Map(),
-		};
+	private members: Record<ChannelAccessLevelGroup, Map<string, ChannelNick>> = {
+		owners: new Map(),
+		adminOperators: new Map(),
+		operators: new Map(),
+		halfOperators: new Map(),
+		vips: new Map(),
+		users: new Map(),
+	};
 
 	// --------------- //
 	// Getter | Setter //
@@ -57,13 +56,9 @@ export class ChannelUsers {
 	 */
 	get moderators() {
 		const owners = sort(Array.from(this.members.owners.values()));
-		const adminOperators = sort(
-			Array.from(this.members.adminOperators.values()),
-		);
+		const adminOperators = sort(Array.from(this.members.adminOperators.values()));
 		const operators = Array.from(this.members.operators.values());
-		const halfOperators = sort(
-			Array.from(this.members.halfOperators.values()),
-		);
+		const halfOperators = sort(Array.from(this.members.halfOperators.values()));
 		return [...owners, ...adminOperators, ...operators, ...halfOperators];
 	}
 
@@ -146,8 +141,6 @@ export class ChannelUsers {
 // -------- //
 
 function sort(list: Array<ChannelNick>): Array<ChannelNick> {
-	list.sort((l, r) =>
-		l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1,
-	);
+	list.sort((l, r) => (l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1));
 	return list;
 }

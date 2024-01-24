@@ -121,8 +121,7 @@ class Result<T, E extends Error> {
 		// biome-ignore lint/style/noNonNullAssertion: pas envie.
 		throw new panic!(
 			// biome-ignore lint/style/useTemplate: pas envie.
-			"La fonction `.unwrap()` est appelée sur une valeur `Err`: " +
-				message,
+			"La fonction `.unwrap()` est appelée sur une valeur `Err`: " + message,
 		);
 	}
 
@@ -142,9 +141,7 @@ class Result<T, E extends Error> {
 	 * Retourne la valeur contenue dans [`Ok`] ou une valeur par défaut si
 	 * [`Err`].
 	 */
-	unwrap_or_else<X>(
-		callback_return_value_in_err_case: (fn_once: E) => T | X,
-	): T | X {
+	unwrap_or_else<X>(callback_return_value_in_err_case: (fn_once: E) => T | X): T | X {
 		try {
 			return this.unwrap();
 		} catch {

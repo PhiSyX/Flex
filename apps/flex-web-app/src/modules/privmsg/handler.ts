@@ -64,23 +64,17 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	}
 
 	handleUser(data: GenericReply<"PRIVMSG">) {
-		const priv = this.store
-			.roomManager()
-			.getOrInsert(data.origin.id, () => {
-				this.store
-					.roomManager()
-					.current()
-					// @ts-expect-error : type à corriger
-					.addEvent("event:query", { ...data, isMe: false });
-				const room = new PrivateRoom(data.origin.nickname).withID(
-					data.origin.id,
-				);
-				room.addParticipant(new PrivateNick(data.origin));
-				room.addParticipant(
-					new PrivateNick(this.store.me()).withIsMe(true),
-				);
-				return room;
-			});
+		const priv = this.store.roomManager().getOrInsert(data.origin.id, () => {
+			this.store
+				.roomManager()
+				.current()
+				// @ts-expect-error : type à corriger
+				.addEvent("event:query", { ...data, isMe: false });
+			const room = new PrivateRoom(data.origin.nickname).withID(data.origin.id);
+			room.addParticipant(new PrivateNick(data.origin));
+			room.addParticipant(new PrivateNick(this.store.me()).withIsMe(true));
+			return room;
+		});
 
 		this.handleMessage(priv, data);
 	}
@@ -98,9 +92,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 		}
 
 		const nickname =
-			room.type === "channel" || room.type === "private"
-				? data.origin.nickname
-				: "*";
+			room.type === "channel" || room.type === "private" ? data.origin.nickname : "*";
 
 		room.addMessage(
 			new RoomMessage()

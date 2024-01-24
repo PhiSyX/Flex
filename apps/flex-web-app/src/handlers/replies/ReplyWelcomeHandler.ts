@@ -17,9 +17,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ReplyWelcomeHandler
-	implements SocketEventInterface<"RPL_WELCOME">
-{
+export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> {
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -30,10 +28,7 @@ export class ReplyWelcomeHandler
 		});
 	}
 
-	handle(
-		data: GenericReply<"RPL_WELCOME">,
-		payload: { channels: Array<string> },
-	) {
+	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<string> }) {
 		const { channels } = payload;
 
 		this.store.setConnected(true);

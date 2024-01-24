@@ -19,10 +19,7 @@ import AppComponent from "./App.vue";
 const app = createApp(AppComponent);
 
 // 1. Setup
-const plugins = import.meta.glob<{ install: VuePluginInstall }>(
-	"./plugins/*.ts",
-	{ eager: true },
-);
+const plugins = import.meta.glob<{ install: VuePluginInstall }>("./plugins/*.ts", { eager: true });
 
 for (const plugin of Object.values(plugins)) {
 	plugin.install(app);
@@ -31,29 +28,20 @@ for (const plugin of Object.values(plugins)) {
 // Chargement des composants (events)
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const eventsComponents = import.meta.glob<{ default: any }>(
-	"../sys/room-events/RoomEvent*.vue",
-	{ eager: true },
-);
+const eventsComponents = import.meta.glob<{ default: any }>("../sys/room-events/RoomEvent*.vue", {
+	eager: true,
+});
 
 app.provide(
 	"eventsComponents",
 	Object.keys(eventsComponents).map((eventFilepath) => {
-		const componentName = eventFilepath.slice(
-			"../sys/room-events/".length,
-			0 - ".vue".length,
-		);
+		const componentName = eventFilepath.slice("../sys/room-events/".length, 0 - ".vue".length);
 		return componentName;
 	}),
 );
 
-for (const [eventFilepath, eventComponent] of Object.entries(
-	eventsComponents,
-)) {
-	const componentName = eventFilepath.slice(
-		"../sys/room-events/".length,
-		0 - ".vue".length,
-	);
+for (const [eventFilepath, eventComponent] of Object.entries(eventsComponents)) {
+	const componentName = eventFilepath.slice("../sys/room-events/".length, 0 - ".vue".length);
 	app.component(componentName, eventComponent.default);
 }
 

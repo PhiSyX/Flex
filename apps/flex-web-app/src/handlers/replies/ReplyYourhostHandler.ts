@@ -14,9 +14,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ReplyYourhostHandler
-	implements SocketEventInterface<"RPL_YOURHOST">
-{
+export class ReplyYourhostHandler implements SocketEventInterface<"RPL_YOURHOST"> {
 	constructor(private store: ChatStore) {}
 
 	listen() {

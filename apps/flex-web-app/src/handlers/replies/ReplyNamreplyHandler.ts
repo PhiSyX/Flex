@@ -17,9 +17,7 @@ import { User } from "~/user/User";
 // Implémentation //
 // -------------- //
 
-export class ReplyNamreplyHandler
-	implements SocketEventInterface<"RPL_NAMREPLY">
-{
+export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"> {
 	constructor(private store: ChatStore) {}
 
 	listen() {
