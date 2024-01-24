@@ -134,6 +134,10 @@ useRememberMe();
 <style lang="scss">
 @use "scss:~/flexsheets" as fx;
 
+body:has(#chat-login-view) {
+	--body-bg: var(--login-page-bg);
+}
+
 #chat-login-view {
 	h1 {
 		font-size: 24px;
@@ -165,6 +169,8 @@ useRememberMe();
 	form[id] ~ button[form][type="submit"] {
 		border-radius: 4px;
 		background: var(--login-button-submit-bg);
+		transition: background-color 200ms;
+		color: var(--login-button-submit-color);
 
 		&:focus-visible {
 			outline: 3px inset var(--login-button-submit-outline-color);
@@ -175,21 +181,13 @@ useRememberMe();
 		}
 
 		&:hover {
-			@include fx.theme using($name) {
-				@if $name == ice {
-					--login-button-submit-bg: var(
-						--login-button-submit-bg-hover
-					);
-				}
-			}
+			--login-button-submit-bg: var(--login-button-submit-bg-hover);
 		}
 
 		&:disabled {
-			@include fx.theme using ($name) {
-				@if $name == ice {
-					--disabled-color: var(--color-blue-grey500);
-				}
-			}
+			background: var(--disabled-bg);
+			color: var(--disabled-color);
+			pointer-events: none;
 		}
 	}
 }

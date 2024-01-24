@@ -53,7 +53,7 @@ const hostname = computeHostname(props.data.origin);
 @use "scss:~/flexsheets" as fx;
 
 p {
-	color: var(--color-green400);
+	color: var(--room-event-join-color);
 }
 
 span {

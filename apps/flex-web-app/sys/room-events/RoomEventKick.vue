@@ -46,7 +46,7 @@ defineProps<Props>();
 @use "scss:~/flexsheets" as fx;
 
 p {
-	color: var(--color-red300);
+	color: var(--room-event-kick-color);
 }
 
 output,

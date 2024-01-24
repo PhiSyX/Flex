@@ -42,7 +42,7 @@ defineProps<Props>();
 @use "scss:~/flexsheets" as fx;
 
 p {
-	color: var(--color-light-blue600);
+	color: var(--room-event-nick-color);
 }
 
 span {

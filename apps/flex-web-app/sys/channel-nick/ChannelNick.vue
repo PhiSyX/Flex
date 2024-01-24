@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChannelNickSearchHits } from '~/channel/ChannelNickFiltered';
+import { ChannelNickSearchHits } from "~/channel/ChannelNickFiltered";
 
 // ---- //
 // Type //
@@ -66,18 +66,13 @@ mark {
 }
 
 .hit {
-	--filter-color: var(--default-text-color_alt);
-	@include fx.theme using ($name) {
-		@if $name == ice {
-			--filter-bg_hsl: var(--color-cyan300_hsl);
-		}
-	}
+	--room-userlist-filter-color: var(--default-text-color_alt);
 	animation: hits 500ms ease-in-out;
 	padding-inline: 2px;
 	border-radius: 2px;
-	background-color: hsl(var(--filter-bg_hsl));
-	color: var(--filter-color);
-	filter: drop-shadow(hsl(var(--filter-bg_hsl)) 0px 0px 2px);
+	background-color: hsl(var(--room-userlist-filter-bg_hsl));
+	color: var(--room-userlist-filter-color);
+	filter: drop-shadow(hsl(var(--room-userlist-filter-bg_hsl)) 0px 0px 2px);
 }
 
 @keyframes hits {

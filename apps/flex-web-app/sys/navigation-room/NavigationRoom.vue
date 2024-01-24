@@ -40,7 +40,10 @@ const totalUnread = computeTotalUnread(props);
 	>
 		<slot name="icon" />
 
-		<bdi v-show="!folded" :class="{ 'scroll:marquee': !name.startsWith('#') }">
+		<bdi
+			v-show="!folded"
+			:class="{ 'scroll:marquee': !name.startsWith('#') }"
+		>
 			{{ name }}
 		</bdi>
 
@@ -81,12 +84,7 @@ li {
 	cursor: pointer;
 
 	&:focus-visible {
-		outline: 1px ridge transparent;
-		@include fx.theme using ($name) {
-			@if $name == ice {
-				outline-color: var(--color-grey600);
-			}
-		}
+		outline: 1px ridge var(--navigation-room-focus-color, transparent);
 	}
 }
 
@@ -101,55 +99,27 @@ li:hover .close {
 .is-active {
 	background: var(--room-bg);
 	cursor: default !important;
-
-	@include fx.theme using ($name) {
-		@if $name == ice {
-			--navigation-room-border-left-color: var(--color-grey800);
-		}
-	}
-
 	.close {
 		display: block;
 	}
 }
 
 .has-events {
-	@include fx.theme using($name) {
-		@if $name == ice {
-			color: var(--color-blue300);
-			--navigation-room-border-left-color: var(--color-blue500);
-		}
-	}
+	color: var(--navigation-room-events-color);
 }
 
 .has-messages {
-	color: var(--color-red);
-	@include fx.theme using ($name) {
-		@if $name == ice {
-			color: var(--color-orange400);
-			--navigation-room-border-left-color: var(--color-orange700);
-		}
-	}
+	color: var(--navigation-room-messages-color);
 }
 
 .is-highlight {
-	color: var(--color-green);
+	color: var(--navigation-room-highlight-color);
 	animation: blink 1s step-start 0s infinite;
-
-	@include fx.theme using ($name) {
-		@if $name == ice {
-			color: var(--color-lime500);
-			--navigation-room-border-left-color: var(--color-lime700);
-		}
-	}
 }
 
 .total-unread {
-	@include fx.theme using ($name) {
-		@if $name == ice {
-			background: var(--room-bg);
-		}
-	}
+	background: var(--navigation-total-unread-bg, var(--room-bg));
+	color: var(--navigation-total-unread-color, inherit);
 }
 
 li:hover > div > .total-unread {

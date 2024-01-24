@@ -27,9 +27,9 @@
 
 :root {
 	@include colors.use-colors;
-
-	@include ice.use-ice-theme;
 }
+
+@include ice.use-ice-theme;
 
 @import "./base";
 
@@ -128,7 +128,7 @@
 		values: (
 			4,
 		),
-	),
+	)
 );
 
 @include fx.use(

@@ -59,8 +59,16 @@ function closeHandler() {
 }
 
 @include fx.class("alert/warning") {
-	border-color: #50a097;
-	color: #50a097;
-	background-color: #ccfff9;
+	@include fx.theme using ($name) {
+		@if $name == light {
+			border-color: #ffd133;
+			color: #a27718;
+			background-color: #ffffcb;
+		} @else if $name == ice {
+			border-color: #50a097;
+			color: #50a097;
+			background-color: #ccfff9;
+		}
+	}
 }
 </style>

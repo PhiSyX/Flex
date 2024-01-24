@@ -1,56 +1,27 @@
 .is-owner {
 	--room-nick-symbol: var(--color-red500);
 	--room-nick-color: var(--color-red500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-orange200);
-			--room-nick-color: var(--color-orange500);
-		}
-	}
 	color: var(--room-nick-symbol);
 }
 .is-admin-operator {
 	--room-nick-symbol: var(--color-red500);
 	--room-nick-color: var(--color-red500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-orange200);
-			--room-nick-color: var(--color-orange500);
-		}
-	}
 	color: var(--room-nick-symbol);
 }
 .is-operator {
 	--room-nick-symbol: var(--color-red500);
 	--room-nick-color: var(--color-red500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-orange200);
-			--room-nick-color: var(--color-orange500);
-		}
-	}
 	color: var(--room-nick-symbol);
 }
 .is-half-operator {
 	--room-nick-symbol: var(--color-cyan500);
 	--room-nick-color: var(--color-cyan500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-cyan200);
-			--room-nick-color: var(--color-cyan400);
-		}
-	}
+
 	color: var(--room-nick-symbol);
 }
 .is-vip {
 	--room-nick-symbol: var(--color-orange400);
 	--room-nick-color: var(--color-orange400);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-indigo200);
-			--room-nick-color: var(--color-indigo100);
-		}
-	}
 	color: var(--room-nick-symbol);
 }
 .is-user {
@@ -60,22 +31,10 @@
 bdi.is-away::after {
 	content: "[away]";
 	text-decoration: underline;
-	@include fx.theme using ($name) {
-		@if $name == light {
-			color: var(--color-grey400);
-		} @else if $name == ice {
-			color: var(--color-grey500);
-		}
-	}
+	color: var(--room-nick-color);
 }
 bdi.is-busy::after {
 	content: "[busy]";
 	text-decoration: underline;
-	@include fx.theme using ($name) {
-		@if $name == light {
-			color: var(--color-grey400);
-		} @else if $name == ice {
-			color: var(--color-grey500);
-		}
-	}
+	color: var(--room-nick-color);
 }

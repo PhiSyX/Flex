@@ -114,7 +114,9 @@ const {
 			</template>
 
 			<template #room-info v-if="displayUserlist">
-				<aside class="room/info [ flex! h:full pt=2 min-w=35 w=35 max-w=35 ]">
+				<aside
+					class="room/info [ flex! h:full pt=2 min-w=35 w=35 max-w=35 ]"
+				>
 					<ChannelUserlist
 						:name="name"
 						:users="users"
@@ -150,7 +152,7 @@ const {
 @include fx.class("room/channel") {
 	@include fx.class("room/topic") {
 		p {
-			color: var(--color-blue-grey200);
+			color: var(--room-topic-placeholder-color);
 		}
 	}
 

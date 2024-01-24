@@ -79,11 +79,7 @@ const sendMessageHandler = sendMessage(emit, props.name);
 			text-transform: uppercase;
 		}
 
-		@include fx.theme using ($name) {
-			@if $name == ice {
-				background-color: var(--color-cyan800);
-			}
-		}
+		background-color: var(--color-cyan800);
 	}
 
 	@include fx.class("room/topic") {

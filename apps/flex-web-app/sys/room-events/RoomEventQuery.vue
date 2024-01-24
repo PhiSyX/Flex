@@ -44,7 +44,7 @@ defineProps<Props>();
 
 <style scoped>
 p {
-	color: var(--color-blue300);
+	color: var(--room-event-query-color);
 }
 
 span {

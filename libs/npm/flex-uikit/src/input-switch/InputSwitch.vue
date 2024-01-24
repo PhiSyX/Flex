@@ -92,7 +92,10 @@ ol {
 	border: 2px solid var(--bc);
 
 	@include fx.theme using ($name) {
-		@if $name == ice {
+		@if $name == light {
+			--bc: var(--color-black);
+			--bg: var(--color-black);
+		} @else if $name == ice {
 			--bc: var(--color-grey50);
 			--bg: var(--color-black);
 		}
@@ -145,9 +148,15 @@ label[for] {
 }
 
 input:checked ~ label[for] {
-	color: var(--color-white);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	@include fx.theme using ($name) {
+		@if $name == light {
+			color: var(--color-white);
+		} @else if $name == ice {
+			color: var(--color-white);
+		}
+	}
 }
 
 :not(*):focus-within,

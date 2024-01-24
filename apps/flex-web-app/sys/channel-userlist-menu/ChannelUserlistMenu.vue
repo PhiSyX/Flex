@@ -154,16 +154,6 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 @include fx.class("room/userlist:menu") {
 	font-size: 14px;
 
-	@include fx.theme using ($name) {
-		@if $name == ice {
-			--btn-primary-bg: var(--color-blue-grey600);
-			--btn-primary-bg-hover: var(--color-blue-grey700);
-			--btn-secondary-bg: var(--color-blue-grey700);
-			--btn-secondary-bg-hover: var(--color-blue-grey500);
-			--btn-danger-disabled-color: var(--color-red900);
-		}
-	}
-
 	li {
 		display: flex;
 		align-items: center;

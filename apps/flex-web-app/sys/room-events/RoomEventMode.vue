@@ -78,7 +78,7 @@ const updatedBy = computed(() => {
 @use "scss:~/flexsheets" as fx;
 
 p {
-	color: var(--color-grey500);
+	color: var(--room-event-mode-color);
 }
 
 bdi,

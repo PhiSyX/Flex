@@ -49,11 +49,7 @@ const joinChannelHandler = joinChannel(emit, { lastMessage });
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("channel/kicked") {
-	@include fx.theme using ($name) {
-		@if $name == dark {
-			background-color: var(--color-grey900);
-		}
-	}
+	background: var(--room-kicked-bg);
 }
 
 p {
@@ -64,14 +60,7 @@ p {
 button {
 	border-radius: 4px;
 
-	@include fx.theme using ($name) {
-		@if $name == light {
-			background-color: var(--color-grey900);
-			color: var(--color-grey50);
-		} @else if $name == dark {
-			background-color: var(--color-grey50);
-			color: var(--color-grey900);
-		}
-	}
+	background: var(--room-kicked-button-bg);
+	color: var(--room-kicked-button-color);
 }
 </style>
