@@ -57,7 +57,7 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 			</template>
 
 			<template #after-topic-before-main>
-				<Alert type="warning">
+				<Alert type="warning" :close-after-seconds="15">
 					Ne communique <strong>jamais</strong> tes coordonnées
 					personnelles (nom, adresse, n° de téléphone...), ni tes
 					identifiants de connexion.

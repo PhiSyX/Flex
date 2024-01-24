@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { ButtonIcon } from "../icons";
 
 // ---- //
@@ -8,8 +8,9 @@ import { ButtonIcon } from "../icons";
 
 interface Props {
 	canClose?: boolean;
-	type: "warning";
 	contentCenter?: boolean;
+	closeAfterSeconds?: number;
+	type: "warning";
 }
 
 interface Emits {
@@ -20,7 +21,7 @@ interface Emits {
 // Composant //
 // --------- //
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
 	canClose: true,
 	contentCenter: true,
 });
@@ -32,6 +33,14 @@ function closeHandler() {
 	displaying.value = false;
 	emit("close");
 }
+
+onMounted(() => {
+	if (props.closeAfterSeconds) {
+		setTimeout(() => {
+			closeHandler();
+		}, props.closeAfterSeconds * 1000);
+	}
+});
 </script>
 
 <template>
