@@ -44,8 +44,9 @@ export class PrivmsgModule implements Module<PrivmsgModule> {
 	// Méthode //
 	// ------- //
 
-	input(targetsRaw: string, ...words: Array<string>) {
-		const targets = targetsRaw.split(",");
+	input(targetsRaw?: string, ...words: Array<string>) {
+		const targets = targetsRaw?.split(",");
+		if (!targets) return;
 		const text = words.join(" ");
 		this.send({ targets, text });
 	}

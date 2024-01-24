@@ -44,11 +44,7 @@ export class KickModule implements Module<KickModule> {
 	input(channelsRaw?: string, knicksRaw?: string, ...words: Array<string>) {
 		const channels = channelsRaw?.split(",");
 		const knicks = knicksRaw?.split(",");
-
-		if (!channels || !knicks) {
-			return;
-		}
-
+		if (!channels || !knicks) return;
 		const comment = words.join(" ") || "Kick.";
 		this.send({ channels, knicks, comment });
 	}

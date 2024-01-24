@@ -41,8 +41,9 @@ export class PartModule implements Module<PartModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelsRaw: string, ...words: Array<string>) {
-		const channels = channelsRaw.split(",");
+	input(channelsRaw?: string, ...words: Array<string>) {
+		const channels = channelsRaw?.split(",");
+		if (!channels) return;
 		const message = words.join(" ");
 		this.send({ channels, message });
 	}

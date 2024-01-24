@@ -44,7 +44,8 @@ export class IgnoreModule implements Module<IgnoreModule> {
 	// Méthode //
 	// ------- //
 
-	input(nickname: string) {
+	input(nickname?: string) {
+		if (!nickname) return;
 		this.send({ nickname });
 	}
 
@@ -83,7 +84,8 @@ export class UnignoreModule implements Module<UnignoreModule> {
 	// Méthode //
 	// ------- //
 
-	input(nickname: string) {
+	input(nickname?: string) {
+		if (!nickname) return;
 		this.send({ nickname });
 	}
 

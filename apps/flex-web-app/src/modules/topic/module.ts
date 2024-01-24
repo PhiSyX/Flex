@@ -46,7 +46,8 @@ export class TopicModule implements Module<TopicModule> {
 	// Méthode //
 	// ------- //
 
-	input(channel: string, ...words: Array<string>) {
+	input(channel?: string, ...words: Array<string>) {
+		if (!channel) return;
 		const topic = words.join(" ");
 		this.send({ channel, topic });
 	}
