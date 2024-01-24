@@ -1,0 +1,7 @@
+@use "./scrollbar";
+
+@mixin use-webkit {
+	@layer framework {
+		@include scrollbar.use-webkit-scrollbar;
+	}
+}

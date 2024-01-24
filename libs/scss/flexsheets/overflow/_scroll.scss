@@ -1,15 +1,62 @@
-@use "../mixins/selector" as sel;
+@use "../mixins/class" as class;
 
-@mixin use-overflow {
-	@include sel.class("scroll:y") {
-		height: 100%;
-		overflow: hidden;
-		overflow-y: auto !important;
-		overscroll-behavior-y: contain;
-		scroll-snap-type: y mandatory;
+@mixin use-overflow-scroll($options...) {
+	$classes: (
+		"ov:a": (
+			overflow: auto,
+		),
 
-		&.scroll\:hidden {
-			margin-right: -1px !important;
-		}
-	}
+		"ov:x": (
+			overflow: hidden,
+			overflow-x: "auto !important",
+			overscroll-behavior-x: contain,
+			scroll-snap-type: x mandatory,
+		),
+
+		"ov:y": (
+			overflow: hidden,
+			overflow-y: "auto !important",
+			overscroll-behavior-y: contain,
+			scroll-snap-type: y mandatory,
+		),
+
+		"scroll": (
+			innerClass: (
+				"scroll:hidden": (
+					margin-bottom: "-1px !important",
+					margin-right: "-1px !important",
+				),
+			),
+		),
+
+		"scroll:x": (
+			width: 100%,
+			overflow: hidden,
+			overflow-x: "auto !important",
+			overscroll-behavior-x: contain,
+			scroll-snap-type: x mandatory,
+
+			innerClass: (
+				"scroll:hidden": (
+					margin-bottom: "-1px !important",
+				),
+			),
+		),
+
+		"scroll:y": (
+			height: 100%,
+			overflow: hidden,
+			overflow-y: "auto !important",
+			overscroll-behavior-y: contain,
+			scroll-snap-type: y mandatory,
+
+			innerClass: (
+				"scroll:hidden": (
+					margin-right: "-1px !important",
+				),
+			),
+		),
+	);
+
+	@include class.generate($options, $classes);
 }

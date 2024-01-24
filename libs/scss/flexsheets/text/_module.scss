@@ -1,0 +1,5 @@
+@use "./alignment";
+
+@mixin use-text($options...) {
+	@include alignment.use-text-alignment($options...);
+}

@@ -1,0 +1,20 @@
+@use "../mixins/class" as class;
+
+@mixin use-ui-cursor($options...) {
+	$classes: (
+		"cursor:default": (
+			cursor: default,
+		),
+		"cursor:pointer": (
+			cursor: pointer,
+		),
+		"cursor:grab": (
+			cursor: grab,
+		),
+		"cursor:text": (
+			cursor: text,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

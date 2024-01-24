@@ -1,0 +1,13 @@
+@use "../mixins/class" as class;
+
+@mixin use-ul-element($options...) {
+	$classes: (
+		"list:reset": (
+			padding: 0,
+			margin: 0,
+			list-style-type: none,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

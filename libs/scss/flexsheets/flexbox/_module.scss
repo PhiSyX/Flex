@@ -1,0 +1,7 @@
+@use "./alignment";
+@use "./flexibility";
+
+@mixin use-flexbox($options...) {
+	@include alignment.use-flexbox-alignment($options...);
+	@include flexibility.use-flexbox-flexibility($options...);
+}

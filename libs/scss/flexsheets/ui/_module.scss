@@ -1,0 +1,7 @@
+@use "./content-selection" as cs;
+@use "./pointer-interaction" as pi;
+
+@mixin use-ui($options...) {
+	@include cs.use-ui-content-selection($options...);
+	@include pi.use-ui-cursor($options...);
+}

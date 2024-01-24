@@ -1,0 +1,22 @@
+@use "../mixins/class" as class;
+
+@mixin use-ui-content-selection($options...) {
+	$classes: (
+		"select:none": (
+			user-select: none,
+		),
+		"select:disabled": (
+			user-select: none,
+			cursor: default,
+			color: var(--disabled-color),
+		),
+		"select:text": (
+			user-select: text,
+		),
+		"select:all": (
+			user-select: all,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

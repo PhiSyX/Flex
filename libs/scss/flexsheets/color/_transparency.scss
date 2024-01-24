@@ -1,0 +1,12 @@
+@use "../functions/space" as fn;
+@use "../mixins/class" as class;
+
+@mixin use-color-transparency($options...) {
+	$classes: (
+		opacity: opacity,
+	);
+
+	@include class.generate-dynamic($options, $classes) using($user_value, $_) {
+		opacity: #{$user_value};
+	}
+}

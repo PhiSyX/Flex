@@ -1,0 +1,33 @@
+@use "../mixins/class" as class;
+
+@mixin use-flexbox-alignment($options...) {
+	$classes: (
+		"align-i:center": (
+			align-items: center,
+		),
+		"align-jc:start": (
+			justify-content: start,
+		),
+		"align-jc:center": (
+			justify-content: center,
+		),
+		"align-jc:end": (
+			justify-content: end,
+		),
+		"align-jc:sa": (
+			justify-content: space-around,
+		),
+		"align-jc:sb": (
+			justify-content: space-between,
+		),
+		"align-jc:se": (
+			justify-content: space-evenly,
+		),
+		"flex/center:full": (
+			place-content: center,
+			place-items: center,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

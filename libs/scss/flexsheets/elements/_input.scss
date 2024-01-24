@@ -1,0 +1,15 @@
+@use "../mixins/class" as class;
+
+@mixin use-input-element($options...) {
+	$classes: (
+		"input:reset": (
+			padding: 0,
+			border: 0,
+			background: transparent,
+			color: inherit,
+			outline: none,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

@@ -1,0 +1,44 @@
+@use "../functions/space" as fn;
+@use "../mixins/class" as class;
+
+@mixin use-margin($options...) {
+	$classes: (
+		"m:a": (
+			margin: auto,
+		),
+	);
+
+	@include class.generate($options, $classes);
+
+	$classes: (
+		margin: m,
+		margin-top: mt,
+		margin-right: mr,
+		margin-bottom: mb,
+		margin-left: ml,
+		margin-inline: mx,
+		margin-block: my,
+	);
+
+	@include class.generate-dynamic($options, $classes) using
+		($user_value, $user_className) {
+		#{$user_className}: fn.space($user_value, $bypass: true);
+	}
+}
+
+@mixin use-padding($options...) {
+	$classes: (
+		padding: p,
+		padding-top: pt,
+		padding-right: pr,
+		padding-bottom: pb,
+		padding-left: pl,
+		padding-inline: px,
+		padding-block: py,
+	);
+
+	@include class.generate-dynamic($options, $classes) using
+		($user_value, $user_className) {
+		#{$user_className}: fn.space($user_value, $bypass: true);
+	}
+}

@@ -1,0 +1,7 @@
+@use "./hidden";
+@use "./scroll";
+
+@mixin use-overflow($options...) {
+	@include hidden.use-overflow-hidden($options...);
+	@include scroll.use-overflow-scroll($options...);
+}

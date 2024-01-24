@@ -1,0 +1,27 @@
+@keyframes marquee {
+	50% {
+		--direction: rtl;
+		--text-overflow: clip;
+	}
+}
+
+@include selector.class("scroll:marquee") {
+	--direction: ltr;
+	--text-overflow: ellipsis;
+
+	overflow-x: hidden;
+	animation: marquee 2s step-start 0s infinite;
+	direction: var(--direction);
+	text-overflow: var(--text-overflow);
+	white-space: nowrap;
+
+	&:active,
+	&:hover {
+		--direction: rtl;
+		--text-overflow: clip;
+		animation: none;
+		&:after {
+			content: "\200E‎";
+		}
+	}
+}

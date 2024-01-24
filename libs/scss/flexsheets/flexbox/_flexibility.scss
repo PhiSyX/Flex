@@ -1,0 +1,25 @@
+@use "../mixins/class" as class;
+
+@mixin use-flexbox-flexibility($options...) {
+	$classes: (
+		"flex": (
+			display: flex,
+		),
+		"i-flex": (
+			display: inline-flex,
+		),
+		"i-flex!": (
+			display: inline-flex,
+			flex-direction: column,
+		),
+		"flex!": (
+			display: flex,
+			flex-direction: column,
+		),
+		"flex:full": (
+			flex-grow: 1,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

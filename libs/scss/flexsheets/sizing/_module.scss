@@ -1,0 +1,6 @@
+@use "./width-height" as wh;
+
+@mixin use-sizing($options...) {
+	@include wh.use-sizing-generics($options...);
+	@include wh.use-sizing-only($options...);
+}

@@ -1,0 +1,42 @@
+@use "../mixins/selector" as selector;
+
+@mixin use-webkit-scrollbar {
+	::-webkit-scrollbar {
+		background: transparent;
+		cursor: pointer;
+		width: var(--scrollbar-size);
+		height: var(--scrollbar-size);
+	}
+
+	::-webkit-scrollbar-corner {
+		background: transparent;
+	}
+
+	::-webkit-scrollbar-thumb {
+		border: calc(var(--scrollbar-size) / 3) solid
+			var(--scrollbar_border-bg, transparent);
+		border-radius: 2px;
+		background: var(--scrollbar-bg, lightgray);
+		background-clip: padding-box !important;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: var(--scrollbar-bg-hover);
+	}
+
+	::-webkit-scrollbar-thumb:active {
+		background: var(--scrollbar-bg-active);
+	}
+
+	@include selector.class("scroll:hidden") {
+		&::-webkit-scrollbar {
+			width: 0px !important;
+			height: 0px !important;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			border: 0 !important;
+			background: transparent !important;
+		}
+	}
+}

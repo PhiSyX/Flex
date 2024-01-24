@@ -1,0 +1,17 @@
+@use "../mixins/class" as class;
+
+@mixin use-text-alignment($options...) {
+	$classes: (
+		"align-t:left": (
+			text-align: left,
+		),
+		"align-t:center": (
+			text-align: center,
+		),
+		"align-t:right": (
+			text-align: right,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

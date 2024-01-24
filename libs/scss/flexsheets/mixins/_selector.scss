@@ -5,8 +5,14 @@
  * 	@include class("py=1") { ... } // -> .py\=1 { ... }
  * ```
  */
-@mixin class($selector) {
+@mixin class($selector, $breakpoints: null) {
 	.#{fn.escape_selector($selector)} {
+		@content;
+	}
+}
+
+@mixin in-class($selector) {
+	&.#{fn.escape_selector($selector)} {
 		@content;
 	}
 }

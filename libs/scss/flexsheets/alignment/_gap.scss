@@ -1,0 +1,13 @@
+@use "../functions/space" as fn;
+@use "../mixins/class" as class;
+
+@mixin use-gap($options...) {
+	$classes: (
+		gap: gap,
+	);
+
+	@include class.generate-dynamic($options, $classes) using
+		($user_value, $user_className) {
+		#{$user_className}: fn.space($user_value, $bypass: true);
+	}
+}

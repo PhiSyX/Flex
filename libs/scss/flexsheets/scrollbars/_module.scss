@@ -1,0 +1,28 @@
+@use "sass:map";
+
+@mixin use-scrollbars($options) {
+	$background: map.get($options, background);
+	$backgroundHover: map.get($options, background-hover);
+	$backgroundActive: map.get($options, background-active);
+
+	@if not map.has-key($options, background-hover) {
+		$backgroundHover: lighten($background, 10%);
+	}
+
+	@if not map.has-key($options, background-active) {
+		$backgroundActive: lighten($background, 32%);
+	}
+
+	:root {
+		--scrollbar-size: 16px;
+		--scrollbar-bg: #{$background};
+		--scrollbar-bg-hover: #{$backgroundHover};
+		--scrollbar-bg-active: #{$backgroundActive};
+		--scrollbar-border-bg: #{map.get($options, border-background)};
+	}
+
+	* {
+		scrollbar-color: var(--scrollbar-bg) transparent;
+		scrollbar-width: thin;
+	}
+}

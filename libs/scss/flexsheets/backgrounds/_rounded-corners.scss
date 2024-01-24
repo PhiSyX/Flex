@@ -1,0 +1,25 @@
+@use "../functions/space" as fn;
+@use "../mixins/class" as class;
+
+@mixin use-backgrounds-rounded-corners($options...) {
+	$classes: (
+		"border/radius=all": (
+			border-radius: 100%,
+		),
+	);
+
+	@include class.generate($options, $classes);
+
+	$classes: (
+		border-radius: "border/radius",
+		border-top-left-radius: "border-tl/radius",
+		border-top-right-radius: "border-tr/radius",
+		border-bottom-left-radius: "border-bl/radius",
+		border-bottom-right-radius: "border-br/radius",
+	);
+
+	@include class.generate-dynamic($options, $classes) using
+		($user_value, $user_className) {
+		#{$user_className}: fn.space($user_value, $bypass: true);
+	}
+}

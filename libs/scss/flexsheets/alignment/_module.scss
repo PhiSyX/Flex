@@ -1,0 +1,5 @@
+@use "./gap";
+
+@mixin use-alignment($options...) {
+	@include gap.use-gap($options...);
+}

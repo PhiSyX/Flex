@@ -1,0 +1,53 @@
+@use "../functions/space" as fn;
+@use "../mixins/class" as class;
+
+@mixin use-sizing-generics($options...) {
+	$classes: (
+		"size:full": (
+			height: 100%,
+			width: 100%,
+		),
+
+		"h:full": (
+			height: 100%,
+		),
+
+		"w:full": (
+			width: 100%,
+		),
+
+		"min-w:fit": (
+			min-width: fit-content,
+		),
+		"min-w:max": (
+			min-width: max-content,
+		),
+		"min-w:min": (
+			min-width: min-content,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}
+
+@mixin use-sizing-only($options...) {
+	$classes: (
+		width: w,
+		height: h,
+		max-width: max-w,
+		max-height: max-h,
+		min-width: min-w,
+		min-height: min-h,
+		size: size,
+	);
+
+	@include class.generate-dynamic($options, $classes) using
+		($user_value, $user_className) {
+		@if $user_className == size {
+			width: fn.space($user_value, $bypass: true);
+			height: fn.space($user_value, $bypass: true);
+		} @else {
+			#{$user_className}: fn.space($user_value, $bypass: true);
+		}
+	}
+}

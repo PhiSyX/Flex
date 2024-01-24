@@ -1,0 +1,76 @@
+@use "sass:map";
+
+@use "./selector" as selector;
+
+@mixin generate($options, $classes) {
+	@each $option in $options {
+		$user_className: map.get($option, className);
+		$user_breakpoints: map.get($option, breakpoints);
+
+		@include generate-classes($classes, $user_className, $user_breakpoints);
+	}
+}
+
+@mixin generate-dynamic($options, $classes) {
+	@each $option in $options {
+		$user_className: map.get($option, className);
+		$user_values: map.get($option, values);
+		$user_breakpoints: map.get($option, breakpoints);
+
+		@include generate-dynamic-classes(
+				$classes,
+				$user_className,
+				$user_values,
+				$user_breakpoints
+			)
+			using ($user_value) {
+			@content ($user_value, $user_className);
+		}
+	}
+}
+
+@mixin generate-dynamic-classes(
+	$classes,
+	$user_className,
+	$user_values,
+	$user_breakpoints
+) {
+	@if map.has-key($classes, $user_className) {
+		$alias: map.get($classes, $user_className);
+
+		@layer userland {
+			@each $user_value in $user_values {
+				@include selector.class(
+					"#{$alias}=#{$user_value}",
+					$user_breakpoints
+				) {
+					@content ($user_value);
+				}
+			}
+		}
+	}
+}
+
+@mixin generate-classes($classes, $user_className, $user_breakpoints) {
+	@if map.has-key($classes, $user_className) {
+		$class: map.get($classes, $user_className);
+
+		@layer flexsheets {
+			@include selector.class($user_className, $user_breakpoints) {
+				@each $prop, $value in $class {
+					@if $prop == innerClass {
+						@each $className, $values in map.get($class, $prop) {
+							@include selector.in-class($className) {
+								@each $prop, $value in $values {
+									#{$prop}: #{$value};
+								}
+							}
+						}
+					} @else {
+						#{$prop}: #{$value};
+					}
+				}
+			}
+		}
+	}
+}

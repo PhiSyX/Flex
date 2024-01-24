@@ -1,0 +1,11 @@
+@use "./button";
+@use "./input";
+@use "./paragraph";
+@use "./ulist";
+
+@mixin use-element($options...) {
+	@include button.use-button-element($options...);
+	@include input.use-input-element($options...);
+	@include paragraph.use-p-element($options...);
+	@include ulist.use-ul-element($options...);
+}

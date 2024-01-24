@@ -1,0 +1,6 @@
+@use "./margin-padding" as mp;
+
+@mixin use-box($options...) {
+	@include mp.use-margin($options...);
+	@include mp.use-padding($options...);
+}

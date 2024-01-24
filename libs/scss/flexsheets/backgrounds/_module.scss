@@ -1,0 +1,7 @@
+@use "./borders" as b;
+@use "./rounded-corners" as rc;
+
+@mixin use-backgrounds($options...) {
+	@include b.use-backgrounds-borders($options...);
+	@include rc.use-backgrounds-rounded-corners($options...);
+}

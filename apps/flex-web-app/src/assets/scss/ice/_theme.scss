@@ -1,0 +1,46 @@
+@use "scss:~/flexsheets" as fx;
+
+@mixin use-ice-theme {
+	@include fx.theme(true) using ($name) {
+		@if $name == ice {
+			--default-border-color: var(--color-blue-grey500);
+			--default-text-color: var(--color-white);
+			--default-text-color_alt: var(--color-grey900);
+
+			--body-bg: linear-gradient(
+				var(--color-blue-grey600),
+				var(--color-blue-grey400)
+			);
+			--body-bg_alt: var(--color-blue-grey600);
+
+			--text-input-color-error: #4dd2d4;
+
+			--login-form-bg: var(--color-blue-grey600);
+			--login-form-shadow: var(--color-blue-grey700);
+			--login-form-color: hsl(var(--color-white_hsl), 0.75);
+			--login-form-hover-color: var(--color-white);
+			--login-button-submit-bg: linear-gradient(
+				hsl(var(--color-grey50_hsl), 55%),
+				hsl(var(--color-grey50_hsl), 15%)
+			);
+			--login-button-submit-bg-hover: linear-gradient(
+				hsl(var(--color-grey50_hsl), 75%),
+				hsl(var(--color-grey50_hsl), 25%)
+			);
+			--login-button-submit-color: var(--color-grey800);
+			--login-button-submit-outline-color: var(--color-blue-grey600);
+
+			--room-bg: var(--color-blue-grey700);
+			--room-editbox-bg: var(--room-bg);
+			--room-message-time-color: var(--color-grey500);
+			--room-message-action-color: var(--color-orange400);
+			--room-message-error-color: var(--color-red300);
+
+			--room-nick-myself-color: var(--color-blue300);
+
+			--room-userlist-bg: var(--body-bg);
+			--room-userlist-search-bg: var(--room-bg);
+			// --room-userlist-search-outline-focus: #009DFF;
+		}
+	}
+}

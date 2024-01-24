@@ -12,228 +12,195 @@
 
 @use "scss:~/flexsheets" as fx with($spacing: var.$spacing);
 
+@use "./colors" as colors;
+@use "./ice/module" as ice;
+
 @layer flexsheets, userland;
 
 @import "scss:~/normalizer.css" layer(reset);
 
 @include fx.use-reset;
 
-@import "./variables";
 @import "./fonts";
 @import "./input";
+@import "./access-level";
 
 :root {
-	/* Couleurs globales */
-	--color-ultra-black: #000000;
-	--color-ultra-white: #ffffff;
+	@include colors.use-colors;
 
-	--color-black: #212121;
-	--color-white: #e9f2f4;
-	--color-white_hsl: 191, 33%, 94%;
-
-	--color-blue300: #64b5f6;
-	--color-blue500: #2196f3;
-
-	--color-blue-grey200: #b0bec5;
-	--color-blue-grey400: #78909c;
-	--color-blue-grey500: #677c86;
-	--color-blue-grey600: #546e7a;
-	--color-blue-grey700: #455a64;
-
-	--color-cyan200: #80deea;
-	--color-cyan300_hsl: 187, 71%, 59%;
-	--color-cyan400: #26c6da;
-	--color-cyan500: #00bcd4;
-	--color-cyan800: #00838f;
-
-	--color-green400: #66bb6a;
-
-	--color-grey50: #fafafa;
-	--color-grey50_hsl: 0, 0%, 98%;
-	--color-grey400: #bdbdbd;
-	--color-grey500: #9e9e9e;
-	--color-grey600: #757575;
-	--color-grey800: #424242;
-	--color-grey900: #212121;
-
-	--color-indigo100: #c5cae9;
-	--color-indigo200: #9fa8da;
-
-	--color-light-blue600: #039be5;
-
-	--color-lime500: #cddc39;
-	--color-lime700: #afb42b;
-
-	--color-orange200: #ffcc80;
-	--color-orange400: #ffa726;
-	--color-orange500: #ff9800;
-	--color-orange700: #f57c00;
-
-	--color-red300: #e57373;
-	--color-red500: #f44336;
-	--color-red600: #e53935;
-	--color-red900: #b71c1c;
-
-	/* Paramètres d'application */
-
-	@include fx.theme(true) using ($name) {
-		@if $name == ice {
-			--default-border-color: var(--color-blue-grey500);
-			--default-text-color: var(--color-white);
-			--default-text-color_alt: var(--color-grey900);
-
-			--body-bg: linear-gradient(
-				var(--color-blue-grey600),
-				var(--color-blue-grey400)
-			);
-			--body-bg_alt: var(--color-blue-grey600);
-
-			--text-input-color-error: #4dd2d4;
-
-			--login-form-bg: var(--color-blue-grey600);
-			--login-form-shadow: var(--color-blue-grey700);
-			--login-form-color: hsl(var(--color-white_hsl), 0.75);
-			--login-form-hover-color: var(--color-white);
-			--login-button-submit-bg: linear-gradient(
-				hsl(var(--color-grey50_hsl), 55%),
-				hsl(var(--color-grey50_hsl), 15%)
-			);
-			--login-button-submit-bg-hover: linear-gradient(
-				hsl(var(--color-grey50_hsl), 75%),
-				hsl(var(--color-grey50_hsl), 25%)
-			);
-			--login-button-submit-color: var(--color-grey800);
-			--login-button-submit-outline-color: var(--color-blue-grey600);
-
-			--room-bg: var(--color-blue-grey700);
-			--room-editbox-bg: var(--room-bg);
-			--room-message-time-color: var(--color-grey500);
-			--room-message-action-color: var(--color-orange400);
-			--room-message-error-color: var(--color-red300);
-
-			--room-nick-myself-color: var(--color-blue300);
-
-			--room-userlist-bg: var(--body-bg);
-			--room-userlist-search-bg: var(--room-bg);
-			// --room-userlist-search-outline-focus: #009DFF;
-		}
-	}
+	@include ice.use-ice-theme;
 }
 
-html,
-body {
-	width: 100svw;
-	height: 100svh;
+@import "./base";
 
-	font-family: Roboto, Nunito, sans-serif;
-	font-size: 16px;
-}
+@include fx.use(
+	"align-i:center",
+	"align-jc:center",
+	"align-jc:end",
+	"align-jc:sb",
+	"align-t:center",
+	"align-t:right",
+	"button:reset",
+	"cursor:default",
+	"cursor:pointer",
+	"flex:full",
+	"flex!",
+	"flex",
+	"flex/center:full",
+	"h:full",
+	"i-flex!",
+	"i-flex",
+	"input:reset",
+	"list:reset",
+	"m:a",
+	"min-w:fit",
+	"ov:a",
+	"ov:h",
+	"ov:x",
+	"ov:y",
+	"p:reset",
+	"scroll:x",
+	"scroll:y",
+	"scroll",
+	"select:disabled",
+	"select:none",
+	"size:full",
+	"w:full"
+);
 
-#🆔,
-#app {
-	width: 100%;
-	height: 100%;
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+			2,
+			3,
+		),
+	)
+);
 
-	overflow: hidden;
-}
+@include fx.use(
+	(
+		className: border-radius,
+		values: (
+			1,
+			3,
+			50,
+		),
+	),
+	(
+		className: border-bottom-left-radius,
+		values: (
+			1,
+		),
+	)
+);
 
-#🆔 {
-	transition: box-shadow 0.2s;
+@include fx.use(
+	(
+		className: margin,
+		values: (
+			1,
+		),
+	),
+	(
+		className: margin-block,
+		values: (
+			1,
+		),
+	),
+	(
+		className: margin-inline,
+		values: (
+			1,
+			2,
+		),
+	)
+);
 
-	color: var(--default-text-color);
-}
+@include fx.use(
+	(
+		className: padding,
+		values: (
+			1,
+			2,
+		),
+	),
+	(
+		className: padding-top,
+		values: (
+			2,
+		),
+	),
+	(
+		className: padding-left,
+		values: (
+			1,
+		),
+	),
+	(
+		className: padding-block,
+		values: (
+			1,
+		),
+	),
+	(
+		className: padding-inline,
+		values: (
+			1,
+			2,
+		),
+	)
+);
 
-#app {
-	padding: fx.space(1);
+@include fx.use(
+	(
+		className: width,
+		values: (
+			5,
+		),
+	),
+	(
+		className: height,
+		values: (
+			3,
+			4,
+			6,
+			8,
+			62,
+		),
+	),
+	(
+		className: size,
+		values: (
+			3,
+			4,
+		),
+	),
+	(
+		className: max-height,
+		values: (
+			12,
+		),
+	),
+	(
+		className: min-height,
+		values: (
+			6,
+		),
+	),
+	(
+		className: min-width,
+		values: (
+			43,
+		),
+	)
+);
 
-	background: var(--body-bg);
+@include fx.use-scrollbars(
+	(
+		background: #1c6a97,
+	)
+);
 
-	box-shadow: inset 0 0 0 fx.space(1) var(--default-border-color),
-		inset 5px 5px 5px var(--default-border-color);
-}
-
-@include fx.use-overflow();
-@include fx.use-ulist-reset();
-@include fx.use-input-reset();
-
-.is-owner {
-	--room-nick-symbol: var(--color-red500);
-	--room-nick-color: var(--color-red500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-orange200);
-			--room-nick-color: var(--color-orange500);
-		}
-	}
-	color: var(--room-nick-symbol);
-}
-.is-admin-operator {
-	--room-nick-symbol: var(--color-red500);
-	--room-nick-color: var(--color-red500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-orange200);
-			--room-nick-color: var(--color-orange500);
-		}
-	}
-	color: var(--room-nick-symbol);
-}
-.is-operator {
-	--room-nick-symbol: var(--color-red500);
-	--room-nick-color: var(--color-red500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-orange200);
-			--room-nick-color: var(--color-orange500);
-		}
-	}
-	color: var(--room-nick-symbol);
-}
-.is-half-operator {
-	--room-nick-symbol: var(--color-cyan500);
-	--room-nick-color: var(--color-cyan500);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-cyan200);
-			--room-nick-color: var(--color-cyan400);
-		}
-	}
-	color: var(--room-nick-symbol);
-}
-.is-vip {
-	--room-nick-symbol: var(--color-orange400);
-	--room-nick-color: var(--color-orange400);
-	@include fx.theme using($name) {
-		@if $name == ice {
-			--room-nick-symbol: var(--color-indigo200);
-			--room-nick-color: var(--color-indigo100);
-		}
-	}
-	color: var(--room-nick-symbol);
-}
-.is-user {
-	color: inherit;
-}
-
-bdi.is-away::after {
-	content: "[away]";
-	text-decoration: underline;
-	@include fx.theme using ($name) {
-		@if $name == light {
-			color: var(--color-grey400);
-		} @else if $name == ice {
-			color: var(--color-grey500);
-		}
-	}
-}
-bdi.is-busy::after {
-	content: "[busy]";
-	text-decoration: underline;
-	@include fx.theme using ($name) {
-		@if $name == light {
-			color: var(--color-grey400);
-		} @else if $name == ice {
-			color: var(--color-grey500);
-		}
-	}
-}
+@include fx.use-webkit();

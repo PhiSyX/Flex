@@ -1,0 +1,11 @@
+@use "../mixins/class" as class;
+
+@mixin use-p-element($options...) {
+	$classes: (
+		"p:reset": (
+			margin-block: 0,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

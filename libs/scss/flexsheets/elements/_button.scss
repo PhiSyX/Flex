@@ -1,0 +1,14 @@
+@use "../mixins/class" as class;
+
+@mixin use-button-element($options...) {
+	$classes: (
+		"button:reset": (
+			padding: 0,
+			border: 0,
+			background: transparent,
+			color: inherit,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

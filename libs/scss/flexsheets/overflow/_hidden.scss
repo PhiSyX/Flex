@@ -1,0 +1,11 @@
+@use "../mixins/class" as class;
+
+@mixin use-overflow-hidden($options...) {
+	$classes: (
+		"ov:h": (
+			overflow: hidden,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

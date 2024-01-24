@@ -1,0 +1,5 @@
+@use "./transparency";
+
+@mixin use-color($options...) {
+	@include transparency.use-color-transparency($options...);
+}

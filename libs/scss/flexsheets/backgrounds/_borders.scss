@@ -1,0 +1,11 @@
+@use "../mixins/class" as class;
+
+@mixin use-backgrounds-borders($options...) {
+	$classes: (
+		"b:none": (
+			border: none,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

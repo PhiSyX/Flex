@@ -12,7 +12,85 @@
 @import "./flexsheets/mixins/selector";
 @import "./flexsheets/mixins/theme";
 
-@import "./flexsheets/reset/input";
-@import "./flexsheets/reset/ulist";
 @import "./flexsheets/reset/reset";
-@import "./flexsheets/overflow/scroll";
+
+@import "./flexsheets/alignment/module";
+@import "./flexsheets/backgrounds/module";
+@import "./flexsheets/box/module";
+@import "./flexsheets/color/module";
+@import "./flexsheets/elements/module";
+@import "./flexsheets/flexbox/module";
+@import "./flexsheets/overflow/module";
+@import "./flexsheets/scrollbars/module";
+@import "./flexsheets/sizing/module";
+@import "./flexsheets/text/module";
+@import "./flexsheets/ui/module";
+@import "./flexsheets/webkit/module";
+
+@mixin use($clsx...) {
+	@each $cls in $clsx {
+		@if type-of($cls) == string {
+			@include use-alignment(
+				(
+					className: $cls,
+				)
+			);
+			@include use-backgrounds(
+				(
+					className: $cls,
+				)
+			);
+			@include use-box(
+				(
+					className: $cls,
+				)
+			);
+			@include use-color(
+				(
+					className: $cls,
+				)
+			);
+			@include use-element(
+				(
+					className: $cls,
+				)
+			);
+			@include use-flexbox(
+				(
+					className: $cls,
+				)
+			);
+			@include use-overflow(
+				(
+					className: $cls,
+				)
+			);
+			@include use-sizing(
+				(
+					className: $cls,
+				)
+			);
+			@include use-text(
+				(
+					className: $cls,
+				)
+			);
+			@include use-ui(
+				(
+					className: $cls,
+				)
+			);
+		} @else {
+			@include use-alignment($cls);
+			@include use-backgrounds($cls);
+			@include use-box($cls);
+			@include use-color($cls);
+			@include use-element($cls);
+			@include use-flexbox($cls);
+			@include use-overflow($cls);
+			@include use-sizing($cls);
+			@include use-text($cls);
+			@include use-ui($cls);
+		}
+	}
+}
