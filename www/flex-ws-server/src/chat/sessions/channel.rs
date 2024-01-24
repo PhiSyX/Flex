@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use dashmap::mapref::multiple::RefMutMulti;
 use dashmap::mapref::one::{Ref, RefMut};
 use dashmap::DashMap;
 use flex_web_framework::types::secret;
@@ -61,9 +62,19 @@ impl ChatApplication
 		self.channels.get(channel_name)
 	}
 
+	/// Récupère un client à partir de son ID.
 	pub fn get_client_by_id(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
 		self.clients.find(client_id)
+	}
+
+	/// Récupère un client à partir de son ID.
+	pub fn get_client_mut_by_id(
+		&self,
+		client_id: &client::ClientID,
+	) -> Option<RefMutMulti<'_, client::ClientID, client::Client>>
+	{
+		self.clients.find_mut(client_id)
 	}
 
 	/// Le client peut-il écrire sur le salon?

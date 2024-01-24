@@ -325,7 +325,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client les réponses liées à la commande /QUIT.
-	pub fn emit_quit(self, reason: impl ToString)
+	pub fn emit_quit(&self, room: &str, reason: impl ToString)
 	{
 		use crate::src::chat::features::QuitCommandResponse;
 
@@ -340,7 +340,7 @@ impl<'a> Socket<'a>
 
 		_ = self
 			.socket()
-			.broadcast()
+			.to(format!("channel:{}", room.to_lowercase()))
 			.emit(quit_command.name(), quit_command);
 	}
 }

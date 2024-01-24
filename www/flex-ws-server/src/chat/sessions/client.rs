@@ -133,9 +133,16 @@ impl ChatApplication
 	/// Déconnecte un client de session.
 	pub fn disconnect_client(&self, client_socket: client::Socket, reason: impl ToString)
 	{
-		self.remove_client_from_all_his_channels(&client_socket);
-		self.clients.unregister(client_socket.cid());
-		client_socket.emit_quit(reason);
+		let Some(mut session_client) = self.get_client_mut_by_id(client_socket.cid()) else {
+			return;
+		};
+		for channel_name in session_client.channels.iter() {
+			client_socket.emit_quit(channel_name, reason.to_string());
+		}
+		self.channels
+			.remove_client_from_all_his_channels(&session_client);
+		session_client.channels.clear();
+		session_client.disconnect();
 	}
 
 	/// Trouve un client de session à partir de son ID.
@@ -261,6 +268,17 @@ impl ClientsSession
 			let (cid, client) = (rm.key(), rm.value());
 			(cid == client_id && client.is_registered()).then_some(client.clone())
 		})
+	}
+
+	/// Cherche un client en fonction de son ID.
+	pub fn find_mut(
+		&self,
+		client_id: &client::ClientID,
+	) -> Option<dashmap::mapref::multiple::RefMutMulti<'_, client::ClientID, client::Client>>
+	{
+		self.clients
+			.iter_mut()
+			.find(|rm| rm.key() == client_id && rm.value().is_registered())
 	}
 
 	/// Trouve un client en fonction de son ID.
