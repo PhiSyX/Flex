@@ -19,11 +19,13 @@ import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
+import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
 import { ErrorChanoprivsneeded } from "~/handlers/errors/ErrorChanoprivsneeded";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
 import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
 import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
+import { ErrorUsernotinchannelHandler } from "~/handlers/errors/ErrorUsernotinchannelHandler";
 import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
@@ -51,7 +53,6 @@ import { RoomManager } from "~/room/RoomManager";
 import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { User, UserID } from "~/user/User";
-import { ErrorCannotsendtochanHandler } from "../handlers/errors/ErrorCannotsendtochanHandler";
 
 // ---- //
 // Type //
@@ -92,7 +93,8 @@ export class ChatStore {
 			.add(new ErrorNicknameinuseHandler(self))
 			.add(new ErrorNosuchchannelHandler(self))
 			.add(new ErrorNosuchnickHandler(self))
-			.add(new ErrorNotonchannelHandler(self));
+			.add(new ErrorNotonchannelHandler(self))
+			.add(new ErrorUsernotinchannelHandler(self));
 
 		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));

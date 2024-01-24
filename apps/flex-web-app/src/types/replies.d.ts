@@ -59,6 +59,7 @@ declare interface ErrorReplies {
 	ERR_NOSUCHCHANNEL: { channel_name: string };
 	ERR_NOSUCHNICK: { nickname: string };
 	ERR_NOTONCHANNEL: { channel: string };
+	ERR_USERNOTINCHANNEL: { channel: string; nick: string };
 }
 
 declare interface Replies
