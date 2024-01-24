@@ -25,7 +25,7 @@ export class RoomManager {
 	 */
 	extends(rooms: Iterable<[RoomID, Room]>) {
 		for (const [roomID, room] of rooms) {
-			this._rooms.set(roomID, room);
+			this._rooms.set(roomID.toLowerCase(), room);
 		}
 	}
 
@@ -42,7 +42,7 @@ export class RoomManager {
 	 * Récupère un chambre à partir de son ID.
 	 */
 	get(roomID: RoomID): Option<Room> {
-		return Option.from(this._rooms.get(roomID));
+		return Option.from(this._rooms.get(roomID.toLowerCase()));
 	}
 
 	/**
@@ -70,7 +70,7 @@ export class RoomManager {
 	 * Ajoute une nouvelle chambre.
 	 */
 	insert(roomID: RoomID, room: Room): Room {
-		this._rooms.set(roomID, room);
+		this._rooms.set(roomID.toLowerCase(), room);
 		return room;
 	}
 
@@ -83,7 +83,7 @@ export class RoomManager {
 				this.unsetCurrent();
 			}
 		}
-		this._rooms.delete(roomID);
+		this._rooms.delete(roomID.toLowerCase());
 		if (this._currentRoom.is_none()) {
 			this.setCurrentToLast();
 		}
@@ -104,7 +104,7 @@ export class RoomManager {
 			this.current().setActive(false);
 		}
 
-		this._currentRoom.replace(roomID);
+		this._currentRoom.replace(roomID.toLowerCase());
 
 		this.current().setActive(true);
 	}
