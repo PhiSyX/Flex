@@ -23,7 +23,7 @@ const sendMessageHandler = sendMessage(emit);
 
 <template>
 	<slot name="room-info" />
-	<div class="room/area">
+	<div class="room/area [ flex:full ov:a flex! ]">
 		<RoomTopic>
 			<template #topic>
 				<slot name="topic" />
@@ -35,12 +35,12 @@ const sendMessageHandler = sendMessage(emit);
 
 		<slot name="after-topic-before-main" />
 
-		<div class="room/main">
+		<div class="room/main [ flex:full ov:h flex h:full ]">
 			<slot name="before-history" />
 			<slot name="history">
 				<RoomHistoryLogs
 					:messages="messages"
-					class="room/history-logs"
+					class="[ flex:full ]"
 					@open-private="openPrivateHandler"
 				/>
 			</slot>
@@ -56,26 +56,3 @@ const sendMessageHandler = sendMessage(emit);
 		/>
 	</div>
 </template>
-
-<style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
-
-@include fx.class("room/area") {
-	flex-grow: 1;
-
-	overflow: auto;
-	display: flex;
-	flex-direction: column;
-}
-
-@include fx.class("room/main") {
-	flex-grow: 1;
-	overflow: hidden;
-	display: flex;
-	height: 100%;
-}
-
-@include fx.class("room/history-logs") {
-	flex-grow: 1;
-}
-</style>

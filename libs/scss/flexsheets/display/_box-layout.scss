@@ -1,12 +1,12 @@
 @use "../mixins/class" as class;
 
-@mixin use-overflow-hidden($options...) {
+@mixin use-box-layout($options...) {
 	$classes: (
-		"ov:c": (
-			overflow: clip,
+		"d-b": (
+			display: block,
 		),
-		"ov:h": (
-			overflow: hidden,
+		"d-ib": (
+			display: inline-block,
 		),
 	);
 

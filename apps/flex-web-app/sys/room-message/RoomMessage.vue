@@ -43,7 +43,7 @@ const maybePrivateNick = computePrivateNick(props);
 </script>
 
 <template>
-	<li :id="id" :data-type="type" :data-myself="isMe" class="room/echo">
+	<li :id="id" :data-type="type" :data-myself="isMe" class="room/echo [ d-ib ]">
 		<template v-if="componentEventExists && isEvent">
 			<component :is="componentEventName" v-bind="props" />
 		</template>
@@ -85,8 +85,6 @@ const maybePrivateNick = computePrivateNick(props);
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("room/echo") {
-	display: inline-block;
-
 	&[data-type="action"] {
 		font-style: italic;
 		color: var(--room-message-action-color);
@@ -112,14 +110,6 @@ const maybePrivateNick = computePrivateNick(props);
 		line-height: 1.4rem;
 		word-break: break-all;
 		hyphens: manual;
-	}
-
-	em {
-		font-style: italic;
-	}
-
-	strong {
-		font-weight: 800;
 	}
 }
 </style>

@@ -26,8 +26,8 @@ onActivated(() => scroll());
 </script>
 
 <template>
-	<div ref="$root">
-		<ul class="[ list:reset ]">
+	<div ref="$root" class="[ ov:y flex! ]">
+		<ul class="[ list:reset flex:full flex! align-jc:end gap=1 p=1 ]">
 			<RoomMessageComponent
 				v-for="message in messages"
 				:key="message.id"
@@ -42,24 +42,7 @@ onActivated(() => scroll());
 @use "scss:~/flexsheets" as fx;
 
 div {
-	overflow: hidden;
-	overflow-y: auto !important;
-	overscroll-behavior-y: contain;
-	scroll-snap-type: y mandatory;
-
-	display: flex;
-	flex-direction: column;
 	border-bottom-left-radius: 4px;
 	background: var(--room-bg);
-}
-
-ul {
-	flex-grow: 1;
-
-	display: flex;
-	flex-direction: column;
-	justify-content: end;
-	gap: fx.space(1);
-	padding: fx.space(1);
 }
 </style>

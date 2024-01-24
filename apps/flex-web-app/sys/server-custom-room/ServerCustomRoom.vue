@@ -27,18 +27,20 @@ const sendMessageHandler = sendMessage(emit, props.name);
 </script>
 
 <template>
-	<div class="server/window">
+	<div class="room/custom:server [ flex! ov:h ]">
 		<Room
 			:messages="messages"
 			:name="name"
 			@send-message="sendMessageHandler"
 		>
 			<template #topic>
-				<p>Bienvenue sur le Chat de {{ name }} !</p>
+				<p class="[ flex flex/center:full h:full m=0 p=0 select:none ]">
+					Bienvenue sur le Chat de {{ name }} !
+				</p>
 			</template>
 
 			<template #after-topic-before-main>
-				<header>
+				<header class="[ flex align-jc:center gap=3 my=1 ]">
 					<a :href="vademecumUrl">
 						<strong>VADEMECUM</strong>
 						Lire / Relire les instructions officielles
@@ -57,19 +59,8 @@ const sendMessageHandler = sendMessage(emit, props.name);
 <style lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-@include fx.class("server/window") {
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-
+@include fx.class("room/custom:server") {
 	background: var(--room-bg);
-
-	header {
-		display: flex;
-		justify-content: center;
-		gap: fx.space(3);
-		margin-block: fx.space(1);
-	}
 
 	header a {
 		display: inline-flex;
@@ -97,15 +88,6 @@ const sendMessageHandler = sendMessage(emit, props.name);
 
 	@include fx.class("room/topic") {
 		background: var(--room-bg);
-		p {
-			display: flex;
-			place-content: center;
-			place-items: center;
-			height: 100%;
-			margin: 0;
-			padding: 0;
-			user-select: none;
-		}
 	}
 
 	@include fx.class("room/logs") {

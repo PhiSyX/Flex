@@ -12,7 +12,3 @@ import { changeRoomHandler, closeRoomHandler } from "./Navigation.handlers";
 		@close-room="closeRoomHandler"
 	/>
 </template>
-
-<style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
-</style>

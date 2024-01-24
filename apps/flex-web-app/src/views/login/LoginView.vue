@@ -34,14 +34,15 @@ useRememberMe();
 </script>
 
 <template>
-	<main id="chat-login-view" class="[ scroll:y ]">
-		<section>
+	<main id="chat-login-view" class="[ scroll:y flex! flex/center:full m:a ]">
+		<section class="[ flex! gap=3 min-w=43 ]">
 			<h1>Accès direct au Chat</h1>
 
 			<form
 				id="chat-login-form"
 				action="/chat/login"
 				method="POST"
+				class="[ ov:h flex! border/radius=1 ]"
 				@submit="submitHandler"
 			>
 				<TextInput
@@ -98,7 +99,7 @@ useRememberMe();
 				/>
 			</form>
 
-			<div id="display-advanced-info" v-if="!advancedInfo">
+			<div class="[ align-t:center ]" v-if="!advancedInfo">
 				<ButtonIcon
 					icon="plus"
 					title="Afficher les champs avancés"
@@ -106,7 +107,7 @@ useRememberMe();
 				/>
 			</div>
 
-			<div class="remember-me">
+			<div class="remember-me [ m:a align-t:center w=35 ]">
 				<label>
 					Connexion automatique lors de vos prochaines sessions :
 				</label>
@@ -119,7 +120,11 @@ useRememberMe();
 				/>
 			</div>
 
-			<button class="btn" form="chat-login-form" type="submit">
+			<button
+				form="chat-login-form"
+				type="submit"
+				class="[ p=2 b:none cursor:pointer ]"
+			>
 				Accéder au Chat
 			</button>
 		</section>
@@ -130,34 +135,12 @@ useRememberMe();
 @use "scss:~/flexsheets" as fx;
 
 #chat-login-view {
-	display: flex;
-	flex-direction: column;
-
-	place-content: center;
-	place-items: center;
-
-	margin-inline: auto;
-
-	section {
-		display: flex;
-		flex-direction: column;
-		gap: fx.space(3);
-
-		min-width: fx.space(340);
-	}
-
 	h1 {
 		font-size: 24px;
 	}
 
 	form {
-		overflow: hidden;
-
-		display: flex;
-		flex-direction: column;
 		gap: 1px;
-
-		border-radius: fx.space(1);
 		border: fx.space(1) solid var(--login-form-bg);
 		box-shadow: 2px 2px 4px var(--login-form-shadow);
 	}
@@ -180,12 +163,8 @@ useRememberMe();
 	}
 
 	form[id] ~ button[form][type="submit"] {
-		padding: fx.space(2);
-
-		border: 0;
 		border-radius: 4px;
 		background: var(--login-button-submit-bg);
-		cursor: pointer;
 
 		&:focus-visible {
 			outline: 3px inset var(--login-button-submit-outline-color);
@@ -205,7 +184,7 @@ useRememberMe();
 			}
 		}
 
-		&[disabled] {
+		&:disabled {
 			@include fx.theme using ($name) {
 				@if $name == ice {
 					--disabled-color: var(--color-blue-grey500);
@@ -215,18 +194,8 @@ useRememberMe();
 	}
 }
 
-#display-advanced-info {
-	text-align: center;
-}
-
 .remember-me {
-	width: fx.space(280);
-
 	font-size: 14px;
 	line-height: 1.2;
-
-	margin-inline: auto;
-
-	text-align: center;
 }
 </style>

@@ -35,8 +35,8 @@ const closeRoomHandler = closeRoom(emit);
 </script>
 
 <template>
-	<section class="navigation-area">
-		<nav class="[ scroll:y ]">
+	<section class="navigation-area [ flex! select:none ]">
+		<nav class="[ scroll:y flex:full size:full ]">
 			<NavigationServer
 				v-for="server in servers"
 				:container-folded="folded"
@@ -47,13 +47,17 @@ const closeRoomHandler = closeRoom(emit);
 			/>
 		</nav>
 
-		<footer>
+		<footer class="[ flex gap=1 p=1 h=6 ]">
 			<ButtonIcon
 				:icon="folded ? 'arrow-right' : 'arrow-left'"
 				@click="folded = !folded"
 			/>
 
-			<div v-show="!folded" title="TODO">
+			<div
+				v-show="!folded"
+				class="[ flex:full flex flex/center:full ]"
+				title="TODO"
+			>
 				<ButtonIcon icon="settings" disabled />
 			</div>
 		</footer>
@@ -64,34 +68,8 @@ const closeRoomHandler = closeRoom(emit);
 @use "scss:~/flexsheets" as fx;
 
 section {
-	display: flex;
-	flex-direction: column;
-	user-select: none;
-
 	min-width: v-bind(navWidth);
 	width: v-bind(navWidth);
 	max-width: fx.space(255);
-}
-
-nav {
-	flex-grow: 1;
-
-	width: 100%;
-	height: 100%;
-}
-
-footer {
-	display: flex;
-	gap: fx.space(1);
-	height: fx.space(6);
-	padding: fx.space(1);
-}
-
-footer div {
-	flex-grow: 1;
-
-	display: flex;
-	place-content: center;
-	place-items: center;
 }
 </style>

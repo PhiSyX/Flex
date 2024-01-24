@@ -14,8 +14,8 @@ const inputModel = defineModel();
 </script>
 
 <template>
-	<div class="form-group" :class="{ error: error }">
-		<div class="text-input">
+	<div class="form-group [ flex! py=1 ]" :class="{ error: error }">
+		<div class="[ flex align-ji:center gap=1 ]">
 			<LabelIcon :for="name" :icon="label" />
 			<input
 				:id="name"
@@ -24,7 +24,7 @@ const inputModel = defineModel();
 				v-bind="$attrs"
 			/>
 		</div>
-		<p v-if="error">{{ error }}</p>
+		<p v-if="error" class="[ p:reset ml=4 ]">{{ error }}</p>
 	</div>
 </template>
 
@@ -32,22 +32,10 @@ const inputModel = defineModel();
 @use "scss:~/flexsheets" as fx;
 
 .form-group {
-	display: flex;
-	flex-direction: column;
-	padding-block: fx.space(1);
 	border: 1px dashed transparent;
 }
 
-.text-input {
-	display: flex;
-	place-items: center;
-	gap: fx.space(1);
-}
-
 p {
-	margin: 0;
-	margin-left: fx.space(4);
-
 	font-size: 13px;
 	font-style: italic;
 }

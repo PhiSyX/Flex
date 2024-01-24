@@ -37,7 +37,7 @@ const selectUserHandler = selectUser(emit);
 </script>
 
 <template>
-	<div class="[ scroll:y ]">
+	<div class="[ scroll:y flex! gap=3 p=2 select:none ]">
 		<details
 			v-if="moderators.original.length > 0"
 			:open="moderators.filtered.length > 0"
@@ -112,14 +112,6 @@ const selectUserHandler = selectUser(emit);
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-div {
-	display: flex;
-	flex-direction: column;
-	gap: fx.space(3);
-	padding: fx.space(2);
-	user-select: none;
-}
-
 details {
 	position: sticky;
 }
@@ -133,14 +125,6 @@ summary {
 
 	list-style-type: none;
 	text-transform: uppercase;
-
-	@include fx.theme using ($name) {
-		@if $name == dark {
-			--room-userlist-group-color: var(--color-yellow300);
-		} @else if $name == light {
-			--room-userlist-group-color: var(--color-grey400);
-		}
-	}
 
 	color: var(--room-userlist-group-color);
 }

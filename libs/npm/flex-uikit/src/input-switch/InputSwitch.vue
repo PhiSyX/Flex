@@ -11,7 +11,7 @@ interface Props {
 	labelY?: string;
 	modelValue: boolean;
 	name: string;
-};
+}
 
 // -------- //
 // Constant //

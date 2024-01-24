@@ -1,0 +1,5 @@
+@use "./box-layout" as bl;
+
+@mixin use-display($options...) {
+	@include bl.use-box-layout($options...);
+}

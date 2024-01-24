@@ -1,14 +1,11 @@
 <template>
-	<span class="badge"><slot /></span>
+	<span class="badge [ di-b align-t:center border/radius=3 ]"><slot /></span>
 </template>
 
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
 span {
-	display: inline-block;
 	padding: calc(#{fx.space(1)} / 2) fx.space(1);
-	text-align: center;
-	border-radius: fx.space(3);
 }
 </style>

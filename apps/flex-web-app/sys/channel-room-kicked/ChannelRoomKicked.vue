@@ -27,7 +27,7 @@ const joinChannelHandler = joinChannel(emit, { lastMessage });
 </script>
 
 <template>
-	<div class="channel/kicked">
+	<div class="channel/kicked [ flex:full flex! flex/center:full px=3 ]">
 		<p>
 			Vous avez été sanctionné par
 			<strong>{{ nickname }}</strong>
@@ -35,7 +35,11 @@ const joinChannelHandler = joinChannel(emit, { lastMessage });
 			<strong>{{ reason }}</strong> » !
 		</p>
 
-		<button v-if="displayJoinButton" @click="joinChannelHandler()">
+		<button
+			v-if="displayJoinButton"
+			class="[ p=1 cursor:pointer ]"
+			@click="joinChannelHandler()"
+		>
 			Rejoindre le salon
 		</button>
 	</div>
@@ -45,15 +49,6 @@ const joinChannelHandler = joinChannel(emit, { lastMessage });
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("channel/kicked") {
-	flex-grow: 1;
-
-	display: flex;
-	flex-direction: column;
-	place-content: center;
-	place-items: center;
-
-	padding-inline: fx.space(3);
-
 	@include fx.theme using ($name) {
 		@if $name == dark {
 			background-color: var(--color-grey900);
@@ -67,9 +62,7 @@ p {
 }
 
 button {
-	padding: fx.space(1);
 	border-radius: 4px;
-	cursor: pointer;
 
 	@include fx.theme using ($name) {
 		@if $name == light {

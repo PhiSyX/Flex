@@ -30,7 +30,7 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 </script>
 
 <template>
-	<div class="room/private" :data-room="recipient.nickname">
+	<div class="room/private [ flex ]" :data-room="recipient.nickname">
 		<Room
 			:disable-input="disableInput"
 			:messages="messages"
@@ -38,7 +38,9 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 			@send-message="sendMessageHandler"
 		>
 			<template #topic>
-				<p>Discussion privée avec {{ recipient.nickname }}</p>
+				<p class="[ flex flex/center:full h:full my=0 select:none ]">
+					Discussion privée avec {{ recipient.nickname }}
+				</p>
 			</template>
 
 			<template #topic-action>
@@ -69,19 +71,6 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("room/private") {
-	display: flex;
-
-	@include fx.class("room/topic") {
-		p {
-			display: flex;
-			place-content: center;
-			place-items: center;
-			margin-block: 0;
-			height: 100%;
-			user-select: none;
-		}
-	}
-
 	@include fx.class("room/editbox") {
 		background-color: var(--body-bg);
 	}

@@ -35,7 +35,3 @@ const user2 = new ChannelSelectedUser(new ChannelNick(origin), false);
 		</Variant>
 	</Story>
 </template>
-
-<style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
-</style>

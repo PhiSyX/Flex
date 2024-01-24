@@ -40,7 +40,7 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 </script>
 
 <template>
-	<menu class="room/userlist:menu [ list:reset ]">
+	<menu class="room/userlist:menu [ list:reset flex! m=1 ]">
 		<li>
 			<p>
 				<bdi>{{ user.cnick.nickname }}</bdi>
@@ -99,7 +99,7 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 			</UiButton>
 		</li>
 
-		<li v-if="iHaveAccessLevel" class="room/userlist:menu/level-access">
+		<li v-if="iHaveAccessLevel" class="[ flex ]">
 			<ChannelUserlistOwnerMenu
 				:disabled="disabled"
 				:is-me="isMe"
@@ -153,9 +153,6 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 
 @include fx.class("room/userlist:menu") {
 	font-size: 14px;
-	display: flex;
-	flex-direction: column;
-	margin: fx.space(1);
 
 	@include fx.theme using ($name) {
 		@if $name == ice {
@@ -208,9 +205,5 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 	button > svg {
 		width: auto;
 	}
-}
-
-@include fx.class("room/userlist:menu/level-access") {
-	display: flex;
 }
 </style>

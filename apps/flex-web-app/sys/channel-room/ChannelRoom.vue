@@ -44,7 +44,7 @@ const {
 </script>
 
 <template>
-	<div class="room/channel" :data-room="name">
+	<div class="room/channel [ flex ]" :data-room="name">
 		<Room
 			:disable-input="disableInput"
 			:messages="messages"
@@ -57,7 +57,7 @@ const {
 					v-if="topicEditMode"
 					ref="$topic"
 					v-model="topicInput"
-					class="[ input:reset ]"
+					class="[ input:reset size:full ]"
 					type="text"
 					@blur="submitTopicHandler"
 					@keydown.enter="submitTopicHandler"
@@ -65,6 +65,7 @@ const {
 				/>
 				<output
 					v-else-if="topic.get().length > 0"
+					class="[ d-ib size:full p=1 select:none cursor:default ]"
 					:class="{
 						'cursor:pointer': canEditTopic,
 					}"
@@ -72,15 +73,21 @@ const {
 				>
 					{{ topic.get() }}
 				</output>
+
 				<p
 					v-else-if="canEditTopic"
-					class="[ cursor:pointer ]"
+					class="[ flex flex/center:full h:full my=0 select:none cursor:pointer ]"
 					@dblclick="enableTopicEditModeHandler()"
 				>
 					Appuyez deux fois sur cette section pour mettre à jour le
 					sujet.
 				</p>
-				<p v-else>Aucun sujet</p>
+				<p
+					v-else
+					class="[ flex flex/center:full h:full my=0 select:none cursor:default ]"
+				>
+					Aucun sujet
+				</p>
 			</template>
 
 			<template #topic-action>
@@ -107,11 +114,11 @@ const {
 			</template>
 
 			<template #room-info v-if="displayUserlist">
-				<aside class="room/info">
+				<aside class="room/info [ flex! h:full pt=2 min-w=35 w=35 max-w=35 ]">
 					<ChannelUserlist
 						:name="name"
 						:users="users"
-						class="room/userlist"
+						class="room/userlist [ flex:full ov:h ]"
 						@open-private="openPrivateHandler"
 						@select-user="selectUserHandler"
 					/>
@@ -140,61 +147,18 @@ const {
 <style lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-.cursor\:pointer {
-	cursor: pointer !important;
-}
-
 @include fx.class("room/channel") {
-	display: flex;
-
 	@include fx.class("room/topic") {
-		input {
-			width: 100%;
-			height: 100%;
-		}
-		output {
-			display: inline-block;
-			width: 100%;
-			height: 100%;
-			padding: fx.space(1);
-			user-select: none;
-			cursor: default;
-		}
 		p {
-			display: flex;
-			place-content: center;
-			place-items: center;
-			height: 100%;
-			margin-block: 0;
-			user-select: none;
-			cursor: default;
 			color: var(--color-blue-grey200);
 		}
 	}
 
 	aside {
 		order: 1;
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		padding-top: fx.space(2);
-	}
-
-	aside ~ div {
-		form {
+		~ div form {
 			padding-right: 0;
 		}
 	}
-
-	@include fx.class("room/userlist") {
-		flex-grow: 1;
-		overflow: hidden;
-	}
-}
-
-@include fx.class("room/info") {
-	min-width: fx.space(280);
-	width: fx.space(280);
-	max-width: fx.space(280);
 }
 </style>

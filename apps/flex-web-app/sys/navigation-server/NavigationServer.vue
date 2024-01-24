@@ -41,7 +41,11 @@ const toggleFoldHandler = toggleFold(folded);
 
 <template>
 	<details open class="navigation-server [ list:reset }">
-		<summary :class="{ 'is-active': active }" @click="changeRoomHandler">
+		<summary
+			:class="{ 'is-active': active }"
+			class="[ flex align-i:center align-jc:sb p=1 cursor:pointer min-h=8 ]"
+			@click="changeRoomHandler"
+		>
 			<icon-home />
 
 			<span v-show="!containerFolded">{{ name }}</span>
@@ -111,7 +115,9 @@ const toggleFoldHandler = toggleFold(folded);
 							"
 						>
 							<template #some="{ data: message }">
-								<p class="[ scroll:y ]">
+								<p
+									class="[ scroll:y w:full min-h=6 max-h=8 my=0 p=:1 border/radius=1 cursor: pointer ]"
+								>
 									{{ message.message }}
 								</p>
 							</template>
@@ -126,36 +132,16 @@ const toggleFoldHandler = toggleFold(folded);
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-summary {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: fx.space(1);
-	cursor: pointer;
-
-	min-height: fx.space(60);
-}
-
 .is-active {
 	cursor: default;
 	background: var(--room-bg);
 }
 
 p {
-	min-height: fx.space(50);
-	max-height: fx.space(60);
-
 	font-size: 14px;
-
 	justify-self: start;
 	grid-column-start: 2;
 	grid-column-end: 3;
 	overflow-wrap: break-word;
-
-	margin-block: 0;
-	width: 100;
-	padding: fx.space(1);
-	border-radius: fx.space(1);
-	cursor: pointer;
 }
 </style>

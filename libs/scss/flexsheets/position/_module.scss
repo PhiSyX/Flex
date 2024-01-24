@@ -1,0 +1,21 @@
+@use "../mixins/class" as class;
+
+@mixin use-position($options...) {
+	$classes: (
+		"pos-r": (
+			position: relative,
+		),
+		"pos-s": (
+			position: sticky,
+		),
+		"pos-a:full": (
+			position: absolute,
+			top: 0,
+			right: 0,
+			bottom: 0,
+			left: 0,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

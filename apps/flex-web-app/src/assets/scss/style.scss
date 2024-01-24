@@ -36,13 +36,16 @@
 @include fx.use(
 	"align-i:center",
 	"align-jc:center",
+	"align-ji:center",
 	"align-jc:end",
 	"align-jc:sb",
 	"align-t:center",
 	"align-t:right",
+	"b:none",
 	"button:reset",
 	"cursor:default",
 	"cursor:pointer",
+	"d-ib",
 	"flex:full",
 	"flex!",
 	"flex",
@@ -55,10 +58,12 @@
 	"m:a",
 	"min-w:fit",
 	"ov:a",
+	"ov:c",
 	"ov:h",
 	"ov:x",
 	"ov:y",
 	"p:reset",
+	"pos-r",
 	"scroll:x",
 	"scroll:y",
 	"scroll",
@@ -100,12 +105,14 @@
 	(
 		className: margin,
 		values: (
+			0,
 			1,
 		),
 	),
 	(
 		className: margin-block,
 		values: (
+			0,
 			1,
 		),
 	),
@@ -115,13 +122,20 @@
 			1,
 			2,
 		),
-	)
+	),
+	(
+		className: margin-left,
+		values: (
+			4,
+		),
+	),
 );
 
 @include fx.use(
 	(
 		className: padding,
 		values: (
+			0,
 			1,
 			2,
 		),
@@ -135,6 +149,7 @@
 	(
 		className: padding-left,
 		values: (
+			0,
 			1,
 		),
 	),
@@ -149,6 +164,7 @@
 		values: (
 			1,
 			2,
+			3,
 		),
 	)
 );
@@ -158,6 +174,7 @@
 		className: width,
 		values: (
 			5,
+			35,
 		),
 	),
 	(
@@ -180,18 +197,22 @@
 	(
 		className: max-height,
 		values: (
+			8,
 			12,
+			35,
 		),
 	),
 	(
 		className: min-height,
 		values: (
 			6,
+			8,
 		),
 	),
 	(
 		className: min-width,
 		values: (
+			35,
 			43,
 		),
 	)

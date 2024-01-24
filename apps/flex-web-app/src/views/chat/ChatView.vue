@@ -13,10 +13,10 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 </script>
 
 <template>
-	<main id="chat-view">
+	<main id="chat-view" class="[ flex h:full ]">
 		<Navigation />
 
-		<div class="room">
+		<div class="room [ flex:full flex ]">
 			<template v-for="room in rooms" :key="room.id">
 				<template
 					v-if="room.type === 'server-custom-room'"
@@ -29,6 +29,7 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 							:messages="room.messages"
 							:name="room.name"
 							:vademecum-url="vademecumURL"
+							class="[ flex:full ]"
 							@send-message="sendMessageHandler"
 						/>
 					</KeepAlive>
@@ -41,6 +42,7 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 						<ChannelRoomComponent
 							v-if="room.isActive()"
 							:room="(room as ChannelRoom)"
+							class="[ flex:full ]"
 						/>
 					</KeepAlive>
 				</template>
@@ -52,6 +54,7 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 						<PrivateRoomComponent
 							v-if="room.isActive()"
 							:room="(room as PrivateRoom)"
+							class="[ flex:full ]"
 						/>
 					</KeepAlive>
 				</template>
@@ -59,23 +62,3 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 		</div>
 	</main>
 </template>
-
-<style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
-
-main {
-	display: flex;
-
-	height: 100%;
-}
-
-.room {
-	flex-grow: 1;
-
-	display: flex;
-}
-
-.room > div {
-	flex-grow: 1;
-}
-</style>

@@ -35,18 +35,19 @@ onActivated(() => {
 		:action="formAction"
 		method="POST"
 		:disabled="disableInput ? 'disabled' : undefined"
+		class="[ min-h=8 p=1 pl=0 ]"
 		@submit.prevent="submitHandler"
 	>
 		<input type="hidden" name="target" :value="target" />
 
-		<div>
+		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<input
 				ref="$input"
 				v-model.trim="inputModel"
 				:disabled="disableInput"
 				:placeholder="placeholder"
 				type="text"
-				class="[ input:reset ]"
+				class="[ input:reset flex:full h:full py=1 ]"
 			/>
 
 			<ButtonIcon icon="text-color" :disabled="disableInput" />
@@ -59,10 +60,6 @@ onActivated(() => {
 @use "scss:~/flexsheets" as fx;
 
 form {
-	min-height: fx.space(60);
-	padding: fx.space(1);
-	padding-left: 0;
-
 	&[disabled],
 	&[disabled] * {
 		cursor: not-allowed !important;
@@ -71,20 +68,11 @@ form {
 }
 
 div {
-	display: flex;
-	align-items: center;
-	height: 100%;
-	gap: fx.space(2);
-	padding-inline: fx.space(1);
-
 	background-color: var(--room-editbox-bg);
 	border-radius: 4px;
 }
 
 input[type="text"] {
-	flex-grow: 1;
 	font-size: 14px;
-	height: 100%;
-	padding-block: fx.space(1);
 }
 </style>

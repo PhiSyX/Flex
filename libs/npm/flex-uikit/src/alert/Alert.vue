@@ -36,14 +36,14 @@ function closeHandler() {
 
 <template>
 	<div
-		class="alert"
+		class="alert [ ov:c flex align-ji:center p=2 select:none ]"
 		:class="{
-			'alert:center': contentCenter,
+			'align-t:center': contentCenter,
 			[`alert/${type}`]: true,
 		}"
 		v-if="displaying"
 	>
-		<p><slot /></p>
+		<p class="[ flex:full my=0 ]"><slot /></p>
 
 		<ButtonIcon v-if="canClose" icon="close" @click="closeHandler" />
 	</div>
@@ -53,25 +53,9 @@ function closeHandler() {
 @use "scss:~/flexsheets" as fx;
 
 .alert {
-	overflow: clip;
-
-	display: flex;
-	place-items: center;
-
 	font-size: 13px;
-	padding: fx.space(2);
 	border: 1px solid transparent;
 	color: currentColor;
-	user-select: none;
-
-	p {
-		flex-grow: 1;
-		margin-block: 0;
-	}
-}
-
-@include fx.class("alert:center") {
-	text-align: center;
 }
 
 @include fx.class("alert/warning") {
