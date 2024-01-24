@@ -73,9 +73,9 @@ const toggleFoldHandler = toggleFold(folded);
 		<ul class="[ list:reset }">
 			<template v-for="room in rooms" :key="room.type + ':' + room.name">
 				<NavigationRoom
-					v-if="room.type === 'channel'"
+					v-if="room.type === 'channel' && !room.isClosed()"
 					:id="room.id()"
-					:active="room.isActive()"
+					:active="room.isActive() && !room.isClosed()"
 					:highlight="false"
 					:name="room.name"
 					:folded="containerFolded"
@@ -90,7 +90,7 @@ const toggleFoldHandler = toggleFold(folded);
 				</NavigationRoom>
 
 				<NavigationRoom
-					v-if="room.type === 'private'"
+					v-if="room.type === 'private' && !room.isClosed()"
 					:id="room.id()"
 					:active="room.isActive()"
 					:highlight="false"

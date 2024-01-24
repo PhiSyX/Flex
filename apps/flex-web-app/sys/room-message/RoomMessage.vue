@@ -43,7 +43,14 @@ const maybePrivateNick = computePrivateNick(props);
 </script>
 
 <template>
-	<li :id="id" :data-type="type" :data-myself="isMe" class="room/echo [ d-ib ]">
+	<li
+		:id="id"
+		:data-archived="archived"
+		:data-type="type"
+		:data-myself="isMe"
+		class="room/echo [ d-ib ]"
+		:title="archived ? `Il s'agit d'un message archivé.` : undefined"
+	>
 		<template v-if="componentEventExists && isEvent">
 			<component :is="componentEventName" v-bind="props" />
 		</template>
@@ -88,6 +95,14 @@ const maybePrivateNick = computePrivateNick(props);
 	&[data-type="action"] {
 		font-style: italic;
 		color: var(--room-message-action-color);
+	}
+
+	&[data-archived="true"] {
+		transition: opacity 200ms;
+		opacity: 0.3;
+		&:hover {
+			opacity: 0.75;
+		}
 	}
 
 	&[data-type*="error"] {

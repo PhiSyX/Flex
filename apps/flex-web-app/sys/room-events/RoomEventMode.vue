@@ -1,33 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	data: GenericReply<"MODE">;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
-}
+import { type Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //
 // --------- //
-const props = defineProps<Props>();
+
+defineOptions({ inheritAttrs: false });
+const props = defineProps<Props<"MODE">>();
 
 const addedModesKeys = computed(() => Object.keys(props.data.added));
 const hasAddedModes = computed(() => addedModesKeys.value.length > 0);

@@ -24,7 +24,7 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 				>
 					<KeepAlive :key="room.type + '@' + room.name">
 						<ServerCustomRoom
-							v-if="room.isActive()"
+							v-if="room.isActive() && !room.isClosed()"
 							:forum-url="forumURL"
 							:messages="room.messages"
 							:name="room.name"
@@ -40,7 +40,7 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 				>
 					<KeepAlive :key="room.type + ':' + room.name">
 						<ChannelRoomComponent
-							v-if="room.isActive()"
+							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as ChannelRoom)"
 							class="[ flex:full ]"
 						/>
@@ -52,7 +52,7 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 				>
 					<KeepAlive :key="room.type + '/' + room.name">
 						<PrivateRoomComponent
-							v-if="room.isActive()"
+							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as PrivateRoom)"
 							class="[ flex:full ]"
 						/>

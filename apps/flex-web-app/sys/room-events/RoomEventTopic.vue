@@ -2,33 +2,14 @@
 import { format_date } from "@phisyx/flex-date";
 import { computed } from "vue";
 
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	data: GenericReply<"RPL_TOPIC">;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
-}
+import { type Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //
 // --------- //
-const props = defineProps<Props>();
+
+defineOptions({ inheritAttrs: false });
+const props = defineProps<Props<"RPL_TOPIC">>();
 
 const updatedAt = computed(() => {
 	return format_date("d/m/Y à H:i:s", new Date(props.data.updated_at));

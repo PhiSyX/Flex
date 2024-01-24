@@ -1,32 +1,20 @@
 <script lang="ts" setup>
+import { type Props } from "./RoomEvent.state";
+
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+type PropsQuery = Props<"PRIVMSG"> & {
 	data: { origin: Origin; text: string };
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
-}
+};
 
 // --------- //
 // Composant //
 // --------- //
 
-defineProps<Props>();
+defineOptions({ inheritAttrs: false });
+defineProps<PropsQuery>();
 </script>
 
 <template>

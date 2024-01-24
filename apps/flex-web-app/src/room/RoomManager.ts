@@ -56,7 +56,8 @@ export class RoomManager {
 				this.insert(roomID, room);
 				return Some(room);
 			})
-			.unwrap();
+			.unwrap()
+			.marksAsOpen();
 	}
 
 	/**
@@ -83,7 +84,11 @@ export class RoomManager {
 				this.unsetCurrent();
 			}
 		}
-		this._rooms.delete(roomID.toLowerCase());
+		const maybeRoom = this.get(roomID);
+		if (maybeRoom.is_some()) {
+			const room = maybeRoom.unwrap();
+			room.marksAsClosed();
+		}
 		if (this._currentRoom.is_none()) {
 			this.setCurrentToLast();
 		}
@@ -113,9 +118,9 @@ export class RoomManager {
 	 * Définit la chambre courante à la dernière chambre.
 	 */
 	setCurrentToLast() {
-		const roomsIDs = Array.from(this._rooms.keys());
-		const maybeLastRoomID = Option.from(roomsIDs.at(-1));
-		maybeLastRoomID.then((id) => this.setCurrent(id));
+		const rooms = this.rooms().filter((room) => !room.isClosed());
+		const maybeLastRoomID = Option.from(rooms.at(-1));
+		maybeLastRoomID.then((room) => this.setCurrent(room.id()));
 	}
 
 	/**

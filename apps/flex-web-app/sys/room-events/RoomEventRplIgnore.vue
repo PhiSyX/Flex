@@ -1,31 +1,12 @@
 <script setup lang="ts">
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	data: GenericReply<"RPL_IGNORE">;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
-}
+import { type Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //
 // --------- //
-defineProps<Props>();
+
+defineOptions({ inheritAttrs: false });
+defineProps<Props<"RPL_IGNORE">>();
 </script>
 
 <template>

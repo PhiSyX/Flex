@@ -17,6 +17,7 @@ import { PrivateNick } from "~/private/PrivateNick";
 
 export interface Props {
 	data: object & { origin: Origin | ChannelOrigin };
+	archived: boolean;
 	id: string;
 	message: string;
 	isMe: boolean;

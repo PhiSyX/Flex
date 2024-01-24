@@ -28,9 +28,14 @@ export class Room<Type extends string = string> {
 	declare _id: RoomID;
 
 	/**
-	 * Définit l'état de la fenêtre, active ou non.
+	 * Définit l'état de la chambre, active ou non.
 	 */
 	private active = false;
+
+	/**
+	 * Définit l'état de la chambre, fermée ou non.
+	 */
+	private closed = false;
 
 	/**
 	 * Nom personnalisé de la fenêtre.
@@ -161,9 +166,7 @@ export class Room<Type extends string = string> {
 
 	public eq($1: string | Room<Type>): boolean {
 		if (typeof $1 === "string") {
-			return (
-				this.id() === $1 || this.name.toLowerCase() === $1.toLowerCase()
-			);
+			return this.id() === $1 || this.name.toLowerCase() === $1.toLowerCase();
 		}
 		return $1.id() === this.id();
 	}
@@ -175,6 +178,9 @@ export class Room<Type extends string = string> {
 		return this._id;
 	}
 
+	/**
+	 * Définit un ID de chambre.
+	 */
 	public withID(id: RoomID): this {
 		this._id = id;
 		return this;
@@ -188,12 +194,42 @@ export class Room<Type extends string = string> {
 	}
 
 	/**
+	 * Est-ce que la chambre est fermée?
+	 */
+	public isClosed(): boolean {
+		return this.closed;
+	}
+
+	/**
+	 * Marque la chambre comme étant fermée.
+	 */
+	public marksAsClosed(): this {
+		this.closed = true;
+		this.active = false;
+		for (const message of this.messages) {
+			message.markAsArchived();
+		}
+		return this;
+	}
+
+	/**
+	 * Marque la chambre comme étant ouverture.
+	 */
+	public marksAsOpen(): this {
+		this.closed = false;
+		return this;
+	}
+
+	/**
 	 * Définit la chambre comme étant active.
 	 */
 	public setActive(b: boolean) {
 		this.active = b;
 	}
 
+	/**
+	 * Définit un nom personnalisé pour la chambre.
+	 */
 	public setCustomName(name: string) {
 		this.customName.replace(name);
 	}

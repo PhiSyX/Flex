@@ -17,6 +17,7 @@ import { formatDate } from "@phisyx/flex-date";
 type MessageProperties = {
 	data: object & { origin: Origin };
 	id: string;
+	archived: boolean;
 	message: string;
 	isMe: boolean;
 	nickname: string;
@@ -25,12 +26,7 @@ type MessageProperties = {
 		datetime: string;
 		formattedTime: string;
 	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
+	type: "action" | `error:${string}` | "event" | `event:${string}` | "privmsg";
 };
 
 // -------- //
@@ -44,6 +40,7 @@ export const MESSAGES_LIMIT: number = 250;
 // -------------- //
 
 export class RoomMessage {
+	archived = false;
 	declare data: MessageProperties["data"];
 	declare id: MessageProperties["id"];
 	declare message: MessageProperties["message"];
@@ -55,6 +52,10 @@ export class RoomMessage {
 
 	get isEventType(): boolean {
 		return this.type.startsWith("event");
+	}
+
+	markAsArchived() {
+		this.archived = true;
 	}
 
 	withData(data: this["data"]): this {

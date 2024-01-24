@@ -10,6 +10,29 @@
 
 import { computed } from "vue";
 
+// ---- //
+// Type //
+// ---- //
+
+export interface Props<E extends keyof Replies> {
+	data: GenericReply<E>;
+	id: string;
+	message: string;
+	isMe: boolean;
+	nickname: string;
+	target: string;
+	time: {
+		datetime: string;
+		formattedTime: string;
+	};
+	type: "action" | `error:${string}` | "event" | `event:${string}` | "privmsg";
+}
+
+// ----------- //
+// Local State //
+// ----------- //
+
+
 // INFO: hostname
 export const computeHostname = (origin: Origin) =>
 	computed(() => origin.host.vhost || origin.host.cloaked);

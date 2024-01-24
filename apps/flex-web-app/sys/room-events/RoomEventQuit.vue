@@ -1,33 +1,14 @@
 <script setup lang="ts">
 import { computeHostname } from "./RoomEvent.state";
 
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	data: GenericReply<"QUIT">;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "privmsg";
-}
+import { type Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //
 // --------- //
-const props = defineProps<Props>();
+
+defineOptions({ inheritAttrs: false });
+const props = defineProps<Props<"QUIT">>();
 
 const hostname = computeHostname(props.data.origin);
 </script>
