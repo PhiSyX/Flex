@@ -46,9 +46,7 @@ import { PartModule } from "~/modules/part/module";
 import { PrivmsgModule } from "~/modules/privmsg/module";
 import { QuitModule } from "~/modules/quit/module";
 import { TopicModule } from "~/modules/topic/module";
-import {
-	AwayModule,
-} from "~/modules/user-status/module";
+import { AwayModule } from "~/modules/user-status/module";
 import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";

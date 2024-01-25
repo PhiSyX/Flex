@@ -41,9 +41,7 @@ export class ReplyAwayHandler implements SocketEventInterface<"RPL_AWAY"> {
 	}
 }
 
-export class ReplyNowawayHandler
-	implements SocketEventInterface<"RPL_NOWAWAY">
-{
+export class ReplyNowawayHandler implements SocketEventInterface<"RPL_NOWAWAY"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
