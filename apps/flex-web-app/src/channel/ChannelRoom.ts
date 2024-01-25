@@ -11,6 +11,7 @@
 import { Option } from "@phisyx/flex-safety";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelUsers } from "~/channel/ChannelUsers";
+import { User } from "~/user/User";
 import { Room } from "../room/Room";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 import { ChannelTopic } from "./ChannelTopic";
@@ -33,8 +34,8 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Crée un salon avec un propriétaire.
 	 */
-	static createWithOwner(name: string, origin: Origin): ChannelRoom {
-		return new ChannelRoom(name).withID(name).withOwner(origin);
+	static createWithOwner(name: string, user: User): ChannelRoom {
+		return new ChannelRoom(name).withID(name).withOwner(user);
 	}
 
 	// ----------- //
@@ -135,8 +136,8 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
-	withOwner(origin: Origin): this {
-		this.addUser(new ChannelNick(origin).withAccessLevel(ChannelAccessLevel.Owner));
+	withOwner(user: User): this {
+		this.addUser(new ChannelNick(user).withAccessLevel(ChannelAccessLevel.Owner));
 		return this;
 	}
 }

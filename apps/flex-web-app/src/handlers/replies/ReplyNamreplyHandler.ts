@@ -32,12 +32,12 @@ export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
 
-		for (const user of data.users) {
-			this.store.addUser(new User(user).withChannel(channel.id()));
+		for (const userOrigin of data.users) {
+			const user = this.store.addUser(new User(userOrigin).withChannel(channel.id()));
 
 			const newNick = new ChannelNick(user)
 				.withIsMe(this.store.isMe(user))
-				.withRawAccessLevel(user.access_level);
+				.withRawAccessLevel(userOrigin.access_level);
 
 			const maybeNick = channel.getUser(user.id);
 			if (maybeNick.is_some()) {

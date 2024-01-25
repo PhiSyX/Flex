@@ -8,6 +8,7 @@ import { RoomMessage } from "~/room/RoomMessage";
 
 import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
 import ChannelRoom from "./ChannelRoom.vue";
+import { User } from "~/user/User";
 
 const channelName = "#channel";
 
@@ -17,20 +18,20 @@ topic.set("Mon super topic");
 // @ts-expect-error : ?
 const messages = [];
 
-const origin1: ChannelOrigin = {
+const origin1: User = new User({
 	access_level: ["Owner"],
 	id: "uuid0",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
-};
+} as ChannelOrigin);
 
-const origin2: Origin = {
+const origin2: User = new User({
 	id: "uuid1",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
-};
+});
 
 const me = Some(new ChannelNick(origin1));
 
@@ -64,12 +65,12 @@ messages.push(
 
 const users = new ChannelUsers();
 
-const origin3: Origin = {
+const origin3: User = new User({
 	id: "uuid3",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",
-};
+});
 
 users.add(new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.Owner));
 users.add(new ChannelNick(origin2).withAccessLevel(ChannelAccessLevel.Vip));

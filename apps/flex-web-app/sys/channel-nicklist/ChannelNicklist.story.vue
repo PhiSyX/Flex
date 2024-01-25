@@ -3,25 +3,26 @@ import { ChannelNick } from "~/channel/ChannelNick";
 import ChannelNicklist from "./ChannelNicklist.vue";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
+import { User } from "~/user/User";
 
-const origin1: Origin = {
+const origin1: User = new User({
 	id: "uuid0",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
-};
-const origin2: Origin = {
+});
+const origin2: User = new User({
 	id: "uuid1",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
-};
-const origin3: Origin = {
+});
+const origin3: User = new User({
 	id: "uuid3",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",
-};
+});
 
 const moderatorsOriginal = [
 	new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.Owner),

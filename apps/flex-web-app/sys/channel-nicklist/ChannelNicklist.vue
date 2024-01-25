@@ -49,14 +49,14 @@ const selectUserHandler = selectUser(emit);
 					tag="li"
 					v-for="filteredNick in moderators.filtered"
 					:key="filteredNick.cnick.id"
-					:classes="filteredNick.cnick.highestAccessLevel.className"
+					:classes="filteredNick.cnick.className"
 					:hits="filteredNick.searchHits"
 					:is-me="filteredNick.cnick.isMe"
 					:nickname="filteredNick.cnick.nickname"
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredNick.cnick)"
-					@click="selectUserHandler(filteredNick.cnick)"
+					@dblclick="openPrivateHandler(filteredNick.cnick.intoUser())"
+					@click="selectUserHandler(filteredNick.cnick.intoUser())"
 				/>
 			</ul>
 		</details>
@@ -72,14 +72,14 @@ const selectUserHandler = selectUser(emit);
 					tag="li"
 					v-for="filteredNick in vips.filtered"
 					:key="filteredNick.cnick.id"
-					:classes="filteredNick.cnick.highestAccessLevel.className"
+					:classes="filteredNick.cnick.className"
 					:hits="filteredNick.searchHits"
 					:is-me="filteredNick.cnick.isMe"
 					:nickname="filteredNick.cnick.nickname"
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredNick.cnick)"
-					@click="selectUserHandler(filteredNick.cnick)"
+					@dblclick="openPrivateHandler(filteredNick.cnick.intoUser())"
+					@click="selectUserHandler(filteredNick.cnick.intoUser())"
 				/>
 			</ul>
 		</details>
@@ -95,14 +95,14 @@ const selectUserHandler = selectUser(emit);
 					tag="li"
 					v-for="filteredNick in users.filtered"
 					:key="filteredNick.cnick.id"
-					:classes="filteredNick.cnick.highestAccessLevel.className"
+					:classes="filteredNick.cnick.className"
 					:hits="filteredNick.searchHits"
 					:is-me="filteredNick.cnick.isMe"
 					:nickname="filteredNick.cnick.nickname"
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredNick.cnick)"
-					@click="selectUserHandler(filteredNick.cnick)"
+					@dblclick="openPrivateHandler(filteredNick.cnick.intoUser())"
+					@click="selectUserHandler(filteredNick.cnick.intoUser())"
 				/>
 			</ul>
 		</details>

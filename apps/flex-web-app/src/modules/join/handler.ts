@@ -42,11 +42,11 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 	}
 
 	handleMe(data: GenericReply<"JOIN">) {
+		const user = new User(data.origin);
+
 		const channel = this.store
 			.roomManager()
-			.getOrInsert(data.channel, () =>
-				ChannelRoom.createWithOwner(data.channel, data.origin),
-			);
+			.getOrInsert(data.channel, () => ChannelRoom.createWithOwner(data.channel, user));
 
 		assertChannelRoom(channel);
 
@@ -60,7 +60,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 	}
 
 	handleUser(data: GenericReply<"JOIN">) {
-		this.store.addUser(new User(data.origin).withChannel(data.channel));
+		const user = this.store.addUser(new User(data.origin).withChannel(data.channel));
 
 		const maybeChannel = this.store.roomManager().get(data.channel);
 
@@ -68,7 +68,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
-		const nick = new ChannelNick(data.origin);
+		const nick = new ChannelNick(user);
 		channel.addUser(nick);
 
 		channel.addEvent("event:join", { ...data, isMe: false });

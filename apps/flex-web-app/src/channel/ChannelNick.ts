@@ -24,11 +24,8 @@ export class ChannelNick {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(origin: Origin) {
-		this.id = origin.id;
-		this.nickname = origin.nickname;
-		this.ident = origin.ident;
-		this.host = origin.host;
+	constructor(user: User) {
+		this.user = user;
 	}
 
 	// --------- //
@@ -37,25 +34,7 @@ export class ChannelNick {
 
 	private declare _highestAccessLevel: HighestAccessLevelOutput;
 
-	/**
-	 * ID.
-	 */
-	declare id: string;
-	/**
-	 * Pseudonyme.
-	 */
-	declare nickname: string;
-	/**
-	 * Ident
-	 */
-	declare ident: string;
-	/**
-	 * Host
-	 */
-	declare host: {
-		cloaked: string;
-		vhost?: string;
-	};
+	private declare user: User;
 
 	/**
 	 * Les niveaux d'accès du pseudo.
@@ -71,6 +50,10 @@ export class ChannelNick {
 	// Getter | Setter //
 	// --------------- //
 
+	get className() {
+		return `${this.user.className} ${this.highestAccessLevel.className}`;
+	}
+
 	/**
 	 * Niveau d'accès du pseudo le plus haut gradé.
 	 */
@@ -81,11 +64,20 @@ export class ChannelNick {
 		return this._highestAccessLevel;
 	}
 
-	/**
-	 * Nom d'hôte du pseudo.
-	 */
+	get id() {
+		return this.user.id;
+	}
+
+	get nickname() {
+		return this.user.nickname;
+	}
+
+	get ident() {
+		return this.user.ident;
+	}
+
 	get hostname() {
-		return this.host.vhost || this.host.cloaked;
+		return this.user.hostname;
 	}
 
 	// ------- //
@@ -101,12 +93,7 @@ export class ChannelNick {
 	}
 
 	intoUser(): User {
-		return new User({
-			host: this.host,
-			id: this.id,
-			ident: this.ident,
-			nickname: this.nickname,
-		});
+		return this.user;
 	}
 
 	/**

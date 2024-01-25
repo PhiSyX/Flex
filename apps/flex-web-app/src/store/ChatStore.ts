@@ -148,15 +148,18 @@ export class ChatStore {
 	// Méthode //
 	// ------- //
 
-	addUser(user: User) {
+	addUser(user: User): User {
 		const fuser = this._users.get(user.id);
 		if (fuser) {
 			for (const channel of user.channels) {
 				fuser.channels.add(channel);
 			}
-		} else {
-			this._users.set(user.id, user);
+			return fuser;
 		}
+
+		this._users.set(user.id, user);
+		// biome-ignore lint/style/noNonNullAssertion: Voir le code ci-haut.
+		return this._users.get(user.id)!;
 	}
 
 	addUserToBlocklist(user: User) {

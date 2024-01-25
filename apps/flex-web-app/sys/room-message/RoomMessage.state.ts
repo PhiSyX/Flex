@@ -14,6 +14,7 @@ import { None, Some } from "@phisyx/flex-safety";
 import { computed } from "vue";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { PrivateNick } from "~/private/PrivateNick";
+import { User } from "~/user/User";
 
 export interface Props {
 	data: object & { origin: Origin | ChannelOrigin };
@@ -51,7 +52,7 @@ export const computeIsPrivate = (props: Props) =>
 
 export const computeChannelNick = (props: Props) =>
 	computed(() => {
-		const cnick = new ChannelNick(props.data.origin);
+		const cnick = new ChannelNick(new User(props.data.origin));
 		if ("access_level" in props.data.origin) {
 			cnick.withRawAccessLevel(props.data.origin.access_level);
 		}
