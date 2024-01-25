@@ -21,7 +21,7 @@ const chatStore = useChatStore();
 // Handlers //
 // -------- //
 
-export function closeRoomHandler(origin: Origin) {
+export function closeRoomHandler(origin: Origin | string) {
 	chatStore.closeRoom(origin);
 }
 

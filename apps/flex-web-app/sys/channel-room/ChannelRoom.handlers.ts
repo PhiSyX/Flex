@@ -18,7 +18,7 @@ import { Props } from "./ChannelRoom.state";
 // ---- //
 
 export interface Emits {
-	(evtName: "close-room", origin: Origin): void;
+	(evtName: "close-room", origin: Origin | string): void;
 	(evtName: "ignore-user", origin: Origin): void;
 	(evtName: "kick-user", cnick: ChannelNick): void;
 	(evtName: "open-private", origin: Origin): void;
@@ -35,7 +35,7 @@ export interface Emits {
 // -------- //
 
 export function closeRoom(emit: Emits) {
-	function closeRoomHandler(origin: Origin) {
+	function closeRoomHandler(origin: Origin | string) {
 		emit("close-room", origin);
 	}
 	return closeRoomHandler;

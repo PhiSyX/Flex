@@ -53,7 +53,10 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 					:title="titleIgnoreButton"
 					@click="toggleIgnoreUserHandler()"
 				/>
-				<ButtonIcon icon="close" @click="closeRoomHandler(recipient)" />
+				<ButtonIcon
+					icon="close"
+					@click="closeRoomHandler(recipient.intoUser())"
+				/>
 			</template>
 
 			<template #after-topic-before-main>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 import {
+	closeRoom,
 	ignoreUser,
 	openPrivate,
 	selectUser,
@@ -25,6 +26,7 @@ import Room from "#/sys/room/Room.vue";
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const closeRoomHandler = closeRoom(emit);
 const ignoreUserHandler = ignoreUser(emit);
 const kickUserHandler = kickUser(emit);
 const openPrivateHandler = openPrivate(emit);
@@ -98,7 +100,11 @@ const {
 					icon="users"
 				/>
 
-				<ButtonIcon class="close" icon="close" />
+				<ButtonIcon
+					class="close"
+					icon="close"
+					@click="closeRoomHandler(name)"
+				/>
 			</template>
 
 			<template #after-topic-before-main>
