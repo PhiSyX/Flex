@@ -347,6 +347,22 @@ impl<'a> Socket<'a>
 
 impl<'a> Socket<'a>
 {
+	/// Émet au client les réponses liées à la commande /AWAY + /PRIVMSG
+	pub fn send_rpl_away(&self, target_client_socket: &Self)
+	{
+		use crate::src::chat::features::RplAwayReply;
+
+		let origin = Origin::from(target_client_socket.client());
+		let message = target_client_socket.user().away_message();
+		let rpl_away = RplAwayReply {
+			origin: &origin,
+			tags: RplAwayReply::default_tags(),
+			message: &message,
+			nick: &target_client_socket.user().nickname,
+		};
+		_ = self.socket().emit(rpl_away.name(), rpl_away);
+	}
+
 	/// Émet au client les réponses liées à la commande /IGNORE.
 	pub fn send_rpl_ignore(&self, users: &[&components::Origin], updated: bool)
 	{
@@ -398,6 +414,32 @@ impl<'a> Socket<'a>
 			tags: RplEndofnamesReply::default_tags(),
 		};
 		_ = self.socket().emit(rpl_endofnames.name(), rpl_endofnames);
+	}
+
+	/// Émet au client les réponses liées à la commande /AWAY.
+	pub fn send_rpl_nowaway(&self)
+	{
+		use crate::src::chat::features::RplNowawayReply;
+
+		let origin = Origin::from(self.client());
+		let rpl_nowaway = RplNowawayReply {
+			origin: &origin,
+			tags: RplNowawayReply::default_tags(),
+		};
+		_ = self.socket().emit(rpl_nowaway.name(), rpl_nowaway);
+	}
+
+	/// Émet au client les réponses liées à la commande /AWAY.
+	pub fn send_rpl_unaway(&self)
+	{
+		use crate::src::chat::features::RplUnawayReply;
+
+		let origin = Origin::from(self.client());
+		let rpl_nowaway = RplUnawayReply {
+			origin: &origin,
+			tags: RplUnawayReply::default_tags(),
+		};
+		_ = self.socket().emit(rpl_nowaway.name(), rpl_nowaway);
 	}
 
 	/// Émet au client le sujet du salon.

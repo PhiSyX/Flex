@@ -137,6 +137,19 @@ impl Client
 		self.connected = false;
 	}
 
+	/// Marque le client comme étant absent.
+	pub fn marks_user_as_away(&mut self, text: String)
+	{
+		self.user.set_flag(super::Flag::Away(text));
+	}
+
+	/// Marque le client comme n'étant plus absent.
+	pub fn marks_user_as_no_longer_away(&mut self)
+	{
+		self.user
+			.unset_flag(|flag| matches!(flag, super::Flag::Away(_)));
+	}
+
 	/// Attribution d'un nouvel ID de Socket.
 	pub fn reconnect_with_new_sid(&mut self, sid: socketioxide::socket::Sid)
 	{

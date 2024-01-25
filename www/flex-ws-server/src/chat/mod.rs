@@ -23,19 +23,20 @@ mod feature;
 
 mod features
 {
-	pub mod mode
+	mod mode
 	{
-		pub mod access_level
+		mod access_level
 		{
 			lexa_kernel::public_using! {
 				formdata,
 				handler,
 			}
 		}
-		pub mod response;
+
+		mod response;
 
 		pub use self::access_level::*;
-		pub use self::response::ModeCommandResponse;
+		pub use self::response::*;
 	}
 
 	pub use self::mode::*;
@@ -106,6 +107,19 @@ mod features
 			handler,
 		};
 	}
+
+	mod user_status
+	{
+		lexa_kernel::public_using! {
+			away / {
+				formdata,
+				handler,
+				response,
+			};
+		}
+	}
+
+	pub use self::user_status::*;
 }
 
 mod replies

@@ -166,6 +166,27 @@ impl ChatApplication
 		})
 	}
 
+	/// Marque le client en session comme étant absent.
+	pub fn marks_client_as_away(&self, client_socket: &client::Socket, text: impl ToString)
+	{
+		self.clients.marks_client_as_away(client_socket.cid(), text);
+		client_socket.send_rpl_nowaway();
+	}
+
+	/// Marque le client en session comme n'étant plus absent.
+	pub fn marks_client_as_no_longer_away(&self, client_socket: &client::Socket)
+	{
+		if self.clients.is_client_away(client_socket.cid()) {
+			self.clients
+				.marks_client_as_no_longer_away(client_socket.cid());
+			client_socket.send_rpl_unaway();
+		} else {
+			self.clients
+				.marks_client_as_away(client_socket.cid(), "Je suis absent.");
+			client_socket.send_rpl_nowaway();
+		}
+	}
+
 	/// Enregistre le client en session.
 	pub fn register_client(&self, client: &client::Client)
 	{
@@ -305,6 +326,36 @@ impl ClientsSession
 		blocklist.contains(other_client_id)
 	}
 
+	/// Vérifie si un client en session est absent.
+	pub fn is_client_away(&self, client_id: &client::ClientID) -> bool
+	{
+		let Some(client) = self.find(client_id) else {
+			return false;
+		};
+
+		client.user().is_away()
+	}
+
+	/// Marque un client comme étant absent.
+	pub fn marks_client_as_away(&self, client_id: &client::ClientID, text: impl ToString)
+	{
+		let Some(mut client) = self.find_mut(client_id) else {
+			return;
+		};
+
+		client.marks_user_as_away(text.to_string());
+	}
+
+	/// Marque un client comme n'étant plus absent.
+	pub fn marks_client_as_no_longer_away(&self, client_id: &client::ClientID)
+	{
+		let Some(mut client) = self.find_mut(client_id) else {
+			return;
+		};
+
+		client.marks_user_as_no_longer_away();
+	}
+
 	/// Enregistre un client.
 	pub fn register(&self, client: &client::Client)
 	{
@@ -326,18 +377,6 @@ impl ClientsSession
 			return;
 		};
 		blocklist.remove(to_ignore_client_id);
-	}
-
-	/// Dés-enregistre un client.
-	pub fn unregister(&self, client_id: &client::ClientID)
-	{
-		let mut client = self.clients.get_mut(client_id).unwrap();
-		if client.user().nickname.is_empty() {
-			drop(client);
-			self.clients.remove(client_id);
-		} else {
-			client.disconnect();
-		}
 	}
 
 	/// Mise à niveau d'un client.
