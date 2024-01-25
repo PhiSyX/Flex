@@ -14,7 +14,7 @@ export class PrivateNick {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private origin: Origin) {}
+	constructor(private user: User) {}
 
 	// -------- //
 	// Property //
@@ -27,23 +27,19 @@ export class PrivateNick {
 	// --------------- //
 
 	get id() {
-		return this.origin.id;
+		return this.user.id;
 	}
 
 	get nickname() {
-		return this.origin.nickname;
+		return this.user.nickname;
 	}
 
 	get ident() {
-		return this.origin.ident;
-	}
-
-	get host() {
-		return this.origin.host;
+		return this.user.ident;
 	}
 
 	get hostname() {
-		return this.host.vhost || this.host.cloaked;
+		return this.user.hostname;
 	}
 
 	// ------- //
@@ -64,12 +60,7 @@ export class PrivateNick {
 	}
 
 	public intoUser(): User {
-		return new User({
-			id: this.id,
-			host: this.host,
-			ident: this.ident,
-			nickname: this.nickname,
-		});
+		return this.user;
 	}
 
 	withIsMe(bool: boolean): this {

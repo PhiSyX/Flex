@@ -469,7 +469,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function openPrivateOrCreate(origin: Origin) {
 		const room = store.roomManager().getOrInsert(origin.id, () => {
 			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
-			priv.addParticipant(new PrivateNick(store.me()).withIsMe(true));
+			priv.addParticipant(new PrivateNick(new User(store.me())).withIsMe(true));
 			const maybeUser = store.findUser(origin.id);
 			maybeUser.then((user) => priv.addParticipant(new PrivateNick(user)));
 			return priv;

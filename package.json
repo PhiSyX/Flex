@@ -15,6 +15,6 @@
 		"test:unit": "pnpm run -r test:unit"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.5.2"
+		"@biomejs/biome": "^1.5.3"
 	}
 }

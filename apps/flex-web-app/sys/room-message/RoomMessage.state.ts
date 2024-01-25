@@ -62,6 +62,6 @@ export const computeChannelNick = (props: Props) =>
 export const computePrivateNick = (props: Props) =>
 	computed(() => {
 		return computeIsPrivate(props).value
-			? Some(new PrivateNick(props.data.origin).withIsMe(props.isMe))
+			? Some(new PrivateNick(new User(props.data.origin)).withIsMe(props.isMe))
 			: None();
 	});

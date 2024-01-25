@@ -13,6 +13,7 @@ import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room } from "~/room/Room";
 import { RoomMessage } from "~/room/RoomMessage";
 import { ChatStore } from "~/store/ChatStore";
+import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
@@ -71,8 +72,8 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 				// @ts-expect-error : type à corriger
 				.addEvent("event:query", { ...data, isMe: false });
 			const room = new PrivateRoom(data.origin.nickname).withID(data.origin.id);
-			room.addParticipant(new PrivateNick(data.origin));
-			room.addParticipant(new PrivateNick(this.store.me()).withIsMe(true));
+			room.addParticipant(new PrivateNick(new User(data.origin)));
+			room.addParticipant(new PrivateNick(new User(this.store.me())).withIsMe(true));
 			return room;
 		});
 

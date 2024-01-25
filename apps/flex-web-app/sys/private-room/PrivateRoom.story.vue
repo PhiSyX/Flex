@@ -1,20 +1,21 @@
 <script setup lang="ts">
+import { User } from "~/user/User";
 import PrivateRoom from "./PrivateRoom.vue";
 import { PrivateNick } from "~/private/PrivateNick";
 
-const origin: Origin = {
+const origin: User = new User({
 	id: "uuid0",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "PhiSyX",
-};
+});
 
-const origin1: Origin = {
+const origin1: User = new User({
 	id: "uuid1",
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",
-};
+});
 
 const disableInput = false;
 const me: PrivateNick = new PrivateNick(origin);
