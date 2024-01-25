@@ -8,13 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod flag;
 mod host;
 mod nick;
 
+use std::collections::HashSet;
 use std::net;
 
 use flex_web_framework::types::secret;
 
+pub use self::flag::Flag;
 pub use self::nick::*;
 
 // --------- //
@@ -41,6 +44,9 @@ pub struct User
 	/// Le nom réel de l'utilisateur.
 	#[serde(skip_serializing)]
 	pub realname: String,
+	/// Les drapeaux utilisateurs
+	#[serde(skip_serializing)]
+	flags: HashSet<flag::Flag>,
 }
 
 // -------------- //
@@ -68,6 +74,7 @@ impl User
 			old_nickname: Default::default(),
 			pass: Default::default(),
 			realname: Default::default(),
+			flags: Default::default(),
 		}
 	}
 }
@@ -80,10 +87,42 @@ impl User
 	{
 		self.nickname.to_lowercase().eq(&nickname.to_lowercase())
 	}
+
+	/// Vérifie que l'utilisateur a comme drapeau, le drapeau d'absence avec un
+	/// message d'absence.
+	pub fn is_away(&self) -> bool
+	{
+		self.flags.iter().any(|flag| {
+			let flag::Flag::Away(text) = flag else {
+				return false;
+			};
+			!text.is_empty()
+		})
+	}
+
+	/// Message d'absence de l'utilisateur.
+	pub fn away_message(&self) -> String
+	{
+		self.flags
+			.iter()
+			.find_map(|flag| {
+				let flag::Flag::Away(text) = flag else {
+					return None;
+				};
+				(!text.is_empty()).then_some(text.to_owned())
+			})
+			.unwrap_or_default()
+	}
 }
 
 impl User
 {
+	/// Applique un drapeau à l'[utilisateur](Self).
+	pub fn set_flag(&mut self, flag: impl Into<flag::Flag>)
+	{
+		self.flags.insert(flag.into());
+	}
+
 	/// Définit l'ident de l'[utilisateur](Self).
 	pub fn set_ident(&mut self, ident: impl ToString) -> Result<String, nick::Error>
 	{
@@ -123,5 +162,11 @@ impl User
 	pub fn set_realname(&mut self, realname: impl ToString)
 	{
 		self.realname = realname.to_string();
+	}
+
+	/// Dés-applique un drapeau à l'[utilisateur](Self).
+	pub fn unset_flag(&mut self, mut retain_cb: impl FnMut(&flag::Flag) -> bool)
+	{
+		self.flags.retain(|flag| !retain_cb(flag));
 	}
 }

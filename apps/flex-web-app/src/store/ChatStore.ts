@@ -46,6 +46,7 @@ import { PartModule } from "~/modules/part/module";
 import { PrivmsgModule } from "~/modules/privmsg/module";
 import { QuitModule } from "~/modules/quit/module";
 import { TopicModule } from "~/modules/topic/module";
+import { AwayModule } from "~/modules/user-status/module";
 import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
@@ -96,6 +97,7 @@ export class ChatStore {
 			.add(new ErrorNotonchannelHandler(self))
 			.add(new ErrorUsernotinchannelHandler(self));
 
+		self.modules.set(AwayModule.NAME, AwayModule.create(self));
 		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
 		self.modules.set(JoinModule.NAME, JoinModule.create(self));
 		self.modules.set(KickModule.NAME, KickModule.create(self));
@@ -148,15 +150,18 @@ export class ChatStore {
 	// Méthode //
 	// ------- //
 
-	addUser(user: User) {
+	addUser(user: User): User {
 		const fuser = this._users.get(user.id);
 		if (fuser) {
 			for (const channel of user.channels) {
 				fuser.channels.add(channel);
 			}
-		} else {
-			this._users.set(user.id, user);
+			return fuser;
 		}
+
+		this._users.set(user.id, user);
+		// biome-ignore lint/style/noNonNullAssertion: Voir le code ci-haut.
+		return this._users.get(user.id)!;
 	}
 
 	addUserToBlocklist(user: User) {

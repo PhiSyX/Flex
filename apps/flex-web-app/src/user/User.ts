@@ -33,6 +33,7 @@ export class User {
 	// Property //
 	// -------- //
 
+	away = false;
 	declare id: Origin["id"];
 	declare nickname: Origin["nickname"];
 	declare ident: Origin["ident"];
@@ -44,9 +45,24 @@ export class User {
 		return this.host.vhost || this.host.cloaked;
 	}
 
+	get className() {
+		if (this.away) {
+			return "is-away";
+		}
+		return "";
+	}
+
 	// ------- //
 	// Méthode // -> API Publique
 	// ------- //
+
+	marksAsAway() {
+		this.away = true;
+	}
+
+	marksAsNoLongerAway() {
+		this.away = false;
+	}
 
 	withChannel(channelID: string): this {
 		this.channels.add(channelID);

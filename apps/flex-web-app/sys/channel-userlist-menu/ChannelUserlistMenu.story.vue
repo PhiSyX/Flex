@@ -3,20 +3,21 @@ import { ChannelNick } from "~/channel/ChannelNick";
 
 import ChannelUserlistMenu from "./ChannelUserlistMenu.vue";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { User } from "~/user/User";
 
-const origin: Origin = {
+const origin: User = new User({
 	id: "uuid0",
 	host: { cloaked: "localhost" },
 	ident: "PhiSyX",
 	nickname: "PhiSyX",
-};
+});
 
-const origin1: Origin = {
+const origin1: User = new User({
 	id: "uuid1",
 	host: { cloaked: "localhost" },
 	ident: "Ident",
 	nickname: "Nick",
-};
+});
 
 const me = new ChannelNick(origin);
 

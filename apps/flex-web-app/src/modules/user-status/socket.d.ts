@@ -8,43 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
+declare interface AwayFormData {
+	text?: string;
+}
 
-// -------------- //
-// Implémentation //
-// -------------- //
+declare interface Commands {
+	AWAY: AwayFormData;
+}
 
-export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"> {
-	constructor(private store: ChatStore) {}
+declare interface CommandResponsesReplies {
+	RPL_AWAY: { nick: string; message: string };
 
-	listen() {
-		this.store.on("RPL_NAMREPLY", (data) => this.handle(data));
-		// this.store.on("RPL_ENDOFNAMES", (_data) => {});
-	}
-
-	handle(data: GenericReply<"RPL_NAMREPLY">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
-
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-
-		for (const userOrigin of data.users) {
-			const user = this.store.addUser(new User(userOrigin).withChannel(channel.id()));
-
-			const newNick = new ChannelNick(user)
-				.withIsMe(this.store.isMe(user))
-				.withRawAccessLevel(userOrigin.access_level);
-
-			const maybeNick = channel.getUser(user.id);
-			if (maybeNick.is_some()) {
-				channel.upgradeUser(maybeNick.unwrap(), newNick);
-			} else {
-				channel.addUser(newNick);
-			}
-		}
-	}
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	RPL_NOWAWAY: {};
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	RPL_UNAWAY: {};
 }

@@ -10,9 +10,9 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::src::chat::components::Origin;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::permission::ChannelPermissionWrite;
+use crate::src::chat::components::Origin;
 use crate::src::chat::replies::*;
 use crate::src::chat::ChatApplication;
 
@@ -80,6 +80,9 @@ impl PrivmsgHandler
 			}
 
 			target_client_socket.emit_privmsg_to_nickname(target, &data.text, &origin);
+			if target_client_socket.client().user().is_away() {
+				client_socket.send_rpl_away(&target_client_socket);
+			}
 		}
 	}
 }

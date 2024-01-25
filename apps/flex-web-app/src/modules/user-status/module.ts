@@ -8,43 +8,57 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
+
+import { Module } from "../interface";
+import { AwayCommand } from "./command";
+import { ReplyAwayHandler, ReplyNowawayHandler, ReplyUnawayHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"> {
-	constructor(private store: ChatStore) {}
+export class AwayModule implements Module<AwayModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
 
-	listen() {
-		this.store.on("RPL_NAMREPLY", (data) => this.handle(data));
-		// this.store.on("RPL_ENDOFNAMES", (_data) => {});
+	static NAME = "AWAY";
+
+	static create(store: ChatStore): AwayModule {
+		return new AwayModule(
+			new AwayCommand(store),
+			new ReplyAwayHandler(store),
+			new ReplyNowawayHandler(store),
+			new ReplyUnawayHandler(store),
+		);
 	}
 
-	handle(data: GenericReply<"RPL_NAMREPLY">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(
+		private command: AwayCommand,
+		private numericAwayHandler: ReplyAwayHandler,
+		private numericNowawayHandler: ReplyNowawayHandler,
+		private numericUnawayHandler: ReplyUnawayHandler,
+	) {}
 
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
+	// ------- //
+	// Méthode //
+	// ------- //
 
-		for (const userOrigin of data.users) {
-			const user = this.store.addUser(new User(userOrigin).withChannel(channel.id()));
+	input(...text: Array<string>) {
+		this.send({ text: text.join(" ") });
+	}
 
-			const newNick = new ChannelNick(user)
-				.withIsMe(this.store.isMe(user))
-				.withRawAccessLevel(userOrigin.access_level);
+	send(payload: Command<"AWAY">) {
+		this.command.send(payload);
+	}
 
-			const maybeNick = channel.getUser(user.id);
-			if (maybeNick.is_some()) {
-				channel.upgradeUser(maybeNick.unwrap(), newNick);
-			} else {
-				channel.addUser(newNick);
-			}
-		}
+	listen() {
+		this.numericAwayHandler.listen();
+		this.numericNowawayHandler.listen();
+		this.numericUnawayHandler.listen();
 	}
 }
