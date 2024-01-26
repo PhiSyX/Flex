@@ -273,11 +273,14 @@ impl ChatApplication
 			return;
 		}
 
-		if !self.channels.does_client_have_rights(
-			channel_name,
-			client_socket.cid(),
-			nick::ChannelAccessLevel::HalfOperator,
-		) {
+		let is_client_operator = self.is_client_global_operator(client_socket);
+
+		if !is_client_operator
+			&& !self.channels.does_client_have_rights(
+				channel_name,
+				client_socket.cid(),
+				nick::ChannelAccessLevel::HalfOperator,
+			) {
 			client_socket.send_err_chanoprivsneeded(channel_name);
 			return;
 		}
@@ -298,13 +301,14 @@ impl ChatApplication
 				continue;
 			}
 
-			if !self
-				.channels
-				.does_client_have_rights_to_operate_on_another_client(
-					channel_name,
-					client_socket.cid(),
-					kick_client_socket.cid(),
-				) {
+			if !is_client_operator
+				&& !self
+					.channels
+					.does_client_have_rights_to_operate_on_another_client(
+						channel_name,
+						client_socket.cid(),
+						kick_client_socket.cid(),
+					) {
 				client_socket.send_err_chanoprivsneeded(channel_name);
 				continue;
 			}

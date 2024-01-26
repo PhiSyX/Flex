@@ -132,7 +132,7 @@ impl ModeAccessLevelHandler
 	{
 		let client_socket = app.current_client(socket);
 
-		let is_operator = app.is_client_global_operator(&client_socket);
+		let is_client_operator = app.is_client_global_operator(&client_socket);
 
 		let updated: Vec<_> = nicknames
 			.iter()
@@ -145,7 +145,7 @@ impl ModeAccessLevelHandler
 				};
 
 				let same_client = client_socket.cid() == target_client_socket.cid();
-				if !is_operator
+				if !is_client_operator
 					&& !same_client && !app.does_client_have_rights_on_channel(
 					&client_socket,
 					channel_name,
