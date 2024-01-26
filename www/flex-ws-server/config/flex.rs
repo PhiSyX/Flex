@@ -11,6 +11,8 @@
 use flex_web_framework::types::{email, secret};
 use flex_web_framework::FeatureConfig;
 
+use crate::macro_rules::command_formdata::validate_channels;
+
 // --------- //
 // Structure //
 // --------- //
@@ -26,6 +28,9 @@ pub struct flex_config
 	pub admin: flex_config_admin,
 	/// Configuration du serveur.
 	pub server: flex_config_server,
+	/// Configuration globale liée aux opérateurs du serveur, pour chaque
+	/// opérateur.
+	pub operator: flex_config_operator,
 	/// Configuration des opérateurs globaux du serveur.
 	#[serde(default)]
 	pub operators: Vec<flex_config_operator_auth>,
@@ -74,6 +79,15 @@ pub struct flex_config_server
 	pub password: Option<secret::Secret<String>>,
 	/// Date de création du serveur.
 	pub created_at: Option<i64>,
+}
+
+#[derive(Debug)]
+#[derive(Clone)]
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct flex_config_operator
+{
+	#[serde(deserialize_with = "validate_channels")]
+	pub auto_join: Vec<String>,
 }
 
 #[derive(Debug)]

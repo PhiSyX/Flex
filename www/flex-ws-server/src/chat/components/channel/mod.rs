@@ -61,6 +61,19 @@ impl Channel
 		}
 	}
 
+	/// Crée une nouvelle structure d'un salon avec des drapeaux.
+	pub fn with_flags(
+		mut self,
+		flags: impl IntoIterator<Item = mode::ChannelMode<mode::SettingsFlags>>,
+	) -> Self
+	{
+		self.modes_settings.extend(flags);
+		self
+	}
+}
+
+impl Channel
+{
 	/// Ajoute un membre au salon.
 	pub fn add_member(&mut self, id: client::ClientID, nick: nick::ChannelNick)
 	{

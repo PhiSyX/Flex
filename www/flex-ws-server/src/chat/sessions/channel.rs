@@ -155,7 +155,7 @@ impl ChatApplication
 		});
 	}
 
-	/// Rejointe un salon ou le crée.
+	/// Rejoint un salon ou le crée.
 	pub fn join_or_create_channel(
 		&self,
 		client_socket: &client::Socket,
@@ -172,9 +172,11 @@ impl ChatApplication
 			self.join_channel(client_socket, &channel);
 		}
 
+		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
+
 		let can_join = self
 			.channels
-			.can_join(channel_name, channel_key, client_socket.cid());
+			.can_join(channel_name, channel_key, &client_session);
 
 		if can_join.is_ok() {
 			let channel = self
@@ -191,6 +193,59 @@ impl ChatApplication
 					client_socket.send_err_badchannelkey(channel_name);
 				}
 				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::OperOnly => {
+					client_socket.send_err_operonly(channel_name);
+				}
+			}
+		}
+	}
+
+	/// Rejoint un salon (opérateur) ou le crée.
+	pub fn join_or_create_oper_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+	)
+	{
+		if !self.channels.has(channel_name) {
+			self.channels.create_with_flags(
+				channel_name,
+				None,
+				[channel::mode::ChannelMode {
+					flag: channel::mode::SettingsFlags::OperOnly,
+					args: Default::default(),
+					updated_at: flex_web_framework::types::time::Utc::now(),
+					updated_by: String::from("*"),
+				}],
+			);
+			let channel = self
+				.channels
+				.add_client(channel_name, client_socket.cid())
+				.expect("Le salon que le client a rejoint");
+			self.join_channel(client_socket, &channel);
+		}
+
+		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
+		let can_join = self.channels.can_join(channel_name, None, &client_session);
+
+		if can_join.is_ok() {
+			let channel = self
+				.channels
+				.add_client(channel_name, client_socket.cid())
+				.expect("Le salon que le client a rejoint");
+			self.join_channel(client_socket, &channel);
+			return;
+		}
+
+		if let Err(err) = can_join {
+			match err {
+				| ChannelJoinError::BadChannelKey => {
+					client_socket.send_err_badchannelkey(channel_name);
+				}
+				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::OperOnly => {
+					client_socket.send_err_operonly(channel_name);
+				}
 			}
 		}
 	}
@@ -367,7 +422,7 @@ impl ChannelsSession
 		&self,
 		channel_id: channel::ChannelIDRef,
 		maybe_user_channel_key: Option<&secret::Secret<String>>,
-		client_id: &client::ClientID,
+		client: &client::Client,
 	) -> Result<(), ChannelJoinError>
 	{
 		let channel = self
@@ -384,8 +439,12 @@ impl ChannelsSession
 			}
 		}
 
-		if self.has_client(channel_id, client_id) {
+		if self.has_client(channel_id, client.id()) {
 			return Err(ChannelJoinError::HasAlreadyClient);
+		}
+
+		if channel.modes_settings.has_operonly_flag() && !client.user().is_operator() {
+			return Err(ChannelJoinError::OperOnly);
 		}
 
 		Ok(())
@@ -401,6 +460,23 @@ impl ChannelsSession
 		let channel_name = channel_name.to_string();
 		let channel_id = channel_name.to_lowercase();
 		let mut channel_entity = channel::Channel::new(channel_name);
+		if let Some(channel_key) = maybe_channel_key {
+			channel_entity.set_key("*", channel_key);
+		}
+		self.add(&channel_id, channel_entity)
+	}
+
+	/// Crée un salon avec des drapeaux.
+	pub fn create_with_flags(
+		&self,
+		channel_name: impl ToString,
+		maybe_channel_key: Option<secret::Secret<String>>,
+		flags: impl IntoIterator<Item = channel::mode::ChannelMode<channel::mode::SettingsFlags>>,
+	) -> bool
+	{
+		let channel_name = channel_name.to_string();
+		let channel_id = channel_name.to_lowercase();
+		let mut channel_entity = channel::Channel::new(channel_name).with_flags(flags);
 		if let Some(channel_key) = maybe_channel_key {
 			channel_entity.set_key("*", channel_key);
 		}

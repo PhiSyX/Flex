@@ -67,5 +67,9 @@ impl OperHandler
 		}
 
 		app.marks_client_as_operator(&client_socket, operator.oper_type);
+
+		for channel_name in config.operator.auto_join.iter() {
+			app.join_or_create_oper_channel(&client_socket, channel_name);
+		}
 	}
 }

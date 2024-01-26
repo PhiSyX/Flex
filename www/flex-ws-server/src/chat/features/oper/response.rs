@@ -29,4 +29,9 @@ error_replies! {
 	/// tant qu'opérateur, cette erreur DOIT être renvoyée.
 	| 491 <-> ERR_NOOPERHOST
 		=> ":Pas de O-lines pour votre hôte"
+
+	/// Renvoyé pour indiquer à l'utilisateur que le salon qui tente de joindre
+	/// est réservé aux opérateurs globaux et locaux du serveur uniquement.
+	| 520 <-> ERR_OPERONLY { channel: str }
+		=> ":Vous ne pouvez pas rejoindre le salon {channel} (opérateurs uniquement)"
 }

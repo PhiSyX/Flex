@@ -16,4 +16,5 @@ pub enum ChannelJoinError
 {
 	BadChannelKey,
 	HasAlreadyClient,
+	OperOnly,
 }

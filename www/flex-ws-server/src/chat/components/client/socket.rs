@@ -632,6 +632,21 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrOperonlyError].
+	pub fn send_err_operonly(&self, channel: &str)
+	{
+		use crate::src::chat::replies::ErrOperonlyError;
+
+		let origin = Origin::from(self.client());
+		let err_operonly = ErrOperonlyError {
+			origin: &origin,
+			channel,
+			tags: ErrOperonlyError::default_tags(),
+		};
+		_ = self.socket().emit(err_operonly.name(), err_operonly);
+	}
+
+	/// Émet au client l'erreur
 	/// [crate::src::chat::replies::ErrPasswdmismatch].
 	pub fn send_err_passwdmismatch(&self)
 	{

@@ -152,7 +152,12 @@ mod replies
 		};
 	}
 
-	pub use super::features::{ErrNooperhostError, ErrPasswdmismatchError, RplYoureoperReply};
+	pub use super::features::{
+		ErrNooperhostError,
+		ErrOperonlyError,
+		ErrPasswdmismatchError,
+		RplYoureoperReply,
+	};
 }
 
 mod routes;
