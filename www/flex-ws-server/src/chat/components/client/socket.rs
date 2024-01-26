@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::types::time;
+
 use crate::src::chat::components;
 use crate::src::chat::components::client::origin::Origin;
 
@@ -515,6 +517,57 @@ impl<'a> Socket<'a>
 			oper_type: &oper_type,
 		};
 		_ = self.socket().emit(rpl_youreoper.name(), rpl_youreoper);
+	}
+
+	/// Émet au client les réponses de connexion. 3) RPL_CREATED
+	pub fn send_rpl_created(&self, created_at: time::DateTime<time::Utc>)
+	{
+		use crate::src::chat::replies::RplCreatedReply;
+
+		let origin = components::Origin::from(self.client());
+		let created_003 = RplCreatedReply {
+			origin: &origin,
+			date: &created_at,
+			tags: RplCreatedReply::default_tags(),
+		};
+
+		_ = self.socket().emit(created_003.name(), created_003);
+	}
+
+	/// Émet au client les réponses de connexion. 2) RPL_YOURHOST
+	pub fn send_rpl_yourhost(&self, servername: &str)
+	{
+		use crate::src::chat::replies::RplYourhostReply;
+
+		let origin = components::Origin::from(self.client());
+		let program_version = format!("v{}", env!("CARGO_PKG_VERSION"));
+		let yourhost_002 = RplYourhostReply {
+			origin: &origin,
+			servername,
+			version: &program_version,
+			tags: RplYourhostReply::default_tags(),
+		};
+
+		_ = self.socket().emit(yourhost_002.name(), yourhost_002);
+	}
+
+	/// Émet au client les réponses de connexion. 1) RPL_WELCOME
+	pub fn send_rpl_welcome(&self)
+	{
+		use crate::src::chat::replies::RplWelcomeReply;
+
+		let origin = components::Origin::from(self.client());
+		let host = self.user().host.to_string();
+		let welcome_001 = RplWelcomeReply {
+			origin: &origin,
+			nickname: &self.user().nickname,
+			ident: &self.user().ident,
+			host: &host,
+			tags: RplWelcomeReply::default_tags(),
+		}
+		.with_tags([("client_id", self.client().cid())]);
+
+		_ = self.socket().emit(welcome_001.name(), welcome_001);
 	}
 }
 

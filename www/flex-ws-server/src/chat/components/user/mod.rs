@@ -81,6 +81,20 @@ impl User
 
 impl User
 {
+	/// Message d'absence de l'utilisateur.
+	pub fn away_message(&self) -> String
+	{
+		self.flags
+			.iter()
+			.find_map(|flag| {
+				let flag::Flag::Away(text) = flag else {
+					return None;
+				};
+				(!text.is_empty()).then_some(text.to_owned())
+			})
+			.unwrap_or_default()
+	}
+
 	/// Vérifie si le pseudonyme donné est le même que celui sauvegardé dans
 	/// l'instance du client.
 	pub fn is_me(&self, nickname: &str) -> bool
@@ -120,18 +134,12 @@ impl User
 		self.flags.contains(&flag::Flag::LocalOperator)
 	}
 
-	/// Message d'absence de l'utilisateur.
-	pub fn away_message(&self) -> String
+	/// Type d'opérateur.
+	pub fn operator_type(&self) -> Option<&flag::Flag>
 	{
 		self.flags
-			.iter()
-			.find_map(|flag| {
-				let flag::Flag::Away(text) = flag else {
-					return None;
-				};
-				(!text.is_empty()).then_some(text.to_owned())
-			})
-			.unwrap_or_default()
+			.get(&flag::Flag::LocalOperator)
+			.or(self.flags.get(&flag::Flag::GlobalOperator))
 	}
 }
 
