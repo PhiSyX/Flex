@@ -121,6 +121,12 @@ impl ChatApplication
 		channel_name: channel::ChannelIDRef,
 	) -> bool
 	{
+		let is_client_operator = self.is_client_global_operator(client_socket);
+
+		if is_client_operator {
+			return true;
+		}
+
 		match self
 			.channels
 			.is_client_can_edit_topic(channel_name, client_socket.cid())

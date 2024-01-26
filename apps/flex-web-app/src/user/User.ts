@@ -82,6 +82,14 @@ export class User {
 	// Méthode // -> API Publique
 	// ------- //
 
+	isGlobalOperator() {
+		return this.operator
+			.filter((flag) => {
+				return flag === UserFlag.GlobalOperator;
+			})
+			.is_some();
+	}
+
 	marksAsAway() {
 		this.away = true;
 	}
