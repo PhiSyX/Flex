@@ -100,6 +100,26 @@ impl User
 		})
 	}
 
+	/// Vérifie que l'utilisateur a comme drapeau, les drapeaux d'opérateurs.
+	pub fn is_operator(&self) -> bool
+	{
+		self.is_global_operator() || self.is_local_operator()
+	}
+
+	/// Vérifie que l'utilisateur a comme drapeau, le drapeaux d'opérateur
+	/// global.
+	pub fn is_global_operator(&self) -> bool
+	{
+		self.flags.contains(&flag::Flag::GlobalOperator)
+	}
+
+	/// Vérifie que l'utilisateur a comme drapeau, le drapeaux d'opérateur
+	/// local.
+	pub fn is_local_operator(&self) -> bool
+	{
+		self.flags.contains(&flag::Flag::LocalOperator)
+	}
+
 	/// Message d'absence de l'utilisateur.
 	pub fn away_message(&self) -> String
 	{

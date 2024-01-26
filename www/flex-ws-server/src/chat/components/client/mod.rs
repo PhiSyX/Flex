@@ -19,6 +19,7 @@ use flex_web_framework::types::uuid;
 pub use self::origin::Origin;
 pub use self::socket::{ClientSocketInterface, Socket};
 use super::{channel, user};
+use crate::config::flex;
 
 // ---- //
 // Type //
@@ -148,6 +149,15 @@ impl Client
 	{
 		self.user
 			.unset_flag(|flag| matches!(flag, super::Flag::Away(_)));
+	}
+
+	/// Marque le client comme étant un opérateur.
+	pub fn marks_client_as_operator(&mut self, oper_type: flex::flex_config_operator_type)
+	{
+		self.user.set_flag(match oper_type {
+			| flex::flex_config_operator_type::GlobalOperator => super::Flag::GlobalOperator,
+			| flex::flex_config_operator_type::LocalOperator => super::Flag::LocalOperator,
+		})
 	}
 
 	/// Attribution d'un nouvel ID de Socket.

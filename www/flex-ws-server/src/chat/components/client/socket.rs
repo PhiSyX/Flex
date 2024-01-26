@@ -496,6 +496,19 @@ impl<'a> Socket<'a>
 		};
 		_ = self.socket().emit(rpl_unignore.name(), rpl_unignore);
 	}
+
+	/// Émet au client les réponses liées à la commande /OPER.
+	pub fn send_rpl_youreoper(&self)
+	{
+		use crate::src::chat::replies::RplYoureoperReply;
+
+		let origin = Origin::from(self.client());
+		let rpl_youreoper = RplYoureoperReply {
+			origin: &origin,
+			tags: RplYoureoperReply::default_tags(),
+		};
+		_ = self.socket().emit(rpl_youreoper.name(), rpl_youreoper);
+	}
 }
 
 impl<'a> Socket<'a>
@@ -602,6 +615,36 @@ impl<'a> Socket<'a>
 		_ = self
 			.socket()
 			.emit(err_nicknameinuse.name(), err_nicknameinuse);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrNooperhostError].
+	pub fn send_err_nooperhost(&self)
+	{
+		use crate::src::chat::replies::ErrNooperhostError;
+
+		let origin = Origin::from(self.client());
+		let err_nooperhost = ErrNooperhostError {
+			origin: &origin,
+			tags: ErrNooperhostError::default_tags(),
+		};
+		_ = self.socket().emit(err_nooperhost.name(), err_nooperhost);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrPasswdmismatch].
+	pub fn send_err_passwdmismatch(&self)
+	{
+		use crate::src::chat::replies::ErrPasswdmismatchError;
+
+		let origin = Origin::from(self.client());
+		let err_passwdmismatch = ErrPasswdmismatchError {
+			origin: &origin,
+			tags: ErrPasswdmismatchError::default_tags(),
+		};
+		_ = self
+			.socket()
+			.emit(err_passwdmismatch.name(), err_passwdmismatch);
 	}
 
 	/// Émet au client l'erreur

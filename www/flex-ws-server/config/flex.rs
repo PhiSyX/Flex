@@ -26,6 +26,9 @@ pub struct flex_config
 	pub admin: flex_config_admin,
 	/// Configuration du serveur.
 	pub server: flex_config_server,
+	/// Configuration des opérateurs globaux du serveur.
+	#[serde(default)]
+	pub operators: Vec<flex_config_operator_auth>,
 }
 
 #[derive(Debug)]
@@ -71,6 +74,34 @@ pub struct flex_config_server
 	pub password: Option<secret::Secret<String>>,
 	/// Date de création du serveur.
 	pub created_at: Option<i64>,
+}
+
+#[derive(Debug)]
+#[derive(Clone)]
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct flex_config_operator_auth
+{
+	/// Identifiant de l'opérateur.
+	pub identifier: secret::Secret<String>,
+	/// Mot de passe de l'opérateur (chiffré).
+	pub password: secret::Secret<String>,
+	/// Type d'opérateur.
+	#[serde(rename = "type")]
+	pub oper_type: flex_config_operator_type,
+	/// Hôte virtuel.
+	#[serde(rename = "vhost")]
+	pub virtual_host: Option<String>,
+}
+
+#[derive(Debug)]
+#[derive(Copy, Clone)]
+#[derive(serde::Deserialize, serde::Serialize)]
+pub enum flex_config_operator_type
+{
+	/// Opérateur local
+	LocalOperator,
+	/// Opérateur Global
+	GlobalOperator,
 }
 
 // -------------- //

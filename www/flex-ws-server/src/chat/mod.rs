@@ -78,6 +78,12 @@ mod features
 			response,
 		};
 
+		oper / {
+			formdata,
+			handler,
+			response,
+		};
+
 		pass / {
 			formdata,
 			handler,
@@ -145,6 +151,8 @@ mod replies
 			rpl_welcome,
 		};
 	}
+
+	pub use super::features::{ErrNooperhostError, ErrPasswdmismatchError, RplYoureoperReply};
 }
 
 mod routes;

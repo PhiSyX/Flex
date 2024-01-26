@@ -14,6 +14,7 @@ use dashmap::{DashMap, DashSet};
 use flex_web_framework::http::request;
 use socketioxide::extract::SocketRef;
 
+use crate::config::flex;
 use crate::src::chat::components::{channel, client, nick};
 use crate::src::ChatApplication;
 
@@ -187,6 +188,18 @@ impl ChatApplication
 		}
 	}
 
+	/// Marque le client en session comme étant un opérateur.
+	pub fn marks_client_as_operator(
+		&self,
+		client_socket: &client::Socket,
+		oper_type: flex::flex_config_operator_type,
+	)
+	{
+		self.clients
+			.marks_client_as_operator(client_socket.cid(), oper_type);
+		client_socket.send_rpl_youreoper();
+	}
+
 	/// Enregistre le client en session.
 	pub fn register_client(&self, client: &client::Client)
 	{
@@ -354,6 +367,20 @@ impl ClientsSession
 		};
 
 		client.marks_user_as_no_longer_away();
+	}
+
+	/// Marque un client comme étant un opérateur.
+	pub fn marks_client_as_operator(
+		&self,
+		client_id: &client::ClientID,
+		oper_type: flex::flex_config_operator_type,
+	)
+	{
+		let Some(mut client) = self.find_mut(client_id) else {
+			return;
+		};
+
+		client.marks_client_as_operator(oper_type);
 	}
 
 	/// Enregistre un client.

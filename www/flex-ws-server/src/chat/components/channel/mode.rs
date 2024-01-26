@@ -22,6 +22,7 @@ pub const CHANNEL_MODE_SETTINGS_KEY: char = 'k';
 pub const CHANNEL_MODE_SETTINGS_MODERATE: char = 'm';
 pub const CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES: char = 'n';
 pub const CHANNEL_MODE_SETTINGS_NOTOPIC: char = 't';
+pub const CHANNEL_MODE_SETTINGS_OPERONLY: char = 'O';
 
 // --------- //
 // Structure //
@@ -73,6 +74,8 @@ pub enum SettingsFlags
 	/// opérateurs. Le niveau requis pour le changement: HalfOperator
 	/// [AccessLevelFlag::HalfOperator].
 	NoTopic,
+	/// Salon réservé aux opérateurs globaux uniquement.
+	OperOnly,
 }
 
 // -------------- //
@@ -131,6 +134,20 @@ impl ChannelModes<SettingsFlags>
 		})
 	}
 
+	/// Est-ce que les paramètres du salon contiennent le drapeau +O
+	pub fn has_operonly_flag(&self) -> bool
+	{
+		self.modes.iter().any(|mode| {
+			matches!(
+				mode,
+				ChannelMode {
+					flag: SettingsFlags::OperOnly,
+					..
+				}
+			)
+		})
+	}
+
 	/// Est-ce que les paramètres du salon contiennent le drapeau +t
 	pub fn has_topic_flag(&self) -> bool
 	{
@@ -156,6 +173,7 @@ impl SettingsFlags
 			| Self::Moderate => CHANNEL_MODE_SETTINGS_MODERATE,
 			| Self::NoExternalMessages => CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES,
 			| Self::NoTopic => CHANNEL_MODE_SETTINGS_NOTOPIC,
+			| Self::OperOnly => CHANNEL_MODE_SETTINGS_OPERONLY,
 		}
 	}
 }
