@@ -18,8 +18,9 @@ declare interface Commands {
 }
 
 declare interface CommandResponsesFromServer {
-	// biome-ignore lint/complexity/noBannedTypes: ?
-	RPL_YOUREOPER: {};
+	RPL_YOUREOPER: {
+		oper_type: "LocalOperator" | "GlobalOperator";
+	};
 }
 
 declare interface ErrorReplies {

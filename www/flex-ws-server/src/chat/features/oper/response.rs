@@ -8,12 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::src::chat::components::user;
 use crate::{error_replies, reserved_numerics};
 
 reserved_numerics! {
 	/// RPL_YOUREOPER est renvoyé à un client qui vient d'émettre avec succès un
 	/// message OPER et d'obtenir le statut d'opérateur.
-	| 381 <-> RPL_YOUREOPER
+	| 381 <-> RPL_YOUREOPER { oper_type: user::Flag }
 		=> ":Vous êtes maintenant un OPÉRATEUR"
 }
 
@@ -33,5 +34,5 @@ error_replies! {
 	/// Renvoyé pour indiquer à l'utilisateur que le salon qui tente de joindre
 	/// est réservé aux opérateurs globaux et locaux du serveur uniquement.
 	| 520 <-> ERR_OPERONLY { channel: str }
-		=> ":Vous ne pouvez pas rejoindre le salon {channel} (opérateurs uniquement)"
+		=> ":Vous ne pouvez pas rejoindre le salon {channel} (OPÉRATEUR uniquement)"
 }

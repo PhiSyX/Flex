@@ -8,11 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { None, Option, Some } from "@phisyx/flex-safety";
+
 // ---- //
 // Type //
 // ---- //
 
 export type UserID = string;
+
+// ----------- //
+// Énumération //
+// ----------- //
+
+enum UserFlag {
+	LocalOperator = 10,
+	GlobalOperator = 20,
+}
 
 // -------------- //
 // Implémentation //
@@ -38,6 +49,7 @@ export class User {
 	declare nickname: Origin["nickname"];
 	declare ident: Origin["ident"];
 	declare host: Origin["host"];
+	operator: Option<UserFlag> = None();
 
 	channels: Set<string> = new Set();
 
@@ -50,6 +62,20 @@ export class User {
 			return "is-away";
 		}
 		return "";
+	}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	#parseFlag(flag: string): Option<UserFlag> {
+		switch (flag.toLocaleLowerCase()) {
+			case "localoperator":
+				return Some(UserFlag.LocalOperator);
+			case "globaloperator":
+				return Some(UserFlag.GlobalOperator);
+		}
+		return None();
 	}
 
 	// ------- //
@@ -66,6 +92,15 @@ export class User {
 
 	withChannel(channelID: string): this {
 		this.channels.add(channelID);
+		return this;
+	}
+
+	withOperatorFlag(flag: UserFlag | string): this {
+		if (typeof flag === "string") {
+			this.operator = this.#parseFlag(flag);
+			return this;
+		}
+		this.operator.replace(flag);
 		return this;
 	}
 }

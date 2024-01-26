@@ -367,6 +367,22 @@ export class ChatStore {
 		this._selectedUser.replace([room.id(), origin.id]);
 	}
 
+	upgradeUser(user: User): User {
+		const fuser = this._users.get(user.id);
+
+		if (fuser) {
+			fuser.away = user.away;
+			fuser.ident = user.ident;
+			fuser.nickname = user.nickname;
+			fuser.host = user.host;
+			return fuser;
+		}
+
+		this._users.set(user.id, user);
+		// biome-ignore lint/style/noNonNullAssertion: Voir le code ci-haut.
+		return this._users.get(user.id)!;
+	}
+
 	unsetSelectedUser() {
 		this._selectedUser = None();
 	}

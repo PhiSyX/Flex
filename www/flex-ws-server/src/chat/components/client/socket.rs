@@ -504,7 +504,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client les réponses liées à la commande /OPER.
-	pub fn send_rpl_youreoper(&self)
+	pub fn send_rpl_youreoper(&self, oper_type: components::user::Flag)
 	{
 		use crate::src::chat::replies::RplYoureoperReply;
 
@@ -512,6 +512,7 @@ impl<'a> Socket<'a>
 		let rpl_youreoper = RplYoureoperReply {
 			origin: &origin,
 			tags: RplYoureoperReply::default_tags(),
+			oper_type: &oper_type,
 		};
 		_ = self.socket().emit(rpl_youreoper.name(), rpl_youreoper);
 	}
