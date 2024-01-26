@@ -65,7 +65,7 @@ impl ChatApplication
 	/// Récupère un client à partir de son ID.
 	pub fn get_client_by_id(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
-		self.clients.find(client_id)
+		self.clients.get(client_id)
 	}
 
 	/// Récupère un client à partir de son ID.
@@ -74,7 +74,7 @@ impl ChatApplication
 		client_id: &client::ClientID,
 	) -> Option<RefMutMulti<'_, client::ClientID, client::Client>>
 	{
-		self.clients.find_mut(client_id)
+		self.clients.get_mut(client_id)
 	}
 
 	/// Le client peut-il écrire sur le salon?
@@ -140,6 +140,15 @@ impl ChatApplication
 		}
 	}
 
+	/// Est-ce que le client est un opérateur global?
+	pub fn is_client_global_operator(&self, client_socket: &client::Socket) -> bool
+	{
+		let Some(client) = self.clients.get(client_socket.cid()) else {
+			return false;
+		};
+		client.user().is_global_operator()
+	}
+
 	/// Rejoint un salon.
 	pub fn join_channel(&self, client_socket: &client::Socket, channel: &channel::Channel)
 	{
@@ -147,7 +156,7 @@ impl ChatApplication
 			.add_channel(client_socket.cid(), channel.id().as_str());
 
 		client_socket.emit_join(channel, false, |channel_nick| {
-			let client = self.clients.find(channel_nick.id())?;
+			let client = self.clients.get(channel_nick.id())?;
 			Some(crate::src::chat::replies::ChannelNickClient::from((
 				client,
 				channel_nick,

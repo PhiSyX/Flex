@@ -149,7 +149,7 @@ impl ChatApplication
 	/// Trouve un client de session à partir de son ID.
 	pub fn find_client(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
-		self.clients.find(client_id)
+		self.clients.get(client_id)
 	}
 
 	/// Cherche un [client::Socket] à partir d'un pseudonyme.
@@ -159,7 +159,7 @@ impl ChatApplication
 		nickname: &str,
 	) -> Option<client::Socket>
 	{
-		let to_ignore_client = self.clients.find_by_nickname(nickname)?;
+		let to_ignore_client = self.clients.get_by_nickname(nickname)?;
 		let to_ignore_socket = socket.broadcast().get_socket(to_ignore_client.sid())?;
 		Some(client::Socket::Owned {
 			client: Box::new(to_ignore_client),
@@ -260,7 +260,7 @@ impl ClientsSession
 	{
 		self.blocklist
 			.get(client_id)
-			.map(|l| l.value().iter().filter_map(|bid| self.find(&bid)).collect())
+			.map(|l| l.value().iter().filter_map(|bid| self.get(&bid)).collect())
 			.unwrap_or_default()
 	}
 
@@ -296,7 +296,7 @@ impl ClientsSession
 	}
 
 	/// Cherche un client en fonction de son ID.
-	pub fn find(&self, client_id: &client::ClientID) -> Option<client::Client>
+	pub fn get(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
 		self.clients.iter().find_map(|rm| {
 			let (cid, client) = (rm.key(), rm.value());
@@ -305,7 +305,7 @@ impl ClientsSession
 	}
 
 	/// Cherche un client en fonction de son ID.
-	pub fn find_mut(
+	pub fn get_mut(
 		&self,
 		client_id: &client::ClientID,
 	) -> Option<dashmap::mapref::multiple::RefMutMulti<'_, client::ClientID, client::Client>>
@@ -316,7 +316,7 @@ impl ClientsSession
 	}
 
 	/// Trouve un client en fonction de son ID.
-	pub fn find_by_nickname(&self, nickname: &str) -> Option<client::Client>
+	pub fn get_by_nickname(&self, nickname: &str) -> Option<client::Client>
 	{
 		let nickname = nickname.to_lowercase();
 		self.clients.iter().find_map(|rm| {
@@ -342,7 +342,7 @@ impl ClientsSession
 	/// Vérifie si un client en session est absent.
 	pub fn is_client_away(&self, client_id: &client::ClientID) -> bool
 	{
-		let Some(client) = self.find(client_id) else {
+		let Some(client) = self.get(client_id) else {
 			return false;
 		};
 
@@ -352,7 +352,7 @@ impl ClientsSession
 	/// Marque un client comme étant absent.
 	pub fn marks_client_as_away(&self, client_id: &client::ClientID, text: impl ToString)
 	{
-		let Some(mut client) = self.find_mut(client_id) else {
+		let Some(mut client) = self.get_mut(client_id) else {
 			return;
 		};
 
@@ -362,7 +362,7 @@ impl ClientsSession
 	/// Marque un client comme n'étant plus absent.
 	pub fn marks_client_as_no_longer_away(&self, client_id: &client::ClientID)
 	{
-		let Some(mut client) = self.find_mut(client_id) else {
+		let Some(mut client) = self.get_mut(client_id) else {
 			return;
 		};
 
@@ -376,7 +376,7 @@ impl ClientsSession
 		oper_type: flex::flex_config_operator_type,
 	)
 	{
-		let Some(mut client) = self.find_mut(client_id) else {
+		let Some(mut client) = self.get_mut(client_id) else {
 			return;
 		};
 

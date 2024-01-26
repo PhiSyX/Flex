@@ -405,7 +405,10 @@ impl<'a> Socket<'a>
 		});
 
 		for rpl_name in rpl_names {
-			_ = self.socket().emit(rpl_name.name(), rpl_name);
+			_ = self
+				.socket()
+				.within(channel.room())
+				.emit(rpl_name.name(), rpl_name);
 		}
 
 		let rpl_endofnames = RplEndofnamesReply {
@@ -413,7 +416,10 @@ impl<'a> Socket<'a>
 			channel: &channel.name,
 			tags: RplEndofnamesReply::default_tags(),
 		};
-		_ = self.socket().emit(rpl_endofnames.name(), rpl_endofnames);
+		_ = self
+			.socket()
+			.within(channel.room())
+			.emit(rpl_endofnames.name(), rpl_endofnames);
 	}
 
 	/// Émet au client les réponses liées à la commande /AWAY.

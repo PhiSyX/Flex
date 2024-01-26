@@ -12,7 +12,6 @@ use flex_crypto::{Argon2Encryption, Encryption};
 use flex_web_framework::security::SecurityEncryptionService;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::ErrNooperhostError;
 use crate::config::flex::flex_config;
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::ChatApplication;
