@@ -151,6 +151,12 @@ impl User
 		Ok(ident)
 	}
 
+	/// Définit un hôte virtual pour l'[utilisateur](Self).
+	pub fn set_vhost(&mut self, vhost: impl ToString)
+	{
+		self.host.set_vhost(vhost);
+	}
+
 	/// Définit le pseudonyme de l'[utilisateur](Self).
 	pub fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, nick::Error>
 	{

@@ -36,19 +36,21 @@ impl OperHandler
 		Data(data): Data<super::OperCommandFormData>,
 	)
 	{
-		let client_socket = app.current_client(&socket);
+		let mut client_socket = app.current_client_mut(&socket);
 
 		let config = client_socket
 			.socket()
 			.req_parts()
 			.extensions
 			.get::<flex_config>()
+			.cloned()
 			.expect("Configuration de notre application serveur");
 
 		let Some(operator) = config
 			.operators
 			.iter()
 			.find(|operator| operator.identifier.eq(&data.name))
+			.cloned()
 		else {
 			client_socket.send_err_nooperhost();
 			return;
@@ -65,7 +67,11 @@ impl OperHandler
 			return;
 		}
 
-		app.marks_client_as_operator(&client_socket, operator.oper_type);
+		app.marks_client_as_operator(
+			&mut client_socket,
+			operator.virtual_host.as_deref(),
+			operator.oper_type,
+		);
 
 		for channel_name in config.operator.auto_join.iter() {
 			app.join_or_create_oper_channel(&client_socket, channel_name);

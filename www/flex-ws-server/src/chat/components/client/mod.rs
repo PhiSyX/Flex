@@ -178,6 +178,12 @@ impl Client
 		self.connected = true;
 	}
 
+	/// Définit un hôte virtuel pour l'utilisateur.
+	pub fn set_vhost(&mut self, vhost: impl ToString)
+	{
+		self.user.set_vhost(vhost)
+	}
+
 	/// Définit le client comme étant enregistré.
 	pub fn set_registered(&mut self)
 	{

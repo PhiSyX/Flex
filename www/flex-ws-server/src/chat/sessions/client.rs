@@ -15,6 +15,7 @@ use flex_web_framework::http::request;
 use socketioxide::extract::SocketRef;
 
 use crate::config::flex;
+use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client, nick};
 use crate::src::ChatApplication;
 
@@ -191,12 +192,16 @@ impl ChatApplication
 	/// Marque le client en session comme étant un opérateur.
 	pub fn marks_client_as_operator(
 		&self,
-		client_socket: &client::Socket,
+		client_socket: &mut client::Socket,
+		oper_vhost: Option<&str>,
 		oper_type: flex::flex_config_operator_type,
 	)
 	{
 		self.clients
-			.marks_client_as_operator(client_socket.cid(), oper_type);
+			.marks_client_as_operator(client_socket.cid(), oper_vhost, oper_type);
+		if let Some(vhost) = oper_vhost {
+			client_socket.user_mut().set_vhost(vhost);
+		}
 		client_socket.send_rpl_youreoper();
 	}
 
@@ -373,6 +378,7 @@ impl ClientsSession
 	pub fn marks_client_as_operator(
 		&self,
 		client_id: &client::ClientID,
+		oper_vhost: Option<&str>,
 		oper_type: flex::flex_config_operator_type,
 	)
 	{
@@ -381,6 +387,9 @@ impl ClientsSession
 		};
 
 		client.marks_client_as_operator(oper_type);
+		if let Some(vhost) = oper_vhost {
+			client.set_vhost(vhost);
+		}
 	}
 
 	/// Enregistre un client.
