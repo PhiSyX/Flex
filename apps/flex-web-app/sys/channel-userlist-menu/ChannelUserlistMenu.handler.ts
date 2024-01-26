@@ -31,14 +31,14 @@ export interface Emits {
 
 export function openPrivate(emit: Emits, props: Props) {
 	function openPrivateHandler() {
-		emit("open-private", props.user.cnick);
+		emit("open-private", props.user.cnick.intoUser());
 	}
 	return openPrivateHandler;
 }
 
 export function ignoreUser(emit: Emits, props: Props) {
 	function ignoreUserHandler() {
-		emit("ignore-user", props.user.cnick);
+		emit("ignore-user", props.user.cnick.intoUser());
 	}
 	return ignoreUserHandler;
 }
@@ -52,7 +52,7 @@ export function kickUser(emit: Emits, props: Props) {
 
 export function unignoreUser(emit: Emits, props: Props) {
 	function unignoreUserHandler() {
-		emit("unignore-user", props.user.cnick);
+		emit("unignore-user", props.user.cnick.intoUser());
 	}
 	return unignoreUserHandler;
 }

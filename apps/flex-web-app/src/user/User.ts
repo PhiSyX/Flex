@@ -20,7 +20,7 @@ export type UserID = string;
 // Énumération //
 // ----------- //
 
-enum UserFlag {
+export enum UserFlag {
 	LocalOperator = 10,
 	GlobalOperator = 20,
 }
@@ -69,7 +69,7 @@ export class User {
 	// ------- //
 
 	#parseFlag(flag: string): Option<UserFlag> {
-		switch (flag.toLocaleLowerCase()) {
+		switch (flag.toLowerCase()) {
 			case "localoperator":
 				return Some(UserFlag.LocalOperator);
 			case "globaloperator":

@@ -369,12 +369,9 @@ export class ChatStore {
 
 	upgradeUser(user: User): User {
 		const fuser = this._users.get(user.id);
-
 		if (fuser) {
-			fuser.away = user.away;
-			fuser.ident = user.ident;
-			fuser.nickname = user.nickname;
 			fuser.host = user.host;
+			fuser.operator = user.operator;
 			return fuser;
 		}
 
