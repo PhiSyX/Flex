@@ -17,7 +17,7 @@ declare interface Commands {
 	OPER: OperFormData;
 }
 
-declare interface CommandResponsesFromServer {
+declare interface CommandResponsesReplies {
 	RPL_YOUREOPER: {
 		oper_type: "LocalOperator" | "GlobalOperator";
 	};
@@ -26,6 +26,7 @@ declare interface CommandResponsesFromServer {
 declare interface ErrorReplies {
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_NOOPERHOST: {};
+	ERR_OPERONLY: { channel: string };
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_PASSWDMISMATCH: {};
 }
