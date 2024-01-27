@@ -8,25 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
-import { CommandInterface } from "../interface";
+use crate::error_replies;
 
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class JoinCommand implements CommandInterface<"JOIN"> {
-	constructor(private store: ChatStore) {}
-
-	send(payload: Command<"JOIN">): void {
-		this.store.emit("JOIN", payload);
-	}
-}
-
-export class SajoinCommand implements CommandInterface<"SAJOIN"> {
-	constructor(private store: ChatStore) {}
-
-	send(payload: Command<"SAJOIN">): void {
-		this.store.emit("SAJOIN", payload);
-	}
+error_replies! {
+	/// Toute commande nécessitant des privilèges d'opérateur pour fonctionner
+	/// DOIT renvoyer cette erreur pour indiquer que la tentative a échoué.
+	| 481 <-> ERR_NOPRIVILEGES
+		=> ":Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects."
 }

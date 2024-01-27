@@ -9,24 +9,20 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ChatStore } from "~/store/ChatStore";
-import { CommandInterface } from "../interface";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class JoinCommand implements CommandInterface<"JOIN"> {
+export class ErrorNoprivilegesHandler implements SocketEventInterface<"ERR_NOPRIVILEGES"> {
 	constructor(private store: ChatStore) {}
 
-	send(payload: Command<"JOIN">): void {
-		this.store.emit("JOIN", payload);
+	listen() {
+		this.store.on("ERR_NOPRIVILEGES", (data) => this.handle(data));
 	}
-}
 
-export class SajoinCommand implements CommandInterface<"SAJOIN"> {
-	constructor(private store: ChatStore) {}
-
-	send(payload: Command<"SAJOIN">): void {
-		this.store.emit("SAJOIN", payload);
+	handle(data: GenericReply<"ERR_NOPRIVILEGES">) {
+		const room = this.store.roomManager().current();
+		room.addEvent("error:err_noprivileges", { ...data, isMe: true }, data.reason.slice(1));
 	}
 }

@@ -22,6 +22,7 @@ import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyH
 import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
 import { ErrorChanoprivsneeded } from "~/handlers/errors/ErrorChanoprivsneeded";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
+import { ErrorNoprivilegesHandler } from "~/handlers/errors/ErrorNoprivilegesHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
 import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
 import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
@@ -31,7 +32,7 @@ import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { CommandInterface, Module } from "~/modules/interface";
-import { JoinModule } from "~/modules/join/module";
+import { JoinModule, SajoinModule } from "~/modules/join/module";
 import { KickModule } from "~/modules/kick/module";
 import {
 	AccessLevelAOPModule,
@@ -98,6 +99,7 @@ export class ChatStore {
 			.add(new ErrorChanoprivsneeded(self))
 			.add(new ErrorCannotsendtochanHandler(self))
 			.add(new ErrorNicknameinuseHandler(self))
+			.add(new ErrorNoprivilegesHandler(self))
 			.add(new ErrorNosuchchannelHandler(self))
 			.add(new ErrorNosuchnickHandler(self))
 			.add(new ErrorNotonchannelHandler(self))
@@ -105,7 +107,9 @@ export class ChatStore {
 
 		self.modules.set(AwayModule.NAME, AwayModule.create(self));
 		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
-		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+		self.modules
+			.set(JoinModule.NAME, JoinModule.create(self))
+			.set(SajoinModule.NAME, SajoinModule.create(self));
 		self.modules.set(KickModule.NAME, KickModule.create(self));
 		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));

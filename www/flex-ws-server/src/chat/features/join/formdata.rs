@@ -24,3 +24,14 @@ command_formdata! {
 		keys: Vec<secret::Secret<String>>,
 	}
 }
+
+command_formdata! {
+	struct SAJOIN
+	{
+		/// Les pseudos à forcer à rejoindre les salons.
+		nicknames: Vec<String>,
+		/// Les salons à rejoindre.
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+	}
+}

@@ -678,6 +678,23 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrNoprivilegesError].
+	pub fn send_err_noprivileges(&self)
+	{
+		use crate::src::chat::replies::ErrNoprivilegesError;
+
+		let origin = Origin::from(self.client());
+		let err_noprivileges = ErrNoprivilegesError {
+			origin: &origin,
+			tags: ErrNoprivilegesError::default_tags(),
+		};
+
+		_ = self
+			.socket()
+			.emit(err_noprivileges.name(), err_noprivileges);
+	}
+
+	/// Émet au client l'erreur
 	/// [crate::src::chat::replies::ErrNooperhostError].
 	pub fn send_err_nooperhost(&self)
 	{

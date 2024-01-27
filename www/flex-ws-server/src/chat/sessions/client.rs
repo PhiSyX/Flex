@@ -119,6 +119,25 @@ impl ChatApplication
 		client::Socket::Borrowed { socket, client }
 	}
 
+	/// Récupère le client courant (immuable) avec les droits d'opérateurs
+	/// globaux / locaux à partir d'une socket.
+	pub fn current_client_operator<'a>(
+		&'a self,
+		socket: &'a socketioxide::extract::SocketRef,
+	) -> Option<client::Socket<'a>>
+	{
+		let client: socketioxide::extensions::Ref<'a, client::Client> =
+			socket.extensions.get().unwrap();
+		let client_socket = client::Socket::Borrowed { socket, client };
+
+		if !client_socket.user().is_operator() {
+			client_socket.send_err_noprivileges();
+			return None;
+		}
+
+		Some(client_socket)
+	}
+
 	/// Récupère le client courant (mutable) à partir d'une socket.
 	pub fn current_client_mut<'a>(
 		&'a self,
@@ -202,6 +221,7 @@ impl ChatApplication
 			client_socket.user_mut().set_vhost(vhost);
 		}
 
+		client_socket.client_mut().marks_client_as_operator(oper_type);
 		client_socket.send_rpl_youreoper(match oper_type {
 			| flex::flex_config_operator_type::LocalOperator => {
 				components::user::Flag::LocalOperator

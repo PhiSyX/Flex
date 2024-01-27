@@ -156,12 +156,17 @@ impl ChatApplication
 	}
 
 	/// Rejoint un salon.
-	pub fn join_channel(&self, client_socket: &client::Socket, channel: &channel::Channel)
+	pub fn join_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel: &channel::Channel,
+		forced: bool,
+	)
 	{
 		self.clients
 			.add_channel(client_socket.cid(), channel.id().as_str());
 
-		client_socket.emit_join(channel, false, |channel_nick| {
+		client_socket.emit_join(channel, forced, |channel_nick| {
 			let client = self.clients.get(channel_nick.id())?;
 			Some(crate::src::chat::replies::ChannelNickClient::from((
 				client,
@@ -184,7 +189,7 @@ impl ChatApplication
 				.channels
 				.add_client(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel);
+			self.join_channel(client_socket, &channel, false);
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
@@ -198,7 +203,7 @@ impl ChatApplication
 				.channels
 				.add_client(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel);
+			self.join_channel(client_socket, &channel, false);
 			return;
 		}
 
@@ -237,7 +242,7 @@ impl ChatApplication
 				.channels
 				.add_client(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel);
+			self.join_channel(client_socket, &channel, true);
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
@@ -248,7 +253,7 @@ impl ChatApplication
 				.channels
 				.add_client(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel);
+			self.join_channel(client_socket, &channel, true);
 			return;
 		}
 
@@ -260,6 +265,49 @@ impl ChatApplication
 				| ChannelJoinError::HasAlreadyClient => {}
 				| ChannelJoinError::OperOnly => {
 					client_socket.send_err_operonly(channel_name);
+				}
+			}
+		}
+	}
+
+	/// Rejoint un salon ou le crée (en bypassant la clé s'il y en a une).
+	pub fn join_or_create_channel_bypass_key(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+	)
+	{
+		if !self.channels.has(channel_name) {
+			self.channels.create(channel_name, None);
+			let channel = self
+				.channels
+				.add_client(channel_name, client_socket.cid())
+				.expect("Le salon que le client a rejoint");
+			self.join_channel(client_socket, &channel, true);
+		}
+
+		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
+
+		let can_join = self.channels.can_join(channel_name, None, &client_session);
+
+		match can_join {
+			| Ok(_) => {
+				let channel = self
+					.channels
+					.add_client(channel_name, client_socket.cid())
+					.expect("Le salon que le client a rejoint");
+				self.join_channel(client_socket, &channel, true);
+			}
+			| Err(err) => {
+				match err {
+					| ChannelJoinError::BadChannelKey | ChannelJoinError::OperOnly => {
+						let channel = self
+							.channels
+							.add_client(channel_name, client_socket.cid())
+							.expect("Le salon que le client a rejoint");
+						self.join_channel(client_socket, &channel, true);
+					}
+					| ChannelJoinError::HasAlreadyClient => {}
 				}
 			}
 		}
