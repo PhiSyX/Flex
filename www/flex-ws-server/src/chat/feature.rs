@@ -63,6 +63,7 @@ impl Feature for ChatApplication
 				socket.on(PrivmsgHandler::COMMAND_NAME, PrivmsgHandler::handle);
 				socket.on(OperHandler::COMMAND_NAME, OperHandler::handle);
 				socket.on(QuitHandler::COMMAND_NAME, QuitHandler::handle);
+				socket.on(SajoinHandler::COMMAND_NAME, SajoinHandler::handle);
 				socket.on(TopicHandler::COMMAND_NAME, TopicHandler::handle);
 				socket.on(UnignoreHandler::COMMAND_NAME, UnignoreHandler::handle);
 

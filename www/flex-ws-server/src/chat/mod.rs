@@ -138,6 +138,7 @@ mod replies
 			err_chanoprivsneeded,
 			err_erroneusnickname,
 			err_nicknameinuse,
+			err_noprivileges,
 			err_nosuchchannel,
 			err_nosuchnick,
 			err_notonchannel,

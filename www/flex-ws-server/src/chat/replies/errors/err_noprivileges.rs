@@ -8,30 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::secret;
+use crate::error_replies;
 
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_channels;
-
-command_formdata! {
-	struct JOIN
-	{
-		/// Les salons à rejoindre.
-		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
-		/// Les clés associées aux salons à rejoindre.
-		#[serde(default)]
-		keys: Vec<secret::Secret<String>>,
-	}
-}
-
-command_formdata! {
-	struct SAJOIN
-	{
-		/// Les pseudos à forcer à rejoindre les salons.
-		nicknames: Vec<String>,
-		/// Les salons à rejoindre.
-		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
-	}
+error_replies! {
+	/// Toute commande nécessitant des privilèges d'opérateur pour fonctionner
+	/// DOIT renvoyer cette erreur pour indiquer que la tentative a échoué.
+	| 481 <-> ERR_NOPRIVILEGES
+		=> ":Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects."
 }
