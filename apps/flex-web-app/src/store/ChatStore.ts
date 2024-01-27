@@ -31,7 +31,7 @@ import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { CommandInterface, Module } from "~/modules/interface";
-import { JoinModule } from "~/modules/join/module";
+import { JoinModule, SajoinModule } from "~/modules/join/module";
 import { KickModule } from "~/modules/kick/module";
 import {
 	AccessLevelAOPModule,
@@ -105,7 +105,9 @@ export class ChatStore {
 
 		self.modules.set(AwayModule.NAME, AwayModule.create(self));
 		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
-		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+		self.modules
+			.set(JoinModule.NAME, JoinModule.create(self))
+			.set(SajoinModule.NAME, SajoinModule.create(self));
 		self.modules.set(KickModule.NAME, KickModule.create(self));
 		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));

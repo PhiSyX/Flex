@@ -22,3 +22,11 @@ export class JoinCommand implements CommandInterface<"JOIN"> {
 		this.store.emit("JOIN", payload);
 	}
 }
+
+export class SajoinCommand implements CommandInterface<"SAJOIN"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"SAJOIN">): void {
+		this.store.emit("SAJOIN", payload);
+	}
+}
