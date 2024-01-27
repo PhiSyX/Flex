@@ -26,6 +26,7 @@ macro_rules! error_replies {
 
 ::paste::paste! { $(
 
+	#[derive(Debug)]
 	#[derive(Clone)]
 	$(#[$attr])*
 	pub struct [ < $numeric:camel Error > ] <'a, O = $crate::src::chat::components::Origin>

@@ -26,6 +26,7 @@ macro_rules! reserved_numerics {
 
 ::paste::paste! { $(
 
+	#[derive(Debug)]
 	#[derive(Clone)]
 	$(#[$attr])*
 	pub struct [ < $numeric:camel Reply > ] <'a, O = $crate::src::chat::components::Origin>
