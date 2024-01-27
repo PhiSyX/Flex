@@ -14,6 +14,8 @@ use std::ops;
 use flex_web_framework::types::secret;
 use flex_web_framework::types::time::{DateTime, Utc};
 
+use crate::src::chat::features::ApplyMode;
+
 // -------- //
 // Constant //
 // -------- //
@@ -33,23 +35,7 @@ pub const CHANNEL_MODE_SETTINGS_OPERONLY: char = 'O';
 pub struct ChannelModes<F>
 {
 	/// Les modes de salon.
-	modes: HashSet<ChannelMode<F>>,
-}
-
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(PartialEq, Eq, Hash)]
-#[derive(serde::Serialize)]
-pub struct ChannelMode<F>
-{
-	/// Drapeau d'un mode.
-	pub flag: F,
-	/// Les arguments d'un drapeau.
-	pub args: Vec<String>,
-	/// Par qui a été appliqué ce mode.
-	pub updated_by: String,
-	/// Quand a été appliqué ce mode.
-	pub updated_at: DateTime<Utc>,
+	modes: HashSet<ApplyMode<F>>,
 }
 
 // ----------- //
@@ -98,7 +84,7 @@ impl ChannelModes<SettingsFlags>
 		self.modes.iter().any(|mode| {
 			matches!(
 				mode,
-				ChannelMode {
+				ApplyMode {
 					flag: SettingsFlags::Key(_),
 					..
 				}
@@ -112,7 +98,7 @@ impl ChannelModes<SettingsFlags>
 		self.modes.iter().any(|mode| {
 			matches!(
 				mode,
-				ChannelMode {
+				ApplyMode {
 					flag: SettingsFlags::Moderate,
 					..
 				}
@@ -126,7 +112,7 @@ impl ChannelModes<SettingsFlags>
 		self.modes.iter().any(|mode| {
 			matches!(
 				mode,
-				ChannelMode {
+				ApplyMode {
 					flag: SettingsFlags::NoExternalMessages,
 					..
 				}
@@ -140,7 +126,7 @@ impl ChannelModes<SettingsFlags>
 		self.modes.iter().any(|mode| {
 			matches!(
 				mode,
-				ChannelMode {
+				ApplyMode {
 					flag: SettingsFlags::OperOnly,
 					..
 				}
@@ -154,7 +140,7 @@ impl ChannelModes<SettingsFlags>
 		self.modes.iter().any(|mode| {
 			matches!(
 				mode,
-				ChannelMode {
+				ApplyMode {
 					flag: SettingsFlags::NoTopic,
 					..
 				}
@@ -187,13 +173,13 @@ impl Default for ChannelModes<SettingsFlags>
 	fn default() -> Self
 	{
 		let settings = HashSet::from_iter([
-			ChannelMode {
+			ApplyMode {
 				flag: SettingsFlags::NoExternalMessages,
 				args: Default::default(),
 				updated_at: Utc::now(),
 				updated_by: "*".into(),
 			},
-			ChannelMode {
+			ApplyMode {
 				flag: SettingsFlags::NoTopic,
 				args: Default::default(),
 				updated_at: Utc::now(),
@@ -207,7 +193,7 @@ impl Default for ChannelModes<SettingsFlags>
 
 impl<T> ops::Deref for ChannelModes<T>
 {
-	type Target = HashSet<ChannelMode<T>>;
+	type Target = HashSet<ApplyMode<T>>;
 
 	fn deref(&self) -> &Self::Target
 	{

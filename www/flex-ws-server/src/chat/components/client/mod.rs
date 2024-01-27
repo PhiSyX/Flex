@@ -20,6 +20,7 @@ pub use self::origin::Origin;
 pub use self::socket::{ClientSocketInterface, Socket};
 use super::{channel, user};
 use crate::config::flex;
+use crate::src::chat::features::ApplyMode;
 
 // ---- //
 // Type //
@@ -141,7 +142,9 @@ impl Client
 	/// Marque le client comme étant absent.
 	pub fn marks_user_as_away(&mut self, text: String)
 	{
-		self.user.set_flag(super::Flag::Away(text));
+		self.user.set_flag(
+			ApplyMode::new(super::Flag::Away(text)).with_update_by(&self.user().nickname),
+		);
 	}
 
 	/// Marque le client comme n'étant plus absent.
@@ -154,10 +157,13 @@ impl Client
 	/// Marque le client comme étant un opérateur.
 	pub fn marks_client_as_operator(&mut self, oper_type: flex::flex_config_operator_type)
 	{
-		self.user.set_flag(match oper_type {
-			| flex::flex_config_operator_type::GlobalOperator => super::Flag::GlobalOperator,
-			| flex::flex_config_operator_type::LocalOperator => super::Flag::LocalOperator,
-		})
+		self.user.set_flag(
+			ApplyMode::new(match oper_type {
+				| flex::flex_config_operator_type::GlobalOperator => super::Flag::GlobalOperator,
+				| flex::flex_config_operator_type::LocalOperator => super::Flag::LocalOperator,
+			})
+			.with_update_by(&self.user().nickname),
+		)
 	}
 
 	/// Attribution d'un nouvel ID de Socket.

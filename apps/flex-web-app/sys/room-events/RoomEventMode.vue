@@ -21,6 +21,12 @@ const updatedBy = computed(() => {
 	const y = Object.values(props.data.removed).at(-1)?.[1].updated_by;
 	return x || y;
 });
+
+const settingsWord = computed(() =>
+	props.data.target.startsWith("#")
+		? "Paramètres du salon"
+		: "Modes utilisateur"
+);
 </script>
 
 <template>
@@ -28,7 +34,7 @@ const updatedBy = computed(() => {
 		{{ time.formattedTime }}
 	</time>
 	<p>
-		<template v-if="!data.updated">* Paramètres du salon: </template>
+		<template v-if="!data.updated">* {{ settingsWord }}: </template>
 		<template v-else>
 			*
 			<bdo>{{ updatedBy }}</bdo>

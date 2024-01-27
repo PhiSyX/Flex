@@ -18,7 +18,7 @@ use crate::src::chat::components::channel::nick;
 use crate::src::chat::components::channel::permission::ChannelPermissionWrite;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
-use crate::src::chat::features::{ChannelJoinError, ChannelTopicError};
+use crate::src::chat::features::{ApplyMode, ChannelJoinError, ChannelTopicError};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -231,7 +231,7 @@ impl ChatApplication
 			self.channels.create_with_flags(
 				channel_name,
 				None,
-				[channel::mode::ChannelMode {
+				[ApplyMode {
 					flag: channel::mode::SettingsFlags::OperOnly,
 					args: Default::default(),
 					updated_at: flex_web_framework::types::time::Utc::now(),
@@ -566,7 +566,7 @@ impl ChannelsSession
 		&self,
 		channel_name: impl ToString,
 		maybe_channel_key: Option<secret::Secret<String>>,
-		flags: impl IntoIterator<Item = channel::mode::ChannelMode<channel::mode::SettingsFlags>>,
+		flags: impl IntoIterator<Item = ApplyMode<channel::mode::SettingsFlags>>,
 	) -> bool
 	{
 		let channel_name = channel_name.to_string();

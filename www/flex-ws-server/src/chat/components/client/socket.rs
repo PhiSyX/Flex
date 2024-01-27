@@ -376,6 +376,51 @@ impl<'a> Socket<'a>
 			quit_command,
 		);
 	}
+
+	/// Émet au client les réponses liées à la commande /QUIT.
+	pub fn emit_umode(&self, umode: &[ApplyMode<components::user::Flag>])
+	{
+		use crate::src::chat::features::ModeCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let mode_cmd = ModeCommandResponse {
+			origin: &origin,
+			tags: ModeCommandResponse::<()>::default_tags(),
+			added: umode
+				.iter()
+				.map(|flag| (flag.letter(), flag.clone()))
+				.collect(),
+			removed: Default::default(),
+			target: &self.user().nickname,
+			updated: false,
+		};
+
+		self.emit(mode_cmd.name(), mode_cmd);
+	}
+
+	/// Émet au client les réponses liées à la commande /QUIT.
+	pub fn emit_umodes(&self)
+	{
+		let umodes: Vec<(char, ApplyMode<components::user::Flag>)> = self.user().flags().collect();
+
+		if umodes.is_empty() {
+			return;
+		}
+
+		use crate::src::chat::features::ModeCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let mode_cmd = ModeCommandResponse {
+			origin: &origin,
+			tags: ModeCommandResponse::<()>::default_tags(),
+			added: umodes,
+			removed: Default::default(),
+			target: &self.user().nickname,
+			updated: false,
+		};
+
+		self.emit(mode_cmd.name(), mode_cmd);
+	}
 }
 
 impl<'a> Socket<'a>

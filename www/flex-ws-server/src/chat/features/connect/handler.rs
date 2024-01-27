@@ -163,8 +163,10 @@ impl ConnectionRegistrationHandler
 			time::Utc::now()
 		});
 
-		// NOTE(phisyx): transmet à l'utilisateur son rôle d'opérateur global.
+		// NOTE(phisyx): transmet à l'utilisateur ses modes utilisateurs.
+		client_socket.emit_umodes();
 
+		// NOTE(phisyx): transmet à l'utilisateur son rôle d'opérateur global.
 		if client_socket.user().is_operator() {
 			client_socket
 				.send_rpl_youreoper(client_socket.user().operator_type().cloned().unwrap());
@@ -173,9 +175,8 @@ impl ConnectionRegistrationHandler
 			}
 		}
 
-		// NOTE(phisyx): Transmet les utilisateurs bloqués/ignorés du client (au
+		// NOTE(phisyx): transmet les utilisateurs bloqués/ignorés du client (au
 		// client lui-même ;-))
-
 		let users: Vec<_> = app
 			.clients
 			.blocklist(client_socket.cid())

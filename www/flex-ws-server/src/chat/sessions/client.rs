@@ -17,6 +17,7 @@ use socketioxide::extract::SocketRef;
 use crate::config::flex;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{self, channel, client, nick};
+use crate::src::chat::features::ApplyMode;
 use crate::src::ChatApplication;
 
 // ---- //
@@ -224,14 +225,19 @@ impl ChatApplication
 		client_socket
 			.client_mut()
 			.marks_client_as_operator(oper_type);
-		client_socket.send_rpl_youreoper(match oper_type {
+
+		let flag_oper = match oper_type {
 			| flex::flex_config_operator_type::LocalOperator => {
 				components::user::Flag::LocalOperator
 			}
 			| flex::flex_config_operator_type::GlobalOperator => {
 				components::user::Flag::GlobalOperator
 			}
-		});
+		};
+
+		client_socket.emit_umode(&[ApplyMode::new(flag_oper.clone())]);
+
+		client_socket.send_rpl_youreoper(flag_oper);
 	}
 
 	/// Enregistre le client en session.

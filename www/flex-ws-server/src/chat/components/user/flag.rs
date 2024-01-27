@@ -48,6 +48,7 @@ pub const USER_FLAG_LOCAL_OPERATOR: char = 'O';
 pub enum Flag
 {
 	/// Permet de marquer l'utilisateur comme étant absent.
+	#[serde(skip_serializing)]
 	Away(
 		/// Texte d'absence.
 		String,

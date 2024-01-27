@@ -14,6 +14,7 @@ use socketioxide::extract::{Data, SocketRef, State};
 use crate::src::chat::components::channel::{mode, nick};
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
+use crate::src::chat::features::ApplyMode;
 use crate::src::chat::replies::ChannelNickClient;
 use crate::src::ChatApplication;
 
@@ -100,7 +101,7 @@ impl ModeAccessLevelHandler
 					ChannelNickClient::from((target_nick.client.client(), &target_nick.nick));
 				(
 					set_access_level.letter(),
-					mode::ChannelMode {
+					ApplyMode {
 						flag: set_access_level,
 						args: vec![member.user.nickname.to_owned()],
 						updated_at: time::Utc::now(),
@@ -190,7 +191,7 @@ impl ModeAccessLevelHandler
 					ChannelNickClient::from((target_nick.client.client(), &target_nick.nick));
 				(
 					unset_access_level.letter(),
-					mode::ChannelMode {
+					ApplyMode {
 						flag: unset_access_level,
 						args: vec![member.user.nickname.to_owned()],
 						updated_at: time::Utc::now(),

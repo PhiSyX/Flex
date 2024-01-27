@@ -8,16 +8,69 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
+use std::ops;
 
-use super::ApplyMode;
+use flex_web_framework::types::time;
 
-command_response! {
-	struct MODE<F>
+// --------- //
+// Structure //
+// --------- //
+
+#[derive(Clone)]
+#[derive(Debug)]
+#[derive(PartialEq, Eq, Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct ApplyMode<F>
+{
+	/// Drapeau d'un mode.
+	pub flag: F,
+	/// Les arguments d'un drapeau.
+	pub args: Vec<String>,
+	/// Par qui a été appliqué ce mode.
+	pub updated_by: String,
+	/// Quand a été appliqué ce mode.
+	pub updated_at: time::DateTime<time::Utc>,
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<F> ApplyMode<F>
+{
+	pub fn new(flag: F) -> Self
 	{
-		target: &'a str,
-		added: Vec<(char, ApplyMode<F>)>,
-		removed: Vec<(char, ApplyMode<F>)>,
-		updated: bool,
+		Self {
+			args: Default::default(),
+			flag,
+			updated_at: time::Utc::now(),
+			updated_by: String::from("*"),
+		}
+	}
+
+	pub fn with_args(mut self, args: impl IntoIterator<Item = String>) -> Self
+	{
+		self.args = args.into_iter().collect();
+		self
+	}
+
+	pub fn with_update_by(mut self, by: impl ToString) -> Self
+	{
+		self.updated_by = by.to_string();
+		self
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<F> ops::Deref for ApplyMode<F>
+{
+	type Target = F;
+
+	fn deref(&self) -> &Self::Target
+	{
+		&self.flag
 	}
 }
