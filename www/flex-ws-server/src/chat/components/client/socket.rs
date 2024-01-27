@@ -82,7 +82,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// ID du socket courante.
-	pub fn sid(&self) -> socketioxide::socket::Sid
+	pub fn sid(&self) -> Option<socketioxide::socket::Sid>
 	{
 		self.client().sid()
 	}

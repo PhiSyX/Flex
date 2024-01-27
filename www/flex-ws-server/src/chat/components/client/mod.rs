@@ -84,9 +84,9 @@ impl Client
 	}
 
 	/// ID de la Socket.
-	pub fn sid(&self) -> socketioxide::socket::Sid
+	pub fn sid(&self) -> Option<socketioxide::socket::Sid>
 	{
-		self.socket_id.unwrap()
+		self.socket_id
 	}
 
 	/// Utilisateur du client.

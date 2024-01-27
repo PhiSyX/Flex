@@ -18,7 +18,6 @@ use crate::config::flex::flex_config;
 use crate::src::chat::components;
 use crate::src::chat::components::{ClientSocketInterface, Origin};
 use crate::src::chat::features::*;
-use crate::src::chat::replies::*;
 use crate::src::ChatApplication;
 
 // --------- //

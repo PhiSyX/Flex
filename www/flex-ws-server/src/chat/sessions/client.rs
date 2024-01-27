@@ -178,7 +178,7 @@ impl ChatApplication
 	) -> Option<client::Socket>
 	{
 		let to_ignore_client = self.clients.get_by_nickname(nickname)?;
-		let to_ignore_socket = socket.broadcast().get_socket(to_ignore_client.sid())?;
+		let to_ignore_socket = socket.broadcast().get_socket(to_ignore_client.sid()?)?;
 		Some(client::Socket::Owned {
 			client: Box::new(to_ignore_client),
 			socket: to_ignore_socket,
@@ -221,7 +221,9 @@ impl ChatApplication
 			client_socket.user_mut().set_vhost(vhost);
 		}
 
-		client_socket.client_mut().marks_client_as_operator(oper_type);
+		client_socket
+			.client_mut()
+			.marks_client_as_operator(oper_type);
 		client_socket.send_rpl_youreoper(match oper_type {
 			| flex::flex_config_operator_type::LocalOperator => {
 				components::user::Flag::LocalOperator
@@ -423,7 +425,9 @@ impl ClientsSession
 	pub fn register(&self, client: &client::Client)
 	{
 		let mut session_client = self.clients.get_mut(client.id()).unwrap();
-		session_client.set_sid(client.sid());
+		if let Some(sid) = client.sid() {
+			session_client.set_sid(sid);
+		}
 		session_client.set_connected();
 		session_client.set_registered();
 	}
