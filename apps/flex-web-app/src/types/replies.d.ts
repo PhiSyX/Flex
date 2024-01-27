@@ -56,6 +56,8 @@ declare interface ErrorReplies {
 	ERR_CHANOPRIVSNEEDED: { channel: string };
 	ERR_ERRONEUSNICKNAME: { nickname: string };
 	ERR_NICKNAMEINUSE: { nickname: string };
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	ERR_NOPRIVILEGES: {};
 	ERR_NOSUCHCHANNEL: { channel_name: string };
 	ERR_NOSUCHNICK: { nickname: string };
 	ERR_NOTONCHANNEL: { channel: string };

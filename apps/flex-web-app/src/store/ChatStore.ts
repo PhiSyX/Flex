@@ -22,6 +22,7 @@ import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyH
 import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
 import { ErrorChanoprivsneeded } from "~/handlers/errors/ErrorChanoprivsneeded";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
+import { ErrorNoprivilegesHandler } from "~/handlers/errors/ErrorNoprivilegesHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
 import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
 import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
@@ -98,6 +99,7 @@ export class ChatStore {
 			.add(new ErrorChanoprivsneeded(self))
 			.add(new ErrorCannotsendtochanHandler(self))
 			.add(new ErrorNicknameinuseHandler(self))
+			.add(new ErrorNoprivilegesHandler(self))
 			.add(new ErrorNosuchchannelHandler(self))
 			.add(new ErrorNosuchnickHandler(self))
 			.add(new ErrorNotonchannelHandler(self))

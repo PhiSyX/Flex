@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject } from "vue";
+import { computed, inject } from "vue";
 
 import {
 	Props,
@@ -40,6 +40,13 @@ const componentEventName = computeComponentEventName(props);
 
 const maybeChannelNick = computeChannelNick(props);
 const maybePrivateNick = computePrivateNick(props);
+
+const isEventOrError = computed(() => {
+	return (
+		props.type.startsWith("error:err_") ||
+		props.type.startsWith("event:rpl_")
+	);
+});
 </script>
 
 <template>
@@ -59,29 +66,32 @@ const maybePrivateNick = computePrivateNick(props);
 				{{ time.formattedTime }}
 			</time>
 
-			<Match :maybe="maybeChannelNick">
-				<template #some="{ data: channelNick }">
-					<ChannelNickComponent
-						tag="span"
-						:nickname="channelNick.nickname"
-						:symbol="channelNick.highestAccessLevel.symbol"
-						:classes="channelNick.className"
-						:is-me="channelNick.isMe"
-						prefix="<"
-						suffix=">"
-					/>
-				</template>
-			</Match>
-			<Match :maybe="maybePrivateNick">
-				<template #some="{ data: privateNick }">
-					<PrivateNickComponent
-						tag="span"
-						:nickname="privateNick.nickname"
-						:is-me="privateNick.isMe"
-						suffix=" :"
-					/>
-				</template>
-			</Match>
+			<template v-if="isEventOrError"> * </template>
+			<template v-else>
+				<Match :maybe="maybeChannelNick">
+					<template #some="{ data: channelNick }">
+						<ChannelNickComponent
+							tag="span"
+							:nickname="channelNick.nickname"
+							:symbol="channelNick.highestAccessLevel.symbol"
+							:classes="channelNick.className"
+							:is-me="channelNick.isMe"
+							prefix="<"
+							suffix=">"
+						/>
+					</template>
+				</Match>
+				<Match :maybe="maybePrivateNick">
+					<template #some="{ data: privateNick }">
+						<PrivateNickComponent
+							tag="span"
+							:nickname="privateNick.nickname"
+							:is-me="privateNick.isMe"
+							suffix=" :"
+						/>
+					</template>
+				</Match>
+			</template>
 
 			<p>{{ message }}</p>
 		</template>
