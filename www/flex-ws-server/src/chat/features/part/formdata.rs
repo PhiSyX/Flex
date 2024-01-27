@@ -9,11 +9,25 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_channels;
+use crate::macro_rules::command_formdata::{validate_channels, validate_nicknames};
 
 command_formdata! {
 	struct PART
 	{
+		/// Salons à quitter.
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		/// Message part du client.
+		message: Option<String>,
+	}
+}
+
+command_formdata! {
+	struct SAPART
+	{
+		/// Les pseudo à forcer de quitter les salons.
+		#[serde(deserialize_with = "validate_nicknames")]
+		nicknames: Vec<String>,
 		/// Salons à quitter.
 		#[serde(deserialize_with = "validate_channels")]
 		channels: Vec<String>,

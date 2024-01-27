@@ -11,7 +11,7 @@
 import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
-import { PartCommand } from "./command";
+import { PartCommand, SapartCommand } from "./command";
 import { PartHandler } from "./handler";
 
 // -------------- //
@@ -55,4 +55,39 @@ export class PartModule implements Module<PartModule> {
 	listen() {
 		this.handler.listen();
 	}
+}
+
+export class SapartModule implements Module<SapartModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "SAPART";
+
+	static create(store: ChatStore): SapartModule {
+		return new SapartModule(new SapartCommand(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: SapartCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(nicknamesRaw?: string, channelsRaw?: string, ...messages: Array<string>) {
+		const nicknames = nicknamesRaw?.split(",");
+		const channels = channelsRaw?.split(",");
+		if (!nicknames || !channels) return;
+		const message = messages.join(" ");
+		this.send({ nicknames, channels, message });
+	}
+
+	send(payload: Command<"SAPART">) {
+		this.command.send(payload);
+	}
+
+	listen() {}
 }

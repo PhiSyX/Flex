@@ -17,6 +17,7 @@ use crate::src::ChatApplication;
 // --------- //
 
 pub struct PartHandler;
+pub struct SapartHandler;
 
 // -------------- //
 // Implémentation //
@@ -45,6 +46,39 @@ impl PartHandler
 
 		for channel_name in data.channels.iter() {
 			app.part_channel(&client_socket, channel_name, data.message.as_deref());
+		}
+	}
+}
+
+impl SapartHandler
+{
+	pub const COMMAND_NAME: &'static str = "SAPART";
+
+	/// La commande SAPART entraîne la suppression des utilisateurs de force.
+	pub async fn handle(
+		socket: SocketRef,
+		State(app): State<ChatApplication>,
+		Data(data): Data<super::SapartCommandFormData>,
+	)
+	{
+		let Some(client_socket) = app.current_client_operator(&socket) else {
+			return;
+		};
+
+		for nickname in data.nicknames.iter() {
+			let Some(nickname_socket) = app.find_socket_by_nickname(&socket, nickname) else {
+				client_socket.send_err_nosuchnick(nickname);
+				continue;
+			};
+
+			for channel_name in data.channels.iter() {
+				app.force_part_channel(
+					&client_socket,
+					&nickname_socket,
+					channel_name,
+					data.message.as_deref(),
+				);
+			}
 		}
 	}
 }

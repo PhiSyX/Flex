@@ -16,11 +16,18 @@ const hostname = computeHostname(props.data.origin);
 		{{ time.formattedTime }}
 	</time>
 	<p>
-		* Parts: <span>{{ data.origin.nickname }}</span> (<span>{{
+		* Parts: <bdo>{{ data.origin.nickname }}</bdo> (<bdo>{{
 			data.origin.ident
-		}}</span
+		}}</bdo
 		>@<span>{{ hostname }}</span
-		>) <em v-if="data.message">(<span>{{ data.message }}</span>)</em>
+		>)
+		<em v-if="data.message">
+			(<output>{{ data.message }}</output>
+			<em v-if="data.forced_by">
+				(Par <bdo>{{ data.forced_by }}</bdo
+				>)</em
+			>)
+		</em>
 	</p>
 </template>
 
@@ -31,7 +38,20 @@ p {
 	color: var(--color-grey500);
 }
 
+bdo,
+output,
 span {
 	color: var(--default-text-color);
+}
+
+output {
+	&::before {
+		content: "« ";
+		color: var(--color-grey400);
+	}
+	&::after {
+		content: " »";
+		color: var(--color-grey400);
+	}
 }
 </style>

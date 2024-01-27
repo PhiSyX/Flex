@@ -254,7 +254,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client les réponses liées à la commande /PART.
-	pub fn emit_part(&self, channel: &str, message: Option<&str>)
+	pub fn emit_part(&self, channel: &str, message: Option<&str>, forced_by: Option<&str>)
 	{
 		use crate::src::chat::features::PartCommandResponse;
 
@@ -264,6 +264,7 @@ impl<'a> Socket<'a>
 			origin: &origin,
 			channel,
 			message,
+			forced_by,
 			tags: PartCommandResponse::default_tags(),
 		};
 

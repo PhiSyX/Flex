@@ -22,3 +22,11 @@ export class PartCommand implements CommandInterface<"PART"> {
 		this.store.emit("PART", payload);
 	}
 }
+
+export class SapartCommand implements CommandInterface<"SAPART"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"SAPART">): void {
+		this.store.emit("SAPART", payload);
+	}
+}

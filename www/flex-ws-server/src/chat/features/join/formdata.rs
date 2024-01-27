@@ -11,7 +11,7 @@
 use flex_web_framework::types::secret;
 
 use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_channels;
+use crate::macro_rules::command_formdata::{validate_channels, validate_nicknames};
 
 command_formdata! {
 	struct JOIN
@@ -29,6 +29,7 @@ command_formdata! {
 	struct SAJOIN
 	{
 		/// Les pseudos à forcer à rejoindre les salons.
+		#[serde(deserialize_with = "validate_nicknames")]
 		nicknames: Vec<String>,
 		/// Les salons à rejoindre.
 		#[serde(deserialize_with = "validate_channels")]

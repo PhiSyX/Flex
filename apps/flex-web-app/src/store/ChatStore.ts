@@ -49,7 +49,7 @@ import {
 import { ModeModule } from "~/modules/mode/module";
 import { NickModule } from "~/modules/nick/module";
 import { OperModule } from "~/modules/oper/module";
-import { PartModule } from "~/modules/part/module";
+import { PartModule, SapartModule } from "~/modules/part/module";
 import { PrivmsgModule } from "~/modules/privmsg/module";
 import { QuitModule } from "~/modules/quit/module";
 import { TopicModule } from "~/modules/topic/module";
@@ -106,19 +106,22 @@ export class ChatStore {
 			.add(new ErrorUsernotinchannelHandler(self));
 
 		self.modules.set(AwayModule.NAME, AwayModule.create(self));
-		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
+		self.modules
+			.set(IgnoreModule.NAME, IgnoreModule.create(self))
+			.set(UnignoreModule.NAME, UnignoreModule.create(self));
 		self.modules
 			.set(JoinModule.NAME, JoinModule.create(self))
 			.set(SajoinModule.NAME, SajoinModule.create(self));
 		self.modules.set(KickModule.NAME, KickModule.create(self));
 		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
-		self.modules.set(PartModule.NAME, PartModule.create(self));
+		self.modules
+			.set(PartModule.NAME, PartModule.create(self))
+			.set(SapartModule.NAME, SapartModule.create(self));
 		self.modules.set(PrivmsgModule.NAME, PrivmsgModule.create(self));
 		self.modules.set(OperModule.NAME, OperModule.create(self));
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 		self.modules.set(TopicModule.NAME, TopicModule.create(self));
-		self.modules.set(UnignoreModule.NAME, UnignoreModule.create(self));
 
 		/** Channel access level */
 		self.modules
