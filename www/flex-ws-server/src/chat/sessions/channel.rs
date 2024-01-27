@@ -389,16 +389,16 @@ impl ChatApplication
 
 		for channel_room in client_socket.channels_rooms() {
 			let channel_name = &channel_room[8..];
-			client_socket.emit_part(channel_name, Some("/partall"));
+			client_socket.emit_part(channel_name, Some("/partall"), None);
 		}
 	}
 
-	/// Part d'un salon
-	pub fn part_channel(
+	fn internal_part_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
 		message: Option<&str>,
+		forced: Option<&str>,
 	)
 	{
 		if !self.channels.has(channel_name) {
@@ -416,7 +416,35 @@ impl ChatApplication
 		self.clients
 			.remove_channel(client_socket.cid(), channel_name);
 
-		client_socket.emit_part(channel_name, message)
+		client_socket.emit_part(channel_name, message, forced)
+	}
+
+	/// Part d'un salon
+	pub fn part_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		message: Option<&str>,
+	)
+	{
+		self.internal_part_channel(client_socket, channel_name, message, None)
+	}
+
+	/// Force un utilisateur à quitter un salon.
+	pub fn force_part_channel(
+		&self,
+		client_socket: &client::Socket,
+		force_to_part: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		message: Option<&str>,
+	)
+	{
+		self.internal_part_channel(
+			force_to_part,
+			channel_name,
+			message,
+			Some(&client_socket.user().nickname),
+		)
 	}
 
 	/// Met à jour les niveaux d'accès d'un client sur un salon.
