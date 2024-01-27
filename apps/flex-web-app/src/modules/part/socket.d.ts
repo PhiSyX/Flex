@@ -13,6 +13,12 @@ declare interface PartFormData {
 	message?: string;
 }
 
+declare interface SapartFormData {
+	channels: Array<string>;
+	nicknames: Array<string>;
+	message?: string;
+}
+
 declare interface PartDataResponse {
 	channel: string;
 	message: string | null;
@@ -20,6 +26,7 @@ declare interface PartDataResponse {
 
 declare interface Commands {
 	PART: PartFormData;
+	SAPART: SapartFormData;
 }
 
 declare interface CommandResponsesFromServer {
