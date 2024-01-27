@@ -28,13 +28,8 @@
 	color: inherit;
 }
 
-bdi.is-away::after {
+bdo.is-away::after {
 	content: "[away]";
-	text-decoration: underline;
-	color: var(--room-nick-color);
-}
-bdi.is-busy::after {
-	content: "[busy]";
 	text-decoration: underline;
 	color: var(--room-nick-color);
 }

@@ -118,8 +118,7 @@
 		}
 	}
 
-	bdi.is-away,
-	bdi.is-busy {
+	bdo.is-away {
 		@include fx.theme using ($name) {
 			@if $name == ice {
 				--room-nick-color: var(--color-grey500);

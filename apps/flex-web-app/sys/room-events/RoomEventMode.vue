@@ -31,7 +31,7 @@ const updatedBy = computed(() => {
 		<template v-if="!data.updated">* Paramètres du salon: </template>
 		<template v-else>
 			*
-			<span>{{ updatedBy }}</span>
+			<bdo>{{ updatedBy }}</bdo>
 			a défini les modes:
 		</template>
 
@@ -45,13 +45,13 @@ const updatedBy = computed(() => {
 			{{ letter }}
 		</output>
 		{{ " " }}
-		<bdi v-for="[_, mode] in data.added">
+		<bdo v-for="[_, mode] in data.added">
 			{{ mode.args.join(" ") }}{{ " " }}
-		</bdi>
+		</bdo>
 		{{ " " }}
-		<bdi v-for="[_, mode] in data.removed">
+		<bdo v-for="[_, mode] in data.removed">
 			{{ mode.args.join(" ") }}{{ " " }}
-		</bdi>
+		</bdo>
 	</p>
 </template>
 
@@ -62,7 +62,7 @@ p {
 	color: var(--room-event-mode-color);
 }
 
-bdi,
+bdo,
 output,
 span {
 	color: var(--default-text-color);

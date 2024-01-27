@@ -90,8 +90,7 @@
 		}
 	}
 
-	bdi.is-away,
-	bdi.is-busy {
+	bdo.is-away {
 		@include fx.theme using ($name) {
 			@if $name == light {
 				--room-nick-color: var(--color-grey400);

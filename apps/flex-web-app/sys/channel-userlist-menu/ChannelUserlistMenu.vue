@@ -45,9 +45,9 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 	<menu class="room/userlist:menu [ list:reset flex! m=1 ]">
 		<li>
 			<p>
-				<bdi>{{ user.cnick.nickname }}</bdi>
+				<bdo>{{ user.cnick.nickname }}</bdo>
 				<span>!</span>
-				<bdi>{{ user.cnick.ident }}</bdi>
+				<bdo>{{ user.cnick.ident }}</bdo>
 				<span>@</span>
 				<span>{{ user.cnick.hostname }}</span>
 			</p>
