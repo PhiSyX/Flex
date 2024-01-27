@@ -22,6 +22,7 @@ declare interface SapartFormData {
 declare interface PartDataResponse {
 	channel: string;
 	message: string | null;
+	forced_by: string | null;
 }
 
 declare interface Commands {
