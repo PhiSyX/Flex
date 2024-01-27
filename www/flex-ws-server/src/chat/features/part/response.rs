@@ -17,7 +17,7 @@ command_response! {
 		channel: &'a str,
 		/// Raison du message.
 		message: Option<&'a str>,
-		/// Est-ce que l'utilisateur a été forcé de quitter le salon.
+		/// Par qui l'utilisateur a été forcé de quitter le salon.
 		forced_by: Option<&'a str>,
 	}
 }
