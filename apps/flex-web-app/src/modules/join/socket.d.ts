@@ -13,6 +13,11 @@ declare interface JoinFormData {
 	keys?: Array<string>;
 }
 
+declare interface SajoinFormData {
+	nicknames?: Array<string>;
+	channels: Array<string>;
+}
+
 declare interface JoinDataResponse {
 	channel: string;
 	forced: boolean;
@@ -20,6 +25,7 @@ declare interface JoinDataResponse {
 
 declare interface Commands {
 	JOIN: JoinFormData;
+	SAJOIN: SajoinFormData;
 }
 
 declare interface CommandResponsesFromServer {

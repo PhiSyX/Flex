@@ -52,11 +52,7 @@ impl UserHandler
 			} else {
 				client_socket.user_mut().set_realname(data.realname);
 
-				ConnectionRegistrationHandler::complete_registration(
-					&socket,
-					app,
-					client_socket.client_mut(),
-				)
+				ConnectionRegistrationHandler::complete_registration(app, client_socket)
 			}
 		};
 

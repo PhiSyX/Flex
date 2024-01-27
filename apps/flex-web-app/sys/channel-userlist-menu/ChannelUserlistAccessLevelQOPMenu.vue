@@ -4,6 +4,7 @@ import { computed } from "vue";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { computeImGlobalOperator } from "./ChannelUserlistMenu.state";
 
 // ---- //
 // Type //
@@ -36,6 +37,7 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
+const imGlobalOperator = computeImGlobalOperator(props);
 const imOwner = computed(() =>
 	props.me.accessLevel.has(ChannelAccessLevel.Owner)
 );
@@ -63,7 +65,7 @@ function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 			-q
 		</UiButton>
 	</template>
-	<template v-else-if="imOwner">
+	<template v-else-if="imOwner || imGlobalOperator">
 		<UiButton
 			v-if="!isUserOwner"
 			:disabled="disabled"

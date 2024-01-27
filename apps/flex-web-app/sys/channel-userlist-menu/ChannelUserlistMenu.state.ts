@@ -12,6 +12,7 @@ import { computed } from "vue";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { UserFlag } from "~/user/User";
 
 // ---- //
 // Type //
@@ -28,6 +29,14 @@ export interface Props {
 // ----------- //
 
 export const computeIsMe = (props: Props) => computed(() => props.me.partialEq(props.user.cnick));
+
+export const computeImGlobalOperator = (props: Props) =>
+	computed(() =>
+		props.me
+			.intoUser()
+			.operator.filter((flag) => flag === UserFlag.GlobalOperator)
+			.is_some(),
+	);
 
 export const computeIHaveAccessLevel = (props: Props) =>
 	computed(() => props.me.highestAccessLevel.level > ChannelAccessLevel.Vip);

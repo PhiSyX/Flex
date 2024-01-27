@@ -8,28 +8,69 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface PartFormData {
-	channels: Array<string>;
-	message?: string;
+use std::ops;
+
+use flex_web_framework::types::time;
+
+// --------- //
+// Structure //
+// --------- //
+
+#[derive(Clone)]
+#[derive(Debug)]
+#[derive(PartialEq, Eq, Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct ApplyMode<F>
+{
+	/// Drapeau d'un mode.
+	pub flag: F,
+	/// Les arguments d'un drapeau.
+	pub args: Vec<String>,
+	/// Par qui a été appliqué ce mode.
+	pub updated_by: String,
+	/// Quand a été appliqué ce mode.
+	pub updated_at: time::DateTime<time::Utc>,
 }
 
-declare interface SapartFormData {
-	channels: Array<string>;
-	nicknames: Array<string>;
-	message?: string;
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<F> ApplyMode<F>
+{
+	pub fn new(flag: F) -> Self
+	{
+		Self {
+			args: Default::default(),
+			flag,
+			updated_at: time::Utc::now(),
+			updated_by: String::from("*"),
+		}
+	}
+
+	pub fn with_args(mut self, args: impl IntoIterator<Item = String>) -> Self
+	{
+		self.args = args.into_iter().collect();
+		self
+	}
+
+	pub fn with_update_by(mut self, by: impl ToString) -> Self
+	{
+		self.updated_by = by.to_string();
+		self
+	}
 }
 
-declare interface PartDataResponse {
-	channel: string;
-	message: string | null;
-	forced_by: string | null;
-}
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
 
-declare interface Commands {
-	PART: PartFormData;
-	SAPART: SapartFormData;
-}
+impl<F> ops::Deref for ApplyMode<F>
+{
+	type Target = F;
 
-declare interface CommandResponsesFromServer {
-	PART: PartDataResponse;
+	fn deref(&self) -> &Self::Target
+	{
+		&self.flag
+	}
 }

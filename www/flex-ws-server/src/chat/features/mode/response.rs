@@ -9,14 +9,15 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::command_response;
-use crate::src::chat::components::channel::mode::ChannelMode;
+
+use super::ApplyMode;
 
 command_response! {
 	struct MODE<F>
 	{
 		target: &'a str,
-		removed: Vec<(char, ChannelMode<F>)>,
-		added: Vec<(char, ChannelMode<F>)>,
+		added: Vec<(char, ApplyMode<F>)>,
+		removed: Vec<(char, ApplyMode<F>)>,
 		updated: bool,
 	}
 }

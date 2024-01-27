@@ -8,28 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface PartFormData {
-	channels: Array<string>;
-	message?: string;
+use crate::src::chat::components::user;
+use crate::{error_replies, reserved_numerics};
+
+reserved_numerics! {
+	/// RPL_YOUREOPER est renvoyé à un client qui vient d'émettre avec succès un
+	/// message OPER et d'obtenir le statut d'opérateur.
+	| 381 <-> RPL_YOUREOPER { oper_type: user::Flag }
+		=> ":Vous êtes maintenant un OPÉRATEUR"
 }
 
-declare interface SapartFormData {
-	channels: Array<string>;
-	nicknames: Array<string>;
-	message?: string;
-}
+error_replies! {
+	/// Renvoyé pour indiquer l'échec d'une tentative d'enregistrement d'une
+	/// connexion pour laquelle un mot de passe était requis et n'a pas été
+	/// fourni ou était incorrect.
+	| 464 <-> ERR_PASSWDMISMATCH
+		=> ":Mot de passe incorrect"
 
-declare interface PartDataResponse {
-	channel: string;
-	message: string | null;
-	forced_by: string | null;
-}
+	/// Si un client envoie un message OPER et que le serveur n'a pas été
+	/// configuré pour autoriser les connexions à partir de l'hôte du client en
+	/// tant qu'opérateur, cette erreur DOIT être renvoyée.
+	| 491 <-> ERR_NOOPERHOST
+		=> ":Pas de O-lines pour votre hôte"
 
-declare interface Commands {
-	PART: PartFormData;
-	SAPART: SapartFormData;
-}
-
-declare interface CommandResponsesFromServer {
-	PART: PartDataResponse;
+	/// Renvoyé pour indiquer à l'utilisateur que le salon qui tente de joindre
+	/// est réservé aux opérateurs globaux et locaux du serveur uniquement.
+	| 520 <-> ERR_OPERONLY { channel: str }
+		=> ":Vous ne pouvez pas rejoindre le salon {channel} (OPÉRATEUR uniquement)"
 }

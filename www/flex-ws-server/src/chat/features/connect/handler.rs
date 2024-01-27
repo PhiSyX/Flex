@@ -16,9 +16,8 @@ use socketioxide::extract::{SocketRef, State, TryData};
 
 use crate::config::flex::flex_config;
 use crate::src::chat::components;
-use crate::src::chat::components::Origin;
+use crate::src::chat::components::{ClientSocketInterface, Origin};
 use crate::src::chat::features::*;
-use crate::src::chat::replies::*;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -57,15 +56,16 @@ impl ConnectionRegistrationHandler
 			);
 		};
 
-		let already_existing_client = |mut client: components::Client| {
-			client.reconnect_with_new_sid(socket.id);
-			socket.extensions.insert(client.clone());
-			Self::complete_registration(socket, app, &mut client);
+		let already_existing_client = |mut client_socket: components::Socket| {
+			client_socket.client_mut().reconnect_with_new_sid(socket.id);
+			Self::complete_registration(app, client_socket);
 		};
 
 		if let Some(remember_client_id) = data.ok().and_then(|data| data.client_id) {
 			if let Some(client) = app.find_client(&remember_client_id) {
-				already_existing_client(client);
+				socket.extensions.insert(client.clone());
+				let client_socket = app.current_client_mut(socket);
+				already_existing_client(client_socket);
 			} else {
 				new_client();
 			}
@@ -78,20 +78,24 @@ impl ConnectionRegistrationHandler
 
 	/// Compléter l'enregistrement d'un client.
 	pub fn complete_registration(
-		socket: &SocketRef,
 		app: &ChatApplication,
-		client: &mut components::Client,
+		mut client_socket: components::Socket,
 	) -> Option<()>
 	{
-		if client.user().nickname.is_empty() || client.user().ident.is_empty() {
+		if client_socket.user().nickname.is_empty() || client_socket.user().ident.is_empty() {
 			return Some(());
 		}
 
-		let config = socket.req_parts().extensions.get::<flex_config>()?;
+		let config = client_socket
+			.socket()
+			.req_parts()
+			.extensions
+			.get::<flex_config>()?
+			.clone();
 
-		if config.server.password.is_some() && client.user().pass.is_none() {
+		if config.server.password.is_some() && client_socket.user().pass.is_none() {
 			// FIXME(phisyx): à déplacer
-			_ = socket.emit(
+			_ = client_socket.socket().emit(
 				"ERROR",
 				"La commande `PASS <password>` DOIT être envoyée avant toutes les autres \
 				 commandes.",
@@ -103,9 +107,10 @@ impl ConnectionRegistrationHandler
 			.server
 			.password
 			.as_deref()
-			.zip(client.user().pass.as_deref())
+			.zip(client_socket.user().pass.as_deref())
 		{
-			let security_encryption = socket
+			let security_encryption = client_socket
+				.socket()
 				.req_parts()
 				.extensions
 				.get::<SecurityEncryptionService<Argon2Encryption>>()
@@ -113,7 +118,7 @@ impl ConnectionRegistrationHandler
 
 			if !security_encryption.cmp(server_password, client_password) {
 				// FIXME(phisyx): à déplacer
-				_ = socket.emit(
+				_ = client_socket.socket().emit(
 					"ERROR",
 					"Le mot de passe entrée ne correspond pas avec le mot de passe serveur.",
 				);
@@ -125,81 +130,62 @@ impl ConnectionRegistrationHandler
 		// NOTE(phisyx): Enregistrer le client dans la session.
 		//
 
-		if !client.is_registered() && client.is_disconnected() {
-			if !app.can_locate_unregistered_client(client) {
+		if !client_socket.client().is_registered() && client_socket.client().is_disconnected() {
+			if !app.can_locate_unregistered_client(client_socket.client()) {
 				return None;
 			}
 
-			client.set_connected();
-			client.set_registered();
-			app.register_client(client);
-		} else if client.is_registered() && client.is_disconnected() {
-			client.set_connected();
-			app.register_client(client);
+			client_socket.client_mut().set_connected();
+			client_socket.client_mut().set_registered();
+			app.register_client(client_socket.client());
+		} else if client_socket.client().is_registered() && client_socket.client().is_disconnected()
+		{
+			client_socket.client_mut().set_connected();
+			app.register_client(client_socket.client());
 		}
 
-		_ = socket.join(client.private_room());
+		_ = client_socket
+			.socket()
+			.join(client_socket.client().private_room());
 
 		//
 		// NOTE(phisyx): Émettre au client les messages de connexions.
 		//
 
 		// Welcome
-		let client_user = client.user();
-		let user_host = client_user.host.to_string();
-		let origin = components::Origin::from(&*client);
-		let welcome_001 = RplWelcomeReply {
-			origin: &origin,
-			nickname: &client_user.nickname,
-			ident: &client_user.ident,
-			host: &user_host,
-			tags: RplWelcomeReply::default_tags(),
-		}
-		.with_tags([("client_id", client.id())]);
-
+		client_socket.send_rpl_welcome();
 		// Version
-		let program_version = format!("v{}", env!("CARGO_PKG_VERSION"));
-		let yourhost_002 = RplYourhostReply {
-			origin: &origin,
-			servername: &config.server.name,
-			version: &program_version,
-			tags: RplYourhostReply::default_tags(),
-		};
-
+		client_socket.send_rpl_yourhost(&config.server.name);
 		// Server creation info
-		let server_created_at = if let Some(server_created_at) = config.server.created_at {
+		client_socket.send_rpl_created(if let Some(server_created_at) = config.server.created_at {
 			time::Utc.timestamp_opt(server_created_at, 0).unwrap()
 		} else {
 			time::Utc::now()
-		};
-		let created_003 = RplCreatedReply {
-			origin: &origin,
-			date: &server_created_at,
-			tags: RplCreatedReply::default_tags(),
-		};
+		});
 
-		// Envoie des messages de connexions.
-		_ = socket.emit(welcome_001.name(), welcome_001);
-		_ = socket.emit(yourhost_002.name(), yourhost_002);
-		_ = socket.emit(created_003.name(), created_003);
+		// NOTE(phisyx): transmet à l'utilisateur ses modes utilisateurs.
+		client_socket.emit_umodes();
 
-		// Transmet les utilisateurs bloqués/ignorés du client (au client
-		// lui-même ;-))
+		// NOTE(phisyx): transmet à l'utilisateur son rôle d'opérateur global.
+		if client_socket.user().is_operator() {
+			client_socket
+				.send_rpl_youreoper(client_socket.user().operator_type().cloned().unwrap());
+			for channel_name in config.operator.auto_join.iter() {
+				app.join_or_create_oper_channel(&client_socket, channel_name);
+			}
+		}
+
+		// NOTE(phisyx): transmet les utilisateurs bloqués/ignorés du client (au
+		// client lui-même ;-))
 		let users: Vec<_> = app
 			.clients
-			.blocklist(client.id())
+			.blocklist(client_socket.cid())
 			.iter()
 			.map(Origin::from)
 			.collect();
 		if !users.is_empty() {
 			let users: Vec<_> = users.iter().collect();
-			let rpl_ignore = RplIgnoreReply {
-				origin: &origin,
-				tags: RplIgnoreReply::default_tags(),
-				users: users.as_slice(),
-				updated: &false,
-			};
-			_ = socket.emit(rpl_ignore.name(), rpl_ignore);
+			client_socket.send_rpl_ignore(&users, false);
 		}
 
 		Some(())

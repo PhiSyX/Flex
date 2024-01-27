@@ -11,7 +11,7 @@
 import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
-import { JoinCommand } from "./command";
+import { JoinCommand, SajoinCommand } from "./command";
 import { JoinHandler } from "./handler";
 
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
@@ -67,4 +67,38 @@ export class JoinModule implements Module<JoinModule> {
 		this.numericNamreplyHandler.listen();
 		this.numericErrorBadchannelkeyHandler.listen();
 	}
+}
+
+export class SajoinModule implements Module<SajoinModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "SAJOIN";
+
+	static create(store: ChatStore): SajoinModule {
+		return new SajoinModule(new SajoinCommand(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: SajoinCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(nicknamesRaw?: string, channelsRaw?: string) {
+		const nicknames = nicknamesRaw?.split(",");
+		const channels = channelsRaw?.split(",");
+		if (!nicknames || !channels) return;
+		this.send({ nicknames, channels });
+	}
+
+	send(payload: Command<"SAJOIN">) {
+		this.command.send(payload);
+	}
+
+	listen() {}
 }

@@ -8,28 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface PartFormData {
-	channels: Array<string>;
-	message?: string;
-}
+use flex_web_framework::types::secret;
 
-declare interface SapartFormData {
-	channels: Array<string>;
-	nicknames: Array<string>;
-	message?: string;
-}
+use crate::command_formdata;
 
-declare interface PartDataResponse {
-	channel: string;
-	message: string | null;
-	forced_by: string | null;
-}
-
-declare interface Commands {
-	PART: PartFormData;
-	SAPART: SapartFormData;
-}
-
-declare interface CommandResponsesFromServer {
-	PART: PartDataResponse;
+command_formdata! {
+	struct OPER
+	{
+		name: secret::Secret<String>,
+		password: secret::Secret<String>,
+	}
 }

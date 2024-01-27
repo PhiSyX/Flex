@@ -19,6 +19,7 @@ use flex_web_framework::types::secret;
 
 pub use self::flag::Flag;
 pub use self::nick::*;
+use crate::src::chat::features::ApplyMode;
 
 // --------- //
 // Structure //
@@ -46,7 +47,7 @@ pub struct User
 	pub realname: String,
 	/// Les drapeaux utilisateurs
 	#[serde(skip_serializing)]
-	flags: HashSet<flag::Flag>,
+	flags: HashSet<ApplyMode<Flag>>,
 }
 
 // -------------- //
@@ -81,6 +82,29 @@ impl User
 
 impl User
 {
+	/// Message d'absence de l'utilisateur.
+	pub fn away_message(&self) -> String
+	{
+		self.flags
+			.iter()
+			.find_map(|flag| {
+				let ApplyMode {
+					flag: Flag::Away(text),
+					..
+				} = flag
+				else {
+					return None;
+				};
+				(!text.is_empty()).then_some(text.to_owned())
+			})
+			.unwrap_or_default()
+	}
+
+	pub fn flags(&self) -> impl Iterator<Item = (char, ApplyMode<Flag>)> + '_
+	{
+		self.flags.iter().map(|flag| (flag.letter(), flag.clone()))
+	}
+
 	/// Vérifie si le pseudonyme donné est le même que celui sauvegardé dans
 	/// l'instance du client.
 	pub fn is_me(&self, nickname: &str) -> bool
@@ -93,32 +117,66 @@ impl User
 	pub fn is_away(&self) -> bool
 	{
 		self.flags.iter().any(|flag| {
-			let flag::Flag::Away(text) = flag else {
+			let ApplyMode {
+				flag: Flag::Away(text),
+				..
+			} = flag
+			else {
 				return false;
 			};
 			!text.is_empty()
 		})
 	}
 
-	/// Message d'absence de l'utilisateur.
-	pub fn away_message(&self) -> String
+	/// Vérifie que l'utilisateur a comme drapeau, les drapeaux d'opérateurs.
+	pub fn is_operator(&self) -> bool
+	{
+		self.is_global_operator() || self.is_local_operator()
+	}
+
+	/// Vérifie que l'utilisateur a comme drapeau, le drapeaux d'opérateur
+	/// global.
+	pub fn is_global_operator(&self) -> bool
+	{
+		self.flags.iter().any(|flag| {
+			matches!(
+				flag,
+				ApplyMode {
+					flag: Flag::GlobalOperator,
+					..
+				}
+			)
+		})
+	}
+
+	/// Vérifie que l'utilisateur a comme drapeau, le drapeaux d'opérateur
+	/// local.
+	pub fn is_local_operator(&self) -> bool
+	{
+		self.flags.iter().any(|flag| {
+			matches!(
+				flag,
+				ApplyMode {
+					flag: Flag::LocalOperator,
+					..
+				}
+			)
+		})
+	}
+
+	/// Type d'opérateur.
+	pub fn operator_type(&self) -> Option<&flag::Flag>
 	{
 		self.flags
 			.iter()
-			.find_map(|flag| {
-				let flag::Flag::Away(text) = flag else {
-					return None;
-				};
-				(!text.is_empty()).then_some(text.to_owned())
-			})
-			.unwrap_or_default()
+			.find_map(|mode| self.is_operator().then_some(&mode.flag))
 	}
 }
 
 impl User
 {
 	/// Applique un drapeau à l'[utilisateur](Self).
-	pub fn set_flag(&mut self, flag: impl Into<flag::Flag>)
+	pub fn set_flag(&mut self, flag: impl Into<ApplyMode<flag::Flag>>)
 	{
 		self.flags.insert(flag.into());
 	}
@@ -129,6 +187,12 @@ impl User
 		let ident = ident.to_string();
 		self.ident = do_nickname(&ident)?.to_string();
 		Ok(ident)
+	}
+
+	/// Définit un hôte virtual pour l'[utilisateur](Self).
+	pub fn set_vhost(&mut self, vhost: impl ToString)
+	{
+		self.host.set_vhost(vhost);
 	}
 
 	/// Définit le pseudonyme de l'[utilisateur](Self).
@@ -168,5 +232,17 @@ impl User
 	pub fn unset_flag(&mut self, mut retain_cb: impl FnMut(&flag::Flag) -> bool)
 	{
 		self.flags.retain(|flag| !retain_cb(flag));
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl PartialEq<Flag> for ApplyMode<Flag>
+{
+	fn eq(&self, other: &Flag) -> bool
+	{
+		self.flag.eq(other)
 	}
 }

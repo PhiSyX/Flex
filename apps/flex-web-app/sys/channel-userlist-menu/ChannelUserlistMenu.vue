@@ -15,6 +15,7 @@ import {
 	type Props,
 	computeIsMe,
 	computeIHaveAccessLevel,
+	computeImGlobalOperator,
 } from "./ChannelUserlistMenu.state";
 
 import ChannelUserlistOwnerMenu from "./ChannelUserlistAccessLevelQOPMenu.vue";
@@ -30,6 +31,7 @@ const emit = defineEmits<Emits>();
 
 const isMe = computeIsMe(props);
 const iHaveAccessLevel = computeIHaveAccessLevel(props);
+const imGlobalOperator = computeImGlobalOperator(props);
 
 const ignoreUserHandler = ignoreUser(emit, props);
 const kickUserHandler = kickUser(emit, props);
@@ -43,9 +45,9 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 	<menu class="room/userlist:menu [ list:reset flex! m=1 ]">
 		<li>
 			<p>
-				<bdi>{{ user.cnick.nickname }}</bdi>
+				<bdo>{{ user.cnick.nickname }}</bdo>
 				<span>!</span>
-				<bdi>{{ user.cnick.ident }}</bdi>
+				<bdo>{{ user.cnick.ident }}</bdo>
 				<span>@</span>
 				<span>{{ user.cnick.hostname }}</span>
 			</p>
@@ -88,7 +90,7 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 			</UiButton>
 		</li>
 
-		<li v-if="iHaveAccessLevel && !isMe">
+		<li v-if="(imGlobalOperator || iHaveAccessLevel) && !isMe">
 			<UiButton
 				:disabled="disabled"
 				variant="secondary"
@@ -99,7 +101,7 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 			</UiButton>
 		</li>
 
-		<li v-if="iHaveAccessLevel" class="[ flex ]">
+		<li v-if="(imGlobalOperator || iHaveAccessLevel)" class="[ flex ]">
 			<ChannelUserlistOwnerMenu
 				:disabled="disabled"
 				:is-me="isMe"

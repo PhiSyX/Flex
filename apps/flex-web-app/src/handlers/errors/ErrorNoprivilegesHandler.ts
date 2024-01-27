@@ -8,28 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface PartFormData {
-	channels: Array<string>;
-	message?: string;
-}
+import { ChatStore } from "~/store/ChatStore";
 
-declare interface SapartFormData {
-	channels: Array<string>;
-	nicknames: Array<string>;
-	message?: string;
-}
+// -------------- //
+// Implémentation //
+// -------------- //
 
-declare interface PartDataResponse {
-	channel: string;
-	message: string | null;
-	forced_by: string | null;
-}
+export class ErrorNoprivilegesHandler implements SocketEventInterface<"ERR_NOPRIVILEGES"> {
+	constructor(private store: ChatStore) {}
 
-declare interface Commands {
-	PART: PartFormData;
-	SAPART: SapartFormData;
-}
+	listen() {
+		this.store.on("ERR_NOPRIVILEGES", (data) => this.handle(data));
+	}
 
-declare interface CommandResponsesFromServer {
-	PART: PartDataResponse;
+	handle(data: GenericReply<"ERR_NOPRIVILEGES">) {
+		const room = this.store.roomManager().current();
+		room.addEvent("error:err_noprivileges", { ...data, isMe: true }, data.reason.slice(1));
+	}
 }

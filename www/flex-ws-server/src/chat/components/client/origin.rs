@@ -15,6 +15,7 @@ use crate::src::chat::components::User;
 // Structure //
 // --------- //
 
+#[derive(Debug)]
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Origin
 {

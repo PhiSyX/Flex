@@ -5,6 +5,7 @@ import { computed } from "vue";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { computeImGlobalOperator } from "./ChannelUserlistMenu.state";
 
 // ---- //
 // Type //
@@ -36,6 +37,8 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
+
+const imGlobalOperator = computeImGlobalOperator(props);
 
 const imHalfOperator = computed(() =>
 	props.me.accessLevel.has(ChannelAccessLevel.HalfOperator)
@@ -75,7 +78,7 @@ function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 		</UiButton>
 	</template>
 
-	<template v-if="iHaveOperatorRights">
+	<template v-if="iHaveOperatorRights || imGlobalOperator">
 		<UiButton
 			v-if="!isUserHalfOperator"
 			:disabled="disabled"
@@ -96,7 +99,7 @@ function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 			-h
 		</UiButton>
 	</template>
-	<template v-if="iHaveHalfOperatorRights">
+	<template v-if="iHaveHalfOperatorRights || imGlobalOperator">
 		<UiButton
 			v-if="!isUserVipRights"
 			:disabled="disabled"

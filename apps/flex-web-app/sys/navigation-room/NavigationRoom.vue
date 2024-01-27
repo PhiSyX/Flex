@@ -40,12 +40,12 @@ const totalUnread = computeTotalUnread(props);
 	>
 		<slot name="icon" />
 
-		<bdi
+		<bdo
 			v-show="!folded"
 			:class="{ 'scroll:marquee': !name.startsWith('#') }"
 		>
 			{{ name }}
-		</bdi>
+		</bdo>
 
 		<div>
 			<Badge

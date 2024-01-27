@@ -8,8 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::types::time;
+
 use crate::src::chat::components;
 use crate::src::chat::components::client::origin::Origin;
+use crate::src::chat::features::ApplyMode;
 
 // --------- //
 // Interface //
@@ -19,6 +22,51 @@ pub trait ClientSocketInterface
 {
 	fn client(&self) -> &super::Client;
 	fn client_mut(&mut self) -> &mut super::Client;
+
+	fn broadcast<E, S>(&self, event: E, data: S)
+	where
+		E: ToString + std::fmt::Display,
+		S: serde::Serialize + std::fmt::Debug,
+	{
+		log::debug!("[BROADCAST] {event} {:#?}", &data);
+		_ = self.socket().broadcast().emit(event.to_string(), data);
+	}
+
+	fn emit<E, S>(&self, event: E, data: S)
+	where
+		E: ToString + std::fmt::Display,
+		S: serde::Serialize + std::fmt::Debug,
+	{
+		log::debug!("{event} {:#?}", &data);
+		_ = self.socket().emit(event.to_string(), data);
+	}
+
+	fn emit_to<T, E, S>(&self, to: T, event: E, data: S)
+	where
+		T: ToString + std::fmt::Display,
+		E: ToString + std::fmt::Display,
+		S: serde::Serialize + std::fmt::Debug,
+	{
+		log::debug!("> {event} {:#?} ({to})", &data);
+		_ = self
+			.socket()
+			.to(to.to_string())
+			.emit(event.to_string(), data);
+	}
+
+	fn emit_within<T, E, S>(&self, to: T, event: E, data: S)
+	where
+		T: ToString + std::fmt::Display,
+		E: ToString + std::fmt::Display,
+		S: serde::Serialize + std::fmt::Debug,
+	{
+		log::debug!("> {event} {:#?} ({to})", &data);
+		_ = self
+			.socket()
+			.within(to.to_string())
+			.emit(event.to_string(), data);
+	}
+
 	fn socket(&self) -> &socketioxide::extract::SocketRef;
 	fn user(&self) -> &crate::src::chat::components::User;
 	fn user_mut(&mut self) -> &mut crate::src::chat::components::User;
@@ -80,7 +128,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// ID du socket courante.
-	pub fn sid(&self) -> socketioxide::socket::Sid
+	pub fn sid(&self) -> Option<socketioxide::socket::Sid>
 	{
 		self.client().sid()
 	}
@@ -119,17 +167,14 @@ impl<'a> Socket<'a>
 
 		let channel_room = format!("channel:{}", channel.name.to_lowercase());
 		_ = self.socket().join(channel_room.clone());
-		_ = self.socket().emit(cmd_join.name(), &cmd_join);
-		_ = self
-			.socket()
-			.to(channel_room)
-			.emit(cmd_join.name(), cmd_join);
+		self.emit(cmd_join.name(), &cmd_join);
+		self.emit_to(channel_room, cmd_join.name(), cmd_join);
 
 		// NOTE: Émettre le sujet du salon au client courant.
 		self.send_rpl_topic(channel, false);
 
 		// NOTE: Émettre les paramètres du salon au client courant.
-		self.emit_mode_settings(channel, false);
+		self.emit_cmodes(channel, false);
 
 		// NOTE: Émettre au client courant les membres du salon.
 		self.send_rpl_namreply(channel, map_member);
@@ -156,10 +201,7 @@ impl<'a> Socket<'a>
 			tags: KickCommandResponse::default_tags(),
 		};
 
-		_ = self
-			.socket()
-			.within(channel.room())
-			.emit(cmd_kick.name(), cmd_kick);
+		self.emit_within(channel.room(), cmd_kick.name(), cmd_kick);
 		_ = knick_client_socket.socket().leave(channel.room());
 	}
 
@@ -168,14 +210,8 @@ impl<'a> Socket<'a>
 	pub fn emit_mode_access_level(
 		&self,
 		channel: &components::channel::Channel,
-		added_flags: Vec<(
-			char,
-			components::mode::ChannelMode<components::nick::ChannelAccessLevel>,
-		)>,
-		removed_flags: Vec<(
-			char,
-			components::mode::ChannelMode<components::nick::ChannelAccessLevel>,
-		)>,
+		added_flags: Vec<(char, ApplyMode<components::nick::ChannelAccessLevel>)>,
+		removed_flags: Vec<(char, ApplyMode<components::nick::ChannelAccessLevel>)>,
 		updated: bool,
 	)
 	{
@@ -191,11 +227,11 @@ impl<'a> Socket<'a>
 			target: &channel.name,
 			updated,
 		};
-		_ = self.socket().within(channel.room()).emit(mode.name(), mode);
+		self.emit_within(channel.room(), mode.name(), mode);
 	}
 
 	/// Émet au client courant les paramètres un salon.
-	pub fn emit_mode_settings(&self, channel: &components::channel::Channel, updated: bool)
+	pub fn emit_cmodes(&self, channel: &components::channel::Channel, updated: bool)
 	{
 		use crate::src::chat::features::ModeCommandResponse;
 
@@ -209,9 +245,7 @@ impl<'a> Socket<'a>
 			added: channel.settings().into_iter().collect(),
 			updated,
 		};
-		_ = self
-			.socket()
-			.emit(channel_settings.name(), channel_settings);
+		self.emit(channel_settings.name(), channel_settings);
 	}
 
 	/// Émet au client les réponses liées à la commande /NICK.
@@ -241,10 +275,10 @@ impl<'a> Socket<'a>
 		// NOTE: notifier toutes les rooms dont fait partie le client que le
 		// pseudonyme du client a été changé.
 
-		_ = self.socket().emit(cmd_nick.name(), &cmd_nick);
+		self.emit(cmd_nick.name(), &cmd_nick);
 		// FIXME(phisyx): À améliorer pour n'envoyer qu'une seul événement à
 		// tous les client en communs.
-		_ = self.socket().broadcast().emit(cmd_nick.name(), &cmd_nick);
+		self.broadcast(cmd_nick.name(), &cmd_nick);
 
 		_ = self
 			.socket()
@@ -252,7 +286,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client les réponses liées à la commande /PART.
-	pub fn emit_part(&self, channel: &str, message: Option<&str>)
+	pub fn emit_part(&self, channel: &str, message: Option<&str>, forced_by: Option<&str>)
 	{
 		use crate::src::chat::features::PartCommandResponse;
 
@@ -262,15 +296,13 @@ impl<'a> Socket<'a>
 			origin: &origin,
 			channel,
 			message,
+			forced_by,
 			tags: PartCommandResponse::default_tags(),
 		};
 
 		let channel_room = format!("channel:{}", channel.to_lowercase());
-		_ = self.socket().emit(cmd_part.name(), &cmd_part);
-		_ = self
-			.socket()
-			.to(channel_room.clone())
-			.emit(cmd_part.name(), cmd_part);
+		self.emit(cmd_part.name(), &cmd_part);
+		self.emit_to(channel_room.clone(), cmd_part.name(), cmd_part);
 		_ = self.socket().leave(channel_room);
 	}
 
@@ -338,10 +370,56 @@ impl<'a> Socket<'a>
 			message: msg.as_str(),
 		};
 
-		_ = self
-			.socket()
-			.to(format!("channel:{}", room.to_lowercase()))
-			.emit(quit_command.name(), quit_command);
+		self.emit_to(
+			format!("channel:{}", room.to_lowercase()),
+			quit_command.name(),
+			quit_command,
+		);
+	}
+
+	/// Émet au client les réponses liées à la commande /QUIT.
+	pub fn emit_umode(&self, umode: &[ApplyMode<components::user::Flag>])
+	{
+		use crate::src::chat::features::ModeCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let mode_cmd = ModeCommandResponse {
+			origin: &origin,
+			tags: ModeCommandResponse::<()>::default_tags(),
+			added: umode
+				.iter()
+				.map(|flag| (flag.letter(), flag.clone()))
+				.collect(),
+			removed: Default::default(),
+			target: &self.user().nickname,
+			updated: false,
+		};
+
+		self.emit(mode_cmd.name(), mode_cmd);
+	}
+
+	/// Émet au client les réponses liées à la commande /QUIT.
+	pub fn emit_umodes(&self)
+	{
+		let umodes: Vec<(char, ApplyMode<components::user::Flag>)> = self.user().flags().collect();
+
+		if umodes.is_empty() {
+			return;
+		}
+
+		use crate::src::chat::features::ModeCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let mode_cmd = ModeCommandResponse {
+			origin: &origin,
+			tags: ModeCommandResponse::<()>::default_tags(),
+			added: umodes,
+			removed: Default::default(),
+			target: &self.user().nickname,
+			updated: false,
+		};
+
+		self.emit(mode_cmd.name(), mode_cmd);
 	}
 }
 
@@ -360,7 +438,7 @@ impl<'a> Socket<'a>
 			message: &message,
 			nick: &target_client_socket.user().nickname,
 		};
-		_ = self.socket().emit(rpl_away.name(), rpl_away);
+		self.emit(rpl_away.name(), rpl_away);
 	}
 
 	/// Émet au client les réponses liées à la commande /IGNORE.
@@ -375,7 +453,7 @@ impl<'a> Socket<'a>
 			tags: RplIgnoreReply::default_tags(),
 			updated: &updated,
 		};
-		_ = self.socket().emit(rpl_ignore.name(), rpl_ignore);
+		self.emit(rpl_ignore.name(), rpl_ignore);
 	}
 
 	/// Émet au client les membres d'un salon par chunk de 300.
@@ -405,7 +483,10 @@ impl<'a> Socket<'a>
 		});
 
 		for rpl_name in rpl_names {
-			_ = self.socket().emit(rpl_name.name(), rpl_name);
+			_ = self
+				.socket()
+				.within(channel.room())
+				.emit(rpl_name.name(), rpl_name);
 		}
 
 		let rpl_endofnames = RplEndofnamesReply {
@@ -413,7 +494,10 @@ impl<'a> Socket<'a>
 			channel: &channel.name,
 			tags: RplEndofnamesReply::default_tags(),
 		};
-		_ = self.socket().emit(rpl_endofnames.name(), rpl_endofnames);
+		_ = self
+			.socket()
+			.within(channel.room())
+			.emit(rpl_endofnames.name(), rpl_endofnames);
 	}
 
 	/// Émet au client les réponses liées à la commande /AWAY.
@@ -426,7 +510,7 @@ impl<'a> Socket<'a>
 			origin: &origin,
 			tags: RplNowawayReply::default_tags(),
 		};
-		_ = self.socket().emit(rpl_nowaway.name(), rpl_nowaway);
+		self.emit(rpl_nowaway.name(), rpl_nowaway);
 	}
 
 	/// Émet au client les réponses liées à la commande /AWAY.
@@ -439,7 +523,7 @@ impl<'a> Socket<'a>
 			origin: &origin,
 			tags: RplUnawayReply::default_tags(),
 		};
-		_ = self.socket().emit(rpl_nowaway.name(), rpl_nowaway);
+		self.emit(rpl_nowaway.name(), rpl_nowaway);
 	}
 
 	/// Émet au client le sujet du salon.
@@ -454,7 +538,7 @@ impl<'a> Socket<'a>
 				channel: &channel.name,
 				tags: RplNotopicReply::default_tags(),
 			};
-			_ = self.socket().emit(rpl_notopic.name(), &rpl_notopic);
+			self.emit(rpl_notopic.name(), &rpl_notopic);
 
 			if updated {
 				_ = self
@@ -472,7 +556,7 @@ impl<'a> Socket<'a>
 				updated_at: channel.topic().updated_at(),
 				tags: RplTopicReply::default_tags(),
 			};
-			_ = self.socket().emit(rpl_topic.name(), &rpl_topic);
+			self.emit(rpl_topic.name(), &rpl_topic);
 
 			if updated {
 				_ = self
@@ -494,7 +578,72 @@ impl<'a> Socket<'a>
 			users,
 			tags: RplUnignoreReply::default_tags(),
 		};
-		_ = self.socket().emit(rpl_unignore.name(), rpl_unignore);
+		self.emit(rpl_unignore.name(), rpl_unignore);
+	}
+
+	/// Émet au client les réponses liées à la commande /OPER.
+	pub fn send_rpl_youreoper(&self, oper_type: components::user::Flag)
+	{
+		use crate::src::chat::replies::RplYoureoperReply;
+
+		let origin = Origin::from(self.client());
+		let rpl_youreoper = RplYoureoperReply {
+			origin: &origin,
+			tags: RplYoureoperReply::default_tags(),
+			oper_type: &oper_type,
+		};
+		self.emit(rpl_youreoper.name(), rpl_youreoper);
+	}
+
+	/// Émet au client les réponses de connexion. 3) RPL_CREATED
+	pub fn send_rpl_created(&self, created_at: time::DateTime<time::Utc>)
+	{
+		use crate::src::chat::replies::RplCreatedReply;
+
+		let origin = components::Origin::from(self.client());
+		let created_003 = RplCreatedReply {
+			origin: &origin,
+			date: &created_at,
+			tags: RplCreatedReply::default_tags(),
+		};
+
+		self.emit(created_003.name(), created_003);
+	}
+
+	/// Émet au client les réponses de connexion. 2) RPL_YOURHOST
+	pub fn send_rpl_yourhost(&self, servername: &str)
+	{
+		use crate::src::chat::replies::RplYourhostReply;
+
+		let origin = components::Origin::from(self.client());
+		let program_version = format!("v{}", env!("CARGO_PKG_VERSION"));
+		let yourhost_002 = RplYourhostReply {
+			origin: &origin,
+			servername,
+			version: &program_version,
+			tags: RplYourhostReply::default_tags(),
+		};
+
+		self.emit(yourhost_002.name(), yourhost_002);
+	}
+
+	/// Émet au client les réponses de connexion. 1) RPL_WELCOME
+	pub fn send_rpl_welcome(&self)
+	{
+		use crate::src::chat::replies::RplWelcomeReply;
+
+		let origin = components::Origin::from(self.client());
+		let host = self.user().host.to_string();
+		let welcome_001 = RplWelcomeReply {
+			origin: &origin,
+			nickname: &self.user().nickname,
+			ident: &self.user().ident,
+			host: &host,
+			tags: RplWelcomeReply::default_tags(),
+		}
+		.with_tags([("client_id", self.client().cid())]);
+
+		self.emit(welcome_001.name(), welcome_001);
 	}
 }
 
@@ -512,9 +661,7 @@ impl<'a> Socket<'a>
 			tags: ErrAlreadyregisteredError::default_tags(),
 		};
 
-		_ = self
-			.socket()
-			.emit(err_alreadyregistered.name(), err_alreadyregistered);
+		self.emit(err_alreadyregistered.name(), err_alreadyregistered);
 	}
 
 	/// Émet au client l'erreur
@@ -529,9 +676,7 @@ impl<'a> Socket<'a>
 			tags: ErrBadchannelkeyError::default_tags(),
 			origin: &origin,
 		};
-		_ = self
-			.socket()
-			.emit(err_badchannelkey.name(), err_badchannelkey);
+		self.emit(err_badchannelkey.name(), err_badchannelkey);
 	}
 
 	/// Émet au client l'erreur
@@ -546,9 +691,7 @@ impl<'a> Socket<'a>
 			origin: &origin,
 			tags: ErrCannotsendtochanError::default_tags(),
 		};
-		_ = self
-			.socket()
-			.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
+		self.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
 	}
 
 	/// Émet au client l'erreur
@@ -563,9 +706,7 @@ impl<'a> Socket<'a>
 			origin: &origin,
 			tags: ErrChanoprivsneededError::default_tags(),
 		};
-		_ = self
-			.socket()
-			.emit(err_chanoprivsneeded.name(), err_chanoprivsneeded);
+		self.emit(err_chanoprivsneeded.name(), err_chanoprivsneeded);
 	}
 
 	/// Émet au client l'erreur
@@ -581,9 +722,7 @@ impl<'a> Socket<'a>
 			tags: ErrErroneusnicknameError::default_tags(),
 		};
 
-		_ = self
-			.socket()
-			.emit(err_erroneusnickname.name(), err_erroneusnickname);
+		self.emit(err_erroneusnickname.name(), err_erroneusnickname);
 	}
 
 	/// Émet au client l'erreur
@@ -599,9 +738,65 @@ impl<'a> Socket<'a>
 			tags: ErrNicknameinuseError::default_tags(),
 		};
 
-		_ = self
-			.socket()
-			.emit(err_nicknameinuse.name(), err_nicknameinuse);
+		self.emit(err_nicknameinuse.name(), err_nicknameinuse);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrNoprivilegesError].
+	pub fn send_err_noprivileges(&self)
+	{
+		use crate::src::chat::replies::ErrNoprivilegesError;
+
+		let origin = Origin::from(self.client());
+		let err_noprivileges = ErrNoprivilegesError {
+			origin: &origin,
+			tags: ErrNoprivilegesError::default_tags(),
+		};
+
+		self.emit(err_noprivileges.name(), err_noprivileges);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrNooperhostError].
+	pub fn send_err_nooperhost(&self)
+	{
+		use crate::src::chat::replies::ErrNooperhostError;
+
+		let origin = Origin::from(self.client());
+		let err_nooperhost = ErrNooperhostError {
+			origin: &origin,
+			tags: ErrNooperhostError::default_tags(),
+		};
+		self.emit(err_nooperhost.name(), err_nooperhost);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrOperonlyError].
+	pub fn send_err_operonly(&self, channel: &str)
+	{
+		use crate::src::chat::replies::ErrOperonlyError;
+
+		let origin = Origin::from(self.client());
+		let err_operonly = ErrOperonlyError {
+			origin: &origin,
+			channel,
+			tags: ErrOperonlyError::default_tags(),
+		};
+		self.emit(err_operonly.name(), err_operonly);
+	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrPasswdmismatch].
+	pub fn send_err_passwdmismatch(&self)
+	{
+		use crate::src::chat::replies::ErrPasswdmismatchError;
+
+		let origin = Origin::from(self.client());
+		let err_passwdmismatch = ErrPasswdmismatchError {
+			origin: &origin,
+			tags: ErrPasswdmismatchError::default_tags(),
+		};
+		self.emit(err_passwdmismatch.name(), err_passwdmismatch);
 	}
 
 	/// Émet au client l'erreur
@@ -616,9 +811,7 @@ impl<'a> Socket<'a>
 			channel_name,
 			tags: ErrNosuchchannelError::default_tags(),
 		};
-		_ = self
-			.socket()
-			.emit(err_nosuchchannel.name(), err_nosuchchannel);
+		self.emit(err_nosuchchannel.name(), err_nosuchchannel);
 	}
 
 	/// Émet au client l'erreur
@@ -633,7 +826,7 @@ impl<'a> Socket<'a>
 			nickname,
 			tags: ErrNosuchnickError::default_tags(),
 		};
-		_ = self.socket().emit(err_nosuchnick.name(), err_nosuchnick);
+		self.emit(err_nosuchnick.name(), err_nosuchnick);
 	}
 
 	/// Émet au client l'erreur
@@ -648,9 +841,7 @@ impl<'a> Socket<'a>
 			channel,
 			tags: ErrNotonchannelError::default_tags(),
 		};
-		_ = self
-			.socket()
-			.emit(err_notonchannel.name(), err_notonchannel);
+		self.emit(err_notonchannel.name(), err_notonchannel);
 	}
 
 	/// Émet au client l'erreur
@@ -667,9 +858,7 @@ impl<'a> Socket<'a>
 			nick,
 		};
 
-		_ = self
-			.socket()
-			.emit(err_usernotinchannel.name(), err_usernotinchannel);
+		self.emit(err_usernotinchannel.name(), err_usernotinchannel);
 	}
 }
 

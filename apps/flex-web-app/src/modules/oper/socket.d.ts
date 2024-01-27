@@ -8,28 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface PartFormData {
-	channels: Array<string>;
-	message?: string;
-}
-
-declare interface SapartFormData {
-	channels: Array<string>;
-	nicknames: Array<string>;
-	message?: string;
-}
-
-declare interface PartDataResponse {
-	channel: string;
-	message: string | null;
-	forced_by: string | null;
+declare interface OperFormData {
+	name: string;
+	password: string;
 }
 
 declare interface Commands {
-	PART: PartFormData;
-	SAPART: SapartFormData;
+	OPER: OperFormData;
 }
 
-declare interface CommandResponsesFromServer {
-	PART: PartDataResponse;
+declare interface CommandResponsesReplies {
+	RPL_YOUREOPER: {
+		oper_type: "LocalOperator" | "GlobalOperator";
+	};
+}
+
+declare interface ErrorReplies {
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	ERR_NOOPERHOST: {};
+	ERR_OPERONLY: { channel: string };
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	ERR_PASSWDMISMATCH: {};
 }

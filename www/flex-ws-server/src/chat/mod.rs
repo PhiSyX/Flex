@@ -33,9 +33,11 @@ mod features
 			}
 		}
 
+		mod apply;
 		mod response;
 
 		pub use self::access_level::*;
+		pub use self::apply::*;
 		pub use self::response::*;
 	}
 
@@ -73,6 +75,12 @@ mod features
 		};
 
 		part / {
+			formdata,
+			handler,
+			response,
+		};
+
+		oper / {
 			formdata,
 			handler,
 			response,
@@ -132,6 +140,7 @@ mod replies
 			err_chanoprivsneeded,
 			err_erroneusnickname,
 			err_nicknameinuse,
+			err_noprivileges,
 			err_nosuchchannel,
 			err_nosuchnick,
 			err_notonchannel,
@@ -145,6 +154,13 @@ mod replies
 			rpl_welcome,
 		};
 	}
+
+	pub use super::features::{
+		ErrNooperhostError,
+		ErrOperonlyError,
+		ErrPasswdmismatchError,
+		RplYoureoperReply,
+	};
 }
 
 mod routes;

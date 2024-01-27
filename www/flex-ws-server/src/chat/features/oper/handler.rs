@@ -8,70 +8,73 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_crypto::{Argon2Encryption, Encryption};
+use flex_web_framework::security::SecurityEncryptionService;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::config::flex::flex_config;
 use crate::src::chat::components::ClientSocketInterface;
-use crate::src::chat::features::ConnectionRegistrationHandler;
 use crate::src::ChatApplication;
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct NickHandler;
+pub struct OperHandler;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-/// La commande `NICK` est utilisée pour donner un pseudonyme au client ou
-/// changer le pseudonyme existant d'un client.
-impl NickHandler
+impl OperHandler
 {
-	pub const COMMAND_NAME: &'static str = "NICK";
+	pub const COMMAND_NAME: &'static str = "OPER";
 
-	pub fn handle(
+	pub async fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::NickCommandFormData>,
+		Data(data): Data<super::OperCommandFormData>,
 	)
 	{
 		let mut client_socket = app.current_client_mut(&socket);
 
-		// NOTE: Le pseudonyme existe déjà?
-		if app.can_locate_client_by_nickname(&data.nickname) {
-			client_socket.send_err_nicknameinuse(&data.nickname);
+		let config = client_socket
+			.socket()
+			.req_parts()
+			.extensions
+			.get::<flex_config>()
+			.cloned()
+			.expect("Configuration de notre application serveur");
+
+		let Some(operator) = config
+			.operators
+			.iter()
+			.find(|operator| operator.identifier.eq(&data.name))
+			.cloned()
+		else {
+			client_socket.send_err_nooperhost();
 			return;
-		}
-
-		app.change_nickname_of_client(&mut client_socket, &data.nickname);
-	}
-}
-
-impl NickHandler
-{
-	pub const UNREGISTERED_COMMAND_NAME: &'static str = "NICK (unregistered)";
-
-	pub fn handle_unregistered(
-		socket: SocketRef,
-		State(app): State<ChatApplication>,
-		Data(data): Data<super::NickCommandFormData>,
-	)
-	{
-		if app.can_locate_client_by_nickname(&data.nickname) {
-			let client_socket = app.current_client(&socket);
-			client_socket.send_err_nicknameinuse(&data.nickname);
-			return;
-		}
-
-		let check = {
-			let mut client_socket = app.current_client_mut(&socket);
-			client_socket.user_mut().set_nickname(&data.nickname).ok();
-			ConnectionRegistrationHandler::complete_registration(app, client_socket)
 		};
 
-		if check.is_none() {
-			_ = socket.disconnect();
+		let security_encryption = socket
+			.req_parts()
+			.extensions
+			.get::<SecurityEncryptionService<Argon2Encryption>>()
+			.expect("Le service de chiffrement Argon2.");
+
+		if !security_encryption.cmp(operator.password.expose(), data.password.expose()) {
+			client_socket.send_err_passwdmismatch();
+			return;
+		}
+
+		app.marks_client_as_operator(
+			&mut client_socket,
+			operator.virtual_host.as_deref(),
+			operator.oper_type,
+		);
+
+		for channel_name in config.operator.auto_join.iter() {
+			app.join_or_create_oper_channel(&client_socket, channel_name);
 		}
 	}
 }

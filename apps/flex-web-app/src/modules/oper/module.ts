@@ -11,83 +11,66 @@
 import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
-import { PartCommand, SapartCommand } from "./command";
-import { PartHandler } from "./handler";
+import { OperCommand } from "./command";
+import {
+	ErrorNooperhostHandler,
+	ErrorOperonlyHandler,
+	ErrorPasswdmismatchHandler,
+	OperHandler,
+} from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class PartModule implements Module<PartModule> {
+export class OperModule implements Module<OperModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
-	static NAME = "PART";
+	static NAME = "OPER";
 
-	static create(store: ChatStore): PartModule {
-		return new PartModule(new PartCommand(store), new PartHandler(store));
+	static create(store: ChatStore): OperModule {
+		return new OperModule(
+			new OperCommand(store),
+			new OperHandler(store),
+			new ErrorNooperhostHandler(store),
+			new ErrorOperonlyHandler(store),
+			new ErrorPasswdmismatchHandler(store),
+		);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 	constructor(
-		private command: PartCommand,
-		private handler: PartHandler,
+		private command: OperCommand,
+		private handler: OperHandler,
+		private numericErrorNooperhostHandler: ErrorNooperhostHandler,
+		private numericErrorOperonlyHandler: ErrorOperonlyHandler,
+		private numericErrorPasswdmismatchHandler: ErrorPasswdmismatchHandler,
 	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(channelsRaw?: string, ...words: Array<string>) {
-		const channels = channelsRaw?.split(",");
-		if (!channels) return;
-		const message = words.join(" ");
-		this.send({ channels, message });
+	input(name?: string, password?: string) {
+		if (!name || !password) {
+			return;
+		}
+
+		this.send({ name, password });
 	}
 
-	send(payload: Command<"PART">) {
+	send(payload: Command<"OPER">) {
 		this.command.send(payload);
 	}
 
 	listen() {
 		this.handler.listen();
+		this.numericErrorNooperhostHandler.listen();
+		this.numericErrorOperonlyHandler.listen();
+		this.numericErrorPasswdmismatchHandler.listen();
 	}
-}
-
-export class SapartModule implements Module<SapartModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "SAPART";
-
-	static create(store: ChatStore): SapartModule {
-		return new SapartModule(new SapartCommand(store));
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private command: SapartCommand) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(nicknamesRaw?: string, channelsRaw?: string, ...messages: Array<string>) {
-		const nicknames = nicknamesRaw?.split(",");
-		const channels = channelsRaw?.split(",");
-		if (!nicknames || !channels) return;
-		const message = messages.join(" ");
-		this.send({ nicknames, channels, message });
-	}
-
-	send(payload: Command<"SAPART">) {
-		this.command.send(payload);
-	}
-
-	listen() {}
 }

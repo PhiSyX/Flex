@@ -11,7 +11,7 @@
 import { Option } from "@phisyx/flex-safety";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelUsers } from "~/channel/ChannelUsers";
-import { User } from "~/user/User";
+import { User, UserFlag } from "~/user/User";
 import { Room } from "../room/Room";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 import { ChannelTopic } from "./ChannelTopic";
@@ -79,7 +79,11 @@ export class ChannelRoom extends Room<"channel"> {
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
 	canEditTopic(cnick: ChannelNick): boolean {
-		return this.topic.isEditable() || this.cnickHasChannelOperatorAccessLevel(cnick);
+		return (
+			this.topic.isEditable() ||
+			this.isUserGlobalOperator(cnick.intoUser()) ||
+			this.cnickHasChannelOperatorAccessLevel(cnick)
+		);
 	}
 
 	/**
@@ -131,6 +135,13 @@ export class ChannelRoom extends Room<"channel"> {
 		this.users.remove(oldNick.id);
 		newNick.highestAccessLevel;
 		this.users.add(newNick);
+	}
+
+	/**
+	 * Est-ce que l'utilisateur est un opérateur global.
+	 */
+	isUserGlobalOperator(user: User) {
+		return user.isGlobalOperator();
 	}
 
 	/**

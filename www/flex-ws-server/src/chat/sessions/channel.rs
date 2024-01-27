@@ -18,7 +18,7 @@ use crate::src::chat::components::channel::nick;
 use crate::src::chat::components::channel::permission::ChannelPermissionWrite;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
-use crate::src::chat::features::{ChannelJoinError, ChannelTopicError};
+use crate::src::chat::features::{ApplyMode, ChannelJoinError, ChannelTopicError};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -65,7 +65,7 @@ impl ChatApplication
 	/// Récupère un client à partir de son ID.
 	pub fn get_client_by_id(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
-		self.clients.find(client_id)
+		self.clients.get(client_id)
 	}
 
 	/// Récupère un client à partir de son ID.
@@ -74,7 +74,7 @@ impl ChatApplication
 		client_id: &client::ClientID,
 	) -> Option<RefMutMulti<'_, client::ClientID, client::Client>>
 	{
-		self.clients.find_mut(client_id)
+		self.clients.get_mut(client_id)
 	}
 
 	/// Le client peut-il écrire sur le salon?
@@ -121,6 +121,12 @@ impl ChatApplication
 		channel_name: channel::ChannelIDRef,
 	) -> bool
 	{
+		let is_client_operator = self.is_client_global_operator(client_socket);
+
+		if is_client_operator {
+			return true;
+		}
+
 		match self
 			.channels
 			.is_client_can_edit_topic(channel_name, client_socket.cid())
@@ -140,14 +146,28 @@ impl ChatApplication
 		}
 	}
 
+	/// Est-ce que le client est un opérateur global?
+	pub fn is_client_global_operator(&self, client_socket: &client::Socket) -> bool
+	{
+		let Some(client) = self.clients.get(client_socket.cid()) else {
+			return false;
+		};
+		client.user().is_global_operator()
+	}
+
 	/// Rejoint un salon.
-	pub fn join_channel(&self, client_socket: &client::Socket, channel: &channel::Channel)
+	pub fn join_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel: &channel::Channel,
+		forced: bool,
+	)
 	{
 		self.clients
 			.add_channel(client_socket.cid(), channel.id().as_str());
 
-		client_socket.emit_join(channel, false, |channel_nick| {
-			let client = self.clients.find(channel_nick.id())?;
+		client_socket.emit_join(channel, forced, |channel_nick| {
+			let client = self.clients.get(channel_nick.id())?;
 			Some(crate::src::chat::replies::ChannelNickClient::from((
 				client,
 				channel_nick,
@@ -155,7 +175,7 @@ impl ChatApplication
 		});
 	}
 
-	/// Rejointe un salon ou le crée.
+	/// Rejoint un salon ou le crée.
 	pub fn join_or_create_channel(
 		&self,
 		client_socket: &client::Socket,
@@ -169,19 +189,21 @@ impl ChatApplication
 				.channels
 				.add_client(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel);
+			self.join_channel(client_socket, &channel, false);
 		}
+
+		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
 
 		let can_join = self
 			.channels
-			.can_join(channel_name, channel_key, client_socket.cid());
+			.can_join(channel_name, channel_key, &client_session);
 
 		if can_join.is_ok() {
 			let channel = self
 				.channels
 				.add_client(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel);
+			self.join_channel(client_socket, &channel, false);
 			return;
 		}
 
@@ -191,6 +213,102 @@ impl ChatApplication
 					client_socket.send_err_badchannelkey(channel_name);
 				}
 				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::OperOnly => {
+					client_socket.send_err_operonly(channel_name);
+				}
+			}
+		}
+	}
+
+	/// Rejoint un salon (opérateur) ou le crée.
+	pub fn join_or_create_oper_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+	)
+	{
+		if !self.channels.has(channel_name) {
+			self.channels.create_with_flags(
+				channel_name,
+				None,
+				[ApplyMode {
+					flag: channel::mode::SettingsFlags::OperOnly,
+					args: Default::default(),
+					updated_at: flex_web_framework::types::time::Utc::now(),
+					updated_by: String::from("*"),
+				}],
+			);
+			let channel = self
+				.channels
+				.add_client(channel_name, client_socket.cid())
+				.expect("Le salon que le client a rejoint");
+			self.join_channel(client_socket, &channel, true);
+		}
+
+		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
+		let can_join = self.channels.can_join(channel_name, None, &client_session);
+
+		if can_join.is_ok() {
+			let channel = self
+				.channels
+				.add_client(channel_name, client_socket.cid())
+				.expect("Le salon que le client a rejoint");
+			self.join_channel(client_socket, &channel, true);
+			return;
+		}
+
+		if let Err(err) = can_join {
+			match err {
+				| ChannelJoinError::BadChannelKey => {
+					client_socket.send_err_badchannelkey(channel_name);
+				}
+				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::OperOnly => {
+					client_socket.send_err_operonly(channel_name);
+				}
+			}
+		}
+	}
+
+	/// Rejoint un salon ou le crée (en bypassant la clé s'il y en a une).
+	pub fn join_or_create_channel_bypass_key(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+	)
+	{
+		if !self.channels.has(channel_name) {
+			self.channels.create(channel_name, None);
+			let channel = self
+				.channels
+				.add_client(channel_name, client_socket.cid())
+				.expect("Le salon que le client a rejoint");
+			self.join_channel(client_socket, &channel, true);
+		}
+
+		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
+
+		let can_join = self.channels.can_join(channel_name, None, &client_session);
+
+		match can_join {
+			| Ok(_) => {
+				let channel = self
+					.channels
+					.add_client(channel_name, client_socket.cid())
+					.expect("Le salon que le client a rejoint");
+				self.join_channel(client_socket, &channel, true);
+			}
+			| Err(err) => {
+				match err {
+					| ChannelJoinError::BadChannelKey | ChannelJoinError::OperOnly => {
+						let channel = self
+							.channels
+							.add_client(channel_name, client_socket.cid())
+							.expect("Le salon que le client a rejoint");
+						self.join_channel(client_socket, &channel, true);
+					}
+					| ChannelJoinError::HasAlreadyClient => {}
+				}
 			}
 		}
 	}
@@ -209,11 +327,14 @@ impl ChatApplication
 			return;
 		}
 
-		if !self.channels.does_client_have_rights(
-			channel_name,
-			client_socket.cid(),
-			nick::ChannelAccessLevel::HalfOperator,
-		) {
+		let is_client_operator = self.is_client_global_operator(client_socket);
+
+		if !is_client_operator
+			&& !self.channels.does_client_have_rights(
+				channel_name,
+				client_socket.cid(),
+				nick::ChannelAccessLevel::HalfOperator,
+			) {
 			client_socket.send_err_chanoprivsneeded(channel_name);
 			return;
 		}
@@ -234,13 +355,14 @@ impl ChatApplication
 				continue;
 			}
 
-			if !self
-				.channels
-				.does_client_have_rights_to_operate_on_another_client(
-					channel_name,
-					client_socket.cid(),
-					kick_client_socket.cid(),
-				) {
+			if !is_client_operator
+				&& !self
+					.channels
+					.does_client_have_rights_to_operate_on_another_client(
+						channel_name,
+						client_socket.cid(),
+						kick_client_socket.cid(),
+					) {
 				client_socket.send_err_chanoprivsneeded(channel_name);
 				continue;
 			}
@@ -267,16 +389,16 @@ impl ChatApplication
 
 		for channel_room in client_socket.channels_rooms() {
 			let channel_name = &channel_room[8..];
-			client_socket.emit_part(channel_name, Some("/partall"));
+			client_socket.emit_part(channel_name, Some("/partall"), None);
 		}
 	}
 
-	/// Part d'un salon
-	pub fn part_channel(
+	fn internal_part_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
 		message: Option<&str>,
+		forced: Option<&str>,
 	)
 	{
 		if !self.channels.has(channel_name) {
@@ -294,7 +416,35 @@ impl ChatApplication
 		self.clients
 			.remove_channel(client_socket.cid(), channel_name);
 
-		client_socket.emit_part(channel_name, message)
+		client_socket.emit_part(channel_name, message, forced)
+	}
+
+	/// Part d'un salon
+	pub fn part_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		message: Option<&str>,
+	)
+	{
+		self.internal_part_channel(client_socket, channel_name, message, None)
+	}
+
+	/// Force un utilisateur à quitter un salon.
+	pub fn force_part_channel(
+		&self,
+		client_socket: &client::Socket,
+		force_to_part: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		message: Option<&str>,
+	)
+	{
+		self.internal_part_channel(
+			force_to_part,
+			channel_name,
+			message,
+			Some(&client_socket.user().nickname),
+		)
 	}
 
 	/// Met à jour les niveaux d'accès d'un client sur un salon.
@@ -367,7 +517,7 @@ impl ChannelsSession
 		&self,
 		channel_id: channel::ChannelIDRef,
 		maybe_user_channel_key: Option<&secret::Secret<String>>,
-		client_id: &client::ClientID,
+		client: &client::Client,
 	) -> Result<(), ChannelJoinError>
 	{
 		let channel = self
@@ -384,8 +534,12 @@ impl ChannelsSession
 			}
 		}
 
-		if self.has_client(channel_id, client_id) {
+		if self.has_client(channel_id, client.id()) {
 			return Err(ChannelJoinError::HasAlreadyClient);
+		}
+
+		if channel.modes_settings.has_operonly_flag() && !client.user().is_operator() {
+			return Err(ChannelJoinError::OperOnly);
 		}
 
 		Ok(())
@@ -401,6 +555,23 @@ impl ChannelsSession
 		let channel_name = channel_name.to_string();
 		let channel_id = channel_name.to_lowercase();
 		let mut channel_entity = channel::Channel::new(channel_name);
+		if let Some(channel_key) = maybe_channel_key {
+			channel_entity.set_key("*", channel_key);
+		}
+		self.add(&channel_id, channel_entity)
+	}
+
+	/// Crée un salon avec des drapeaux.
+	pub fn create_with_flags(
+		&self,
+		channel_name: impl ToString,
+		maybe_channel_key: Option<secret::Secret<String>>,
+		flags: impl IntoIterator<Item = ApplyMode<channel::mode::SettingsFlags>>,
+	) -> bool
+	{
+		let channel_name = channel_name.to_string();
+		let channel_id = channel_name.to_lowercase();
+		let mut channel_entity = channel::Channel::new(channel_name).with_flags(flags);
 		if let Some(channel_key) = maybe_channel_key {
 			channel_entity.set_key("*", channel_key);
 		}

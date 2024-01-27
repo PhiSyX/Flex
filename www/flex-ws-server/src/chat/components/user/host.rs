@@ -69,6 +69,15 @@ impl Host
 
 impl Host
 {
+	/// Définit un nouvel hôte virtuel.
+	pub fn set_vhost(&mut self, vhost: impl ToString)
+	{
+		self.virtual_host.replace(vhost.to_string());
+	}
+}
+
+impl Host
+{
 	/// Génère un nom d'hôte à partir de l'adresse IP.
 	fn get_cloaked_ip(hostname: &str, rng: ops::RangeFrom<usize>) -> String
 	{

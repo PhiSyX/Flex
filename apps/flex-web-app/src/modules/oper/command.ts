@@ -8,28 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface PartFormData {
-	channels: Array<string>;
-	message?: string;
-}
+import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
-declare interface SapartFormData {
-	channels: Array<string>;
-	nicknames: Array<string>;
-	message?: string;
-}
+// -------------- //
+// Implémentation //
+// -------------- //
 
-declare interface PartDataResponse {
-	channel: string;
-	message: string | null;
-	forced_by: string | null;
-}
+export class OperCommand implements CommandInterface<"OPER"> {
+	constructor(private store: ChatStore) {}
 
-declare interface Commands {
-	PART: PartFormData;
-	SAPART: SapartFormData;
-}
-
-declare interface CommandResponsesFromServer {
-	PART: PartDataResponse;
+	send(payload: Command<"OPER">): void {
+		this.store.emit("OPER", payload);
+	}
 }

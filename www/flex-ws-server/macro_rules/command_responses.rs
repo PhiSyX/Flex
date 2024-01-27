@@ -25,6 +25,7 @@ macro_rules! command_response {
 
 ::paste::paste! { $(
 
+	#[derive(Debug)]
 	#[derive(Clone)]
 	#[derive(serde::Serialize)]
 	$(#[$doc_struct])*

@@ -8,28 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface PartFormData {
-	channels: Array<string>;
-	message?: string;
-}
+use crate::error_replies;
 
-declare interface SapartFormData {
-	channels: Array<string>;
-	nicknames: Array<string>;
-	message?: string;
-}
-
-declare interface PartDataResponse {
-	channel: string;
-	message: string | null;
-	forced_by: string | null;
-}
-
-declare interface Commands {
-	PART: PartFormData;
-	SAPART: SapartFormData;
-}
-
-declare interface CommandResponsesFromServer {
-	PART: PartDataResponse;
+error_replies! {
+	/// Toute commande nécessitant des privilèges d'opérateur pour fonctionner
+	/// DOIT renvoyer cette erreur pour indiquer que la tentative a échoué.
+	| 481 <-> ERR_NOPRIVILEGES
+		=> ":Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects."
 }

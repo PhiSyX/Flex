@@ -14,6 +14,7 @@ use socketioxide::extract::{Data, SocketRef, State};
 use crate::src::chat::components::channel::{mode, nick};
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
+use crate::src::chat::features::ApplyMode;
 use crate::src::chat::replies::ChannelNickClient;
 use crate::src::ChatApplication;
 
@@ -45,7 +46,12 @@ impl ModeAccessLevelHandler
 	{
 		let client_socket = app.current_client(socket);
 
-		if !app.does_client_have_rights_on_channel(&client_socket, channel_name, min_access_level) {
+		if !app.is_client_global_operator(&client_socket)
+			&& !app.does_client_have_rights_on_channel(
+				&client_socket,
+				channel_name,
+				min_access_level,
+			) {
 			return;
 		}
 
@@ -95,7 +101,7 @@ impl ModeAccessLevelHandler
 					ChannelNickClient::from((target_nick.client.client(), &target_nick.nick));
 				(
 					set_access_level.letter(),
-					mode::ChannelMode {
+					ApplyMode {
 						flag: set_access_level,
 						args: vec![member.user.nickname.to_owned()],
 						updated_at: time::Utc::now(),
@@ -127,6 +133,8 @@ impl ModeAccessLevelHandler
 	{
 		let client_socket = app.current_client(socket);
 
+		let is_client_operator = app.is_client_global_operator(&client_socket);
+
 		let updated: Vec<_> = nicknames
 			.iter()
 			.filter_map(|nickname| {
@@ -137,13 +145,13 @@ impl ModeAccessLevelHandler
 					return None;
 				};
 
-				if client_socket.cid() != target_client_socket.cid()
-					&& !app.does_client_have_rights_on_channel(
-						&client_socket,
-						channel_name,
-						min_access_level,
-					) {
-					client_socket.send_err_chanoprivsneeded(channel_name);
+				let same_client = client_socket.cid() == target_client_socket.cid();
+				if !is_client_operator
+					&& !same_client && !app.does_client_have_rights_on_channel(
+					&client_socket,
+					channel_name,
+					min_access_level,
+				) {
 					return None;
 				}
 
@@ -183,7 +191,7 @@ impl ModeAccessLevelHandler
 					ChannelNickClient::from((target_nick.client.client(), &target_nick.nick));
 				(
 					unset_access_level.letter(),
-					mode::ChannelMode {
+					ApplyMode {
 						flag: unset_access_level,
 						args: vec![member.user.nickname.to_owned()],
 						updated_at: time::Utc::now(),

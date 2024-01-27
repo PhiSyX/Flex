@@ -22,6 +22,7 @@ import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyH
 import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
 import { ErrorChanoprivsneeded } from "~/handlers/errors/ErrorChanoprivsneeded";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
+import { ErrorNoprivilegesHandler } from "~/handlers/errors/ErrorNoprivilegesHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
 import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
 import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
@@ -30,11 +31,16 @@ import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
 import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
 import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
 import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
-import { Module } from "~/modules/interface";
-import { JoinModule } from "~/modules/join/module";
+import { CommandInterface, Module } from "~/modules/interface";
+import { JoinModule, SajoinModule } from "~/modules/join/module";
 import { KickModule } from "~/modules/kick/module";
 import {
 	AccessLevelAOPModule,
+	AccessLevelDEAOPModule,
+	AccessLevelDEHOPModule,
+	AccessLevelDEOPModule,
+	AccessLevelDEQOPModule,
+	AccessLevelDEVIPModule,
 	AccessLevelHOPModule,
 	AccessLevelOPModule,
 	AccessLevelQOPModule,
@@ -42,7 +48,8 @@ import {
 } from "~/modules/mode/access-level/module";
 import { ModeModule } from "~/modules/mode/module";
 import { NickModule } from "~/modules/nick/module";
-import { PartModule } from "~/modules/part/module";
+import { OperModule } from "~/modules/oper/module";
+import { PartModule, SapartModule } from "~/modules/part/module";
 import { PrivmsgModule } from "~/modules/privmsg/module";
 import { QuitModule } from "~/modules/quit/module";
 import { TopicModule } from "~/modules/topic/module";
@@ -92,29 +99,46 @@ export class ChatStore {
 			.add(new ErrorChanoprivsneeded(self))
 			.add(new ErrorCannotsendtochanHandler(self))
 			.add(new ErrorNicknameinuseHandler(self))
+			.add(new ErrorNoprivilegesHandler(self))
 			.add(new ErrorNosuchchannelHandler(self))
 			.add(new ErrorNosuchnickHandler(self))
 			.add(new ErrorNotonchannelHandler(self))
 			.add(new ErrorUsernotinchannelHandler(self));
 
 		self.modules.set(AwayModule.NAME, AwayModule.create(self));
-		self.modules.set(IgnoreModule.NAME, IgnoreModule.create(self));
-		self.modules.set(JoinModule.NAME, JoinModule.create(self));
+		self.modules
+			.set(IgnoreModule.NAME, IgnoreModule.create(self))
+			.set(UnignoreModule.NAME, UnignoreModule.create(self));
+		self.modules
+			.set(JoinModule.NAME, JoinModule.create(self))
+			.set(SajoinModule.NAME, SajoinModule.create(self));
 		self.modules.set(KickModule.NAME, KickModule.create(self));
 		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
-		self.modules.set(PartModule.NAME, PartModule.create(self));
+		self.modules
+			.set(PartModule.NAME, PartModule.create(self))
+			.set(SapartModule.NAME, SapartModule.create(self));
 		self.modules.set(PrivmsgModule.NAME, PrivmsgModule.create(self));
+		self.modules.set(OperModule.NAME, OperModule.create(self));
 		self.modules.set(QuitModule.NAME, QuitModule.create(self));
 		self.modules.set(TopicModule.NAME, TopicModule.create(self));
-		self.modules.set(UnignoreModule.NAME, UnignoreModule.create(self));
 
 		/** Channel access level */
-		self.modules.set(AccessLevelQOPModule.NAME, AccessLevelQOPModule.create(self));
-		self.modules.set(AccessLevelAOPModule.NAME, AccessLevelAOPModule.create(self));
-		self.modules.set(AccessLevelOPModule.NAME, AccessLevelOPModule.create(self));
-		self.modules.set(AccessLevelHOPModule.NAME, AccessLevelHOPModule.create(self));
-		self.modules.set(AccessLevelVIPModule.NAME, AccessLevelVIPModule.create(self));
+		self.modules
+			.set(AccessLevelQOPModule.NAME, AccessLevelQOPModule.create(self))
+			.set(AccessLevelDEQOPModule.NAME, AccessLevelDEQOPModule.create(self));
+		self.modules
+			.set(AccessLevelAOPModule.NAME, AccessLevelAOPModule.create(self))
+			.set(AccessLevelDEAOPModule.NAME, AccessLevelDEAOPModule.create(self));
+		self.modules
+			.set(AccessLevelOPModule.NAME, AccessLevelOPModule.create(self))
+			.set(AccessLevelDEOPModule.NAME, AccessLevelDEOPModule.create(self));
+		self.modules
+			.set(AccessLevelHOPModule.NAME, AccessLevelHOPModule.create(self))
+			.set(AccessLevelDEHOPModule.NAME, AccessLevelDEHOPModule.create(self));
+		self.modules
+			.set(AccessLevelVIPModule.NAME, AccessLevelVIPModule.create(self))
+			.set(AccessLevelDEVIPModule.NAME, AccessLevelDEVIPModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex").withID("Flex");
 		const rooms: Map<RoomID, Room> = new Map([[thisServer.id(), thisServer]]);
@@ -350,6 +374,19 @@ export class ChatStore {
 		this._selectedUser.replace([room.id(), origin.id]);
 	}
 
+	upgradeUser(user: User): User {
+		const fuser = this._users.get(user.id);
+		if (fuser) {
+			fuser.host = user.host;
+			fuser.operator = user.operator;
+			return fuser;
+		}
+
+		this._users.set(user.id, user);
+		// biome-ignore lint/style/noNonNullAssertion: Voir le code ci-haut.
+		return this._users.get(user.id)!;
+	}
+
 	unsetSelectedUser() {
 		this._selectedUser = None();
 	}
@@ -529,48 +566,28 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		accessLevel: ChannelAccessLevel,
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
+
+		let module: unknown;
+
 		switch (accessLevel) {
 			case ChannelAccessLevel.Owner:
-				{
-					const module = store.modules.get(
-						AccessLevelQOPModule.NAME,
-					) as AccessLevelQOPModule;
-					module.sendSet(payload);
-				}
+				module = store.modules.get(AccessLevelQOPModule.NAME);
 				break;
 			case ChannelAccessLevel.AdminOperator:
-				{
-					const module = store.modules.get(
-						AccessLevelAOPModule.NAME,
-					) as AccessLevelAOPModule;
-					module.sendSet(payload);
-				}
+				module = store.modules.get(AccessLevelAOPModule.NAME);
 				break;
 			case ChannelAccessLevel.Operator:
-				{
-					const module = store.modules.get(
-						AccessLevelOPModule.NAME,
-					) as AccessLevelOPModule;
-					module.sendSet(payload);
-				}
+				module = store.modules.get(AccessLevelOPModule.NAME);
 				break;
 			case ChannelAccessLevel.HalfOperator:
-				{
-					const module = store.modules.get(
-						AccessLevelHOPModule.NAME,
-					) as AccessLevelHOPModule;
-					module.sendSet(payload);
-				}
+				module = store.modules.get(AccessLevelHOPModule.NAME);
 				break;
 			case ChannelAccessLevel.Vip:
-				{
-					const module = store.modules.get(
-						AccessLevelVIPModule.NAME,
-					) as AccessLevelVIPModule;
-					module.sendSet(payload);
-				}
+				module = store.modules.get(AccessLevelVIPModule.NAME);
 				break;
 		}
+
+		(module as CommandInterface<"OP">).send(payload);
 	}
 
 	function sendUnsetAccessLevel(
@@ -579,48 +596,27 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		accessLevel: ChannelAccessLevel,
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
+		let module: unknown;
+
 		switch (accessLevel) {
 			case ChannelAccessLevel.Owner:
-				{
-					const module = store.modules.get(
-						AccessLevelQOPModule.NAME,
-					) as AccessLevelQOPModule;
-					module.sendUnset(payload);
-				}
+				module = store.modules.get(AccessLevelDEQOPModule.NAME);
 				break;
 			case ChannelAccessLevel.AdminOperator:
-				{
-					const module = store.modules.get(
-						AccessLevelAOPModule.NAME,
-					) as AccessLevelAOPModule;
-					module.sendUnset(payload);
-				}
+				module = store.modules.get(AccessLevelDEAOPModule.NAME);
 				break;
 			case ChannelAccessLevel.Operator:
-				{
-					const module = store.modules.get(
-						AccessLevelOPModule.NAME,
-					) as AccessLevelOPModule;
-					module.sendUnset(payload);
-				}
+				module = store.modules.get(AccessLevelDEOPModule.NAME);
 				break;
 			case ChannelAccessLevel.HalfOperator:
-				{
-					const module = store.modules.get(
-						AccessLevelHOPModule.NAME,
-					) as AccessLevelHOPModule;
-					module.sendUnset(payload);
-				}
+				module = store.modules.get(AccessLevelDEHOPModule.NAME);
 				break;
 			case ChannelAccessLevel.Vip:
-				{
-					const module = store.modules.get(
-						AccessLevelVIPModule.NAME,
-					) as AccessLevelVIPModule;
-					module.sendUnset(payload);
-				}
+				module = store.modules.get(AccessLevelDEVIPModule.NAME);
 				break;
 		}
+
+		(module as CommandInterface<"DEOP">).send(payload);
 	}
 
 	function unignoreUser(nickname: string) {

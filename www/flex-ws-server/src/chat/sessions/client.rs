@@ -14,7 +14,10 @@ use dashmap::{DashMap, DashSet};
 use flex_web_framework::http::request;
 use socketioxide::extract::SocketRef;
 
-use crate::src::chat::components::{channel, client, nick};
+use crate::config::flex;
+use crate::src::chat::components::client::ClientSocketInterface;
+use crate::src::chat::components::{self, channel, client, nick};
+use crate::src::chat::features::ApplyMode;
 use crate::src::ChatApplication;
 
 // ---- //
@@ -70,9 +73,7 @@ impl ChatApplication
 	/// Change le pseudonyme d'un client
 	pub fn change_nickname_of_client(&self, client_socket: &mut client::Socket, nickname: &str)
 	{
-		use client::ClientSocketInterface;
-
-		if let Err(err) = client_socket.client_mut().user_mut().set_nickname(nickname) {
+		if let Err(err) = client_socket.user_mut().set_nickname(nickname) {
 			log::error!("Changement de pseudonyme impossible {:?}", err);
 
 			client_socket.send_err_erroneusnickname(nickname);
@@ -119,6 +120,25 @@ impl ChatApplication
 		client::Socket::Borrowed { socket, client }
 	}
 
+	/// Récupère le client courant (immuable) avec les droits d'opérateurs
+	/// globaux / locaux à partir d'une socket.
+	pub fn current_client_operator<'a>(
+		&'a self,
+		socket: &'a socketioxide::extract::SocketRef,
+	) -> Option<client::Socket<'a>>
+	{
+		let client: socketioxide::extensions::Ref<'a, client::Client> =
+			socket.extensions.get().unwrap();
+		let client_socket = client::Socket::Borrowed { socket, client };
+
+		if !client_socket.user().is_operator() {
+			client_socket.send_err_noprivileges();
+			return None;
+		}
+
+		Some(client_socket)
+	}
+
 	/// Récupère le client courant (mutable) à partir d'une socket.
 	pub fn current_client_mut<'a>(
 		&'a self,
@@ -148,7 +168,7 @@ impl ChatApplication
 	/// Trouve un client de session à partir de son ID.
 	pub fn find_client(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
-		self.clients.find(client_id)
+		self.clients.get(client_id)
 	}
 
 	/// Cherche un [client::Socket] à partir d'un pseudonyme.
@@ -158,8 +178,8 @@ impl ChatApplication
 		nickname: &str,
 	) -> Option<client::Socket>
 	{
-		let to_ignore_client = self.clients.find_by_nickname(nickname)?;
-		let to_ignore_socket = socket.broadcast().get_socket(to_ignore_client.sid())?;
+		let to_ignore_client = self.clients.get_by_nickname(nickname)?;
+		let to_ignore_socket = socket.broadcast().get_socket(to_ignore_client.sid()?)?;
 		Some(client::Socket::Owned {
 			client: Box::new(to_ignore_client),
 			socket: to_ignore_socket,
@@ -185,6 +205,39 @@ impl ChatApplication
 				.marks_client_as_away(client_socket.cid(), "Je suis absent.");
 			client_socket.send_rpl_nowaway();
 		}
+	}
+
+	/// Marque le client en session comme étant un opérateur.
+	pub fn marks_client_as_operator(
+		&self,
+		client_socket: &mut client::Socket,
+		oper_vhost: Option<&str>,
+		oper_type: flex::flex_config_operator_type,
+	)
+	{
+		self.clients
+			.marks_client_as_operator(client_socket.cid(), oper_vhost, oper_type);
+
+		if let Some(vhost) = oper_vhost {
+			client_socket.user_mut().set_vhost(vhost);
+		}
+
+		client_socket
+			.client_mut()
+			.marks_client_as_operator(oper_type);
+
+		let flag_oper = match oper_type {
+			| flex::flex_config_operator_type::LocalOperator => {
+				components::user::Flag::LocalOperator
+			}
+			| flex::flex_config_operator_type::GlobalOperator => {
+				components::user::Flag::GlobalOperator
+			}
+		};
+
+		client_socket.emit_umode(&[ApplyMode::new(flag_oper.clone())]);
+
+		client_socket.send_rpl_youreoper(flag_oper);
 	}
 
 	/// Enregistre le client en session.
@@ -247,7 +300,7 @@ impl ClientsSession
 	{
 		self.blocklist
 			.get(client_id)
-			.map(|l| l.value().iter().filter_map(|bid| self.find(&bid)).collect())
+			.map(|l| l.value().iter().filter_map(|bid| self.get(&bid)).collect())
 			.unwrap_or_default()
 	}
 
@@ -283,7 +336,7 @@ impl ClientsSession
 	}
 
 	/// Cherche un client en fonction de son ID.
-	pub fn find(&self, client_id: &client::ClientID) -> Option<client::Client>
+	pub fn get(&self, client_id: &client::ClientID) -> Option<client::Client>
 	{
 		self.clients.iter().find_map(|rm| {
 			let (cid, client) = (rm.key(), rm.value());
@@ -292,7 +345,7 @@ impl ClientsSession
 	}
 
 	/// Cherche un client en fonction de son ID.
-	pub fn find_mut(
+	pub fn get_mut(
 		&self,
 		client_id: &client::ClientID,
 	) -> Option<dashmap::mapref::multiple::RefMutMulti<'_, client::ClientID, client::Client>>
@@ -303,7 +356,7 @@ impl ClientsSession
 	}
 
 	/// Trouve un client en fonction de son ID.
-	pub fn find_by_nickname(&self, nickname: &str) -> Option<client::Client>
+	pub fn get_by_nickname(&self, nickname: &str) -> Option<client::Client>
 	{
 		let nickname = nickname.to_lowercase();
 		self.clients.iter().find_map(|rm| {
@@ -329,7 +382,7 @@ impl ClientsSession
 	/// Vérifie si un client en session est absent.
 	pub fn is_client_away(&self, client_id: &client::ClientID) -> bool
 	{
-		let Some(client) = self.find(client_id) else {
+		let Some(client) = self.get(client_id) else {
 			return false;
 		};
 
@@ -339,7 +392,7 @@ impl ClientsSession
 	/// Marque un client comme étant absent.
 	pub fn marks_client_as_away(&self, client_id: &client::ClientID, text: impl ToString)
 	{
-		let Some(mut client) = self.find_mut(client_id) else {
+		let Some(mut client) = self.get_mut(client_id) else {
 			return;
 		};
 
@@ -349,18 +402,38 @@ impl ClientsSession
 	/// Marque un client comme n'étant plus absent.
 	pub fn marks_client_as_no_longer_away(&self, client_id: &client::ClientID)
 	{
-		let Some(mut client) = self.find_mut(client_id) else {
+		let Some(mut client) = self.get_mut(client_id) else {
 			return;
 		};
 
 		client.marks_user_as_no_longer_away();
 	}
 
+	/// Marque un client comme étant un opérateur.
+	pub fn marks_client_as_operator(
+		&self,
+		client_id: &client::ClientID,
+		oper_vhost: Option<&str>,
+		oper_type: flex::flex_config_operator_type,
+	)
+	{
+		let Some(mut client) = self.get_mut(client_id) else {
+			return;
+		};
+
+		client.marks_client_as_operator(oper_type);
+		if let Some(vhost) = oper_vhost {
+			client.set_vhost(vhost);
+		}
+	}
+
 	/// Enregistre un client.
 	pub fn register(&self, client: &client::Client)
 	{
 		let mut session_client = self.clients.get_mut(client.id()).unwrap();
-		session_client.set_sid(client.sid());
+		if let Some(sid) = client.sid() {
+			session_client.set_sid(sid);
+		}
 		session_client.set_connected();
 		session_client.set_registered();
 	}

@@ -27,7 +27,7 @@ defineProps<Props>();
 	<component :is="tag" :data-myself="isMe" :class="classes">
 		<span class="prefix">{{ prefix }}</span>
 		<span class="channel/nick:symbol">{{ symbol }}</span>
-		<bdi v-if="hits && hits.length > 0" :class="classes">
+		<bdo v-if="hits && hits.length > 0" :class="classes">
 			<template v-for="(substring, idx) of hits" :key="idx">
 				<mark
 					:key="idx + '!'"
@@ -38,10 +38,10 @@ defineProps<Props>();
 				</mark>
 				<mark v-else :key="idx + '?'">{{ nickname }}</mark>
 			</template>
-		</bdi>
-		<bdi v-else :class="classes">
+		</bdo>
+		<bdo v-else :class="classes">
 			{{ nickname }}
-		</bdi>
+		</bdo>
 		<span class="suffix">{{ suffix }}</span>
 	</component>
 </template>
@@ -49,14 +49,14 @@ defineProps<Props>();
 <style lang="scss" scoped>
 @use "scss:~/flexsheets" as fx;
 
-bdi {
+bdo {
 	color: var(--room-nick-color);
 	word-break: break-all;
 	hyphens: manual;
 	cursor: pointer;
 }
 
-[data-myself="true"] bdi {
+[data-myself="true"] bdo {
 	color: var(--room-nick-myself-color, var(--room-nick-color));
 }
 

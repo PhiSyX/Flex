@@ -21,7 +21,7 @@ defineProps<Props>();
 <template>
 	<component :is="tag" :data-myself="isMe">
 		<span class="prefix">{{ prefix }}</span>
-		<bdi>{{ nickname }}</bdi>
+		<bdo>{{ nickname }}</bdo>
 		<span class="suffix">{{ suffix }}</span>
 	</component>
 </template>
@@ -29,14 +29,14 @@ defineProps<Props>();
 <style lang="scss" scoped>
 @use "scss:~/flexsheets" as fx;
 
-bdi {
+bdo {
 	color: var(--room-nick-color);
 	word-break: break-all;
 	hyphens: manual;
 	cursor: pointer;
 }
 
-[data-myself="true"] bdi {
+[data-myself="true"] bdo {
 	color: var(--room-nick-myself-color, var(--room-nick-color));
 }
 </style>

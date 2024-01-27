@@ -18,6 +18,7 @@ use std::collections::HashMap;
 use flex_web_framework::types::{secret, time};
 
 use super::client;
+use crate::src::chat::features::ApplyMode;
 
 // ---- //
 // Type //
@@ -61,6 +62,19 @@ impl Channel
 		}
 	}
 
+	/// Crée une nouvelle structure d'un salon avec des drapeaux.
+	pub fn with_flags(
+		mut self,
+		flags: impl IntoIterator<Item = ApplyMode<mode::SettingsFlags>>,
+	) -> Self
+	{
+		self.modes_settings.extend(flags);
+		self
+	}
+}
+
+impl Channel
+{
 	/// Ajoute un membre au salon.
 	pub fn add_member(&mut self, id: client::ClientID, nick: nick::ChannelNick)
 	{
@@ -100,7 +114,7 @@ impl Channel
 	/// Définit la clé du salon.
 	pub fn set_key(&mut self, updated_by: &str, key: impl Into<secret::Secret<String>>)
 	{
-		self.modes_settings.insert(mode::ChannelMode {
+		self.modes_settings.insert(ApplyMode {
 			flag: mode::SettingsFlags::Key(key.into()),
 			args: Default::default(),
 			updated_by: updated_by.to_owned(),
@@ -109,7 +123,7 @@ impl Channel
 	}
 
 	/// Paramètres du salon.
-	pub fn settings(&self) -> HashMap<char, mode::ChannelMode<mode::SettingsFlags>>
+	pub fn settings(&self) -> HashMap<char, ApplyMode<mode::SettingsFlags>>
 	{
 		self.modes_settings
 			.iter()

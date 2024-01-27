@@ -17,6 +17,7 @@ use crate::src::ChatApplication;
 // --------- //
 
 pub struct JoinHandler;
+pub struct SajoinHandler;
 
 // -------------- //
 // Implémentation //
@@ -73,6 +74,35 @@ impl JoinHandler
 		for (idx, channel_name) in data.channels.iter().enumerate() {
 			let channel_key = channel_keys.get(idx).filter(|key| !key.is_empty());
 			app.join_or_create_channel(&client_socket, channel_name, channel_key);
+		}
+	}
+}
+
+impl SajoinHandler
+{
+	pub const COMMAND_NAME: &'static str = "SAJOIN";
+
+	/// La commande SAJOIN est utilisée par un client de type opérateur global
+	/// pour forcer les pseudo à rejoindre des salons spécifiques.
+	pub async fn handle(
+		socket: SocketRef,
+		State(app): State<ChatApplication>,
+		Data(data): Data<super::SajoinCommandFormData>,
+	)
+	{
+		let Some(client_socket) = app.current_client_operator(&socket) else {
+			return;
+		};
+
+		for nickname in data.nicknames.iter() {
+			let Some(nickname_socket) = app.find_socket_by_nickname(&socket, nickname) else {
+				client_socket.send_err_nosuchnick(nickname);
+				continue;
+			};
+
+			for channel_name in data.channels.iter() {
+				app.join_or_create_channel_bypass_key(&nickname_socket, channel_name);
+			}
 		}
 	}
 }
