@@ -12,7 +12,6 @@ use std::collections::HashSet;
 use std::ops;
 
 use flex_web_framework::types::secret;
-use flex_web_framework::types::time::{DateTime, Utc};
 
 use crate::src::chat::features::ApplyMode;
 
@@ -173,18 +172,8 @@ impl Default for ChannelModes<SettingsFlags>
 	fn default() -> Self
 	{
 		let settings = HashSet::from_iter([
-			ApplyMode {
-				flag: SettingsFlags::NoExternalMessages,
-				args: Default::default(),
-				updated_at: Utc::now(),
-				updated_by: "*".into(),
-			},
-			ApplyMode {
-				flag: SettingsFlags::NoTopic,
-				args: Default::default(),
-				updated_at: Utc::now(),
-				updated_by: "*".into(),
-			},
+			ApplyMode::new(SettingsFlags::NoExternalMessages),
+			ApplyMode::new(SettingsFlags::NoTopic),
 		]);
 
 		Self { modes: settings }

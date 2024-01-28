@@ -8,10 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_serde_validation::string::validate_opt_string_filter;
-
 use crate::command_formdata;
-use crate::macro_rules::command_formdata::{validate_channels, validate_nicknames};
+use crate::macro_rules::command_formdata::validate_channels;
 
 command_formdata! {
 	struct LIST
