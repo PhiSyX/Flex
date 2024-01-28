@@ -26,6 +26,11 @@ impl ListHandler
 {
 	pub const COMMAND_NAME: &'static str = "LIST";
 
+	/// La commande list permet de dresser la liste des salons et de leurs
+	/// sujets.
+	///
+	// TODO: Les caractères joker sont autorisés dans le paramètre <channels>.
+	// TODO: Mettre en cache le résultat, pendant une certaine durée.
 	pub async fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
