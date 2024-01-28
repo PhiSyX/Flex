@@ -62,19 +62,13 @@ impl ChatApplication
 		self.channels.get(channel_name)
 	}
 
-	/// Récupère un client à partir de son ID.
-	pub fn get_client_by_id(&self, client_id: &client::ClientID) -> Option<client::Client>
+	/// Est-ce qu'un client a un salon donné dans sa liste de salons rejoint.
+	pub fn is_client_has_channel(&self, client_id: &client::ClientID, channel_name: &str) -> bool
 	{
-		self.clients.get(client_id)
-	}
-
-	/// Récupère un client à partir de son ID.
-	pub fn get_client_mut_by_id(
-		&self,
-		client_id: &client::ClientID,
-	) -> Option<RefMutMulti<'_, client::ClientID, client::Client>>
-	{
-		self.clients.get_mut(client_id)
+		let Some(client) = self.get_client_by_id(client_id) else {
+			return false;
+		};
+		client.has_channel(channel_name)
 	}
 
 	/// Le client peut-il écrire sur le salon?
@@ -144,15 +138,6 @@ impl ChatApplication
 				false
 			}
 		}
-	}
-
-	/// Est-ce que le client est un opérateur global?
-	pub fn is_client_global_operator(&self, client_socket: &client::Socket) -> bool
-	{
-		let Some(client) = self.clients.get(client_socket.cid()) else {
-			return false;
-		};
-		client.user().is_global_operator()
 	}
 
 	/// Rejoint un salon.

@@ -10,6 +10,7 @@
 
 use std::net;
 
+use dashmap::mapref::multiple::RefMutMulti;
 use dashmap::{DashMap, DashSet};
 use flex_web_framework::http::request;
 use socketioxide::extract::SocketRef;
@@ -165,12 +166,6 @@ impl ChatApplication
 		session_client.disconnect();
 	}
 
-	/// Trouve un client de session à partir de son ID.
-	pub fn find_client(&self, client_id: &client::ClientID) -> Option<client::Client>
-	{
-		self.clients.get(client_id)
-	}
-
 	/// Cherche un [client::Socket] à partir d'un pseudonyme.
 	pub fn find_socket_by_nickname(
 		&self,
@@ -184,6 +179,30 @@ impl ChatApplication
 			client: Box::new(to_ignore_client),
 			socket: to_ignore_socket,
 		})
+	}
+
+	/// Récupère un client à partir de son ID.
+	pub fn get_client_by_id(&self, client_id: &client::ClientID) -> Option<client::Client>
+	{
+		self.clients.get(client_id)
+	}
+
+	/// Récupère un client à partir de son ID.
+	pub fn get_client_mut_by_id(
+		&self,
+		client_id: &client::ClientID,
+	) -> Option<RefMutMulti<'_, client::ClientID, client::Client>>
+	{
+		self.clients.get_mut(client_id)
+	}
+
+	/// Est-ce que le client est un opérateur global?
+	pub fn is_client_global_operator(&self, client_socket: &client::Socket) -> bool
+	{
+		let Some(client) = self.get_client_by_id(client_socket.cid()) else {
+			return false;
+		};
+		client.user().is_global_operator()
 	}
 
 	/// Marque le client en session comme étant absent.

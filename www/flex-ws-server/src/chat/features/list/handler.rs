@@ -48,6 +48,11 @@ impl ListHandler
 				continue;
 			}
 
+			if app.is_client_has_channel(client_socket.cid(), &channel.name) {
+				client_socket.send_rpl_list(channel.value());
+				continue;
+			}
+
 			if !channel.modes_settings.has_secret_flag() {
 				client_socket.send_rpl_list(channel.value());
 				continue;
