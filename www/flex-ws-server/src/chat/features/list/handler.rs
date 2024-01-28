@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::src::chat::components::ClientSocketInterface;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -28,7 +29,7 @@ impl ListHandler
 
 	/// La commande list permet de dresser la liste des salons et de leurs
 	/// sujets.
-	///
+	//
 	// TODO: Les caractères joker sont autorisés dans le paramètre <channels>.
 	// TODO: Mettre en cache le résultat, pendant une certaine durée.
 	pub async fn handle(
@@ -42,7 +43,15 @@ impl ListHandler
 		client_socket.send_rpl_liststart();
 
 		for channel in app.channels.list() {
-			client_socket.send_rpl_list(channel.value());
+			if client_socket.user().is_global_operator() {
+				client_socket.send_rpl_list(channel.value());
+				continue;
+			}
+
+			if !channel.modes_settings.has_secret_flag() {
+				client_socket.send_rpl_list(channel.value());
+				continue;
+			}
 		}
 
 		client_socket.send_rpl_listend();

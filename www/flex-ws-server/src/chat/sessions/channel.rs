@@ -231,12 +231,10 @@ impl ChatApplication
 			self.channels.create_with_flags(
 				channel_name,
 				None,
-				[ApplyMode {
-					flag: channel::mode::SettingsFlags::OperOnly,
-					args: Default::default(),
-					updated_at: flex_web_framework::types::time::Utc::now(),
-					updated_by: String::from("*"),
-				}],
+				[
+					ApplyMode::new(channel::mode::SettingsFlags::OperOnly),
+					ApplyMode::new(channel::mode::SettingsFlags::Secret),
+				],
 			);
 			let channel = self
 				.channels

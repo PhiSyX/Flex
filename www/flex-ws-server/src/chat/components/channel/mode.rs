@@ -24,6 +24,7 @@ pub const CHANNEL_MODE_SETTINGS_MODERATE: char = 'm';
 pub const CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES: char = 'n';
 pub const CHANNEL_MODE_SETTINGS_NOTOPIC: char = 't';
 pub const CHANNEL_MODE_SETTINGS_OPERONLY: char = 'O';
+pub const CHANNEL_MODE_SETTINGS_SECRET: char = 's';
 
 // --------- //
 // Structure //
@@ -61,6 +62,8 @@ pub enum SettingsFlags
 	NoTopic,
 	/// Salon réservé aux opérateurs globaux uniquement.
 	OperOnly,
+	/// Salon secret. Ces salons ne seront pas affiché dans la liste des salons.
+	Secret,
 }
 
 // -------------- //
@@ -133,6 +136,20 @@ impl ChannelModes<SettingsFlags>
 		})
 	}
 
+	/// Est-ce que les paramètres du salon contiennent le drapeau +s
+	pub fn has_secret_flag(&self) -> bool
+	{
+		self.modes.iter().any(|mode| {
+			matches!(
+				mode,
+				ApplyMode {
+					flag: SettingsFlags::Secret,
+					..
+				}
+			)
+		})
+	}
+
 	/// Est-ce que les paramètres du salon contiennent le drapeau +t
 	pub fn has_topic_flag(&self) -> bool
 	{
@@ -159,6 +176,7 @@ impl SettingsFlags
 			| Self::NoExternalMessages => CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES,
 			| Self::NoTopic => CHANNEL_MODE_SETTINGS_NOTOPIC,
 			| Self::OperOnly => CHANNEL_MODE_SETTINGS_OPERONLY,
+			| Self::Secret => CHANNEL_MODE_SETTINGS_SECRET,
 		}
 	}
 }
