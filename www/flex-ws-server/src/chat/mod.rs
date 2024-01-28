@@ -62,6 +62,12 @@ mod features
 			response,
 		};
 
+		list / {
+			formdata,
+			handler,
+			response,
+		};
+
 		kick / {
 			formdata,
 			handler,

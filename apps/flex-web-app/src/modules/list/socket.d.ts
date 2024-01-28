@@ -8,21 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+declare interface ListDataResponse {
+	channel: string;
+	modes_settings: string;
+	topic: string;
+	total_members: number;
+}
 
-// -------------- //
-// Implémentation //
-// -------------- //
+declare interface Commands {
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	LIST: {};
+}
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
-	constructor(private store: ChatStore) {}
-
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
-	}
-
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
-	}
+declare interface CommandResponsesReplies {
+	RPL_LIST: ListDataResponse;
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	RPL_LISTEND: {};
+	// biome-ignore lint/complexity/noBannedTypes: ?
+	RPL_LISTSTART: {};
 }

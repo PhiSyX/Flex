@@ -32,7 +32,7 @@ export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER"> {
 	handle(data: GenericReply<"RPL_YOUREOPER">) {
 		this.store.upgradeUser(new User(data.origin).withOperatorFlag(data.oper_type));
 
-		const currentRoom = this.store.roomManager().current();
+		const currentRoom = this.store.roomManager().active();
 		currentRoom.addEvent("event:rpl_youreoper", { ...data, isMe: true }, data.message.slice(1));
 	}
 }
@@ -52,7 +52,7 @@ export class ErrorNooperhostHandler implements SocketEventInterface<"ERR_NOOPERH
 	}
 
 	handle(data: GenericReply<"ERR_NOOPERHOST">) {
-		const currentRoom = this.store.roomManager().current();
+		const currentRoom = this.store.roomManager().active();
 		currentRoom.addEvent("error:err_nooperhost", { ...data, isMe: false }, data.reason);
 	}
 }
@@ -72,7 +72,7 @@ export class ErrorPasswdmismatchHandler implements SocketEventInterface<"ERR_PAS
 	}
 
 	handle(data: GenericReply<"ERR_PASSWDMISMATCH">) {
-		const currentRoom = this.store.roomManager().current();
+		const currentRoom = this.store.roomManager().active();
 		currentRoom.addEvent("error:err_passwdmismatch", { ...data, isMe: false }, data.reason);
 	}
 }
@@ -92,7 +92,7 @@ export class ErrorOperonlyHandler implements SocketEventInterface<"ERR_OPERONLY"
 	}
 
 	handle(data: GenericReply<"ERR_OPERONLY">) {
-		const currentRoom = this.store.roomManager().current();
+		const currentRoom = this.store.roomManager().active();
 		currentRoom.addEvent("error:err_operonly", { ...data, isMe: false }, data.reason);
 	}
 }

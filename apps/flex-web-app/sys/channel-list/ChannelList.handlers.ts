@@ -8,21 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+import { selectedChannels } from "./ChannelList.state";
 
-// -------------- //
-// Implémentation //
-// -------------- //
+// ---- //
+// Type //
+// ---- //
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
-	constructor(private store: ChatStore) {}
+export interface Emits {
+	(evtName: "join-channel", name: string): void;
+}
 
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
+// -------- //
+// Handlers //
+// -------- //
+
+export function joinSelectedChannels(emit: Emits) {
+	function joinSelectedChannelsHandler() {
+		for (const channel of selectedChannels.value) {
+			emit("join-channel", channel);
+		}
 	}
-
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
-	}
+	return joinSelectedChannelsHandler;
 }

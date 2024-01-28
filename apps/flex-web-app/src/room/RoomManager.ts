@@ -21,6 +21,23 @@ export class RoomManager {
 	_rooms: Map<RoomID, Room> = new Map();
 
 	/**
+	 * Chambre courante à l'exception des chambres de type suivants:
+	 *
+	 * 	- "channel-list-custom-room"
+	 */
+	active(): Room {
+		return this._currentRoom
+			.and_then((currentRoom) => this.get(currentRoom))
+			.filter_map((customRoom) => {
+				if (customRoom.type === "channel-list-custom-room") {
+					return this.get("Flex");
+				}
+				return Some(customRoom);
+			})
+			.expect("La chambre courante");
+	}
+
+	/**
 	 * Définit les rooms de la classe à partir d'un itérable.
 	 */
 	extends(rooms: Iterable<[RoomID, Room]>) {

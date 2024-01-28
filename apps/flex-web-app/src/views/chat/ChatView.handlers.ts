@@ -16,6 +16,11 @@ const chatStore = useChatStore();
 // Handlers //
 // -------- //
 
+export function joinChannelHandler(name: string) {
+	chatStore.joinChannel(name);
+	chatStore.changeRoom(name);
+}
+
 export function sendMessageHandler(name: string, message: string) {
 	chatStore.sendMessage(name, message);
 }

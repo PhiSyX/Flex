@@ -8,21 +8,43 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+use socketioxide::extract::{Data, SocketRef, State};
+
+use crate::src::ChatApplication;
+
+// --------- //
+// Structure //
+// --------- //
+
+pub struct ListHandler;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
-	constructor(private store: ChatStore) {}
+impl ListHandler
+{
+	pub const COMMAND_NAME: &'static str = "LIST";
 
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
-	}
+	/// La commande list permet de dresser la liste des salons et de leurs
+	/// sujets.
+	///
+	// TODO: Les caractères joker sont autorisés dans le paramètre <channels>.
+	// TODO: Mettre en cache le résultat, pendant une certaine durée.
+	pub async fn handle(
+		socket: SocketRef,
+		State(app): State<ChatApplication>,
+		Data(_): Data<super::ListCommandFormData>,
+	)
+	{
+		let client_socket = app.current_client(&socket);
 
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
+		client_socket.send_rpl_liststart();
+
+		for channel in app.channels.list() {
+			client_socket.send_rpl_list(channel.value());
+		}
+
+		client_socket.send_rpl_listend();
 	}
 }

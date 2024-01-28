@@ -723,6 +723,12 @@ impl ChannelsSession
 		Ok(())
 	}
 
+	/// Liste des salons crées depuis le début de la session.
+	pub fn list(&self) -> dashmap::iter::Iter<'_, String, channel::Channel>
+	{
+		self.0.iter()
+	}
+
 	/// Supprime un salon.
 	pub fn remove(&self, channel_id: channel::ChannelIDRef) -> Option<(String, channel::Channel)>
 	{

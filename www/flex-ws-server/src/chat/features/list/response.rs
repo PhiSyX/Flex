@@ -8,21 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+use crate::reserved_numerics;
 
-// -------------- //
-// Implémentation //
-// -------------- //
+reserved_numerics! {
+	| 321 <-> RPL_LISTSTART => ":Début de /LIST"
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
-	constructor(private store: ChatStore) {}
+	| 322 <-> RPL_LIST {
+		channel: str,
+		modes_settings: str,
+		topic: str,
+		total_members: usize
+	} => "{channel} {modes_settings} :{topic}"
 
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
-	}
-
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
-	}
+	| 323 <-> RPL_LISTEND => ":Fin de /LIST"
 }

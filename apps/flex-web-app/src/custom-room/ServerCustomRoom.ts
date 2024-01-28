@@ -8,21 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+import { Room } from "~/room/Room";
 
-// -------------- //
-// Implémentation //
-// -------------- //
+export class ServerCustomRoom extends Room<"server-custom-room"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
-	constructor(private store: ChatStore) {}
-
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
+	constructor(name: string) {
+		super("server-custom-room", name);
 	}
 
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
+	// ---------- //
+	// Properties //
+	// ---------- //
+
+	/**
+	 * Connecté ou non
+	 */
+	connected = false;
+
+	/**
+	 * Est-ce que le serveur est connecté?
+	 */
+	isConnected(): boolean {
+		return this.connected;
+	}
+
+	/**
+	 * Définit le serveur comme étant connecté ou non.
+	 */
+	setConnected(bool: boolean) {
+		this.connected = bool;
 	}
 }

@@ -22,7 +22,7 @@ export class ErrorNoprivilegesHandler implements SocketEventInterface<"ERR_NOPRI
 	}
 
 	handle(data: GenericReply<"ERR_NOPRIVILEGES">) {
-		const room = this.store.roomManager().current();
+		const room = this.store.roomManager().active();
 		room.addEvent("error:err_noprivileges", { ...data, isMe: true }, data.reason.slice(1));
 	}
 }

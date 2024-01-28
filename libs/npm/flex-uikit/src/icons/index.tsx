@@ -23,6 +23,7 @@ export type Icons =
 	| "arrow-left"
 	| "arrow-right"
 	| "channel"
+	| "channel-list"
 	| "close"
 	| "home"
 	| "logoff"

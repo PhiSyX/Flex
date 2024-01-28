@@ -23,3 +23,7 @@ export function changeRoomHandler(origin: Origin | string) {
 export function closeRoomHandler(origin: Origin | string) {
 	chatStore.closeRoom(origin);
 }
+
+export function openChannelListHandler() {
+	chatStore.channelList();
+}

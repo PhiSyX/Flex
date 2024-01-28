@@ -22,7 +22,7 @@ export class ErrorNosuchnickHandler implements SocketEventInterface<"ERR_NOSUCHN
 	}
 
 	handle(data: GenericReply<"ERR_NOSUCHNICK">) {
-		const room = this.store.roomManager().current();
+		const room = this.store.roomManager().active();
 		room.addEvent("error:err_nosuchnick", { ...data, isMe: true }, data.reason);
 	}
 }

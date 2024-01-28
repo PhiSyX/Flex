@@ -2,7 +2,11 @@
 import NavigationArea from "#/sys/navigation-area/NavigationArea.vue";
 
 import { servers } from "./Navigation.state";
-import { changeRoomHandler, closeRoomHandler } from "./Navigation.handlers";
+import {
+	changeRoomHandler,
+	closeRoomHandler,
+	openChannelListHandler,
+} from "./Navigation.handlers";
 </script>
 
 <template>
@@ -10,5 +14,6 @@ import { changeRoomHandler, closeRoomHandler } from "./Navigation.handlers";
 		:servers="servers"
 		@change-room="changeRoomHandler"
 		@close-room="closeRoomHandler"
+		@open-channel-list="openChannelListHandler"
 	/>
 </template>

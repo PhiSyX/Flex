@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ButtonIcon } from "@phisyx/flex-uikit";
+import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 
 import { Room } from "~/room/Room";
 
 import { folded, navWidth } from "./NavigationArea.state";
-import { type Emits, changeRoom, closeRoom } from "./NavigationArea.handlers";
+import { type Emits, changeRoom, closeRoom, openChannelList } from "./NavigationArea.handlers";
 
 import NavigationServer from "#/sys/navigation-server/NavigationServer.vue";
 
@@ -32,6 +32,7 @@ const emit = defineEmits<Emits>();
 
 const changeRoomHandler = changeRoom(emit);
 const closeRoomHandler = closeRoom(emit);
+const openChannelListHandler = openChannelList(emit)
 </script>
 
 <template>
@@ -55,10 +56,14 @@ const closeRoomHandler = closeRoom(emit);
 
 			<div
 				v-show="!folded"
-				class="[ flex:full flex flex/center:full ]"
-				title="TODO"
+				class="[ flex:full flex flex/center:full gap=1 ]"
 			>
-				<ButtonIcon icon="settings" disabled />
+				<UiButton
+					icon="channel-list"
+					:with-opacity="false"
+					@click="openChannelListHandler()"
+				/>
+				<ButtonIcon icon="settings" disabled title="TODO" />
 			</div>
 		</footer>
 	</section>

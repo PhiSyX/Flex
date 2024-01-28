@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ChannelRoom } from "~/channel/ChannelRoom";
 import { PrivateRoom } from "~/private/PrivateRoom";
+import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 
 import { rooms, forumURL, vademecumURL } from "./ChatView.state";
-import { sendMessageHandler } from "./ChatView.handlers";
+import { joinChannelHandler, sendMessageHandler } from "./ChatView.handlers";
 
 import Navigation from "~/components/navigation/Navigation.vue";
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 
 import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
+import ChannelList from "#/sys/channel-list/ChannelList.vue";
 </script>
 
 <template>
@@ -55,6 +57,19 @@ import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as PrivateRoom)"
 							class="[ flex:full ]"
+						/>
+					</KeepAlive>
+				</template>
+				<template
+					v-else-if="room.type === 'channel-list-custom-room'"
+					:key="room.type + '|' + room.name"
+				>
+					<KeepAlive :key="room.type + '|' + room.name">
+						<ChannelList
+							v-if="room.isActive() && !room.isClosed()"
+							:room="(room as ChannelListCustomRoom)"
+							class="[ flex:full ]"
+							@join-channel="joinChannelHandler"
 						/>
 					</KeepAlive>
 				</template>

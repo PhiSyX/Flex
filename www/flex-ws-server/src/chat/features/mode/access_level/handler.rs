@@ -11,7 +11,7 @@
 use flex_web_framework::types::time;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::src::chat::components::channel::{mode, nick};
+use crate::src::chat::components::channel::nick;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::ApplyMode;

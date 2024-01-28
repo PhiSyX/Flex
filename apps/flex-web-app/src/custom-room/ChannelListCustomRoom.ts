@@ -8,37 +8,35 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Room } from "./Room";
+import { Room } from "~/room/Room";
 
-export class ServerCustomRoom extends Room<"server-custom-room"> {
+export class ChannelListCustomRoom extends Room<"channel-list-custom-room"> {
+	public static ID = "@channel-list";
+
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
-	constructor(name: string) {
-		super("server-custom-room", name);
+	constructor() {
+		super("channel-list-custom-room", "Liste des salons");
+		this.withID(ChannelListCustomRoom.ID);
 	}
 
-	// ---------- //
-	// Properties //
-	// ---------- //
+	// --------- //
+	// Propriété //
+	// --------- //
 
-	/**
-	 * Connecté ou non
-	 */
-	connected = false;
+	channels: Map<ListDataResponse["channel"], ListDataResponse> = new Map();
 
-	/**
-	 * Est-ce que le serveur est connecté?
-	 */
-	isConnected(): boolean {
-		return this.connected;
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	insert(data: ListDataResponse) {
+		this.channels.set(data.channel, data);
 	}
 
-	/**
-	 * Définit le serveur comme étant connecté ou non.
-	 */
-	setConnected(bool: boolean) {
-		this.connected = bool;
+	reset() {
+		this.channels = new Map();
 	}
 }

@@ -9,20 +9,16 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
+export class ListCommand implements CommandInterface<"LIST"> {
 	constructor(private store: ChatStore) {}
 
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
-	}
-
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
+	send(payload: Command<"LIST">): void {
+		this.store.emit("LIST", payload);
 	}
 }

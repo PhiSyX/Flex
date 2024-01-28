@@ -14,15 +14,60 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
+export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
 	constructor(private store: ChatStore) {}
 
+	// ------- //
+	// Méthode //
+	// ------- //
+
 	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
+		this.store.on("RPL_LIST", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
+	handle(data: GenericReply<"RPL_LIST">) {
+		const channelList = this.store.channelList();
+		channelList.insert(data);
 	}
+}
+
+export class ReplyListstartHandler implements SocketEventInterface<"RPL_LISTSTART"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
+	}
+
+	handle(_: GenericReply<"RPL_LISTSTART">) {
+		const channelList = this.store.channelList();
+		this.store.roomManager().setCurrent(channelList.id());
+		channelList.reset();
+	}
+}
+
+export class ReplyListendHandler implements SocketEventInterface<"RPL_LISTEND"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("RPL_LISTEND", (data) => this.handle(data));
+	}
+
+	handle(_: GenericReply<"RPL_LISTEND">) {}
 }

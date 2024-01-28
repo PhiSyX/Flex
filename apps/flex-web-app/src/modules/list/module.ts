@@ -10,19 +10,55 @@
 
 import { ChatStore } from "~/store/ChatStore";
 
+import { Module } from "../interface";
+import { ListCommand } from "./command";
+import { ReplyListHandler, ReplyListendHandler, ReplyListstartHandler } from "./handler";
+
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
-	constructor(private store: ChatStore) {}
+export class ListModule implements Module<ListModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
 
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
+	static NAME = "LIST";
+
+	static create(store: ChatStore): ListModule {
+		return new ListModule(
+			new ListCommand(store),
+			new ReplyListHandler(store),
+			new ReplyListstartHandler(store),
+			new ReplyListendHandler(store),
+		);
 	}
 
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(
+		private command: ListCommand,
+		private numericListHandler: ReplyListHandler,
+		private numericListstartHandler: ReplyListstartHandler,
+		private numericListendHandler: ReplyListendHandler,
+	) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input() {
+		this.command.send({});
+	}
+
+	send(payload: Command<"LIST">) {
+		this.command.send(payload);
+	}
+
+	listen() {
+		this.numericListHandler.listen();
+		this.numericListstartHandler.listen();
+		this.numericListendHandler.listen();
 	}
 }

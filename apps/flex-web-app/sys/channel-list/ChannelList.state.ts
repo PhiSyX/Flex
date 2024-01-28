@@ -8,21 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+import { fuzzy_search } from "@phisyx/flex-search";
+import { computed, ref } from "vue";
+import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 
-// -------------- //
-// Implémentation //
-// -------------- //
+// ---- //
+// Type //
+// ---- //
 
-export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSUCHCHANNEL"> {
-	constructor(private store: ChatStore) {}
-
-	listen() {
-		this.store.on("ERR_NOSUCHCHANNEL", (data) => this.handle(data));
-	}
-
-	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
-	}
+export interface Props {
+	room: ChannelListCustomRoom;
 }
+
+// ----------- //
+// Local State //
+// ----------- //
+
+export const filteredChannelInput = ref("");
+export const selectedChannels = ref(new Set<string>());
+
+export const computeFilteredChannels = (props: Props) =>
+	computed(() => {
+		if (filteredChannelInput.value.length === 0) {
+			return props.room.channels;
+		}
+		return Array.from(props.room.channels).filter((channel) =>
+			fuzzy_search(filteredChannelInput.value, channel[0]).is_some(),
+		);
+	});
