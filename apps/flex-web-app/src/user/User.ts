@@ -98,6 +98,10 @@ export class User {
 		this.away = false;
 	}
 
+	setNickname(nickname: string) {
+		this.nickname = nickname;
+	}
+
 	withChannel(channelID: string): this {
 		this.channels.add(channelID);
 		return this;

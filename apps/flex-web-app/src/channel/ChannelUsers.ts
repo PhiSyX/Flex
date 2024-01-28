@@ -95,7 +95,7 @@ export class ChannelUsers {
 	 */
 	changeNickname(id: string, _oldNickname: string, newNickname: string) {
 		this.get(id).then((oldChannelNick) => {
-			oldChannelNick.nickname = newNickname;
+			oldChannelNick.intoUser().setNickname(newNickname);
 		});
 	}
 
