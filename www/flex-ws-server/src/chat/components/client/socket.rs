@@ -456,6 +456,54 @@ impl<'a> Socket<'a>
 		self.emit(rpl_ignore.name(), rpl_ignore);
 	}
 
+	/// Émet au client les réponses liées à la commande /LIST (2).
+	pub fn send_rpl_list(&self, channel: &components::Channel)
+	{
+		use crate::src::chat::features::RplListReply;
+
+		let origin = Origin::from(self.client());
+
+		let mode_settings = channel.modes_settings.to_string();
+		let topic = channel.topic_text();
+		let total_members = channel.members().len();
+
+		let rpl_list = RplListReply {
+			origin: &origin,
+			tags: RplListReply::default_tags(),
+			channel: &channel.name,
+			modes_settings: &mode_settings,
+			topic,
+			total_members: &total_members,
+		};
+		self.emit(rpl_list.name(), rpl_list);
+	}
+
+	/// Émet au client les réponses liées à la commande /LIST (3).
+	pub fn send_rpl_listend(&self)
+	{
+		use crate::src::chat::features::RplListendReply;
+
+		let origin = Origin::from(self.client());
+		let rpl_listend = RplListendReply {
+			origin: &origin,
+			tags: RplListendReply::default_tags(),
+		};
+		self.emit(rpl_listend.name(), rpl_listend);
+	}
+
+	/// Émet au client les réponses liées à la commande /LIST (1).
+	pub fn send_rpl_liststart(&self)
+	{
+		use crate::src::chat::features::RplListstartReply;
+
+		let origin = Origin::from(self.client());
+		let rpl_liststart = RplListstartReply {
+			origin: &origin,
+			tags: RplListstartReply::default_tags(),
+		};
+		self.emit(rpl_liststart.name(), rpl_liststart);
+	}
+
 	/// Émet au client les membres d'un salon par chunk de 300.
 	pub fn send_rpl_namreply(
 		&self,

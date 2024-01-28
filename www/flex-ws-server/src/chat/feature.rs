@@ -57,6 +57,7 @@ impl Feature for ChatApplication
 				socket.on(AwayHandler::COMMAND_NAME, AwayHandler::handle);
 				socket.on(IgnoreHandler::COMMAND_NAME, IgnoreHandler::handle);
 				socket.on(JoinHandler::COMMAND_NAME, JoinHandler::handle);
+				socket.on(ListHandler::COMMAND_NAME, ListHandler::handle);
 				socket.on(KickHandler::COMMAND_NAME, KickHandler::handle);
 				socket.on(NickHandler::COMMAND_NAME, NickHandler::handle);
 				socket.on(PartHandler::COMMAND_NAME, PartHandler::handle);

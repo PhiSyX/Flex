@@ -191,6 +191,15 @@ impl Default for ChannelModes<SettingsFlags>
 	}
 }
 
+impl std::fmt::Display for ChannelModes<SettingsFlags>
+{
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+	{
+		let mode_settings: String = self.modes.iter().map(|flag| flag.letter()).collect();
+		write!(f, "{}", mode_settings)
+	}
+}
+
 impl<T> ops::Deref for ChannelModes<T>
 {
 	type Target = HashSet<ApplyMode<T>>;
