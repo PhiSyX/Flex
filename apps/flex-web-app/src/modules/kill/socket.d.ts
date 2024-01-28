@@ -8,27 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
+declare interface KillFormData {
+	nickname: string;
+	comment?: string;
+}
+
+declare interface KillDataResponse {
+	knick: Origin;
+	reason: string;
+}
+
+declare interface Commands {
+	KILL: KillFormData;
 }
 
 declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
-
-		added: [
-			| ["k", ModeApplyFlag<{ key: string }>]
-			| ["m", ModeApplyFlag<"moderate">]
-			| ["n", ModeApplyFlag<"no_external_messages">]
-			| ["O", ModeApplyFlag<"oper_only">],
-			| ["s", ModeApplyFlag<"secret">],
-			| ["t", ModeApplyFlag<"no_topic">],
-		];
-
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+	KILL: KillDataResponse;
 }

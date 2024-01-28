@@ -36,6 +36,7 @@ import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { CommandInterface, Module } from "~/modules/interface";
 import { JoinModule, SajoinModule } from "~/modules/join/module";
 import { KickModule } from "~/modules/kick/module";
+import { KillModule } from "~/modules/kill/module";
 import { ListModule } from "~/modules/list/module";
 import {
 	AccessLevelAOPModule,
@@ -115,6 +116,7 @@ export class ChatStore {
 			.set(JoinModule.NAME, JoinModule.create(self))
 			.set(SajoinModule.NAME, SajoinModule.create(self));
 		self.modules.set(KickModule.NAME, KickModule.create(self));
+		self.modules.set(KillModule.NAME, KillModule.create(self));
 		self.modules.set(ListModule.NAME, ListModule.create(self));
 		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
