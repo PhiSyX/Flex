@@ -205,6 +205,33 @@ impl ChatApplication
 		client.user().is_global_operator()
 	}
 
+	/// Est-ce qu'un opérateur (a) PEUT KILL un client (b)?
+	pub fn is_operator_able_to_kill_client(
+		&self,
+		operator_socket: &client::Socket,
+		other_socket: &client::Socket,
+	) -> bool
+	{
+		assert!(operator_socket.user().is_operator());
+
+		// Le client (b) n'est pas un opérateur.
+		if !other_socket.user().is_operator() {
+			return true;
+		}
+
+		// Les opérateurs (a) globaux PEUVENT kill tout le monde.
+		if operator_socket.user().is_global_operator() {
+			return true;
+		}
+
+		// Les opérateurs (a) locaux NE PEUVENT PAS kill les opérateurs.
+		if operator_socket.user().is_local_operator() {
+			return false;
+		}
+
+		false
+	}
+
 	/// Marque le client en session comme étant absent.
 	pub fn marks_client_as_away(&self, client_socket: &client::Socket, text: impl ToString)
 	{

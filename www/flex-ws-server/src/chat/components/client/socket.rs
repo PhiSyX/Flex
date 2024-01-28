@@ -23,6 +23,8 @@ pub trait ClientSocketInterface
 	fn client(&self) -> &super::Client;
 	fn client_mut(&mut self) -> &mut super::Client;
 
+	fn disconnect(self);
+
 	fn broadcast<E, S>(&self, event: E, data: S)
 	where
 		E: ToString + std::fmt::Display,
@@ -203,6 +205,27 @@ impl<'a> Socket<'a>
 
 		self.emit_within(channel.room(), cmd_kick.name(), cmd_kick);
 		_ = knick_client_socket.socket().leave(channel.room());
+	}
+
+	/// Émet au client les réponses liées à la commande /KILL.
+	pub fn emit_kill(&self, knick_client_socket: &Self, reason: &str)
+	{
+		use crate::src::chat::features::KillCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let knick_origin = Origin::from(knick_client_socket.client());
+
+		let cmd_kill = KillCommandResponse {
+			origin: &origin,
+			knick: &knick_origin,
+			reason,
+			tags: KillCommandResponse::default_tags(),
+		};
+
+		_ = self
+			.socket()
+			.within(knick_client_socket.channels_rooms())
+			.emit(cmd_kill.name(), cmd_kill);
 	}
 
 	/// Émet au client courant les membres avec leurs niveaux d'accès sur un
@@ -697,6 +720,11 @@ impl<'a> Socket<'a>
 
 impl<'a> Socket<'a>
 {
+	pub fn send_err(&self, comment: impl ToString)
+	{
+		self.emit("ERROR", comment.to_string());
+	}
+
 	/// Émet au client l'erreur
 	/// [crate::src::chat::replies::ErrAlreadyregisteredError].
 	pub fn send_err_alreadyregistered(&self)
@@ -931,6 +959,16 @@ impl<'a> ClientSocketInterface for Socket<'a>
 			| Self::BorrowedMut { client, .. } => client,
 			| Self::Owned { .. } | Self::Borrowed { .. } => {
 				panic!("Le client NE PEUT PAS être mutable")
+			}
+		}
+	}
+
+	fn disconnect(self)
+	{
+		_ = match self {
+			| Self::Owned { socket, .. } => socket.disconnect(),
+			| Self::Borrowed { .. } | Self::BorrowedMut { .. } => {
+				panic!("Impossible de déconnecter cette socket.")
 			}
 		}
 	}
