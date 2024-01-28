@@ -22,7 +22,7 @@ export class ErrorNosuchchannelHandler implements SocketEventInterface<"ERR_NOSU
 	}
 
 	handle(data: GenericReply<"ERR_NOSUCHCHANNEL">) {
-		const room = this.store.roomManager().current();
+		const room = this.store.roomManager().active();
 		room.addEvent("error:err_nosuchchannel", { ...data, isMe: true }, data.reason);
 	}
 }

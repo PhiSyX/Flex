@@ -30,7 +30,7 @@ export class ReplyIgnoreHandler implements SocketEventInterface<"RPL_IGNORE"> {
 	}
 
 	handle(data: GenericReply<"RPL_IGNORE">) {
-		const currentRoom = this.store.roomManager().current();
+		const currentRoom = this.store.roomManager().active();
 
 		if (data.updated) {
 			currentRoom.addConnectEvent(data, data.message);
@@ -64,7 +64,7 @@ export class ReplyUnignoreHandler implements SocketEventInterface<"RPL_UNIGNORE"
 	}
 
 	handle(data: GenericReply<"RPL_UNIGNORE">) {
-		const currentRoom = this.store.roomManager().current();
+		const currentRoom = this.store.roomManager().active();
 
 		currentRoom.addConnectEvent(data, data.message);
 

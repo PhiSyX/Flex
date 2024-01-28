@@ -22,7 +22,7 @@ export class ErrorNotonchannelHandler implements SocketEventInterface<"ERR_NOTON
 	}
 
 	handle(data: GenericReply<"ERR_NOTONCHANNEL">) {
-		const room = this.store.roomManager().current();
+		const room = this.store.roomManager().active();
 		room.addEvent("error:err_notonchannel", { ...data, isMe: true }, data.reason);
 	}
 }

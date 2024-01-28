@@ -68,7 +68,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 		const priv = this.store.roomManager().getOrInsert(data.origin.id, () => {
 			this.store
 				.roomManager()
-				.current()
+				.active()
 				// @ts-expect-error : type à corriger
 				.addEvent("event:query", { ...data, isMe: false });
 			const room = new PrivateRoom(data.origin.nickname).withID(data.origin.id);
