@@ -29,6 +29,8 @@ export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
 	}
 
 	handle(data: GenericReply<"RPL_LIST">) {
+		const channelList = this.store.channelList();
+		channelList.insert(data);
 	}
 }
 
@@ -47,6 +49,9 @@ export class ReplyListstartHandler implements SocketEventInterface<"RPL_LISTSTAR
 	}
 
 	handle(_: GenericReply<"RPL_LISTSTART">) {
+		const channelList = this.store.channelList();
+		this.store.roomManager().setCurrent(channelList.id());
+		channelList.reset();
 	}
 }
 

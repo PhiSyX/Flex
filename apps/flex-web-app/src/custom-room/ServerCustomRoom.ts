@@ -8,22 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { Room } from "~/room/Room";
 
-const chatStore = useChatStore();
+export class ServerCustomRoom extends Room<"server-custom-room"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
 
-// -------- //
-// Handlers //
-// -------- //
+	constructor(name: string) {
+		super("server-custom-room", name);
+	}
 
-export function changeRoomHandler(origin: Origin | string) {
-	chatStore.changeRoom(origin);
-}
+	// ---------- //
+	// Properties //
+	// ---------- //
 
-export function closeRoomHandler(origin: Origin | string) {
-	chatStore.closeRoom(origin);
-}
+	/**
+	 * Connecté ou non
+	 */
+	connected = false;
 
-export function openChannelListHandler() {
-	chatStore.channelList();
+	/**
+	 * Est-ce que le serveur est connecté?
+	 */
+	isConnected(): boolean {
+		return this.connected;
+	}
+
+	/**
+	 * Définit le serveur comme étant connecté ou non.
+	 */
+	setConnected(bool: boolean) {
+		this.connected = bool;
+	}
 }

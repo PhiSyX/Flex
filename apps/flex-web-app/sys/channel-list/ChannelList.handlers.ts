@@ -8,22 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { selectedChannels } from "./ChannelList.state";
 
-const chatStore = useChatStore();
+// ---- //
+// Type //
+// ---- //
+
+export interface Emits {
+	(evtName: "join-channel", name: string): void;
+}
 
 // -------- //
 // Handlers //
 // -------- //
 
-export function changeRoomHandler(origin: Origin | string) {
-	chatStore.changeRoom(origin);
-}
-
-export function closeRoomHandler(origin: Origin | string) {
-	chatStore.closeRoom(origin);
-}
-
-export function openChannelListHandler() {
-	chatStore.channelList();
+export function joinSelectedChannels(emit: Emits) {
+	function joinSelectedChannelsHandler() {
+		for (const channel of selectedChannels.value) {
+			emit("join-channel", channel);
+		}
+	}
+	return joinSelectedChannelsHandler;
 }

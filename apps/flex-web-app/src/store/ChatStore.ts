@@ -18,6 +18,8 @@ import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
+import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
 import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
 import { ErrorChanoprivsneeded } from "~/handlers/errors/ErrorChanoprivsneeded";
@@ -34,6 +36,7 @@ import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
 import { CommandInterface, Module } from "~/modules/interface";
 import { JoinModule, SajoinModule } from "~/modules/join/module";
 import { KickModule } from "~/modules/kick/module";
+import { ListModule } from "~/modules/list/module";
 import {
 	AccessLevelAOPModule,
 	AccessLevelDEAOPModule,
@@ -58,7 +61,6 @@ import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
-import { ServerCustomRoom } from "~/room/ServerCustomRoom";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { User, UserID } from "~/user/User";
 
@@ -113,6 +115,7 @@ export class ChatStore {
 			.set(JoinModule.NAME, JoinModule.create(self))
 			.set(SajoinModule.NAME, SajoinModule.create(self));
 		self.modules.set(KickModule.NAME, KickModule.create(self));
+		self.modules.set(ListModule.NAME, ListModule.create(self));
 		self.modules.set(ModeModule.NAME, ModeModule.create(self));
 		self.modules.set(NickModule.NAME, NickModule.create(self));
 		self.modules
@@ -141,7 +144,12 @@ export class ChatStore {
 			.set(AccessLevelDEVIPModule.NAME, AccessLevelDEVIPModule.create(self));
 
 		const thisServer = new ServerCustomRoom("Flex").withID("Flex");
-		const rooms: Map<RoomID, Room> = new Map([[thisServer.id(), thisServer]]);
+		const channelList = new ChannelListCustomRoom();
+		// @ts-expect-error test
+		const rooms: Map<RoomID, Room> = new Map([
+			[thisServer.id(), thisServer],
+			[channelList.id(), channelList],
+		]);
 
 		self.setNetworkName(thisServer.id());
 		self.roomManager().extends(rooms);
@@ -190,6 +198,12 @@ export class ChatStore {
 
 	addUserToBlocklist(user: User) {
 		this._usersBlocked.set(user.id, user);
+	}
+
+	channelList(): ChannelListCustomRoom {
+		return this.roomManager()
+			.get(ChannelListCustomRoom.ID)
+			.unwrap_unchecked() as ChannelListCustomRoom;
 	}
 
 	changeUserNickname(oldNickname: string, newNickname: string) {
@@ -419,6 +433,12 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		current.unsetTotalUnreadMessages();
 	}
 
+	function channelList(channels?: Array<string>) {
+		changeRoom(ChannelListCustomRoom.ID);
+		const listModule = store.modules.get(ListModule.NAME) as ListModule;
+		listModule.send({ channels });
+	}
+
 	function checkUserIsBlocked(user: User): boolean {
 		return store.isUserBlocked(user);
 	}
@@ -633,6 +653,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		store,
 
 		changeRoom,
+		channelList,
 		checkUserIsBlocked,
 		closeRoom,
 		connect,

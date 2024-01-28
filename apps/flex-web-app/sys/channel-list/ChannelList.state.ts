@@ -8,22 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { useChatStore } from "~/store/ChatStore";
+import { fuzzy_search } from "@phisyx/flex-search";
+import { computed, ref } from "vue";
+import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 
-const chatStore = useChatStore();
+// ---- //
+// Type //
+// ---- //
 
-// -------- //
-// Handlers //
-// -------- //
-
-export function changeRoomHandler(origin: Origin | string) {
-	chatStore.changeRoom(origin);
+export interface Props {
+	room: ChannelListCustomRoom;
 }
 
-export function closeRoomHandler(origin: Origin | string) {
-	chatStore.closeRoom(origin);
-}
+// ----------- //
+// Local State //
+// ----------- //
 
-export function openChannelListHandler() {
-	chatStore.channelList();
-}
+export const filteredChannelInput = ref("");
+export const selectedChannels = ref(new Set<string>());
+
+export const computeFilteredChannels = (props: Props) =>
+	computed(() => {
+		if (filteredChannelInput.value.length === 0) {
+			return props.room.channels;
+		}
+		return Array.from(props.room.channels).filter((channel) =>
+			fuzzy_search(filteredChannelInput.value, channel[0]).is_some(),
+		);
+	});

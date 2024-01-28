@@ -15,6 +15,7 @@
 export interface Emits {
 	(evtName: "change-room", origin: Origin | string): void;
 	(evtName: "close-room", origin: Origin | string): void;
+	(evtName: "open-channel-list"): void;
 }
 
 // -------- //
@@ -33,4 +34,11 @@ export function closeRoom(emit: Emits) {
 		emit("close-room", origin);
 	}
 	return closeRoomHandler;
+}
+
+export function openChannelList(emit: Emits) {
+	function openChannelListHandler() {
+		emit("open-channel-list");
+	}
+	return openChannelListHandler;
 }
