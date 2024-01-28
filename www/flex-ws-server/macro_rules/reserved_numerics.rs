@@ -50,6 +50,7 @@ macro_rules! reserved_numerics {
 
 	impl<'a> [ < $numeric:camel Reply > ] <'a>
 	{
+		#[allow(dead_code)]
 		pub fn default_tags() -> std::collections::HashMap<String, String>
 		{
 			return [("msgid", flex_web_framework::types::uuid::Uuid::new_v4())]

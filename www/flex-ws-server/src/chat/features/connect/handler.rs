@@ -62,7 +62,7 @@ impl ConnectionRegistrationHandler
 		};
 
 		if let Some(remember_client_id) = data.ok().and_then(|data| data.client_id) {
-			if let Some(client) = app.find_client(&remember_client_id) {
+			if let Some(client) = app.get_client_by_id(&remember_client_id) {
 				socket.extensions.insert(client.clone());
 				let client_socket = app.current_client_mut(socket);
 				already_existing_client(client_socket);

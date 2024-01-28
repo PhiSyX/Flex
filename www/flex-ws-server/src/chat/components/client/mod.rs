@@ -105,6 +105,13 @@ impl Client
 
 impl Client
 {
+	/// Est-ce que le client a comme salon, un salon donné, dans sa liste des
+	/// salons rejoint.
+	pub fn has_channel(&self, channel_name: &str) -> bool
+	{
+		self.channels.contains(channel_name)
+	}
+
 	/// Est-ce que le client est connecté du serveur de Chat?
 	pub fn is_connected(&self) -> bool
 	{
