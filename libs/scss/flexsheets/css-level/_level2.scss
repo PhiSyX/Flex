@@ -1,0 +1,20 @@
+@use "../mixins/class" as class;
+
+@mixin use-css-level-2($options...) {
+	$classes: (
+		"align-v:baseline": (
+			vertical-align: baseline,
+		),
+		"align-v:bottom": (
+			vertical-align: bottom,
+		),
+		"align-v:middle": (
+			vertical-align: middle,
+		),
+		"align-v:top": (
+			vertical-align: top,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

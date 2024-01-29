@@ -17,7 +17,6 @@ import Match from "#/sys/match/Match.vue";
 import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
 
-
 const chatStore = useChatStore();
 </script>
 
@@ -87,7 +86,11 @@ const chatStore = useChatStore();
 			<template #some="{ data: error }">
 				<Teleport :to="`#${error.id}_teleport`">
 					<Alert type="error" :can-close="false">
-						<h1>Erreur</h1>
+						<h1 class="[ align-t:left ]">
+							<IconError class="[ size=4 align-v:top ]" />
+							Erreur
+						</h1>
+
 						<p>{{ error.data }}</p>
 					</Alert>
 				</Teleport>

@@ -84,7 +84,7 @@ impl KillHandler
 		client_socket.emit_kill(&knick_socket, &data.comment);
 
 		let error = format!(
-			"Déconnexion: vous avez été kill par {} ({})",
+			"Déconnexion: vous avez été sanctionné d'un KILL par {} ({})",
 			client_socket.user().nickname,
 			&data.comment
 		);

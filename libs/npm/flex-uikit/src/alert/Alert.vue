@@ -45,14 +45,14 @@ onMounted(() => {
 
 <template>
 	<div
-		class="alert [ ov:c flex align-ji:center p=2 select:none ]"
+		class="alert [ ov:c flex align-ji:center gap=1 p=2 select:none ]"
 		:class="{
 			'align-t:center': contentCenter,
 			[`alert/${type}`]: true,
 		}"
 		v-if="displaying"
 	>
-		<p class="[ flex:full my=0 ]"><slot /></p>
+		<div class="[ flex:full ]"><slot /></div>
 
 		<ButtonIcon v-if="canClose" icon="close" @click="closeHandler" />
 	</div>

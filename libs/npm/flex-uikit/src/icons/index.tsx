@@ -25,6 +25,7 @@ export type Icons =
 	| "channel"
 	| "channel-list"
 	| "close"
+	| "error"
 	| "home"
 	| "logoff"
 	| "password"
