@@ -15,7 +15,17 @@ import { ChannelNick } from "./ChannelNick";
 // -------------- //
 
 export class ChannelSelectedUser {
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	/**
+	 * Pseudo de salon sélectionné.
+	 */
 	declare cnick: ChannelNick;
+	/**
+	 * Est-ce que le pseudo sélectionné est bloqué?
+	 */
 	declare isBlocked: boolean;
 
 	// ----------- //

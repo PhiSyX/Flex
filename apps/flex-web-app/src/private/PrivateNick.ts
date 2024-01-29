@@ -14,30 +14,50 @@ export class PrivateNick {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private user: User) {}
+	constructor(user: User) {
+		this.user = user;
+	}
 
 	// -------- //
 	// Property //
 	// -------- //
 
+	private declare user: User;
+
+	/**
+	 * Est-ce que le pseudo du privé s'agit du client actuellement connecté
+	 * l'application?
+	 */
 	isMe = false;
 
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
 
+	/**
+	 * @see User#id
+	 */
 	get id() {
 		return this.user.id;
 	}
 
+	/**
+	 * @see User#nickname
+	 */
 	get nickname() {
 		return this.user.nickname;
 	}
 
+	/**
+	 * @see User#ident
+	 */
 	get ident() {
 		return this.user.ident;
 	}
 
+	/**
+	 * @see User#username
+	 */
 	get hostname() {
 		return this.user.hostname;
 	}
@@ -46,7 +66,10 @@ export class PrivateNick {
 	// Méthode //
 	// ------- //
 
-	public eq(other: this) {
+	/**
+	 * Comparaison du pseudo privé.
+	 */
+	eq(other: this) {
 		return (
 			other.id === this.id &&
 			other.nickname === this.nickname &&
@@ -55,14 +78,21 @@ export class PrivateNick {
 		);
 	}
 
-	public partialEq(other: this) {
+	/**
+	 * Comparaison partielle du pseudo privé.
+	 */
+	partialEq(other: this) {
 		return other.id === this.id;
 	}
 
-	public intoUser(): User {
+	intoUser(): User {
 		return this.user;
 	}
 
+	/**
+	 * Définit ou non l'instance comme étant le client actuellement connecté
+	 * l'application.
+	 */
 	withIsMe(bool: boolean): this {
 		this.isMe = bool;
 		return this;

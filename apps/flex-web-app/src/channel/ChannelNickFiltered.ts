@@ -26,7 +26,18 @@ export interface ChannelNickSearchHits {
 // -------------- //
 
 export class ChannelNickFiltered {
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	/**
+	 * Pseudo de salon filtré.
+	 */
 	declare cnick: ChannelNick;
+
+	/**
+	 * Résultat du filtre de recherche.
+	 */
 	declare searchHits: Array<ChannelNickSearchHits>;
 
 	// ----------- //

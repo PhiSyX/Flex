@@ -11,12 +11,18 @@
 import { Room } from "~/room/Room";
 
 export class ServerCustomRoom extends Room<"server-custom-room"> {
+	/**
+	 * ID de la chambre personnalisée.
+	 */
+	public static ID = "@flex";
+
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
 	constructor(name: string) {
 		super("server-custom-room", name);
+		this.withID(ServerCustomRoom.ID);
 	}
 
 	// ---------- //

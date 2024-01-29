@@ -21,6 +21,7 @@ interface Props {
 	connected: boolean;
 	containerFolded?: boolean;
 	folded: boolean;
+	id: string,
 	name: string;
 	rooms: Array<Room>;
 }
@@ -33,7 +34,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 const folded = defineModel<boolean>("folded");
 
-const changeRoomHandler = changeRoom(emit, props.name);
+const changeRoomHandler = changeRoom(emit, props.id);
 const openRoomHandler = openRoom(emit);
 const closeRoomHandler = closeRoom(emit);
 const toggleFoldHandler = toggleFold(folded);

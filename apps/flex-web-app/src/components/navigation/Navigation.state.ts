@@ -20,6 +20,7 @@ export const servers = computed(() => {
 			active: network.isActive(),
 			connected: network.isConnected(),
 			folded: false,
+			id: network.id(),
 			name: network.name,
 			rooms: chatStore.store.roomManager().rooms(),
 		},

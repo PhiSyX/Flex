@@ -50,6 +50,9 @@ export class ChannelNick {
 	// Getter | Setter //
 	// --------------- //
 
+	/**
+	 * Les classes CSS qu'il faut appliquer aux éléments de pseudo de salon.
+	 */
 	get className() {
 		return `${this.user.className} ${this.highestAccessLevel.className}`;
 	}
@@ -64,18 +67,30 @@ export class ChannelNick {
 		return this._highestAccessLevel;
 	}
 
+	/**
+	 * @see User#id
+	 */
 	get id() {
 		return this.user.id;
 	}
 
+	/**
+	 * @see User#nickname
+	 */
 	get nickname() {
 		return this.user.nickname;
 	}
 
+	/**
+	 * @see User#ident
+	 */
 	get ident() {
 		return this.user.ident;
 	}
 
+	/**
+	 * @see User#hostname
+	 */
 	get hostname() {
 		return this.user.hostname;
 	}
@@ -84,10 +99,23 @@ export class ChannelNick {
 	// Méthode //
 	// ------- //
 
+	/**
+	 * Est-ce que le pseudo donné correspond à celui de l'instance.
+	 */
 	eq(cnick: this): boolean {
-		return cnick.id === this.id;
+		return (
+			cnick === this ||
+			(cnick.id === this.id &&
+				cnick.nickname === this.nickname &&
+				cnick.ident === this.ident &&
+				cnick.hostname === this.hostname)
+		);
 	}
 
+	/**
+	 * Est-ce que le pseudo donné correspond à celui de l'instance, comparaison
+	 * partielle
+	 */
 	partialEq(cnick: this): boolean {
 		return cnick.nickname.toLowerCase() === this.nickname.toLowerCase();
 	}

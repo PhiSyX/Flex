@@ -11,6 +11,9 @@
 import { Room } from "~/room/Room";
 
 export class ChannelListCustomRoom extends Room<"channel-list-custom-room"> {
+	/**
+	 * ID de la chambre personnalisée.
+	 */
 	public static ID = "@channel-list";
 
 	// ----------- //
@@ -26,17 +29,26 @@ export class ChannelListCustomRoom extends Room<"channel-list-custom-room"> {
 	// Propriété //
 	// --------- //
 
+	/**
+	 * La liste des salons publiques du serveur.
+	 */
 	channels: Map<ListDataResponse["channel"], ListDataResponse> = new Map();
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	insert(data: ListDataResponse) {
-		this.channels.set(data.channel, data);
+	/**
+	 * Efface tous les salons de l'instance.
+	 */
+	clear() {
+		this.channels.clear();
 	}
 
-	reset() {
-		this.channels = new Map();
+	/**
+	 * Insère un nouveau salon du serveur.
+	 */
+	insert(data: ListDataResponse) {
+		this.channels.set(data.channel, data);
 	}
 }

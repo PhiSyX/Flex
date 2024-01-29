@@ -20,6 +20,7 @@ interface Server {
 	active: boolean;
 	connected: boolean;
 	folded: boolean;
+	id: string,
 	name: string;
 	rooms: Array<Room>;
 }

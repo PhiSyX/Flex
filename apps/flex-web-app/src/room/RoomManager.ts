@@ -10,6 +10,7 @@
 
 import { None, Option, Some } from "@phisyx/flex-safety";
 
+import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import { Room, RoomID } from "./Room";
 
 // -------------- //
@@ -30,7 +31,7 @@ export class RoomManager {
 			.and_then((currentRoom) => this.get(currentRoom))
 			.filter_map((customRoom) => {
 				if (customRoom.type === "channel-list-custom-room") {
-					return this.get("Flex");
+					return this.get(ServerCustomRoom.ID);
 				}
 				return Some(customRoom);
 			})

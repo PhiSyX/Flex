@@ -51,7 +51,7 @@ export class ReplyListstartHandler implements SocketEventInterface<"RPL_LISTSTAR
 	handle(_: GenericReply<"RPL_LISTSTART">) {
 		const channelList = this.store.channelList();
 		this.store.roomManager().setCurrent(channelList.id());
-		channelList.reset();
+		channelList.clear();
 	}
 }
 

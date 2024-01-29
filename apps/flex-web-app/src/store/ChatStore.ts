@@ -148,7 +148,7 @@ export class ChatStore {
 			.set(AccessLevelVIPModule.NAME, AccessLevelVIPModule.create(self))
 			.set(AccessLevelDEVIPModule.NAME, AccessLevelDEVIPModule.create(self));
 
-		const thisServer = new ServerCustomRoom("Flex").withID("Flex");
+		const thisServer = new ServerCustomRoom("Flex");
 		const channelList = new ChannelListCustomRoom();
 		// @ts-expect-error test
 		const rooms: Map<RoomID, Room> = new Map([
@@ -189,6 +189,9 @@ export class ChatStore {
 	// Méthode //
 	// ------- //
 
+	/**
+	 * Ajoute un nouvel utilisateur au Store.
+	 */
 	addUser(user: User): User {
 		const fuser = this._users.get(user.id);
 		if (fuser) {
@@ -203,26 +206,41 @@ export class ChatStore {
 		return this._users.get(user.id)!;
 	}
 
+	/**
+	 * Ajoute un utilisateur à la liste des utilisateurs bloqués.
+	 */
 	addUserToBlocklist(user: User) {
 		this._usersBlocked.set(user.id, user);
 	}
 
+	/**
+	 * Chambre personnalisé liste des salons.
+	 */
 	channelList(): ChannelListCustomRoom {
 		return this.roomManager()
 			.get(ChannelListCustomRoom.ID)
 			.unwrap_unchecked() as ChannelListCustomRoom;
 	}
 
+	/**
+	 * Change le pseudonyme d'un utilisateur.
+	 */
 	changeUserNickname(oldNickname: string, newNickname: string) {
 		const user = this.findUserByNickname(oldNickname).unwrap();
 		this._nicksUsers.delete(oldNickname);
 		user.nickname = newNickname;
 	}
 
+	/**
+	 * ID du client actuellement connecté à l'application.
+	 */
 	clientID() {
 		return this.me().id;
 	}
 
+	/**
+	 * Connexion au serveur de Chat WebSocket.
+	 */
 	connectWebsocket(websocketServerURL: string) {
 		console.info("Connexion au serveur de WebSocket « %s »", websocketServerURL);
 
@@ -235,11 +253,17 @@ export class ChatStore {
 		this._ws.replace(io(websocketServerURL, { auth: { client_id: clientID } }));
 	}
 
+	/**
+	 * Méthode d'émission de données vers le serveur WebSocket.
+	 */
 	emit<E extends keyof Commands>(eventName: E, ...payload: Parameters<ClientToServerEvent[E]>) {
 		this._ws.expect("Instance WebSocket connecté au serveur").emit(eventName, ...payload);
 	}
 
-	disconnect(comment: string) {
+	/**
+	 * Déconnexion du client liée à un événement d'erreur.
+	 */
+	disconnectError(comment: string) {
 		this.overlayer.create({
 			id: "error-layer",
 			centered: true,
@@ -255,10 +279,16 @@ export class ChatStore {
 		});
 	}
 
+	/**
+	 * Cherche un utilisateur en fonction d'un ID.
+	 */
 	findUser(userID: string): Option<User> {
 		return Option.from(this._users.get(userID));
 	}
 
+	/**
+	 * Cherche un utilisateur en fonction d'un pseudonyme.
+	 */
 	findUserByNickname(nickname: string): Option<User> {
 		if (this._nicksUsers.has(nickname.toLowerCase())) {
 			const userID = this._nicksUsers.get(nickname.toLowerCase()) as string;
@@ -278,14 +308,23 @@ export class ChatStore {
 		return maybeUser;
 	}
 
+	/**
+	 * Récupère les salons à rejoindre automatiquement.
+	 */
 	getAutoJoinChannels(): Array<string> {
 		return this.getConnectUserInfo().channels.split(",");
 	}
 
+	/**
+	 * Récupère les informations de connexion de l'utilisateur.
+	 */
 	getConnectUserInfo(): ConnectUserInfo {
 		return this._connectUserInfo.expect("Information de connexion de l'utilisateur");
 	}
 
+	/**
+	 * Récupère l'utilisateur sélectionné d'un salon.
+	 */
 	getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
 		return this._selectedUser
 			.and_then(([channelID, userID]) => {
@@ -302,14 +341,24 @@ export class ChatStore {
 			});
 	}
 
+	/**
+	 * Vérifie que le client est connecté au serveur.
+	 */
 	isConnected(): boolean {
 		return this.network().isConnected();
 	}
 
+	/**
+	 * Vérifie qu'un utilisateur est dans la liste des utilisateurs bloqués.
+	 */
 	isUserBlocked(user: User): boolean {
 		return this._usersBlocked.has(user.id);
 	}
 
+	/**
+	 * Vérifie qu'une origine correspond à l'utilisateur actuellement connecté
+	 * à l'application.
+	 */
 	isMe(origin: Origin | string): boolean {
 		if (typeof origin === "string") {
 			return (
@@ -320,6 +369,9 @@ export class ChatStore {
 		return this.me().id === origin.id;
 	}
 
+	/**
+	 * Écoute de tous les événements du Chat.
+	 */
 	listenAllEvents() {
 		for (const handler of this.repliesHandlers) {
 			handler.listen();
@@ -335,26 +387,44 @@ export class ChatStore {
 		}
 	}
 
+	/**
+	 * L'utilisateur actuellement connecté à l'application.
+	 */
 	me(): Origin {
 		return this._client.expect("Le client courant connecté");
 	}
 
+	/**
+	 * La chambre personnalisée du serveur.
+	 */
 	network(): ServerCustomRoom {
 		return this.roomManager().get(this.networkName()).unwrap_unchecked() as ServerCustomRoom;
 	}
 
+	/**
+	 * Le nom du serveur.
+	 */
 	networkName(): string {
 		return this._network.expect("Nom du réseau");
 	}
 
+	/**
+	 * Le pseudonyme du client actuellement connecté à l'application.
+	 */
 	nickname(): string {
 		return this.me().nickname;
 	}
 
+	/**
+	 * Désactive un événement.
+	 */
 	off<K extends keyof ServerToClientEvent>(eventName: K) {
 		this._ws.expect("Instance WebSocket connecté au serveur").off(eventName);
 	}
 
+	/**
+	 * Active/écoute un événement.
+	 */
 	on<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
 		this._ws.expect("Instance WebSocket connecté au serveur").on(
 			eventName,
@@ -363,6 +433,9 @@ export class ChatStore {
 		);
 	}
 
+	/**
+	 * Active/écoute un événement une seule et unique fois.
+	 */
 	once<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
 		this._ws.expect("Instance WebSocket connecté au serveur").once(
 			eventName,
@@ -371,46 +444,80 @@ export class ChatStore {
 		);
 	}
 
+	/**
+	 * Supprime un utilisateur de la liste des utilisateurs bloqués.
+	 */
 	removeUserToBlocklist(user: User): boolean {
 		return this._usersBlocked.delete(user.id);
 	}
 
+	/**
+	 * Supprime un salon d'un utilisateur.
+	 */
 	removeChannelForUser(channelID: ChannelID, userID: UserID) {
 		this._users.get(userID)?.channels.delete(channelID);
 	}
 
+	/**
+	 * Gestion des chambres.
+	 */
 	roomManager(): RoomManager {
 		return this._roomManager;
 	}
 
+	/**
+	 * Définit les informations de connexion du formulaire d'accès direct au
+	 * Chat de l'utilisateur.
+	 */
 	setConnectUserInfo(connectUserInfo: ConnectUserInfo) {
 		this._connectUserInfo.replace(connectUserInfo);
 	}
 
+	/**
+	 * Définit l'application comme étant connecté au serveur.
+	 */
 	setConnected(b: boolean) {
 		this.network().setConnected(b);
 	}
 
+	/**
+	 * Définit l'ID du client.
+	 */
 	setClientID(clientID: string) {
 		this._clientIDStorage.set(clientID);
 	}
 
+	/**
+	 * Définit l'origine du client.
+	 */
 	setMe(me: Origin) {
 		this._client.replace(me);
 	}
 
+	/**
+	 * Définit le nom du serveur.
+	 */
 	setNetworkName(networkName: string) {
 		this._network.replace(networkName);
 	}
 
+	/**
+	 * Définit le nom du client connecté au serveur.
+	 */
 	setNickname(nickname: string) {
 		this.me().nickname = nickname;
 	}
 
+	/**
+	 * Définit l'utilisateur sélectionné d'un salon.
+	 */
 	setSelectedUser(room: ChannelRoom, origin: Origin) {
 		this._selectedUser.replace([room.id(), origin.id]);
 	}
 
+	/**
+	 * Met à jour l'utilisateur de la liste des utilisateurs du client.
+	 */
 	upgradeUser(user: User): User {
 		const fuser = this._users.get(user.id);
 		if (fuser) {
@@ -424,10 +531,16 @@ export class ChatStore {
 		return this._users.get(user.id)!;
 	}
 
+	/**
+	 * Désélectionne un utilisateur d'un salon.
+	 */
 	unsetSelectedUser() {
 		this._selectedUser = None();
 	}
 
+	/**
+	 * Instance de la WebSocket.
+	 */
 	websocket(): Socket<ServerToClientEvent, ClientToServerEvent> {
 		return this._ws.expect("Instance WebSocket connecté au serveur");
 	}
@@ -436,6 +549,9 @@ export class ChatStore {
 export const useChatStore = defineStore(ChatStore.NAME, () => {
 	const store = ChatStore.default();
 
+	/**
+	 * Change de chambre.
+	 */
 	function changeRoom(target: Origin | string) {
 		let roomID: string;
 
@@ -448,6 +564,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		if (!store.roomManager().has(roomID)) {
 			return;
 		}
+
 		store.roomManager().setCurrent(roomID);
 
 		const current = store.roomManager().current();
@@ -456,16 +573,26 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		current.unsetTotalUnreadMessages();
 	}
 
+	/**
+	 * Émet la commande /LIST vers le serveur.
+	 */
 	function channelList(channels?: Array<string>) {
 		changeRoom(ChannelListCustomRoom.ID);
 		const listModule = store.modules.get(ListModule.NAME) as ListModule;
 		listModule.send({ channels });
 	}
 
+	/**
+	 * Vérifie qu'un utilisateur est bloqué.
+	 */
 	function checkUserIsBlocked(user: User): boolean {
 		return store.isUserBlocked(user);
 	}
 
+	/**
+	 * Ferme une chambre. Dans le cas d'un salon, cette fonction émet la
+	 * commande /PART vers le serveur.
+	 */
 	function closeRoom(target: Origin | string, message?: string) {
 		let roomID: string;
 		if (typeof target === "string") {
@@ -486,6 +613,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 	}
 
+	/**
+	 * Se connecte au serveur de Chat.
+	 */
 	function connect(connectUserInfo: ConnectUserInfo) {
 		store.setConnectUserInfo(connectUserInfo);
 		store.connectWebsocket(connectUserInfo.websocketServerURL);
@@ -511,20 +641,32 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		store.listenAllEvents();
 	}
 
+	/**
+	 * @see ChatStore#getSelectedUser
+	 */
 	function getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
 		return store.getSelectedUser(room);
 	}
 
+	/**
+	 * Émet la commande /IGNORE vers le serveur.
+	 */
 	function ignoreUser(nickname: string) {
 		const ignoreModule = store.modules.get(IgnoreModule.NAME) as IgnoreModule;
 		ignoreModule.send({ nickname });
 	}
 
+	/**
+	 * Émet la commande /JOIN vers le serveur.
+	 */
 	function joinChannel(name: string) {
 		const joinModule = store.modules.get(JoinModule.NAME) as JoinModule;
 		joinModule.send({ channels: [name] });
 	}
 
+	/**
+	 * Émet la commande /KICK vers le serveur.
+	 */
 	function kickUser(channel: ChannelRoom, cnick: ChannelNick, comment = "Kick.") {
 		const ignoreModule = store.modules.get(KickModule.NAME) as KickModule;
 		ignoreModule.send({
@@ -534,6 +676,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		});
 	}
 
+	/**
+	 * Écoute un événement donnée.
+	 */
 	function listen<K extends keyof ServerToClientEvent>(
 		eventName: K,
 		listener: ServerToClientEvent[K],
@@ -546,6 +691,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 	}
 
+	/**
+	 * Ouvre un privé ou le crée.
+	 */
 	function openPrivateOrCreate(origin: Origin) {
 		const room = store.roomManager().getOrInsert(origin.id, () => {
 			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
@@ -563,6 +711,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		// store.emit("QUERY", { nickname: name });
 	}
 
+	/**
+	 * (Dé-)sélectionne un utilisateur d'un salon.
+	 */
 	function toggleSelectUser(room: ChannelRoom, origin: Origin) {
 		const maybeSelectedUser = store.getSelectedUser(room);
 		if (maybeSelectedUser.is_some()) {
@@ -577,6 +728,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 	}
 
+	/**
+	 * Émet les commandes au serveur.
+	 */
 	function sendMessage(name: string, message: string) {
 		if (!message.startsWith("/")) {
 			const words = message.split(" ");
@@ -603,6 +757,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		module.input(...args);
 	}
 
+	/**
+	 * Émet les commandes liées aux niveaux d'accès vers le serveur.
+	 */
 	function sendSetAccessLevel(
 		channel: ChannelRoom,
 		cnick: ChannelNick,
@@ -633,6 +790,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		(module as CommandInterface<"OP">).send(payload);
 	}
 
+	/**
+	 * Émet les commandes liées aux niveaux d'accès vers le serveur.
+	 */
 	function sendUnsetAccessLevel(
 		channel: ChannelRoom,
 		cnick: ChannelNick,
@@ -662,11 +822,17 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		(module as CommandInterface<"DEOP">).send(payload);
 	}
 
+	/**
+	 * Émet la commande /UNIGNORE vers le serveur.
+	 */
 	function unignoreUser(nickname: string) {
 		const unignoreModule = store.modules.get(UnignoreModule.NAME) as UnignoreModule;
 		unignoreModule.send({ nickname });
 	}
 
+	/**
+	 * Émet la commande /TOPIC vers le serveur.
+	 */
 	function updateTopic(channelName: string, topic: string) {
 		const topicModule = store.modules.get(TopicModule.NAME) as TopicModule;
 		topicModule.send({ channel: channelName, topic });

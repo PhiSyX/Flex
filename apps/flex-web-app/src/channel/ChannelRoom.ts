@@ -11,7 +11,7 @@
 import { Option } from "@phisyx/flex-safety";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelUsers } from "~/channel/ChannelUsers";
-import { User, UserFlag } from "~/user/User";
+import { User } from "~/user/User";
 import { Room } from "../room/Room";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 import { ChannelTopic } from "./ChannelTopic";

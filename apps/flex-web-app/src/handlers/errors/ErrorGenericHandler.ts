@@ -22,6 +22,6 @@ export class ErrorGeneralHandler implements SocketEventInterface<"ERROR"> {
 	}
 
 	handle(data: GenericReply<"ERROR">) {
-		this.store.disconnect(data);
+		this.store.disconnectError(data);
 	}
 }
