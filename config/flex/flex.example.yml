@@ -1,16 +1,18 @@
+# Les champs en commentaires ne sont pas obligatoires.
+
 cors:
-  preset: "permissive"
+  preset: permissive
 
 network:
-  name: "Nom d'example"
+  name: Nom d'example
 
 admin:
   name: "John Doe"
-  email: "johndoe@example.org"
-  nick: "JohnDoe"
+  email: johndoe@example.org
+  nick: JohnDoe
 
 server:
-  name: "chat.example.org"
+  name: chat.example.org
 
   #
   # Mot de passe
@@ -25,3 +27,13 @@ server:
   # Date de création du serveur.
   #
   #created_at: 1635185135
+
+operator:
+  auto_join: ["#headquarter", "#staff"]
+
+operators:
+  - identifier: JohnDoe
+    password: "$argon2id..."
+    type: GlobalOperator #| LocalOperator
+    #vhost: example.org/johndoe
+    #flags: [NoKick]

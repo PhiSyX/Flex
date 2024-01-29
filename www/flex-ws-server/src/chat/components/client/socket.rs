@@ -756,6 +756,22 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrCannot].
+	pub fn send_err_cannotkickglobops(&self, channel_name: &str, nickname: &str)
+	{
+		use crate::src::chat::replies::ErrCannotkickglobopsError;
+
+		let origin = Origin::from(self.client());
+		let err_cannotsendtochan = ErrCannotkickglobopsError {
+			channel: channel_name,
+			nick: nickname,
+			origin: &origin,
+			tags: ErrCannotkickglobopsError::default_tags(),
+		};
+		self.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
+	}
+
+	/// Émet au client l'erreur
 	/// [crate::src::chat::replies::ErrCannotsendtochanError].
 	pub fn send_err_cannotsendtochan(&self, channel_name: &str)
 	{

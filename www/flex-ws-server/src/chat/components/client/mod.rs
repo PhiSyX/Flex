@@ -162,15 +162,20 @@ impl Client
 	}
 
 	/// Marque le client comme étant un opérateur.
-	pub fn marks_client_as_operator(&mut self, oper_type: flex::flex_config_operator_type)
+	pub fn marks_client_as_operator(&mut self, oper: &flex::flex_config_operator_auth)
 	{
 		self.user.set_flag(
-			ApplyMode::new(match oper_type {
+			ApplyMode::new(match oper.oper_type {
 				| flex::flex_config_operator_type::GlobalOperator => super::Flag::GlobalOperator,
 				| flex::flex_config_operator_type::LocalOperator => super::Flag::LocalOperator,
 			})
 			.with_update_by(&self.user().nickname),
-		)
+		);
+		for flag in oper.flags.iter() {
+			self.user.set_flag(ApplyMode::new(match flag {
+				| flex::flex_config_operator_flags::NoKick => super::Flag::NoKick,
+			}));
+		}
 	}
 
 	/// Attribution d'un nouvel ID de Socket.

@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::collections::HashSet;
+
 use flex_web_framework::types::{email, secret};
 use flex_web_framework::FeatureConfig;
 
@@ -105,6 +107,9 @@ pub struct flex_config_operator_auth
 	/// Hôte virtuel.
 	#[serde(rename = "vhost")]
 	pub virtual_host: Option<String>,
+	/// Drapeau par défaut à appliquer automatiquement.
+	#[serde(default)]
+	pub flags: HashSet<flex_config_operator_flags>,
 }
 
 #[derive(Debug)]
@@ -116,6 +121,16 @@ pub enum flex_config_operator_type
 	LocalOperator,
 	/// Opérateur Global
 	GlobalOperator,
+}
+
+#[derive(Debug)]
+#[derive(Copy, Clone)]
+#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(PartialEq, Eq, Hash)]
+pub enum flex_config_operator_flags
+{
+	/// Opérateur non kickable.
+	NoKick,
 }
 
 // -------------- //
