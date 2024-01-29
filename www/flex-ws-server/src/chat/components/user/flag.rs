@@ -37,12 +37,13 @@ pub const USER_FLAG_GLOBAL_OPERATOR: char = 'o';
 /// se "dé-op" lui-même (en utilisant '`-o`' ou '`-O`').
 pub const USER_FLAG_LOCAL_OPERATOR: char = 'O';
 
-/// Drapeau '`q`': utilisateur marqué comme unkickable sur les salons quelques
-/// soient le niveau d'accès des autres membres.
+/// Drapeau '`q`': utilisateur marqué comme non sanctionable d'un KICK sur les
+/// salons quels que soient le niveau d'accès des autres membres.
 ///
 /// Si un utilisateur tente d'appliquer ce drapeau, la tentative devrait être
 /// ignorée. Seuls les opérateurs globaux ont droit d'appliquer ce drapeau à
-/// eux-même.
+/// eux-même; les opérateurs globaux NE PEUVENT PAS appliquer ce drapeau aux
+/// autres utilisateurs.
 pub const USER_FLAG_NOKICK: char = 'q';
 
 // ----------- //
