@@ -8,71 +8,40 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { JSX } from "vue/jsx-runtime";
+import { onBeforeMount, onBeforeUnmount } from "vue";
 
-// @ts-expect-error : `h` à corriger.
-import { h } from "vue";
-import { resolveComponent } from "vue";
+import { type Layer, useOverlayerStore } from "~/store/OverlayerStore";
 
-// ---- //
-// Type //
-// ---- //
+// ----- //
+// Hooks //
+// ----- //
 
-export type Icons =
-	| "arrow-down"
-	| "arrow-left"
-	| "arrow-right"
-	| "channel"
-	| "channel-list"
-	| "close"
-	| "error"
-	| "home"
-	| "logoff"
-	| "password"
-	| "plus"
-	| "report"
-	| "send"
-	| "settings"
-	| "text-color"
-	| "url"
-	| "user"
-	| "user-block"
-	| "users"
-	| "view-list";
+export function useOverlayer() {
+	const overlayerStore = useOverlayerStore();
 
-interface ButtonProps {
-	disabled?: boolean;
-	icon: Icons;
-}
+	function destroyHandler(_: Event, id?: Layer["id"]) {
+		if (id) {
+			overlayerStore.destroy(id);
+		} else {
+			overlayerStore.destroyAll();
+		}
+	}
 
-interface LabelProps {
-	for: string;
-	icon: Icons;
+	function resizeHandler() {
+		// overlayerStore.updateAll();
+	}
+
+	onBeforeMount(() => {
+		window.addEventListener("resize", resizeHandler, { passive: true });
+	});
+
+	onBeforeUnmount(() => {
+		window.removeEventListener("resize", resizeHandler);
+	});
+
+	return { store: overlayerStore, destroyHandler, resizeHandler };
 }
 
 // -------- //
 // Fonction //
 // -------- //
-
-// HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assertIcon(_value: unknown): asserts _value is string {}
-
-export function ButtonIcon(props: ButtonProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<button disabled={props.disabled} class="btn" type="button">
-			<IconName />
-		</button>
-	);
-}
-
-export function LabelIcon(props: LabelProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<label for={props.for}>
-			<IconName />
-		</label>
-	);
-}

@@ -1,0 +1,5 @@
+@use "level2" as lv2;
+
+@mixin use-css-level($options...) {
+	@include lv2.use-css-level-2($options...);
+}

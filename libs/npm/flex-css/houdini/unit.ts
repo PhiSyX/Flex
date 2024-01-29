@@ -8,71 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { JSX } from "vue/jsx-runtime";
-
-// @ts-expect-error : `h` à corriger.
-import { h } from "vue";
-import { resolveComponent } from "vue";
-
-// ---- //
-// Type //
-// ---- //
-
-export type Icons =
-	| "arrow-down"
-	| "arrow-left"
-	| "arrow-right"
-	| "channel"
-	| "channel-list"
-	| "close"
-	| "error"
-	| "home"
-	| "logoff"
-	| "password"
-	| "plus"
-	| "report"
-	| "send"
-	| "settings"
-	| "text-color"
-	| "url"
-	| "user"
-	| "user-block"
-	| "users"
-	| "view-list";
-
-interface ButtonProps {
-	disabled?: boolean;
-	icon: Icons;
-}
-
-interface LabelProps {
-	for: string;
-	icon: Icons;
-}
-
 // -------- //
 // Fonction //
 // -------- //
 
-// HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assertIcon(_value: unknown): asserts _value is string {}
-
-export function ButtonIcon(props: ButtonProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<button disabled={props.disabled} class="btn" type="button">
-			<IconName />
-		</button>
-	);
+/// CSS.px houdini
+function to_px(n: number): CSS.CSSUnitValue {
+	// NOTE(phisyx): `CSS` est disponible dans l'objet Window dans certains
+	// navigateurs.
+	if (typeof globalThis.CSS?.px !== "undefined") {
+		return globalThis.CSS.px(n) || `${n}px`;
+	}
+	return `${n}px`;
 }
 
-export function LabelIcon(props: LabelProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<label for={props.for}>
-			<IconName />
-		</label>
-	);
-}
+// ------ //
+// Export //
+// ------ //
+
+export { to_px };

@@ -8,71 +8,60 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { JSX } from "vue/jsx-runtime";
-
-// @ts-expect-error : `h` à corriger.
-import { h } from "vue";
-import { resolveComponent } from "vue";
+import { defineStore } from "pinia";
+import { CSSProperties, computed, ref } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-export type Icons =
-	| "arrow-down"
-	| "arrow-left"
-	| "arrow-right"
-	| "channel"
-	| "channel-list"
-	| "close"
-	| "error"
-	| "home"
-	| "logoff"
-	| "password"
-	| "plus"
-	| "report"
-	| "send"
-	| "settings"
-	| "text-color"
-	| "url"
-	| "user"
-	| "user-block"
-	| "users"
-	| "view-list";
+export type Layer = {
+	id: string;
+	centered?: boolean;
+	destroyable?: "background" | "manual";
+	style?: CSSProperties;
+	onClose?: () => void;
+};
 
-interface ButtonProps {
-	disabled?: boolean;
-	icon: Icons;
-}
+export const useOverlayerStore = defineStore("overlayer-store", () => {
+	const list = ref(new Map<string, Layer>());
 
-interface LabelProps {
-	for: string;
-	icon: Icons;
-}
+	const hasLayers = computed(() => list.value.size > 0);
 
-// -------- //
-// Fonction //
-// -------- //
+	const layers = computed(() => Array.from(list.value));
 
-// HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assertIcon(_value: unknown): asserts _value is string {}
+	function create(payload: Layer) {
+		payload.destroyable ||= "background";
+		list.value.set(payload.id, payload);
+	}
 
-export function ButtonIcon(props: ButtonProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<button disabled={props.disabled} class="btn" type="button">
-			<IconName />
-		</button>
-	);
-}
+	function destroy(layerID: Layer["id"]) {
+		const layer = list.value.get(layerID);
+		if (!layer) return;
+		layer.onClose?.();
+		list.value.delete(layerID);
+	}
 
-export function LabelIcon(props: LabelProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
-	return (
-		<label for={props.for}>
-			<IconName />
-		</label>
-	);
-}
+	function destroyAll(options: { force: boolean } = { force: false }) {
+		for (const [_, layer] of list.value) {
+			if (options.force) {
+				destroy(layer.id);
+				continue;
+			}
+
+			if (layer.destroyable !== "background") {
+				continue;
+			}
+
+			destroy(layer.id);
+		}
+	}
+
+	return {
+		create,
+		destroy,
+		destroyAll,
+		hasLayers,
+		layers,
+	};
+});

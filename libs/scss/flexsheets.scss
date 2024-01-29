@@ -18,6 +18,7 @@
 @import "./flexsheets/backgrounds/module";
 @import "./flexsheets/box/module";
 @import "./flexsheets/color/module";
+@import "./flexsheets/css-level/module";
 @import "./flexsheets/display/module";
 @import "./flexsheets/elements/module";
 @import "./flexsheets/flexbox/module";
@@ -48,6 +49,11 @@
 				)
 			);
 			@include use-color(
+				(
+					className: $cls,
+				)
+			);
+			@include use-css-level(
 				(
 					className: $cls,
 				)
@@ -97,6 +103,7 @@
 			@include use-backgrounds($cls);
 			@include use-box($cls);
 			@include use-color($cls);
+			@include use-css-level($cls);
 			@include use-display($cls);
 			@include use-element($cls);
 			@include use-flexbox($cls);

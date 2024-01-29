@@ -8,29 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
-}
+import { assertChannelRoom } from "~/asserts/room";
+import { ChannelRoom } from "~/channel/ChannelRoom";
+import { ChatStore } from "~/store/ChatStore";
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
+// -------------- //
+// Implémentation //
+// -------------- //
 
-		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
-		];
+export class KillHandler implements SocketEventInterface<"KILL"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
 
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("KILL", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"KILL">) {}
 }

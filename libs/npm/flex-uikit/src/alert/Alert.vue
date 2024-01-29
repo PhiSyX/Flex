@@ -10,7 +10,7 @@ interface Props {
 	canClose?: boolean;
 	contentCenter?: boolean;
 	closeAfterSeconds?: number;
-	type: "warning";
+	type: "warning" | "error";
 }
 
 interface Emits {
@@ -45,14 +45,14 @@ onMounted(() => {
 
 <template>
 	<div
-		class="alert [ ov:c flex align-ji:center p=2 select:none ]"
+		class="alert [ ov:c flex align-ji:center gap=1 p=2 select:none ]"
 		:class="{
 			'align-t:center': contentCenter,
 			[`alert/${type}`]: true,
 		}"
 		v-if="displaying"
 	>
-		<p class="[ flex:full my=0 ]"><slot /></p>
+		<div class="[ flex:full ]"><slot /></div>
 
 		<ButtonIcon v-if="canClose" icon="close" @click="closeHandler" />
 	</div>
@@ -77,6 +77,20 @@ onMounted(() => {
 			border-color: #50a097;
 			color: #50a097;
 			background-color: #ccfff9;
+		}
+	}
+}
+
+@include fx.class("alert/error") {
+	@include fx.theme using ($name) {
+		@if $name == light {
+			border-color: var(--color-red600);
+			color: var(--color-red700);
+			background-color: var(--color-red200);
+		} @else if $name == ice {
+			border-color: var(--color-red300);
+			color: var(--color-white);
+			background-color: var(--color-red900);
 		}
 	}
 }

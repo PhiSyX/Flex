@@ -32,8 +32,6 @@ export class QuitHandler implements SocketEventInterface<"QUIT"> {
 
 	handle(data: GenericReply<"QUIT">) {
 		if (this.store.isMe(data.origin)) {
-			// FIXME
-			window.location.reload();
 			return;
 		}
 

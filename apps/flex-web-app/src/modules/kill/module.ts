@@ -8,29 +8,50 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
-}
+import { ChatStore } from "~/store/ChatStore";
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
+import { Module } from "../interface";
+import { KillCommand } from "./command";
+import { KillHandler } from "./handler";
 
-		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
-		];
+// -------------- //
+// Implémentation //
+// -------------- //
 
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+export class KillModule implements Module<KillModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "KILL";
+
+	static create(store: ChatStore): KillModule {
+		return new KillModule(new KillCommand(store), new KillHandler(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(
+		private command: KillCommand,
+		private handler: KillHandler,
+	) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(knick?: string, ...words: Array<string>) {
+		const comment = words.join(" ");
+		if (!knick || !comment) return;
+		this.send({ nickname: knick, comment });
+	}
+
+	send(payload: Command<"KILL">) {
+		this.command.send(payload);
+	}
+
+	listen() {
+		this.handler.listen();
+	}
 }

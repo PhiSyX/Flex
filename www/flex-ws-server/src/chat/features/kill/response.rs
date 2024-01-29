@@ -8,29 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
-}
+use crate::command_response;
+use crate::src::chat::components::Origin;
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
-
-		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
-		];
-
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+command_response! {
+	struct KILL
+	{
+		/// La victime.
+		knick: &'a Origin,
+		/// Raison du kill.
+		reason: &'a str,
+	}
 }

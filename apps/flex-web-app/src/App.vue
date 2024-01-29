@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
 
+import Overlayer from "./components/overlayer/Overlayer.vue";
+
 // ------ //
 // Effect //
 // ------ //
@@ -34,5 +36,7 @@ const isUserConnected = ref(false);
 			v-model:is-connected="isUserConnected"
 		/>
 		<ChatView key="chat" v-else />
+
+		<Overlayer />
 	</div>
 </template>

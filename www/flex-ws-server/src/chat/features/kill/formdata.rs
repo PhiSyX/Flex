@@ -8,29 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
-}
+use flex_serde_validation::string::validate_string_filter;
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
+use crate::command_formdata;
+use crate::macro_rules::command_formdata::validate_nickname;
 
-		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
-		];
-
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+command_formdata! {
+	struct KILL
+	{
+		#[serde(deserialize_with = "validate_nickname")]
+		nickname: String,
+		#[serde(default, deserialize_with = "validate_string_filter")]
+		comment: String,
+	}
 }

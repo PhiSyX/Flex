@@ -74,6 +74,12 @@ mod features
 			response,
 		};
 
+		kill / {
+			formdata,
+			handler,
+			response,
+		};
+
 		nick / {
 			formdata,
 			handler,
