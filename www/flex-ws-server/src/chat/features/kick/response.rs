@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
 use crate::src::chat::components::Origin;
+use crate::{command_response, error_replies};
 
 command_response! {
 	struct KICK
@@ -21,4 +21,11 @@ command_response! {
 		/// La victime.
 		knick: &'a Origin,
 	}
+}
+
+error_replies! {
+	/// Renvoyé pour indiquer l'échec d'une tentative de sanction KICK sur un
+	/// utilisateur (opérateur global) ayant le drapeau utilisateur +q.
+	| 480 <-> ERR_CANNOTKICKGLOBOPS { channel: str, nick: str }
+		=> "{channel} {nick} :Vous n'avez pas le droit de sanctionner d'un KICK cet utilisateur (protégé par le drapeau +q)"
 }

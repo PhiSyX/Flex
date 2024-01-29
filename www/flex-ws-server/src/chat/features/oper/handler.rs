@@ -67,11 +67,7 @@ impl OperHandler
 			return;
 		}
 
-		app.marks_client_as_operator(
-			&mut client_socket,
-			operator.virtual_host.as_deref(),
-			operator.oper_type,
-		);
+		app.marks_client_as_operator(&mut client_socket, &operator);
 
 		for channel_name in config.operator.auto_join.iter() {
 			app.join_or_create_oper_channel(&client_socket, channel_name);

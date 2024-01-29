@@ -37,6 +37,14 @@ pub const USER_FLAG_GLOBAL_OPERATOR: char = 'o';
 /// se "dé-op" lui-même (en utilisant '`-o`' ou '`-O`').
 pub const USER_FLAG_LOCAL_OPERATOR: char = 'O';
 
+/// Drapeau '`q`': utilisateur marqué comme unkickable sur les salons quelques
+/// soient le niveau d'accès des autres membres.
+///
+/// Si un utilisateur tente d'appliquer ce drapeau, la tentative devrait être
+/// ignorée. Seuls les opérateurs globaux ont droit d'appliquer ce drapeau à
+/// eux-même.
+pub const USER_FLAG_NOKICK: char = 'q';
+
 // ----------- //
 // Énumération //
 // ----------- //
@@ -58,6 +66,9 @@ pub enum Flag
 	GlobalOperator,
 	/// Opérateur local.
 	LocalOperator,
+
+	/// Opérateur non kickable.
+	NoKick,
 }
 
 // -------------- //
@@ -69,9 +80,10 @@ impl Flag
 	pub fn letter(&self) -> char
 	{
 		match self {
-			| Flag::Away(_) => USER_FLAG_AWAY,
-			| Flag::GlobalOperator => USER_FLAG_GLOBAL_OPERATOR,
-			| Flag::LocalOperator => USER_FLAG_LOCAL_OPERATOR,
+			| Self::Away(_) => USER_FLAG_AWAY,
+			| Self::GlobalOperator => USER_FLAG_GLOBAL_OPERATOR,
+			| Self::LocalOperator => USER_FLAG_LOCAL_OPERATOR,
+			| Self::NoKick => USER_FLAG_NOKICK,
 		}
 	}
 }

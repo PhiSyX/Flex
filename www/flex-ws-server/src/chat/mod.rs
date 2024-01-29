@@ -168,6 +168,7 @@ mod replies
 	}
 
 	pub use super::features::{
+		ErrCannotkickglobopsError,
 		ErrNooperhostError,
 		ErrOperonlyError,
 		ErrPasswdmismatchError,

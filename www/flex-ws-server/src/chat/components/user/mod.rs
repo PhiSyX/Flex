@@ -100,9 +100,24 @@ impl User
 			.unwrap_or_default()
 	}
 
+	/// Les drapeaux utilisateurs.
 	pub fn flags(&self) -> impl Iterator<Item = (char, ApplyMode<Flag>)> + '_
 	{
 		self.flags.iter().map(|flag| (flag.letter(), flag.clone()))
+	}
+
+	/// Vérifie que l'utilisateur a comme drapeau, le drapeau q (nokick).
+	pub fn has_nokick_flag(&self) -> bool
+	{
+		self.flags.iter().any(|flag| {
+			matches!(
+				flag,
+				ApplyMode {
+					flag: Flag::NoKick,
+					..
+				}
+			)
+		})
 	}
 
 	/// Vérifie si le pseudonyme donné est le même que celui sauvegardé dans

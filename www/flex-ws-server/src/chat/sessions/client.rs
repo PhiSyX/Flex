@@ -257,22 +257,19 @@ impl ChatApplication
 	pub fn marks_client_as_operator(
 		&self,
 		client_socket: &mut client::Socket,
-		oper_vhost: Option<&str>,
-		oper_type: flex::flex_config_operator_type,
+		oper: &flex::flex_config_operator_auth,
 	)
 	{
 		self.clients
-			.marks_client_as_operator(client_socket.cid(), oper_vhost, oper_type);
+			.marks_client_as_operator(client_socket.cid(), oper);
 
-		if let Some(vhost) = oper_vhost {
+		if let Some(vhost) = oper.virtual_host.as_deref() {
 			client_socket.user_mut().set_vhost(vhost);
 		}
 
-		client_socket
-			.client_mut()
-			.marks_client_as_operator(oper_type);
+		client_socket.client_mut().marks_client_as_operator(oper);
 
-		let flag_oper = match oper_type {
+		let flag_oper = match oper.oper_type {
 			| flex::flex_config_operator_type::LocalOperator => {
 				components::user::Flag::LocalOperator
 			}
@@ -459,16 +456,15 @@ impl ClientsSession
 	pub fn marks_client_as_operator(
 		&self,
 		client_id: &client::ClientID,
-		oper_vhost: Option<&str>,
-		oper_type: flex::flex_config_operator_type,
+		oper: &flex::flex_config_operator_auth,
 	)
 	{
 		let Some(mut client) = self.get_mut(client_id) else {
 			return;
 		};
 
-		client.marks_client_as_operator(oper_type);
-		if let Some(vhost) = oper_vhost {
+		client.marks_client_as_operator(oper);
+		if let Some(vhost) = oper.virtual_host.as_deref() {
 			client.set_vhost(vhost);
 		}
 	}

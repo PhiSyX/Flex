@@ -27,3 +27,10 @@ declare interface Commands {
 declare interface CommandResponsesFromServer {
 	KICK: KickDataResponse;
 }
+
+declare interface ErrorReplies {
+	ERR_CANNOTKICKGLOBOPS: {
+		channel: string;
+		nick: string;
+	};
+}

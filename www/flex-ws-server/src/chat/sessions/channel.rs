@@ -323,7 +323,7 @@ impl ChatApplication
 		}
 
 		for nickname in knicks.iter() {
-			let Some(kick_client_socket) =
+			let Some(knick_client_socket) =
 				self.find_socket_by_nickname(client_socket.socket(), nickname)
 			else {
 				client_socket.send_err_nosuchnick(nickname);
@@ -332,9 +332,16 @@ impl ChatApplication
 
 			if !self
 				.channels
-				.has_client(channel_name, kick_client_socket.cid())
+				.has_client(channel_name, knick_client_socket.cid())
 			{
 				client_socket.send_err_usernotinchannel(channel_name, nickname);
+				continue;
+			}
+
+			let is_knick_are_unkickable = knick_client_socket.user().has_nokick_flag();
+
+			if is_knick_are_unkickable {
+				client_socket.send_err_cannotkickglobops(channel_name, nickname);
 				continue;
 			}
 
@@ -344,23 +351,23 @@ impl ChatApplication
 					.does_client_have_rights_to_operate_on_another_client(
 						channel_name,
 						client_socket.cid(),
-						kick_client_socket.cid(),
+						knick_client_socket.cid(),
 					) {
 				client_socket.send_err_chanoprivsneeded(channel_name);
 				continue;
 			}
 
 			self.channels
-				.remove_client(channel_name, kick_client_socket.cid());
+				.remove_client(channel_name, knick_client_socket.cid());
 			self.clients
-				.remove_channel(kick_client_socket.cid(), channel_name);
+				.remove_channel(knick_client_socket.cid(), channel_name);
 
 			let Some(channel) = self.channels.get(channel_name) else {
 				client_socket.send_err_nosuchchannel(channel_name);
 				continue;
 			};
 
-			client_socket.emit_kick(&channel, &kick_client_socket, comment);
+			client_socket.emit_kick(&channel, &knick_client_socket, comment);
 		}
 	}
 
