@@ -51,6 +51,8 @@ declare interface CommandResponsesReplies {
 
 declare interface ErrorReplies {
 	// biome-ignore lint/complexity/noBannedTypes: ?
+	ERROR: {};
+	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_ALREADYREGISTERED: {};
 	ERR_CANNOTSENDTOCHAN: { channel_name: string };
 	ERR_CHANOPRIVSNEEDED: { channel: string };

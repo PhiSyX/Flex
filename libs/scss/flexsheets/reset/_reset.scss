@@ -1,7 +1,6 @@
 @mixin use-reset {
 	@layer flexsheets {
 		* {
-			font: inherit;
 			min-width: 0;
 		}
 

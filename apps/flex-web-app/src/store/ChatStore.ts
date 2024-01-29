@@ -22,7 +22,8 @@ import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
 import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
-import { ErrorChanoprivsneeded } from "~/handlers/errors/ErrorChanoprivsneeded";
+import { ErrorChanoprivsneededHandler } from "~/handlers/errors/ErrorChanoprivsneededHandler";
+import { ErrorGeneralHandler } from "~/handlers/errors/ErrorGenericHandler";
 import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
 import { ErrorNoprivilegesHandler } from "~/handlers/errors/ErrorNoprivilegesHandler";
 import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
@@ -64,6 +65,7 @@ import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { User, UserID } from "~/user/User";
+import { useOverlayerStore } from "./OverlayerStore";
 
 // ---- //
 // Type //
@@ -98,8 +100,9 @@ export class ChatStore {
 			.add(new ReplyYourhostHandler(self));
 
 		self.errorsHandlers
+			.add(new ErrorGeneralHandler(self))
 			.add(new ErrorBadchannelkeyHandler(self))
-			.add(new ErrorChanoprivsneeded(self))
+			.add(new ErrorChanoprivsneededHandler(self))
 			.add(new ErrorCannotsendtochanHandler(self))
 			.add(new ErrorNicknameinuseHandler(self))
 			.add(new ErrorNoprivilegesHandler(self))
@@ -164,8 +167,10 @@ export class ChatStore {
 	// Propriété //
 	// --------- //
 
+	private overlayer = useOverlayerStore();
 	private _connectUserInfo: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
+	public clientError: Option<{ id: string; data: unknown }> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
 	private _selectedUser: Option<[ChannelID, UserID]> = None();
 	private _network: Option<string> = None();
@@ -232,6 +237,22 @@ export class ChatStore {
 
 	emit<E extends keyof Commands>(eventName: E, ...payload: Parameters<ClientToServerEvent[E]>) {
 		this._ws.expect("Instance WebSocket connecté au serveur").emit(eventName, ...payload);
+	}
+
+	disconnect(comment: string) {
+		this.overlayer.create({
+			id: "error-layer",
+			centered: true,
+			onClose: () => {
+				this.clientError = None();
+				window.location.reload();
+			},
+		});
+
+		this.clientError.replace({
+			id: "error-layer",
+			data: comment,
+		});
 	}
 
 	findUser(userID: string): Option<User> {

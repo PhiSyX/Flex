@@ -8,29 +8,40 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
+import { onBeforeMount, onBeforeUnmount } from "vue";
+
+import { type Layer, useOverlayerStore } from "~/store/OverlayerStore";
+
+// ----- //
+// Hooks //
+// ----- //
+
+export function useOverlayer() {
+	const overlayerStore = useOverlayerStore();
+
+	function destroyHandler(_: Event, id?: Layer["id"]) {
+		if (id) {
+			overlayerStore.destroy(id);
+		} else {
+			overlayerStore.destroyAll();
+		}
+	}
+
+	function resizeHandler() {
+		// overlayerStore.updateAll();
+	}
+
+	onBeforeMount(() => {
+		window.addEventListener("resize", resizeHandler, { passive: true });
+	});
+
+	onBeforeUnmount(() => {
+		window.removeEventListener("resize", resizeHandler);
+	});
+
+	return { store: overlayerStore, destroyHandler, resizeHandler };
 }
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
-
-		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
-		];
-
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
-}
+// -------- //
+// Fonction //
+// -------- //

@@ -8,29 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
-}
+import { ChatStore } from "~/store/ChatStore";
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
+// -------------- //
+// Implémentation //
+// -------------- //
 
-		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
-		];
+export class ErrorGeneralHandler implements SocketEventInterface<"ERROR"> {
+	constructor(private store: ChatStore) {}
 
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+	listen() {
+		this.store.on("ERROR", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERROR">) {
+		this.store.disconnect(data);
+	}
 }

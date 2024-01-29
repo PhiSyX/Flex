@@ -8,29 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
+// -------- //
+// Fonction //
+// -------- //
+
+/// CSS.px houdini
+function to_px(n: number): CSS.CSSUnitValue {
+	// NOTE(phisyx): `CSS` est disponible dans l'objet Window dans certains
+	// navigateurs.
+	if (typeof globalThis.CSS?.px !== "undefined") {
+		return globalThis.CSS.px(n) || `${n}px`;
+	}
+	return `${n}px`;
 }
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
+// ------ //
+// Export //
+// ------ //
 
-		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
-		];
-
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
-}
+export { to_px };

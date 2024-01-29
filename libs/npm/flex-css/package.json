@@ -1,0 +1,13 @@
+{
+	"name": "@phisyx/flex-css",
+	"description": "Code liée au CSS (in JS) pour Flex",
+	"authors": "Mike 'PhiSyX' S.",
+	"version": "0.1.0",
+	"scripts": {
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"@phisyx/flex-code-quality": "workspace:*",
+		"typescript": "^5.3.3"
+	}
+}
