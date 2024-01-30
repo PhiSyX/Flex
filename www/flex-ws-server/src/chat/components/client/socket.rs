@@ -207,6 +207,27 @@ impl<'a> Socket<'a>
 		_ = knick_client_socket.socket().leave(channel.room());
 	}
 
+	/// Émet au client les réponses liées à la commande /KICK.
+	pub fn emit_self_kick(&self, channel: &str, knick_client_socket: &Self, reason: Option<&str>)
+	{
+		use crate::src::chat::features::KickCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let knick_origin = Origin::from(knick_client_socket.client());
+
+		let cmd_kick = KickCommandResponse {
+			origin: &origin,
+			knick: &knick_origin,
+			channel,
+			reason: reason.or(Some("Kick!")),
+			tags: KickCommandResponse::default_tags(),
+		};
+
+		let room = format!("channel:{}", channel.to_lowercase());
+		self.emit_within(room.clone(), cmd_kick.name(), cmd_kick);
+		_ = knick_client_socket.socket().leave(room);
+	}
+
 	/// Émet au client les réponses liées à la commande /KILL.
 	pub fn emit_kill(&self, knick_client_socket: &Self, reason: &str)
 	{

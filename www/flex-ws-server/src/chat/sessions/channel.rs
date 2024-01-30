@@ -305,22 +305,74 @@ impl ChatApplication
 		comment: Option<&str>,
 	)
 	{
+		// NOTE: utilisateur / opérateur global / membre du salon / opérateur du
+		// salon / victime.
+
+		let is_client_globop = self.is_client_global_operator(client_socket);
+
+		// NOTE: opérateur global (2).
+
+		if is_client_globop {
+			for nickname in knicks.iter() {
+				let Some(knick_client_socket) =
+					self.find_socket_by_nickname(client_socket.socket(), nickname)
+				else {
+					client_socket.send_err_nosuchnick(nickname);
+					continue;
+				};
+
+				// NOTE: la victime (1/5) n'est pas membre du salon (3).
+				if !self
+					.channels
+					.has_client(channel_name, knick_client_socket.cid())
+				{
+					client_socket.send_err_usernotinchannel(channel_name, nickname);
+					continue;
+				}
+
+				// NOTE: un opérateur global (2) PEUT sanctionner même s'il
+				//       n'est pas présent dans le salon en question. Ce qui a
+				//       pour conséquence que si le membre du salon (3) était
+				//       seul dans le salon, le salon est supprimé.
+				let channel_not_removed =
+					self.remove_client_from_channel(channel_name, &knick_client_socket);
+
+				if channel_not_removed.is_some() {
+					let Some(channel) = self.channels.get(channel_name) else {
+						client_socket.send_err_nosuchchannel(channel_name);
+						continue;
+					};
+
+					client_socket.emit_kick(&channel, &knick_client_socket, comment);
+				} else {
+					// TODO: envoyer une SNotice de succès à l'opérateur global
+					// (2).
+				}
+			}
+
+			return;
+		}
+
+		// NOTE: utilisateur (1).
+
+		// NOTE: l'utilisateur (1) n'est pas membre du salon.
 		if !self.channels.has_client(channel_name, client_socket.cid()) {
 			client_socket.send_err_notonchannel(channel_name);
 			return;
 		}
 
-		let is_client_operator = self.is_client_global_operator(client_socket);
-
-		if !is_client_operator
-			&& !self.channels.does_client_have_rights(
-				channel_name,
-				client_socket.cid(),
-				nick::ChannelAccessLevel::HalfOperator,
-			) {
+		// NOTE: le membre du salon (3) n'a pas les droits minimales de
+		// 		 sanctionner dans le salon.
+		if !self.channels.does_client_have_rights(
+			channel_name,
+			client_socket.cid(),
+			nick::ChannelAccessLevel::HalfOperator,
+		) {
 			client_socket.send_err_chanoprivsneeded(channel_name);
 			return;
 		}
+
+		// NOTE: opérateur de salon (4) avec les bonnes permissions.
 
 		for nickname in knicks.iter() {
 			let Some(knick_client_socket) =
@@ -330,6 +382,7 @@ impl ChatApplication
 				continue;
 			};
 
+			// NOTE: la victime (1/5) n'est pas membre du salon (3).
 			if !self
 				.channels
 				.has_client(channel_name, knick_client_socket.cid())
@@ -338,30 +391,43 @@ impl ChatApplication
 				continue;
 			}
 
-			let is_knick_are_unkickable = knick_client_socket.user().has_nokick_flag();
-
-			if is_knick_are_unkickable {
+			// NOTE: la victime (5) possède un drapeau 'q' dans ses drapeaux
+			// 		 utilisateur (1) ce qui le rend non sanctionable d'un KICK.
+			if knick_client_socket.user().has_nokick_flag() {
 				client_socket.send_err_cannotkickglobops(channel_name, nickname);
 				continue;
 			}
 
-			if !is_client_operator
-				&& !self
-					.channels
-					.does_client_have_rights_to_operate_on_another_client(
-						channel_name,
-						client_socket.cid(),
-						knick_client_socket.cid(),
-					) {
+			// NOTE: l'opérateur de salon (4) n'a pas les droits d'opérer sur la
+			//       victime (5) qui se trouve être un opérateur de salon plus
+			//       haut gradé (4).
+			if !self
+				.channels
+				.does_client_have_rights_to_operate_on_another_client(
+					channel_name,
+					client_socket.cid(),
+					knick_client_socket.cid(),
+				) {
 				client_socket.send_err_chanoprivsneeded(channel_name);
 				continue;
 			}
 
-			self.channels
-				.remove_client(channel_name, knick_client_socket.cid());
-			self.clients
-				.remove_channel(knick_client_socket.cid(), channel_name);
+			// NOTE: nous sommes assuré par les conditions ci-hautes que
+			//       l'opérateur de salon (4) est un membre du salon (3). Ce qui
+			//       signifie que le salon NE PEUT PAS être supprimé après un
+			//       KICK d'un membre de salon (3). Cependant, nous ne sommes
+			//       pas assurer que l'opérateur de salon (4) se sanctionne
+			//       lui-même. ;-)
+			let channel_not_removed =
+				self.remove_client_from_channel(channel_name, &knick_client_socket);
 
+			if channel_not_removed.is_none() {
+				client_socket.emit_self_kick(channel_name, &knick_client_socket, comment);
+				return;
+			}
+
+			// NOTE: cela ne devrait jamais arriver à ce stade, mais sait-on
+			// 		 jamais.
 			let Some(channel) = self.channels.get(channel_name) else {
 				client_socket.send_err_nosuchchannel(channel_name);
 				continue;
@@ -369,6 +435,20 @@ impl ChatApplication
 
 			client_socket.emit_kick(&channel, &knick_client_socket, comment);
 		}
+	}
+
+	/// Supprime un client d'un salon. Si le salon n'a plus de membre, il sera
+	/// également supprimé.
+	pub fn remove_client_from_channel(
+		&self,
+		channel_name: &str,
+		client_socket: &client::Socket,
+	) -> Option<()>
+	{
+		self.clients
+			.remove_channel(client_socket.cid(), channel_name);
+		self.channels
+			.remove_client(channel_name, client_socket.cid())
 	}
 
 	/// Supprime le client courant de tous ses salons.
@@ -739,6 +819,7 @@ impl ChannelsSession
 		if channel_entity.users.is_empty() {
 			drop(channel_entity);
 			self.remove(channel_id);
+			return None;
 		}
 		Some(())
 	}
