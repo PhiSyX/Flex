@@ -17,6 +17,7 @@
 		"@phisyx/flex-safety": "workspace:*",
 		"@phisyx/flex-search": "workspace:*",
 		"@phisyx/flex-uikit": "workspace:*",
+		"focus-trap": "^7.5.4",
 		"pinia": "^2.1.7",
 		"socket.io-client": "^4.7.4",
 		"vue": "^3.4.14"

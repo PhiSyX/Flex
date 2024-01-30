@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { useOverlayer } from "./Overlayer.hooks";
+
+import { vTrap } from "~/directives";
+
 import OverlayerTeleport from "./Teleport.vue";
 
 const { store, destroyHandler } = useOverlayer();
