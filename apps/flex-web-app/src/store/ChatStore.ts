@@ -20,7 +20,6 @@ import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
-import { ErrorBadchannelkeyHandler } from "~/handlers/errors/ErrorBadchannelkeyHandler";
 import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
 import { ErrorChanoprivsneededHandler } from "~/handlers/errors/ErrorChanoprivsneededHandler";
 import { ErrorGeneralHandler } from "~/handlers/errors/ErrorGenericHandler";
@@ -101,7 +100,6 @@ export class ChatStore {
 
 		self.errorsHandlers
 			.add(new ErrorGeneralHandler(self))
-			.add(new ErrorBadchannelkeyHandler(self))
 			.add(new ErrorChanoprivsneededHandler(self))
 			.add(new ErrorCannotsendtochanHandler(self))
 			.add(new ErrorNicknameinuseHandler(self))
@@ -659,9 +657,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet la commande /JOIN vers le serveur.
 	 */
-	function joinChannel(name: string) {
+	function joinChannel(channelsRaw: string, keysRaw?: string) {
 		const joinModule = store.modules.get(JoinModule.NAME) as JoinModule;
-		joinModule.send({ channels: [name] });
+		const channels = channelsRaw.split(",");
+		const keys = keysRaw?.split(",");
+		joinModule.send({ channels, keys });
 	}
 
 	/**

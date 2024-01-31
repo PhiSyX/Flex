@@ -42,6 +42,10 @@
 			text-wrap: pretty;
 		}
 
+		label {
+			cursor: pointer;
+		}
+
 		@media (prefers-reduced-motion: no-preferences) {
 			:has(:target) {
 				scroll-behavior: smooth;

@@ -8,40 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { onBeforeMount, onBeforeUnmount } from "vue";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 
-import { type Layer, useOverlayerStore } from "~/store/OverlayerStore";
+const overlayerStore = useOverlayerStore();
 
-// ----- //
-// Hooks //
-// ----- //
-
-export function useOverlayer() {
-	const overlayerStore = useOverlayerStore();
-
-	function destroyHandler(_: Event, id?: Layer["id"]) {
-		if (id) {
-			overlayerStore.destroy(id);
-		} else {
-			overlayerStore.destroyAll();
-		}
+export function closeLayer(name: string) {
+	function closeLayerHandler() {
+		overlayerStore.destroy(name);
 	}
-
-	function resizeHandler() {
-		overlayerStore.updateAll();
-	}
-
-	onBeforeMount(() => {
-		window.addEventListener("resize", resizeHandler, { passive: true });
-	});
-
-	onBeforeUnmount(() => {
-		window.removeEventListener("resize", resizeHandler);
-	});
-
-	return { store: overlayerStore, destroyHandler, resizeHandler };
+	return closeLayerHandler;
 }
-
-// -------- //
-// Fonction //
-// -------- //

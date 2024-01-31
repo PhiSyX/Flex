@@ -78,7 +78,7 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 </script>
 
 <template>
-	<Story title="Molecules/ChannelRoom" responsive-disabled>
+	<Story title="Organisms/ChannelRoom" responsive-disabled>
 		<Variant title="Default">
 			<ChannelRoom
 				:can-edit-topic="false"
