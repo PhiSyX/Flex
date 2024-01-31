@@ -40,7 +40,9 @@ function submitHandler() {
 		<template #label>Rejoindre un salon</template>
 
 		<template #footer>
-			<em>Les champs contenant un asterisk * sont obligatoires.</em>
+			<em>
+				Les champs ayant un <span>*</span>asterisk sont obligatoires.
+			</em>
 
 			<UiButton
 				type="submit"
@@ -102,12 +104,13 @@ function submitHandler() {
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-:has {
-	color: red;
-}
-
 input {
-	background: var(--color-white);
+	--default-placeholder-color: var(--color-grey900);
+	background: var(--color-ultra-white);
+	color: var(--color-black);
+	&:placeholder-shown {
+		color: var(--default-placeholder-color);
+	}
 }
 
 em {
@@ -120,8 +123,8 @@ span {
 }
 
 button[type="submit"] {
-	--btn-primary-bg: var(--color-white);
-	--btn-primary-bg-hover: var(--color-ultra-white);
+	--btn-primary-bg: var(--color-ultra-white);
+	--btn-primary-bg-hover: var(--color-white);
 	--btn-primary-color: var(--color-black);
 	padding: fx.space(1) fx.space(2);
 	border-radius: 2px;
