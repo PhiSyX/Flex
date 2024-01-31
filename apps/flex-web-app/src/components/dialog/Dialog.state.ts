@@ -13,5 +13,4 @@ import { useOverlayerStore } from "~/store/OverlayerStore";
 
 const overlayerStore = useOverlayerStore();
 
-export const hasLayer = (name: string) =>
-	computed(() => overlayerStore.layers.has(name));
+export const hasLayer = (name: string) => computed(() => overlayerStore.layers.has(name));

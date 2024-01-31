@@ -43,6 +43,7 @@ const toggleSelectedUserHandler = toggleSelectedUser(props);
 	<ChannelRoomComponent
 		:can-edit-topic="canEditTopic"
 		:disable-input="room.kicked"
+		:input-history="room.inputHistory"
 		:me="$me"
 		:messages="room.messages"
 		:name="room.name"

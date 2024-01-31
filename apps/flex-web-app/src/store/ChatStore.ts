@@ -732,6 +732,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet les commandes au serveur.
 	 */
 	function sendMessage(name: string, message: string) {
+		const room = store.roomManager().get(name).unwrap_unchecked();
+		room.addInputHistory(message);
+
 		if (!message.startsWith("/")) {
 			const words = message.split(" ");
 			const privmsgModule = store.modules.get(PrivmsgModule.NAME) as PrivmsgModule;

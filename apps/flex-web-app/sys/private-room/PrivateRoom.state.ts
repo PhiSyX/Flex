@@ -19,6 +19,7 @@ import { RoomMessage } from "~/room/RoomMessage";
 
 export interface Props {
 	disableInput: boolean;
+	inputHistory?: Array<string>;
 	me: PrivateNick;
 	messages: Array<RoomMessage>;
 	recipient: PrivateNick;

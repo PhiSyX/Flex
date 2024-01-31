@@ -49,6 +49,7 @@ const {
 	<div class="room/channel [ flex ]" :data-room="name">
 		<Room
 			:disable-input="disableInput"
+			:input-history="inputHistory"
 			:messages="messages"
 			:name="name"
 			@open-private="openPrivateHandler"

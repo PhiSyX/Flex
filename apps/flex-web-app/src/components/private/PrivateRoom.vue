@@ -29,6 +29,7 @@ const recipientIsBlocked = computeRecipientIsBlocked(recipient.value);
 <template>
 	<PrivateRoomComponent
 		:disable-input="recipientIsBlocked"
+		:input-history="room.inputHistory"
 		:me="$me"
 		:messages="room.messages"
 		:recipient="recipient"
