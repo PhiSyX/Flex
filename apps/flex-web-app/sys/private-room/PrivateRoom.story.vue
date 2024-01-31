@@ -23,7 +23,7 @@ const recipient: PrivateNick = new PrivateNick(origin1);
 </script>
 
 <template>
-	<Story title="Molecules/PrivateRoom" responsive-disabled>
+	<Story title="Organisms/PrivateRoom" responsive-disabled>
 		<Variant title="Me">
 			<PrivateRoom
 				:disable-input="disableInput"

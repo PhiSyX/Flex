@@ -15,7 +15,7 @@ room.insert({
 </script>
 
 <template>
-	<Story title="Molecules/ChannelList" responsive-disabled>
+	<Story title="Organisms/ChannelList" responsive-disabled>
 		<Variant title="Default">
 			<ChannelList :room="room" />
 		</Variant>
