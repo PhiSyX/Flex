@@ -24,6 +24,7 @@ import { RoomMessage } from "~/room/RoomMessage";
 export interface Props {
 	canEditTopic: boolean;
 	disableInput: boolean;
+	inputHistory?: Array<string>;
 	me: Option<ChannelNick>;
 	messages: Array<RoomMessage>;
 	name: string;

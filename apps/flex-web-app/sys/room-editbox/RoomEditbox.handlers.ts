@@ -22,7 +22,7 @@ interface Emits {
 // Handlers //
 // -------- //
 
-export function onSubmit(emit: Emits, props: Props) {
+export const onSubmit = (emit: Emits) => (props: Props) => {
 	function onSubmitHandler() {
 		if (props.disableInput || inputModel.value.length === 0) {
 			return;
@@ -32,4 +32,4 @@ export function onSubmit(emit: Emits, props: Props) {
 	}
 
 	return onSubmitHandler;
-}
+};

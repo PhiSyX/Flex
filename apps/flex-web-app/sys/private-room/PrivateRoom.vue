@@ -33,6 +33,7 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 	<div class="room/private [ flex ]" :data-room="recipient.nickname">
 		<Room
 			:disable-input="disableInput"
+			:input-history="inputHistory"
 			:messages="messages"
 			:name="recipient.nickname"
 			@send-message="sendMessageHandler"

@@ -3,6 +3,7 @@ import { ButtonIcon } from "@phisyx/flex-uikit";
 
 import { onActivated } from "vue";
 
+import { useInputHistory } from "./RoomEditbox.hooks";
 import { onSubmit } from "./RoomEditbox.handlers";
 import {
 	type Props,
@@ -23,7 +24,11 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const formAction = computeFormAction(props);
-const submitHandler = onSubmit(emit, props);
+
+const { keydownHandler, submitHandler } = useInputHistory(
+	props,
+	onSubmit(emit)
+);
 
 onActivated(() => {
 	$input.value?.focus();
@@ -36,7 +41,7 @@ onActivated(() => {
 		method="POST"
 		:disabled="disableInput ? 'disabled' : undefined"
 		class="[ min-h=8 p=1 pl=0 ]"
-		@submit.prevent="submitHandler"
+		@submit.prevent="submitHandler()"
 	>
 		<input type="hidden" name="target" :value="target" />
 
@@ -48,6 +53,7 @@ onActivated(() => {
 				:placeholder="placeholder"
 				type="text"
 				class="[ input:reset flex:full h:full py=1 ]"
+				@keydown="keydownHandler"
 			/>
 
 			<ButtonIcon icon="text-color" :disabled="disableInput" />

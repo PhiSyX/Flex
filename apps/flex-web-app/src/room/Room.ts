@@ -17,6 +17,12 @@ import { MESSAGES_LIMIT, RoomMessage } from "./RoomMessage";
 
 export type RoomID = string;
 
+// -------- //
+// Constant //
+// -------- //
+
+export const INPUT_HISTORY_LIMIT: number = 50;
+
 // -------------- //
 // Implémentation //
 // -------------- //
@@ -47,6 +53,11 @@ export class Room<Type extends string = string> {
 	 * Highlight de la chambre
 	 */
 	highlight = false;
+
+	/**
+	 * Historique des champs de saisie de l'utilisateur.
+	 */
+	inputHistory: Array<string> = [];
 
 	/**
 	 * Les messages liées à la fenêtre.
@@ -94,7 +105,7 @@ export class Room<Type extends string = string> {
 	/**
 	 * Ajoute un événement de connexion au tableau de messages.
 	 */
-	public addConnectEvent(
+	addConnectEvent(
 		payload: {
 			origin: Origin;
 			tags: { msgid: string };
@@ -117,7 +128,7 @@ export class Room<Type extends string = string> {
 	/**
 	 * Ajoute un événement au tableau de messages.
 	 */
-	public addEvent<R extends RepliesNames>(
+	addEvent<R extends RepliesNames>(
 		evtName:
 			| `error:${Lowercase<R>}`
 			| `event:${Lowercase<R>}`
@@ -139,9 +150,29 @@ export class Room<Type extends string = string> {
 	}
 
 	/**
+	 * Ajoute une entrée utilisateur dans l'historique des entrées.
+	 */
+	addInputHistory(input: string) {
+		const inputHistorySize = this.inputHistory.length;
+
+		if (inputHistorySize === INPUT_HISTORY_LIMIT) {
+			this.inputHistory.shift();
+		}
+
+		if (inputHistorySize === 0) {
+			this.inputHistory.push(input, "");
+		} else {
+			if (this.inputHistory[inputHistorySize - 2] !== input) {
+				this.inputHistory[inputHistorySize - 1] = input;
+				this.inputHistory.push("");
+			}
+		}
+	}
+
+	/**
 	 * Ajoute un message au tableau de messages.
 	 */
-	public addMessage(message: RoomMessage) {
+	addMessage(message: RoomMessage) {
 		if (this.messages.length === MESSAGES_LIMIT) {
 			this.messages.shift();
 		}
@@ -160,11 +191,11 @@ export class Room<Type extends string = string> {
 	/**
 	 * Définit un nom.
 	 */
-	public changeName(name: string) {
+	changeName(name: string) {
 		this._name = name;
 	}
 
-	public eq($1: string | Room<Type>): boolean {
+	eq($1: string | Room<Type>): boolean {
 		if (typeof $1 === "string") {
 			return this.id() === $1 || this.name.toLowerCase() === $1.toLowerCase();
 		}
@@ -174,14 +205,14 @@ export class Room<Type extends string = string> {
 	/**
 	 * ID de la chambre.
 	 */
-	public id(): RoomID {
+	id(): RoomID {
 		return this._id;
 	}
 
 	/**
 	 * Définit un ID de chambre.
 	 */
-	public withID(id: RoomID): this {
+	withID(id: RoomID): this {
 		this._id = id;
 		return this;
 	}
@@ -189,21 +220,21 @@ export class Room<Type extends string = string> {
 	/**
 	 * Est-ce que la chambre est active?
 	 */
-	public isActive(): boolean {
+	isActive(): boolean {
 		return this.active;
 	}
 
 	/**
 	 * Est-ce que la chambre est fermée?
 	 */
-	public isClosed(): boolean {
+	isClosed(): boolean {
 		return this.closed;
 	}
 
 	/**
 	 * Marque la chambre comme étant fermée.
 	 */
-	public marksAsClosed(): this {
+	marksAsClosed(): this {
 		this.closed = true;
 		this.active = false;
 		for (const message of this.messages) {
@@ -215,7 +246,7 @@ export class Room<Type extends string = string> {
 	/**
 	 * Marque la chambre comme étant ouverture.
 	 */
-	public marksAsOpen(): this {
+	marksAsOpen(): this {
 		this.closed = false;
 		return this;
 	}
@@ -223,35 +254,35 @@ export class Room<Type extends string = string> {
 	/**
 	 * Définit la chambre comme étant active.
 	 */
-	public setActive(b: boolean) {
+	setActive(b: boolean) {
 		this.active = b;
 	}
 
 	/**
 	 * Définit un nom personnalisé pour la chambre.
 	 */
-	public setCustomName(name: string) {
+	setCustomName(name: string) {
 		this.customName.replace(name);
 	}
 
 	/**
 	 * Définit la chambre comme étant "highlight".
 	 */
-	public setHighlight(bool: boolean) {
+	setHighlight(bool: boolean) {
 		this.highlight = bool;
 	}
 
 	/**
 	 * Définit le total des événements reçus à 0.
 	 */
-	public unsetTotalUnreadEvents() {
+	unsetTotalUnreadEvents() {
 		this.totalUnreadEvents = 0;
 	}
 
 	/**
 	 * Définit le total des messages reçus à 0.
 	 */
-	public unsetTotalUnreadMessages() {
+	unsetTotalUnreadMessages() {
 		this.totalUnreadMessages = 0;
 	}
 }

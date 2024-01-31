@@ -8,33 +8,46 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed, ref } from "vue";
+import { ref, watchEffect } from "vue";
+import { Props, inputModel } from "./RoomEditbox.state";
 
-// ---- //
-// Type //
-// ---- //
+export function useInputHistory(props: Props, onSubmit: (props: Props) => () => void) {
+	const positionArrow = ref(0);
 
-export interface Props {
-	disableInput?: boolean;
-	history?: Array<string>;
-	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes
-	//background: color;
-	//foreground: color;
-	placeholder?: string;
-	target: string;
-}
+	function keydownHandler(evt: KeyboardEvent) {
+		if (!props.history) return;
 
-// ----------- //
-// Local State //
-// ----------- //
+		if (!["ArrowDown", "ArrowUp"].includes(evt.code)) return;
 
-export const $input = ref<HTMLInputElement>();
-export const inputModel = ref("");
+		evt.preventDefault();
 
-export const computeFormAction = (props: Props) =>
-	computed(() => {
-		const targetPath = props.target.startsWith("#")
-			? `%23${props.target.slice(1).toLowerCase()}`
-			: props.target.toLowerCase();
-		return `/privmsg/${targetPath}`;
+		if (evt.code === "ArrowDown") {
+			positionArrow.value -= 1;
+		} else {
+			positionArrow.value += 1;
+		}
+
+		const v = props.history[props.history.length - 1 - positionArrow.value];
+		if (v == null) return;
+		inputModel.value = v;
+	}
+
+	function submitHandler() {
+		onSubmit(props)();
+		positionArrow.value = 0;
+	}
+
+	watchEffect(() => {
+		if (!props.history) return;
+
+		if (positionArrow.value <= -1) {
+			positionArrow.value = 0;
+		}
+
+		if (positionArrow.value >= props.history.length - 1) {
+			positionArrow.value = props.history.length - 1;
+		}
 	});
+
+	return { keydownHandler, submitHandler };
+}
