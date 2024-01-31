@@ -11,6 +11,8 @@ import Room from "#/sys/room/Room.vue";
 
 interface Props {
 	forumUrl: string;
+	id: string;
+	inputHistory?: Array<string>;
 	messages: Array<RoomMessage>;
 	name: string;
 	vademecumUrl: string;
@@ -23,12 +25,13 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const sendMessageHandler = sendMessage(emit, props.name);
+const sendMessageHandler = sendMessage(emit, props.id);
 </script>
 
 <template>
 	<div class="room/custom:server [ flex! ov:h ]">
 		<Room
+			:input-history="inputHistory"
 			:messages="messages"
 			:name="name"
 			@send-message="sendMessageHandler"

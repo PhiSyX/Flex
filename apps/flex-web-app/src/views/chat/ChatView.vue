@@ -39,6 +39,8 @@ const chatStore = useChatStore();
 						<ServerCustomRoom
 							v-if="room.isActive() && !room.isClosed()"
 							:forum-url="forumURL"
+							:id="room.id()"
+							:input-history="room.inputHistory"
 							:messages="room.messages"
 							:name="room.name"
 							:vademecum-url="vademecumURL"
