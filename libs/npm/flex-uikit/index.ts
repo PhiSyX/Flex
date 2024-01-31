@@ -25,6 +25,7 @@ const iconsComponents = Object.entries(iconsImports).map(
 
 export { default as Alert } from "./src/alert/Alert.vue";
 export { default as Badge } from "./src/badge/Badge.vue";
+export { default as Dialog } from "./src/dialog/Dialog.vue";
 export { default as UiButton } from "./src/button/Button.vue";
 export { default as InputSwitch } from "./src/input-switch/InputSwitch.vue";
 export { default as TextInput } from "./src/text-input/TextInput.vue";

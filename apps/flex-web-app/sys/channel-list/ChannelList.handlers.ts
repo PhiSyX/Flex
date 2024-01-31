@@ -16,6 +16,7 @@ import { selectedChannels } from "./ChannelList.state";
 
 export interface Emits {
 	(evtName: "join-channel", name: string): void;
+	(evtName: "channel-create-request", event: MouseEvent): void;
 }
 
 // -------- //
@@ -29,4 +30,11 @@ export function joinSelectedChannels(emit: Emits) {
 		}
 	}
 	return joinSelectedChannelsHandler;
+}
+
+export function requestCreateChannel(emit: Emits) {
+	function requestCreateChannelHandler(event: MouseEvent) {
+		emit("channel-create-request", event);
+	}
+	return requestCreateChannelHandler;
 }

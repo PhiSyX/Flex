@@ -7,6 +7,7 @@
 				--default-border-color: var(--color-blue-grey500);
 				--default-text-color: var(--color-white);
 				--default-text-color_alt: var(--color-grey900);
+				--box-shadow: 2px 2px 4px var(--color-blue-grey700);
 
 				--disabled-color: var(--color-blue-grey500);
 
@@ -15,6 +16,9 @@
 					var(--color-blue-grey400)
 				);
 				--body-bg_alt: var(--color-blue-grey600);
+
+				--dialog-bg: var(--color-blue-grey100);
+				--dialog-border-color: var(--color-blue-grey400);
 
 				--text-input-color-error: #4dd2d4;
 

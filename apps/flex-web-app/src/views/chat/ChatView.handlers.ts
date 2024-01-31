@@ -9,8 +9,10 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
 // -------- //
 // Handlers //
@@ -19,6 +21,14 @@ const chatStore = useChatStore();
 export function joinChannelHandler(name: string) {
 	chatStore.joinChannel(name);
 	chatStore.changeRoom(name);
+}
+
+export function requestCreateChannelHandler(event: MouseEvent) {
+	overlayerStore.create({
+		id: "channel-create-request",
+		centered: true,
+		event,
+	});
 }
 
 export function sendMessageHandler(name: string, message: string) {

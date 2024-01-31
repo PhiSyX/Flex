@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { UiButton } from "@phisyx/flex-uikit";
 
-import { Emits, joinSelectedChannels } from "./ChannelList.handlers";
+import {
+	Emits,
+	joinSelectedChannels,
+	requestCreateChannel,
+} from "./ChannelList.handlers";
 import {
 	type Props,
 	filteredChannelInput,
@@ -17,6 +21,8 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const joinSelectedChannelsHandler = joinSelectedChannels(emit);
+const requestCreateChannelHandler = requestCreateChannel(emit);
+
 const filteredChannels = computeFilteredChannels(props);
 </script>
 
@@ -31,15 +37,27 @@ const filteredChannels = computeFilteredChannels(props);
 			class="[ input:reset p=1 border/radius=1 ]"
 		/>
 
-		<div class="[ align-t:right ]">
-			<UiButton
-				class="[ p=2 border/radius=0.6 ]"
-				variant="primary"
-				:disabled="selectedChannels.size === 0"
-				@click="joinSelectedChannelsHandler()"
-			>
-				Rejoindre les salons sélectionnés
-			</UiButton>
+		<div class="[ flex gap=1 align-jc:end ]">
+			<div>
+				<UiButton
+					class="[ px=2 py=1 border/radius=0.6 ]"
+					variant="primary"
+					@click="requestCreateChannelHandler"
+				>
+					Créer un salon
+				</UiButton>
+			</div>
+
+			<div class="[ align-t:right ]">
+				<UiButton
+					class="[ px=2 py=1 border/radius=0.6 ]"
+					variant="primary"
+					:disabled="selectedChannels.size === 0"
+					@click="joinSelectedChannelsHandler()"
+				>
+					Rejoindre les salons sélectionnés
+				</UiButton>
+			</div>
 		</div>
 
 		<div class="table [ ov:h border/radius=1 scroll:y ]">

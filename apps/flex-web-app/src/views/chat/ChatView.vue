@@ -7,11 +7,16 @@ import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { useChatStore } from "~/store/ChatStore";
 
 import { rooms, forumURL, vademecumURL } from "./ChatView.state";
-import { joinChannelHandler, sendMessageHandler } from "./ChatView.handlers";
+import {
+	joinChannelHandler,
+	requestCreateChannelHandler,
+	sendMessageHandler,
+} from "./ChatView.handlers";
 
 import Navigation from "~/components/navigation/Navigation.vue";
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
+import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 
 import Match from "#/sys/match/Match.vue";
 import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
@@ -76,11 +81,16 @@ const chatStore = useChatStore();
 							:room="(room as ChannelListCustomRoom)"
 							class="[ flex:full ]"
 							@join-channel="joinChannelHandler"
+							@channel-create-request="
+								requestCreateChannelHandler
+							"
 						/>
 					</KeepAlive>
 				</template>
 			</template>
 		</div>
+
+		<!-- Teleport -->
 
 		<Match :maybe="chatStore.store.clientError">
 			<template #some="{ data: error }">
@@ -96,5 +106,7 @@ const chatStore = useChatStore();
 				</Teleport>
 			</template>
 		</Match>
+
+		<ChannelCreateDialog />
 	</main>
 </template>
