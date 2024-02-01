@@ -45,7 +45,7 @@ const ErrorNotonchannelHandler = () => import("~/handlers/errors/ErrorNotonchann
 const ErrorUsernotinchannelHandler = () => import("~/handlers/errors/ErrorUsernotinchannelHandler");
 
 const AwayModule = () => import("~/modules/user-status/module");
-const IgnoreModule = () => import("~/modules/(un)ignore/module");
+const SilenceModule = () => import("~/modules/silence/module");
 const JoinModule = () => import("~/modules/join/module");
 const KickModule = () => import("~/modules/kick/module");
 const KillModule = () => import("~/modules/kill/module");
@@ -102,7 +102,7 @@ export class ChatStore {
 
 		self.modulesSets
 			.add(AwayModule)
-			.add(IgnoreModule)
+			.add(SilenceModule)
 			.add(JoinModule)
 			.add(KickModule)
 			.add(KillModule)
@@ -686,13 +686,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	/**
-	 * Émet la commande /IGNORE vers le serveur.
+	 * Émet la commande /SILENCE +nickname vers le serveur.
 	 */
 	function ignoreUser(nickname: string) {
-		const moduleUnsafe: CommandInterface<"IGNORE"> | undefined = store.modules.get("IGNORE");
+		const moduleUnsafe: CommandInterface<"SILENCE"> | undefined = store.modules.get("SILENCE");
 		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `IGNORE`");
-		module.send({ nickname });
+		const module = maybeModule.expect("Récupération du module `SILENCE`");
+		module.send({ nickname: `+${nickname}` });
 	}
 
 	/**
@@ -777,7 +777,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet les commandes au serveur.
 	 */
 	function sendMessage(name: string, message: string) {
-		const room = store.roomManager().get(name).unwrap_unchecked();
+		const room = store
+			.roomManager()
+			.get(name)
+			.or_else(() =>
+				store.findUserByNickname(name).and_then((user) => store.roomManager().get(user.id)),
+			)
+			.unwrap_unchecked();
 		room.addInputHistory(message);
 
 		if (!message.startsWith("/")) {
@@ -790,7 +796,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		const words = message.slice(1).split(" ");
 		const [commandName, ...args] = words;
 
-		const module = store.modules.get(commandName.toLowerCase() as CommandsNames);
+		const module = store.modules.get(commandName.toUpperCase() as CommandsNames);
 
 		if (!module) {
 			console.error(
@@ -881,14 +887,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	/**
-	 * Émet la commande /UNIGNORE vers le serveur.
+	 * Émet la commande /SILENCE - vers le serveur.
 	 */
 	function unignoreUser(nickname: string) {
-		const moduleUnsafe: CommandInterface<"UNIGNORE"> | undefined =
-			store.modules.get("UNIGNORE");
+		const moduleUnsafe: CommandInterface<"SILENCE"> | undefined = store.modules.get("SILENCE");
 		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `UNIGNORE`");
-		module.send({ nickname });
+		const module = maybeModule.expect("Récupération du module `SILENCE`");
+		module.send({ nickname: `-${nickname}` });
 	}
 
 	/**

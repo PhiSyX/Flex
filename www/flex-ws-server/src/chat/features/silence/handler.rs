@@ -17,80 +17,63 @@ use crate::src::ChatApplication;
 // Structure //
 // --------- //
 
-pub struct IgnoreHandler;
-
-pub struct UnignoreHandler;
+pub struct SilenceHandler;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl IgnoreHandler
+impl SilenceHandler
 {
-	pub const COMMAND_NAME: &'static str = "IGNORE";
+	pub const COMMAND_NAME: &'static str = "SILENCE";
 
-	/// La commande `/IGNORE` permet de ne plus être notifié des messages d'un
+	/// La commande `/SILENCE` permet de ne plus être notifié des messages d'un
 	/// client que ces soit dans les messages privés ou publiques.
 	pub async fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::IgnoreCommandFormData>,
+		Data(data): Data<super::SilenceCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
 
-		if client_socket.check_nickname(&data.nickname) {
+		let nickname = &data.nickname[1..];
+
+		if client_socket.check_nickname(nickname) {
 			return;
 		}
 
-		let Some(to_ignore_client_socket) = app.find_socket_by_nickname(&socket, &data.nickname)
-		else {
-			client_socket.send_err_nosuchnick(&data.nickname);
+		let Some(to_silence_client_socket) = app.find_socket_by_nickname(&socket, nickname) else {
+			client_socket.send_err_nosuchnick(nickname);
 			return;
 		};
 
-		app.add_client_to_blocklist(&client_socket, &to_ignore_client_socket);
+		// NOTE(phisyx): utilisateur à ajouter dans la liste des utilisateurs
+		// 				 ignorés.
 
-		_ = client_socket
-			.socket()
-			.join(to_ignore_client_socket.useless_people_room());
+		if data.nickname.starts_with('+') {
+			_ = client_socket
+				.socket()
+				.join(to_silence_client_socket.useless_people_room());
 
-		let users = [&Origin::from(to_ignore_client_socket.client())];
-		client_socket.send_rpl_ignore(&users, true);
-	}
-}
+			if app.add_client_to_blocklist(&client_socket, &to_silence_client_socket) {
+				let users = [&Origin::from(to_silence_client_socket.client())];
+				client_socket.emit_silence(&users, Some(true));
+			}
 
-impl UnignoreHandler
-{
-	pub const COMMAND_NAME: &'static str = "UNIGNORE";
-
-	/// La commande `/UNIGNORE` permet retirer un membre bloqué de la liste
-	/// des membres bloqués du client courant.
-	pub async fn handle(
-		socket: SocketRef,
-		State(app): State<ChatApplication>,
-		Data(data): Data<super::IgnoreCommandFormData>,
-	)
-	{
-		let client_socket = app.current_client(&socket);
-
-		if client_socket.check_nickname(&data.nickname) {
 			return;
 		}
 
-		let Some(to_unignore_client_socket) = app.find_socket_by_nickname(&socket, &data.nickname)
-		else {
-			client_socket.send_err_nosuchnick(&data.nickname);
-			return;
-		};
-
-		app.remove_client_to_blocklist(&client_socket, &to_unignore_client_socket);
+		// NOTE(phisyx): utilisateur à retirer de la liste des utilisateurs
+		// 				 ignorés.
 
 		_ = client_socket
 			.socket()
-			.leave(to_unignore_client_socket.useless_people_room());
+			.leave(to_silence_client_socket.useless_people_room());
 
-		let users = [&Origin::from(to_unignore_client_socket.client())];
-		client_socket.send_rpl_unignore(&users)
+		if app.remove_client_to_blocklist(&client_socket, &to_silence_client_socket) {
+			let users = [&Origin::from(to_silence_client_socket.client())];
+			client_socket.emit_silence(&users, Some(false));
+		}
 	}
 }

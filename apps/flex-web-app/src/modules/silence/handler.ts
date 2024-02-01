@@ -15,7 +15,7 @@ import { User } from "~/user/User";
 // Implémentation //
 // -------------- //
 
-export class ReplyIgnoreHandler implements SocketEventInterface<"RPL_IGNORE"> {
+export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -26,55 +26,32 @@ export class ReplyIgnoreHandler implements SocketEventInterface<"RPL_IGNORE"> {
 	// ------- //
 
 	listen() {
-		this.store.on("RPL_IGNORE", (data) => this.handle(data));
+		this.store.on("SILENCE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_IGNORE">) {
+	handle(data: GenericReply<"SILENCE">) {
 		const currentRoom = this.store.roomManager().active();
 
 		if (data.updated) {
-			currentRoom.addConnectEvent(data, data.message);
+			const message = "Votre liste des utilisateurs ignorés a été mis à jour";
+			currentRoom.addConnectEvent(data, message);
 		}
 
 		for (const user of data.users) {
-			this.store.addUserToBlocklist(new User(user));
+			if (data.added) {
+				this.store.addUserToBlocklist(new User(user));
+			}
+
+			if (data.removed) {
+				this.store.removeUserToBlocklist(new User(user));
+			}
 
 			if (data.updated) {
-				currentRoom.addEvent("event:rpl_ignore", {
+				currentRoom.addEvent("event:silence", {
 					...data,
 					isMe: true,
 				});
 			}
-		}
-	}
-}
-
-export class ReplyUnignoreHandler implements SocketEventInterface<"RPL_UNIGNORE"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStore) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_UNIGNORE", (data) => this.handle(data));
-	}
-
-	handle(data: GenericReply<"RPL_UNIGNORE">) {
-		const currentRoom = this.store.roomManager().active();
-
-		currentRoom.addConnectEvent(data, data.message);
-
-		for (const user of data.users) {
-			this.store.removeUserToBlocklist(new User(user));
-
-			currentRoom.addEvent("event:rpl_unignore", {
-				...data,
-				isMe: true,
-			});
 		}
 	}
 }

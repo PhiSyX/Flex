@@ -6,7 +6,7 @@ import { type Props } from "./RoomEvent.state";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-defineProps<Props<"RPL_UNIGNORE">>();
+defineProps<Props<"SILENCE">>();
 </script>
 
 <template>
@@ -14,8 +14,14 @@ defineProps<Props<"RPL_UNIGNORE">>();
 		{{ time.formattedTime }}
 	</time>
 	<p v-for="user of data.users">
-		* <span>{{ user.nickname }}</span> n'est désormais
-		<strong>plus ignoré</strong>.
+		<template v-if="data.added">
+			* <span>{{ user.nickname }}</span> est désormais
+			<strong>ignoré</strong>.
+		</template>
+		<template v-else-if="data.removed">
+			* <span>{{ user.nickname }}</span> n'est désormais
+			<strong>plus ignoré</strong>.
+		</template>
 	</p>
 </template>
 

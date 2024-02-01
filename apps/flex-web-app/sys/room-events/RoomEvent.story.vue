@@ -7,8 +7,8 @@ import RoomEventNick from "./RoomEventNick.vue";
 import RoomEventPart from "./RoomEventPart.vue";
 import RoomEventQuery from "./RoomEventQuery.vue";
 import RoomEventQuit from "./RoomEventQuit.vue";
-import RoomEventRplIgnore from "./RoomEventRplIgnore.vue";
-import RoomEventRplUnignore from "./RoomEventRplUnignore.vue";
+import RoomEventIgnore from "./RoomEventSilence.vue";
+import RoomEventUnignore from "./RoomEventSilence.vue";
 
 type Payload = {
 	id: string;
@@ -157,13 +157,10 @@ const eventQuit: Payload & {
 	},
 	...payload,
 };
-const eventRplIgnore: Payload & {
-	data: GenericReply<"RPL_IGNORE">;
-} = {
+const eventIgnore: Payload & { data: GenericReply<"SILENCE"> } = {
 	data: {
-		message: "message",
-		code: 1,
-		name: "RPL_IGNORE",
+		name: "SILENCE",
+		added: true,
 		updated: true,
 		users: [origin],
 		origin,
@@ -171,13 +168,11 @@ const eventRplIgnore: Payload & {
 	},
 	...payload,
 };
-const eventRplUnignore: Payload & {
-	data: GenericReply<"RPL_UNIGNORE">;
-} = {
+const eventUnignore: Payload & { data: GenericReply<"SILENCE"> } = {
 	data: {
-		message: "message",
-		code: 1,
-		name: "RPL_UNIGNORE",
+		removed: true,
+		updated: false,
+		name: "SILENCE",
 		users: [origin],
 		origin,
 		tags,
@@ -240,14 +235,14 @@ const eventRplUnignore: Payload & {
 			</div>
 		</Variant>
 
-		<Variant title="Reply Ignore Event">
+		<Variant title="Silence (Ignore) Event">
 			<div class="room/echo">
-				<RoomEventRplIgnore v-bind="eventRplIgnore" />
+				<RoomEventIgnore v-bind="eventIgnore" />
 			</div>
 		</Variant>
-		<Variant title="Reply Unignore Event">
+		<Variant title="Silence (Unignore) Event">
 			<div class="room/echo">
-				<RoomEventRplUnignore v-bind="eventRplUnignore" />
+				<RoomEventUnignore v-bind="eventUnignore" />
 			</div>
 		</Variant>
 	</Story>

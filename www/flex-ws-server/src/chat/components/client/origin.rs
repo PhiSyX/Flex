@@ -19,9 +19,9 @@ use crate::src::chat::components::User;
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Origin
 {
-	id: ClientID,
+	pub id: ClientID,
 	#[serde(flatten)]
-	user: User,
+	pub user: User,
 }
 
 // -------------- //

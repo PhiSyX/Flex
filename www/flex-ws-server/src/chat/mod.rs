@@ -49,12 +49,6 @@ mod features
 			handler,
 		};
 
-		ignore / {
-			formdata,
-			handler,
-			response,
-		};
-
 		join / {
 			error,
 			formdata,
@@ -110,6 +104,12 @@ mod features
 		};
 
 		quit / {
+			formdata,
+			handler,
+			response,
+		};
+
+		silence / {
 			formdata,
 			handler,
 			response,

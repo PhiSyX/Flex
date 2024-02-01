@@ -8,16 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::command_response;
+use crate::src::chat::components::Origin;
 
-
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_nickname;
-
-command_formdata! {
-	struct IGNORE
+command_response! {
+	struct SILENCE
 	{
-		/// Pseudonyme à ignorer pour le client.
-		#[serde(deserialize_with = "validate_nickname")]
-		nickname: String,
+		added: bool,
+		removed: bool,
+		users: &'a [&'a Origin],
+		updated: bool,
 	}
 }

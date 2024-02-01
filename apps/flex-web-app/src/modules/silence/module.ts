@@ -11,30 +11,30 @@
 import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
-import { IgnoreCommand, UnignoreCommand } from "./command";
-import { ReplyIgnoreHandler, ReplyUnignoreHandler } from "./handler";
+import { SilenceCommand } from "./command";
+import { ReplySilenceHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class IgnoreModule implements Module<IgnoreModule> {
+export class SilenceModule implements Module<SilenceModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
-	static NAME = "IGNORE";
+	static NAME = "SILENCE";
 
-	static create(store: ChatStore): IgnoreModule {
-		return new IgnoreModule(new IgnoreCommand(store), new ReplyIgnoreHandler(store));
+	static create(store: ChatStore): SilenceModule {
+		return new SilenceModule(new SilenceCommand(store), new ReplySilenceHandler(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 	constructor(
-		private command: IgnoreCommand,
-		private numericIgnoreHandler: ReplyIgnoreHandler,
+		private command: SilenceCommand,
+		private numericSilenceHandler: ReplySilenceHandler,
 	) {}
 
 	// ------- //
@@ -42,52 +42,20 @@ export class IgnoreModule implements Module<IgnoreModule> {
 	// ------- //
 
 	input(nickname?: string) {
-		if (!nickname) return;
+		if (!nickname || (!nickname.startsWith("-") && !nickname.startsWith("+"))) {
+			return;
+		}
+
+		console.log(2, { nickname });
+
 		this.send({ nickname });
 	}
 
-	send(payload: Command<"IGNORE">) {
+	send(payload: Command<"SILENCE">) {
 		this.command.send(payload);
 	}
 
 	listen() {
-		this.numericIgnoreHandler.listen();
-	}
-}
-
-export class UnignoreModule implements Module<UnignoreModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "UNIGNORE";
-
-	static create(store: ChatStore): UnignoreModule {
-		return new UnignoreModule(new UnignoreCommand(store), new ReplyUnignoreHandler(store));
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: UnignoreCommand,
-		private numericUnignoreHandler: ReplyUnignoreHandler,
-	) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(nickname?: string) {
-		if (!nickname) return;
-		this.send({ nickname });
-	}
-
-	send(payload: Command<"UNIGNORE">) {
-		this.command.send(payload);
-	}
-
-	listen() {
-		this.numericUnignoreHandler.listen();
+		this.numericSilenceHandler.listen();
 	}
 }

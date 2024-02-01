@@ -8,25 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
-import { CommandInterface } from "../interface";
+use crate::command_formdata;
 
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class IgnoreCommand implements CommandInterface<"IGNORE"> {
-	constructor(private store: ChatStore) {}
-
-	send(payload: Command<"IGNORE">): void {
-		this.store.emit("IGNORE", payload);
+command_formdata! {
+	struct SILENCE
+	{
+		/// Pseudonyme à ignorer pour le client.
+		#[serde(deserialize_with = "validate_nickname_with_prefix")]
+		nickname: String,
 	}
 }
 
-export class UnignoreCommand implements CommandInterface<"UNIGNORE"> {
-	constructor(private store: ChatStore) {}
+pub fn validate_nickname_with_prefix<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+	D: serde::Deserializer<'de>,
+{
+	use serde::Deserialize;
 
-	send(payload: Command<"UNIGNORE">): void {
-		this.store.emit("UNIGNORE", payload);
+	let s = String::deserialize(deserializer)?;
+
+	if !s.starts_with(['-', '+']) {
+		return Err(serde::de::Error::custom(
+			"Un préfixe '-' ou '+' est attendu",
+		));
 	}
+
+	crate::src::chat::components::user::do_nickname_with_config(
+		&s[1..],
+		crate::src::chat::components::user::DoNicknameFnOptions {
+			max_size: crate::src::chat::components::user::NICK_MAX_SIZE,
+			reserved_list: vec![String::from("flex")],
+		},
+	)
+	.map(|_| s.to_owned())
+	.map_err(|_| serde::de::Error::custom(format!("Le nom « {} » est incorrect", &s[1..])))
 }

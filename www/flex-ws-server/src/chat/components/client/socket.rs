@@ -421,6 +421,23 @@ impl<'a> Socket<'a>
 		);
 	}
 
+	/// Émet au client les réponses liées à la commande /SILENCE.
+	pub fn emit_silence(&self, users: &[&components::Origin], updated: Option<bool>)
+	{
+		use crate::src::chat::features::SilenceCommandResponse;
+
+		let origin = Origin::from(self.client());
+		let silence_command = SilenceCommandResponse {
+			origin: &origin,
+			tags: SilenceCommandResponse::default_tags(),
+			added: matches!(updated, Some(true) | None),
+			removed: matches!(updated, Some(false)),
+			users,
+			updated: updated.is_some(),
+		};
+		self.emit(silence_command.name(), silence_command);
+	}
+
 	/// Émet au client les réponses liées à la commande /QUIT.
 	pub fn emit_umode(&self, umode: &[ApplyMode<components::user::Flag>])
 	{
@@ -483,21 +500,6 @@ impl<'a> Socket<'a>
 			nick: &target_client_socket.user().nickname,
 		};
 		self.emit(rpl_away.name(), rpl_away);
-	}
-
-	/// Émet au client les réponses liées à la commande /IGNORE.
-	pub fn send_rpl_ignore(&self, users: &[&components::Origin], updated: bool)
-	{
-		use crate::src::chat::features::RplIgnoreReply;
-
-		let origin = Origin::from(self.client());
-		let rpl_ignore = RplIgnoreReply {
-			origin: &origin,
-			users,
-			tags: RplIgnoreReply::default_tags(),
-			updated: &updated,
-		};
-		self.emit(rpl_ignore.name(), rpl_ignore);
 	}
 
 	/// Émet au client les réponses liées à la commande /LIST (2).
@@ -657,20 +659,6 @@ impl<'a> Socket<'a>
 					.emit(rpl_topic.name(), rpl_topic);
 			}
 		};
-	}
-
-	/// Émet au client les réponses liées à la commande /UNIGNORE.
-	pub fn send_rpl_unignore(&self, users: &[&components::Origin])
-	{
-		use crate::src::chat::features::RplUnignoreReply;
-
-		let origin = Origin::from(self.client());
-		let rpl_unignore = RplUnignoreReply {
-			origin: &origin,
-			users,
-			tags: RplUnignoreReply::default_tags(),
-		};
-		self.emit(rpl_unignore.name(), rpl_unignore);
 	}
 
 	/// Émet au client les réponses liées à la commande /OPER.
