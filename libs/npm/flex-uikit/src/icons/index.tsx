@@ -27,6 +27,7 @@ export type Icons =
 	| "close"
 	| "error"
 	| "home"
+	| "loader"
 	| "logoff"
 	| "password"
 	| "plus"

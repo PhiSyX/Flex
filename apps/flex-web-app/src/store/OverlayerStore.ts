@@ -10,15 +10,16 @@
 
 import { to_px } from "@phisyx/flex-css";
 import { defineStore } from "pinia";
-import { CSSProperties, computed, nextTick, reactive, ref } from "vue";
+import { CSSProperties, computed, nextTick, reactive } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-export type Layer = {
+export type Layer<D = unknown> = {
 	id: string;
 	centered?: boolean;
+	data?: D;
 	destroyable?: "background" | "manual";
 	event?: Event & { clientX: number; clientY: number };
 	DOMElement?: Element;
@@ -44,7 +45,7 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 
 	const hasLayers = computed(() => layers.size > 0);
 
-	function create(payload: Layer) {
+	function create<D = unknown>(payload: Layer<D>) {
 		payload.destroyable ||= "background";
 
 		if (!payload.event) {
@@ -144,6 +145,12 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 		layers.set(layerID, { ...layer, style });
 	}
 
+	function updateData<D = unknown>(layerID: Layer<D>["id"], data: D) {
+		const layer = layers.get(layerID);
+		if (!layer) return;
+		layer.data = data;
+	}
+
 	function updateAll() {
 		for (const [id, _] of layers) {
 			update(id);
@@ -157,5 +164,6 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 		hasLayers,
 		layers,
 		updateAll,
+		updateData,
 	};
 });

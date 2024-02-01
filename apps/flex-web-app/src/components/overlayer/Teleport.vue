@@ -20,11 +20,10 @@ defineProps<Props>();
 <template>
 	<div
 		:id="`${id}_teleport`"
-		ref="$el"
 		tabindex="0"
 		class="teleport [ pos-a:full flex! ]"
 		:class="{
 			'flex/center:full': layer.centered,
 		}"
-	></div>
+	/>
 </template>

@@ -31,3 +31,4 @@ export const errors = reactive({
 	nickname: null as string | null,
 	alternativeNickname: null as string | null,
 });
+export const loader = ref(false);

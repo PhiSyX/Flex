@@ -20,44 +20,8 @@ import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
-import { ErrorCannotsendtochanHandler } from "~/handlers/errors/ErrorCannotsendtochanHandler";
-import { ErrorChanoprivsneededHandler } from "~/handlers/errors/ErrorChanoprivsneededHandler";
-import { ErrorGeneralHandler } from "~/handlers/errors/ErrorGenericHandler";
-import { ErrorNicknameinuseHandler } from "~/handlers/errors/ErrorNicknameinuseHandler";
-import { ErrorNoprivilegesHandler } from "~/handlers/errors/ErrorNoprivilegesHandler";
-import { ErrorNosuchchannelHandler } from "~/handlers/errors/ErrorNosuchchannelHandler";
-import { ErrorNosuchnickHandler } from "~/handlers/errors/ErrorNosuchnickHandler";
-import { ErrorNotonchannelHandler } from "~/handlers/errors/ErrorNotonchannelHandler";
-import { ErrorUsernotinchannelHandler } from "~/handlers/errors/ErrorUsernotinchannelHandler";
-import { ReplyCreatedHandler } from "~/handlers/replies/ReplyCreatedHandler";
-import { ReplyWelcomeHandler } from "~/handlers/replies/ReplyWelcomeHandler";
-import { ReplyYourhostHandler } from "~/handlers/replies/ReplyYourhostHandler";
-import { IgnoreModule, UnignoreModule } from "~/modules/(un)ignore/module";
+
 import { CommandInterface, Module } from "~/modules/interface";
-import { JoinModule, SajoinModule } from "~/modules/join/module";
-import { KickModule } from "~/modules/kick/module";
-import { KillModule } from "~/modules/kill/module";
-import { ListModule } from "~/modules/list/module";
-import {
-	AccessLevelAOPModule,
-	AccessLevelDEAOPModule,
-	AccessLevelDEHOPModule,
-	AccessLevelDEOPModule,
-	AccessLevelDEQOPModule,
-	AccessLevelDEVIPModule,
-	AccessLevelHOPModule,
-	AccessLevelOPModule,
-	AccessLevelQOPModule,
-	AccessLevelVIPModule,
-} from "~/modules/mode/access-level/module";
-import { ModeModule } from "~/modules/mode/module";
-import { NickModule } from "~/modules/nick/module";
-import { OperModule } from "~/modules/oper/module";
-import { PartModule, SapartModule } from "~/modules/part/module";
-import { PrivmsgModule } from "~/modules/privmsg/module";
-import { QuitModule } from "~/modules/quit/module";
-import { TopicModule } from "~/modules/topic/module";
-import { AwayModule } from "~/modules/user-status/module";
 import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
@@ -65,6 +29,35 @@ import { RoomManager } from "~/room/RoomManager";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { User, UserID } from "~/user/User";
 import { useOverlayerStore } from "./OverlayerStore";
+
+const ReplyCreatedHandler = () => import("~/handlers/replies/ReplyCreatedHandler");
+const ReplyYourhostHandler = () => import("~/handlers/replies/ReplyYourhostHandler");
+const ReplyWelcomeHandler = () => import("~/handlers/replies/ReplyWelcomeHandler");
+
+const ErrorCannotsendtochanHandler = () => import("~/handlers/errors/ErrorCannotsendtochanHandler");
+const ErrorChanoprivsneededHandler = () => import("~/handlers/errors/ErrorChanoprivsneededHandler");
+const ErrorGeneralHandler = () => import("~/handlers/errors/ErrorGenericHandler");
+const ErrorNicknameinuseHandler = () => import("~/handlers/errors/ErrorNicknameinuseHandler");
+const ErrorNoprivilegesHandler = () => import("~/handlers/errors/ErrorNoprivilegesHandler");
+const ErrorNosuchchannelHandler = () => import("~/handlers/errors/ErrorNosuchchannelHandler");
+const ErrorNosuchnickHandler = () => import("~/handlers/errors/ErrorNosuchnickHandler");
+const ErrorNotonchannelHandler = () => import("~/handlers/errors/ErrorNotonchannelHandler");
+const ErrorUsernotinchannelHandler = () => import("~/handlers/errors/ErrorUsernotinchannelHandler");
+
+const AwayModule = () => import("~/modules/user-status/module");
+const IgnoreModule = () => import("~/modules/(un)ignore/module");
+const JoinModule = () => import("~/modules/join/module");
+const KickModule = () => import("~/modules/kick/module");
+const KillModule = () => import("~/modules/kill/module");
+const ListModule = () => import("~/modules/list/module");
+const ModeModule = () => import("~/modules/mode/module");
+const NickModule = () => import("~/modules/nick/module");
+const OperModule = () => import("~/modules/oper/module");
+const PartModule = () => import("~/modules/part/module");
+const PrivmsgModule = () => import("~/modules/privmsg/module");
+const QuitModule = () => import("~/modules/quit/module");
+const TopicModule = () => import("~/modules/topic/module");
+const AccessLevelModule = () => import("~/modules/mode/access-level/module");
 
 // ---- //
 // Type //
@@ -93,60 +86,37 @@ export class ChatStore {
 	static default(): ChatStore {
 		const self = reactive(new ChatStore()) as ChatStore;
 
-		self.repliesHandlers
-			.add(new ReplyWelcomeHandler(self))
-			.add(new ReplyCreatedHandler(self))
-			.add(new ReplyYourhostHandler(self));
+		self.handlersSets
+			.add(ReplyCreatedHandler)
+			.add(ReplyYourhostHandler)
+			.add(ReplyWelcomeHandler)
+			.add(ErrorCannotsendtochanHandler)
+			.add(ErrorChanoprivsneededHandler)
+			.add(ErrorGeneralHandler)
+			.add(ErrorNicknameinuseHandler)
+			.add(ErrorNoprivilegesHandler)
+			.add(ErrorNosuchchannelHandler)
+			.add(ErrorNosuchnickHandler)
+			.add(ErrorNotonchannelHandler)
+			.add(ErrorUsernotinchannelHandler);
 
-		self.errorsHandlers
-			.add(new ErrorGeneralHandler(self))
-			.add(new ErrorChanoprivsneededHandler(self))
-			.add(new ErrorCannotsendtochanHandler(self))
-			.add(new ErrorNicknameinuseHandler(self))
-			.add(new ErrorNoprivilegesHandler(self))
-			.add(new ErrorNosuchchannelHandler(self))
-			.add(new ErrorNosuchnickHandler(self))
-			.add(new ErrorNotonchannelHandler(self))
-			.add(new ErrorUsernotinchannelHandler(self));
+		self.modulesSets
+			.add(AwayModule)
+			.add(IgnoreModule)
+			.add(JoinModule)
+			.add(KickModule)
+			.add(KillModule)
+			.add(ListModule)
+			.add(ModeModule)
+			.add(NickModule)
+			.add(OperModule)
+			.add(PartModule)
+			.add(PrivmsgModule)
+			.add(QuitModule)
+			.add(TopicModule)
+			.add(AccessLevelModule);
 
-		self.modules.set(AwayModule.NAME, AwayModule.create(self));
-		self.modules
-			.set(IgnoreModule.NAME, IgnoreModule.create(self))
-			.set(UnignoreModule.NAME, UnignoreModule.create(self));
-		self.modules
-			.set(JoinModule.NAME, JoinModule.create(self))
-			.set(SajoinModule.NAME, SajoinModule.create(self));
-		self.modules.set(KickModule.NAME, KickModule.create(self));
-		self.modules.set(KillModule.NAME, KillModule.create(self));
-		self.modules.set(ListModule.NAME, ListModule.create(self));
-		self.modules.set(ModeModule.NAME, ModeModule.create(self));
-		self.modules.set(NickModule.NAME, NickModule.create(self));
-		self.modules
-			.set(PartModule.NAME, PartModule.create(self))
-			.set(SapartModule.NAME, SapartModule.create(self));
-		self.modules.set(PrivmsgModule.NAME, PrivmsgModule.create(self));
-		self.modules.set(OperModule.NAME, OperModule.create(self));
-		self.modules.set(QuitModule.NAME, QuitModule.create(self));
-		self.modules.set(TopicModule.NAME, TopicModule.create(self));
-
-		/** Channel access level */
-		self.modules
-			.set(AccessLevelQOPModule.NAME, AccessLevelQOPModule.create(self))
-			.set(AccessLevelDEQOPModule.NAME, AccessLevelDEQOPModule.create(self));
-		self.modules
-			.set(AccessLevelAOPModule.NAME, AccessLevelAOPModule.create(self))
-			.set(AccessLevelDEAOPModule.NAME, AccessLevelDEAOPModule.create(self));
-		self.modules
-			.set(AccessLevelOPModule.NAME, AccessLevelOPModule.create(self))
-			.set(AccessLevelDEOPModule.NAME, AccessLevelDEOPModule.create(self));
-		self.modules
-			.set(AccessLevelHOPModule.NAME, AccessLevelHOPModule.create(self))
-			.set(AccessLevelDEHOPModule.NAME, AccessLevelDEHOPModule.create(self));
-		self.modules
-			.set(AccessLevelVIPModule.NAME, AccessLevelVIPModule.create(self))
-			.set(AccessLevelDEVIPModule.NAME, AccessLevelDEVIPModule.create(self));
-
-		const thisServer = new ServerCustomRoom("Flex");
+		const thisServer = new ServerCustomRoom();
 		const channelList = new ChannelListCustomRoom();
 		// @ts-expect-error test
 		const rooms: Map<RoomID, Room> = new Map([
@@ -178,10 +148,11 @@ export class ChatStore {
 	private _nicksUsers: Map<string, string> = new Map();
 	private _usersBlocked: Map<string, User> = new Map();
 
-	private repliesHandlers: Set<SocketEventHandler> = new Set();
-	private errorsHandlers: Set<SocketEventHandler> = new Set();
+	private handlersSets: Set<() => Promise<unknown>> = new Set();
+	private modulesSets: Set<() => Promise<unknown>> = new Set();
 
-	public modules: Map<string, Module> = new Map();
+	public handlers: Map<string, SocketEventHandler> = new Map();
+	public modules: Map<CommandsNames, Module & CommandInterface> = new Map();
 
 	// ------- //
 	// Méthode //
@@ -368,21 +339,86 @@ export class ChatStore {
 	}
 
 	/**
-	 * Écoute de tous les événements du Chat.
+	 * Charge tous les modules du Chat.
 	 */
-	listenAllEvents() {
-		for (const handler of this.repliesHandlers) {
-			handler.listen();
+	async loadAllModules() {
+		let totalLoaded = this.handlersSets.size + this.modulesSets.size;
+		let loaded = 0;
+
+		type LayerData = {
+			moduleName?: string;
+			totalLoaded: number;
+			loaded: number;
+		};
+
+		this.overlayer.create<LayerData>({
+			id: "load-all-modules",
+			centered: true,
+			destroyable: "manual",
+			data: { loaded, totalLoaded },
+		});
+
+		totalLoaded = this.handlersSets.size;
+		for (const handler of this.handlersSets) {
+			const handlerCtors = (await handler()) as Record<
+				string,
+				{ new (store: ChatStore): SocketEventHandler }
+			>;
+
+			const handlers = Object.entries(handlerCtors);
+			const handlersSize = handlers.length;
+			if (handlersSize > 1) {
+				totalLoaded += handlersSize - 1;
+			}
+
+			for (const [handlerName, handlerCtor] of handlers) {
+				this.handlers.set(handlerName, new handlerCtor(this));
+
+				loaded += 1;
+
+				this.overlayer.updateData<LayerData>("load-all-modules", {
+					loaded,
+					totalLoaded,
+					moduleName: handlerName,
+				});
+			}
 		}
 
-		for (const handler of this.errorsHandlers) {
-			handler.listen();
+		totalLoaded += this.modulesSets.size;
+		for (const module of this.modulesSets) {
+			const moduleCtors = (await module()) as Record<
+				string,
+				{
+					new (): Module & CommandInterface;
+					create(store: ChatStore): Module & CommandInterface;
+					NAME: string;
+				}
+			>;
+
+			const modules = Object.entries(moduleCtors);
+			const modulesSize = modules.length;
+			if (modulesSize > 1) {
+				totalLoaded += modulesSize - 1;
+			}
+
+			for (const [moduleName, moduleCtor] of modules) {
+				console.info("Le module « %s » est maintenant en écoute.", moduleName);
+				this.modules.set(
+					moduleCtor.NAME.toUpperCase() as CommandsNames,
+					moduleCtor.create(this),
+				);
+
+				loaded += 1;
+
+				this.overlayer.updateData<LayerData>("load-all-modules", {
+					loaded,
+					totalLoaded,
+					moduleName,
+				});
+			}
 		}
 
-		for (const [moduleName, module] of this.modules) {
-			console.info("Le module « %s » est maintenant en écoute.", moduleName);
-			module.listen();
-		}
+		this.overlayer.destroy("load-all-modules");
 	}
 
 	/**
@@ -576,8 +612,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function channelList(channels?: Array<string>) {
 		changeRoom(ChannelListCustomRoom.ID);
-		const listModule = store.modules.get(ListModule.NAME) as ListModule;
-		listModule.send({ channels });
+		const moduleUnsafe: CommandInterface<"LIST"> | undefined = store.modules.get("LIST");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `LIST`");
+		module?.send({ channels });
 	}
 
 	/**
@@ -600,12 +638,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 
 		if (roomID.startsWith("#")) {
-			const partModuleUnsafe = store.modules.get(PartModule.NAME);
-			const maybePartModule = Option.from(partModuleUnsafe);
-			const partModule = maybePartModule.expect(
-				"Récupération du module `PART`",
-			) as Module<PartModule>;
-			partModule.send({ channels: [roomID], message });
+			const moduleUnsafe: CommandInterface<"PART"> | undefined = store.modules.get("PART");
+			const maybeModule = Option.from(moduleUnsafe);
+			const module = maybeModule.expect("Récupération du module `PART`");
+			module.send({ channels: [roomID], message });
 		} else {
 			store.roomManager().remove(roomID);
 		}
@@ -619,24 +655,27 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		store.connectWebsocket(connectUserInfo.websocketServerURL);
 
 		store.websocket().once("connect", () => {
+			for (const [_, handler] of store.handlers) {
+				handler.listen();
+			}
+			for (const [_, module] of store.modules) {
+				module.listen();
+			}
+
 			if (connectUserInfo.passwordServer) {
 				store.emit("PASS", {
 					password: connectUserInfo.passwordServer,
 				});
 			}
-
 			store.emit("NICK (unregistered)", {
 				nickname: connectUserInfo.nickname,
 			});
-
 			store.emit("USER", {
 				user: connectUserInfo.nickname,
 				mode: 1 << 3,
 				realname: connectUserInfo.realname,
 			});
 		});
-
-		store.listenAllEvents();
 	}
 
 	/**
@@ -650,26 +689,32 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /IGNORE vers le serveur.
 	 */
 	function ignoreUser(nickname: string) {
-		const ignoreModule = store.modules.get(IgnoreModule.NAME) as IgnoreModule;
-		ignoreModule.send({ nickname });
+		const moduleUnsafe: CommandInterface<"IGNORE"> | undefined = store.modules.get("IGNORE");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `IGNORE`");
+		module.send({ nickname });
 	}
 
 	/**
 	 * Émet la commande /JOIN vers le serveur.
 	 */
 	function joinChannel(channelsRaw: string, keysRaw?: string) {
-		const joinModule = store.modules.get(JoinModule.NAME) as JoinModule;
+		const moduleUnsafe: CommandInterface<"JOIN"> | undefined = store.modules.get("JOIN");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `JOIN`");
 		const channels = channelsRaw.split(",");
 		const keys = keysRaw?.split(",");
-		joinModule.send({ channels, keys });
+		module.send({ channels, keys });
 	}
 
 	/**
 	 * Émet la commande /KICK vers le serveur.
 	 */
 	function kickUser(channel: ChannelRoom, cnick: ChannelNick, comment = "Kick.") {
-		const ignoreModule = store.modules.get(KickModule.NAME) as KickModule;
-		ignoreModule.send({
+		const moduleUnsafe: CommandInterface<"KICK"> | undefined = store.modules.get("KICK");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `KICK`");
+		module.send({
 			channels: [channel.name],
 			knicks: [cnick.nickname],
 			comment,
@@ -737,16 +782,15 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 
 		if (!message.startsWith("/")) {
 			const words = message.split(" ");
-			const privmsgModule = store.modules.get(PrivmsgModule.NAME) as PrivmsgModule;
-
-			privmsgModule.input(name, ...words);
+			const privmsgModule = store.modules.get("PRIVMSG");
+			privmsgModule?.input(name, ...words);
 			return;
 		}
 
 		const words = message.slice(1).split(" ");
 		const [commandName, ...args] = words;
 
-		const module = store.modules.get(commandName.toUpperCase());
+		const module = store.modules.get(commandName.toLowerCase() as CommandsNames);
 
 		if (!module) {
 			console.error(
@@ -770,27 +814,32 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
 
-		let module: unknown;
+		let moduleUnsafe: CommandInterface<"OP"> | undefined;
 
 		switch (accessLevel) {
 			case ChannelAccessLevel.Owner:
-				module = store.modules.get(AccessLevelQOPModule.NAME);
+				moduleUnsafe = store.modules.get("QOP");
 				break;
 			case ChannelAccessLevel.AdminOperator:
-				module = store.modules.get(AccessLevelAOPModule.NAME);
+				moduleUnsafe = store.modules.get("AOP");
 				break;
 			case ChannelAccessLevel.Operator:
-				module = store.modules.get(AccessLevelOPModule.NAME);
+				moduleUnsafe = store.modules.get("OP");
 				break;
 			case ChannelAccessLevel.HalfOperator:
-				module = store.modules.get(AccessLevelHOPModule.NAME);
+				moduleUnsafe = store.modules.get("HOP");
 				break;
 			case ChannelAccessLevel.Vip:
-				module = store.modules.get(AccessLevelVIPModule.NAME);
+				moduleUnsafe = store.modules.get("VIP");
 				break;
 		}
 
-		(module as CommandInterface<"OP">).send(payload);
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect(
+			`Récupération du module \`AccessLevel (${accessLevel})\``,
+		);
+
+		module.send(payload);
 	}
 
 	/**
@@ -802,43 +851,54 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		accessLevel: ChannelAccessLevel,
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
-		let module: unknown;
+
+		let moduleUnsafe: CommandInterface<"OP"> | undefined;
 
 		switch (accessLevel) {
 			case ChannelAccessLevel.Owner:
-				module = store.modules.get(AccessLevelDEQOPModule.NAME);
+				moduleUnsafe = store.modules.get("DEQOP");
 				break;
 			case ChannelAccessLevel.AdminOperator:
-				module = store.modules.get(AccessLevelDEAOPModule.NAME);
+				moduleUnsafe = store.modules.get("AOP");
 				break;
 			case ChannelAccessLevel.Operator:
-				module = store.modules.get(AccessLevelDEOPModule.NAME);
+				moduleUnsafe = store.modules.get("DEOP");
 				break;
 			case ChannelAccessLevel.HalfOperator:
-				module = store.modules.get(AccessLevelDEHOPModule.NAME);
+				moduleUnsafe = store.modules.get("DEHOP");
 				break;
 			case ChannelAccessLevel.Vip:
-				module = store.modules.get(AccessLevelDEVIPModule.NAME);
+				moduleUnsafe = store.modules.get("DEVIP");
 				break;
 		}
 
-		(module as CommandInterface<"DEOP">).send(payload);
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect(
+			`Récupération du module \`AccessLevel (${accessLevel})\``,
+		);
+
+		module?.send(payload);
 	}
 
 	/**
 	 * Émet la commande /UNIGNORE vers le serveur.
 	 */
 	function unignoreUser(nickname: string) {
-		const unignoreModule = store.modules.get(UnignoreModule.NAME) as UnignoreModule;
-		unignoreModule.send({ nickname });
+		const moduleUnsafe: CommandInterface<"UNIGNORE"> | undefined =
+			store.modules.get("UNIGNORE");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `UNIGNORE`");
+		module.send({ nickname });
 	}
 
 	/**
 	 * Émet la commande /TOPIC vers le serveur.
 	 */
 	function updateTopic(channelName: string, topic: string) {
-		const topicModule = store.modules.get(TopicModule.NAME) as TopicModule;
-		topicModule.send({ channel: channelName, topic });
+		const moduleUnsafe: CommandInterface<"TOPIC"> | undefined = store.modules.get("TOPIC");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `TOPIC`");
+		module.send({ channel: channelName, topic });
 	}
 
 	return {

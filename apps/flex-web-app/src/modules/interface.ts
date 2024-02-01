@@ -14,6 +14,7 @@ export interface ModuleInterface extends SocketEventHandler {
 
 export type Module<T extends ModuleInterface = ModuleInterface> = T;
 
-export interface CommandInterface<E extends keyof ClientToServerEvent> {
+// biome-ignore lint/suspicious/noExplicitAny: J'ai un type `any` et alors?
+export interface CommandInterface<E extends keyof ClientToServerEvent = any> {
 	send(payload: Command<E>): void;
 }
