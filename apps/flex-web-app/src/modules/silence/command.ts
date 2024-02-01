@@ -8,25 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface IgnoreFormData {
-	nickname: string;
-}
+import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
-declare interface UnignoreFormData {
-	nickname: string;
-}
+// -------------- //
+// Implémentation //
+// -------------- //
 
-declare interface Commands {
-	IGNORE: IgnoreFormData;
-	UNIGNORE: UnignoreFormData;
-}
+export class SilenceCommand implements CommandInterface<"SILENCE"> {
+	constructor(private store: ChatStore) {}
 
-declare interface CommandResponsesReplies {
-	RPL_IGNORE: {
-		users: Array<Origin>;
-		updated: boolean;
-	};
-	RPL_UNIGNORE: {
-		users: Array<Origin>;
-	};
+	send(payload: Command<"SILENCE">): void {
+		this.store.emit("SILENCE", payload);
+	}
 }

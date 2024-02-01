@@ -55,7 +55,7 @@ impl Feature for ChatApplication
 				ConnectionRegistrationHandler::handle_connect(&socket, state, data);
 
 				socket.on(AwayHandler::COMMAND_NAME, AwayHandler::handle);
-				socket.on(IgnoreHandler::COMMAND_NAME, IgnoreHandler::handle);
+				socket.on(SilenceHandler::COMMAND_NAME, SilenceHandler::handle);
 				socket.on(JoinHandler::COMMAND_NAME, JoinHandler::handle);
 				socket.on(ListHandler::COMMAND_NAME, ListHandler::handle);
 				socket.on(KickHandler::COMMAND_NAME, KickHandler::handle);
@@ -68,7 +68,6 @@ impl Feature for ChatApplication
 				socket.on(SajoinHandler::COMMAND_NAME, SajoinHandler::handle);
 				socket.on(SapartHandler::COMMAND_NAME, SapartHandler::handle);
 				socket.on(TopicHandler::COMMAND_NAME, TopicHandler::handle);
-				socket.on(UnignoreHandler::COMMAND_NAME, UnignoreHandler::handle);
 
 				/* Channel Access Level */
 				socket.on(

@@ -8,16 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::reserved_numerics;
-use crate::src::chat::components::Origin;
+declare interface SilenceFormData {
+	nickname: string;
+}
 
-reserved_numerics! {
-	| 396 <-> RPL_IGNORE {
-		users: [&'a Origin],
-		updated: bool
-	} => "Liste des utilisateurs ignorés a été mis à jour."
+declare interface Commands {
+	SILENCE: SilenceFormData;
+}
 
-	| 397 <-> RPL_UNIGNORE {
-		users: [&'a Origin]
-	} => "Liste des utilisateurs ignorés a été mis à jour."
+declare interface CommandResponsesFromServer {
+	SILENCE: {
+		added?: boolean;
+		removed?: boolean;
+		users: Array<Origin>;
+		updated: boolean;
+	};
 }

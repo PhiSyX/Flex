@@ -53,10 +53,10 @@ impl ChatApplication
 		&self,
 		client: &client::Socket,
 		to_ignore_client: &client::Socket,
-	)
+	) -> bool
 	{
 		self.clients
-			.add_to_block(client.cid(), to_ignore_client.cid());
+			.add_to_block(client.cid(), to_ignore_client.cid())
 	}
 
 	/// Peut-on localiser un client de session via un pseudonyme ?
@@ -311,10 +311,10 @@ impl ChatApplication
 		&self,
 		client: &client::Socket,
 		to_ignore_client: &client::Socket,
-	)
+	) -> bool
 	{
 		self.clients
-			.remove_to_block(client.cid(), to_ignore_client.cid());
+			.remove_to_block(client.cid(), to_ignore_client.cid())
 	}
 }
 
@@ -326,16 +326,20 @@ impl ClientsSession
 {
 	/// Ajoute un client dans la liste des bloqués/ignorés pour les deux
 	/// clients.
-	pub fn add_to_block(&self, client_id: &client::ClientID, to_ignore_client_id: &client::ClientID)
+	pub fn add_to_block(
+		&self,
+		client_id: &client::ClientID,
+		to_ignore_client_id: &client::ClientID,
+	) -> bool
 	{
 		let Some(blocklist) = self.blocklist.get_mut(client_id) else {
 			self.blocklist.insert(
 				client_id.to_owned(),
 				DashSet::from_iter([to_ignore_client_id.to_owned()]),
 			);
-			return;
+			return true;
 		};
-		blocklist.insert(to_ignore_client_id.to_owned());
+		blocklist.insert(to_ignore_client_id.to_owned())
 	}
 
 	/// La liste des clients bloqués d'un client.
@@ -486,12 +490,12 @@ impl ClientsSession
 		&self,
 		client_id: &client::ClientID,
 		to_ignore_client_id: &client::ClientID,
-	)
+	) -> bool
 	{
 		let Some(blocklist) = self.blocklist.get_mut(client_id) else {
-			return;
+			return false;
 		};
-		blocklist.remove(to_ignore_client_id);
+		blocklist.remove(to_ignore_client_id).is_some()
 	}
 
 	/// Mise à niveau d'un client.

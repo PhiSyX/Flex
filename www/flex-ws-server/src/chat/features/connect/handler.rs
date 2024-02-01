@@ -184,8 +184,11 @@ impl ConnectionRegistrationHandler
 			.map(Origin::from)
 			.collect();
 		if !users.is_empty() {
+			for user in users.iter() {
+				_ = client_socket.socket().join(format!("{}/ignore", &user.id));
+			}
 			let users: Vec<_> = users.iter().collect();
-			client_socket.send_rpl_ignore(&users, false);
+			client_socket.emit_silence(&users, None);
 		}
 
 		Some(())
