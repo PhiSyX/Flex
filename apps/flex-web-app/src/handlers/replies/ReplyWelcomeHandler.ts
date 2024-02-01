@@ -9,8 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Option } from "@phisyx/flex-safety";
-import { Module } from "~/modules/interface";
-import { JoinModule } from "~/modules/join/module";
+import { CommandInterface } from "~/modules/interface";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -43,11 +42,9 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> 
 		const networkRoom = this.store.network();
 		networkRoom.addConnectEvent(data, data.message);
 
-		const joinModuleUnsafe = this.store.modules.get(JoinModule.NAME);
-		const maybeJoinModule = Option.from(joinModuleUnsafe);
-		const joinModule = maybeJoinModule.expect(
-			"Récupération du module `JOIN`",
-		) as Module<JoinModule>;
-		joinModule.send({ channels });
+		const moduleUnsafe: CommandInterface<"JOIN"> | undefined = this.store.modules.get("JOIN");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `JOIN`");
+		module.send({ channels });
 	}
 }

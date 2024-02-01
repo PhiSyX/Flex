@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ModelRef } from "vue";
+import { type ModelRef } from "vue";
 
-import { advancedInfo, errors, loginFormData } from "./LoginView.state";
+import { advancedInfo, errors, loader, loginFormData } from "./LoginView.state";
 
 import { useChatStore } from "~/store/ChatStore";
 
@@ -31,8 +31,12 @@ export function displayAdvancedInfoHandler() {
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
 export function connectSubmit(isConnectedModel: ModelRef<boolean | undefined, string>) {
-	function connectSubmitHandler(evt: Event) {
+	async function connectSubmitHandler(evt: Event) {
 		evt.preventDefault();
+
+		loader.value = true;
+
+		await chatStore.store.loadAllModules();
 
 		chatStore.connect(loginFormData);
 
@@ -50,6 +54,7 @@ export function connectSubmit(isConnectedModel: ModelRef<boolean | undefined, st
  * Écoute de l'événement `RPL_WELCOME`.
  */
 function replyWelcomeHandler(isConnectedModel: ModelRef<boolean | undefined, string>) {
+	loader.value = false;
 	isConnectedModel.value = true;
 }
 
@@ -64,4 +69,6 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 	} else {
 		errors.nickname = data.reason.slice(loginFormData.nickname.length + 2);
 	}
+
+	loader.value = false;
 }

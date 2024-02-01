@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { ButtonIcon, InputSwitch, TextInput } from "@phisyx/flex-uikit";
+import {
+	ButtonIcon,
+	InputSwitch,
+	TextInput,
+	UiButton,
+} from "@phisyx/flex-uikit";
 
 import {
 	MAXLENGTH_NICKNAME,
@@ -10,8 +15,10 @@ import {
 	connectSubmit,
 	displayAdvancedInfoHandler,
 } from "./LoginView.handlers";
-import { advancedInfo, errors, loginFormData } from "./LoginView.state";
+import { advancedInfo, errors, loader, loginFormData } from "./LoginView.state";
 import { useRememberMe } from "./LoginView.hooks";
+
+import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 
 // ---- //
 // Type //
@@ -120,14 +127,18 @@ useRememberMe();
 				/>
 			</div>
 
-			<button
-				form="chat-login-form"
+			<UiButton
+				:icon="loader ? 'loader' : undefined"
+				position="right"
 				type="submit"
-				class="[ p=2 b:none cursor:pointer ]"
+				form="chat-login-form"
+				class="[ flex align-jc:se p=2 b:none cursor:pointer ]"
 			>
-				Accéder au Chat
-			</button>
+				<span class="[ flex:full ]">Accéder au Chat</span>
+			</UiButton>
 		</section>
+
+		<ModulesProgress />
 	</main>
 </template>
 
@@ -171,6 +182,10 @@ body:has(#chat-login-view) {
 		background: var(--login-button-submit-bg);
 		transition: background-color 200ms;
 		color: var(--login-button-submit-color);
+
+		svg {
+			max-width: fx.space(3);
+		}
 
 		&:focus-visible {
 			outline: 3px inset var(--login-button-submit-outline-color);
