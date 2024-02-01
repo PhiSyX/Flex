@@ -21,14 +21,12 @@ declare interface CommandResponsesFromServer {
 		updated: boolean;
 
 		added: [
-			(
-				| ["k", ModeApplyFlag<{ key: string }>]
-				| ["m", ModeApplyFlag<"moderate">]
-				| ["n", ModeApplyFlag<"no_external_messages">]
-				| ["O", ModeApplyFlag<"oper_only">]
-			),
-			["s", ModeApplyFlag<"secret">],
-			["t", ModeApplyFlag<"no_topic">],
+			| ["k", ModeApplyFlag<{ key: string }>]
+			| ["m", ModeApplyFlag<"moderate">]
+			| ["n", ModeApplyFlag<"no_external_messages">]
+			| ["O", ModeApplyFlag<"oper_only">]
+			| ["s", ModeApplyFlag<"secret">]
+			| ["t", ModeApplyFlag<"no_topic">],
 		];
 
 		removed: CommandResponsesFromServer["MODE"]["added"];

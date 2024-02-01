@@ -8,21 +8,4 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class ErrorGeneralHandler implements SocketEventInterface<"ERROR"> {
-	constructor(private store: ChatStore) {}
-
-	listen() {
-		this.store.on("ERROR", (data) => this.handle(data));
-	}
-
-	handle(data: GenericReply<"ERROR">) {
-		// @ts-expect-error : à corriger.
-		this.store.disconnectError(data);
-	}
-}
+/// <reference types="@phisyx/flex-css" />

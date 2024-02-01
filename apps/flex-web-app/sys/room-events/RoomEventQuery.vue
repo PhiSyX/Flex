@@ -5,7 +5,7 @@ import { type Props } from "./RoomEvent.state";
 // Type //
 // ---- //
 
-type PropsQuery = Props<"PRIVMSG"> & {
+type PropsQuery = Props<any> & {
 	data: { origin: Origin; text: string };
 };
 

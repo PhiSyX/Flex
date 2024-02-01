@@ -15,13 +15,14 @@ export class ServerCustomRoom extends Room<"server-custom-room"> {
 	 * ID de la chambre personnalisée.
 	 */
 	public static ID = "@flex";
+	public static NAME = "Flex";
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
-	constructor(name: string) {
-		super("server-custom-room", name);
+	constructor() {
+		super("server-custom-room", ServerCustomRoom.NAME);
 		this.withID(ServerCustomRoom.ID);
 	}
 
