@@ -131,6 +131,7 @@ const eventPart: Payload & { data: GenericReply<"PART"> } = {
 		name: "PART",
 		channel: "#channel",
 		message: "Bye les ploucs.",
+		forced_by: null,
 		origin,
 		tags,
 	},

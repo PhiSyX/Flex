@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "~/asserts/room";
-import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -30,5 +28,7 @@ export class KillHandler implements SocketEventInterface<"KILL"> {
 		this.store.on("KILL", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"KILL">) {}
+	handle(data: GenericReply<"KILL">) {
+		console.log("KILL Handler", data);
+	}
 }

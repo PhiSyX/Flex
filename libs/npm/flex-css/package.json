@@ -3,6 +3,7 @@
 	"description": "Code liée au CSS (in JS) pour Flex",
 	"authors": "Mike 'PhiSyX' S.",
 	"version": "0.1.0",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc"
 	},
