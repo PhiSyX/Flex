@@ -777,7 +777,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet les commandes au serveur.
 	 */
 	function sendMessage(name: string, message: string) {
-		const room = store.roomManager().get(name).unwrap_unchecked();
+		const room = store
+			.roomManager()
+			.get(name)
+			.or_else(() =>
+				store.findUserByNickname(name).and_then((user) => store.roomManager().get(user.id)),
+			)
+			.unwrap_unchecked();
 		room.addInputHistory(message);
 
 		if (!message.startsWith("/")) {
