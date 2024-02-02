@@ -62,7 +62,7 @@ export function ButtonIcon(props: ButtonProps): JSX.Element {
 	const IconName = resolveComponent(`icon-${props.icon}`);
 	assertIcon(IconName);
 	return (
-		<button disabled={props.disabled} class="btn" type="button">
+		<button type="button" {...props} class="btn">
 			<IconName />
 		</button>
 	);
