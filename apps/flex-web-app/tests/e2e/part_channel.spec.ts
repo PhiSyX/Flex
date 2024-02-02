@@ -9,26 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { expect, test, type Page, Locator } from "@playwright/test";
+import { connectChat, connectUsersToChat } from "./helpers/connect.js";
+import { containsMessage, sendMessage } from "./helpers/channel.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
-
-async function connectChat({
-	page,
-	channels = "",
-}: { page: Page; channels?: string }): Promise<string> {
-	// biome-ignore lint/style/useTemplate: Pas envie.
-	const nickname = "x" + (Math.random() + 1).toString(36).slice(2) + "x";
-
-	await page.goto("/");
-	await page.locator("#nickname").fill(nickname);
-	await page.locator("#channels").fill(channels);
-
-	const $btnLogin = page.locator('#chat-login-view button[type="submit"]');
-	await $btnLogin.click();
-
-	return nickname;
-}
 
 async function partChannel(
 	{ page, channel }: { page: Page; channel: string },
@@ -37,11 +22,9 @@ async function partChannel(
 		$navRoomsItems: Locator;
 		$channelRoom: Locator;
 	}) => Promise<void>,
-): Promise<string> {
-	const nickname = await connectChat({ page, channels: channel });
-
+) {
 	const $navRooms = page.locator(".navigation-area .navigation-server ul");
-	const $navRoomsItems = $navRooms.locator(" li");
+	const $navRoomsItems = $navRooms.locator("li");
 	await expect($navRoomsItems).toHaveCount(1);
 
 	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
@@ -54,66 +37,52 @@ async function partChannel(
 
 	await expect($navRoomsItems).toHaveCount(0);
 	await expect($navRoomsItems).not.toHaveCount(1);
-
-	return nickname;
 }
 
 test("Partir d'un salon via la commande /PART", async ({ page }) => {
+	await page.goto("/");
 	const channelToPart = "#test-part-command";
-	await partChannel(
-		{ page, channel: channelToPart },
-		async ({ $channelRoom }) => {
-			const $form = $channelRoom.locator(
-				`form[action='/privmsg/${encodeURIComponent(channelToPart)}']`,
-			);
-
-			const $input = $form.locator("input[type='text']");
-			$input.fill(`/part ${channelToPart}`);
-
-			const $btnSubmit = $form.locator("button[type='submit']");
-			await $btnSubmit.click();
-		},
+	await connectChat({ page, channels: channelToPart });
+	await partChannel({ page, channel: channelToPart }, () =>
+		sendMessage(
+			page,
+			channelToPart,
+			`/part ${channelToPart} Au revoir les amis.`,
+		),
 	);
 });
 
 test("Partir d'un salon via la commande /PART avec un message", async ({
 	browser,
 }) => {
-	const user1Context = await browser.newContext();
-	const user2Context = await browser.newContext();
-
-	const user1Page = await user1Context.newPage();
-	const user2Page = await user2Context.newPage();
-
 	const channelToPart = "#test-part2-command";
 
-	await connectChat({ page: user2Page, channels: channelToPart });
-
-	const pnick = await partChannel(
-		{ page: user1Page, channel: channelToPart },
-		async ({ $channelRoom }) => {
-			const $form = $channelRoom.locator(
-				`form[action='/privmsg/${encodeURIComponent(channelToPart)}']`,
-			);
-
-			const $input = $form.locator("input[type='text']");
-			$input.fill(`/part ${channelToPart} Au revoir les amis.`);
-
-			const $btnSubmit = $form.locator("button[type='submit']");
-			await $btnSubmit.click();
-		},
+	const { user1, user2 } = await connectUsersToChat(
+		{ browser },
+		{ channels: channelToPart },
 	);
 
-	const $mainRoom = user2Page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(
-		`* Parts: ${pnick} (${pnick}@F65E28A7.57B2.F6AB) (Au revoir les amis.) `,
+	await partChannel({ page: user1.page, channel: channelToPart }, () =>
+		sendMessage(
+			user1.page,
+			channelToPart,
+			`/part ${channelToPart} Au revoir les amis.`,
+		),
+	);
+
+	await containsMessage(
+		user2.page,
+		channelToPart,
+		`* Parts: ${user1.nick} (${user1.nick}@F65E28A7.57B2.F6AB) (Au revoir les amis.) `,
 	);
 });
 
 test("Partir d'un salon via le bouton de fermeture du la navigation", async ({
 	page,
 }) => {
+	await page.goto("/");
 	const channelToPart = "#test-part-channel";
+	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, async ({ $navRooms }) => {
 		const $navChannelRoom = $navRooms.locator(
 			`li[data-room="${channelToPart}"]`,
@@ -128,7 +97,9 @@ test("Partir d'un salon via le bouton de fermeture du la navigation", async ({
 test("Partir d'un salon via le bouton de fermeture du salon", async ({
 	page,
 }) => {
+	await page.goto("/");
 	const channelToPart = "#test-part-channel";
+	await connectChat({ page, channels: channelToPart });
 	await partChannel(
 		{ page, channel: channelToPart },
 		async ({ $channelRoom }) => {
