@@ -33,6 +33,7 @@ const totalUnread = computeTotalUnread(props);
 			'is-active': active,
 			'is-highlight': highlight,
 		}"
+		:data-room="name"
 		@click="openRoomHandler"
 		@keypress.space="openRoomHandler"
 		@keypress.enter="openRoomHandler"
