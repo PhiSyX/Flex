@@ -75,7 +75,7 @@ test("Ignorer un utilisateur (message salon)", async ({ browser }) => {
 	);
 });
 
-test.only("Ignorer un utilisateur (message privé)", async ({ browser }) => {
+test("Ignorer un utilisateur (message privé)", async ({ browser }) => {
 	const { user1, user2 } = await connectUsersToChat(
 		{ browser },
 		{ channels: "#test-silence-command" },
