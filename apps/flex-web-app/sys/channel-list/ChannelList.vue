@@ -3,6 +3,7 @@ import { UiButton } from "@phisyx/flex-uikit";
 
 import {
 	Emits,
+	joinChannel,
 	joinSelectedChannels,
 	requestCreateChannel,
 } from "./ChannelList.handlers";
@@ -20,7 +21,9 @@ import {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const joinChannelHandler = joinChannel(emit);
 const joinSelectedChannelsHandler = joinSelectedChannels(emit);
+
 const requestCreateChannelHandler = requestCreateChannel(emit);
 
 const filteredChannels = computeFilteredChannels(props);
@@ -77,7 +80,10 @@ const filteredChannels = computeFilteredChannels(props);
 				<span>Utilisateurs</span>
 
 				<div>
-					<label :for="`chan-${idx}`"></label>
+					<label
+						:for="`chan-${idx}`"
+						@dblclick="joinChannelHandler(channelData.channel)"
+					/>
 					<input
 						:id="`chan-${idx}`"
 						type="checkbox"

@@ -26,10 +26,18 @@ export interface Emits {
 export function joinSelectedChannels(emit: Emits) {
 	function joinSelectedChannelsHandler() {
 		for (const channel of selectedChannels.value) {
-			emit("join-channel", channel);
+			joinChannel(emit)(channel);
 		}
+		selectedChannels.value.clear();
 	}
 	return joinSelectedChannelsHandler;
+}
+
+export function joinChannel(emit: Emits) {
+	function joinChannelsHandler(name: string) {
+		emit("join-channel", name);
+	}
+	return joinChannelsHandler;
 }
 
 export function requestCreateChannel(emit: Emits) {
