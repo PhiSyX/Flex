@@ -16,7 +16,7 @@ import { expect, test, type Page, Locator } from "@playwright/test";
 async function connectChat({
 	page,
 	channels = "",
-}: { page: Page; channels?: string }) {
+}: { page: Page; channels?: string }): Promise<string> {
 	// biome-ignore lint/style/useTemplate: Pas envie.
 	const nickname = "x" + (Math.random() + 1).toString(36).slice(2) + "x";
 
@@ -26,6 +26,8 @@ async function connectChat({
 
 	const $btnLogin = page.locator('#chat-login-view button[type="submit"]');
 	await $btnLogin.click();
+
+	return nickname;
 }
 
 async function partChannel(
@@ -35,8 +37,8 @@ async function partChannel(
 		$navRoomsItems: Locator;
 		$channelRoom: Locator;
 	}) => Promise<void>,
-) {
-	await connectChat({ page, channels: channel });
+): Promise<string> {
+	const nickname = await connectChat({ page, channels: channel });
 
 	const $navRooms = page.locator(".navigation-area .navigation-server ul");
 	const $navRoomsItems = $navRooms.locator(" li");
@@ -52,6 +54,8 @@ async function partChannel(
 
 	await expect($navRoomsItems).toHaveCount(0);
 	await expect($navRoomsItems).not.toHaveCount(1);
+
+	return nickname;
 }
 
 test("Partir d'un salon via la commande /PART", async ({ page }) => {
@@ -69,6 +73,40 @@ test("Partir d'un salon via la commande /PART", async ({ page }) => {
 			const $btnSubmit = $form.locator("button[type='submit']");
 			await $btnSubmit.click();
 		},
+	);
+});
+
+test("Partir d'un salon via la commande /PART avec un message", async ({
+	browser,
+}) => {
+	const user1Context = await browser.newContext();
+	const user2Context = await browser.newContext();
+
+	const user1Page = await user1Context.newPage();
+	const user2Page = await user2Context.newPage();
+
+	const channelToPart = "#test-part2-command";
+
+	await connectChat({ page: user2Page, channels: channelToPart });
+
+	const pnick = await partChannel(
+		{ page: user1Page, channel: channelToPart },
+		async ({ $channelRoom }) => {
+			const $form = $channelRoom.locator(
+				`form[action='/privmsg/${encodeURIComponent(channelToPart)}']`,
+			);
+
+			const $input = $form.locator("input[type='text']");
+			$input.fill(`/part ${channelToPart} Au revoir les amis.`);
+
+			const $btnSubmit = $form.locator("button[type='submit']");
+			await $btnSubmit.click();
+		},
+	);
+
+	const $mainRoom = user2Page.locator(".room\\/main");
+	await expect($mainRoom).toContainText(
+		`* Parts: ${pnick} (${pnick}@F65E28A7.57B2.F6AB) (Au revoir les amis.) `,
 	);
 });
 
