@@ -13,6 +13,7 @@ import { expect, test } from "@playwright/test";
 import { connectUsersToChat } from "./helpers/connect.js";
 import {
 	containsMessage,
+	kickNickFromUserlistMenu,
 	sendMessage,
 } from "./helpers/channel.js";
 
@@ -48,3 +49,26 @@ test("Sanctionner d'un KICK un membre de salon via la commande /KICK", async ({
 	);
 });
 
+test("Sanctionner d'un KICK un membre de salon via le menu de la liste des utilisateurs du salon", async ({
+	browser,
+}) => {
+	const channelToKick = "#test-kick2-command";
+
+	const { user1, user2 } = await connectUsersToChat(
+		{ browser },
+		{ channels: channelToKick },
+	);
+
+	await kickNickFromUserlistMenu(user1.page, channelToKick, user2.nick);
+
+	await containsMessage(
+		user1.page,
+		channelToKick,
+		`* Kicks: ${user2.nick} a été sanctionné par ${user1.nick} (Raison: Kick.)`,
+	);
+
+	const $kicked = user2.page.locator(".channel\\/kicked");
+	await expect($kicked).toContainText(
+		`Vous avez été sanctionné par ${user1.nick} du salon ${channelToKick} pour la raison suivante « Kick. » !`,
+	);
+});

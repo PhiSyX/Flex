@@ -36,3 +36,26 @@ export async function containsMessage(
 	await expect($channelMain).toContainText(message);
 }
 
+export async function selectNickFromUserlist(
+	page: Page,
+	channel: string,
+	nick: string,
+): Promise<Locator> {
+	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
+	const $userlist = $channelRoom.locator(".room\\/userlist");
+	const $nick = $userlist.locator("li").getByText(nick);
+	await $nick.click();
+	const $userlistMenu = $channelRoom.locator(".room\\/userlist\\:menu");
+	return $userlistMenu;
+}
+
+export async function kickNickFromUserlistMenu(
+	page: Page,
+	channel: string,
+	knick: string,
+) {
+	const $userlistMenu = await selectNickFromUserlist(page, channel, knick);
+	const $kickItem = $userlistMenu.locator("li").getByText("Kick");
+	await $kickItem.click();
+	await page.waitForTimeout(250);
+}
