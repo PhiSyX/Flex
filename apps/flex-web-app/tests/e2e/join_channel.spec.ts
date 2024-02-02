@@ -83,7 +83,7 @@ test("Rejoindre un salon avec une clé via la commande /JOIN", async ({
 	);
 });
 
-test.only("Rejoindre un salon via la boite de dialogue (de la vue ChannelList)", async ({
+test("Rejoindre un salon via la boite de dialogue (de la vue ChannelList)", async ({
 	page,
 }) => {
 	await connectChat({ page });

@@ -9,7 +9,7 @@
 		"build": "vue-tsc -p ./config/tsconfig.app.json && vite build --config config/vite.config.ts",
 		"lint": "vue-tsc",
 		"preview": "vite preview --config config/vite.config.ts",
-		"test:e2e": "playwright test -c ./config/playwright.config.ts",
+		"test:e2e": "playwright test -x -c ./config/playwright.config.ts",
 		"test:e2e:report": "playwright show-report tests/e2e/report"
 	},
 	"dependencies": {
