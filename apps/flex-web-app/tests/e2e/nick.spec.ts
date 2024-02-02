@@ -13,6 +13,7 @@ import { test } from "@playwright/test";
 import { containsMessage, sendMessage } from "./helpers/channel.js";
 import { connectChat } from "./helpers/connect.js";
 import { generateRandomWord } from "./helpers/context.js";
+import { openRoomFromNavigation } from "./helpers/room.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -26,6 +27,39 @@ test("Changer le pseudonyme via la commande /NICK", async ({ page }) => {
 	const currentNick = await connectChat({ page, channels: channelToJoin });
 
 	await sendMessage(page, channelToJoin, `/nick ${newNick}`);
+
+	await containsMessage(
+		page,
+		channelToJoin,
+		`${currentNick} est désormais connu sous le nom de ${newNick}`,
+	);
+});
+
+test("Changer le pseudonyme via la boite de dialogue", async ({ page }) => {
+	await page.goto("/");
+
+	const channelToJoin = "#test-nick-command";
+	const currentNick = await connectChat({ page, channels: channelToJoin });
+
+	const [_, $channelRoom] = await openRoomFromNavigation(page, channelToJoin);
+
+	const $btnChangeNick = $channelRoom.locator(".btn-change-nick");
+	await $btnChangeNick.click();
+
+	await page.waitForTimeout(250);
+
+	const $teleportChangeNickRequest = page.locator(
+		"#change-nick-request_teleport",
+	);
+
+	const newNick = generateRandomWord();
+	const $inputNickname = $teleportChangeNickRequest.locator("#nickname");
+	await $inputNickname.fill(newNick);
+
+	const $btnSubmit = $teleportChangeNickRequest.getByText("Changer maintenant");
+	await $btnSubmit.click();
+
+	await page.waitForTimeout(250);
 
 	await containsMessage(
 		page,
