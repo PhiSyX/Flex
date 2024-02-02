@@ -8,19 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Page, expect } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 
-export async function containsMessageInActiveRoom(page: Page, message: string) {
-	const $main = page.locator(".room\\/main");
-	await expect($main).toContainText(message);
+export async function sendMessage(page: Page, priv: string, message: string) {
+	const $privateRoom = page.locator(`.room\\/private[data-room="${priv}"]`);
+	const $formRoom = $privateRoom.locator(
+		`form[action='/privmsg/${encodeURIComponent(priv)}']`,
+	);
+	const $inputRoom = $formRoom.locator("input[type='text']");
+	await $inputRoom.fill(message);
+	const $btnSubmit = $formRoom.locator("button[type='submit']");
+	await $btnSubmit.click();
+	await page.waitForTimeout(250);
 }
 
-export async function openRoomFromNavigation(page: Page, room: string) {
-	const $navRoom = page
-		.locator(".navigation-area .navigation-server ul li")
-		.getByText(room);
-	await $navRoom.click();
-	await page.waitForTimeout(250);
-	const $room = page.locator(`.room\\/private[data-room="${room}"]`);
-	return [$navRoom, $room];
+export async function containsMessage(
+	page: Page,
+	priv: string,
+	message: string,
+) {
+	const $privateRoom = page.locator(`.room\\/private[data-room="${priv}"]`);
+	const $privateMain = $privateRoom.locator(".room\\/main");
+	await expect($privateMain).toContainText(message);
+}
+
+export async function notContainsMessage(
+	page: Page,
+	priv: string,
+	message: string,
+) {
+	const $privateRoom = page.locator(`.room\\/private[data-room="${priv}"]`);
+	const $privateMain = $privateRoom.locator(".room\\/main");
+	await expect($privateMain).not.toContainText(message);
 }
