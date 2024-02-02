@@ -13,13 +13,22 @@ import { useChatStore } from "~/store/ChatStore";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 
+import { useOverlayerStore } from "~/store/OverlayerStore";
 import { Props } from "./ChannelRoom.state";
 
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
 // -------- //
 // Handlers //
 // -------- //
+
+export function changeNickRequestHandler() {
+	overlayerStore.create({
+		id: "change-nick-request",
+		centered: true,
+	});
+}
 
 export function closeRoomHandler(origin: Origin | string) {
 	chatStore.closeRoom(origin);

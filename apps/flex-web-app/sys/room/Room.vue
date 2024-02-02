@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { Emits, openPrivate, sendMessage } from "./Room.handler";
+import {
+	type Emits,
+	changeNickRequest,
+	openPrivate,
+	sendMessage,
+} from "./Room.handler";
 import { type Props, computeInputPlaceholder } from "./Room.state";
 
 import RoomTopic from "#/sys/room-topic/RoomTopic.vue";
@@ -17,6 +22,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const inputPlaceholder = computeInputPlaceholder(props);
+
+const changeNickRequestHandler =changeNickRequest(emit);
 const openPrivateHandler = openPrivate(emit);
 const sendMessageHandler = sendMessage(emit);
 </script>
@@ -51,8 +58,10 @@ const sendMessageHandler = sendMessage(emit);
 			v-if="displayInput"
 			:disable-input="disableInput"
 			:history="inputHistory"
-			:target="name"
+			:nick="nick"
 			:placeholder="inputPlaceholder"
+			:target="name"
+			@change-nick-request="changeNickRequestHandler"
 			@submit="sendMessageHandler"
 		/>
 	</div>

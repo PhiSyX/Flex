@@ -26,6 +26,7 @@ export interface Props {
 	disableInput: boolean;
 	inputHistory?: Array<string>;
 	me: Option<ChannelNick>;
+	currentNick: string;
 	messages: Array<RoomMessage>;
 	name: string;
 	selectedUser: Option<ChannelSelectedUser>;

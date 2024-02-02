@@ -30,7 +30,3 @@ export function requestCreateChannelHandler(event: MouseEvent) {
 		event,
 	});
 }
-
-export function sendMessageHandler(name: string, message: string) {
-	chatStore.sendMessage(name, message);
-}

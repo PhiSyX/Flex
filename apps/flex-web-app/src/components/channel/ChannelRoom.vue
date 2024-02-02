@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {
+	type Props,
 	compute$me,
 	computeSelectedUser,
 	computeCanEditTopic,
-	type Props,
+	myNick,
 } from "./ChannelRoom.state";
 
 import {
+	changeNickRequestHandler,
 	closeRoomHandler,
 	ignoreUserHandler,
 	kickUser,
@@ -45,11 +47,13 @@ const toggleSelectedUserHandler = toggleSelectedUser(props);
 		:disable-input="room.kicked"
 		:input-history="room.inputHistory"
 		:me="$me"
+		:current-nick="myNick"
 		:messages="room.messages"
 		:name="room.name"
 		:users="room.users"
 		:selected-user="selectedUser"
 		:topic="room.topic"
+		@change-nick-request="changeNickRequestHandler"
 		@close-room="closeRoomHandler"
 		@ignore-user="ignoreUserHandler"
 		@kick-user="kickUserHandler"

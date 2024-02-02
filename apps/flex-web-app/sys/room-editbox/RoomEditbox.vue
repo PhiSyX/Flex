@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { ButtonIcon } from "@phisyx/flex-uikit";
+import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 
 import { onActivated } from "vue";
 
 import { useInputHistory } from "./RoomEditbox.hooks";
-import { onSubmit } from "./RoomEditbox.handlers";
+import { type Emits, changeNick, onSubmit } from "./RoomEditbox.handlers";
 import {
 	type Props,
 	$input,
 	computeFormAction,
 	inputModel,
 } from "./RoomEditbox.state";
-
-interface Emits {
-	(evtName: "submit", inputModel: string): void;
-}
 
 // --------- //
 // Composant //
@@ -25,6 +21,7 @@ const emit = defineEmits<Emits>();
 
 const formAction = computeFormAction(props);
 
+const changeNickHandler = changeNick(emit);
 const { keydownHandler, submitHandler } = useInputHistory(
 	props,
 	onSubmit(emit)
@@ -40,12 +37,19 @@ onActivated(() => {
 		:action="formAction"
 		method="POST"
 		:disabled="disableInput ? 'disabled' : undefined"
-		class="[ min-h=8 p=1 pl=0 ]"
+		class="[ p=1 pl=0 ]"
 		@submit.prevent="submitHandler()"
 	>
 		<input type="hidden" name="target" :value="target" />
 
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
+			<UiButton
+				class="btn-change-nick [ my=1 px=1 py=1 border/radius=1 ]"
+				@click="changeNickHandler()"
+			>
+				{{ nick }}
+			</UiButton>
+
 			<input
 				ref="$input"
 				v-model.trim="inputModel"
@@ -85,5 +89,10 @@ div {
 
 input[type="text"] {
 	font-size: 14px;
+}
+
+.btn-change-nick {
+	font-size: 14px;
+	background: var(--body-bg_alt);
 }
 </style>

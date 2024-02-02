@@ -8,39 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ---- //
-// Type //
-// ---- //
+import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 
-export interface Emits {
-	(evtName: "change-nick-request"): void;
-	(evtName: "open-private", origin: Origin): void;
-	(evtName: "send-message", message: string): void;
-}
+const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
 // -------- //
 // Handlers //
 // -------- //
 
-export function openPrivate(emit: Emits) {
-	function openPrivateHandler(origin: Origin) {
-		emit("open-private", origin);
-	}
-
-	return openPrivateHandler;
+export function changeNickRequestHandler() {
+	overlayerStore.create({
+		id: "change-nick-request",
+		centered: true,
+	});
 }
 
-export function sendMessage(emit: Emits) {
-	function sendMessageHandler(message: string) {
-		emit("send-message", message);
-	}
-
-	return sendMessageHandler;
-}
-
-export function changeNickRequest(emit: Emits) {
-	function changeNickRequestHandler() {
-		emit("change-nick-request");
-	}
-	return changeNickRequestHandler;
+export function sendMessageHandler(name: string, message: string) {
+	chatStore.sendMessage(name, message);
 }

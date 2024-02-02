@@ -15,6 +15,7 @@ import type { Props } from "./PrivateRoom.state";
 // ---- //
 
 export interface Emits {
+	(evtName: "change-nick-request"): void;
 	(evtName: "close-room", origin: Origin): void;
 	(evtName: "send-message", name: string, message: string): void;
 	(evtName: "ignore-user", nickname: string): void;
@@ -24,6 +25,13 @@ export interface Emits {
 // -------- //
 // Handlers //
 // -------- //
+
+export function changeNickRequest(emit: Emits) {
+	function changeNickRequestHandler() {
+		emit("change-nick-request");
+	}
+	return changeNickRequestHandler;
+}
 
 export function closeRoom(emit: Emits) {
 	function closeRoomHandler(origin: Origin) {

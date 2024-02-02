@@ -31,6 +31,8 @@ export interface Props {
 export const compute$me = (props: Props) =>
 	computed(() => props.room.getUser(chatStore.store.me().id));
 
+export const myNick = computed(() => chatStore.store.me().nickname);
+
 export const computeCanEditTopic = (props: Props) =>
 	computed(() =>
 		compute$me(props)

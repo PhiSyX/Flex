@@ -8,39 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ---- //
-// Type //
-// ---- //
+import { computed } from "vue";
 
-export interface Emits {
-	(evtName: "change-nick-request"): void;
-	(evtName: "open-private", origin: Origin): void;
-	(evtName: "send-message", message: string): void;
-}
+import { useChatStore } from "~/store/ChatStore";
 
-// -------- //
-// Handlers //
-// -------- //
+const chatStore = useChatStore();
 
-export function openPrivate(emit: Emits) {
-	function openPrivateHandler(origin: Origin) {
-		emit("open-private", origin);
-	}
+// ----------- //
+// Local Store //
+// ----------- //
 
-	return openPrivateHandler;
-}
-
-export function sendMessage(emit: Emits) {
-	function sendMessageHandler(message: string) {
-		emit("send-message", message);
-	}
-
-	return sendMessageHandler;
-}
-
-export function changeNickRequest(emit: Emits) {
-	function changeNickRequestHandler() {
-		emit("change-nick-request");
-	}
-	return changeNickRequestHandler;
-}
+export const myNick = computed(() => chatStore.store.me().nickname);
+export const forumURL = import.meta.env.VITE_APP_FORUM_URL || "#";
+export const vademecumURL = import.meta.env.VITE_APP_VADEMECUM_URL || "#";

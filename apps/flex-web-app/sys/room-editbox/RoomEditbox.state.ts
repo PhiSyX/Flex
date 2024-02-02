@@ -15,6 +15,7 @@ import { computed, ref } from "vue";
 // ---- //
 
 export interface Props {
+	nick: string;
 	disableInput?: boolean;
 	history?: Array<string>;
 	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes

@@ -13,12 +13,20 @@
 // ---- //
 
 export interface Emits {
+	(evtName: "change-nick-request"): void;
 	(evtName: "send-message", name: string, message: string): void;
 }
 
 // -------- //
 // Handlers //
 // -------- //
+
+export function changeNickRequest(emit: Emits) {
+	function changeNickRequestHandler() {
+		emit("change-nick-request");
+	}
+	return changeNickRequestHandler;
+}
 
 export function sendMessage(emit: Emits, name: string) {
 	function sendMessageHandler(message: string) {

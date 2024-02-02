@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 import {
+	type Emits,
+	changeNickRequest,
 	closeRoom,
 	ignoreUser,
+	kickUser,
 	openPrivate,
 	selectUser,
 	sendMessage,
-	type Emits,
-	unignoreUser,
 	setAccessLevel,
+	unignoreUser,
 	unsetAccessLevel,
-	kickUser,
 } from "./ChannelRoom.handlers";
 import { useChannelTopic } from "./ChannelRoom.hooks";
 import { type Props, displayUserlist } from "./ChannelRoom.state";
@@ -26,6 +27,7 @@ import Room from "#/sys/room/Room.vue";
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const changeNickRequestHandler = changeNickRequest(emit);
 const closeRoomHandler = closeRoom(emit);
 const ignoreUserHandler = ignoreUser(emit);
 const kickUserHandler = kickUser(emit);
@@ -52,6 +54,8 @@ const {
 			:input-history="inputHistory"
 			:messages="messages"
 			:name="name"
+			:nick="currentNick"
+			@change-nick-request="changeNickRequestHandler"
 			@open-private="openPrivateHandler"
 			@send-message="sendMessageHandler"
 		>

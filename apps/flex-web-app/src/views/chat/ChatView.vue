@@ -1,26 +1,27 @@
 <script setup lang="ts">
+import type { ChannelRoom } from "~/channel/ChannelRoom";
+import type { PrivateRoom } from "~/private/PrivateRoom";
+import type { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
+import type { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
+
 import { Alert } from "@phisyx/flex-uikit";
 
-import { ChannelRoom } from "~/channel/ChannelRoom";
-import { PrivateRoom } from "~/private/PrivateRoom";
-import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { useChatStore } from "~/store/ChatStore";
-
-import { rooms, forumURL, vademecumURL } from "./ChatView.state";
-import {
-	joinChannelHandler,
-	requestCreateChannelHandler,
-	sendMessageHandler,
-} from "./ChatView.handlers";
 
 import Navigation from "~/components/navigation/Navigation.vue";
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
+import ServerCustomRoomComponent from "~/components/custom-room/ServerCustomRoom.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
-
-import Match from "#/sys/match/Match.vue";
-import ServerCustomRoom from "#/sys/server-custom-room/ServerCustomRoom.vue";
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
+import Match from "#/sys/match/Match.vue";
+
+import { rooms } from "./ChatView.state";
+import {
+	joinChannelHandler,
+	requestCreateChannelHandler,
+} from "./ChatView.handlers";
+import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 
 const chatStore = useChatStore();
 </script>
@@ -36,16 +37,9 @@ const chatStore = useChatStore();
 					:key="room.type + '@' + room.name"
 				>
 					<KeepAlive :key="room.type + '@' + room.name">
-						<ServerCustomRoom
-							v-if="room.isActive() && !room.isClosed()"
-							:forum-url="forumURL"
-							:id="room.id()"
-							:input-history="room.inputHistory"
-							:messages="room.messages"
-							:name="room.name"
-							:vademecum-url="vademecumURL"
+						<ServerCustomRoomComponent
+							:room="(room as ServerCustomRoom)"
 							class="[ flex:full ]"
-							@send-message="sendMessageHandler"
 						/>
 					</KeepAlive>
 				</template>
@@ -110,5 +104,6 @@ const chatStore = useChatStore();
 		</Match>
 
 		<ChannelCreateDialog />
+		<ChangeNickDialog />
 	</main>
 </template>
