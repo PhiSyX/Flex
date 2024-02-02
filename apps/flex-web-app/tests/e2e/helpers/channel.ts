@@ -48,14 +48,3 @@ export async function selectNickFromUserlist(
 	const $userlistMenu = $channelRoom.locator(".room\\/userlist\\:menu");
 	return $userlistMenu;
 }
-
-export async function kickNickFromUserlistMenu(
-	page: Page,
-	channel: string,
-	knick: string,
-) {
-	const $userlistMenu = await selectNickFromUserlist(page, channel, knick);
-	const $kickItem = $userlistMenu.locator("li").getByText("Kick");
-	await $kickItem.click();
-	await page.waitForTimeout(250);
-}

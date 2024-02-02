@@ -13,7 +13,7 @@ import { expect, test } from "@playwright/test";
 import { connectUsersToChat } from "./helpers/connect.js";
 import {
 	containsMessage,
-	kickNickFromUserlistMenu,
+	selectNickFromUserlist,
 	sendMessage,
 } from "./helpers/channel.js";
 
@@ -59,7 +59,13 @@ test("Sanctionner d'un KICK un membre de salon via le menu de la liste des utili
 		{ channels: channelToKick },
 	);
 
-	await kickNickFromUserlistMenu(user1.page, channelToKick, user2.nick);
+	const $userlistMenu = await selectNickFromUserlist(
+		user1.page,
+		channelToKick,
+		user2.nick,
+	);
+	const $kickItem = $userlistMenu.locator("li").getByText("Kick");
+	await $kickItem.click();
 
 	await containsMessage(
 		user1.page,
