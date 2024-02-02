@@ -36,6 +36,16 @@ export async function containsMessage(
 	await expect($channelMain).toContainText(message);
 }
 
+export async function notContainsMessage(
+	page: Page,
+	channel: string,
+	message: string,
+) {
+	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
+	const $channelMain = $channelRoom.locator(".room\\/main");
+	await expect($channelMain).not.toContainText(message);
+}
+
 export async function selectNickFromUserlist(
 	page: Page,
 	channel: string,
