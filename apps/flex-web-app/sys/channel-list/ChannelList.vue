@@ -38,26 +38,23 @@ const filteredChannels = computeFilteredChannels(props);
 		/>
 
 		<div class="[ flex gap=1 align-jc:end ]">
-			<div>
-				<UiButton
-					class="[ px=2 py=1 border/radius=0.6 ]"
-					variant="primary"
-					@click="requestCreateChannelHandler"
-				>
-					Créer un salon
-				</UiButton>
-			</div>
+			<UiButton
+				id="channel-create-request_btn"
+				class="[ px=2 py=1 border/radius=0.6 ]"
+				variant="primary"
+				@click="requestCreateChannelHandler"
+			>
+				Créer un salon
+			</UiButton>
 
-			<div class="[ align-t:right ]">
-				<UiButton
-					class="[ px=2 py=1 border/radius=0.6 ]"
-					variant="primary"
-					:disabled="selectedChannels.size === 0"
-					@click="joinSelectedChannelsHandler()"
-				>
-					Rejoindre les salons sélectionnés
-				</UiButton>
-			</div>
+			<UiButton
+				class="[ px=2 py=1 border/radius=0.6 ]"
+				variant="primary"
+				:disabled="selectedChannels.size === 0"
+				@click="joinSelectedChannelsHandler()"
+			>
+				Rejoindre les salons sélectionnés
+			</UiButton>
 		</div>
 
 		<div class="table [ ov:h border/radius=1 scroll:y ]">

@@ -57,7 +57,12 @@ onActivated(() => {
 			/>
 
 			<ButtonIcon icon="text-color" :disabled="disableInput" />
-			<ButtonIcon icon="send" type="submit" :disabled="disableInput" />
+			<ButtonIcon
+				icon="send"
+				type="submit"
+				:disabled="disableInput"
+				title="Soumettre le message"
+			/>
 		</div>
 	</form>
 </template>
