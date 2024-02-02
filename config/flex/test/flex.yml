@@ -1,0 +1,32 @@
+# Les champs en commentaires ne sont pas obligatoires.
+
+cors:
+  preset: permissive
+
+network:
+  name: Nom d'example
+
+admin:
+  name: "John Doe"
+  email: johndoe@test.org
+  nick: JohnDoe
+
+server:
+  name: chat.test.org
+  created_at: 1635185135
+
+operator:
+  auto_join: []
+
+operators:
+  - identifier: test-globop
+    password: "$argon2id$v=19$m=4096,t=3,p=1$c2FOeFlWYS9QREttMDloYU1GeTlrZGxiQ0tuTlcyclBodE94SUtsU2xzU0M5T2dUcURGWkRoNFpYOUFJYWEySitodHlFMFo3V3pjQlR5UXF2TmhmMEE9PQ$3B8PIAr8CV4dwx53DQVmTLCCoxBL6ngpmm0kEd/hjBw"
+    type: GlobalOperator
+    vhost: globops.chat
+    flags: [NoKick]
+
+  - identifier: test-locop
+    password: "$argon2id$v=19$m=4096,t=3,p=1$c2FOeFlWYS9QREttMDloYU1GeTlrZGxiQ0tuTlcyclBodE94SUtsU2xzU0M5T2dUcURGWkRoNFpYOUFJYWEySitodHlFMFo3V3pjQlR5UXF2TmhmMEE9PQ$3B8PIAr8CV4dwx53DQVmTLCCoxBL6ngpmm0kEd/hjBw"
+    type: LocalOperator
+    vhost: locops.chat
+    flags: []
