@@ -8,20 +8,28 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Browser, Page } from "@playwright/test";
+import { test } from "@playwright/test";
 
-export async function createTwoUsers(browser: Browser): Promise<{
-	user1: Page;
-	user2: Page;
-}> {
-	const user1Context = await browser.newContext();
-	const user2Context = await browser.newContext();
-	return {
-		user1: await user1Context.newPage(),
-		user2: await user2Context.newPage(),
-	};
-}
+import { containsMessage, sendMessage } from "./helpers/channel.js";
+import { connectChat } from "./helpers/connect.js";
+import { generateRandomWord } from "./helpers/context.js";
 
-export function generateRandomWord() {
-	return `x${(Math.random() + 1).toString(36).slice(2)}x`;
-}
+// See here how to get started:
+// https://playwright.dev/docs/intro
+
+test("Changer le pseudonyme via la commande /NICK", async ({ page }) => {
+	await page.goto("/");
+
+	const channelToJoin = "#test-nick-command";
+
+	const newNick = generateRandomWord();
+	const currentNick = await connectChat({ page, channels: channelToJoin });
+
+	await sendMessage(page, channelToJoin, `/nick ${newNick}`);
+
+	await containsMessage(
+		page,
+		channelToJoin,
+		`${currentNick} est désormais connu sous le nom de ${newNick}`,
+	);
+});
