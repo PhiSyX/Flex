@@ -9,17 +9,17 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { test } from "@playwright/test";
-import { connectUsersToChat } from "./helpers/connect.js";
 import {
 	containsMessage as containsInChannelMessage,
 	notContainsMessage as notContainsInChannelMessage,
 	selectNickFromUserlist,
 	sendMessage as sendChannelMessage,
 } from "./helpers/channel.js";
+import { connectUsersToChat } from "./helpers/connect.js";
 import {
 	containsMessage as containsInPrivateMessage,
-	sendMessage as sendPrivateMessage,
 	notContainsMessage as notContainsInPrivateMessage,
+	sendMessage as sendPrivateMessage,
 } from "./helpers/private.js";
 import { openRoomFromNavigation } from "./helpers/room.js";
 

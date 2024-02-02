@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { expect, test, type Page } from "@playwright/test";
-import { connectChat, connectUsersToChat } from "./helpers/connect.js";
+import { type Page, expect, test } from "@playwright/test";
 import { containsMessage } from "./helpers/channel.js";
+import { connectChat, connectUsersToChat } from "./helpers/connect.js";
 import { containsMessageInActiveRoom } from "./helpers/room.js";
 
 // See here how to get started:
