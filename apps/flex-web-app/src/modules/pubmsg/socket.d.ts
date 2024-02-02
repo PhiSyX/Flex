@@ -8,38 +8,24 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
-
-// ---- //
-// Type //
-// ---- //
-
-export interface Props<E extends keyof Replies> {
-	data: GenericReply<E>;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type: "action" | `error:${string}` | "event" | `event:${string}` | "pubmsg" | "privmsg";
+declare interface PubmsgFormData {
+	channels: Array<string>;
+	text: string;
 }
 
-// ----------- //
-// Local State //
-// ----------- //
+declare interface PubmsgDataResponse {
+	tags: { msgid: string };
+	channel: string;
+	text: string;
+	origin: {
+		access_level?: Array<string>;
+	};
+}
 
-// INFO: hostname
-export const computeHostname = (origin: Origin) =>
-	computed(() => origin.host.vhost || origin.host.cloaked);
+declare interface Commands {
+	PUBMSG: PubmsgFormData;
+}
 
-// INFO: ident@hostname
-export const computeUserAddress = (origin: Origin) =>
-	computed(() => `${origin.ident}@${computeHostname(origin)}`);
-
-// INFO: nickname!ident@hostname
-export const computeFullUserAddress = (origin: Origin) =>
-	computed(() => `${origin.nickname}!${computeUserAddress(origin)}`);
+declare interface CommandResponsesFromServer {
+	PUBMSG: PubmsgDataResponse;
+}

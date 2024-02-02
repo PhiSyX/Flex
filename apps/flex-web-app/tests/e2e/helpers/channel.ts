@@ -17,7 +17,7 @@ export async function sendMessage(
 ) {
 	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
 	const $formRoom = $channelRoom.locator(
-		`form[action='/privmsg/${encodeURIComponent(channel)}']`,
+		`form[action='/msg/${encodeURIComponent(channel)}']`,
 	);
 	const $inputRoom = $formRoom.locator("input[type='text']");
 	await $inputRoom.fill(message);

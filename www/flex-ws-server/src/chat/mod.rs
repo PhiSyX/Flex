@@ -103,6 +103,12 @@ mod features
 			response,
 		};
 
+		pubmsg / {
+			formdata,
+			handler,
+			response,
+		};
+
 		quit / {
 			formdata,
 			handler,

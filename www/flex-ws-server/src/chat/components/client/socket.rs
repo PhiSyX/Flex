@@ -350,54 +350,46 @@ impl<'a> Socket<'a>
 		_ = self.socket().leave(channel_room);
 	}
 
-	/// Émet au client les réponses liées à la commande /PRIVMSG <channel>
-	pub fn emit_privmsg_to_channel<User>(&self, target: &str, text: &str, by: User)
+	/// Émet au client les réponses liées à la commande /PUBMSG <channel>
+	pub fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User)
 	where
 		User: serde::Serialize,
 	{
-		use crate::src::chat::features::PrivmsgCommandResponse;
+		use crate::src::chat::features::PubmsgCommandResponse;
 
-		let privmsg = PrivmsgCommandResponse {
+		let pubmsg_command = PubmsgCommandResponse {
 			origin: &by,
-			tags: PrivmsgCommandResponse::default_tags(),
-			target,
+			tags: PubmsgCommandResponse::default_tags(),
+			channel: channel_name,
 			text,
 		};
 
-		_ = self.socket().emit(privmsg.name(), &privmsg);
+		_ = self.socket().emit(pubmsg_command.name(), &pubmsg_command);
 
-		let target_room = format!(
-			"{}:{}",
-			if target.starts_with('#') {
-				"channel"
-			} else {
-				"private"
-			},
-			target.to_lowercase()
-		);
+		let target_room = format!("channel:{}", channel_name.to_lowercase());
 
 		_ = self
 			.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
-			.emit(privmsg.name(), privmsg);
+			.emit(pubmsg_command.name(), pubmsg_command);
 	}
 
 	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
-	pub fn emit_privmsg_to_nickname<User>(&self, target: &str, text: &str, by: User)
+	pub fn emit_privmsg<User>(&self, target: &str, text: &str, by: User)
 	where
 		User: serde::Serialize,
 	{
 		use crate::src::chat::features::PrivmsgCommandResponse;
 
-		let privmsg = PrivmsgCommandResponse {
+		let privmsg_command = PrivmsgCommandResponse {
 			origin: &by,
 			target,
 			text,
 			tags: PrivmsgCommandResponse::default_tags(),
 		};
 
-		_ = self.socket().emit(privmsg.name(), &privmsg);
+		_ = self.socket().emit(privmsg_command.name(), &privmsg_command);
 	}
 
 	/// Émet au client les réponses liées à la commande /QUIT.

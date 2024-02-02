@@ -27,7 +27,7 @@ async function joinChannel({
 }) {
 	const $navServer = page.locator(".navigation-area .navigation-server");
 	await expect($navServer).toHaveText("Flex");
-	const $formRoom = page.locator("form[action='/privmsg/flex']");
+	const $formRoom = page.locator("form[action='/msg/flex']");
 	const $inputRoom = $formRoom.locator("input[type='text']");
 	await $inputRoom.fill(`/join ${channel} ${key}`);
 	const $btnSubmit = $formRoom.locator("button[type='submit']");

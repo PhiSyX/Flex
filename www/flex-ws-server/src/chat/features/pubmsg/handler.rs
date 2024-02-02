@@ -11,52 +11,46 @@
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::Origin;
+use crate::src::chat::components::permission::ChannelPermissionWrite;
+use crate::src::chat::replies::*;
 use crate::src::chat::ChatApplication;
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct PrivmsgHandler;
+pub struct PubmsgHandler;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl PrivmsgHandler
+impl PubmsgHandler
 {
-	pub const COMMAND_NAME: &'static str = "PRIVMSG";
+	pub const COMMAND_NAME: &'static str = "PUBMSG";
 
-	/// PRIVMSG est utilisé pour envoyer des messages privés entre utilisateurs.
+	/// PUBMSG est utilisé pour envoyer des messages à des salons.
 	pub async fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::PrivmsgCommandFormData>,
+		Data(data): Data<super::PubmsgCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
 
-		for target in data.targets.iter() {
-			let origin = Origin::from(client_socket.client());
-			client_socket.emit_privmsg(target, &data.text, &origin);
-
-			if client_socket.check_nickname(target) {
-				continue;
-			}
-
-			let Some(target_client_socket) = app.find_socket_by_nickname(&socket, target) else {
-				client_socket.send_err_nosuchnick(target);
-				continue;
-			};
-
-			if app.client_isin_blocklist(&target_client_socket, &client_socket) {
-				continue;
-			}
-
-			target_client_socket.emit_privmsg(target, &data.text, &origin);
-			if target_client_socket.client().user().is_away() {
-				client_socket.send_rpl_away(&target_client_socket);
+		for channel in data.channels.iter() {
+			match app.is_client_able_to_write_on_channel(&client_socket, channel) {
+				| ChannelPermissionWrite::Yes(channel_nick) => {
+					let channel_member =
+						ChannelNickClient::from((client_socket.client(), channel_nick));
+					client_socket.emit_pubmsg(channel, &data.text, channel_member);
+				}
+				| ChannelPermissionWrite::Bypass => {
+					client_socket.emit_pubmsg(channel, &data.text, client_socket.user());
+				}
+				| ChannelPermissionWrite::No => {
+					client_socket.send_err_cannotsendtochan(channel);
+				}
 			}
 		}
 	}

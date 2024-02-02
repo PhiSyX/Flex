@@ -34,24 +34,12 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	}
 
 	handle(data: GenericReply<"PRIVMSG">) {
-		if (data.target.startsWith("#")) {
-			this.handleChannel(data);
-			return;
-		}
-
 		if (this.store.isMe(data.origin)) {
 			this.handleMe(data);
 			return;
 		}
 
 		this.handleUser(data);
-	}
-
-	handleChannel(data: GenericReply<"PRIVMSG">) {
-		const maybeChannel = this.store.roomManager().get(data.target);
-		if (maybeChannel.is_none()) return;
-		const channel = maybeChannel.unwrap();
-		this.handleMessage(channel, data);
 	}
 
 	handleMe(data: GenericReply<"PRIVMSG">) {

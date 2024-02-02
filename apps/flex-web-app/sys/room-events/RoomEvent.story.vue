@@ -25,6 +25,7 @@ type Payload = {
 		| `error:${string}`
 		| "event"
 		| `event:${string}`
+		| "pubmsg"
 		| "privmsg";
 };
 

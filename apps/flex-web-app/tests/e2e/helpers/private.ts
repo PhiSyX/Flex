@@ -8,12 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Locator, Page, expect } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 
 export async function sendMessage(page: Page, priv: string, message: string) {
 	const $privateRoom = page.locator(`.room\\/private[data-room="${priv}"]`);
 	const $formRoom = $privateRoom.locator(
-		`form[action='/privmsg/${encodeURIComponent(priv)}']`,
+		`form[action='/msg/${encodeURIComponent(priv)}']`,
 	);
 	const $inputRoom = $formRoom.locator("input[type='text']");
 	await $inputRoom.fill(message);

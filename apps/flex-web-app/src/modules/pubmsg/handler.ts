@@ -8,56 +8,57 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use socketioxide::extract::{Data, SocketRef, State};
-
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::Origin;
-use crate::src::chat::ChatApplication;
-
-// --------- //
-// Structure //
-// --------- //
-
-pub struct PrivmsgHandler;
+import { Room } from "~/room/Room";
+import { RoomMessage } from "~/room/RoomMessage";
+import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl PrivmsgHandler
-{
-	pub const COMMAND_NAME: &'static str = "PRIVMSG";
+export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
 
-	/// PRIVMSG est utilisé pour envoyer des messages privés entre utilisateurs.
-	pub async fn handle(
-		socket: SocketRef,
-		State(app): State<ChatApplication>,
-		Data(data): Data<super::PrivmsgCommandFormData>,
-	)
-	{
-		let client_socket = app.current_client(&socket);
+	// ------- //
+	// Méthode //
+	// ------- //
 
-		for target in data.targets.iter() {
-			let origin = Origin::from(client_socket.client());
-			client_socket.emit_privmsg(target, &data.text, &origin);
+	listen() {
+		this.store.on("PUBMSG", (data) => this.handle(data));
+	}
 
-			if client_socket.check_nickname(target) {
-				continue;
-			}
+	handle(data: GenericReply<"PUBMSG">) {
+		const maybeChannel = this.store.roomManager().get(data.channel);
+		if (maybeChannel.is_none()) return;
+		const channel = maybeChannel.unwrap();
+		this.handleMessage(channel, data);
+	}
 
-			let Some(target_client_socket) = app.find_socket_by_nickname(&socket, target) else {
-				client_socket.send_err_nosuchnick(target);
-				continue;
-			};
+	handleMessage(room: Room, data: GenericReply<"PUBMSG">) {
+		let hl = false;
 
-			if app.client_isin_blocklist(&target_client_socket, &client_socket) {
-				continue;
-			}
-
-			target_client_socket.emit_privmsg(target, &data.text, &origin);
-			if target_client_socket.client().user().is_away() {
-				client_socket.send_rpl_away(&target_client_socket);
+		const isMe = this.store.isMe(data.origin);
+		if (!isMe && !room.isActive()) {
+			const me = this.store.nickname();
+			if (data.text.toLowerCase().indexOf(me.toLowerCase()) >= 0) {
+				hl = true;
+				room.setHighlight(hl);
 			}
 		}
+
+		room.addMessage(
+			new RoomMessage()
+				.withID(data.tags.msgid)
+				.withMessage(data.text)
+				.withNickname(data.origin.nickname)
+				.withTarget(data.channel)
+				.withTime(new Date())
+				.withType("pubmsg")
+				.withData(data)
+				.withIsMe(isMe),
+		);
 	}
 }

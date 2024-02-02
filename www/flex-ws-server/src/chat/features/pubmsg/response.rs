@@ -8,38 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
+use crate::command_response;
 
-// ---- //
-// Type //
-// ---- //
-
-export interface Props<E extends keyof Replies> {
-	data: GenericReply<E>;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type: "action" | `error:${string}` | "event" | `event:${string}` | "pubmsg" | "privmsg";
+command_response! {
+	struct PUBMSG
+	{
+		/// Le salon.
+		channel: &'a str,
+		/// Le texte.
+		text: &'a str,
+	}
 }
-
-// ----------- //
-// Local State //
-// ----------- //
-
-// INFO: hostname
-export const computeHostname = (origin: Origin) =>
-	computed(() => origin.host.vhost || origin.host.cloaked);
-
-// INFO: ident@hostname
-export const computeUserAddress = (origin: Origin) =>
-	computed(() => `${origin.ident}@${computeHostname(origin)}`);
-
-// INFO: nickname!ident@hostname
-export const computeFullUserAddress = (origin: Origin) =>
-	computed(() => `${origin.nickname}!${computeUserAddress(origin)}`);

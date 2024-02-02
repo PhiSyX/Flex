@@ -54,6 +54,7 @@ const ModeModule = () => import("~/modules/mode/module");
 const NickModule = () => import("~/modules/nick/module");
 const OperModule = () => import("~/modules/oper/module");
 const PartModule = () => import("~/modules/part/module");
+const PubmsgModule = () => import("~/modules/pubmsg/module");
 const PrivmsgModule = () => import("~/modules/privmsg/module");
 const QuitModule = () => import("~/modules/quit/module");
 const TopicModule = () => import("~/modules/topic/module");
@@ -111,6 +112,7 @@ export class ChatStore {
 			.add(NickModule)
 			.add(OperModule)
 			.add(PartModule)
+			.add(PubmsgModule)
 			.add(PrivmsgModule)
 			.add(QuitModule)
 			.add(TopicModule)
@@ -788,8 +790,14 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 
 		if (!message.startsWith("/")) {
 			const words = message.split(" ");
-			const privmsgModule = store.modules.get("PRIVMSG");
-			privmsgModule?.input(name, ...words);
+
+			if (name.startsWith("#")) {
+				const pubmsgModule = store.modules.get("PUBMSG");
+				pubmsgModule?.input(name, ...words);
+			} else {
+				const privmsgModule = store.modules.get("PRIVMSG");
+				privmsgModule?.input(name, ...words);
+			}
 			return;
 		}
 

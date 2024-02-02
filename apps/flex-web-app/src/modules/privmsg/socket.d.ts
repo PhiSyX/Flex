@@ -17,9 +17,6 @@ declare interface PrivmsgDataResponse {
 	tags: { msgid: string };
 	target: string;
 	text: string;
-	origin: {
-		access_level?: Array<string>;
-	};
 }
 
 declare interface Commands {

@@ -132,9 +132,7 @@ const config: PlaywrightTestConfig = {
 		 * preview server on CI for more realistic testing. Playwright will
 		 * re-use the local server if there is already a dev-server running.
 		 */
-		command: `${
-			env.CI ? "vite preview --port 5173" : "vite dev"
-		} ${viteConfigCmd}`,
+		command: `${env.CI ? "vite preview --port 5173" : "vite dev"} ${viteConfigCmd}`,
 		port: 5173,
 		reuseExistingServer: !env.CI,
 	},

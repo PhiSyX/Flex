@@ -44,7 +44,7 @@ messages.push(
 		.withNickname("ModeratorUser")
 		.withTarget(channelName)
 		.withTime(new Date())
-		.withType("privmsg"),
+		.withType("pubmsg"),
 	new RoomMessage()
 		.withData({
 			origin: origin1,

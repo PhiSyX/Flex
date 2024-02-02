@@ -8,56 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use socketioxide::extract::{Data, SocketRef, State};
-
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::Origin;
-use crate::src::chat::ChatApplication;
-
-// --------- //
-// Structure //
-// --------- //
-
-pub struct PrivmsgHandler;
+import { ChatStore } from "~/store/ChatStore";
+import { CommandInterface } from "../interface";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl PrivmsgHandler
-{
-	pub const COMMAND_NAME: &'static str = "PRIVMSG";
+export class PubmsgCommand implements CommandInterface<"PUBMSG"> {
+	constructor(private store: ChatStore) {}
 
-	/// PRIVMSG est utilisé pour envoyer des messages privés entre utilisateurs.
-	pub async fn handle(
-		socket: SocketRef,
-		State(app): State<ChatApplication>,
-		Data(data): Data<super::PrivmsgCommandFormData>,
-	)
-	{
-		let client_socket = app.current_client(&socket);
-
-		for target in data.targets.iter() {
-			let origin = Origin::from(client_socket.client());
-			client_socket.emit_privmsg(target, &data.text, &origin);
-
-			if client_socket.check_nickname(target) {
-				continue;
-			}
-
-			let Some(target_client_socket) = app.find_socket_by_nickname(&socket, target) else {
-				client_socket.send_err_nosuchnick(target);
-				continue;
-			};
-
-			if app.client_isin_blocklist(&target_client_socket, &client_socket) {
-				continue;
-			}
-
-			target_client_socket.emit_privmsg(target, &data.text, &origin);
-			if target_client_socket.client().user().is_away() {
-				client_socket.send_rpl_away(&target_client_socket);
-			}
-		}
+	send(payload: Command<"PUBMSG">): void {
+		this.store.emit("PUBMSG", payload);
 	}
 }

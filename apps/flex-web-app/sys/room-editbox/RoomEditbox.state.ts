@@ -36,5 +36,5 @@ export const computeFormAction = (props: Props) =>
 		const targetPath = props.target.startsWith("#")
 			? `%23${props.target.slice(1).toLowerCase()}`
 			: props.target.toLowerCase();
-		return `/privmsg/${targetPath}`;
+		return `/msg/${targetPath}`;
 	});

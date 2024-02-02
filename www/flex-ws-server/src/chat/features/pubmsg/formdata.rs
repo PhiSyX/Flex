@@ -8,38 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
+use flex_serde_validation::string::validate_string_filter;
 
-// ---- //
-// Type //
-// ---- //
+use crate::command_formdata;
+use crate::macro_rules::command_formdata::validate_channels;
 
-export interface Props<E extends keyof Replies> {
-	data: GenericReply<E>;
-	id: string;
-	message: string;
-	isMe: boolean;
-	nickname: string;
-	target: string;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type: "action" | `error:${string}` | "event" | `event:${string}` | "pubmsg" | "privmsg";
+command_formdata! {
+	struct PUBMSG
+	{
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		/// Le message envoyé.
+		#[serde(deserialize_with = "validate_string_filter")]
+		text: String,
+	}
 }
-
-// ----------- //
-// Local State //
-// ----------- //
-
-// INFO: hostname
-export const computeHostname = (origin: Origin) =>
-	computed(() => origin.host.vhost || origin.host.cloaked);
-
-// INFO: ident@hostname
-export const computeUserAddress = (origin: Origin) =>
-	computed(() => `${origin.ident}@${computeHostname(origin)}`);
-
-// INFO: nickname!ident@hostname
-export const computeFullUserAddress = (origin: Origin) =>
-	computed(() => `${origin.nickname}!${computeUserAddress(origin)}`);
