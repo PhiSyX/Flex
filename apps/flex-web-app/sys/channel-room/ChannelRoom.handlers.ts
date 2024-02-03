@@ -18,7 +18,7 @@ import { Props } from "./ChannelRoom.state";
 // ---- //
 
 export interface Emits {
-	(evtName: "change-nick-request"): void;
+	(evtName: "change-nick-request", event: MouseEvent): void;
 	(evtName: "close-room", origin: Origin | string): void;
 	(evtName: "ignore-user", origin: Origin): void;
 	(evtName: "kick-user", cnick: ChannelNick): void;
@@ -27,8 +27,8 @@ export interface Emits {
 	(evtName: "send-message", target: string, message: string): void;
 	(evtName: "set-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
 	(evtName: "unignore-user", origin: Origin): void;
-	(evtName: "update-topic", name: string, topic: string): void;
 	(evtName: "unset-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
+	(evtName: "update-topic", name: string, topic: string): void;
 }
 
 // -------- //
@@ -36,8 +36,8 @@ export interface Emits {
 // -------- //
 
 export function changeNickRequest(emit: Emits) {
-	function changeNickRequestHandler() {
-		emit("change-nick-request");
+	function changeNickRequestHandler(event: MouseEvent) {
+		emit("change-nick-request", event);
 	}
 	return changeNickRequestHandler;
 }

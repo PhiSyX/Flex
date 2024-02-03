@@ -45,7 +45,7 @@ onActivated(() => {
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<UiButton
 				class="btn-change-nick [ my=1 px=1 py=1 border/radius=1 ]"
-				@click="changeNickHandler()"
+				@click="changeNickHandler"
 			>
 				{{ nick }}
 			</UiButton>

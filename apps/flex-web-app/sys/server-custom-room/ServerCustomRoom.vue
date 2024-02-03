@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RoomMessage } from "~/room/RoomMessage";
 
-import { Emits, changeNickRequest, sendMessage } from "./ServerCustomRoom";
+import { Emits, changeNickRequest, sendMessage } from "./ServerCustomRoom.handlers";
 
 import Room from "#/sys/room/Room.vue";
 

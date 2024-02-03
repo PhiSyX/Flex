@@ -16,12 +16,22 @@ import { createFocusTrap } from "focus-trap";
 ///
 /// Utilise la librairie [focus-trap]
 const trap: Directive = {
-	mounted(el, _binding, _vnode, _pnode) {
-		const trap = createFocusTrap(el, {
-			escapeDeactivates: false,
-			clickOutsideDeactivates: true,
-		});
-		trap.activate();
+	mounted(el, binding, _vnode, _pnode) {
+		if (typeof binding.value === "boolean") {
+			if (binding.value) {
+				const trap = createFocusTrap(el, {
+					escapeDeactivates: false,
+					clickOutsideDeactivates: true,
+				});
+				trap.activate();
+			}
+		} else {
+			const trap = createFocusTrap(el, {
+				escapeDeactivates: false,
+				clickOutsideDeactivates: true,
+			});
+			trap.activate();
+		}
 	},
 };
 

@@ -23,10 +23,11 @@ const overlayerStore = useOverlayerStore();
 // Handlers //
 // -------- //
 
-export function changeNickRequestHandler() {
+export function changeNickRequestHandler(event: MouseEvent) {
 	overlayerStore.create({
 		id: "change-nick-request",
 		centered: true,
+		event,
 	});
 }
 

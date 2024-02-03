@@ -13,7 +13,7 @@
 // ---- //
 
 export interface Emits {
-	(evtName: "change-nick-request"): void;
+	(evtName: "change-nick-request", event: MouseEvent): void;
 	(evtName: "send-message", name: string, message: string): void;
 }
 
@@ -22,8 +22,8 @@ export interface Emits {
 // -------- //
 
 export function changeNickRequest(emit: Emits) {
-	function changeNickRequestHandler() {
-		emit("change-nick-request");
+	function changeNickRequestHandler(event: MouseEvent) {
+		emit("change-nick-request", event);
 	}
 	return changeNickRequestHandler;
 }
