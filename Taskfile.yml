@@ -1,0 +1,16 @@
+# https://taskfile.dev
+
+version: "3"
+
+#vars:
+#   GREETING: Hello, World!
+
+tasks:
+  code-quality:
+    cmds:
+      - echo "Cargo checks code quality..."
+      - cargo clippy --workspace --all-features -- -D warnings -A dead_code --no-deps
+      - cargo fmt --check
+      - echo "NPM checks code quality..."
+      - pnpm lint
+    silent: true

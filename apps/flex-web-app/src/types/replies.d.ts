@@ -35,7 +35,6 @@ declare interface ChannelOrigin {
 
 // NOTE(phisyx): les réponses des commandes sont déclarées dans chaque modules
 //  	EXAMPLE: ~/modules/<module>/socket.d.ts
-// biome-ignore lint/suspicious/noEmptyInterface: lire NOTE ci-haut.
 declare interface CommandResponsesFromServer {}
 
 declare interface CommandResponsesReplies {

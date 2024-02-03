@@ -82,6 +82,7 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 		<Variant title="Default">
 			<ChannelRoom
 				:can-edit-topic="false"
+				:current-nick="origin3.nickname"
 				:disable-input="false"
 				:me="me"
 				:messages="messages"
@@ -95,6 +96,7 @@ users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
 		<Variant title="Kicked">
 			<ChannelRoom
 				:can-edit-topic="false"
+				:current-nick="origin3.nickname"
 				:disable-input="false"
 				:me="me"
 				:messages="messages"

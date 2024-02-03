@@ -26,6 +26,7 @@ const recipient: PrivateNick = new PrivateNick(origin1);
 	<Story title="Organisms/PrivateRoom" responsive-disabled>
 		<Variant title="Me">
 			<PrivateRoom
+				:current-nick="origin.nickname"
 				:disable-input="disableInput"
 				:me="me"
 				:recipient="me"
@@ -35,6 +36,7 @@ const recipient: PrivateNick = new PrivateNick(origin1);
 
 		<Variant title="User">
 			<PrivateRoom
+				:current-nick="origin.nickname"
 				:disable-input="disableInput"
 				:me="me"
 				:recipient="recipient"
@@ -44,6 +46,7 @@ const recipient: PrivateNick = new PrivateNick(origin1);
 
 		<Variant title="User blocked">
 			<PrivateRoom
+				:current-nick="origin.nickname"
 				:disable-input="true"
 				:me="me"
 				:recipient="recipient"

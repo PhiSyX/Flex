@@ -5,11 +5,11 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite --config config/vite.config.ts",
-		"story:dev": "histoire dev -c ./config/histoire.config.ts",
-		"build": "vue-tsc -p ./config/tsconfig.app.json && vite build --config config/vite.config.ts",
-		"lint": "vue-tsc",
+		"story:dev": "histoire dev -c config/histoire.config.ts",
+		"build": "pnpm lint && vite build --config config/vite.config.ts",
+		"lint": "vue-tsc -p config/tsconfig.app.json",
 		"preview": "vite preview --config config/vite.config.ts",
-		"test:e2e": "playwright test -x -c ./config/playwright.config.ts",
+		"test:e2e": "playwright test -x -c config/playwright.config.ts",
 		"test:e2e:report": "playwright show-report tests/e2e/report"
 	},
 	"dependencies": {

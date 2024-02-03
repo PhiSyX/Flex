@@ -6,6 +6,7 @@ import RoomEditbox from "./RoomEditbox.vue";
 	<Story title="Molecules/RoomEditbox" responsive-disabled>
 		<Variant title="Default">
 			<RoomEditbox
+			 	nick="PhiSyX"
 				:disable-input="false"
 				placeholder="Placeholder"
 				target="#channel"
@@ -14,6 +15,7 @@ import RoomEditbox from "./RoomEditbox.vue";
 
 		<Variant title="Disabled">
 			<RoomEditbox
+				nick="PhiSyX"
 				:disable-input="true"
 				placeholder="Placeholder"
 				target="#channel"
