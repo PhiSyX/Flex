@@ -30,6 +30,7 @@ export interface Props {
 
 export const computeMe = (props: Props) =>
 	computed(() => props.room.getParticipant(chatStore.store.clientID()).unwrap());
+export const myNick = computed(() => chatStore.store.me().nickname);
 export const computeRecipient = (props: Props) =>
 	computed(() => props.room.getParticipant(props.room.id()).unwrap());
 

@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { expect, test, type Page, Locator } from "@playwright/test";
-import { connectChat, connectUsersToChat } from "./helpers/connect.js";
+import { Locator, type Page, expect, test } from "@playwright/test";
 import { containsMessage, sendMessage } from "./helpers/channel.js";
+import { connectChat, connectUsersToChat } from "./helpers/connect.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro

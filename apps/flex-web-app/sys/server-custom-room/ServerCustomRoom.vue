@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RoomMessage } from "~/room/RoomMessage";
 
-import { Emits, sendMessage } from "./ServerCustomRoom";
+import { Emits, changeNickRequest, sendMessage } from "./ServerCustomRoom.handlers";
 
 import Room from "#/sys/room/Room.vue";
 
@@ -15,6 +15,7 @@ interface Props {
 	inputHistory?: Array<string>;
 	messages: Array<RoomMessage>;
 	name: string;
+	currentNick: string;
 	vademecumUrl: string;
 }
 
@@ -25,15 +26,18 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const changeNickRequestHandler = changeNickRequest(emit);
 const sendMessageHandler = sendMessage(emit, props.id);
 </script>
 
 <template>
 	<div class="room/custom:server [ flex! ov:h ]">
 		<Room
+			:nick="currentNick"
 			:input-history="inputHistory"
 			:messages="messages"
 			:name="name"
+			@change-nick-request="changeNickRequestHandler"
 			@send-message="sendMessageHandler"
 		>
 			<template #topic>

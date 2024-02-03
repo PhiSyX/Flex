@@ -13,13 +13,23 @@ import { useChatStore } from "~/store/ChatStore";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
 
+import { useOverlayerStore } from "~/store/OverlayerStore";
 import { Props } from "./ChannelRoom.state";
 
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
 // -------- //
 // Handlers //
 // -------- //
+
+export function changeNickRequestHandler(event: MouseEvent) {
+	overlayerStore.create({
+		id: "change-nick-request",
+		centered: true,
+		event,
+	});
+}
 
 export function closeRoomHandler(origin: Origin | string) {
 	chatStore.closeRoom(origin);
@@ -68,6 +78,27 @@ export function toggleSelectedUser(props: Props) {
 		chatStore.toggleSelectUser(props.room, origin);
 	}
 	return toggleSelectedUserHandler;
+}
+
+export function topicModeHandler(
+	event: Event,
+	linkedElement: HTMLElement | undefined,
+	mode: boolean,
+) {
+	const channelTopicLayer = "channel-topic-layer";
+
+	if (mode) {
+		overlayerStore.create({
+			id: channelTopicLayer,
+			destroyable: "manual",
+			// @ts-expect-error ?
+			event,
+			DOMElement: linkedElement,
+			trapFocus: false,
+		});
+	} else {
+		overlayerStore.destroy(channelTopicLayer);
+	}
 }
 
 export function unignoreUserHandler(origin: Origin) {

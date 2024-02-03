@@ -8,21 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ---- //
-// Type //
-// ---- //
+import { computed } from "vue";
 
-export interface Emits {
-	(evtName: "send-message", name: string, message: string): void;
-}
+import { useChatStore } from "~/store/ChatStore";
 
-// -------- //
-// Handlers //
-// -------- //
+const chatStore = useChatStore();
 
-export function sendMessage(emit: Emits, name: string) {
-	function sendMessageHandler(message: string) {
-		emit("send-message", name, message);
-	}
-	return sendMessageHandler;
-}
+// ----------- //
+// Local Store //
+// ----------- //
+
+export const myNick = computed(() => chatStore.store.me().nickname);
+export const forumURL = import.meta.env.VITE_APP_FORUM_URL || "#";
+export const vademecumURL = import.meta.env.VITE_APP_VADEMECUM_URL || "#";

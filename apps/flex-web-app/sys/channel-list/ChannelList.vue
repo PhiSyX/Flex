@@ -185,6 +185,6 @@ input {
 }
 
 @include fx.class("channel/list:topic") {
-	z-index: 1000;
+	z-index: 1;
 }
 </style>

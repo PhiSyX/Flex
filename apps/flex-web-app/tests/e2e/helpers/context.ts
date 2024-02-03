@@ -21,3 +21,7 @@ export async function createTwoUsers(browser: Browser): Promise<{
 		user2: await user2Context.newPage(),
 	};
 }
+
+export function generateRandomWord() {
+	return `x${(Math.random() + 1).toString(36).slice(2)}x`;
+}

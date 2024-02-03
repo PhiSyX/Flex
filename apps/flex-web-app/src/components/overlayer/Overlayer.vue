@@ -3,31 +3,33 @@ import { useOverlayer } from "./Overlayer.hooks";
 
 import { vTrap } from "~/directives";
 
-import OverlayerTeleport from "./Teleport.vue";
-
 const { store, destroyHandler } = useOverlayer();
 </script>
 
 <template>
 	<Transition name="fade">
-		<div v-if="store.hasLayers" id="overlayer" v-trap:focus="{}">
+		<div v-if="store.hasLayers" id="overlayer">
 			<div class="overlay [ pos-a:full ]" @click="destroyHandler" />
 
-			<div
-				class="layer [ border/radius=1 ]"
-				v-for="[id, layer] of store.layers"
-				@keydown.esc="destroyHandler($event, id)"
-				:key="`${id}_layer`"
-				:id="`${id}_layer`"
-				:style="layer.style"
-			/>
+			<template v-for="[id, layer] of store.layers" :key="`${id}_layer`">
+				<div v-trap:focus="layer.trapFocus">
+					<div
+						:id="`${id}_layer`"
+						class="layer [ border/radius=1 ]"
+						@keydown.esc="destroyHandler($event, id)"
+						:style="layer.style"
+					/>
 
-			<OverlayerTeleport
-				v-for="[id, layer] of store.layers"
-				:key="`${id}_teleport`"
-				:id="id"
-				:layer="layer"
-			/>
+					<div
+						:id="`${id}_teleport`"
+						tabindex="0"
+						class="teleport [ pos-a:full flex! ]"
+						:class="{
+							'flex/center:full': layer.centered,
+						}"
+					/>
+				</div>
+			</template>
 		</div>
 	</Transition>
 </template>
@@ -69,8 +71,8 @@ const { store, destroyHandler } = useOverlayer();
 
 	@include fx.theme using ($name) {
 		@if $name == ice {
-			--overlayer-bg: var(--color-grey500_hsl);
-			--layer-border: var(--color-yellow700);
+			--overlayer-bg: var(--color-black_hsl);
+			--layer-border: var(--color-blue300);
 			--layer-box-shadow: hsla(var(--color-white_hsl), 50%);
 		} @else if $name == light {
 			--overlayer-bg: var(--color-white_hsl);
@@ -80,18 +82,20 @@ const { store, destroyHandler } = useOverlayer();
 	}
 
 	z-index: 1005;
-	&\@highlight {
-		z-index: 1010 !important;
+}
 
-		position: relative;
+.layer\@highlight {
+	z-index: 1010 !important;
 
-		pointer-events: none;
-	}
-	&\@highlight--alt {
-		z-index: 1010 !important;
+	position: relative;
+}
+.layer\@highlight--alt {
+	z-index: 1010 !important;
+}
 
-		pointer-events: none;
-	}
+.layer\@highlight:not(input),
+.layer\@highlight--alt:not(input) {
+	pointer-events: none;
 }
 
 .teleport {

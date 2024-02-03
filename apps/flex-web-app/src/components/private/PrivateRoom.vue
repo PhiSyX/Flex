@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+	changeNickRequestHandler,
 	closeRoomHandler,
 	ignoreUserHandler,
 	sendMessageHandler,
@@ -11,6 +12,7 @@ import {
 	computeMe,
 	computeRecipient,
 	computeRecipientIsBlocked,
+	myNick,
 } from "./PrivateRoom.state";
 
 import PrivateRoomComponent from "#/sys/private-room/PrivateRoom.vue";
@@ -28,11 +30,13 @@ const recipientIsBlocked = computeRecipientIsBlocked(recipient.value);
 
 <template>
 	<PrivateRoomComponent
+		:current-nick="myNick"
 		:disable-input="recipientIsBlocked"
 		:input-history="room.inputHistory"
 		:me="$me"
 		:messages="room.messages"
 		:recipient="recipient"
+		@change-nick-request="changeNickRequestHandler"
 		@close-room="closeRoomHandler"
 		@ignore-user="ignoreUserHandler"
 		@send-message="sendMessageHandler"

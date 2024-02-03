@@ -26,6 +26,7 @@ export type Layer<D = unknown> = {
 	style?: CSSProperties;
 	onClose?: () => void;
 	mousePosition?: Partial<{ top: CSSUnitValue; left: CSSUnitValue }>;
+	trapFocus?: boolean;
 };
 
 // -------- //
@@ -47,13 +48,14 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 
 	function create<D = unknown>(payload: Layer<D>) {
 		payload.destroyable ||= "background";
+		payload.trapFocus ??= true;
 
 		if (!payload.event) {
 			layers.set(payload.id, payload);
 			return;
 		}
 
-		const DOMElement = payload.event.currentTarget as Element;
+		const DOMElement = payload.DOMElement || (payload.event.currentTarget as Element);
 
 		if (
 			DOMElement.classList.contains(LAYER_HL_CSS_CLASS) ||

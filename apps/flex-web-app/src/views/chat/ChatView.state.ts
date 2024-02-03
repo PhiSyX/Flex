@@ -15,5 +15,3 @@ import { useChatStore } from "~/store/ChatStore";
 const chatStore = useChatStore();
 
 export const rooms = computed(() => chatStore.store.roomManager().rooms());
-export const forumURL = import.meta.env.VITE_APP_FORUM_URL || "#";
-export const vademecumURL = import.meta.env.VITE_APP_VADEMECUM_URL || "#";

@@ -9,14 +9,13 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Browser, Page } from "@playwright/test";
-import { createTwoUsers } from "./context.js";
+import { createTwoUsers, generateRandomWord } from "./context.js";
 
 export async function connectChat({
 	page,
 	channels = "",
 }: { page: Page; channels?: string }): Promise<string> {
-	// biome-ignore lint/style/useTemplate: Pas envie.
-	const nickname = "x" + (Math.random() + 1).toString(36).slice(2) + "x";
+	const nickname = generateRandomWord();
 
 	await page.goto("/");
 	await page.locator("#nickname").fill(nickname);

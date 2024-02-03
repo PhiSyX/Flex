@@ -9,12 +9,21 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
 // -------- //
 // Handlers //
 // -------- //
+
+export function changeNickRequestHandler() {
+	overlayerStore.create({
+		id: "change-nick-request",
+		centered: true,
+	});
+}
 
 export function closeRoomHandler(origin: Origin) {
 	chatStore.closeRoom(origin);

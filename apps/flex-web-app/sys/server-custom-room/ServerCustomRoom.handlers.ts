@@ -8,18 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Props } from "./PrivateRoom.state";
-
 // ---- //
 // Type //
 // ---- //
 
 export interface Emits {
 	(evtName: "change-nick-request", event: MouseEvent): void;
-	(evtName: "close-room", origin: Origin): void;
 	(evtName: "send-message", name: string, message: string): void;
-	(evtName: "ignore-user", nickname: string): void;
-	(evtName: "unignore-user", nickname: string): void;
 }
 
 // -------- //
@@ -33,27 +28,9 @@ export function changeNickRequest(emit: Emits) {
 	return changeNickRequestHandler;
 }
 
-export function closeRoom(emit: Emits) {
-	function closeRoomHandler(origin: Origin) {
-		emit("close-room", origin);
-	}
-	return closeRoomHandler;
-}
-
 export function sendMessage(emit: Emits, name: string) {
 	function sendMessageHandler(message: string) {
 		emit("send-message", name, message);
 	}
 	return sendMessageHandler;
-}
-
-export function toggleIgnoreUser(emit: Emits, props: Props) {
-	function toggleIgnoreUserHandler() {
-		if (props.disableInput) {
-			emit("unignore-user", props.recipient.nickname);
-		} else {
-			emit("ignore-user", props.recipient.nickname);
-		}
-	}
-	return toggleIgnoreUserHandler;
 }

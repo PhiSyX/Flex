@@ -21,6 +21,7 @@ export interface Props {
 	disableInput: boolean;
 	inputHistory?: Array<string>;
 	me: PrivateNick;
+	currentNick: string;
 	messages: Array<RoomMessage>;
 	recipient: PrivateNick;
 }

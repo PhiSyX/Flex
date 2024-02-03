@@ -7,6 +7,7 @@ import {
 	sendMessage,
 	toggleIgnoreUser,
 	type Emits,
+	changeNickRequest,
 } from "./PrivateRoom.handler";
 import {
 	Props,
@@ -21,6 +22,7 @@ import {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const changeNickRequestHandler = changeNickRequest(emit);
 const closeRoomHandler = closeRoom(emit);
 const sendMessageHandler = sendMessage(emit, props.recipient.nickname);
 const toggleIgnoreUserHandler = toggleIgnoreUser(emit, props);
@@ -36,6 +38,8 @@ const titleIgnoreButton = computeTitleIgnoreButton(props);
 			:input-history="inputHistory"
 			:messages="messages"
 			:name="recipient.nickname"
+			:nick="currentNick"
+			@change-nick-request="changeNickRequestHandler"
 			@send-message="sendMessageHandler"
 		>
 			<template #topic>

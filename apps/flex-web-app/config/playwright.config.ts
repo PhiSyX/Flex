@@ -10,8 +10,8 @@
 
 import type { PlaywrightTestConfig } from "@playwright/test";
 
-import { env } from "node:process";
 import * as path from "node:path";
+import { env } from "node:process";
 import { devices } from "@playwright/test";
 
 /**

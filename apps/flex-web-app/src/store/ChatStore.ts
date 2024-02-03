@@ -586,6 +586,16 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	const store = ChatStore.default();
 
 	/**
+	 * Change le pseudonyme de l'utilisateur actuel.
+	 */
+	function changeNick(newNick: string) {
+		const moduleUnsafe: CommandInterface<"NICK"> | undefined = store.modules.get("NICK");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `NICK`");
+		module?.send({ nickname: newNick });
+	}
+
+	/**
 	 * Change de chambre.
 	 */
 	function changeRoom(target: Origin | string) {
@@ -917,6 +927,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	return {
 		store,
 
+		changeNick,
 		changeRoom,
 		channelList,
 		checkUserIsBlocked,

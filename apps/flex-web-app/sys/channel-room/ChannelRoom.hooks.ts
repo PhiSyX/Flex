@@ -16,17 +16,18 @@ import { Props } from "./ChannelRoom.state";
 // Hooks //
 // ----- //
 
-export function useChannelTopic(props: Props, emits: Emits) {
+export function useChannelTopic(props: Props, emit: Emits) {
 	const $topic = ref<HTMLInputElement>();
 	const topicEditMode = ref(false);
 	const topicInput = ref("");
 
-	const submitTopicHandler = submitTopic(emits, props, {
+	const submitTopicHandler = submitTopic(emit, props, {
+		$input: $topic,
 		topicEditMode,
 		topicInput,
 	});
 
-	const enableTopicEditModeHandler = enableTopicEditMode(props, {
+	const enableTopicEditModeHandler = enableTopicEditMode(props, emit, {
 		$topic,
 		topicEditMode,
 	});

@@ -21,6 +21,6 @@ export async function openRoomFromNavigation(page: Page, room: string) {
 		.getByText(room);
 	await $navRoom.click();
 	await page.waitForTimeout(250);
-	const $room = page.locator(`.room\\/private[data-room="${room}"]`);
+	const $room = page.locator(`.room [data-room="${room}"]`);
 	return [$navRoom, $room];
 }

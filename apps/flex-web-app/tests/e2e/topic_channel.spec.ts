@@ -10,8 +10,8 @@
 
 import { test } from "@playwright/test";
 
-import { connectUsersToChat } from "./helpers/connect.js";
 import { containsMessage, sendMessage } from "./helpers/channel.js";
+import { connectUsersToChat } from "./helpers/connect.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro

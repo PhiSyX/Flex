@@ -17,6 +17,7 @@ import { RoomMessage } from "~/room/RoomMessage";
 // ---- //
 
 export interface Props {
+	nick: string;
 	displayInput?: boolean;
 	disableInput?: boolean;
 	inputHistory?: Array<string>;
