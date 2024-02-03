@@ -11,13 +11,14 @@ import {
 	changeNickRequestHandler,
 	closeRoomHandler,
 	ignoreUserHandler,
-	kickUser,
 	joinChannelHandler,
+	kickUser,
 	openPrivateHandler,
 	sendMessageHandler,
 	sendSetAccessLevel,
 	sendUnsetAccessLevel,
 	toggleSelectedUser,
+	topicModeHandler,
 	unignoreUserHandler,
 	updateTopicHandler,
 } from "./ChannelRoom.handlers";
@@ -61,6 +62,7 @@ const toggleSelectedUserHandler = toggleSelectedUser(props);
 		@select-user="toggleSelectedUserHandler"
 		@send-message="sendMessageHandler"
 		@set-access-level="sendSetAccessLevelHandler"
+		@topic-mode="topicModeHandler"
 		@unignore-user="unignoreUserHandler"
 		@unset-access-level="sendUnsetAccessLevelHandler"
 		@update-topic="updateTopicHandler"

@@ -80,6 +80,27 @@ export function toggleSelectedUser(props: Props) {
 	return toggleSelectedUserHandler;
 }
 
+export function topicModeHandler(
+	event: Event,
+	linkedElement: HTMLElement | undefined,
+	mode: boolean,
+) {
+	const channelTopicLayer = "channel-topic-layer";
+
+	if (mode) {
+		overlayerStore.create({
+			id: channelTopicLayer,
+			destroyable: "manual",
+			// @ts-expect-error ?
+			event,
+			DOMElement: linkedElement,
+			trapFocus: false,
+		});
+	} else {
+		overlayerStore.destroy(channelTopicLayer);
+	}
+}
+
 export function unignoreUserHandler(origin: Origin) {
 	chatStore.unignoreUser(origin.nickname);
 }

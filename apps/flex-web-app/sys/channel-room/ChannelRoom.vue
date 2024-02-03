@@ -76,7 +76,7 @@ const {
 					:class="{
 						'cursor:pointer': canEditTopic,
 					}"
-					@dblclick="enableTopicEditModeHandler()"
+					@dblclick="enableTopicEditModeHandler"
 				>
 					{{ topic.get() }}
 				</output>
@@ -84,7 +84,7 @@ const {
 				<p
 					v-else-if="canEditTopic"
 					class="[ flex flex/center:full h:full my=0 select:none cursor:pointer ]"
-					@dblclick="enableTopicEditModeHandler()"
+					@dblclick="enableTopicEditModeHandler"
 				>
 					Appuyez deux fois sur cette section pour mettre à jour le
 					sujet.

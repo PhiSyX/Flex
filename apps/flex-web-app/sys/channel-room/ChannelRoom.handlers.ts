@@ -26,6 +26,12 @@ export interface Emits {
 	(evtName: "select-user", origin: Origin): void;
 	(evtName: "send-message", target: string, message: string): void;
 	(evtName: "set-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
+	(
+		evtName: "topic-mode",
+		evt: Event,
+		linkedElement: HTMLInputElement | undefined,
+		mode: boolean,
+	): void;
 	(evtName: "unignore-user", origin: Origin): void;
 	(evtName: "unset-access-level", cnick: ChannelNick, accessLevel: ChannelAccessLevel): void;
 	(evtName: "update-topic", name: string, topic: string): void;
@@ -95,15 +101,18 @@ export function submitTopic(
 	emit: Emits,
 	props: Props,
 	{
+		$input,
 		topicEditMode,
 		topicInput,
 	}: {
+		$input: Ref<HTMLInputElement | undefined>;
 		topicEditMode: Ref<boolean>;
 		topicInput: Ref<string>;
 	},
 ) {
 	function submitTopicHandler(evt: Event) {
 		topicEditMode.value = false;
+		emit("topic-mode", evt, $input.value, topicEditMode.value);
 
 		evt.preventDefault();
 
@@ -123,6 +132,7 @@ export function submitTopic(
 
 export function enableTopicEditMode(
 	props: Props,
+	emit: Emits,
 	{
 		$topic,
 		topicEditMode,
@@ -131,7 +141,7 @@ export function enableTopicEditMode(
 		topicEditMode: Ref<boolean>;
 	},
 ) {
-	function enableTopicEditModeHandler() {
+	function enableTopicEditModeHandler(evt: Event) {
 		if (!props.canEditTopic) {
 			return;
 		}
@@ -140,6 +150,7 @@ export function enableTopicEditMode(
 
 		nextTick(() => {
 			$topic.value?.focus();
+			emit("topic-mode", evt, $topic.value, topicEditMode.value);
 		});
 	}
 	return enableTopicEditModeHandler;
