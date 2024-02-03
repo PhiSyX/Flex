@@ -2,9 +2,6 @@
 
 version: "3"
 
-#vars:
-#   GREETING: Hello, World!
-
 tasks:
   code-quality:
     cmds:
@@ -14,3 +11,32 @@ tasks:
       - echo "NPM checks code quality..."
       - pnpm lint
     silent: true
+
+  tests:
+    deps:
+      - cargo:test:unit
+      - npm:test:unit
+
+  tests-ci:
+    deps:
+      - cargo:test:unit
+      - npm:test:unit
+      - npm:test:e2e-ci
+
+
+######################
+#        Test        #
+######################
+
+  cargo:test:unit:
+    cmds:
+      - cargo test
+
+  npm:test:unit:
+    cmds:
+      - pnpm -w run test:unit
+
+  npm:test:e2e-ci:
+    vars: { CI: true }
+    cmds:
+      - CI={{.CI}} pnpm -w run test:e2e

@@ -22,12 +22,13 @@ import {
 	sendMessage as sendPrivateMessage,
 } from "./helpers/private.js";
 import { openRoomFromNavigation } from "./helpers/room.js";
+import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Ignorer un utilisateur (message salon)", async ({ browser }) => {
-	const channelToJoin = "#test-silence-command";
+	const channelToJoin = generateRandomChannel();
 
 	const { user1, user2 } = await connectUsersToChat(
 		{ browser },
@@ -76,14 +77,15 @@ test("Ignorer un utilisateur (message salon)", async ({ browser }) => {
 });
 
 test("Ignorer un utilisateur (message privé)", async ({ browser }) => {
+	const channelToJoin = generateRandomChannel();
 	const { user1, user2 } = await connectUsersToChat(
 		{ browser },
-		{ channels: "#test-silence-command" },
+		{ channels: channelToJoin },
 	);
 
 	const $userlistMenu = await selectNickFromUserlist(
 		user1.page,
-		"#test-silence-command",
+		channelToJoin,
 		user2.nick,
 	);
 

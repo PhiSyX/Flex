@@ -20,8 +20,6 @@ import { devices } from "@playwright/test";
  */
 // require('dotenv').config();
 
-const viteConfigCmd = "-c ./vite.config.ts";
-
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -41,12 +39,14 @@ const config: PlaywrightTestConfig = {
 		 */
 		timeout: 5000,
 	},
+
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!env.CI,
 	/* Retry on CI only */
 	retries: env.CI ? 2 : 0,
 	/* Opt out of parallel tests on CI. */
-	workers: "75%",
+	// FIXME: valeur arbitraire
+	workers: env.CI ? 4 : 3,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [
 		[
@@ -132,9 +132,9 @@ const config: PlaywrightTestConfig = {
 		 * preview server on CI for more realistic testing. Playwright will
 		 * re-use the local server if there is already a dev-server running.
 		 */
-		command: `${env.CI ? "vite preview --port 5173" : "vite dev"} ${viteConfigCmd}`,
+		command: `${env.CI ? "pnpm preview --port 5173" : "pnpm run dev"}`,
 		port: 5173,
-		reuseExistingServer: !env.CI,
+		reuseExistingServer: true,
 	},
 };
 

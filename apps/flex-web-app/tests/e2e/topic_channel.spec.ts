@@ -12,6 +12,7 @@ import { test } from "@playwright/test";
 
 import { containsMessage, sendMessage } from "./helpers/channel.js";
 import { connectUsersToChat } from "./helpers/connect.js";
+import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -19,10 +20,7 @@ import { connectUsersToChat } from "./helpers/connect.js";
 test("Changer le sujet d'un salon via la commande /TOPIC", async ({
 	browser,
 }) => {
-	const randomChannel =
-		// biome-ignore lint/style/useTemplate: Pas envie.
-		"#test-topic-x" + (Math.random() + 1).toString(36).slice(2) + "x";
-	const channelToJoin = randomChannel;
+	const channelToJoin = generateRandomChannel();
 	const topic = "Mon super topic";
 
 	const { user1: owner, user2: user } = await connectUsersToChat(
@@ -69,10 +67,7 @@ test("Changer le sujet d'un salon via la commande /TOPIC", async ({
 test("Changer le sujet d'un salon via le champ d'édition du sujet", async ({
 	browser,
 }) => {
-	const randomChannel =
-		// biome-ignore lint/style/useTemplate: Pas envie.
-		"#test-topic-x" + (Math.random() + 1).toString(36).slice(2) + "x";
-	const channelToJoin = randomChannel;
+	const channelToJoin = generateRandomChannel();
 	const topic = "Mon super topic";
 
 	const { user1: owner, user2: user } = await connectUsersToChat(

@@ -12,6 +12,7 @@ import { expect, test } from "@playwright/test";
 
 import { containsMessage, sendMessage } from "./helpers/channel.js";
 import { connectUsersToChat } from "./helpers/connect.js";
+import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -19,7 +20,7 @@ import { connectUsersToChat } from "./helpers/connect.js";
 test("Sanctionner d'un KILL un utilisateur via la commande /KILL", async ({
 	browser,
 }) => {
-	const channelToJoin = "#test-kill-command";
+	const channelToJoin = generateRandomChannel();
 	const killReason = "Dehors !";
 	// FIXME: améliorer le message du quit.
 	const quitReason = "socket was forcefully disconnected from the namespace";
@@ -55,7 +56,7 @@ test("Sanctionner d'un KILL un utilisateur via la commande /KILL", async ({
 test("Sanctionner d'un KILL un utilisateur via la commande /KILL sans permission d'opérateur", async ({
 	browser,
 }) => {
-	const channelToJoin = "#test-kill-command";
+	const channelToJoin = generateRandomChannel();
 	const killReason = "Dehors !";
 	// FIXME: améliorer le message du quit.
 	const quitReason = "socket was forcefully disconnected from the namespace";

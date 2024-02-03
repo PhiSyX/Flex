@@ -12,7 +12,7 @@ import { test } from "@playwright/test";
 
 import { containsMessage, sendMessage } from "./helpers/channel.js";
 import { connectChat } from "./helpers/connect.js";
-import { generateRandomWord } from "./helpers/context.js";
+import { generateRandomChannel, generateRandomWord } from "./helpers/context.js";
 import { openRoomFromNavigation } from "./helpers/room.js";
 
 // See here how to get started:
@@ -21,7 +21,7 @@ import { openRoomFromNavigation } from "./helpers/room.js";
 test("Changer le pseudonyme via la commande /NICK", async ({ page }) => {
 	await page.goto("/");
 
-	const channelToJoin = "#test-nick-command";
+	const channelToJoin = generateRandomChannel();
 
 	const newNick = generateRandomWord();
 	const currentNick = await connectChat({ page, channels: channelToJoin });
@@ -38,7 +38,7 @@ test("Changer le pseudonyme via la commande /NICK", async ({ page }) => {
 test("Changer le pseudonyme via la boite de dialogue", async ({ page }) => {
 	await page.goto("/");
 
-	const channelToJoin = "#test-nick-command";
+	const channelToJoin = generateRandomChannel();
 	const currentNick = await connectChat({ page, channels: channelToJoin });
 
 	const [_, $channelRoom] = await openRoomFromNavigation(page, channelToJoin);

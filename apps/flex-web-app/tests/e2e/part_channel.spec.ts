@@ -11,6 +11,7 @@
 import { Locator, type Page, expect, test } from "@playwright/test";
 import { containsMessage, sendMessage } from "./helpers/channel.js";
 import { connectChat, connectUsersToChat } from "./helpers/connect.js";
+import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -41,7 +42,7 @@ async function partChannel(
 
 test("Partir d'un salon via la commande /PART", async ({ page }) => {
 	await page.goto("/");
-	const channelToPart = "#test-part-command";
+	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, () =>
 		sendMessage(
@@ -55,7 +56,7 @@ test("Partir d'un salon via la commande /PART", async ({ page }) => {
 test("Partir d'un salon via la commande /PART avec un message", async ({
 	browser,
 }) => {
-	const channelToPart = "#test-part2-command";
+	const channelToPart = generateRandomChannel();
 
 	const { user1, user2 } = await connectUsersToChat(
 		{ browser },
@@ -81,7 +82,7 @@ test("Partir d'un salon via le bouton de fermeture du la navigation", async ({
 	page,
 }) => {
 	await page.goto("/");
-	const channelToPart = "#test-part-channel";
+	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, async ({ $navRooms }) => {
 		const $navChannelRoom = $navRooms.locator(
@@ -98,7 +99,7 @@ test("Partir d'un salon via le bouton de fermeture du salon", async ({
 	page,
 }) => {
 	await page.goto("/");
-	const channelToPart = "#test-part-channel";
+	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel(
 		{ page, channel: channelToPart },

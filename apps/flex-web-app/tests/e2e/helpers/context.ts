@@ -25,3 +25,7 @@ export async function createTwoUsers(browser: Browser): Promise<{
 export function generateRandomWord() {
 	return `x${(Math.random() + 1).toString(36).slice(2)}x`;
 }
+
+export function generateRandomChannel() {
+	return `#test-x${(Math.random() + 1).toString(36).slice(2)}x`;
+}

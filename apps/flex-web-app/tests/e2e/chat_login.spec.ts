@@ -9,17 +9,17 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { expect, test } from "@playwright/test";
+import { generateRandomChannel, generateRandomWord } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Connexion au Chat", async ({ page }) => {
-	// biome-ignore lint/style/useTemplate: Pas envie.
-	const nickname = "x" + (Math.random() + 1).toString(36).slice(2) + "x";
+	const nickname = generateRandomWord();
+	const channelToJoin = generateRandomChannel();
 
 	await page.goto("/");
 
-	const channelToJoin = "#test-join-channel";
 
 	await page.locator("#nickname").fill(nickname);
 	await page.locator("#channels").fill(channelToJoin);
@@ -40,8 +40,7 @@ test("Connexion au Chat", async ({ page }) => {
 });
 
 test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {
-	// biome-ignore lint/style/useTemplate: Pas envie.
-	const nickname = "x" + (Math.random() + 1).toString(36).slice(2) + "x";
+	const nickname = generateRandomWord();
 
 	await page.goto("/");
 	await page.locator("#nickname").fill(nickname);

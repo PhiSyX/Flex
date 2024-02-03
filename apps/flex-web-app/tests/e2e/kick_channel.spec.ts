@@ -16,6 +16,7 @@ import {
 	sendMessage,
 } from "./helpers/channel.js";
 import { connectUsersToChat } from "./helpers/connect.js";
+import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -23,7 +24,7 @@ import { connectUsersToChat } from "./helpers/connect.js";
 test("Sanctionner d'un KICK un membre de salon via la commande /KICK", async ({
 	browser,
 }) => {
-	const channelToKick = "#test-kick-command";
+	const channelToKick = generateRandomChannel();
 	const kickReason = "Dehors !";
 
 	const { user1, user2 } = await connectUsersToChat(
@@ -52,7 +53,7 @@ test("Sanctionner d'un KICK un membre de salon via la commande /KICK", async ({
 test("Sanctionner d'un KICK un membre de salon via le menu de la liste des utilisateurs du salon", async ({
 	browser,
 }) => {
-	const channelToKick = "#test-kick2-command";
+	const channelToKick = generateRandomChannel();
 
 	const { user1, user2 } = await connectUsersToChat(
 		{ browser },

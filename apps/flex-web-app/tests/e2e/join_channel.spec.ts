@@ -12,6 +12,7 @@ import { type Page, expect, test } from "@playwright/test";
 import { containsMessage } from "./helpers/channel.js";
 import { connectChat, connectUsersToChat } from "./helpers/connect.js";
 import { containsMessageInActiveRoom } from "./helpers/room.js";
+import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -36,7 +37,7 @@ async function joinChannel({
 
 test("Rejoindre un salon via la commande /JOIN", async ({ page }) => {
 	await page.goto("/");
-	const channelToJoin = "#test-join-command";
+	const channelToJoin = generateRandomChannel();
 	await connectChat({ page });
 	await joinChannel({ page, channels: channelToJoin });
 	await containsMessageInActiveRoom(
@@ -50,7 +51,7 @@ test("Rejoindre un salon avec une clé via la commande /JOIN", async ({
 }) => {
 	const { user1, user2 } = await connectUsersToChat({ browser });
 
-	const channelToJoin = "#test-join-with-key";
+	const channelToJoin = generateRandomChannel();
 	const channelToJoinKey = "my-best-key";
 
 	// NOTE: user1 rejoint un salon AVEC une clé
@@ -104,7 +105,7 @@ test("Rejoindre un salon via la boite de dialogue (de la vue ChannelList)", asyn
 	const $inputChannels =
 		$teleportChannelCreateRequest.locator("input#channels");
 
-	const channelToJoin = "#test-join-from-dialog";
+	const channelToJoin = generateRandomChannel();
 	await $inputChannels.fill(channelToJoin);
 
 	const $btnSubmit = $teleportChannelCreateRequest.getByText(
