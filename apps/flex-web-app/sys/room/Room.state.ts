@@ -17,11 +17,12 @@ import { RoomMessage } from "~/room/RoomMessage";
 // ---- //
 
 export interface Props {
-	nick: string;
+	completionList?: Array<string>;
 	displayInput?: boolean;
 	disableInput?: boolean;
 	inputHistory?: Array<string>;
 	name: string;
+	nick: string;
 	messages: Array<RoomMessage>;
 }
 

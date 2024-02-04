@@ -50,6 +50,7 @@ const {
 <template>
 	<div class="room/channel [ flex ]" :data-room="name">
 		<Room
+		 	:completion-list="completionList"
 			:disable-input="disableInput"
 			:input-history="inputHistory"
 			:messages="messages"

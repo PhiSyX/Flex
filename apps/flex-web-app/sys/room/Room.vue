@@ -56,6 +56,7 @@ const sendMessageHandler = sendMessage(emit);
 
 		<RoomEditbox
 			v-if="displayInput"
+			:completion-list="completionList"
 			:disable-input="disableInput"
 			:history="inputHistory"
 			:nick="nick"

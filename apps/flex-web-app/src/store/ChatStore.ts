@@ -586,6 +586,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	const store = ChatStore.default();
 
 	/**
+	 * Toutes les commandes basées sur les noms de modules.
+	 */
+	function allCommands() {
+		return Array.from(store.modules.keys(), (k) => `/${k.toLowerCase()}`).sort();
+	}
+
+	/**
 	 * Change le pseudonyme de l'utilisateur actuel.
 	 */
 	function changeNick(newNick: string) {
@@ -927,6 +934,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	return {
 		store,
 
+		allCommands,
 		changeNick,
 		changeRoom,
 		channelList,

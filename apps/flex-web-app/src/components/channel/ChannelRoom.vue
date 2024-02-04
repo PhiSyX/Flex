@@ -4,6 +4,7 @@ import {
 	compute$me,
 	computeSelectedUser,
 	computeCanEditTopic,
+	computeCompletionList,
 	myNick,
 } from "./ChannelRoom.state";
 
@@ -35,6 +36,7 @@ const props = defineProps<Props>();
 const $me = compute$me(props);
 const selectedUser = computeSelectedUser(props);
 const canEditTopic = computeCanEditTopic(props);
+const completionList = computeCompletionList(props);
 
 const kickUserHandler = kickUser(props);
 const sendSetAccessLevelHandler = sendSetAccessLevel(props);
@@ -45,6 +47,7 @@ const toggleSelectedUserHandler = toggleSelectedUser(props);
 <template>
 	<ChannelRoomComponent
 		:can-edit-topic="canEditTopic"
+		:completion-list="completionList"
 		:disable-input="room.kicked"
 		:input-history="room.inputHistory"
 		:me="$me"
