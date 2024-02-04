@@ -883,7 +883,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 				moduleUnsafe = store.modules.get("DEQOP");
 				break;
 			case ChannelAccessLevel.AdminOperator:
-				moduleUnsafe = store.modules.get("AOP");
+				moduleUnsafe = store.modules.get("DEAOP");
 				break;
 			case ChannelAccessLevel.Operator:
 				moduleUnsafe = store.modules.get("DEOP");
