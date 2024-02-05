@@ -44,8 +44,9 @@ const ErrorNosuchnickHandler = () => import("~/handlers/errors/ErrorNosuchnickHa
 const ErrorNotonchannelHandler = () => import("~/handlers/errors/ErrorNotonchannelHandler");
 const ErrorUsernotinchannelHandler = () => import("~/handlers/errors/ErrorUsernotinchannelHandler");
 
+const AccessLevelModule = () => import("~/modules/mode/access-level/module");
 const AwayModule = () => import("~/modules/user-status/module");
-const SilenceModule = () => import("~/modules/silence/module");
+const ClearModule = () => import("~/modules/clear/module");
 const JoinModule = () => import("~/modules/join/module");
 const KickModule = () => import("~/modules/kick/module");
 const KillModule = () => import("~/modules/kill/module");
@@ -54,11 +55,11 @@ const ModeModule = () => import("~/modules/mode/module");
 const NickModule = () => import("~/modules/nick/module");
 const OperModule = () => import("~/modules/oper/module");
 const PartModule = () => import("~/modules/part/module");
-const PubmsgModule = () => import("~/modules/pubmsg/module");
 const PrivmsgModule = () => import("~/modules/privmsg/module");
+const PubmsgModule = () => import("~/modules/pubmsg/module");
 const QuitModule = () => import("~/modules/quit/module");
+const SilenceModule = () => import("~/modules/silence/module");
 const TopicModule = () => import("~/modules/topic/module");
-const AccessLevelModule = () => import("~/modules/mode/access-level/module");
 
 // ---- //
 // Type //
@@ -102,8 +103,9 @@ export class ChatStore {
 			.add(ErrorUsernotinchannelHandler);
 
 		self.modulesSets
+			.add(AccessLevelModule)
 			.add(AwayModule)
-			.add(SilenceModule)
+			.add(ClearModule)
 			.add(JoinModule)
 			.add(KickModule)
 			.add(KillModule)
@@ -112,11 +114,11 @@ export class ChatStore {
 			.add(NickModule)
 			.add(OperModule)
 			.add(PartModule)
-			.add(PubmsgModule)
 			.add(PrivmsgModule)
+			.add(PubmsgModule)
 			.add(QuitModule)
-			.add(TopicModule)
-			.add(AccessLevelModule);
+			.add(SilenceModule)
+			.add(TopicModule);
 
 		const thisServer = new ServerCustomRoom();
 		const channelList = new ChannelListCustomRoom();
