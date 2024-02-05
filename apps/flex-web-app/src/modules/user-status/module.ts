@@ -12,7 +12,11 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { AwayCommand } from "./command";
-import { ReplyAwayHandler, ReplyNowawayHandler, ReplyUnawayHandler } from "./handler";
+import {
+	ReplyAwayHandler,
+	ReplyNowawayHandler,
+	ReplyUnawayHandler,
+} from "./handler";
 
 // -------------- //
 // Implémentation //
@@ -61,4 +65,35 @@ export class AwayModule implements Module<AwayModule> {
 		this.numericNowawayHandler.listen();
 		this.numericUnawayHandler.listen();
 	}
+}
+
+export class BackModule implements Module<BackModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "BACK";
+
+	static create(store: ChatStore): BackModule {
+		return new BackModule(new AwayCommand(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: AwayCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(_: string) {
+		this.send({ text: "" });
+	}
+
+	send(payload: Command<"AWAY">) {
+		this.command.send(payload);
+	}
+
+	listen() {}
 }
