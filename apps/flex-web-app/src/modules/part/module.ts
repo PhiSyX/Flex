@@ -41,9 +41,21 @@ export class PartModule implements Module<PartModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelsRaw?: string, ...words: Array<string>) {
-		const channels = channelsRaw?.split(",");
-		if (!channels) return;
+	input(roomName: string, channelsRaw?: string, ...words: Array<string>) {
+		let channelsR = channelsRaw;
+
+		if (channelsR) {
+			if (!channelsR.startsWith("#") && roomName.startsWith("#")) {
+				words.unshift(channelsR);
+				channelsR = roomName;
+			}
+		} else if (roomName.startsWith("#")) {
+			channelsR = roomName;
+		}
+
+		if (!channelsR?.startsWith("#")) return;
+
+		const channels = channelsR.split(",");
 		const message = words.join(" ");
 		this.send({ channels, message });
 	}

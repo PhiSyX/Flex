@@ -46,10 +46,22 @@ export class TopicModule implements Module<TopicModule> {
 	// Méthode //
 	// ------- //
 
-	input(channel?: string, ...words: Array<string>) {
-		if (!channel) return;
+	input(roomName: string, channelRaw?: string, ...words: Array<string>) {
+		let channelR = channelRaw;
+
+		if (channelR) {
+			if (!channelR.startsWith("#") && roomName.startsWith("#")) {
+				words.unshift(channelR);
+				channelR = roomName;
+			}
+		} else if (roomName.startsWith("#")) {
+			channelR = roomName;
+		}
+
+		if (!channelR?.startsWith("#")) return;
+
 		const topic = words.join(" ");
-		this.send({ channel, topic });
+		this.send({ channel: channelR, topic });
 	}
 
 	send(payload: Command<"TOPIC">) {

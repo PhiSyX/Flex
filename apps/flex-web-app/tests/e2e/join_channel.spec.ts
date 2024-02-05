@@ -11,8 +11,8 @@
 import { type Page, expect, test } from "@playwright/test";
 import { containsMessage } from "./helpers/channel.js";
 import { connectChat, connectUsersToChat } from "./helpers/connect.js";
-import { containsMessageInActiveRoom } from "./helpers/room.js";
 import { generateRandomChannel } from "./helpers/context.js";
+import { containsMessageInActiveRoom } from "./helpers/room.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro

@@ -48,7 +48,7 @@ export class AwayModule implements Module<AwayModule> {
 	// Méthode //
 	// ------- //
 
-	input(...text: Array<string>) {
+	input(_: string, ...text: Array<string>) {
 		this.send({ text: text.join(" ") });
 	}
 

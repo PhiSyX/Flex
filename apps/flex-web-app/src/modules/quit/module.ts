@@ -41,7 +41,7 @@ export class QuitModule implements Module<QuitModule> {
 	// Méthode //
 	// ------- //
 
-	input(...words: Array<string>) {
+	input(_: string, ...words: Array<string>) {
 		this.send({ reason: words.join(" ") });
 	}
 

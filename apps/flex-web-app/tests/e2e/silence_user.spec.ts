@@ -16,13 +16,13 @@ import {
 	sendMessage as sendChannelMessage,
 } from "./helpers/channel.js";
 import { connectUsersToChat } from "./helpers/connect.js";
+import { generateRandomChannel } from "./helpers/context.js";
 import {
 	containsMessage as containsInPrivateMessage,
 	notContainsMessage as notContainsInPrivateMessage,
 	sendMessage as sendPrivateMessage,
 } from "./helpers/private.js";
 import { openRoomFromNavigation } from "./helpers/room.js";
-import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro

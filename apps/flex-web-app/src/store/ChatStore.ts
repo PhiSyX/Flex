@@ -827,7 +827,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			return;
 		}
 
-		module.input(...args);
+		module.input(name, ...args);
 	}
 
 	/**
