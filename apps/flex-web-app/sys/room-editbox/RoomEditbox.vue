@@ -44,6 +44,7 @@ onActivated(() => {
 
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<UiButton
+				variant="primary"
 				class="btn-change-nick [ my=1 px=1 py=1 border/radius=1 ]"
 				@click="changeNickHandler"
 			>
@@ -92,7 +93,7 @@ input[type="text"] {
 }
 
 .btn-change-nick {
+	--btn-primary-bg: var(--body-bg_alt);
 	font-size: 14px;
-	background: var(--body-bg_alt);
 }
 </style>

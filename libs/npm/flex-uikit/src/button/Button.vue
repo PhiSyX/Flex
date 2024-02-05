@@ -18,7 +18,7 @@ const isSelected = computeIsSelected(props);
 	<button
 		class="btn"
 		:class="{
-			'btn:active': isSelected,
+			'btn(:active)': isSelected,
 			'btn/without-opacity': withOpacity === false,
 			[`btn/${variant}`]: variant,
 		}"
@@ -86,7 +86,7 @@ const isSelected = computeIsSelected(props);
 		opacity: 0.5;
 	}
 
-	.btn\:active svg,
+	.btn\(\:active\) svg,
 	.btn:not(:disabled, .btn\/without-opacity):hover svg:hover {
 		opacity: 1 !important;
 		filter: drop-shadow(0px 0px 4.5px var(--btn-svg-color, currentColor));
@@ -95,7 +95,12 @@ const isSelected = computeIsSelected(props);
 	.btn\/primary {
 		background: var(--btn-primary-bg);
 		color: var(--btn-primary-color);
+		transition: outline 60ms ease-in-out;
+
+		&:focus,
 		&:hover {
+			outline: var(--btn-primary-outline, 3px) solid
+				var(--btn-primary-outline-color, currentColor);
 			background: var(--btn-primary-bg-hover, var(--btn-primary-bg));
 			color: var(--btn-primary-color-hover, var(--btn-primary-color));
 		}
@@ -104,7 +109,12 @@ const isSelected = computeIsSelected(props);
 	.btn\/secondary {
 		background: var(--btn-secondary-bg);
 		color: var(--btn-secondary-color);
+		transition: outline 60ms ease-in-out;
+
+		&:focus,
 		&:hover {
+			outline: var(--btn-secondary-outline, 3px) solid
+				var(--btn-secondary-outline-color, currentColor);
 			background: var(--btn-secondary-bg-hover, var(--btn-secondary-bg));
 			color: var(--btn-secondary-color-hover, var(--btn-secondary-color));
 		}
@@ -113,13 +123,19 @@ const isSelected = computeIsSelected(props);
 	.btn\/danger {
 		background: var(--btn-danger-bg, var(--color-red500));
 		color: var(--btn-danger-color);
+		transition: outline 60ms ease-in-out;
+
 		&[disabled] {
 			color: var(
 				--btn-danger-disabled-color,
 				var(--disabled-color, #aaa)
 			);
 		}
+
+		&:focus,
 		&:hover {
+			outline: var(--btn-danger-outline, 3px) solid
+				var(--btn-danger-outline-color, currentColor);
 			background-color: var(--btn-danger-bg-hover, var(--color-red600));
 			color: var(--btn-danger-color-hover, var(--btn-danger-color));
 		}

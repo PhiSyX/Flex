@@ -10,28 +10,33 @@
 
 import type { Directive } from "vue";
 
-import { createFocusTrap } from "focus-trap";
+import { type FocusTrap, createFocusTrap } from "focus-trap";
 
 /// Directive `v-trap`.
 ///
 /// Utilise la librairie [focus-trap]
-const trap: Directive = {
+const trap: Directive<HTMLElement & { trap?: FocusTrap }> = {
 	mounted(el, binding, _vnode, _pnode) {
 		if (typeof binding.value === "boolean") {
 			if (binding.value) {
-				const trap = createFocusTrap(el, {
+				el.trap = createFocusTrap(el, {
 					escapeDeactivates: false,
 					clickOutsideDeactivates: true,
 				});
-				trap.activate();
+				el.trap.activate();
 			}
 		} else {
-			const trap = createFocusTrap(el, {
+			el.trap = createFocusTrap(el, {
 				escapeDeactivates: false,
 				clickOutsideDeactivates: true,
 			});
-			trap.activate();
+			el.trap.activate();
 		}
+	},
+
+	unmounted(el) {
+		el.trap?.deactivate();
+		el.trap = undefined;
 	},
 };
 

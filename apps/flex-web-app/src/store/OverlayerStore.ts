@@ -22,7 +22,7 @@ export type Layer<D = unknown> = {
 	data?: D;
 	destroyable?: "background" | "manual";
 	event?: Event & { clientX: number; clientY: number };
-	DOMElement?: Element;
+	DOMElement?: HTMLElement;
 	style?: CSSProperties;
 	onClose?: () => void;
 	mousePosition?: Partial<{ top: CSSUnitValue; left: CSSUnitValue }>;
@@ -55,7 +55,7 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 			return;
 		}
 
-		const DOMElement = payload.DOMElement || (payload.event.currentTarget as Element);
+		const DOMElement = payload.DOMElement || (payload.event.currentTarget as HTMLElement);
 
 		if (
 			DOMElement.classList.contains(LAYER_HL_CSS_CLASS) ||
@@ -106,6 +106,7 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 
 		layer.DOMElement?.classList?.remove(LAYER_HL_CSS_CLASS);
 		layer.DOMElement?.classList?.remove(LAYER_HL_CSS_CLASS_ALT);
+		layer.DOMElement?.focus();
 
 		layer.onClose?.call(layers);
 
