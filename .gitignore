@@ -7,3 +7,5 @@ target/
 
 pnpm-lock.yaml
 Cargo.lock
+
+/biome.json
