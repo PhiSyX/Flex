@@ -6,14 +6,14 @@ import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { User } from "~/user/User";
 
 const origin: User = new User({
-	id: "uuid0",
+	id: "a-b-c-d-e" as UUID,
 	host: { cloaked: "localhost" },
 	ident: "PhiSyX",
 	nickname: "PhiSyX",
 });
 
 const origin1: User = new User({
-	id: "uuid1",
+	id: "f-g-h-i-j" as UUID,
 	host: { cloaked: "localhost" },
 	ident: "Ident",
 	nickname: "Nick",

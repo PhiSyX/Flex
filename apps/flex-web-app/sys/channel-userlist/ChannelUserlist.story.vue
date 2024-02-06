@@ -9,19 +9,19 @@ const channelName = "#channel";
 const users = new ChannelUsers();
 
 const origin1: User = new User({
-	id: "uuid0",
+	id: "a-b-c-d-e" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 });
 const origin2: User = new User({
-	id: "uuid1",
+	id: "f-g-h-i-j" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
 });
 const origin3: User = new User({
-	id: "uuid3",
+	id: "k-l-m-n-o" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",

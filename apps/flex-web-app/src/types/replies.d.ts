@@ -13,7 +13,7 @@
 // ---- //
 
 declare interface Origin {
-	id: string;
+	id: UUID;
 	nickname: string;
 	ident: string;
 	host: {
@@ -24,7 +24,7 @@ declare interface Origin {
 
 declare interface ChannelOrigin {
 	access_level: Array<string>;
-	id: string;
+	id: UUID;
 	nickname: string;
 	ident: string;
 	host: {
@@ -42,7 +42,7 @@ declare interface CommandResponsesReplies {
 		nickname: string;
 		ident: string;
 		host: string;
-		tags: { client_id: string };
+		tags: { client_id: UUID };
 	};
 	RPL_YOURHOST: { servername: string; version: string };
 	RPL_CREATED: { date: string };

@@ -4,14 +4,14 @@ import PrivateRoom from "./PrivateRoom.vue";
 import { PrivateNick } from "~/private/PrivateNick";
 
 const origin: User = new User({
-	id: "uuid0",
+	id: "a-b-c-d-e" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "PhiSyX",
 });
 
 const origin1: User = new User({
-	id: "uuid1",
+	id: "k-l-m-n-o" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",

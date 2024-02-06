@@ -30,7 +30,7 @@ type Payload = {
 };
 
 const origin: Origin = {
-	id: "uuid0",
+	id: "a-b-c-d-e" as UUID,
 	host: { cloaked: "localhost" },
 	ident: "ident",
 	nickname: "PhiSyX",
