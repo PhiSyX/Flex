@@ -292,6 +292,39 @@ impl<'a> Socket<'a>
 		self.emit(channel_settings.name(), channel_settings);
 	}
 
+	/// Émet au client courant les paramètres un salon.
+	pub fn emit_channel_settings(
+		&self,
+		target: &str,
+		added: &[ApplyMode<components::mode::SettingsFlags>],
+		removed: &[ApplyMode<components::mode::SettingsFlags>],
+	)
+	{
+		if added.is_empty() && removed.is_empty() {
+			return;
+		}
+
+		use crate::src::chat::features::ModeCommandResponse;
+
+		let origin = Origin::from(self.client());
+
+		let channel_settings = ModeCommandResponse {
+			origin: &origin,
+			tags: ModeCommandResponse::<()>::default_tags(),
+			target,
+			added: added
+				.iter()
+				.map(|mode| (mode.letter(), mode.clone()))
+				.collect(),
+			removed: removed
+				.iter()
+				.map(|mode| (mode.letter(), mode.clone()))
+				.collect(),
+			updated: true,
+		};
+		self.emit(channel_settings.name(), channel_settings);
+	}
+
 	/// Émet au client les réponses liées à la commande /NICK.
 	pub fn emit_nick(&self)
 	{
@@ -351,7 +384,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client les réponses liées à la commande /PUBMSG <channel>
-	pub fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User)
+	pub fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User, external: bool)
 	where
 		User: serde::Serialize,
 	{
@@ -362,6 +395,7 @@ impl<'a> Socket<'a>
 			tags: PubmsgCommandResponse::default_tags(),
 			channel: channel_name,
 			text,
+			external,
 		};
 
 		_ = self.socket().emit(pubmsg_command.name(), &pubmsg_command);

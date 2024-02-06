@@ -119,3 +119,11 @@ impl<T> serde::Serialize for Secret<T>
 		serde_str
 	}
 }
+
+impl Default for Secret<String>
+{
+	fn default() -> Self
+	{
+		Self(Default::default())
+	}
+}

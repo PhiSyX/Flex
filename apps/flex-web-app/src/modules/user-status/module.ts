@@ -12,11 +12,7 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { AwayCommand } from "./command";
-import {
-	ReplyAwayHandler,
-	ReplyNowawayHandler,
-	ReplyUnawayHandler,
-} from "./handler";
+import { ReplyAwayHandler, ReplyNowawayHandler, ReplyUnawayHandler } from "./handler";
 
 // -------------- //
 // Implémentation //

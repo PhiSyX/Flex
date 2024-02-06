@@ -16,6 +16,7 @@ declare interface PubmsgFormData {
 declare interface PubmsgDataResponse {
 	tags: { msgid: string };
 	channel: string;
+	external: boolean;
 	text: string;
 	origin: {
 		access_level?: Array<string>;

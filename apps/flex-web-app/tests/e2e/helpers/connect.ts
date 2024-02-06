@@ -9,7 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Browser, Page } from "@playwright/test";
-import { createTwoUsers, generateRandomWord } from "./context.js";
+import { env } from "process";
+import { createNBrowserPages, generateRandomWord } from "./context.js";
 
 export async function connectChat({
 	page,
@@ -31,11 +32,37 @@ export async function connectUsersToChat(
 	{ browser }: { browser: Browser },
 	opts?: { channels?: string },
 ) {
-	const { user1, user2 } = await createTwoUsers(browser);
-	const nick1 = await connectChat({ page: user1, channels: opts?.channels });
-	const nick2 = await connectChat({ page: user2, channels: opts?.channels });
-	return {
-		user1: { page: user1, nick: nick1 },
-		user2: { page: user2, nick: nick2 },
+	let page1: Page;
+	let page2: Page;
+
+	if (env.CI) {
+		const bCtx1 = await browser.newContext();
+		const bCtx2 = await browser.newContext();
+		page1 = await bCtx1.newPage();
+		page2 = await bCtx2.newPage();
+	} else {
+		const bCtx1 = await browser.newContext();
+		page1 = await bCtx1.newPage();
+		page2 = await bCtx1.newPage();
+	}
+
+	const nick1 = await connectChat({ page: page1, channels: opts?.channels });
+	page2.waitForTimeout(250);
+	const nick2 = await connectChat({ page: page2, channels: opts?.channels });
+	const user1 = { page: page1, nick: nick1 };
+	const user2 = { page: page2, nick: nick2 };
+	return { user1, user2 };
+}
+
+export function connectNUsersToChat(n: number) {
+	let pagesFn = createNBrowserPages(n);
+	return async ({ browser }: { browser: Browser }, opts?: { channels?: string }) => {
+		return Promise.all(
+			(await pagesFn(browser)).map(async (futPage) => {
+				const page = await futPage;
+				const nick = await connectChat({ page, channels: opts?.channels });
+				return { page, nick };
+			}),
+		);
 	};
 }

@@ -17,25 +17,20 @@ import { generateRandomChannel } from "./helpers/context.js";
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
-test("Changer le sujet d'un salon via la commande /TOPIC", async ({
-	browser,
-}) => {
+test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) => {
 	const channelToJoin = generateRandomChannel();
 	const topic = "Mon super topic";
 
 	const { user1: owner, user2: user } = await connectUsersToChat(
 		{ browser },
+		// NOTE: le salon a comme drapeau +t dès la création du salon.
 		{ channels: channelToJoin },
 	);
 
 	// NOTE: Owner a les droits d'édition. Le premier utilisateur arrivé sur un
 	// salon est automatiquement owner du salon.
 
-	await sendMessage(
-		owner.page,
-		channelToJoin,
-		`/topic ${channelToJoin} ${topic}`,
-	);
+	await sendMessage(owner.page, channelToJoin, `/topic ${channelToJoin} ${topic}`);
 
 	await containsMessage(
 		owner.page,
@@ -51,22 +46,43 @@ test("Changer le sujet d'un salon via la commande /TOPIC", async ({
 
 	// NOTE: User, n'a pas les droits d'édition.
 
-	await sendMessage(
-		user.page,
-		channelToJoin,
-		`/topic ${channelToJoin} ${topic}`,
-	);
+	await sendMessage(user.page, channelToJoin, `/topic ${channelToJoin} ${topic} #2`);
 
 	await containsMessage(
 		user.page,
 		channelToJoin,
 		`* ${channelToJoin} :Vous n'êtes pas opérateur sur ce salon`,
 	);
+
+	// NOTE: retrait du drapeau -t topic, l'utilisateur a les droits d'édition.
+	const $ownerChannelRoom = owner.page.locator(
+		`.room\\/channel[data-room="${channelToJoin}"] .room\\/main`,
+	);
+	await $ownerChannelRoom.dblclick();
+	await owner.page.waitForTimeout(250);
+	const $ownerTeleport = owner.page.locator("#channel-settings-layer_teleport");
+	const $moderateSettings = $ownerTeleport
+		.locator("ul li label")
+		.getByText("Seuls les opérateurs peuvent définir un topic (+t)");
+	await $moderateSettings.click();
+	const $ownerBtnSubmit = $ownerTeleport.locator('button[type="submit"]');
+	await $ownerBtnSubmit.click();
+	await containsMessage(owner.page, channelToJoin, `* ${owner.nick} a défini les modes: -t`);
+
+	await sendMessage(user.page, channelToJoin, `/topic ${channelToJoin} ${topic} #2`);
+	await containsMessage(
+		user.page,
+		channelToJoin,
+		`Vous avez mis à jour le sujet du salon ${channelToJoin}: ${topic} #2`,
+	);
+	await containsMessage(
+		owner.page,
+		channelToJoin,
+		`* Topic: ${user.nick} a mis à jour le sujet du salon: ${topic} #2`,
+	);
 });
 
-test("Changer le sujet d'un salon via le champ d'édition du sujet", async ({
-	browser,
-}) => {
+test("Changer le sujet d'un salon via le champ d'édition du sujet", async ({ browser }) => {
 	const channelToJoin = generateRandomChannel();
 	const topic = "Mon super topic";
 

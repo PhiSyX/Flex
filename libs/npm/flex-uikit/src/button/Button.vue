@@ -22,7 +22,7 @@ const isSelected = computeIsSelected(props);
 			'btn/without-opacity': withOpacity === false,
 			[`btn/${variant}`]: variant,
 		}"
-		:type="type"
+		:type="(type as HTMLButtonElement['type'])"
 		@click="handleClickHandler"
 	>
 		<template v-if="position === 'left' && icon">

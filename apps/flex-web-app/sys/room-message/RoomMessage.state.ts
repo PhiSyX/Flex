@@ -33,6 +33,15 @@ export interface Props {
 
 export const computeIsEvent = (props: Props) => computed(() => props.type.startsWith("event:"));
 
+export const computeIsExternalMessage = (props: Props) =>
+	computed(() => {
+		if (props.type === "pubmsg") {
+			const data = props.data as GenericReply<"PUBMSG">;
+			if (data.external) return Some(data.origin);
+		}
+		return None();
+	});
+
 export const computeComponentEventName = (props: Props) =>
 	computed(() => kebabcase(`room:${props.type}`));
 

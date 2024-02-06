@@ -22,6 +22,7 @@ export interface Emits {
 	(evtName: "close-room", origin: Origin | string): void;
 	(evtName: "ignore-user", origin: Origin): void;
 	(evtName: "kick-user", cnick: ChannelNick): void;
+	(evtName: "open-channel-settings", event: Event): void;
 	(evtName: "open-private", origin: Origin): void;
 	(evtName: "select-user", origin: Origin): void;
 	(evtName: "send-message", target: string, message: string): void;
@@ -74,6 +75,13 @@ export function unignoreUser(emit: Emits) {
 		emit("unignore-user", origin);
 	}
 	return unignoreUserHandler;
+}
+
+export function openChannelSettings(emit: Emits) {
+	function openChannelSettingsHandler(event: Event) {
+		emit("open-channel-settings", event);
+	}
+	return openChannelSettingsHandler;
 }
 
 export function openPrivate(emit: Emits) {
