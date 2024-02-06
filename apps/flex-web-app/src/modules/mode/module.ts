@@ -11,6 +11,7 @@
 import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
+import { ModeCommand } from "./command";
 import { ModeHandler } from "./handler";
 
 // -------------- //
@@ -25,19 +26,26 @@ export class ModeModule implements Module<ModeModule> {
 	static NAME = "MODE";
 
 	static create(store: ChatStore): ModeModule {
-		return new ModeModule(new ModeHandler(store));
+		return new ModeModule(new ModeCommand(store), new ModeHandler(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private handler: ModeHandler) {}
+	constructor(
+		private command: ModeCommand,
+		private handler: ModeHandler,
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	input() {}
+
+	send(payload: Command<"MODE">) {
+		this.command.send(payload);
+	}
 
 	listen() {
 		this.handler.listen();

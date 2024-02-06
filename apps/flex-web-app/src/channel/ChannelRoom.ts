@@ -55,6 +55,11 @@ export class ChannelRoom extends Room<"channel"> {
 	kicked = false;
 
 	/**
+	 * Paramètres du salon.
+	 */
+	settings: Set<string> = new Set();
+
+	/**
 	 * Sujet du salon.
 	 */
 	topic = new ChannelTopic();
@@ -101,6 +106,13 @@ export class ChannelRoom extends Room<"channel"> {
 	}
 
 	/**
+	 * Est-ce que l'utilisateur est un opérateur global.
+	 */
+	isUserGlobalOperator(user: User) {
+		return user.isGlobalOperator();
+	}
+
+	/**
 	 * Supprime un utilisateur du salon.
 	 */
 	removeUser(id: string): boolean {
@@ -112,6 +124,16 @@ export class ChannelRoom extends Room<"channel"> {
 	 */
 	setKicked(bool: boolean) {
 		this.kicked = bool;
+	}
+
+	/**
+	 * Définit un paramètre de salon.
+	 */
+	setSettingMode(mode: string) {
+		if (["q", "a", "o", "h", "v"].includes(mode)) {
+			return
+		}
+		this.settings.add(mode);
 	}
 
 	/**
@@ -138,10 +160,10 @@ export class ChannelRoom extends Room<"channel"> {
 	}
 
 	/**
-	 * Est-ce que l'utilisateur est un opérateur global.
+	 * Retire un paramètre de salon.
 	 */
-	isUserGlobalOperator(user: User) {
-		return user.isGlobalOperator();
+	unsetSettingMode(mode: string) {
+		this.settings.delete(mode);
 	}
 
 	/**

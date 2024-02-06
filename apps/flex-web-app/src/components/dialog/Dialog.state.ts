@@ -9,8 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { computed } from "vue";
-import { useOverlayerStore } from "~/store/OverlayerStore";
+import { type Layer, useOverlayerStore } from "~/store/OverlayerStore";
 
 const overlayerStore = useOverlayerStore();
+
+export const getLayer = <T>(name: string) =>
+	computed(() => overlayerStore.layers.get(name) as Layer<T>);
 
 export const hasLayer = (name: string) => computed(() => overlayerStore.layers.has(name));

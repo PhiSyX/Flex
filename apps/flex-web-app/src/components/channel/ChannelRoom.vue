@@ -13,6 +13,7 @@ import {
 	ignoreUserHandler,
 	joinChannelHandler,
 	kickUser,
+	openChannelSettings,
 	openPrivateHandler,
 	sendMessageHandler,
 	sendSetAccessLevel,
@@ -37,6 +38,7 @@ const selectedUser = computeSelectedUser(props);
 const canEditTopic = computeCanEditTopic(props);
 
 const kickUserHandler = kickUser(props);
+const openChannelSettingsHandler = openChannelSettings(props);
 const sendSetAccessLevelHandler = sendSetAccessLevel(props);
 const sendUnsetAccessLevelHandler = sendUnsetAccessLevel(props);
 const toggleSelectedUserHandler = toggleSelectedUser(props);
@@ -58,6 +60,7 @@ const toggleSelectedUserHandler = toggleSelectedUser(props);
 		@close-room="closeRoomHandler"
 		@ignore-user="ignoreUserHandler"
 		@kick-user="kickUserHandler"
+		@open-channel-settings="openChannelSettingsHandler"
 		@open-private="openPrivateHandler"
 		@select-user="toggleSelectedUserHandler"
 		@send-message="sendMessageHandler"

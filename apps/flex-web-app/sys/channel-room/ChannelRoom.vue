@@ -12,6 +12,7 @@ import {
 	setAccessLevel,
 	unignoreUser,
 	unsetAccessLevel,
+openChannelSettings,
 } from "./ChannelRoom.handlers";
 import { useChannelTopic } from "./ChannelRoom.hooks";
 import { type Props, displayUserlist } from "./ChannelRoom.state";
@@ -31,6 +32,7 @@ const changeNickRequestHandler = changeNickRequest(emit);
 const closeRoomHandler = closeRoom(emit);
 const ignoreUserHandler = ignoreUser(emit);
 const kickUserHandler = kickUser(emit);
+const openChannelSettingsHandler = openChannelSettings(emit);
 const openPrivateHandler = openPrivate(emit);
 const selectUserHandler = selectUser(emit);
 const sendMessageHandler = sendMessage(emit, props.name);
@@ -58,6 +60,7 @@ const {
 			@change-nick-request="changeNickRequestHandler"
 			@open-private="openPrivateHandler"
 			@send-message="sendMessageHandler"
+			@dblclick-main="openChannelSettingsHandler"
 		>
 			<template #topic>
 				<input

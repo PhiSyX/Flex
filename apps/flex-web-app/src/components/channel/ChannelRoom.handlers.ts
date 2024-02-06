@@ -55,6 +55,23 @@ export function kickUser(props: Props) {
 	return kickUserHandler;
 }
 
+export function openChannelSettings(props: Props) {
+	function openChannelSettingsHandler(_: Event) {
+		const channelSettingsLayer = "channel-settings-layer";
+		overlayerStore.create({
+			id: channelSettingsLayer,
+			destroyable: "manual",
+			centered: true,
+			data: {
+				room: props.room,
+				cnick: props.room.getUser(chatStore.store.me().id),
+			},
+		});
+	}
+
+	return openChannelSettingsHandler;
+}
+
 export function sendMessageHandler(name: string, message: string) {
 	chatStore.sendMessage(name, message);
 }

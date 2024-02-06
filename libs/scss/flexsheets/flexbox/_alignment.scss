@@ -2,6 +2,9 @@
 
 @mixin use-flexbox-alignment($options...) {
 	$classes: (
+		"align-i:base": (
+			align-items: baseline,
+		),
 		"align-i:center": (
 			align-items: center,
 		),

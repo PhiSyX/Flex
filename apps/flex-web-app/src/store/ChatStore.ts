@@ -588,6 +588,16 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	const store = ChatStore.default();
 
 	/**
+	 * Applique les paramètres d'un salon.
+	 */
+	function applyChannelSettings(target: string, modesSettings: Command<"MODE">["modes"]) {
+		const moduleUnsafe: CommandInterface<"MODE"> | undefined = store.modules.get("MODE");
+		const maybeModule = Option.from(moduleUnsafe);
+		const module = maybeModule.expect("Récupération du module `MODE`");
+		module?.send({ target, modes: modesSettings });
+	}
+
+	/**
 	 * Change le pseudonyme de l'utilisateur actuel.
 	 */
 	function changeNick(newNick: string) {
@@ -929,6 +939,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	return {
 		store,
 
+		applyChannelSettings,
 		changeNick,
 		changeRoom,
 		channelList,

@@ -36,6 +36,7 @@
 @import "./base";
 
 @include fx.use(
+	"align-i:base",
 	"align-i:center",
 	"align-jc:center",
 	"align-ji:center",
@@ -161,6 +162,7 @@
 		values: (
 			0,
 			1,
+			2,
 		),
 	),
 	(
@@ -190,6 +192,8 @@
 	(
 		className: height,
 		values: (
+			1,
+			2,
 			3,
 			4,
 			6,
@@ -200,6 +204,8 @@
 	(
 		className: size,
 		values: (
+			0,
+			2,
 			3,
 			4,
 		),
