@@ -88,12 +88,20 @@ impl ChatApplication
 		// dans le salon n'est pas bannie.
 
 		let Some(member) = channel.member(client_socket.cid()) else {
+			if self.is_client_global_operator(client_socket) {
+				return ChannelPermissionWrite::Bypass;
+			}
+
 			if moderate_flag || no_external_messages_flag {
 				return ChannelPermissionWrite::No;
 			}
 
 			return ChannelPermissionWrite::Bypass;
 		};
+
+		if self.is_client_global_operator(client_socket) {
+			return ChannelPermissionWrite::Yes(member.clone());
+		}
 
 		if moderate_flag
 			&& member
