@@ -17,5 +17,7 @@ command_response! {
 		channel: &'a str,
 		/// Le texte.
 		text: &'a str,
+		/// Message venant de l'extérieur?
+		external: bool,
 	}
 }

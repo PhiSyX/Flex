@@ -43,10 +43,10 @@ impl PubmsgHandler
 				| ChannelPermissionWrite::Yes(channel_nick) => {
 					let channel_member =
 						ChannelNickClient::from((client_socket.client(), channel_nick));
-					client_socket.emit_pubmsg(channel, &data.text, channel_member);
+					client_socket.emit_pubmsg(channel, &data.text, channel_member, false);
 				}
 				| ChannelPermissionWrite::Bypass => {
-					client_socket.emit_pubmsg(channel, &data.text, client_socket.user());
+					client_socket.emit_pubmsg(channel, &data.text, client_socket.user(), true);
 				}
 				| ChannelPermissionWrite::No => {
 					client_socket.send_err_cannotsendtochan(channel);

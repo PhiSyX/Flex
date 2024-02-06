@@ -8,6 +8,7 @@ import {
 	computeIsEvent,
 	computeChannelNick,
 	computePrivateNick,
+	computeIsExternalMessage,
 } from "./RoomMessage.state";
 
 import Match from "#/sys/match/Match.vue";
@@ -37,7 +38,7 @@ const componentEventExists = computeComponentEventExists(
 	eventsComponents
 );
 const componentEventName = computeComponentEventName(props);
-
+const isExternalMessage = computeIsExternalMessage(props);
 const maybeChannelNick = computeChannelNick(props);
 const maybePrivateNick = computePrivateNick(props);
 
@@ -53,6 +54,7 @@ const isEventOrError = computed(() => {
 	<li
 		:id="id"
 		:data-archived="archived"
+		:data-external="isExternalMessage.is_some()"
 		:data-type="type"
 		:data-myself="isMe"
 		class="room/echo [ d-ib ]"
@@ -67,6 +69,15 @@ const isEventOrError = computed(() => {
 			</time>
 
 			<template v-if="isEventOrError"> * </template>
+			<Match
+				v-else-if="isExternalMessage.is_some()"
+				:maybe="isExternalMessage"
+			>
+				<template #some="{ data: origin }">
+					<em>(extern)</em>
+					<span>-&lt; {{ origin.nickname }} &gt;-</span>
+				</template>
+			</Match>
 			<template v-else>
 				<Match :maybe="maybeChannelNick">
 					<template #some="{ data: channelNick }">
@@ -113,6 +124,10 @@ const isEventOrError = computed(() => {
 		&:hover {
 			opacity: 0.75;
 		}
+	}
+
+	&[data-external="true"] em {
+		color: var(--room-message-error-color);
 	}
 
 	&[data-type*="error"] {

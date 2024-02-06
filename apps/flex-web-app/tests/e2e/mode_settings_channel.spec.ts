@@ -85,3 +85,47 @@ test("Paramètre m: moderate", async ({ browser }) => {
 	await notContainsMessage(vip.page, channelToJoin, `Hello World #4`);
 });
 
+test("Paramètre n: no external messages", async ({ browser }) => {
+	const channelToJoin = generateRandomChannel();
+
+	const [owner, globop, user] = await connectNUsersToChat(3)({ browser });
+
+	await sendMessageInActiveRoom(globop.page, "/oper test-globop test");
+
+	// NOTE: Owner crée le salon, par le défaut le +n est définit.
+	await sendMessageInActiveRoom(owner.page, `/join ${channelToJoin}`);
+
+	// NOTE: GlobOp envoie un message au salon en +n
+	await sendMessageInActiveRoom(globop.page, `/pubmsg ${channelToJoin} Hello World #1`);
+	const r1 = new RegExp(`\(extern\).*-.*${globop.nick}.*-.*Hello World #1`);
+	await containsMessage(owner.page, channelToJoin, r1);
+
+	// NOTE: User ne peut pas envoyer de message s'il n'est pas présent dans le
+	// salon.
+	await sendMessageInActiveRoom(user.page, `/pubmsg ${channelToJoin} Hello World #2`);
+	await containsMessageInActiveRoom(
+		user.page,
+		`* ${channelToJoin} :Impossible d'envoyer un message au salon`,
+	);
+
+	// NOTE: Owner change le paramètre en -n.
+	const $ownerChannelRoom = owner.page.locator(
+		`.room\\/channel[data-room="${channelToJoin}"] .room\\/main`,
+	);
+	await $ownerChannelRoom.dblclick();
+	await owner.page.waitForTimeout(250);
+	const $ownerTeleport = owner.page.locator("#channel-settings-layer_teleport");
+	const $moderateSettings = $ownerTeleport
+		.locator("ul li label")
+		.getByText("Pas de messages à partir de l'extérieur (+n)");
+	await $moderateSettings.click();
+	const $ownerBtnSubmit = $ownerTeleport.locator('button[type="submit"]');
+	await $ownerBtnSubmit.click();
+	await containsMessage(owner.page, channelToJoin, `* ${owner.nick} a défini les modes: -n`);
+
+	// NOTE: User PEUT désormais envoyer de message s'il n'est pas présent dans
+	// le salon.
+	await sendMessageInActiveRoom(user.page, `/pubmsg ${channelToJoin} Hello World #3`);
+	const r2 = new RegExp(`\(extern\).*-.*${user.nick}.*-.*Hello World #3`);
+	await containsMessage(owner.page, channelToJoin, r2);
+});

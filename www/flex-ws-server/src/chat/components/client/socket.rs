@@ -384,7 +384,7 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client les réponses liées à la commande /PUBMSG <channel>
-	pub fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User)
+	pub fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User, external: bool)
 	where
 		User: serde::Serialize,
 	{
@@ -395,6 +395,7 @@ impl<'a> Socket<'a>
 			tags: PubmsgCommandResponse::default_tags(),
 			channel: channel_name,
 			text,
+			external,
 		};
 
 		_ = self.socket().emit(pubmsg_command.name(), &pubmsg_command);
