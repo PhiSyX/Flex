@@ -28,6 +28,14 @@ function submitHandler(modesSettings: Command<"MODE">["modes"]) {
 	);
 	closeChannelSettingsLayerHandler();
 }
+
+function updateTopicHandler(topic?: string) {
+	if (channelSettingsLayer.value.data!.room.topic.get() === topic) {
+		return;
+	}
+
+	chatStore.updateTopic(channelSettingsLayer.value.data!.room.name, topic);
+}
 </script>
 
 <template>
@@ -39,7 +47,9 @@ function submitHandler(modesSettings: Command<"MODE">["modes"]) {
 			<template #some="{ data: cnick }">
 				<ChannelSettingsDialog
 					:layer-name="LAYER_NAME"
-					@close="closeChannelSettingsLayerHandler"
+					:can-edit-topic="
+						channelSettingsLayer.data.room.canEditTopic(cnick)
+					"
 					:channel="channelSettingsLayer.data.room.name"
 					:settings="
 						Array.from(channelSettingsLayer.data.room.settings)
@@ -50,7 +60,10 @@ function submitHandler(modesSettings: Command<"MODE">["modes"]) {
 							cnick
 						)
 					"
+					:topics="channelSettingsLayer.data.room.topic.history"
+					@close="closeChannelSettingsLayerHandler"
 					@submit="submitHandler"
+					@update-topic="updateTopicHandler"
 				/>
 			</template>
 		</Match>

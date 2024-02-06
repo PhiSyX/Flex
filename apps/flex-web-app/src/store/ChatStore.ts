@@ -929,7 +929,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet la commande /TOPIC vers le serveur.
 	 */
-	function updateTopic(channelName: string, topic: string) {
+	function updateTopic(channelName: string, topic?: string) {
 		const moduleUnsafe: CommandInterface<"TOPIC"> | undefined = store.modules.get("TOPIC");
 		const maybeModule = Option.from(moduleUnsafe);
 		const module = maybeModule.expect("Récupération du module `TOPIC`");

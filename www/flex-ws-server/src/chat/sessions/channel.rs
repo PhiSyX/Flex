@@ -824,6 +824,14 @@ impl ChannelsSession
 			return Ok(());
 		};
 
+		// NOTE(phisyx): tout le monde peut éditer le sujet du salon si le
+		//               drapeau topic n'est pas définit.
+		if !topic_flag {
+			return Ok(());
+		}
+
+		// NOTE(phisyx): seuls les utilisateurs avec un niveau d'accès minimal à
+		// 				 HalfOperator peuvent éditer le sujet du salon.
 		let level_access = channel_nick
 			.access_level()
 			.iter()

@@ -131,7 +131,7 @@ export class ChannelRoom extends Room<"channel"> {
 	 */
 	setSettingMode(mode: string) {
 		if (["q", "a", "o", "h", "v"].includes(mode)) {
-			return
+			return;
 		}
 		this.settings.add(mode);
 	}
