@@ -10,15 +10,12 @@
 
 import { Browser, Page } from "@playwright/test";
 
-export async function createTwoUsers(browser: Browser): Promise<{
-	user1: Page;
-	user2: Page;
-}> {
-	const user1Context = await browser.newContext();
-	const user2Context = await browser.newContext();
-	return {
-		user1: await user1Context.newPage(),
-		user2: await user2Context.newPage(),
+export function createNBrowserPages(n: number) {
+	return async (browser: Browser) => {
+		const pages: Array<Promise<Page>> = Array.from({ length: n }, () =>
+			browser.newContext().then((ctx) => ctx.newPage()),
+		);
+		return pages;
 	};
 }
 

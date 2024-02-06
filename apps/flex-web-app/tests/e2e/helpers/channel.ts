@@ -10,15 +10,9 @@
 
 import { Locator, Page, expect } from "@playwright/test";
 
-export async function sendMessage(
-	page: Page,
-	channel: string,
-	message: string,
-) {
+export async function sendMessage(page: Page, channel: string, message: string) {
 	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
-	const $formRoom = $channelRoom.locator(
-		`form[action='/msg/${encodeURIComponent(channel)}']`,
-	);
+	const $formRoom = $channelRoom.locator(`form[action='/msg/${encodeURIComponent(channel)}']`);
 	const $inputRoom = $formRoom.locator("input[type='text']");
 	await $inputRoom.fill(message);
 	const $btnSubmit = $formRoom.locator("button[type='submit']");
@@ -26,21 +20,13 @@ export async function sendMessage(
 	await page.waitForTimeout(250);
 }
 
-export async function containsMessage(
-	page: Page,
-	channel: string,
-	message: string,
-) {
+export async function containsMessage(page: Page, channel: string, message: string | RegExp) {
 	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
 	const $channelMain = $channelRoom.locator(".room\\/main");
 	await expect($channelMain).toContainText(message);
 }
 
-export async function notContainsMessage(
-	page: Page,
-	channel: string,
-	message: string,
-) {
+export async function notContainsMessage(page: Page, channel: string, message: string) {
 	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
 	const $channelMain = $channelRoom.locator(".room\\/main");
 	await expect($channelMain).not.toContainText(message);
