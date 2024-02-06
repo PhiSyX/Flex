@@ -8,8 +8,10 @@ import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
 			<ChannelSettingsDialog
 				layer-name="layer"
 				channel="#chan"
+				:can-edit-topic="false"
 				:is-channel-operator="false"
 				:is-global-operator="false"
+				:topics="new Set()"
 				:settings="['s', 'm']"
 			/>
 		</Variant>
@@ -18,9 +20,11 @@ import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
 			<ChannelSettingsDialog
 				layer-name="layer"
 				channel="#chan"
+				:can-edit-topic="true"
 				:is-channel-operator="true"
 				:is-global-operator="true"
 				:settings="['n', 't']"
+				:topics="new Set()"
 			/>
 		</Variant>
 	</Story>
