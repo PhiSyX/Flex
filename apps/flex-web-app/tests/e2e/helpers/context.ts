@@ -9,12 +9,14 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Browser, Page } from "@playwright/test";
+import { env } from "process";
 
 export function createNBrowserPages(n: number) {
 	return async (browser: Browser) => {
-		const pages: Array<Promise<Page>> = Array.from({ length: n }, () =>
-			browser.newContext().then((ctx) => ctx.newPage()),
-		);
+		const bCtx = browser.newContext();
+		const pages: Array<Promise<Page>> = Array.from({ length: n }, async () => {
+			return (env.CI ? browser.newContext() : bCtx).then((ctx) => ctx.newPage());
+		});
 		return pages;
 	};
 }
