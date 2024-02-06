@@ -57,8 +57,9 @@ const isEventOrError = computed(() => {
 		:data-external="isExternalMessage.is_some()"
 		:data-type="type"
 		:data-myself="isMe"
-		class="room/echo [ d-ib ]"
+		class="room/echo [ d-i max-w:max ]"
 		:title="archived ? `Il s'agit d'un message archivé.` : undefined"
+		@dblclick.stop
 	>
 		<template v-if="componentEventExists && isEvent">
 			<component :is="componentEventName" v-bind="props" />

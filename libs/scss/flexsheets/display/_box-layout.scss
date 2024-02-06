@@ -2,6 +2,9 @@
 
 @mixin use-box-layout($options...) {
 	$classes: (
+		"d-i": (
+			display: inline,
+		),
 		"d-b": (
 			display: block,
 		),
