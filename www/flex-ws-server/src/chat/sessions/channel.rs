@@ -516,6 +516,41 @@ impl ChatApplication
 		)
 	}
 
+	/// Définit un nouveau mode de salon.
+	pub fn set_settings_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel: channel::ChannelIDRef,
+		flag: channel::mode::SettingsFlags,
+	) -> Option<ApplyMode<channel::mode::SettingsFlags>>
+	{
+		let Some(mut channel) = self.channels.get_mut(channel) else {
+			client_socket.send_err_nosuchchannel(channel);
+			return None;
+		};
+
+		channel
+			.modes_settings
+			.set(ApplyMode::new(flag).with_update_by(&client_socket.user().nickname))
+	}
+
+	/// Retire un mode de salon existant.
+	pub fn unset_settings_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel: channel::ChannelIDRef,
+		flag: channel::mode::SettingsFlags,
+	) -> Option<ApplyMode<channel::mode::SettingsFlags>>
+	{
+		let Some(mut channel) = self.channels.get_mut(channel) else {
+			client_socket.send_err_nosuchchannel(channel);
+			return None;
+		};
+		channel
+			.modes_settings
+			.unset(ApplyMode::new(flag).with_update_by(&client_socket.user().nickname))
+	}
+
 	/// Met à jour les niveaux d'accès d'un client sur un salon.
 	pub fn update_client_access_level_on_channel(
 		&self,
