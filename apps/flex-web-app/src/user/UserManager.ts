@@ -148,8 +148,8 @@ export class UserManager {
 		const foundUser = this._users.get(user.id);
 
 		if (foundUser) {
-			foundUser.away = user.away;
-			foundUser.channels = user.channels;
+			foundUser.away ||= user.away;
+			foundUser.channels = new Set([...foundUser.channels, ...user.channels]);
 			foundUser.host = user.host;
 			foundUser.ident = user.ident;
 			foundUser.nickname = user.nickname;

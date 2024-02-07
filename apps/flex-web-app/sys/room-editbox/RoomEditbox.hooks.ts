@@ -143,15 +143,23 @@ export function useAutocompletion(props: Props) {
 		return completionList.filter((item) => !item.toLowerCase().indexOf(word.toLowerCase()));
 	}
 
+	function submitHandler() {
+		positionSuggestion.value = -1;
+		positionWord.value = 0;
+		suggestions.value = [];
+		suggestionInput.value = "";
+	}
+
 	return {
 		applySuggestionHandler,
 		autocompletionInputHandler: inputHandler,
 		autocompletionKeydownHandler: keydownHandler,
+		autocompletionSubmitHandler: submitHandler,
 		suggestionInput,
 	};
 }
 
-export function useInputHistory(props: Props, onSubmit: (props: Props) => () => void) {
+export function useInputHistory(props: Props) {
 	const positionArrow = ref(0);
 
 	function keydownHandler(evt: KeyboardEvent) {
@@ -171,7 +179,6 @@ export function useInputHistory(props: Props, onSubmit: (props: Props) => () => 
 	}
 
 	function submitHandler() {
-		onSubmit(props)();
 		positionArrow.value = 0;
 	}
 
@@ -189,6 +196,6 @@ export function useInputHistory(props: Props, onSubmit: (props: Props) => () => 
 
 	return {
 		historyKeydownHandler: keydownHandler,
-		submitHandler,
+		historySubmitHandler: submitHandler,
 	};
 }

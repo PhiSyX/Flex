@@ -8,36 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Props, inputModel } from "./RoomEditbox.state";
+import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateRoom } from "~/private/PrivateRoom";
+import { ChatStore } from "~/store/ChatStore";
+import { User } from "~/user/User";
 
-// ---- //
-// Type //
-// ---- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export interface Emits {
-	(evtName: "change-nick-request", event: MouseEvent): void;
-	(evtName: "submit", inputModel: string): void;
-}
+export class QueryCommand {
+	constructor(private store: ChatStore) {}
 
-// -------- //
-// Handlers //
-// -------- //
+	handle(roomName: string) {
+		const maybeUser = this.store.userManager().findByNickname(roomName);
+		if (maybeUser.is_none()) return;
+		const user = maybeUser.unwrap();
 
-export const onSubmit = (emit: Emits, props: Props) => {
-	function onSubmitHandler() {
-		if (props.disableInput || inputModel.value.length === 0) {
-			return;
-		}
-		emit("submit", inputModel.value);
-		inputModel.value = "";
+		const room = this.store.roomManager().getOrInsert(user.id, () => {
+			const priv = new PrivateRoom(user.nickname).withID(user.id);
+			priv.addParticipant(new PrivateNick(new User(this.store.me())).withIsMe(true));
+			priv.addParticipant(new PrivateNick(user));
+			return priv;
+		});
+
+		room.unsetTotalUnreadEvents();
+		room.unsetTotalUnreadMessages();
+
+		this.store.roomManager().setCurrent(room.id());
 	}
-
-	return onSubmitHandler;
-};
-
-export function changeNick(emit: Emits) {
-	function changeNickHandler(event: MouseEvent) {
-		emit("change-nick-request", event);
-	}
-	return changeNickHandler;
 }

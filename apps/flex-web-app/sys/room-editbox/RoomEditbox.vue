@@ -22,16 +22,20 @@ const emit = defineEmits<Emits>();
 const formAction = computeFormAction(props);
 
 const changeNickHandler = changeNick(emit);
-const { historyKeydownHandler, submitHandler } = useInputHistory(
-	props,
-	onSubmit(emit)
-);
+const { historyKeydownHandler, historySubmitHandler } = useInputHistory(props);
 const {
 	applySuggestionHandler,
 	autocompletionInputHandler,
 	autocompletionKeydownHandler,
+	autocompletionSubmitHandler,
 	suggestionInput,
 } = useAutocompletion(props);
+
+function submitHandler() {
+	historySubmitHandler();
+	autocompletionSubmitHandler();
+	onSubmit(emit, props)();
+}
 
 onActivated(() => {
 	$input.value?.focus();
@@ -62,7 +66,7 @@ onActivated(() => {
 					:disabled="true"
 					:placeholder="suggestionInput"
 					type="search"
-					class="[ pos-a:full input:reset h:full py=1 ]"
+					class="[ pos-a:full input:reset size:full py=1 ]"
 				/>
 
 				<input
@@ -71,7 +75,7 @@ onActivated(() => {
 					:disabled="disableInput"
 					:placeholder="placeholder"
 					type="text"
-					class="[ input:reset h:full w:full py=1 ]"
+					class="[ input:reset size:full py=1 ]"
 					@keydown.down="historyKeydownHandler"
 					@keydown.up="historyKeydownHandler"
 					@keydown="autocompletionKeydownHandler"

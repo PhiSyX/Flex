@@ -60,6 +60,7 @@ const OperModule = () => import("~/modules/oper/module");
 const PartModule = () => import("~/modules/part/module");
 const PrivmsgModule = () => import("~/modules/privmsg/module");
 const PubmsgModule = () => import("~/modules/pubmsg/module");
+const QueryModule = () => import("~/modules/query/module");
 const QuitModule = () => import("~/modules/quit/module");
 const SilenceModule = () => import("~/modules/silence/module");
 const TopicModule = () => import("~/modules/topic/module");
@@ -119,6 +120,7 @@ export class ChatStore {
 			.add(PartModule)
 			.add(PrivmsgModule)
 			.add(PubmsgModule)
+			.add(QueryModule)
 			.add(QuitModule)
 			.add(SilenceModule)
 			.add(TopicModule);
@@ -504,7 +506,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Toutes les commandes basées sur les noms de modules.
 	 */
 	function allCommands() {
-		return Array.from(store.moduleManager().modules().keys(), (k) => `/${k.toLowerCase()}`).sort();
+		return Array.from(
+			store.moduleManager().modules().keys(),
+			(k) => `/${k.toLowerCase()}`,
+		).sort();
 	}
 
 	/*

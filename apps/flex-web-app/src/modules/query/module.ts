@@ -8,36 +8,42 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Props, inputModel } from "./RoomEditbox.state";
+import { ChatStore } from "~/store/ChatStore";
 
-// ---- //
-// Type //
-// ---- //
+import { Module } from "../interface";
+import { QueryCommand } from "./command";
 
-export interface Emits {
-	(evtName: "change-nick-request", event: MouseEvent): void;
-	(evtName: "submit", inputModel: string): void;
-}
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// -------- //
-// Handlers //
-// -------- //
+export class QueryModule implements Module<QueryModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
 
-export const onSubmit = (emit: Emits, props: Props) => {
-	function onSubmitHandler() {
-		if (props.disableInput || inputModel.value.length === 0) {
-			return;
+	static NAME = "QUERY";
+
+	static create(store: ChatStore): QueryModule {
+		return new QueryModule(new QueryCommand(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: QueryCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(__: string, nicknamesRaw?: string) {
+		for (const nickname of nicknamesRaw?.split(",") || []) {
+			this.command.handle(nickname);
 		}
-		emit("submit", inputModel.value);
-		inputModel.value = "";
 	}
 
-	return onSubmitHandler;
-};
+	send() {}
 
-export function changeNick(emit: Emits) {
-	function changeNickHandler(event: MouseEvent) {
-		emit("change-nick-request", event);
-	}
-	return changeNickHandler;
+	listen() {}
 }
