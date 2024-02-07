@@ -27,8 +27,8 @@ export function useOverlayer() {
 		}
 	}
 
-	function keydownHandler() {
-		overlayerStore.destroyAll();
+	function keydownHandler(evt: KeyboardEvent) {
+		if (evt.code === "Escape") overlayerStore.destroyAll();
 	}
 
 	function resizeHandler() {
