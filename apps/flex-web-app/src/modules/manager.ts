@@ -8,42 +8,46 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+import { Option } from "@phisyx/flex-safety";
+import { CommandInterface, ModuleInterface } from "./interface";
 
-// -------------- //
-// Implémentation //
-// -------------- //
+export type ModuleID = Opaque<string, "ModuleID">;
 
-export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> {
-	constructor(private store: ChatStore) {}
+export class ModuleManager {
+	private _sets: Set<() => Promise<unknown>> = new Set();
+	private _maps: Map<ModuleID, { listen(): void }> = new Map();
 
-	listen() {
-		this.store.once("RPL_WELCOME", (data) => {
-			this.handle(data, {
-				channels: this.store.getAutoJoinChannels(),
-			});
-		});
+	get size() {
+		return this._sets.size;
 	}
 
-	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<string> }) {
-		const { channels } = payload;
+	add(module: () => Promise<unknown>): Set<() => Promise<unknown>> {
+		return this._sets.add(module);
+	}
 
-		this.store.setConnected(true);
-		this.store.setClientID(data.tags.client_id);
-		this.store.setMe({
-			id: data.tags.client_id,
-			nickname: data.nickname,
-			host: { cloaked: data.host },
-			ident: data.ident,
-		});
+	get<T extends CommandsNames = CommandsNames>(
+		moduleID: T,
+	): Option<ModuleInterface & CommandInterface<T>> {
+		return Option.from(
+			this._maps.get(moduleID as ModuleID) as
+				| (ModuleInterface & CommandInterface<T>)
+				| undefined,
+		);
+	}
 
-		const networkRoom = this.store.network();
-		networkRoom.addConnectEvent(data, data.message);
+	set(moduleID: string, module: ModuleInterface & CommandInterface) {
+		return this._maps.set(moduleID as ModuleID, module);
+	}
 
-		const module = this.store
-			.moduleManager()
-			.get("JOIN")
-			.expect("Récupération du module `JOIN`");
-		module.send({ channels });
+	free() {
+		this._sets.clear();
+	}
+
+	sets() {
+		return this._sets;
+	}
+
+	modules() {
+		return this._maps;
 	}
 }

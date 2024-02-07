@@ -21,7 +21,9 @@ import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 
+import { HandlerManager } from "~/handlers/manager";
 import { CommandInterface, Module } from "~/modules/interface";
+import { ModuleManager } from "~/modules/manager";
 import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
@@ -89,7 +91,7 @@ export class ChatStore {
 	static default(): ChatStore {
 		const self = reactive(new ChatStore()) as ChatStore;
 
-		self.handlersSets
+		self._handlerManager
 			.add(ReplyCreatedHandler)
 			.add(ReplyYourhostHandler)
 			.add(ReplyWelcomeHandler)
@@ -103,7 +105,7 @@ export class ChatStore {
 			.add(ErrorNotonchannelHandler)
 			.add(ErrorUsernotinchannelHandler);
 
-		self.modulesSets
+		self._moduleManager
 			.add(AccessLevelModule)
 			.add(AwayModule)
 			.add(ClearModule)
@@ -150,11 +152,8 @@ export class ChatStore {
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
 	private _userManager: UserManager = new UserManager();
 
-	private handlersSets: Set<() => Promise<unknown>> = new Set();
-	private modulesSets: Set<() => Promise<unknown>> = new Set();
-
-	public handlers: Map<string, SocketEventHandler> = new Map();
-	public modules: Map<CommandsNames, Module & CommandInterface> = new Map();
+	private _handlerManager = new HandlerManager();
+	private _moduleManager = new ModuleManager();
 
 	// ------- //
 	// Méthode //
@@ -269,7 +268,7 @@ export class ChatStore {
 	 * Charge tous les modules du Chat.
 	 */
 	async loadAllModules() {
-		let totalLoaded = this.handlersSets.size + this.modulesSets.size;
+		let totalLoaded = this._handlerManager.size + this._moduleManager.size;
 		let loaded = 0;
 
 		type LayerData = {
@@ -285,8 +284,9 @@ export class ChatStore {
 			data: { loaded, totalLoaded },
 		});
 
-		totalLoaded = this.handlersSets.size;
-		for (const handler of this.handlersSets) {
+		totalLoaded = this._handlerManager.size;
+
+		for (const handler of this._handlerManager.sets()) {
 			const handlerCtors = (await handler()) as Record<
 				string,
 				{ new (store: ChatStore): SocketEventHandler }
@@ -299,7 +299,7 @@ export class ChatStore {
 			}
 
 			for (const [handlerName, handlerCtor] of handlers) {
-				this.handlers.set(handlerName, new handlerCtor(this));
+				this._handlerManager.set(handlerName, new handlerCtor(this));
 
 				loaded += 1;
 
@@ -311,8 +311,8 @@ export class ChatStore {
 			}
 		}
 
-		totalLoaded += this.modulesSets.size;
-		for (const module of this.modulesSets) {
+		totalLoaded += this._moduleManager.size;
+		for (const module of this.moduleManager().sets()) {
 			const moduleCtors = (await module()) as Record<
 				string,
 				{
@@ -330,10 +330,7 @@ export class ChatStore {
 
 			for (const [moduleName, moduleCtor] of modules) {
 				console.info("Le module « %s » est maintenant en écoute.", moduleName);
-				this.modules.set(
-					moduleCtor.NAME.toUpperCase() as CommandsNames,
-					moduleCtor.create(this),
-				);
+				this.moduleManager().set(moduleCtor.NAME.toUpperCase(), moduleCtor.create(this));
 
 				loaded += 1;
 
@@ -345,6 +342,8 @@ export class ChatStore {
 			}
 		}
 
+		this._handlerManager.free();
+		this._moduleManager.free();
 		this.overlayer.destroy("load-all-modules");
 	}
 
@@ -353,6 +352,20 @@ export class ChatStore {
 	 */
 	me(): Origin {
 		return this._client.expect("Le client courant connecté");
+	}
+
+	/**
+	 * Gestion des handlers.
+	 */
+	handlerManager(): HandlerManager {
+		return this._handlerManager;
+	}
+
+	/**
+	 * Gestion des modules.
+	 */
+	moduleManager(): ModuleManager {
+		return this._moduleManager;
 	}
 
 	/**
@@ -469,6 +482,9 @@ export class ChatStore {
 		room.users.unselect(origin.id);
 	}
 
+	/**
+	 * Gestion des utilisateurs.
+	 */
 	userManager(): UserManager {
 		return this._userManager;
 	}
@@ -488,19 +504,15 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Applique les paramètres d'un salon.
 	 */
 	function applyChannelSettings(target: string, modesSettings: Command<"MODE">["modes"]) {
-		const moduleUnsafe: CommandInterface<"MODE"> | undefined = store.modules.get("MODE");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `MODE`");
-		module?.send({ target, modes: modesSettings });
+		const module = store.moduleManager().get("MODE").expect("Récupération du module `MODE`");
+		module.send({ target, modes: modesSettings });
 	}
 
 	/**
 	 * Change le pseudonyme de l'utilisateur actuel.
 	 */
 	function changeNick(newNick: string) {
-		const moduleUnsafe: CommandInterface<"NICK"> | undefined = store.modules.get("NICK");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `NICK`");
+		const module = store.moduleManager().get("NICK").expect("Récupération du module `NICK`");
 		module?.send({ nickname: newNick });
 	}
 
@@ -533,9 +545,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function channelList(channels?: Array<string>) {
 		changeRoom(ChannelListCustomRoom.ID);
-		const moduleUnsafe: CommandInterface<"LIST"> | undefined = store.modules.get("LIST");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `LIST`");
+		const module = store.moduleManager().get("LIST").expect("Récupération du module `LIST`");
 		module?.send({ channels });
 	}
 
@@ -558,14 +568,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			roomID = target.id;
 		}
 
-		if (roomID.startsWith("#")) {
-			const moduleUnsafe: CommandInterface<"PART"> | undefined = store.modules.get("PART");
-			const maybeModule = Option.from(moduleUnsafe);
-			const module = maybeModule.expect("Récupération du module `PART`");
-			module.send({ channels: [roomID], message });
-		} else {
+		if (!roomID.startsWith("#")) {
 			store.roomManager().remove(roomID);
+			return;
 		}
+
+		const module = store.moduleManager().get("PART").expect("Récupération du module `PART`");
+		module.send({ channels: [roomID], message });
 	}
 
 	/**
@@ -576,10 +585,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		store.connectWebsocket(connectUserInfo.websocketServerURL);
 
 		store.websocket().once("connect", () => {
-			for (const [_, handler] of store.handlers) {
+			for (const [_, handler] of store.handlerManager().handlers()) {
 				handler.listen();
 			}
-			for (const [_, module] of store.modules) {
+			for (const [_, module] of store.moduleManager().modules()) {
 				module.listen();
 			}
 
@@ -610,9 +619,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /SILENCE +nickname vers le serveur.
 	 */
 	function ignoreUser(nickname: string) {
-		const moduleUnsafe: CommandInterface<"SILENCE"> | undefined = store.modules.get("SILENCE");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `SILENCE`");
+		const module = store
+			.moduleManager()
+			.get("SILENCE")
+			.expect("Récupération du module `SILENCE`");
 		module.send({ nickname: `+${nickname}` });
 	}
 
@@ -620,9 +630,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /JOIN vers le serveur.
 	 */
 	function joinChannel(channelsRaw: string, keysRaw?: string) {
-		const moduleUnsafe: CommandInterface<"JOIN"> | undefined = store.modules.get("JOIN");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `JOIN`");
+		const module = store.moduleManager().get("JOIN").expect("Récupération du module `JOIN`");
 		const channels = channelsRaw.split(",");
 		const keys = keysRaw?.split(",");
 		module.send({ channels, keys });
@@ -632,14 +640,8 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /KICK vers le serveur.
 	 */
 	function kickUser(channel: ChannelRoom, cnick: ChannelNick, comment = "Kick.") {
-		const moduleUnsafe: CommandInterface<"KICK"> | undefined = store.modules.get("KICK");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `KICK`");
-		module.send({
-			channels: [channel.name],
-			knicks: [cnick.nickname],
-			comment,
-		});
+		const module = store.moduleManager().get("KICK").expect("Récupération du module `KICK`");
+		module.send({ channels: [channel.name], knicks: [cnick.nickname], comment });
 	}
 
 	/**
@@ -714,11 +716,17 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			const words = message.split(" ");
 
 			if (name.startsWith("#")) {
-				const pubmsgModule = store.modules.get("PUBMSG");
-				pubmsgModule?.input(name, ...words);
+				const module = store
+					.moduleManager()
+					.get("PUBMSG")
+					.expect("Récupération du module `PUBMSG`");
+				module.input(name, ...words);
 			} else {
-				const privmsgModule = store.modules.get("PRIVMSG");
-				privmsgModule?.input(name, ...words);
+				const module = store
+					.moduleManager()
+					.get("PRIVMSG")
+					.expect("Récupération du module `PRIVMSG`");
+				module.input(name, ...words);
 			}
 			return;
 		}
@@ -726,9 +734,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		const words = message.slice(1).split(" ");
 		const [commandName, ...args] = words;
 
-		const module = store.modules.get(commandName.toUpperCase() as CommandsNames);
+		const maybeModule = store.moduleManager().get(commandName.toUpperCase() as CommandsNames);
 
-		if (!module) {
+		if (maybeModule.is_none()) {
 			console.error(
 				"[%s]: le module « %s » n'a pas été trouvé.",
 				ChatStore.NAME,
@@ -736,6 +744,8 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			);
 			return;
 		}
+
+		const module = maybeModule.unwrap();
 
 		module.input(name, ...args);
 	}
@@ -750,27 +760,26 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
 
-		let moduleUnsafe: CommandInterface<"OP"> | undefined;
+		let maybeModule: Option<CommandInterface<"OP">> = None();
 
 		switch (accessLevel) {
 			case ChannelAccessLevel.Owner:
-				moduleUnsafe = store.modules.get("QOP");
+				maybeModule = store.moduleManager().get("QOP");
 				break;
 			case ChannelAccessLevel.AdminOperator:
-				moduleUnsafe = store.modules.get("AOP");
+				maybeModule = store.moduleManager().get("AOP");
 				break;
 			case ChannelAccessLevel.Operator:
-				moduleUnsafe = store.modules.get("OP");
+				maybeModule = store.moduleManager().get("OP");
 				break;
 			case ChannelAccessLevel.HalfOperator:
-				moduleUnsafe = store.modules.get("HOP");
+				maybeModule = store.moduleManager().get("HOP");
 				break;
 			case ChannelAccessLevel.Vip:
-				moduleUnsafe = store.modules.get("VIP");
+				maybeModule = store.moduleManager().get("VIP");
 				break;
 		}
 
-		const maybeModule = Option.from(moduleUnsafe);
 		const module = maybeModule.expect(
 			`Récupération du module \`AccessLevel (${accessLevel})\``,
 		);
@@ -788,27 +797,26 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
 
-		let moduleUnsafe: CommandInterface<"OP"> | undefined;
+		let maybeModule: Option<CommandInterface<"OP">> = None();
 
 		switch (accessLevel) {
 			case ChannelAccessLevel.Owner:
-				moduleUnsafe = store.modules.get("DEQOP");
+				maybeModule = store.moduleManager().get("DEQOP");
 				break;
 			case ChannelAccessLevel.AdminOperator:
-				moduleUnsafe = store.modules.get("DEAOP");
+				maybeModule = store.moduleManager().get("DEAOP");
 				break;
 			case ChannelAccessLevel.Operator:
-				moduleUnsafe = store.modules.get("DEOP");
+				maybeModule = store.moduleManager().get("DEOP");
 				break;
 			case ChannelAccessLevel.HalfOperator:
-				moduleUnsafe = store.modules.get("DEHOP");
+				maybeModule = store.moduleManager().get("DEHOP");
 				break;
 			case ChannelAccessLevel.Vip:
-				moduleUnsafe = store.modules.get("DEVIP");
+				maybeModule = store.moduleManager().get("DEVIP");
 				break;
 		}
 
-		const maybeModule = Option.from(moduleUnsafe);
 		const module = maybeModule.expect(
 			`Récupération du module \`AccessLevel (${accessLevel})\``,
 		);
@@ -820,9 +828,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /SILENCE - vers le serveur.
 	 */
 	function unignoreUser(nickname: string) {
-		const moduleUnsafe: CommandInterface<"SILENCE"> | undefined = store.modules.get("SILENCE");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `SILENCE`");
+		const module = store
+			.moduleManager()
+			.get("SILENCE")
+			.expect("Récupération du module `SILENCE`");
 		module.send({ nickname: `-${nickname}` });
 	}
 
@@ -830,9 +839,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /TOPIC vers le serveur.
 	 */
 	function updateTopic(channelName: string, topic?: string) {
-		const moduleUnsafe: CommandInterface<"TOPIC"> | undefined = store.modules.get("TOPIC");
-		const maybeModule = Option.from(moduleUnsafe);
-		const module = maybeModule.expect("Récupération du module `TOPIC`");
+		const module = store.moduleManager().get("TOPIC").expect("Récupération du module `TOPIC`");
 		module.send({ channel: channelName, topic });
 	}
 
