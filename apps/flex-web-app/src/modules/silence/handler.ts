@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
@@ -39,11 +38,11 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
 
 		for (const user of data.users) {
 			if (data.added) {
-				this.store.addUserToBlocklist(new User(user));
+				this.store.userManager().addToBlock(user.id);
 			}
 
 			if (data.removed) {
-				this.store.removeUserToBlocklist(new User(user));
+				this.store.userManager().removeToBlock(user.id);
 			}
 
 			if (data.updated) {

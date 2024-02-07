@@ -14,7 +14,7 @@ import { None, Option, Some } from "@phisyx/flex-safety";
 // Type //
 // ---- //
 
-export type UserID = string;
+export type UserID = UUID;
 
 // ----------- //
 // Énumération //

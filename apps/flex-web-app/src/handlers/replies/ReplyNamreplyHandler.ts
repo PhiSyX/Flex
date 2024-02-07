@@ -11,7 +11,6 @@
 import { assertChannelRoom } from "~/asserts/room";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
@@ -33,7 +32,7 @@ export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"
 		assertChannelRoom(channel);
 
 		for (const userOrigin of data.users) {
-			const user = this.store.addUser(new User(userOrigin).withChannel(channel.id()));
+			const user = this.store.userManager().add(userOrigin).withChannel(channel.id());
 
 			const newNick = new ChannelNick(user)
 				.withIsMe(this.store.isMe(user))

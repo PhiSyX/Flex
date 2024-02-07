@@ -28,6 +28,7 @@ import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
 import { User, UserID } from "~/user/User";
+import { UserManager } from "~/user/UserManager";
 import { useOverlayerStore } from "./OverlayerStore";
 
 const ReplyCreatedHandler = () => import("~/handlers/replies/ReplyCreatedHandler");
@@ -144,13 +145,12 @@ export class ChatStore {
 	private _client: Option<Origin> = None();
 	public clientError: Option<{ id: string; data: unknown }> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
-	private _selectedUser: Option<[ChannelID, UserID]> = None();
+	private _selectedChannelUser: Option<[ChannelID, UserID]> = None();
 	private _network: Option<string> = None();
 	private _roomManager: RoomManager = new RoomManager();
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
-	private _users: Map<string, User> = new Map();
-	private _nicksUsers: Map<string, string> = new Map();
-	private _usersBlocked: Map<string, User> = new Map();
+	// private _users: Map<string, User> = new Map();
+	private _userManager: UserManager = new UserManager();
 
 	private handlersSets: Set<() => Promise<unknown>> = new Set();
 	private modulesSets: Set<() => Promise<unknown>> = new Set();
@@ -163,45 +163,12 @@ export class ChatStore {
 	// ------- //
 
 	/**
-	 * Ajoute un nouvel utilisateur au Store.
-	 */
-	addUser(user: User): User {
-		const fuser = this._users.get(user.id);
-		if (fuser) {
-			for (const channel of user.channels) {
-				fuser.channels.add(channel);
-			}
-			return fuser;
-		}
-
-		this._users.set(user.id, user);
-		// biome-ignore lint/style/noNonNullAssertion: Voir le code ci-haut.
-		return this._users.get(user.id)!;
-	}
-
-	/**
-	 * Ajoute un utilisateur à la liste des utilisateurs bloqués.
-	 */
-	addUserToBlocklist(user: User) {
-		this._usersBlocked.set(user.id, user);
-	}
-
-	/**
 	 * Chambre personnalisé liste des salons.
 	 */
 	channelList(): ChannelListCustomRoom {
 		return this.roomManager()
 			.get(ChannelListCustomRoom.ID)
 			.unwrap_unchecked() as ChannelListCustomRoom;
-	}
-
-	/**
-	 * Change le pseudonyme d'un utilisateur.
-	 */
-	changeUserNickname(oldNickname: string, newNickname: string) {
-		const user = this.findUserByNickname(oldNickname).unwrap();
-		this._nicksUsers.delete(oldNickname);
-		user.nickname = newNickname;
 	}
 
 	/**
@@ -253,35 +220,6 @@ export class ChatStore {
 	}
 
 	/**
-	 * Cherche un utilisateur en fonction d'un ID.
-	 */
-	findUser(userID: string): Option<User> {
-		return Option.from(this._users.get(userID));
-	}
-
-	/**
-	 * Cherche un utilisateur en fonction d'un pseudonyme.
-	 */
-	findUserByNickname(nickname: string): Option<User> {
-		if (this._nicksUsers.has(nickname.toLowerCase())) {
-			const userID = this._nicksUsers.get(nickname.toLowerCase()) as string;
-			return this.findUser(userID);
-		}
-
-		const maybeUser = Option.from(
-			Array.from(this._users.values()).find(
-				(user) => user.nickname.toLowerCase() === nickname.toLowerCase(),
-			),
-		);
-
-		maybeUser.then((user) => {
-			this._nicksUsers.set(user.nickname.toLowerCase(), user.id);
-		});
-
-		return maybeUser;
-	}
-
-	/**
 	 * Récupère les salons à rejoindre automatiquement.
 	 */
 	getAutoJoinChannels(): Array<string> {
@@ -299,7 +237,7 @@ export class ChatStore {
 	 * Récupère l'utilisateur sélectionné d'un salon.
 	 */
 	getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
-		return this._selectedUser
+		return this._selectedChannelUser
 			.and_then(([channelID, userID]) => {
 				return this.roomManager()
 					.get(channelID)
@@ -310,7 +248,7 @@ export class ChatStore {
 					});
 			})
 			.map((cnick) => {
-				return new ChannelSelectedUser(cnick, this.isUserBlocked(cnick.intoUser()));
+				return new ChannelSelectedUser(cnick, this.userManager().isBlocked(cnick.id));
 			});
 	}
 
@@ -319,13 +257,6 @@ export class ChatStore {
 	 */
 	isConnected(): boolean {
 		return this.network().isConnected();
-	}
-
-	/**
-	 * Vérifie qu'un utilisateur est dans la liste des utilisateurs bloqués.
-	 */
-	isUserBlocked(user: User): boolean {
-		return this._usersBlocked.has(user.id);
 	}
 
 	/**
@@ -483,20 +414,6 @@ export class ChatStore {
 	}
 
 	/**
-	 * Supprime un utilisateur de la liste des utilisateurs bloqués.
-	 */
-	removeUserToBlocklist(user: User): boolean {
-		return this._usersBlocked.delete(user.id);
-	}
-
-	/**
-	 * Supprime un salon d'un utilisateur.
-	 */
-	removeChannelForUser(channelID: ChannelID, userID: UserID) {
-		this._users.get(userID)?.channels.delete(channelID);
-	}
-
-	/**
 	 * Gestion des chambres.
 	 */
 	roomManager(): RoomManager {
@@ -550,30 +467,18 @@ export class ChatStore {
 	 * Définit l'utilisateur sélectionné d'un salon.
 	 */
 	setSelectedUser(room: ChannelRoom, origin: Origin) {
-		this._selectedUser.replace([room.id(), origin.id]);
-	}
-
-	/**
-	 * Met à jour l'utilisateur de la liste des utilisateurs du client.
-	 */
-	upgradeUser(user: User): User {
-		const fuser = this._users.get(user.id);
-		if (fuser) {
-			fuser.host = user.host;
-			fuser.operator = user.operator;
-			return fuser;
-		}
-
-		this._users.set(user.id, user);
-		// biome-ignore lint/style/noNonNullAssertion: Voir le code ci-haut.
-		return this._users.get(user.id)!;
+		this._selectedChannelUser.replace([room.id(), origin.id]);
 	}
 
 	/**
 	 * Désélectionne un utilisateur d'un salon.
 	 */
 	unsetSelectedUser() {
-		this._selectedUser = None();
+		this._selectedChannelUser = None();
+	}
+
+	userManager(): UserManager {
+		return this._userManager;
 	}
 
 	/**
@@ -646,7 +551,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Vérifie qu'un utilisateur est bloqué.
 	 */
 	function checkUserIsBlocked(user: User): boolean {
-		return store.isUserBlocked(user);
+		return store.userManager().isBlocked(user.id);
 	}
 
 	/**
@@ -767,7 +672,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		const room = store.roomManager().getOrInsert(origin.id, () => {
 			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
 			priv.addParticipant(new PrivateNick(new User(store.me())).withIsMe(true));
-			const maybeUser = store.findUser(origin.id);
+			const maybeUser = store.userManager().find(origin.id);
 			maybeUser.then((user) => priv.addParticipant(new PrivateNick(user)));
 			return priv;
 		});
@@ -805,7 +710,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			.roomManager()
 			.get(name)
 			.or_else(() =>
-				store.findUserByNickname(name).and_then((user) => store.roomManager().get(user.id)),
+				store
+					.userManager()
+					.findByNickname(name)
+					.and_then((user) => store.roomManager().get(user.id)),
 			)
 			.unwrap_unchecked();
 		room.addInputHistory(message);

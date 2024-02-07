@@ -44,7 +44,8 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 
 	handleMe(data: GenericReply<"PRIVMSG">) {
 		const user = this.store
-			.findUserByNickname(data.target)
+			.userManager()
+			.findByNickname(data.target)
 			.expect(`"L'utilisateur cible ${data.target}."`);
 		const maybeRoom = this.store.roomManager().get(user.id);
 		if (maybeRoom.is_none()) return;

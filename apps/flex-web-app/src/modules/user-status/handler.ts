@@ -58,7 +58,7 @@ export class ReplyNowawayHandler implements SocketEventInterface<"RPL_NOWAWAY"> 
 	handle(data: GenericReply<"RPL_NOWAWAY">) {
 		const room = this.store.network();
 		room.addConnectEvent(data, data.message.slice(1));
-		const user = this.store.findUser(this.store.clientID()).unwrap();
+		const user = this.store.userManager().find(this.store.clientID()).unwrap();
 		user.marksAsAway();
 	}
 }
@@ -80,7 +80,7 @@ export class ReplyUnawayHandler implements SocketEventInterface<"RPL_UNAWAY"> {
 	handle(data: GenericReply<"RPL_UNAWAY">) {
 		const room = this.store.network();
 		room.addConnectEvent(data, data.message.slice(1));
-		const user = this.store.findUser(this.store.clientID()).unwrap();
+		const user = this.store.userManager().find(this.store.clientID()).unwrap();
 		user.marksAsNoLongerAway();
 	}
 }

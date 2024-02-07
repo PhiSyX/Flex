@@ -30,7 +30,7 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 	}
 
 	handle(data: GenericReply<"NICK">) {
-		this.store.changeUserNickname(data.old_nickname, data.new_nickname);
+		this.store.userManager().changeNickname(data.old_nickname, data.new_nickname);
 
 		const isMe = this.store.isMe(data.origin);
 		if (isMe) {
@@ -44,7 +44,8 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 				assertChannelRoom(room);
 
 				const user = this.store
-					.findUserByNickname(data.new_nickname)
+					.userManager()
+					.findByNickname(data.new_nickname)
 					.expect(`L'utilisateur ${data.new_nickname}.`);
 
 				if (!room.users.has(user.id)) {
