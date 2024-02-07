@@ -20,7 +20,7 @@ export interface Props {
 	trueValue?: unknown;
 	falseValue?: unknown;
 	selected?: unknown;
-	type?: "button" | "submit";
+	type?: HTMLButtonElement["type"] | "dialog";
 	variant?: "primary" | "secondary" | "danger";
 }
 

@@ -55,7 +55,7 @@ export class OperModule implements Module<OperModule> {
 	// Méthode //
 	// ------- //
 
-	input(name?: string, password?: string) {
+	input(_: string, name?: string, password?: string) {
 		if (!name || !password) {
 			return;
 		}

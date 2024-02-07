@@ -46,13 +46,13 @@ export class KickHandler implements SocketEventInterface<"KICK"> {
 		channel.addEvent("event:kick", { ...data, isMe: true });
 		channel.removeUser(data.knick.id);
 		channel.setKicked(true);
-		this.store.removeChannelForUser(data.channel, data.knick.id);
+		this.store.userManager().removeChannel(data.knick.id, data.channel);
 	}
 
 	handleUser(data: GenericReply<"KICK">, channel: ChannelRoom) {
 		channel.addEvent("event:kick", { ...data, isMe: false });
 		channel.removeUser(data.knick.id);
-		this.store.removeChannelForUser(data.channel, data.knick.id);
+		this.store.userManager().removeChannel(data.knick.id, data.channel);
 	}
 }
 

@@ -20,14 +20,14 @@ const messages = [];
 
 const origin1: User = new User({
 	access_level: ["Owner"],
-	id: "uuid0",
+	id: "a-b-c-d-e" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 } as ChannelOrigin);
 
 const origin2: User = new User({
-	id: "uuid1",
+	id: "f-g-h-i-j" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
@@ -66,7 +66,7 @@ messages.push(
 const users = new ChannelUsers();
 
 const origin3: User = new User({
-	id: "uuid3",
+	id: "k-l-m-n-o" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",

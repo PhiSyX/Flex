@@ -15,6 +15,13 @@ declare interface ModeApplyFlag<F> {
 	updated_by: string;
 }
 
+declare interface Commands {
+	MODE: {
+		target: string;
+		modes: Record<CommandResponsesFromServer["MODE"]["added"][0][0], string | boolean>;
+	};
+}
+
 declare interface CommandResponsesFromServer {
 	MODE: {
 		target: string;

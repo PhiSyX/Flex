@@ -11,7 +11,7 @@
 import { Option } from "@phisyx/flex-safety";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelUsers } from "~/channel/ChannelUsers";
-import { User } from "~/user/User";
+import { User, UserID } from "~/user/User";
 import { Room } from "../room/Room";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 import { ChannelTopic } from "./ChannelTopic";
@@ -55,6 +55,11 @@ export class ChannelRoom extends Room<"channel"> {
 	kicked = false;
 
 	/**
+	 * Paramètres du salon.
+	 */
+	settings: Set<string> = new Set();
+
+	/**
 	 * Sujet du salon.
 	 */
 	topic = new ChannelTopic();
@@ -96,14 +101,21 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Récupère un utilisateur du salon.
 	 */
-	getUser(id: string): Option<ChannelNick> {
+	getUser(id: UserID): Option<ChannelNick> {
 		return this.users.get(id);
+	}
+
+	/**
+	 * Est-ce que l'utilisateur est un opérateur global.
+	 */
+	isUserGlobalOperator(user: User) {
+		return user.isGlobalOperator();
 	}
 
 	/**
 	 * Supprime un utilisateur du salon.
 	 */
-	removeUser(id: string): boolean {
+	removeUser(id: UserID): boolean {
 		return this.users.remove(id).is_some();
 	}
 
@@ -112,6 +124,16 @@ export class ChannelRoom extends Room<"channel"> {
 	 */
 	setKicked(bool: boolean) {
 		this.kicked = bool;
+	}
+
+	/**
+	 * Définit un paramètre de salon.
+	 */
+	setSettingMode(mode: string) {
+		if (["q", "a", "o", "h", "v"].includes(mode)) {
+			return;
+		}
+		this.settings.add(mode);
 	}
 
 	/**
@@ -138,10 +160,10 @@ export class ChannelRoom extends Room<"channel"> {
 	}
 
 	/**
-	 * Est-ce que l'utilisateur est un opérateur global.
+	 * Retire un paramètre de salon.
 	 */
-	isUserGlobalOperator(user: User) {
-		return user.isGlobalOperator();
+	unsetSettingMode(mode: string) {
+		this.settings.delete(mode);
 	}
 
 	/**

@@ -13,6 +13,8 @@ import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import ServerCustomRoomComponent from "~/components/custom-room/ServerCustomRoom.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
+import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
+import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
 import Match from "#/sys/match/Match.vue";
 
@@ -21,7 +23,6 @@ import {
 	joinChannelHandler,
 	requestCreateChannelHandler,
 } from "./ChatView.handlers";
-import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 
 const chatStore = useChatStore();
 </script>
@@ -104,6 +105,7 @@ const chatStore = useChatStore();
 		</Match>
 
 		<ChannelCreateDialog />
+		<ChannelSettingsDialog />
 		<ChangeNickDialog />
 	</main>
 </template>

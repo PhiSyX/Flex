@@ -30,7 +30,7 @@ type Payload = {
 };
 
 const origin: Origin = {
-	id: "uuid0",
+	id: "a-b-c-d-e" as UUID,
 	host: { cloaked: "localhost" },
 	ident: "ident",
 	nickname: "PhiSyX",
@@ -189,60 +189,60 @@ const eventUnignore: Payload & { data: GenericReply<"SILENCE"> } = {
 		responsive-disabled
 	>
 		<Variant title="Join Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventJoin v-bind="eventJoin" />
 			</div>
 		</Variant>
 
 		<Variant title="Kick Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventKick v-bind="eventKick" />
 			</div>
 		</Variant>
 
 		<Variant title="Mode Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventMode v-bind="eventMode1" />
 			</div>
 		</Variant>
 
 		<Variant title="Mode Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventMode v-bind="eventMode2" />
 			</div>
 		</Variant>
 
 		<Variant title="Nick Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventNick v-bind="eventNick" />
 			</div>
 		</Variant>
 
 		<Variant title="Part Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventPart v-bind="eventPart" />
 			</div>
 		</Variant>
 
 		<Variant title="Query Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventQuery v-bind="eventQuery" />
 			</div>
 		</Variant>
 
 		<Variant title="Quit Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventQuit v-bind="eventQuit" />
 			</div>
 		</Variant>
 
 		<Variant title="Silence (Ignore) Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventIgnore v-bind="eventIgnore" />
 			</div>
 		</Variant>
 		<Variant title="Silence (Unignore) Event">
-			<div class="room/echo">
+			<div class="room/echo-s">
 				<RoomEventUnignore v-bind="eventUnignore" />
 			</div>
 		</Variant>
@@ -250,7 +250,7 @@ const eventUnignore: Payload & { data: GenericReply<"SILENCE"> } = {
 </template>
 
 <style>
-.room\/echo {
+.room\/echo-s {
 	display: inline-block;
 
 	&[data-type="action"] {

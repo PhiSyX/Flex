@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Some } from "@phisyx/flex-safety";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -22,7 +23,10 @@ export class ErrorChanoprivsneededHandler implements SocketEventInterface<"ERR_C
 	}
 
 	handle(data: GenericReply<"ERR_CHANOPRIVSNEEDED">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
+		const maybeChannel = this.store
+			.roomManager()
+			.get(data.channel)
+			.or_else(() => Some(this.store.roomManager().active()));
 		if (maybeChannel.is_none()) return;
 		const channel = maybeChannel.unwrap();
 		channel.addEvent("error:err_chanoprivsneeded", { ...data, isMe: true }, data.reason);

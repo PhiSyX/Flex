@@ -68,7 +68,8 @@ impl Channel
 		flags: impl IntoIterator<Item = ApplyMode<mode::SettingsFlags>>,
 	) -> Self
 	{
-		self.modes_settings.extend(flags);
+		self.modes_settings
+			.extend(flags.into_iter().map(|mode| (mode.flag.to_string(), mode)));
 		self
 	}
 }
@@ -114,19 +115,22 @@ impl Channel
 	/// Définit la clé du salon.
 	pub fn set_key(&mut self, updated_by: &str, key: impl Into<secret::Secret<String>>)
 	{
-		self.modes_settings.insert(ApplyMode {
-			flag: mode::SettingsFlags::Key(key.into()),
-			args: Default::default(),
-			updated_by: updated_by.to_owned(),
-			updated_at: time::Utc::now(),
-		});
+		self.modes_settings.insert(
+			mode::SettingsFlags::Key(Default::default()).to_string(),
+			ApplyMode {
+				flag: mode::SettingsFlags::Key(key.into()),
+				args: Default::default(),
+				updated_by: updated_by.to_owned(),
+				updated_at: time::Utc::now(),
+			},
+		);
 	}
 
 	/// Paramètres du salon.
 	pub fn settings(&self) -> HashMap<char, ApplyMode<mode::SettingsFlags>>
 	{
 		self.modes_settings
-			.iter()
+			.values()
 			.map(|mode| (mode.flag.letter(), mode.clone()))
 			.collect()
 	}

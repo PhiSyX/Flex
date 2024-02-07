@@ -182,6 +182,10 @@ const unsetAccessLevelHandler = unsetAccessLevel(emit);
 	}
 
 	button {
+		--btn-primary-outline: 0;
+		--btn-secondary-outline: 0;
+		--btn-danger-outline: 0;
+
 		flex-grow: 1;
 		justify-content: space-between;
 		padding: fx.space(1);

@@ -9,3 +9,9 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 /// <reference types="@phisyx/flex-css" />
+
+declare const __opaque__: unique symbol;
+
+declare type Opaque<B, R> = B & { readonly [__opaque__]: R };
+
+declare type UUID = Opaque<`${string}-${string}-${string}-${string}-${string}`, "UUID">;

@@ -14,6 +14,7 @@
 
 export interface Emits {
 	(evtName: "change-nick-request", event: MouseEvent): void;
+	(evtName: "dblclick-main", event: MouseEvent): void;
 	(evtName: "open-private", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
 }
@@ -21,6 +22,20 @@ export interface Emits {
 // -------- //
 // Handlers //
 // -------- //
+
+export function changeNickRequest(emit: Emits) {
+	function changeNickRequestHandler(event: MouseEvent) {
+		emit("change-nick-request", event);
+	}
+	return changeNickRequestHandler;
+}
+
+export function dblclickMain(emit: Emits) {
+	function dblclickMainHandler(evt: MouseEvent) {
+		emit("dblclick-main", evt);
+	}
+	return dblclickMainHandler;
+}
 
 export function openPrivate(emit: Emits) {
 	function openPrivateHandler(origin: Origin) {
@@ -36,11 +51,4 @@ export function sendMessage(emit: Emits) {
 	}
 
 	return sendMessageHandler;
-}
-
-export function changeNickRequest(emit: Emits) {
-	function changeNickRequestHandler(event: MouseEvent) {
-		emit("change-nick-request", event);
-	}
-	return changeNickRequestHandler;
 }

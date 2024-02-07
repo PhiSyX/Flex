@@ -46,7 +46,8 @@ const config: PlaywrightTestConfig = {
 	retries: env.CI ? 2 : 0,
 	/* Opt out of parallel tests on CI. */
 	// FIXME: valeur arbitraire
-	workers: env.CI ? 4 : 3,
+	workers: env.CI ? 4 : "75%",
+	fullyParallel: !env.CI,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [
 		[

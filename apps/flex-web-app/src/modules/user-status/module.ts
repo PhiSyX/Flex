@@ -48,7 +48,7 @@ export class AwayModule implements Module<AwayModule> {
 	// Méthode //
 	// ------- //
 
-	input(...text: Array<string>) {
+	input(_: string, ...text: Array<string>) {
 		this.send({ text: text.join(" ") });
 	}
 
@@ -61,4 +61,35 @@ export class AwayModule implements Module<AwayModule> {
 		this.numericNowawayHandler.listen();
 		this.numericUnawayHandler.listen();
 	}
+}
+
+export class BackModule implements Module<BackModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "BACK";
+
+	static create(store: ChatStore): BackModule {
+		return new BackModule(new AwayCommand(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: AwayCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(_: string) {
+		this.send({ text: "" });
+	}
+
+	send(payload: Command<"AWAY">) {
+		this.command.send(payload);
+	}
+
+	listen() {}
 }

@@ -6,6 +6,7 @@ import UiButton from "../button/Button.vue";
 // ---- //
 interface Props {
 	open?: boolean;
+	withoutClose?: boolean;
 	withoutHeader?: boolean;
 }
 
@@ -19,6 +20,7 @@ interface Emits {
 
 withDefaults(defineProps<Props>(), {
 	open: true,
+	withoutClose: false,
 	withoutHeader: false,
 });
 const emit = defineEmits<Emits>();
@@ -35,6 +37,7 @@ const emit = defineEmits<Emits>();
 				<slot name="actions" />
 
 				<UiButton
+					v-if="!withoutClose"
 					icon="close"
 					class="[ h:full ]"
 					@click="emit('close', $event)"
@@ -63,6 +66,9 @@ dialog {
 	background: var(--dialog-bg, canvas);
 	color: var(--default-text-color_alt);
 	border-color: var(--dialog-border-color);
+
+	font-size: 13px;
+	user-select: none;
 }
 
 @include fx.class("dialog/title") {

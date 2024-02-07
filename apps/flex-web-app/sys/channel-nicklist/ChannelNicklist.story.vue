@@ -1,24 +1,25 @@
 <script setup lang="ts">
 import { ChannelNick } from "~/channel/ChannelNick";
 import ChannelNicklist from "./ChannelNicklist.vue";
+
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
 import { User } from "~/user/User";
 
 const origin1: User = new User({
-	id: "uuid0",
+	id: "a-b-c-d-e" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 });
 const origin2: User = new User({
-	id: "uuid1",
+	id: "f-g-h-i-j" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
 });
 const origin3: User = new User({
-	id: "uuid3",
+	id: "k-l-m-n-o" as UUID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",

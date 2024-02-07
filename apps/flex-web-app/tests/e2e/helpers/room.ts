@@ -10,15 +10,23 @@
 
 import { Page, expect } from "@playwright/test";
 
+export async function sendMessageInActiveRoom(page: Page, message: string) {
+	const $room = page.locator(".room");
+	const $formRoom = $room.locator("form[action^='/msg/']");
+	const $inputRoom = $formRoom.locator("input[type='text']");
+	await $inputRoom.fill(message);
+	const $btnSubmit = $formRoom.locator("button[type='submit']");
+	await $btnSubmit.click();
+	await page.waitForTimeout(250);
+}
+
 export async function containsMessageInActiveRoom(page: Page, message: string) {
 	const $main = page.locator(".room\\/main");
 	await expect($main).toContainText(message);
 }
 
 export async function openRoomFromNavigation(page: Page, room: string) {
-	const $navRoom = page
-		.locator(".navigation-area .navigation-server ul li")
-		.getByText(room);
+	const $navRoom = page.locator(".navigation-area .navigation-server ul li").getByText(room);
 	await $navRoom.click();
 	await page.waitForTimeout(250);
 	const $room = page.locator(`.room [data-room="${room}"]`);

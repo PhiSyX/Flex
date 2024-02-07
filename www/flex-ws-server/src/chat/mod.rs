@@ -33,11 +33,20 @@ mod features
 			}
 		}
 
+		mod channel_settings
+		{
+			lexa_kernel::public_using! {
+				formdata,
+				handler,
+			}
+		}
+
 		mod apply;
 		mod response;
 
 		pub use self::access_level::*;
 		pub use self::apply::*;
+		pub use self::channel_settings::*;
 		pub use self::response::*;
 	}
 

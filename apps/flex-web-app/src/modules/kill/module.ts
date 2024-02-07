@@ -41,7 +41,7 @@ export class KillModule implements Module<KillModule> {
 	// Méthode //
 	// ------- //
 
-	input(knick?: string, ...words: Array<string>) {
+	input(_: string, knick?: string, ...words: Array<string>) {
 		const comment = words.join(" ");
 		if (!knick || !comment) return;
 		this.send({ nickname: knick, comment });

@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
@@ -30,8 +29,7 @@ export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER"> {
 	}
 
 	handle(data: GenericReply<"RPL_YOUREOPER">) {
-		this.store.upgradeUser(new User(data.origin).withOperatorFlag(data.oper_type));
-
+		this.store.userManager().upsert(data.origin).withOperatorFlag(data.oper_type);
 		const currentRoom = this.store.roomManager().active();
 		currentRoom.addEvent("event:rpl_youreoper", { ...data, isMe: true }, data.message.slice(1));
 	}

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::ops;
 
 use flex_web_framework::types::secret;
@@ -35,7 +35,7 @@ pub const CHANNEL_MODE_SETTINGS_SECRET: char = 's';
 pub struct ChannelModes<F>
 {
 	/// Les modes de salon.
-	modes: HashSet<ApplyMode<F>>,
+	modes: HashMap<String, ApplyMode<F>>,
 }
 
 // ----------- //
@@ -76,14 +76,14 @@ impl ChannelModes<SettingsFlags>
 	pub fn contains_key_flag(&self, key: &secret::Secret<String>) -> bool
 	{
 		self.modes
-			.iter()
+			.values()
 			.any(|mode| mode.flag == SettingsFlags::Key(key.to_owned()))
 	}
 
 	/// Est-ce que les paramètres du salon contiennent le drapeau +k <key>
 	pub fn has_key_flag(&self) -> bool
 	{
-		self.modes.iter().any(|mode| {
+		self.modes.values().any(|mode| {
 			matches!(
 				mode,
 				ApplyMode {
@@ -97,7 +97,7 @@ impl ChannelModes<SettingsFlags>
 	/// Est-ce que les paramètres du salon contiennent le drapeau +m
 	pub fn has_moderate_flag(&self) -> bool
 	{
-		self.modes.iter().any(|mode| {
+		self.modes.values().any(|mode| {
 			matches!(
 				mode,
 				ApplyMode {
@@ -111,7 +111,7 @@ impl ChannelModes<SettingsFlags>
 	/// Est-ce que les paramètres du salon contiennent le drapeau +n
 	pub fn has_no_external_messages_flag(&self) -> bool
 	{
-		self.modes.iter().any(|mode| {
+		self.modes.values().any(|mode| {
 			matches!(
 				mode,
 				ApplyMode {
@@ -125,7 +125,7 @@ impl ChannelModes<SettingsFlags>
 	/// Est-ce que les paramètres du salon contiennent le drapeau +O
 	pub fn has_operonly_flag(&self) -> bool
 	{
-		self.modes.iter().any(|mode| {
+		self.modes.values().any(|mode| {
 			matches!(
 				mode,
 				ApplyMode {
@@ -139,7 +139,7 @@ impl ChannelModes<SettingsFlags>
 	/// Est-ce que les paramètres du salon contiennent le drapeau +s
 	pub fn has_secret_flag(&self) -> bool
 	{
-		self.modes.iter().any(|mode| {
+		self.modes.values().any(|mode| {
 			matches!(
 				mode,
 				ApplyMode {
@@ -153,7 +153,7 @@ impl ChannelModes<SettingsFlags>
 	/// Est-ce que les paramètres du salon contiennent le drapeau +t
 	pub fn has_topic_flag(&self) -> bool
 	{
-		self.modes.iter().any(|mode| {
+		self.modes.values().any(|mode| {
 			matches!(
 				mode,
 				ApplyMode {
@@ -162,6 +162,31 @@ impl ChannelModes<SettingsFlags>
 				}
 			)
 		})
+	}
+}
+
+impl ChannelModes<SettingsFlags>
+{
+	pub fn set(
+		&mut self,
+		mode: impl Into<ApplyMode<SettingsFlags>>,
+	) -> Option<ApplyMode<SettingsFlags>>
+	{
+		let mode: ApplyMode<SettingsFlags> = mode.into();
+		let letter = mode.letter().to_string();
+		self.modes.insert(letter, mode.clone());
+		Some(mode)
+	}
+
+	pub fn unset(
+		&mut self,
+		mode: impl Into<ApplyMode<SettingsFlags>>,
+	) -> Option<ApplyMode<SettingsFlags>>
+	{
+		let mode: ApplyMode<SettingsFlags> = mode.into();
+		let letter = mode.letter().to_string();
+		self.modes.remove(&letter);
+		Some(mode)
 	}
 }
 
@@ -189,9 +214,15 @@ impl Default for ChannelModes<SettingsFlags>
 {
 	fn default() -> Self
 	{
-		let settings = HashSet::from_iter([
-			ApplyMode::new(SettingsFlags::NoExternalMessages),
-			ApplyMode::new(SettingsFlags::NoTopic),
+		let settings = HashMap::from_iter([
+			(
+				SettingsFlags::NoExternalMessages.to_string(),
+				ApplyMode::new(SettingsFlags::NoExternalMessages),
+			),
+			(
+				SettingsFlags::NoTopic.to_string(),
+				ApplyMode::new(SettingsFlags::NoTopic),
+			),
 		]);
 
 		Self { modes: settings }
@@ -202,14 +233,14 @@ impl std::fmt::Display for ChannelModes<SettingsFlags>
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{
-		let mode_settings: String = self.modes.iter().map(|flag| flag.letter()).collect();
+		let mode_settings: String = self.modes.keys().map(|letter| letter.to_string()).collect();
 		write!(f, "{}", mode_settings)
 	}
 }
 
 impl<T> ops::Deref for ChannelModes<T>
 {
-	type Target = HashSet<ApplyMode<T>>;
+	type Target = HashMap<String, ApplyMode<T>>;
 
 	fn deref(&self) -> &Self::Target
 	{
@@ -222,5 +253,13 @@ impl<T> ops::DerefMut for ChannelModes<T>
 	fn deref_mut(&mut self) -> &mut Self::Target
 	{
 		&mut self.modes
+	}
+}
+
+impl std::fmt::Display for SettingsFlags
+{
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+	{
+		write!(f, "{}", self.letter())
 	}
 }

@@ -36,6 +36,7 @@
 @import "./base";
 
 @include fx.use(
+	"align-i:base",
 	"align-i:center",
 	"align-jc:center",
 	"align-ji:center",
@@ -50,6 +51,7 @@
 	"button:reset",
 	"cursor:default",
 	"cursor:pointer",
+	"d-i",
 	"d-ib",
 	"flex:full",
 	"flex!",
@@ -61,6 +63,7 @@
 	"input:reset",
 	"list:reset",
 	"m:a",
+	"max-w:max",
 	"min-w:fit",
 	"ov:a",
 	"ov:c",
@@ -133,6 +136,12 @@
 		),
 	),
 	(
+		className: margin-top,
+		values: (
+			0,
+		),
+	),
+	(
 		className: margin-left,
 		values: (
 			1,
@@ -161,6 +170,7 @@
 		values: (
 			0,
 			1,
+			2,
 		),
 	),
 	(
@@ -190,6 +200,8 @@
 	(
 		className: height,
 		values: (
+			1,
+			2,
 			3,
 			4,
 			6,
@@ -200,6 +212,8 @@
 	(
 		className: size,
 		values: (
+			0,
+			2,
 			3,
 			4,
 		),

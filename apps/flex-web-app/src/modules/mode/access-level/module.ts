@@ -48,10 +48,19 @@ export class AccessLevelQOPModule implements Module<AccessLevelQOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"QOP">) {
@@ -81,10 +90,19 @@ export class AccessLevelAOPModule implements Module<AccessLevelAOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"AOP">) {
@@ -114,10 +132,19 @@ export class AccessLevelOPModule implements Module<AccessLevelOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"OP">) {
@@ -147,10 +174,19 @@ export class AccessLevelHOPModule implements Module<AccessLevelHOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"HOP">) {
@@ -180,10 +216,19 @@ export class AccessLevelVIPModule implements Module<AccessLevelVIPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"VIP">) {
@@ -213,10 +258,19 @@ export class AccessLevelDEQOPModule implements Module<AccessLevelDEQOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"DEQOP">) {
@@ -246,10 +300,19 @@ export class AccessLevelDEAOPModule implements Module<AccessLevelDEAOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"DEAOP">) {
@@ -279,10 +342,19 @@ export class AccessLevelDEOPModule implements Module<AccessLevelDEOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"DEOP">) {
@@ -312,10 +384,19 @@ export class AccessLevelDEHOPModule implements Module<AccessLevelDEHOPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"DEHOP">) {
@@ -345,10 +426,19 @@ export class AccessLevelDEVIPModule implements Module<AccessLevelDEVIPModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelName?: string, nicknames_raw?: string) {
-		if (!channelName || !nicknames_raw) return;
-		const nicknames = nicknames_raw.split(",");
-		this.send({ channel: channelName, nicknames });
+	input(roomName: string, channelNameRaw?: string, nicknamesRaw?: string) {
+		let channel = channelNameRaw;
+		let nicknamesR = nicknamesRaw;
+
+		if (channelNameRaw && !nicknamesRaw) {
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			nicknamesR = channelNameRaw;
+			channel = roomName;
+		}
+
+		if (!channel || !nicknamesR) return;
+		const nicknames = nicknamesR.split(",");
+		this.send({ channel, nicknames });
 	}
 
 	send(payload: Command<"DEVIP">) {

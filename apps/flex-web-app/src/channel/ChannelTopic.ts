@@ -29,6 +29,11 @@ export class ChannelTopic {
 	 */
 	private editable = true;
 
+	/**
+	 * Historique des sujets (en session)
+	 */
+	public history: Set<string> = new Set();
+
 	// ------- //
 	// Méthode //
 	// ------- //
@@ -52,6 +57,8 @@ export class ChannelTopic {
 	 */
 	set(topic: string, options?: { force: boolean }) {
 		if (this.editable || options?.force) {
+			this.history.delete(topic);
+			this.history.add(topic);
 			this.text.replace(topic);
 		}
 	}

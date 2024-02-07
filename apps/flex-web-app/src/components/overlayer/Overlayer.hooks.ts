@@ -27,16 +27,22 @@ export function useOverlayer() {
 		}
 	}
 
+	function keydownHandler(evt: KeyboardEvent) {
+		if (evt.code === "Escape") overlayerStore.destroyAll();
+	}
+
 	function resizeHandler() {
 		overlayerStore.updateAll();
 	}
 
 	onBeforeMount(() => {
 		window.addEventListener("resize", resizeHandler, { passive: true });
+		window.addEventListener("keydown", keydownHandler);
 	});
 
 	onBeforeUnmount(() => {
 		window.removeEventListener("resize", resizeHandler);
+		window.removeEventListener("keydown", keydownHandler);
 	});
 
 	return { store: overlayerStore, destroyHandler, resizeHandler };

@@ -50,10 +50,24 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 		const channel = maybeRoom.unwrap();
 		assertChannelRoom(channel);
 
-		if (data.added.some(([mode]) => mode === "t")) {
-			channel.topic.setEditable(false);
-		} else if (data.removed.some(([mode]) => mode === "t")) {
-			channel.topic.setEditable(true);
+		if (data.added) {
+			for (const [letter, _] of Array.from(data.added)) {
+				channel.setSettingMode(letter);
+
+				if (letter === "t") {
+					channel.topic.setEditable(false);
+				}
+			}
+		}
+
+		if (data.removed) {
+			for (const [letter, _] of Array.from(data.removed)) {
+				channel.unsetSettingMode(letter);
+
+				if (letter === "t") {
+					channel.topic.setEditable(true);
+				}
+			}
 		}
 
 		channel.addEvent("event:mode", {

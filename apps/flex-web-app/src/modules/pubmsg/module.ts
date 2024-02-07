@@ -41,9 +41,27 @@ export class PubmsgModule implements Module<PubmsgModule> {
 	// Méthode //
 	// ------- //
 
-	input(channelsRaw?: string, ...words: Array<string>) {
-		const channels = channelsRaw?.split(",");
-		if (!channels) return;
+	input(roomMessage: string, channelsRaw?: string, ...words: Array<string>) {
+		if (!roomMessage.startsWith("#")) {
+			const channels = channelsRaw?.split(",");
+			if (!channels) return;
+			const text = words.join(" ");
+			this.send({ channels, text });
+			return;
+		}
+
+		if (channelsRaw?.startsWith("#")) {
+			const channels = channelsRaw?.split(",");
+			if (!channels) return;
+			const text = words.join(" ");
+			this.send({ channels, text });
+			return;
+		}
+
+		const channels = [roomMessage];
+		if (channelsRaw) {
+			words.unshift(channelsRaw);
+		}
 		const text = words.join(" ");
 		this.send({ channels, text });
 	}

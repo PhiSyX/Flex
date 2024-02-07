@@ -195,6 +195,13 @@ export class Room<Type extends string = string> {
 		this._name = name;
 	}
 
+	/**
+	 * Efface tous les messages
+	 */
+	clearMessages() {
+		this.messages = [];
+	}
+
 	eq($1: string | Room<Type>): boolean {
 		if (typeof $1 === "string") {
 			return this.id() === $1 || this.name.toLowerCase() === $1.toLowerCase();

@@ -4,6 +4,7 @@ import {
 	changeNickRequest,
 	openPrivate,
 	sendMessage,
+	dblclickMain,
 } from "./Room.handler";
 import { type Props, computeInputPlaceholder } from "./Room.state";
 
@@ -23,7 +24,8 @@ const emit = defineEmits<Emits>();
 
 const inputPlaceholder = computeInputPlaceholder(props);
 
-const changeNickRequestHandler =changeNickRequest(emit);
+const changeNickRequestHandler = changeNickRequest(emit);
+const dblclickMainHandler = dblclickMain(emit);
 const openPrivateHandler = openPrivate(emit);
 const sendMessageHandler = sendMessage(emit);
 </script>
@@ -42,7 +44,10 @@ const sendMessageHandler = sendMessage(emit);
 
 		<slot name="after-topic-before-main" />
 
-		<div class="room/main [ flex:full ov:h flex h:full ]">
+		<div
+			class="room/main [ flex:full ov:h flex h:full ]"
+			@dblclick="dblclickMainHandler"
+		>
 			<slot name="before-history" />
 			<slot name="history">
 				<RoomHistoryLogs

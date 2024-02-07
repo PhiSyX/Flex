@@ -35,6 +35,7 @@ const totalUnread = computeTotalUnread(props);
 		}"
 		:data-room="name"
 		@click="openRoomHandler"
+		@click.middle="closeRoomHandler"
 		@keypress.space="openRoomHandler"
 		@keypress.enter="openRoomHandler"
 		tabindex="0"

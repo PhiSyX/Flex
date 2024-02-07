@@ -9,6 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { None, Option, Some } from "@phisyx/flex-safety";
+
+import { UserID } from "~/user/User";
 import { ChannelAccessLevelGroup } from "./ChannelAccessLevel";
 import { ChannelNick } from "./ChannelNick";
 
@@ -24,7 +26,7 @@ export class ChannelUsers {
 	/**
 	 * Les membres du salon organisé par groupes de niveaux d'access.
 	 */
-	private members: Record<ChannelAccessLevelGroup, Map<string, ChannelNick>> = {
+	private members: Record<ChannelAccessLevelGroup, Map<UserID, ChannelNick>> = {
 		owners: new Map(),
 		adminOperators: new Map(),
 		operators: new Map(),
@@ -32,6 +34,11 @@ export class ChannelUsers {
 		vips: new Map(),
 		users: new Map(),
 	};
+
+	/**
+	 * Membre sélectionné d'un salon.
+	 */
+	private _selected: Option<UserID> = None();
 
 	// --------------- //
 	// Getter | Setter //
@@ -100,7 +107,7 @@ export class ChannelUsers {
 	/**
 	 * Change le pseudonyme d'un membre par un nouveau pseudonyme.
 	 */
-	changeNickname(id: string, _oldNickname: string, newNickname: string) {
+	changeNickname(id: UserID, _oldNickname: string, newNickname: string) {
 		this.get(id).then((oldChannelNick) => {
 			oldChannelNick.intoUser().setNickname(newNickname);
 		});
@@ -110,7 +117,7 @@ export class ChannelUsers {
 	 * Récupère le pseudo du salon en fonction d'un pseudonyme donné, s'il
 	 * existe.
 	 */
-	get(id: string): Option<ChannelNick> {
+	get(id: UserID): Option<ChannelNick> {
 		for (const map of Object.values(this.members)) {
 			const nick = map.get(id);
 			if (nick) return Some(nick);
@@ -121,7 +128,7 @@ export class ChannelUsers {
 	/**
 	 * Est-ce que la liste des membres contient le pseudonyme donné.
 	 */
-	has(id: string): boolean {
+	has(id: UserID): boolean {
 		return Object.values(this.members).some((map) => map.has(id));
 	}
 
@@ -129,7 +136,7 @@ export class ChannelUsers {
 	 * Supprime un pseudo de la liste des membres, en fonction d'un pseudonyme
 	 * donné, s'il existe.
 	 */
-	remove(id: string): Option<ChannelNick> {
+	remove(id: UserID): Option<ChannelNick> {
 		const foundNick: Option<ChannelNick> = None();
 		for (const map of Object.values(this.members)) {
 			const nick = map.get(id);
@@ -140,6 +147,27 @@ export class ChannelUsers {
 			}
 		}
 		return foundNick;
+	}
+
+	/**
+	 * Définit un membre du salon comme étant sélectionné.
+	 */
+	select(userID: UserID) {
+		this._selected.replace(userID);
+	}
+
+	/**
+	 * Membre du salon sélectionné.
+	 */
+	selected(): Option<ChannelNick> {
+		return this._selected.and_then((userID) => this.get(userID));
+	}
+
+	/**
+	 * Désélectionne un membre du salon sélectionné.
+	 */
+	unselect(_userID: UserID) {
+		this._selected = None();
 	}
 }
 

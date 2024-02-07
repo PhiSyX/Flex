@@ -9,16 +9,15 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Browser, Page } from "@playwright/test";
+import { env } from "process";
 
-export async function createTwoUsers(browser: Browser): Promise<{
-	user1: Page;
-	user2: Page;
-}> {
-	const user1Context = await browser.newContext();
-	const user2Context = await browser.newContext();
-	return {
-		user1: await user1Context.newPage(),
-		user2: await user2Context.newPage(),
+export function createNBrowserPages(n: number) {
+	return async (browser: Browser) => {
+		const bCtx = browser.newContext();
+		const pages: Array<Promise<Page>> = Array.from({ length: n }, async () => {
+			return (env.CI ? browser.newContext() : bCtx).then((ctx) => ctx.newPage());
+		});
+		return pages;
 	};
 }
 
