@@ -59,6 +59,13 @@ export class ChannelUsers {
 	}
 
 	/**
+	 * Tous les membres du salon.
+	 */
+	get all() {
+		return [...this.moderators, ...this.vips, ...this.users];
+	}
+
+	/**
 	 * Les modérateurs de la liste des membres.
 	 */
 	get moderators() {

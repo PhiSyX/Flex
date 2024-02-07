@@ -501,6 +501,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	const store = ChatStore.default();
 
 	/**
+	 * Toutes les commandes basées sur les noms de modules.
+	 */
+	function allCommands() {
+		return Array.from(store.moduleManager().modules().keys(), (k) => `/${k.toLowerCase()}`).sort();
+	}
+
+	/*
 	 * Applique les paramètres d'un salon.
 	 */
 	function applyChannelSettings(target: string, modesSettings: Command<"MODE">["modes"]) {
@@ -846,6 +853,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	return {
 		store,
 
+		allCommands,
 		applyChannelSettings,
 		changeNick,
 		changeRoom,

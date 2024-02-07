@@ -36,3 +36,6 @@ export const computeRecipient = (props: Props) =>
 
 export const computeRecipientIsBlocked = (nick: PrivateNick) =>
 	computed(() => chatStore.checkUserIsBlocked(nick.intoUser()));
+
+export const computeCompletionList = (nick: PrivateNick) =>
+	computed(() => [...chatStore.allCommands(), chatStore.store.nickname(), nick.nickname]);

@@ -42,3 +42,10 @@ export const computeCanEditTopic = (props: Props) =>
 
 export const computeSelectedUser = (props: Props) =>
 	computed(() => chatStore.getSelectedUser(props.room));
+
+export const computeCompletionList = (props: Props) =>
+	computed(() => [
+		props.room.name,
+		...props.room.users.all.map((user) => user.nickname),
+		...chatStore.allCommands(),
+	]);

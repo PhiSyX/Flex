@@ -18,6 +18,7 @@ import { RoomMessage } from "~/room/RoomMessage";
 // ---- //
 
 export interface Props {
+	completionList?: Array<string>;
 	disableInput: boolean;
 	inputHistory?: Array<string>;
 	me: PrivateNick;

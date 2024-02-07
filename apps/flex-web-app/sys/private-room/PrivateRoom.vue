@@ -10,10 +10,11 @@ import {
 	changeNickRequest,
 } from "./PrivateRoom.handler";
 import {
-	Props,
+	type Props,
 	computeIsMe,
 	computeTitleIgnoreButton,
 } from "./PrivateRoom.state";
+import { computeCompletionList } from "~/components/private/PrivateRoom.state";
 
 // --------- //
 // Composant //
@@ -29,11 +30,13 @@ const toggleIgnoreUserHandler = toggleIgnoreUser(emit, props);
 
 const isMe = computeIsMe(props);
 const titleIgnoreButton = computeTitleIgnoreButton(props);
+const completionList = computeCompletionList(props.recipient);
 </script>
 
 <template>
 	<div class="room/private [ flex ]" :data-room="recipient.nickname">
 		<Room
+			:completion-list="completionList"
 			:disable-input="disableInput"
 			:input-history="inputHistory"
 			:messages="messages"

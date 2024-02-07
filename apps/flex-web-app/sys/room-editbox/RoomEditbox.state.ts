@@ -15,6 +15,7 @@ import { computed, ref } from "vue";
 // ---- //
 
 export interface Props {
+	completionList?: Array<string>;
 	nick: string;
 	disableInput?: boolean;
 	history?: Array<string>;

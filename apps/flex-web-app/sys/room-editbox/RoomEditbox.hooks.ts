@@ -9,15 +9,153 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ref, watchEffect } from "vue";
-import { Props, inputModel } from "./RoomEditbox.state";
+import { $input, Props, inputModel } from "./RoomEditbox.state";
+
+// ----- //
+// Hooks //
+// ----- //
+
+export function useAutocompletion(props: Props) {
+	const positionSuggestion = ref(-1);
+	const positionWord = ref(0);
+	const suggestions = ref([] as Array<string>);
+	const suggestionInput = ref("");
+
+	function applySuggestionHandler() {
+		inputModel.value = suggestionInput.value;
+		suggestionInput.value = "";
+		$input.value?.focus();
+	}
+
+	function inputHandler(evt: Event) {
+		const el = evt.target as HTMLInputElement;
+		const word = getWordByPositionCursor(el);
+
+		if (word.length === 0) {
+			inputCompleter();
+			return;
+		}
+
+		suggestions.value = wordCompleter(props.completionList || [], word);
+
+		if (
+			word.length >= 1 &&
+			inputModel.value.slice(-1) !== " " &&
+			suggestions.value.length > 0
+		) {
+			inputCompleter(suggestions.value[0]);
+		} else {
+			inputCompleter();
+		}
+	}
+
+	function keydownHandler(evt: KeyboardEvent) {
+		if (inputModel.value.length === 0) return;
+
+		if (["ArrowDown", "ArrowUp"].includes(evt.key)) {
+			suggestionInput.value = "";
+			return;
+		}
+
+		if (evt.key !== "Tab") {
+			positionSuggestion.value = -1;
+			return;
+		}
+
+		const lastSpaceChar = inputModel.value.slice(-1) === " ";
+
+		if (lastSpaceChar) return;
+
+		if (evt.shiftKey) {
+			positionSuggestion.value--;
+		} else {
+			positionSuggestion.value++;
+		}
+
+		const ls = suggestions.value.length;
+
+		if (positionSuggestion.value <= -1) {
+			positionSuggestion.value = ls - 1;
+		}
+
+		if (positionSuggestion.value >= ls) {
+			positionSuggestion.value = 0;
+		}
+
+		if (suggestions.value.length > 0) {
+			evt.preventDefault();
+		}
+
+		const ps = positionSuggestion.value;
+		const ds = ps % ls;
+		const found = suggestions.value[ds];
+
+		if (!found) return;
+
+		inputCompleter(found, evt.shiftKey ? "ShiftTab" : "Tab");
+	}
+
+	function getWordByPositionCursor(el: HTMLInputElement) {
+		const cursor = el.selectionStart || 0;
+		const words = inputModel.value.split(/\s/);
+
+		let word = "";
+
+		for (let idx = 0, count = 0; idx < words.length; idx++) {
+			const temp = words[idx];
+
+			count += temp.length + 1;
+
+			if (count >= cursor) {
+				positionWord.value = idx;
+				word = temp;
+			}
+		}
+
+		return word;
+	}
+
+	function inputCompleter(suggest = "", type = "input") {
+		const words = inputModel.value.split(/\s/);
+		const parts = inputModel.value.split(/\s/);
+		const word = parts[positionWord.value] || "";
+
+		words[positionWord.value] = word + suggest.slice(word.length);
+		if (suggestions.value.length > 0) {
+			suggestionInput.value = words.join(" ");
+		}
+
+		if (suggest === "") {
+			suggestionInput.value = "";
+		}
+
+		const last = words.at(-1);
+
+		if (["Tab", "ShiftTab"].includes(type) && last) {
+			const newPositionWord = words.slice(0, positionWord.value + 1).join(" ").length;
+			const newValueInput = words.join(" ").slice(0, newPositionWord - last.length) + suggest;
+			inputModel.value = newValueInput;
+			suggestionInput.value = "";
+		}
+	}
+
+	function wordCompleter(completionList: Array<string>, word: string) {
+		return completionList.filter((item) => !item.toLowerCase().indexOf(word.toLowerCase()));
+	}
+
+	return {
+		applySuggestionHandler,
+		autocompletionInputHandler: inputHandler,
+		autocompletionKeydownHandler: keydownHandler,
+		suggestionInput,
+	};
+}
 
 export function useInputHistory(props: Props, onSubmit: (props: Props) => () => void) {
 	const positionArrow = ref(0);
 
 	function keydownHandler(evt: KeyboardEvent) {
 		if (!props.history) return;
-
-		if (!["ArrowDown", "ArrowUp"].includes(evt.code)) return;
 
 		evt.preventDefault();
 
@@ -49,5 +187,8 @@ export function useInputHistory(props: Props, onSubmit: (props: Props) => () => 
 		}
 	});
 
-	return { keydownHandler, submitHandler };
+	return {
+		historyKeydownHandler: keydownHandler,
+		submitHandler,
+	};
 }
