@@ -11,7 +11,7 @@
 import { Option } from "@phisyx/flex-safety";
 import { ChannelNick } from "~/channel/ChannelNick";
 import { ChannelUsers } from "~/channel/ChannelUsers";
-import { User } from "~/user/User";
+import { User, UserID } from "~/user/User";
 import { Room } from "../room/Room";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 import { ChannelTopic } from "./ChannelTopic";
@@ -101,7 +101,7 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Récupère un utilisateur du salon.
 	 */
-	getUser(id: string): Option<ChannelNick> {
+	getUser(id: UserID): Option<ChannelNick> {
 		return this.users.get(id);
 	}
 
@@ -115,7 +115,7 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Supprime un utilisateur du salon.
 	 */
-	removeUser(id: string): boolean {
+	removeUser(id: UserID): boolean {
 		return this.users.remove(id).is_some();
 	}
 

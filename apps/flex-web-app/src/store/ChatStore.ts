@@ -16,7 +16,7 @@ import { reactive } from "vue";
 import { assertChannelRoom } from "~/asserts/room";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelNick } from "~/channel/ChannelNick";
-import { ChannelID, ChannelRoom } from "~/channel/ChannelRoom";
+import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
@@ -27,7 +27,7 @@ import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ClientIDStorage } from "~/storage/ClientIDStorage";
-import { User, UserID } from "~/user/User";
+import { User } from "~/user/User";
 import { UserManager } from "~/user/UserManager";
 import { useOverlayerStore } from "./OverlayerStore";
 
@@ -145,11 +145,9 @@ export class ChatStore {
 	private _client: Option<Origin> = None();
 	public clientError: Option<{ id: string; data: unknown }> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
-	private _selectedChannelUser: Option<[ChannelID, UserID]> = None();
 	private _network: Option<string> = None();
 	private _roomManager: RoomManager = new RoomManager();
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
-	// private _users: Map<string, User> = new Map();
 	private _userManager: UserManager = new UserManager();
 
 	private handlersSets: Set<() => Promise<unknown>> = new Set();
@@ -237,19 +235,13 @@ export class ChatStore {
 	 * Récupère l'utilisateur sélectionné d'un salon.
 	 */
 	getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
-		return this._selectedChannelUser
-			.and_then(([channelID, userID]) => {
-				return this.roomManager()
-					.get(channelID)
-					.filter((channel) => channel.eq(room))
-					.filter_map((channel) => {
-						assertChannelRoom(channel);
-						return channel.getUser(userID);
-					});
+		return this.roomManager()
+			.get(room.id())
+			.and_then((room) => {
+				assertChannelRoom(room);
+				return room.users.selected();
 			})
-			.map((cnick) => {
-				return new ChannelSelectedUser(cnick, this.userManager().isBlocked(cnick.id));
-			});
+			.map((cnick) => new ChannelSelectedUser(cnick, this.userManager().isBlocked(cnick.id)));
 	}
 
 	/**
@@ -467,14 +459,14 @@ export class ChatStore {
 	 * Définit l'utilisateur sélectionné d'un salon.
 	 */
 	setSelectedUser(room: ChannelRoom, origin: Origin) {
-		this._selectedChannelUser.replace([room.id(), origin.id]);
+		room.users.select(origin.id);
 	}
 
 	/**
 	 * Désélectionne un utilisateur d'un salon.
 	 */
-	unsetSelectedUser() {
-		this._selectedChannelUser = None();
+	unsetSelectedUser(room: ChannelRoom, origin: Origin) {
+		room.users.unselect(origin.id);
 	}
 
 	userManager(): UserManager {
@@ -693,7 +685,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		if (maybeSelectedUser.is_some()) {
 			const selectedUser = maybeSelectedUser.unwrap();
 			if (selectedUser.cnick.id === origin.id) {
-				store.unsetSelectedUser();
+				store.unsetSelectedUser(room, origin);
 			} else {
 				store.setSelectedUser(room, origin);
 			}
