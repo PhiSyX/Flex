@@ -74,8 +74,8 @@ impl ChatApplication
 	/// Change le pseudonyme d'un client
 	pub fn change_nickname_of_client(&self, client_socket: &mut client::Socket, nickname: &str)
 	{
-		if let Err(err) = client_socket.user_mut().set_nickname(nickname) {
-			log::error!("Changement de pseudonyme impossible {:?}", err);
+		if let Err(error) = client_socket.user_mut().set_nickname(nickname) {
+			tracing::error!(?error, "Changement de pseudonyme impossible");
 
 			client_socket.send_err_erroneusnickname(nickname);
 			return;

@@ -46,8 +46,8 @@ impl UserHandler
 				return;
 			}
 
-			if let Err(err) = client_socket.user_mut().set_ident(data.user) {
-				log::error!("Impossible d'assigner l'ident: {:?}", err);
+			if let Err(error) = client_socket.user_mut().set_ident(data.user) {
+				tracing::error!(?error, "Impossible d'assigner l'ident",);
 				None
 			} else {
 				client_socket.user_mut().set_realname(data.realname);

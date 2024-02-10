@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::types::time;
+use tracing::instrument;
 
 use crate::src::chat::components;
 use crate::src::chat::components::client::origin::Origin;
@@ -25,44 +26,64 @@ pub trait ClientSocketInterface
 
 	fn disconnect(self);
 
+	#[instrument(name = "ClientSocketInterface::broadcast", skip(self))]
 	fn broadcast<E, S>(&self, event: E, data: S)
 	where
-		E: ToString + std::fmt::Display,
+		E: ToString + std::fmt::Display + std::fmt::Debug,
 		S: serde::Serialize + std::fmt::Debug,
 	{
-		log::debug!("[BROADCAST] {event} {:#?}", &data);
+		tracing::debug!(
+			cid = ?self.client().cid(),
+			sid = ?self.client().sid(),
+			"Emission des données au client de la socket courante"
+		);
 		_ = self.socket().broadcast().emit(event.to_string(), data);
 	}
 
+	#[instrument(name = "ClientSocketInterface::emit", skip(self))]
 	fn emit<E, S>(&self, event: E, data: S)
 	where
-		E: ToString + std::fmt::Display,
+		E: ToString + std::fmt::Display + std::fmt::Debug,
 		S: serde::Serialize + std::fmt::Debug,
 	{
-		log::debug!("{event} {:#?}", &data);
+		tracing::debug!(
+			cid = ?self.client().cid(),
+			sid = ?self.client().sid(),
+			"Emission des données au client de la socket courante"
+		);
 		_ = self.socket().emit(event.to_string(), data);
 	}
 
+	#[instrument(name = "ClientSocketInterface::emit_to", skip(self))]
 	fn emit_to<T, E, S>(&self, to: T, event: E, data: S)
 	where
-		T: ToString + std::fmt::Display,
-		E: ToString + std::fmt::Display,
+		T: ToString + std::fmt::Display + std::fmt::Debug,
+		E: ToString + std::fmt::Display + std::fmt::Debug,
 		S: serde::Serialize + std::fmt::Debug,
 	{
-		log::debug!("> {event} {:#?} ({to})", &data);
+		tracing::debug!(
+			cid = ?self.client().cid(),
+			sid = ?self.client().sid(),
+			"Emission des données au client de la socket courante"
+		);
 		_ = self
 			.socket()
 			.to(to.to_string())
 			.emit(event.to_string(), data);
 	}
 
+	#[instrument(name = "ClientSocketInterface::emit_within", skip(self))]
 	fn emit_within<T, E, S>(&self, to: T, event: E, data: S)
 	where
-		T: ToString + std::fmt::Display,
-		E: ToString + std::fmt::Display,
+		T: ToString + std::fmt::Display + std::fmt::Debug,
+		E: ToString + std::fmt::Display + std::fmt::Debug,
 		S: serde::Serialize + std::fmt::Debug,
 	{
-		log::debug!("> {event} {:#?} ({to})", &data);
+		tracing::debug!(
+			cid = ?self.client().cid(),
+			sid = ?self.client().sid(),
+			"Emission des données au client de la socket courante"
+		);
 		_ = self
 			.socket()
 			.within(to.to_string())
