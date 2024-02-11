@@ -64,7 +64,9 @@ pub trait ModeChannelSettingsClientSocketCommandResponseInterface: ClientSocketI
 				.collect(),
 			updated: true,
 		};
-		self.emit(channel_settings.name(), channel_settings);
+
+		let channel_room = format!("channel:{}", target.to_lowercase());
+		self.emit_within(channel_room, channel_settings.name(), channel_settings);
 	}
 }
 

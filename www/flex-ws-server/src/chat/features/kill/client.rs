@@ -42,9 +42,10 @@ impl<'s> KillClientSocketCommandResponseInterface for client::Socket<'s>
 			tags: KillCommandResponse::default_tags(),
 		};
 
-		_ = self
-			.socket()
-			.within(knick_client_socket.channels_rooms())
-			.emit(cmd_kill.name(), cmd_kill);
+		self.emit_within(
+			knick_client_socket.channels_rooms(),
+			cmd_kill.name(),
+			cmd_kill,
+		);
 	}
 }

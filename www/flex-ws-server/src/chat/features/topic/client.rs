@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use super::{RplNotopicReply, RplTopicReply};
 use crate::src::chat::components::{self, client, ClientSocketInterface, Origin};
 
 // --------- //
@@ -19,8 +20,6 @@ pub trait TopicClientSocketInterface: ClientSocketInterface
 	/// Émet au client le sujet du salon.
 	fn send_rpl_topic(&self, channel: &components::channel::Channel, updated: bool)
 	{
-		use crate::src::chat::features::{RplNotopicReply, RplTopicReply};
-
 		let origin = Origin::from(self.client());
 		if channel.topic_text().is_empty() {
 			let rpl_notopic = RplNotopicReply {
@@ -31,10 +30,7 @@ pub trait TopicClientSocketInterface: ClientSocketInterface
 			self.emit(rpl_notopic.name(), &rpl_notopic);
 
 			if updated {
-				_ = self
-					.socket()
-					.to(channel.room())
-					.emit(rpl_notopic.name(), rpl_notopic);
+				self.emit_to(channel.room(), rpl_notopic.name(), rpl_notopic);
 			}
 		} else {
 			let rpl_topic = RplTopicReply {
@@ -49,10 +45,7 @@ pub trait TopicClientSocketInterface: ClientSocketInterface
 			self.emit(rpl_topic.name(), &rpl_topic);
 
 			if updated {
-				_ = self
-					.socket()
-					.to(channel.room())
-					.emit(rpl_topic.name(), rpl_topic);
+				self.emit_to(channel.room(), rpl_topic.name(), rpl_topic);
 			}
 		};
 	}

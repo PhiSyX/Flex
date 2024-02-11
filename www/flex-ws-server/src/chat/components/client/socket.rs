@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::types::time;
+use socketioxide::operators::RoomParam;
 use tracing::instrument;
 
 use crate::src::chat::components;
@@ -56,7 +57,7 @@ pub trait ClientSocketInterface
 	#[instrument(name = "ClientSocketInterface::emit_to", skip(self))]
 	fn emit_to<T, E, S>(&self, to: T, event: E, data: S)
 	where
-		T: ToString + std::fmt::Display + std::fmt::Debug,
+		T: RoomParam + std::fmt::Debug,
 		E: ToString + std::fmt::Display + std::fmt::Debug,
 		S: serde::Serialize + std::fmt::Debug,
 	{
@@ -65,16 +66,13 @@ pub trait ClientSocketInterface
 			sid = ?self.client().sid(),
 			"Emission des données au client de la socket courante"
 		);
-		_ = self
-			.socket()
-			.to(to.to_string())
-			.emit(event.to_string(), data);
+		_ = self.socket().to(to).emit(event.to_string(), data);
 	}
 
 	#[instrument(name = "ClientSocketInterface::emit_within", skip(self))]
 	fn emit_within<T, E, S>(&self, to: T, event: E, data: S)
 	where
-		T: ToString + std::fmt::Display + std::fmt::Debug,
+		T: RoomParam + std::fmt::Debug,
 		E: ToString + std::fmt::Display + std::fmt::Debug,
 		S: serde::Serialize + std::fmt::Debug,
 	{
@@ -83,10 +81,7 @@ pub trait ClientSocketInterface
 			sid = ?self.client().sid(),
 			"Emission des données au client de la socket courante"
 		);
-		_ = self
-			.socket()
-			.within(to.to_string())
-			.emit(event.to_string(), data);
+		_ = self.socket().within(to).emit(event.to_string(), data);
 	}
 
 	fn socket(&self) -> &socketioxide::extract::SocketRef;
@@ -189,10 +184,7 @@ impl<'a> Socket<'a>
 		});
 
 		for rpl_name in rpl_names {
-			_ = self
-				.socket()
-				.within(channel.room())
-				.emit(rpl_name.name(), rpl_name);
+			self.emit_within(channel.room(), rpl_name.name(), rpl_name);
 		}
 
 		let rpl_endofnames = RplEndofnamesReply {
@@ -200,10 +192,7 @@ impl<'a> Socket<'a>
 			channel: &channel.name,
 			tags: RplEndofnamesReply::default_tags(),
 		};
-		_ = self
-			.socket()
-			.within(channel.room())
-			.emit(rpl_endofnames.name(), rpl_endofnames);
+		self.emit_within(channel.room(), rpl_endofnames.name(), rpl_endofnames);
 	}
 
 	/// Émet au client les réponses de connexion. 3) RPL_CREATED
