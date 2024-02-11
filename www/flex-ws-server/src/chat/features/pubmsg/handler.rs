@@ -10,8 +10,13 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{
+	PubmsgApplicationInterface,
+	PubmsgClientSocketCommandResponseInterface,
+	PubmsgCommandFormData,
+};
 use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::permission::ChannelPermissionWrite;
+use crate::src::chat::components::permission::ChannelWritePermission;
 use crate::src::chat::replies::*;
 use crate::src::chat::ChatApplication;
 
@@ -30,25 +35,25 @@ impl PubmsgHandler
 	pub const COMMAND_NAME: &'static str = "PUBMSG";
 
 	/// PUBMSG est utilisé pour envoyer des messages à des salons.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::PubmsgCommandFormData>,
+		Data(data): Data<PubmsgCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
 
 		for channel in data.channels.iter() {
 			match app.is_client_able_to_write_on_channel(&client_socket, channel) {
-				| ChannelPermissionWrite::Yes(channel_nick) => {
+				| ChannelWritePermission::Yes(channel_nick) => {
 					let channel_member =
-						ChannelNickClient::from((client_socket.client(), channel_nick));
+						ChannelMemberDTO::from((client_socket.client(), channel_nick));
 					client_socket.emit_pubmsg(channel, &data.text, channel_member, false);
 				}
-				| ChannelPermissionWrite::Bypass => {
+				| ChannelWritePermission::Bypass => {
 					client_socket.emit_pubmsg(channel, &data.text, client_socket.user(), true);
 				}
-				| ChannelPermissionWrite::No => {
+				| ChannelWritePermission::No => {
 					client_socket.send_err_cannotsendtochan(channel);
 				}
 			}

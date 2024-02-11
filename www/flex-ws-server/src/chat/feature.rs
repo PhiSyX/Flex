@@ -60,10 +60,6 @@ impl Feature for ChatApplication
 				socket.on(ListHandler::COMMAND_NAME, ListHandler::handle);
 				socket.on(KickHandler::COMMAND_NAME, KickHandler::handle);
 				socket.on(KillHandler::COMMAND_NAME, KillHandler::handle);
-				socket.on(
-					ModeChannelSettingsHandler::COMMAND_NAME,
-					ModeChannelSettingsHandler::handle,
-				);
 				socket.on(NickHandler::COMMAND_NAME, NickHandler::handle);
 				socket.on(PartHandler::COMMAND_NAME, PartHandler::handle);
 				socket.on(PrivmsgHandler::COMMAND_NAME, PrivmsgHandler::handle);
@@ -114,6 +110,12 @@ impl Feature for ChatApplication
 				socket.on(
 					ModeAccessLevelVIPHandler::UNSET_COMMAND_NAME,
 					ModeAccessLevelVIPHandler::handle_remove,
+				);
+
+				/* Channel Modes */
+				socket.on(
+					ModeChannelSettingsHandler::COMMAND_NAME,
+					ModeChannelSettingsHandler::handle,
 				);
 			},
 		);

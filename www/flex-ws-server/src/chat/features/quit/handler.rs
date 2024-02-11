@@ -11,6 +11,7 @@
 use socketioxide::extract::{Data, SocketRef, State};
 use socketioxide::socket;
 
+use super::{QuitApplicationInterface, QuitCommandFormData};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -30,7 +31,7 @@ impl QuitHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::QuitCommandFormData>,
+		Data(data): Data<QuitCommandFormData>,
 	)
 	{
 		let _client_socket = app.current_client(&socket);

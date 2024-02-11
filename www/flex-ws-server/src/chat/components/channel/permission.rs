@@ -8,15 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::nick;
+use super::member;
 
 // ----------- //
 // Énumération //
 // ----------- //
 
-pub enum ChannelPermissionWrite
+pub enum ChannelWritePermission
 {
-	Yes(nick::ChannelNick),
+	Yes(member::ChannelMember),
 	Bypass,
 	No,
 }

@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{ListChannelClientSocketCommandResponseInterface, ListCommandFormData};
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::ChatApplication;
 
@@ -32,10 +33,10 @@ impl ListHandler
 	//
 	// TODO: Les caractères joker sont autorisés dans le paramètre <channels>.
 	// TODO: Mettre en cache le résultat, pendant une certaine durée.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(_): Data<super::ListCommandFormData>,
+		Data(_): Data<ListCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);

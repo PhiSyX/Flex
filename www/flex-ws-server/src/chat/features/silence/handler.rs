@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{SilenceApplicationInterface, SilenceClientSocketInterface, SilenceCommandFormData};
 use crate::src::chat::components::{ClientSocketInterface, Origin};
 use crate::src::ChatApplication;
 
@@ -29,10 +30,10 @@ impl SilenceHandler
 
 	/// La commande `/SILENCE` permet de ne plus être notifié des messages d'un
 	/// client que ces soit dans les messages privés ou publiques.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::SilenceCommandFormData>,
+		Data(data): Data<SilenceCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);

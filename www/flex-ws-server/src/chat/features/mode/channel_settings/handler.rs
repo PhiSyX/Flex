@@ -10,8 +10,17 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{
+	ChannelModeCommandFormData,
+	ModeChannelSettingsApplicationInterface,
+	ModeChannelSettingsClientSocketCommandResponseInterface,
+};
 use crate::src::chat::components::channel;
-use crate::src::chat::features::ApplyMode;
+use crate::src::chat::features::{
+	ApplyMode,
+	ModeChannelAccessLevelApplicationInterface,
+	OperApplicationInterface,
+};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -31,7 +40,7 @@ impl ModeChannelSettingsHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::ChannelModeCommandFormData>,
+		Data(data): Data<ChannelModeCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
@@ -143,13 +152,13 @@ impl ModeChannelSettingsHandler
 		}
 
 		// NOTE: seuls les membres ayant un niveau d'accès minimal à
-		// channel::nick::ChannelAccessLevel::HalfOperator peuvent appliquer
+		// channel::mode::ChannelAccessLevel::HalfOperator peuvent appliquer
 		// les modes suivants:
 
 		if !app.does_client_have_rights_on_channel(
 			&client_socket,
 			&data.target,
-			channel::nick::ChannelAccessLevel::HalfOperator,
+			channel::mode::ChannelAccessLevel::HalfOperator,
 		) {
 			return;
 		}

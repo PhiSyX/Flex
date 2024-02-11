@@ -12,6 +12,7 @@ use flex_crypto::{Argon2Encryption, Encryption};
 use flex_web_framework::security::SecurityEncryptionService;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{OperApplicationInterface, OperClientSocketErrorRepliesInterface, OperCommandFormData};
 use crate::config::flex::flex_config;
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::ChatApplication;
@@ -30,10 +31,10 @@ impl OperHandler
 {
 	pub const COMMAND_NAME: &'static str = "OPER";
 
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::OperCommandFormData>,
+		Data(data): Data<OperCommandFormData>,
 	)
 	{
 		let mut client_socket = app.current_client_mut(&socket);

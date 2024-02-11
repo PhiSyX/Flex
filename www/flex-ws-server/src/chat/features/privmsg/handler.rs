@@ -10,8 +10,10 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{PrivmsgClientSocketCommandResponseInterface, PrivmsgCommandFormData};
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::Origin;
+use crate::src::chat::features::{SilenceApplicationInterface, UserStatusClientSocketInterface};
 use crate::src::chat::ChatApplication;
 
 // --------- //
@@ -29,10 +31,10 @@ impl PrivmsgHandler
 	pub const COMMAND_NAME: &'static str = "PRIVMSG";
 
 	/// PRIVMSG est utilisé pour envoyer des messages privés entre utilisateurs.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::PrivmsgCommandFormData>,
+		Data(data): Data<PrivmsgCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);

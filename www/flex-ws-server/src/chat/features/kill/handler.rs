@@ -10,6 +10,11 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{
+	KillApplicationInterface,
+	KillClientSocketCommandResponseInterface,
+	KillCommandFormData,
+};
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::ChatApplication;
 
@@ -62,10 +67,10 @@ impl KillHandler
 	/// d'être générés pour cacher l'identité du KILLer, le commentaire montre
 	/// également un 'kill-path' qui est mis à jour par chaque serveur qu'il
 	/// traverse, chacun ajoutant son nom au chemin.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::KillCommandFormData>,
+		Data(data): Data<KillCommandFormData>,
 	)
 	{
 		let Some(client_socket) = app.current_client_operator(&socket) else {

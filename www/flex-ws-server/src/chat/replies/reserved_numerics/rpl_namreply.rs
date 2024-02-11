@@ -10,8 +10,8 @@
 
 use std::collections::HashSet;
 
-use crate::src::chat::components::channel::nick;
-use crate::src::chat::components::{client, user};
+use crate::src::chat::components::channel::member;
+use crate::src::chat::components::{client, mode, user};
 use crate::{command_response, reserved_numerics};
 
 reserved_numerics! {
@@ -34,7 +34,7 @@ command_response! {
 	{
 		code: u16,
 		channel: &'a str,
-		users: Vec<ChannelNickClient>,
+		users: Vec<ChannelMemberDTO>,
 	}
 }
 
@@ -49,22 +49,22 @@ impl<'c> RplNamreplyCommandResponse<'c>
 #[derive(Debug)]
 #[derive(serde::Serialize)]
 #[derive(Clone)]
-pub struct ChannelNickClient
+pub struct ChannelMemberDTO
 {
 	pub id: client::ClientID,
 	#[serde(flatten)]
 	pub user: user::User,
 	/// Les modes de salon d'un pseudo.
-	pub access_level: HashSet<nick::ChannelAccessLevel>,
+	pub access_level: HashSet<mode::ChannelAccessLevel>,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl From<(client::Client, nick::ChannelNick)> for ChannelNickClient
+impl From<(client::Client, member::ChannelMember)> for ChannelMemberDTO
 {
-	fn from((client, channel_nick): (client::Client, nick::ChannelNick)) -> Self
+	fn from((client, channel_nick): (client::Client, member::ChannelMember)) -> Self
 	{
 		Self {
 			id: client.cid(),
@@ -74,9 +74,9 @@ impl From<(client::Client, nick::ChannelNick)> for ChannelNickClient
 	}
 }
 
-impl From<(&client::Client, nick::ChannelNick)> for ChannelNickClient
+impl From<(&client::Client, member::ChannelMember)> for ChannelMemberDTO
 {
-	fn from((client, channel_nick): (&client::Client, nick::ChannelNick)) -> Self
+	fn from((client, channel_nick): (&client::Client, member::ChannelMember)) -> Self
 	{
 		Self {
 			id: client.cid(),
@@ -86,9 +86,9 @@ impl From<(&client::Client, nick::ChannelNick)> for ChannelNickClient
 	}
 }
 
-impl From<(client::Client, &nick::ChannelNick)> for ChannelNickClient
+impl From<(client::Client, &member::ChannelMember)> for ChannelMemberDTO
 {
-	fn from((client, channel_nick): (client::Client, &nick::ChannelNick)) -> Self
+	fn from((client, channel_nick): (client::Client, &member::ChannelMember)) -> Self
 	{
 		Self {
 			id: client.cid(),
@@ -98,9 +98,9 @@ impl From<(client::Client, &nick::ChannelNick)> for ChannelNickClient
 	}
 }
 
-impl From<(&client::Client, &nick::ChannelNick)> for ChannelNickClient
+impl From<(&client::Client, &member::ChannelMember)> for ChannelMemberDTO
 {
-	fn from((client, channel_nick): (&client::Client, &nick::ChannelNick)) -> Self
+	fn from((client, channel_nick): (&client::Client, &member::ChannelMember)) -> Self
 	{
 		Self {
 			id: client.cid(),
@@ -110,9 +110,9 @@ impl From<(&client::Client, &nick::ChannelNick)> for ChannelNickClient
 	}
 }
 
-impl From<(client::Client, &&nick::ChannelNick)> for ChannelNickClient
+impl From<(client::Client, &&member::ChannelMember)> for ChannelMemberDTO
 {
-	fn from((client, channel_nick): (client::Client, &&nick::ChannelNick)) -> Self
+	fn from((client, channel_nick): (client::Client, &&member::ChannelMember)) -> Self
 	{
 		Self {
 			id: client.cid(),

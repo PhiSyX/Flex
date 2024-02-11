@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{KickApplicationInterface, KickCommandFormData};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -39,10 +40,10 @@ impl KickHandler
 	/// Le serveur NE DOIT PAS envoyer aux clients des messages KICK comportant
 	/// plusieurs salons ou utilisateurs. Ceci est nécessaire pour maintenir la
 	/// compatibilité avec les anciens logiciels clients.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::KickCommandFormData>,
+		Data(data): Data<KickCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);

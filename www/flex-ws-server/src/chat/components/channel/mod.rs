@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+pub mod member;
 pub mod mode;
-pub mod nick;
 pub mod permission;
 pub mod topic;
 
@@ -40,7 +40,7 @@ pub struct Channel
 	/// Les paramètres du salon.
 	pub(crate) modes_settings: mode::ChannelModes<mode::SettingsFlags>,
 	/// Liste des utilisateurs du salon.
-	pub(crate) users: HashMap<client::ClientID, nick::ChannelNick>,
+	pub(crate) users: HashMap<client::ClientID, member::ChannelMember>,
 	/// Topic du salon.
 	pub(crate) topic: topic::ChannelTopic,
 }
@@ -63,7 +63,7 @@ impl Channel
 	}
 
 	/// Crée une nouvelle structure d'un salon avec des drapeaux.
-	pub fn with_flags(
+	pub fn with_creation_flags(
 		mut self,
 		flags: impl IntoIterator<Item = ApplyMode<mode::SettingsFlags>>,
 	) -> Self
@@ -77,7 +77,7 @@ impl Channel
 impl Channel
 {
 	/// Ajoute un membre au salon.
-	pub fn add_member(&mut self, id: client::ClientID, nick: nick::ChannelNick)
+	pub fn add_member(&mut self, id: client::ClientID, nick: member::ChannelMember)
 	{
 		self.users.insert(id, nick);
 	}
@@ -89,19 +89,19 @@ impl Channel
 	}
 
 	/// Récupère un membre du salon.
-	pub fn member(&self, id: &client::ClientID) -> Option<&nick::ChannelNick>
+	pub fn member(&self, id: &client::ClientID) -> Option<&member::ChannelMember>
 	{
 		self.users.get(id)
 	}
 
 	/// Récupère un membre du salon.
-	pub fn member_mut(&mut self, id: &client::ClientID) -> Option<&mut nick::ChannelNick>
+	pub fn member_mut(&mut self, id: &client::ClientID) -> Option<&mut member::ChannelMember>
 	{
 		self.users.get_mut(id)
 	}
 
 	/// Tous les membres du salon.
-	pub fn members(&self) -> &HashMap<client::ClientID, nick::ChannelNick>
+	pub fn members(&self) -> &HashMap<client::ClientID, member::ChannelMember>
 	{
 		&self.users
 	}

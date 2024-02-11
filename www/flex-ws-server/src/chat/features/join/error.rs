@@ -12,7 +12,7 @@
 // Énumération //
 // ----------- //
 
-pub enum ChannelJoinError
+pub enum JoinChannelError
 {
 	BadChannelKey,
 	HasAlreadyClient,

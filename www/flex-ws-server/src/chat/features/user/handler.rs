@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::UserCommandFormData;
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::chat::features::ConnectionRegistrationHandler;
 use crate::src::ChatApplication;
@@ -35,7 +36,7 @@ impl UserHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::UserCommandFormData>,
+		Data(data): Data<UserCommandFormData>,
 	)
 	{
 		let check = {

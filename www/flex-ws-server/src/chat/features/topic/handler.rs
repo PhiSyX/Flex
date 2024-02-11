@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{TopicApplicationInterface, TopicClientSocketInterface, TopicCommandFormData};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -32,10 +33,10 @@ impl TopicHandler
 	/// cette action est autorisée pour l'utilisateur qui la demande. Si le
 	/// paramètre <topic> est une chaîne vide, le sujet de ce salon sera
 	/// supprimé.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::TopicCommandFormData>,
+		Data(data): Data<TopicCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);

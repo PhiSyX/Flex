@@ -47,18 +47,18 @@ impl ChannelTopic
 	}
 
 	/// Définit le sujet d'un salon.
-	pub fn set(&mut self, topic: impl ToString, updated_by: &str)
+	pub fn set(&mut self, topic: impl ToString, updated_by: impl ToString)
 	{
 		self.updated_at = time::Utc::now();
-		self.updated_by = updated_by.to_owned();
+		self.updated_by = updated_by.to_string();
 		self.topic = topic.to_string();
 	}
 
 	/// Définit le sujet d'un salon comme étant vide.
-	pub fn unset(&mut self, updated_by: &str)
+	pub fn unset(&mut self, updated_by: impl ToString)
 	{
 		self.updated_at = time::Utc::now();
-		self.updated_by = updated_by.to_owned();
+		self.updated_by = updated_by.to_string();
 		self.topic = String::default();
 	}
 

@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{AwayCommandFormData, UserStatusAwayApplicationInterface};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -43,10 +44,10 @@ impl AwayHandler
 	/// devrait être utilisé à la place.
 	///
 	/// TODO: Notifier les clients avec les capacités serveur (away-notify).
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AwayCommandFormData>,
+		Data(data): Data<AwayCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);

@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{NickApplicationInterface, NickClientSocketErrorRepliesInterface, NickCommandFormData};
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::chat::features::ConnectionRegistrationHandler;
 use crate::src::ChatApplication;
@@ -33,7 +34,7 @@ impl NickHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::NickCommandFormData>,
+		Data(data): Data<NickCommandFormData>,
 	)
 	{
 		let mut client_socket = app.current_client_mut(&socket);
@@ -55,7 +56,7 @@ impl NickHandler
 	pub fn handle_unregistered(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::NickCommandFormData>,
+		Data(data): Data<NickCommandFormData>,
 	)
 	{
 		if app.can_locate_client_by_nickname(&data.nickname) {

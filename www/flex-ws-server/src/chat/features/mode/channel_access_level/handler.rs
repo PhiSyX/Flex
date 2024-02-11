@@ -11,11 +11,20 @@
 use flex_web_framework::types::time;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::src::chat::components::channel::nick;
+use super::application::ModeChannelAccessLevelApplicationInterface;
+use super::client::ModeAccessLevelClientSocketInterface;
+use super::{
+	AccessLevelAdminOperatorCommandFormData,
+	AccessLevelHalfOperatorCommandFormData,
+	AccessLevelOperatorCommandFormData,
+	AccessLevelOwnerOperatorCommandFormData,
+	AccessLevelVipCommandFormData,
+};
+use crate::src::chat::components::channel::member;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
-use crate::src::chat::features::ApplyMode;
-use crate::src::chat::replies::ChannelNickClient;
+use crate::src::chat::features::{ApplyMode, OperApplicationInterface};
+use crate::src::chat::replies::ChannelMemberDTO;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -23,6 +32,7 @@ use crate::src::ChatApplication;
 // --------- //
 
 struct ModeAccessLevelHandler;
+
 pub struct ModeAccessLevelQOPHandler;
 pub struct ModeAccessLevelAOPHandler;
 pub struct ModeAccessLevelOPHandler;
@@ -40,8 +50,8 @@ impl ModeAccessLevelHandler
 		app: &ChatApplication,
 		channel_name: channel::ChannelIDRef,
 		nicknames: &[String],
-		min_access_level: nick::ChannelAccessLevel,
-		set_access_level: nick::ChannelAccessLevel,
+		min_access_level: channel::mode::ChannelAccessLevel,
+		set_access_level: channel::mode::ChannelAccessLevel,
 	)
 	{
 		let client_socket = app.current_client(socket);
@@ -74,7 +84,7 @@ impl ModeAccessLevelHandler
 					struct TargetNick<'a>
 					{
 						client: client::Socket<'a>,
-						nick: nick::ChannelNick,
+						nick: member::ChannelMember,
 					}
 
 					TargetNick {
@@ -98,7 +108,7 @@ impl ModeAccessLevelHandler
 			.iter()
 			.map(|target_nick| {
 				let member =
-					ChannelNickClient::from((target_nick.client.client(), &target_nick.nick));
+					ChannelMemberDTO::from((target_nick.client.client(), &target_nick.nick));
 				(
 					set_access_level.letter(),
 					ApplyMode {
@@ -116,9 +126,9 @@ impl ModeAccessLevelHandler
 		client_socket.send_rpl_namreply(&channel, move |nick| {
 			let found = updated
 				.iter()
-				.find(|target_nick| target_nick.nick.id() == nick.id())?;
-			let found_client = app.get_client_by_id(found.nick.id())?;
-			Some(ChannelNickClient::from((found_client, &found.nick)))
+				.find(|target_nick| target_nick.nick.member_id() == nick.member_id())?;
+			let found_client = app.get_client_by_id(found.nick.member_id())?;
+			Some(ChannelMemberDTO::from((found_client, &found.nick)))
 		});
 	}
 
@@ -127,8 +137,8 @@ impl ModeAccessLevelHandler
 		app: &ChatApplication,
 		channel_name: &channel::ChannelID,
 		nicknames: &[String],
-		min_access_level: nick::ChannelAccessLevel,
-		unset_access_level: nick::ChannelAccessLevel,
+		min_access_level: channel::mode::ChannelAccessLevel,
+		unset_access_level: channel::mode::ChannelAccessLevel,
 	)
 	{
 		let client_socket = app.current_client(socket);
@@ -164,7 +174,7 @@ impl ModeAccessLevelHandler
 					struct TargetNick<'a>
 					{
 						client: client::Socket<'a>,
-						nick: nick::ChannelNick,
+						nick: member::ChannelMember,
 					}
 
 					TargetNick {
@@ -188,7 +198,7 @@ impl ModeAccessLevelHandler
 			.iter()
 			.map(|target_nick| {
 				let member =
-					ChannelNickClient::from((target_nick.client.client(), &target_nick.nick));
+					ChannelMemberDTO::from((target_nick.client.client(), &target_nick.nick));
 				(
 					unset_access_level.letter(),
 					ApplyMode {
@@ -206,9 +216,9 @@ impl ModeAccessLevelHandler
 		client_socket.send_rpl_namreply(&channel, move |nick| {
 			let found = updated
 				.iter()
-				.find(|target_nick| target_nick.nick.id() == nick.id())?;
-			let found_client = app.get_client_by_id(found.nick.id())?;
-			Some(ChannelNickClient::from((found_client, &found.nick)))
+				.find(|target_nick| target_nick.nick.member_id() == nick.member_id())?;
+			let found_client = app.get_client_by_id(found.nick.member_id())?;
+			Some(ChannelMemberDTO::from((found_client, &found.nick)))
 		});
 	}
 }
@@ -221,7 +231,7 @@ impl ModeAccessLevelQOPHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelOwnerOperatorCommandFormData>,
+		Data(data): Data<AccessLevelOwnerOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::update_access_level_for_nick(
@@ -229,15 +239,15 @@ impl ModeAccessLevelQOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Owner,
-			nick::ChannelAccessLevel::Owner,
+			channel::mode::ChannelAccessLevel::Owner,
+			channel::mode::ChannelAccessLevel::Owner,
 		);
 	}
 
 	pub fn handle_remove(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelOwnerOperatorCommandFormData>,
+		Data(data): Data<AccessLevelOwnerOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::remove_access_level_for_nick(
@@ -245,8 +255,8 @@ impl ModeAccessLevelQOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Owner,
-			nick::ChannelAccessLevel::Owner,
+			channel::mode::ChannelAccessLevel::Owner,
+			channel::mode::ChannelAccessLevel::Owner,
 		);
 	}
 }
@@ -259,7 +269,7 @@ impl ModeAccessLevelAOPHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelAdminOperatorCommandFormData>,
+		Data(data): Data<AccessLevelAdminOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::update_access_level_for_nick(
@@ -267,15 +277,15 @@ impl ModeAccessLevelAOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Owner,
-			nick::ChannelAccessLevel::AdminOperator,
+			channel::mode::ChannelAccessLevel::Owner,
+			channel::mode::ChannelAccessLevel::AdminOperator,
 		);
 	}
 
 	pub fn handle_remove(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelAdminOperatorCommandFormData>,
+		Data(data): Data<AccessLevelAdminOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::remove_access_level_for_nick(
@@ -283,8 +293,8 @@ impl ModeAccessLevelAOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Owner,
-			nick::ChannelAccessLevel::AdminOperator,
+			channel::mode::ChannelAccessLevel::Owner,
+			channel::mode::ChannelAccessLevel::AdminOperator,
 		);
 	}
 }
@@ -297,7 +307,7 @@ impl ModeAccessLevelOPHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelOperatorCommandFormData>,
+		Data(data): Data<AccessLevelOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::update_access_level_for_nick(
@@ -305,15 +315,15 @@ impl ModeAccessLevelOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Operator,
-			nick::ChannelAccessLevel::Operator,
+			channel::mode::ChannelAccessLevel::Operator,
+			channel::mode::ChannelAccessLevel::Operator,
 		);
 	}
 
 	pub fn handle_remove(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelOperatorCommandFormData>,
+		Data(data): Data<AccessLevelOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::remove_access_level_for_nick(
@@ -321,8 +331,8 @@ impl ModeAccessLevelOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Operator,
-			nick::ChannelAccessLevel::Operator,
+			channel::mode::ChannelAccessLevel::Operator,
+			channel::mode::ChannelAccessLevel::Operator,
 		);
 	}
 }
@@ -335,7 +345,7 @@ impl ModeAccessLevelHOPHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelHalfOperatorCommandFormData>,
+		Data(data): Data<AccessLevelHalfOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::update_access_level_for_nick(
@@ -343,15 +353,15 @@ impl ModeAccessLevelHOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Operator,
-			nick::ChannelAccessLevel::HalfOperator,
+			channel::mode::ChannelAccessLevel::Operator,
+			channel::mode::ChannelAccessLevel::HalfOperator,
 		);
 	}
 
 	pub fn handle_remove(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelHalfOperatorCommandFormData>,
+		Data(data): Data<AccessLevelHalfOperatorCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::remove_access_level_for_nick(
@@ -359,8 +369,8 @@ impl ModeAccessLevelHOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::Operator,
-			nick::ChannelAccessLevel::HalfOperator,
+			channel::mode::ChannelAccessLevel::Operator,
+			channel::mode::ChannelAccessLevel::HalfOperator,
 		);
 	}
 }
@@ -373,7 +383,7 @@ impl ModeAccessLevelVIPHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelOperatorCommandFormData>,
+		Data(data): Data<AccessLevelVipCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::update_access_level_for_nick(
@@ -381,15 +391,15 @@ impl ModeAccessLevelVIPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::HalfOperator,
-			nick::ChannelAccessLevel::Vip,
+			channel::mode::ChannelAccessLevel::HalfOperator,
+			channel::mode::ChannelAccessLevel::Vip,
 		);
 	}
 
 	pub fn handle_remove(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::AccessLevelOperatorCommandFormData>,
+		Data(data): Data<AccessLevelVipCommandFormData>,
 	)
 	{
 		ModeAccessLevelHandler::remove_access_level_for_nick(
@@ -397,8 +407,8 @@ impl ModeAccessLevelVIPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			nick::ChannelAccessLevel::HalfOperator,
-			nick::ChannelAccessLevel::Vip,
+			channel::mode::ChannelAccessLevel::HalfOperator,
+			channel::mode::ChannelAccessLevel::Vip,
 		);
 	}
 }

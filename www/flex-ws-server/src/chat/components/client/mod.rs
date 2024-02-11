@@ -147,10 +147,11 @@ impl Client
 	}
 
 	/// Marque le client comme étant absent.
-	pub fn marks_user_as_away(&mut self, text: String)
+	pub fn marks_user_as_away(&mut self, text: impl ToString)
 	{
 		self.user.set_flag(
-			ApplyMode::new(super::Flag::Away(text)).with_update_by(&self.user().nickname),
+			ApplyMode::new(super::Flag::Away(text.to_string()))
+				.with_update_by(&self.user().nickname),
 		);
 	}
 

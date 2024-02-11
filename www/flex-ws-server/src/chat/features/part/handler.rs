@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{PartChannelApplicationInterface, PartCommandFormData, SapartCommandFormData};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -17,6 +18,7 @@ use crate::src::ChatApplication;
 // --------- //
 
 pub struct PartHandler;
+
 pub struct SapartHandler;
 
 // -------------- //
@@ -36,16 +38,16 @@ impl PartHandler
 	/// Les serveurs DOIVENT être capables d'analyser les arguments sous la
 	/// forme d'une liste de cibles, mais NE DOIVENT PAS utiliser de listes lors
 	/// de l'envoi de messages PART aux clients.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::PartCommandFormData>,
+		Data(data): Data<PartCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels.iter() {
-			app.part_channel(&client_socket, channel_name, data.message.as_deref());
+			app.part_channel::<&str>(&client_socket, channel_name, data.message.as_deref());
 		}
 	}
 }
@@ -55,10 +57,10 @@ impl SapartHandler
 	pub const COMMAND_NAME: &'static str = "SAPART";
 
 	/// La commande SAPART entraîne la suppression des utilisateurs de force.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::SapartCommandFormData>,
+		Data(data): Data<SapartCommandFormData>,
 	)
 	{
 		let Some(client_socket) = app.current_client_operator(&socket) else {
@@ -72,7 +74,7 @@ impl SapartHandler
 			};
 
 			for channel_name in data.channels.iter() {
-				app.force_part_channel(
+				app.force_part_channel::<&str>(
 					&client_socket,
 					&nickname_socket,
 					channel_name,

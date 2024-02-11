@@ -8,10 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use std::collections::HashSet;
-
-use crate::src::chat::components::client;
-
 // ---- //
 // Type //
 // ---- //
@@ -42,19 +38,9 @@ pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR: char = 'h';
 pub const CHANNEL_ACCESS_LEVEL_VIP_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 3;
 pub const CHANNEL_ACCESS_LEVEL_VIP: char = 'v';
 
-// --------- //
-// Structure //
-// --------- //
-
-#[derive(Debug)]
-#[derive(Clone)]
-pub struct ChannelNick
-{
-	/// ID faisant référence à un client.
-	client_id: client::ClientID,
-	/// Les modes liés au pseudo du salon.
-	pub(crate) access_level: HashSet<ChannelAccessLevel>,
-}
+// ----------- //
+// Énumération //
+// ----------- //
 
 #[derive(Debug)]
 #[derive(Copy, Clone)]
@@ -79,71 +65,6 @@ pub enum ChannelAccessLevel
 // -------------- //
 // Implémentation //
 // -------------- //
-
-impl ChannelNick
-{
-	/// Crée la structure [ChannelNick]
-	pub fn new(client_id: client::ClientID) -> Self
-	{
-		Self {
-			client_id,
-			access_level: Default::default(),
-		}
-	}
-
-	/// Crée la structure [ChannelNick] avec ses modes.
-	pub fn with_modes(mut self, it: impl IntoIterator<Item = ChannelAccessLevel>) -> Self
-	{
-		self.access_level = HashSet::from_iter(it);
-		self
-	}
-}
-
-impl ChannelNick
-{
-	/// ID faisant référence à un [client](Client).
-	pub fn id(&self) -> &client::ClientID
-	{
-		&self.client_id
-	}
-
-	/// Les niveaux d'access d'un pseudo d'un salon.
-	pub fn access_level(&self) -> &HashSet<ChannelAccessLevel>
-	{
-		&self.access_level
-	}
-
-	/// Le niveau le plus élevé qu'à le lient
-	pub fn highest_access_level(&self) -> Option<&ChannelAccessLevel>
-	{
-		if self.access_level.is_empty() {
-			return None;
-		}
-
-		let last = self.access_level.iter().last();
-
-		let highest: Option<&ChannelAccessLevel> =
-			self.access_level.iter().fold(last, |maybe_level, level| {
-				(level.flag() >= maybe_level?.flag())
-					.then_some(level)
-					.or(maybe_level)
-			});
-
-		highest
-	}
-
-	/// Supprime le niveau d'accès du pseudo.
-	pub fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
-	{
-		self.access_level.remove(&access_level)
-	}
-
-	/// Met à jour le niveau d'accès du pseudo.
-	pub fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
-	{
-		self.access_level.insert(access_level)
-	}
-}
 
 impl ChannelAccessLevel
 {

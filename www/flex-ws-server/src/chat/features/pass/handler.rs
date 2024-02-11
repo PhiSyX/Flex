@@ -10,6 +10,7 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::PassCommandFormData;
 use crate::config::flex::flex_config;
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::ChatApplication;
@@ -37,7 +38,7 @@ impl PassHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::PassCommandFormData>,
+		Data(data): Data<PassCommandFormData>,
 	)
 	{
 		let mut client_socket = app.current_client_mut(&socket);

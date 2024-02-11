@@ -10,6 +10,8 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
+use super::{JoinApplicationInterface, JoinCommandFormData, SajoinCommandFormData};
+use crate::src::chat::features::PartChannelApplicationInterface;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -52,14 +54,14 @@ impl JoinHandler
 	pub async fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::JoinCommandFormData>,
+		Data(data): Data<JoinCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
 
 		// NOTE: Cas spécial "/JOIN 0" : partir de tous les salons.
 		if data.channels.first().filter(|s| s.eq(&"0")).is_some() {
-			app.remove_client_from_all_his_channels(&client_socket);
+			app.part_all_channels(&client_socket);
 			return;
 		}
 
@@ -84,10 +86,10 @@ impl SajoinHandler
 
 	/// La commande SAJOIN est utilisée par un client de type opérateur global
 	/// pour forcer les pseudo à rejoindre des salons spécifiques.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::SajoinCommandFormData>,
+		Data(data): Data<SajoinCommandFormData>,
 	)
 	{
 		let Some(client_socket) = app.current_client_operator(&socket) else {

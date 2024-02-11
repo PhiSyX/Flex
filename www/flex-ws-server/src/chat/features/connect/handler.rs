@@ -14,10 +14,21 @@ use flex_web_framework::types::time;
 use flex_web_framework::types::time::TimeZone;
 use socketioxide::extract::{SocketRef, State, TryData};
 
+use super::ConnectApplicationInterface;
 use crate::config::flex::flex_config;
 use crate::src::chat::components;
 use crate::src::chat::components::{ClientSocketInterface, Origin};
-use crate::src::chat::features::*;
+use crate::src::chat::features::{
+	NickHandler,
+	OperApplicationInterface,
+	OperClientSocketCommandResponse,
+	PassHandler,
+	QuitHandler,
+	SilenceClientSocketInterface,
+	SilenceClientsSessionInterface,
+	UserClientSocketInterface,
+	UserHandler,
+};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -164,7 +175,7 @@ impl ConnectionRegistrationHandler
 		});
 
 		// NOTE(phisyx): transmet à l'utilisateur ses modes utilisateurs.
-		client_socket.emit_umodes();
+		client_socket.emit_all_user_modes();
 
 		// NOTE(phisyx): transmet à l'utilisateur son rôle d'opérateur global.
 		if client_socket.user().is_operator() {
