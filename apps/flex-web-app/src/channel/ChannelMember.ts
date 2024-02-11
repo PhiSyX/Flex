@@ -20,7 +20,7 @@ import {
 // Implémentation //
 // -------------- //
 
-export class ChannelNick {
+export class ChannelMember {
 	// ----------- //
 	// Constructor //
 	// ----------- //

@@ -5,18 +5,10 @@ import {
 	TextInput,
 	UiButton,
 } from "@phisyx/flex-uikit";
+import { reactive, ref, type ModelRef } from "vue";
 
-import {
-	MAXLENGTH_NICKNAME,
-	PLACEHOLDER_NICKNAME,
-	VALIDATION_NICKNAME_INFO,
-} from "./LoginView.constants";
-import {
-	connectSubmit,
-	displayAdvancedInfoHandler,
-} from "./LoginView.handlers";
-import { advancedInfo, errors, loader, loginFormData } from "./LoginView.state";
-import { useRememberMe } from "./LoginView.hooks";
+import { useChatStore } from "~/store/ChatStore";
+import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
 
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 
@@ -35,7 +27,131 @@ interface Props {
 defineProps<Props>();
 const isConnected = defineModel<boolean>("isConnected");
 
+/**
+ * Attribut `title` de l'élément `<input name="nickname">`.
+ *
+ * Utilisé pour indiquer à l'utilisateur la valeur attendue pour un pseudonyme.
+ */
+const VALIDATION_NICKNAME_INFO: string = `
+Pour qu'un pseudonyme soit considéré comme valide, ses caractères doivent
+respecter, un format précis, les conditions suivantes :
+	- Il ne doit pas commencer par le caractère '-' ou par un caractère
+	  numérique '0..9' ;
+	- Il peut contenir les caractères: alphanumériques, 'A..Z', 'a..z',
+	  '0..9'. Les caractères alphabétiques des langues étrangères sont
+	  considérés comme valides. Par exemple: le russe, le japonais, etc.
+	- Il peut contenir les caractères spéciaux suivants: []\`_^{|}
+`.trim();
+
+/**
+ * Attribut `maxlength` de l'élément `<input name="nickname">`.
+ *
+ * Taille maximale d'un pseudonyme.
+ */
+const MAXLENGTH_NICKNAME: number = 30;
+
+/**
+ * Attribut `placeholder` de l'élément `<input name="nickname">`.
+ */
+const PLACEHOLDER_NICKNAME: string = `Pseudonyme (max. ${MAXLENGTH_NICKNAME} caractères)`;
+
 const submitHandler = connectSubmit(isConnected);
+
+const chatStore = useChatStore();
+
+const advancedInfo = ref(false);
+const loginFormData = reactive({
+	alternativeNickname: import.meta.env.VITE_APP_NICKNAME
+		? `${import.meta.env.VITE_APP_NICKNAME}_`
+		: "",
+	channels: import.meta.env.VITE_APP_CHANNELS || "",
+	nickname: import.meta.env.VITE_APP_NICKNAME || "",
+	realname: import.meta.env.VITE_APP_REALNAME || "Flex Web App",
+	rememberMe: new RememberMeStorage(),
+	passwordServer: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
+	websocketServerURL: import.meta.env.VITE_APP_WEBSOCKET_URL,
+});
+const errors = reactive({
+	nickname: null as string | null,
+	alternativeNickname: null as string | null,
+});
+const loader = ref(false);
+
+// ------- //
+// Handler //
+// ------- //
+
+/**
+ * Affiche les informations de connexion avancées.
+ */
+function displayAdvancedInfoHandler() {
+	advancedInfo.value = true;
+}
+
+/**
+ * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
+ */
+function connectSubmit(
+	isConnectedModel: ModelRef<boolean | undefined, string>
+) {
+	async function connectSubmitHandler(evt: Event) {
+		evt.preventDefault();
+
+		loader.value = true;
+
+		await chatStore.store.loadAllModules();
+
+		chatStore.connect(loginFormData);
+
+		chatStore.listen(
+			"RPL_WELCOME",
+			() => replyWelcomeHandler(isConnectedModel),
+			{
+				once: true,
+			}
+		);
+
+		chatStore.listen("ERR_NICKNAMEINUSE", (data) =>
+			errorNicknameinuseHandler(data)
+		);
+	}
+
+	return connectSubmitHandler;
+}
+
+/**
+ * Écoute de l'événement `RPL_WELCOME`.
+ */
+function replyWelcomeHandler(
+	isConnectedModel: ModelRef<boolean | undefined, string>
+) {
+	loader.value = false;
+	isConnectedModel.value = true;
+}
+
+/**
+ * Écoute de l'événement `ERR_NICKNAMEINUSE`.
+ */
+function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
+	if (data.nickname === loginFormData.alternativeNickname) {
+		errors.alternativeNickname = data.reason.slice(
+			loginFormData.alternativeNickname.length + 2
+		);
+	} else {
+		errors.nickname = data.reason.slice(loginFormData.nickname.length + 2);
+	}
+
+	loader.value = false;
+}
+
+/**
+ * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
+ */
+function useRememberMe() {
+	if (loginFormData.rememberMe.value) {
+		chatStore.connect(loginFormData);
+	}
+}
 
 useRememberMe();
 </script>

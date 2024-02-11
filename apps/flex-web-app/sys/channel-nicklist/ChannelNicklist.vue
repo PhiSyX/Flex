@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { ChannelNick } from "~/channel/ChannelNick";
-
-import { openPrivate, type Emits, selectUser } from "./ChannelNicklist.handler";
+import { ChannelMember } from "~/channel/ChannelMember";
+import { ChannelMemberFiltered } from "~/channel/ChannelMemberFiltered";
 
 import ChannelNickComponent from "#/sys/channel-nick/ChannelNick.vue";
-import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
 
 // ---- //
 // Type //
@@ -12,17 +10,22 @@ import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
 
 interface Props {
 	moderators: {
-		original: Array<ChannelNick>;
-		filtered: Array<ChannelNickFiltered>;
+		original: Array<ChannelMember>;
+		filtered: Array<ChannelMemberFiltered>;
 	};
 	vips: {
-		original: Array<ChannelNick>;
-		filtered: Array<ChannelNickFiltered>;
+		original: Array<ChannelMember>;
+		filtered: Array<ChannelMemberFiltered>;
 	};
 	users: {
-		original: Array<ChannelNick>;
-		filtered: Array<ChannelNickFiltered>;
+		original: Array<ChannelMember>;
+		filtered: Array<ChannelMemberFiltered>;
 	};
+}
+
+interface Emits {
+	(evtName: "open-private", origin: Origin): void;
+	(evtName: "select-member", origin: Origin): void;
 }
 
 // --------- //
@@ -32,8 +35,17 @@ interface Props {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const openPrivateHandler = openPrivate(emit);
-const selectUserHandler = selectUser(emit);
+// -------- //
+// Handlers //
+// -------- //
+
+function openPrivateHandler(member: ChannelMemberFiltered) {
+	emit("open-private", member.cnick.intoUser());
+}
+
+function selectUserHandler(member: ChannelMemberFiltered) {
+	emit("select-member", member.cnick.intoUser());
+}
 </script>
 
 <template>
@@ -55,8 +67,8 @@ const selectUserHandler = selectUser(emit);
 					:nickname="filteredNick.cnick.nickname"
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredNick.cnick.intoUser())"
-					@click="selectUserHandler(filteredNick.cnick.intoUser())"
+					@dblclick="openPrivateHandler(filteredNick)"
+					@click="selectUserHandler(filteredNick)"
 				/>
 			</ul>
 		</details>
@@ -78,8 +90,8 @@ const selectUserHandler = selectUser(emit);
 					:nickname="filteredNick.cnick.nickname"
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredNick.cnick.intoUser())"
-					@click="selectUserHandler(filteredNick.cnick.intoUser())"
+					@dblclick="openPrivateHandler(filteredNick)"
+					@click="selectUserHandler(filteredNick)"
 				/>
 			</ul>
 		</details>
@@ -101,8 +113,8 @@ const selectUserHandler = selectUser(emit);
 					:nickname="filteredNick.cnick.nickname"
 					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredNick.cnick.intoUser())"
-					@click="selectUserHandler(filteredNick.cnick.intoUser())"
+					@dblclick="openPrivateHandler(filteredNick)"
+					@click="selectUserHandler(filteredNick)"
 				/>
 			</ul>
 		</details>

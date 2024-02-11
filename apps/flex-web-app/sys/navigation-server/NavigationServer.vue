@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { Room } from "~/room/Room";
 
-import {
-	changeRoom,
-	closeRoom,
-	openRoom,
-	type Emits,
-	toggleFold,
-} from "./NavigationServer.handlers";
-
 import Match from "#/sys/match/Match.vue";
 import NavigationRoom from "#/sys/navigation-room/NavigationRoom.vue";
 
@@ -21,9 +13,18 @@ interface Props {
 	connected: boolean;
 	containerFolded?: boolean;
 	folded: boolean;
-	id: string,
+	id: string;
 	name: string;
 	rooms: Array<Room>;
+}
+
+// ---- //
+// Type //
+// ---- //
+
+export interface Emits {
+	(evtName: "change-room", origin: Origin | string): void;
+	(evtName: "close-room", origin: Origin | string): void;
 }
 
 // --------- //
@@ -34,10 +35,23 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 const folded = defineModel<boolean>("folded");
 
-const changeRoomHandler = changeRoom(emit, props.id);
-const openRoomHandler = openRoom(emit);
-const closeRoomHandler = closeRoom(emit);
-const toggleFoldHandler = toggleFold(folded);
+function changeRoomHandler(evt: Event) {
+	evt.preventDefault();
+	evt.stopPropagation();
+	openRoomHandler(props.id);
+}
+
+function openRoomHandler(origin: Origin | string) {
+	emit("change-room", origin);
+}
+
+function closeRoomHandler(origin: Origin | string) {
+	emit("close-room", origin);
+}
+
+function toggleFoldHandler() {
+	folded.value = !folded.value;
+}
 </script>
 
 <template>

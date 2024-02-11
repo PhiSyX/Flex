@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChatStore } from "~/store/ChatStore";
 import { User } from "~/user/User";
@@ -68,7 +68,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
-		const nick = new ChannelNick(user);
+		const nick = new ChannelMember(user);
 		channel.addUser(nick);
 
 		channel.addEvent("event:join", { ...data, isMe: false });

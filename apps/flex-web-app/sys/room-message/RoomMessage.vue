@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 
-import {
-	Props,
-	computeComponentEventExists,
-	computeComponentEventName,
-	computeIsEvent,
-	computeChannelNick,
-	computePrivateNick,
-	computeIsExternalMessage,
-} from "./RoomMessage.state";
+import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
+import { None, Some } from "@phisyx/flex-safety";
+
+import { ChannelMember } from "~/channel/ChannelMember";
+import { PrivateNick } from "~/private/PrivateNick";
+import { User } from "~/user/User";
 
 import Match from "#/sys/match/Match.vue";
 
@@ -19,6 +16,27 @@ import PrivateNickComponent from "#/sys/private-nick/PrivateNick.vue";
 // ---- //
 // Type //
 // ---- //
+
+interface Props {
+	data: object & { origin: Origin | ChannelOrigin };
+	archived: boolean;
+	id: string;
+	message: string;
+	isMe: boolean;
+	nickname: string;
+	target: string;
+	time: {
+		datetime: string;
+		formattedTime: string;
+	};
+	type:
+		| "action"
+		| `error:${string}`
+		| "event"
+		| `event:${string}`
+		| "pubmsg"
+		| "privmsg";
+}
 
 interface Emits {
 	(evtName: "open-private", origin: Origin): void;
@@ -30,17 +48,51 @@ interface Emits {
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+
 const eventsComponents = inject<Array<string>>("eventsComponents");
 
-const isEvent = computeIsEvent(props);
-const componentEventExists = computeComponentEventExists(
-	props,
-	eventsComponents
+const isChannel = computed(
+	() => props.nickname !== "*" && props.target.startsWith("#")
 );
-const componentEventName = computeComponentEventName(props);
-const isExternalMessage = computeIsExternalMessage(props);
-const maybeChannelNick = computeChannelNick(props);
-const maybePrivateNick = computePrivateNick(props);
+
+const isPrivate = computed(() => props.nickname !== "*" && !isChannel.value);
+
+const maybeChannelMember = computed(() => {
+	const cnick = new ChannelMember(new User(props.data.origin));
+	if ("access_level" in props.data.origin) {
+		cnick.withRawAccessLevel(props.data.origin.access_level);
+	}
+	return isChannel.value ? Some(cnick) : None();
+});
+
+const maybePrivateNick = computed(() => {
+	return isPrivate.value
+		? Some(
+				new PrivateNick(new User(props.data.origin)).withIsMe(
+					props.isMe
+				)
+		  )
+		: None();
+});
+
+const isEvent = computed(() => props.type.startsWith("event:"));
+
+const componentEventExists = computed(() => {
+	const componentName = camelCase(componentEventName.value, {
+		includes_separators: false,
+	});
+	return eventsComponents?.includes(componentName) ?? false;
+});
+
+const componentEventName = computed(() => kebabcase(`room:${props.type}`));
+
+const isExternalMessage = computed(() => {
+	if (props.type === "pubmsg") {
+		const data = props.data as GenericReply<"PUBMSG">;
+		if (data.external) return Some(data.origin);
+	}
+	return None();
+});
 
 const isEventOrError = computed(() => {
 	return (
@@ -80,14 +132,14 @@ const isEventOrError = computed(() => {
 				</template>
 			</Match>
 			<template v-else>
-				<Match :maybe="maybeChannelNick">
-					<template #some="{ data: channelNick }">
+				<Match :maybe="maybeChannelMember">
+					<template #some="{ data: ChannelMember }">
 						<ChannelNickComponent
 							tag="span"
-							:nickname="channelNick.nickname"
-							:symbol="channelNick.highestAccessLevel.symbol"
-							:classes="channelNick.className"
-							:is-me="channelNick.isMe"
+							:nickname="ChannelMember.nickname"
+							:symbol="ChannelMember.highestAccessLevel.symbol"
+							:classes="ChannelMember.className"
+							:is-me="ChannelMember.isMe"
 							prefix="<"
 							suffix=">"
 						/>

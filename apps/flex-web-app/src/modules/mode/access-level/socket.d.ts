@@ -24,22 +24,3 @@ declare interface Commands {
 	VIP: { channel: string; nicknames: Array<string> };
 	DEVIP: Commands["VIP"];
 }
-
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
-
-		added: [
-			(
-				| ["o", ModeApplyFlag<"owner">]
-				| ["a", ModeApplyFlag<"admin_operator">]
-				| ["o", ModeApplyFlag<"operator">]
-			),
-			["h", ModeApplyFlag<"half_operator">],
-			["v", ModeApplyFlag<"vip">],
-		];
-
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
-}

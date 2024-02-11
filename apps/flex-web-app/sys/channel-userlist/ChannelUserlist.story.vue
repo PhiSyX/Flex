@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelMember } from "~/channel/ChannelMember";
 import ChannelUserlist from "./ChannelUserlist.vue";
-import { ChannelUsers } from "~/channel/ChannelUsers";
+import { ChannelMembers } from "~/channel/ChannelMembers";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { User } from "~/user/User";
 
 const channelName = "#channel";
-const users = new ChannelUsers();
+const users = new ChannelMembers();
 
 const origin1: User = new User({
 	id: "a-b-c-d-e" as UUID,
@@ -27,9 +27,9 @@ const origin3: User = new User({
 	nickname: "User",
 });
 
-users.add(new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.Owner));
-users.add(new ChannelNick(origin2).withAccessLevel(ChannelAccessLevel.Vip));
-users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
+users.add(new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner));
+users.add(new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip));
+users.add(new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User));
 </script>
 
 <template>

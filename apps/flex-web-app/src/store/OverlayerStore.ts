@@ -21,7 +21,7 @@ export type Layer<D = unknown> = {
 	centered?: boolean;
 	data?: D;
 	destroyable?: "background" | "manual";
-	event?: Event & { clientX: number; clientY: number };
+	event?: Event & { clientX?: number; clientY?: number };
 	DOMElement?: HTMLElement;
 	style?: CSSProperties;
 	onClose?: () => void;
@@ -41,18 +41,42 @@ const LAYER_HL_CSS_CLASS_ALT = "layer@highlight--alt";
 
 const MOUSE_POSITION_PADDING: number = 4;
 
-export const useOverlayerStore = defineStore("overlayer-store", () => {
-	const layers = reactive(new Map<string, Layer>());
+// -------------- //
+// Implémentation //
+// -------------- //
 
-	const hasLayers = computed(() => layers.size > 0);
+export class OverlayerStore {
+	// ------ //
+	// Static //
+	// ------ //
 
-	function create<D = unknown>(payload: Layer<D>) {
+	static ID = "overlayer-store";
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	layers: Map<string, Layer> = new Map();
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get hasLayers(): boolean {
+		return this.layers.size > 0;
+	}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	create<D = unknown>(payload: Layer<D>): Layer<D> {
 		payload.destroyable ||= "background";
 		payload.trapFocus ??= true;
 
 		if (!payload.event) {
-			layers.set(payload.id, payload);
-			return;
+			this.layers.set(payload.id, payload);
+			return this.layers.get(payload.id) as Layer<D>;
 		}
 
 		const DOMElement = payload.DOMElement || (payload.event.currentTarget as HTMLElement);
@@ -61,7 +85,7 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 			DOMElement.classList.contains(LAYER_HL_CSS_CLASS) ||
 			DOMElement.classList.contains(LAYER_HL_CSS_CLASS_ALT)
 		) {
-			return;
+			return this.layers.get(payload.id) as Layer<D>;
 		}
 
 		const computedStyle = window.getComputedStyle(DOMElement);
@@ -87,36 +111,38 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 
 		const mousePosition: Layer["mousePosition"] = {};
 		if (!payload.centered) {
-			const { clientX: deltaX, clientY: deltaY } = payload.event;
+			const { clientX: deltaX = 0, clientY: deltaY = 0 } = payload.event;
 			mousePosition.top = to_px(deltaY + MOUSE_POSITION_PADDING);
 			mousePosition.left = to_px(deltaX + MOUSE_POSITION_PADDING);
 		}
 
-		layers.set(payload.id, {
+		this.layers.set(payload.id, {
 			...payload,
 			DOMElement,
 			style,
 			mousePosition,
 		});
+
+		return this.layers.get(payload.id) as Layer<D>;
 	}
 
-	function destroy(layerID: Layer["id"]) {
-		const layer = layers.get(layerID);
+	destroy(layerID: Layer["id"]) {
+		const layer = this.layers.get(layerID);
 		if (!layer) return;
 
 		layer.DOMElement?.classList?.remove(LAYER_HL_CSS_CLASS);
 		layer.DOMElement?.classList?.remove(LAYER_HL_CSS_CLASS_ALT);
 		layer.DOMElement?.focus();
 
-		layer.onClose?.call(layers);
+		layer.onClose?.call(this);
 
-		layers.delete(layerID);
+		this.layers.delete(layerID);
 	}
 
-	function destroyAll(options: { force: boolean } = { force: false }) {
-		for (const [id, layer] of layers) {
+	destroyAll(options: { force: boolean } = { force: false }) {
+		for (const [id, layer] of this.layers) {
 			if (options.force) {
-				destroy(id);
+				this.destroy(id);
 				continue;
 			}
 
@@ -124,12 +150,20 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 				continue;
 			}
 
-			destroy(id);
+			this.destroy(id);
 		}
 	}
 
-	function update(layerID: Layer["id"]) {
-		const layer = layers.get(layerID);
+	get(layerID: Layer["id"]) {
+		return this.layers.get(layerID);
+	}
+
+	has(layerID: Layer["id"]) {
+		return this.layers.has(layerID);
+	}
+
+	update(layerID: Layer["id"]) {
+		const layer = this.layers.get(layerID);
 
 		if (!layer) return;
 
@@ -145,19 +179,54 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 			height: to_px(DOMPositionElement.height + MOUSE_POSITION_PADDING * 2),
 		};
 
-		layers.set(layerID, { ...layer, style });
+		this.layers.set(layerID, { ...layer, style });
 	}
 
-	function updateData<D = unknown>(layerID: Layer<D>["id"], data: D) {
-		const layer = layers.get(layerID);
+	updateData<D = unknown>(layerID: Layer<D>["id"], data: D) {
+		const layer = this.layers.get(layerID);
 		if (!layer) return;
 		layer.data = data;
 	}
 
-	function updateAll() {
-		for (const [id, _] of layers) {
-			update(id);
+	updateAll() {
+		for (const [id, _] of this.layers) {
+			this.update(id);
 		}
+	}
+}
+
+// ----- //
+// Store //
+// ----- //
+
+export const useOverlayerStore = defineStore(OverlayerStore.ID, () => {
+	const store = reactive(new OverlayerStore());
+
+	const layers = computed(() => store.layers);
+	const hasLayers = computed(() => store.hasLayers);
+
+	function create<D = unknown>(payload: Layer<D>): Layer<D> {
+		return store.create(payload);
+	}
+
+	function destroy(layerID: Layer["id"]) {
+		store.destroy(layerID);
+	}
+
+	function destroyAll(options: { force: boolean } = { force: false }) {
+		store.destroyAll(options);
+	}
+
+	function update(layerID: Layer["id"]) {
+		store.update(layerID);
+	}
+
+	function updateData<D = unknown>(layerID: Layer<D>["id"], data: D) {
+		store.updateData(layerID, data);
+	}
+
+	function updateAll() {
+		store.updateAll();
 	}
 
 	return {
@@ -166,6 +235,8 @@ export const useOverlayerStore = defineStore("overlayer-store", () => {
 		destroyAll,
 		hasLayers,
 		layers,
+		store,
+		update,
 		updateAll,
 		updateData,
 	};

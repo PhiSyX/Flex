@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelMember } from "~/channel/ChannelMember";
 
 import ChannelUserlistMenu from "./ChannelUserlistMenu.vue";
-import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
+import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 import { User } from "~/user/User";
 
 const origin: User = new User({
@@ -19,10 +19,10 @@ const origin1: User = new User({
 	nickname: "Nick",
 });
 
-const me = new ChannelNick(origin);
+const me = new ChannelMember(origin);
 
-const user1 = new ChannelSelectedUser(new ChannelNick(origin1), false);
-const user2 = new ChannelSelectedUser(new ChannelNick(origin), false);
+const user1 = new ChannelMemberSelected(new ChannelMember(origin1), false);
+const user2 = new ChannelMemberSelected(new ChannelMember(origin), false);
 </script>
 
 <template>

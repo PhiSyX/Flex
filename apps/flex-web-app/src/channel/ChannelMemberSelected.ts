@@ -8,44 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed } from "vue";
-import { ChannelRoom } from "~/channel/ChannelRoom";
-import { useChatStore } from "~/store/ChatStore";
+import { ChannelMember } from "./ChannelMember";
 
-const chatStore = useChatStore();
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// ---- //
-// Type //
-// ---- //
+export class ChannelMemberSelected {
+	// --------- //
+	// Propriété //
+	// --------- //
 
-export interface Props {
-	room: ChannelRoom;
+	/**
+	 * Pseudo de salon sélectionné.
+	 */
+	declare cnick: ChannelMember;
+	/**
+	 * Est-ce que le pseudo sélectionné est bloqué?
+	 */
+	declare isBlocked: boolean;
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(cnick: ChannelMember, isBlocked: boolean) {
+		this.cnick = cnick;
+		this.isBlocked = isBlocked;
+	}
 }
-
-// ----------- //
-// Local State //
-// ----------- //
-
-// NOTE: retourne une Option, car l'utilisateur courant PEUT être sanctionné à
-// tout moment.
-export const compute$me = (props: Props) =>
-	computed(() => props.room.getUser(chatStore.store.me().id));
-
-export const myNick = computed(() => chatStore.store.me().nickname);
-
-export const computeCanEditTopic = (props: Props) =>
-	computed(() =>
-		compute$me(props)
-			.value.map((cnick) => props.room.canEditTopic(cnick))
-			.unwrap_or(false),
-	);
-
-export const computeSelectedUser = (props: Props) =>
-	computed(() => chatStore.getSelectedUser(props.room));
-
-export const computeCompletionList = (props: Props) =>
-	computed(() => [
-		props.room.name,
-		...props.room.users.all.map((user) => user.nickname),
-		...chatStore.allCommands(),
-	]);

@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { assertChannelRoom } from "~/asserts/room";
-import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelMember } from "~/channel/ChannelMember";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -34,7 +34,7 @@ export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"
 		for (const userOrigin of data.users) {
 			const user = this.store.userManager().add(userOrigin).withChannel(channel.id());
 
-			const newNick = new ChannelNick(user)
+			const newNick = new ChannelMember(user)
 				.withIsMe(this.store.isMe(user))
 				.withRawAccessLevel(userOrigin.access_level);
 

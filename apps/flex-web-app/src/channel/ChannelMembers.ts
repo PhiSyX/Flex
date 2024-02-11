@@ -12,13 +12,13 @@ import { None, Option, Some } from "@phisyx/flex-safety";
 
 import { UserID } from "~/user/User";
 import { ChannelAccessLevelGroup } from "./ChannelAccessLevel";
-import { ChannelNick } from "./ChannelNick";
+import { ChannelMember } from "./ChannelMember";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelUsers {
+export class ChannelMembers {
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -26,7 +26,7 @@ export class ChannelUsers {
 	/**
 	 * Les membres du salon organisé par groupes de niveaux d'access.
 	 */
-	private members: Record<ChannelAccessLevelGroup, Map<UserID, ChannelNick>> = {
+	private members: Record<ChannelAccessLevelGroup, Map<UserID, ChannelMember>> = {
 		owners: new Map(),
 		adminOperators: new Map(),
 		operators: new Map(),
@@ -99,7 +99,7 @@ export class ChannelUsers {
 	/**
 	 * Ajoute un pseudo de salon dans la liste des membres du salon.
 	 */
-	add(nick: ChannelNick) {
+	add(nick: ChannelMember) {
 		const group = this.members[nick.highestAccessLevel.group];
 		group.set(nick.id, nick);
 	}
@@ -108,8 +108,8 @@ export class ChannelUsers {
 	 * Change le pseudonyme d'un membre par un nouveau pseudonyme.
 	 */
 	changeNickname(id: UserID, _oldNickname: string, newNickname: string) {
-		this.get(id).then((oldChannelNick) => {
-			oldChannelNick.intoUser().setNickname(newNickname);
+		this.get(id).then((oldChannelMember) => {
+			oldChannelMember.intoUser().setNickname(newNickname);
 		});
 	}
 
@@ -117,7 +117,7 @@ export class ChannelUsers {
 	 * Récupère le pseudo du salon en fonction d'un pseudonyme donné, s'il
 	 * existe.
 	 */
-	get(id: UserID): Option<ChannelNick> {
+	get(id: UserID): Option<ChannelMember> {
 		for (const map of Object.values(this.members)) {
 			const nick = map.get(id);
 			if (nick) return Some(nick);
@@ -136,8 +136,8 @@ export class ChannelUsers {
 	 * Supprime un pseudo de la liste des membres, en fonction d'un pseudonyme
 	 * donné, s'il existe.
 	 */
-	remove(id: UserID): Option<ChannelNick> {
-		const foundNick: Option<ChannelNick> = None();
+	remove(id: UserID): Option<ChannelMember> {
+		const foundNick: Option<ChannelMember> = None();
 		for (const map of Object.values(this.members)) {
 			const nick = map.get(id);
 			if (nick) {
@@ -159,7 +159,7 @@ export class ChannelUsers {
 	/**
 	 * Membre du salon sélectionné.
 	 */
-	selected(): Option<ChannelNick> {
+	selected(): Option<ChannelMember> {
 		return this._selected.and_then((userID) => this.get(userID));
 	}
 
@@ -175,7 +175,7 @@ export class ChannelUsers {
 // Fonction //
 // -------- //
 
-function sort(list: Array<ChannelNick>): Array<ChannelNick> {
+function sort(list: Array<ChannelMember>): Array<ChannelMember> {
 	list.sort((l, r) => (l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1));
 	return list;
 }

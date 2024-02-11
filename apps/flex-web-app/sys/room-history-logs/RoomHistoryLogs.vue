@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { onActivated } from "vue";
+import { onActivated, ref } from "vue";
 
 import { RoomMessage } from "~/room/RoomMessage";
-
-import { $root } from "./RoomHistoryLogs.state";
-import { scrollHandler, scroll } from "./RoomHistoryLogs.handlers";
 
 import RoomMessageComponent from "#/sys/room-message/RoomMessage.vue";
 
@@ -21,6 +18,40 @@ interface Props {
 // --------- //
 
 defineProps<Props>();
+
+const $root = ref<HTMLElement>();
+const containerNeedsScroll = ref(true);
+
+// -------- //
+// Fonction //
+// -------- //
+
+function scrollToBottom() {
+	if (containerNeedsScroll.value) scroll();
+}
+
+function scroll() {
+	if (!$root.value) {
+		return;
+	}
+	$root.value.scrollTop = $root.value.scrollHeight;
+}
+
+// -------- //
+// Handlers //
+// -------- //
+
+function scrollHandler() {
+	if (!$root.value) {
+		return;
+	}
+
+	containerNeedsScroll.value =
+		$root.value.clientHeight + $root.value.scrollTop + 150 >=
+		$root.value.scrollHeight;
+
+	scrollToBottom();
+}
 
 onActivated(() => scroll());
 </script>

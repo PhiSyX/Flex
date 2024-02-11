@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { UiButton, Dialog, InputSwitchV2 } from "@phisyx/flex-uikit";
-
 import { computed, ref } from "vue";
+
+import { ChannelMember } from "~/channel/ChannelMember";
+import { ChannelRoom } from "~/channel/ChannelRoom";
 
 // ---- //
 // Type //
@@ -9,17 +11,13 @@ import { computed, ref } from "vue";
 
 interface Props {
 	layerName: string;
-	canEditTopic: boolean;
-	channel: string;
-	isChannelOperator: boolean;
-	isGlobalOperator: boolean;
-	settings: Array<string>;
-	topics: Set<string>;
+	room: ChannelRoom;
+	currentClientChannelMember: ChannelMember;
 }
 
 interface Emits {
 	(evtName: "close"): void;
-	(evtName: "submit", modesSettings: Command<"MODE">["modes"]): void;
+	(evtName: "submit", modesSettings: Partial<Command<"MODE">["modes"]>): void;
 	(evtName: "update-topic", topic?: string): void;
 }
 
@@ -30,37 +28,47 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const settings = computed(() => props.settings.join(""));
-
-const hasKeySettings = computed(() => props.settings.includes("k"));
-const hasModerateSettings = computed(() => props.settings.includes("m"));
-const hasNoExternalMessagesSettings = computed(() =>
-	props.settings.includes("n")
+// Est-ce que le client courant a les droits d'édition du sujet?
+const isCurrentClientChannelMemberCanEditTopic = computed(() =>
+	props.room.canEditTopic(props.currentClientChannelMember)
 );
-const hasOperatorsOnlySettings = computed(() => props.settings.includes("O"));
-const hasSecretSettings = computed(() => props.settings.includes("s"));
-const hasTopicSettings = computed(() => props.settings.includes("t"));
 
-const moderateSettings = ref();
-const operatorsOnlySettings = ref();
-const noExternalMessagesSettings = ref();
-const secretSettings = ref();
-const topicSettings = ref();
-const topicModel = ref(Array.from(props.topics).at(-1));
+// Est-ce que le client courant est opérateur global?
+const isCurrentClientGlobalOperator = computed(() =>
+	props.currentClientChannelMember.intoUser().isOperator()
+);
+
+// Est-ce que le client courant opérateur du salon?
+const isCurrentClientChannelMemberChannelOperator = computed(() =>
+	props.room.memberHasChannelOperatorAccessLevel(
+		props.currentClientChannelMember
+	)
+);
+
+// Les paramètres du salon.
+const settings = computed(() => Array.from(props.room.settings));
+const settingsToString = computed(() => settings.value.join(""));
+const moderateSettings = ref<boolean>();
+const operatorsOnlySettings = ref<boolean>();
+const noExternalMessagesSettings = ref<boolean>();
+const secretSettings = ref<boolean>();
+const topicSettings = ref<boolean>();
 
 const enabledKeySettings = ref();
 const keySettings = ref();
 
-function closeHandler() {
-	emit("close");
-}
+// Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
+const topicModel = ref(Array.from(props.room.topic.history).at(-1));
 
-function submitHandler() {
-	if (props.canEditTopic) {
+function onSubmitHandler() {
+	if (isCurrentClientChannelMemberCanEditTopic.value) {
 		emit("update-topic", topicModel.value);
 	}
 
-	if (!props.isChannelOperator && !props.isGlobalOperator) {
+	if (
+		!isCurrentClientChannelMemberChannelOperator.value &&
+		!isCurrentClientGlobalOperator.value
+	) {
 		emit("close");
 		return;
 	}
@@ -79,8 +87,10 @@ function submitHandler() {
 <template>
 	<Dialog :without-close="true">
 		<template #label>
-			Paramètres {{ channel
-			}}<span v-if="settings">: (modes: +{{ settings }})</span>
+			Paramètres {{ room.name
+			}}<span v-if="settingsToString"
+				>: (modes: +{{ settingsToString }})</span
+			>
 		</template>
 
 		<template #footer>
@@ -99,7 +109,7 @@ function submitHandler() {
 				variant="secondary"
 				class="[ ml=1 ]"
 				:form="`${layerName}_form`"
-				@click="closeHandler()"
+				@click="emit('close')"
 			>
 				Annuler
 			</UiButton>
@@ -108,7 +118,7 @@ function submitHandler() {
 		<form
 			:id="`${layerName}_form`"
 			method="dialog"
-			@submit="submitHandler()"
+			@submit="onSubmitHandler()"
 		>
 			<h2 class="[ mt=0 ]">Historique des sujets</h2>
 
@@ -117,10 +127,10 @@ function submitHandler() {
 				list="topics"
 				type="text"
 				class="[ w:full ]"
-				:disabled="!canEditTopic"
+				:disabled="!isCurrentClientChannelMemberCanEditTopic"
 			/>
 			<datalist id="topics">
-				<option v-for="topic in topics" :value="topic" />
+				<option v-for="topic in room.topic.history" :value="topic" />
 			</datalist>
 
 			<h2>Paramètres du salon</h2>
@@ -130,8 +140,11 @@ function submitHandler() {
 					<InputSwitchV2
 						v-model="enabledKeySettings"
 						name="key-settings"
-						:checked="hasKeySettings"
-						:disabled="!isChannelOperator && !isGlobalOperator"
+						:checked="room.settings.has('k')"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
 					>
 						Définir une clé (+k)
 					</InputSwitchV2>
@@ -139,7 +152,10 @@ function submitHandler() {
 					<input
 						v-if="enabledKeySettings"
 						v-model="keySettings"
-						:disabled="!isChannelOperator && !isGlobalOperator"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
 						maxlength="25"
 						placeholder="Clé de salon"
 						type="text"
@@ -151,8 +167,11 @@ function submitHandler() {
 					<InputSwitchV2
 						v-model="moderateSettings"
 						name="moderate-settings"
-						:checked="hasModerateSettings"
-						:disabled="!isChannelOperator && !isGlobalOperator"
+						:checked="room.settings.has('m')"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
 					>
 						Salon en modéré (+m)
 					</InputSwitchV2>
@@ -162,8 +181,11 @@ function submitHandler() {
 					<InputSwitchV2
 						v-model="noExternalMessagesSettings"
 						name="no-external-messages-settings"
-						:checked="hasNoExternalMessagesSettings"
-						:disabled="!isChannelOperator && !isGlobalOperator"
+						:checked="room.settings.has('n')"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
 					>
 						Pas de messages à partir de l'extérieur (+n)
 					</InputSwitchV2>
@@ -173,8 +195,11 @@ function submitHandler() {
 					<InputSwitchV2
 						v-model="secretSettings"
 						name="secret-settings"
-						:checked="hasSecretSettings"
-						:disabled="!isChannelOperator && !isGlobalOperator"
+						:checked="room.settings.has('s')"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
 					>
 						Salon secret (+s)
 					</InputSwitchV2>
@@ -184,19 +209,25 @@ function submitHandler() {
 					<InputSwitchV2
 						v-model="topicSettings"
 						name="topic-settings"
-						:checked="hasTopicSettings"
-						:disabled="!isChannelOperator && !isGlobalOperator"
+						:checked="room.settings.has('t')"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
 					>
 						Seuls les opérateurs peuvent définir un topic (+t)
 					</InputSwitchV2>
 				</li>
 
-				<li v-if="isGlobalOperator">
+				<li v-if="isCurrentClientGlobalOperator">
 					<InputSwitchV2
 						v-model="operatorsOnlySettings"
 						name="operators-only-settings"
-						:checked="hasOperatorsOnlySettings"
-						:disabled="!isChannelOperator && !isGlobalOperator"
+						:checked="room.settings.has('O')"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
 					>
 						Salon accessible uniquement pour les opérateurs (+O)
 					</InputSwitchV2>

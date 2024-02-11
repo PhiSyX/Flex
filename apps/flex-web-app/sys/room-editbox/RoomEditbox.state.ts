@@ -10,20 +10,21 @@
 
 import { computed, ref } from "vue";
 
+import { Room } from "~/room/Room";
+
 // ---- //
 // Type //
 // ---- //
 
 export interface Props {
 	completionList?: Array<string>;
-	nick: string;
+	currentClientNickname: string;
 	disableInput?: boolean;
-	history?: Array<string>;
 	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes
 	//background: color;
 	//foreground: color;
 	placeholder?: string;
-	target: string;
+	room: Room;
 }
 
 // ----------- //
@@ -35,8 +36,8 @@ export const inputModel = ref("");
 
 export const computeFormAction = (props: Props) =>
 	computed(() => {
-		const targetPath = props.target.startsWith("#")
-			? `%23${props.target.slice(1).toLowerCase()}`
-			: props.target.toLowerCase();
+		const targetPath = props.room.name.startsWith("#")
+			? `%23${props.room.name.slice(1).toLowerCase()}`
+			: props.room.name.toLowerCase();
 		return `/msg/${targetPath}`;
 	});

@@ -9,10 +9,62 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { None, Option } from "@phisyx/flex-safety";
+import { Layer, OverlayerStore } from "~/store/OverlayerStore";
 
 // -------------- //
 // Implémentation //
 // -------------- //
+
+export class ChannelTopicLayer {
+	// ------ //
+	// Static //
+	// ------ //
+
+	static ID = "channel-topic-layer";
+
+	static create(
+		overlayerStore: OverlayerStore,
+		payload: {
+			event: Event;
+			linkedElement: HTMLElement | undefined;
+		},
+	) {
+		overlayerStore.create({
+			id: ChannelTopicLayer.ID,
+			destroyable: "manual",
+			event: payload.event,
+			DOMElement: payload.linkedElement,
+			trapFocus: false,
+		});
+
+		return new ChannelTopicLayer(overlayerStore);
+	}
+
+	static destroy(overlayerStore: OverlayerStore) {
+		overlayerStore.destroy(ChannelTopicLayer.ID);
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private overlayerStore: OverlayerStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	destroy() {
+		this.overlayerStore.destroy(ChannelTopicLayer.ID);
+	}
+
+	get(): Layer | undefined {
+		return this.overlayerStore.get(ChannelTopicLayer.ID);
+	}
+
+	exists(): boolean {
+		return this.overlayerStore.has(ChannelTopicLayer.ID);
+	}
+}
 
 export class ChannelTopic {
 	// --------- //

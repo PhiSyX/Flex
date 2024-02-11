@@ -20,6 +20,7 @@ import { containsMessageInActiveRoom, sendMessageInActiveRoom } from "./helpers/
 
 test("Paramètre m: moderate", async ({ browser }) => {
 	const channelToJoin = generateRandomChannel();
+	const layerName = "channel-settings-layer";
 
 	const [owner, globop, vip, user] = await connectNUsersToChat(4)(
 		{ browser },
@@ -45,7 +46,7 @@ test("Paramètre m: moderate", async ({ browser }) => {
 	);
 	await $ownerChannelRoom.dblclick();
 	await owner.page.waitForTimeout(250);
-	const $ownerTeleport = owner.page.locator("#channel-settings-layer_teleport");
+	const $ownerTeleport = owner.page.locator(`#${layerName}_teleport`);
 	const $moderateSettings = $ownerTeleport
 		.locator("ul li label")
 		.getByText("Salon en modéré (+m)");
@@ -87,6 +88,7 @@ test("Paramètre m: moderate", async ({ browser }) => {
 
 test("Paramètre n: no external messages", async ({ browser }) => {
 	const channelToJoin = generateRandomChannel();
+	const layerName = "channel-settings-layer";
 
 	const [owner, globop, user] = await connectNUsersToChat(3)({ browser });
 
@@ -114,7 +116,7 @@ test("Paramètre n: no external messages", async ({ browser }) => {
 	);
 	await $ownerChannelRoom.dblclick();
 	await owner.page.waitForTimeout(250);
-	const $ownerTeleport = owner.page.locator("#channel-settings-layer_teleport");
+	const $ownerTeleport = owner.page.locator(`#${layerName}_teleport`);
 	const $moderateSettings = $ownerTeleport
 		.locator("ul li label")
 		.getByText("Pas de messages à partir de l'extérieur (+n)");

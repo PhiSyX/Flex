@@ -19,6 +19,7 @@ import { generateRandomChannel } from "./helpers/context.js";
 
 test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) => {
 	const channelToJoin = generateRandomChannel();
+	const layerName = "channel-settings-layer";
 	const topic = "Mon super topic";
 
 	const { user1: owner, user2: user } = await connectUsersToChat(
@@ -60,7 +61,7 @@ test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) =
 	);
 	await $ownerChannelRoom.dblclick();
 	await owner.page.waitForTimeout(250);
-	const $ownerTeleport = owner.page.locator("#channel-settings-layer_teleport");
+	const $ownerTeleport = owner.page.locator(`#${layerName}_teleport`);
 	const $moderateSettings = $ownerTeleport
 		.locator("ul li label")
 		.getByText("Seuls les opérateurs peuvent définir un topic (+t)");

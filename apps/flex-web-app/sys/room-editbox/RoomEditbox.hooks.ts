@@ -163,7 +163,9 @@ export function useInputHistory(props: Props) {
 	const positionArrow = ref(0);
 
 	function keydownHandler(evt: KeyboardEvent) {
-		if (!props.history) return;
+		if (!props.room.inputHistory) return;
+
+		const history = props.room.inputHistory;
 
 		evt.preventDefault();
 
@@ -173,7 +175,7 @@ export function useInputHistory(props: Props) {
 			positionArrow.value += 1;
 		}
 
-		const v = props.history[props.history.length - 1 - positionArrow.value];
+		const v = history[history.length - 1 - positionArrow.value];
 		if (v == null) return;
 		inputModel.value = v;
 	}
@@ -183,14 +185,14 @@ export function useInputHistory(props: Props) {
 	}
 
 	watchEffect(() => {
-		if (!props.history) return;
+		if (!history) return;
 
 		if (positionArrow.value <= -1) {
 			positionArrow.value = 0;
 		}
 
-		if (positionArrow.value >= props.history.length - 1) {
-			positionArrow.value = props.history.length - 1;
+		if (positionArrow.value >= history.length - 1) {
+			positionArrow.value = history.length - 1;
 		}
 	});
 

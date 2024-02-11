@@ -1,33 +1,33 @@
 <script setup lang="ts">
 import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 
-import { closeLayer } from "./Dialog.handlers";
-import { hasLayer } from "./Dialog.state";
+import { ChannelJoinDialog } from "~/channel/ChannelRoom";
+
 import ChannelCreateDialog from "#/sys/channel-create-dialog/ChannelCreateDialog.vue";
+import { computed } from "vue";
 
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
-const LAYER_NAME: string = "channel-create-request";
-const hasRequestCreateChannelLayer = hasLayer(LAYER_NAME);
-const closeRequestCreateChannelHandler = closeLayer(LAYER_NAME);
+const LAYER_NAME: string = ChannelJoinDialog.ID;
+const dialog = computed(() => new ChannelJoinDialog(overlayerStore.store));
+const hasLayer = computed(() => dialog.value.exists());
+const closeLayer = () => dialog.value.destroy();
 
-function joinChannelHandler(channels: string, keys: string) {
+function joinChannel(channels: string, keys: string) {
 	if (!channels) return;
 	chatStore.joinChannel(channels, keys);
-	closeRequestCreateChannelHandler();
+	closeLayer();
 }
 </script>
 
 <template>
-	<Teleport
-		v-if="hasRequestCreateChannelLayer"
-		:to="`#${LAYER_NAME}_teleport`"
-	>
+	<Teleport v-if="hasLayer" :to="`#${LAYER_NAME}_teleport`">
 		<ChannelCreateDialog
 			:layer-name="LAYER_NAME"
-			@close="closeRequestCreateChannelHandler"
-			@submit="joinChannelHandler"
+			@close="closeLayer"
+			@submit="joinChannel"
 		/>
 	</Teleport>
 </template>
-

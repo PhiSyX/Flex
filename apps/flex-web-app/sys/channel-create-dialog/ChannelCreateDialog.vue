@@ -26,17 +26,13 @@ const emit = defineEmits<Emits>();
 const channelsRequest = ref("");
 const keysRequest = ref("");
 
-function closeHandler() {
-	emit("close");
-}
-
 function submitHandler() {
 	emit("submit", channelsRequest.value, keysRequest.value);
 }
 </script>
 
 <template>
-	<Dialog @close="closeHandler()">
+	<Dialog @close="emit('close')">
 		<template #label>Rejoindre un salon</template>
 
 		<template #footer>

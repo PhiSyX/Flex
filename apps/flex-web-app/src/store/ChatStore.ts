@@ -15,9 +15,9 @@ import { reactive } from "vue";
 
 import { assertChannelRoom } from "~/asserts/room";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelMember } from "~/channel/ChannelMember";
+import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 import { ChannelRoom } from "~/channel/ChannelRoom";
-import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 
@@ -28,7 +28,7 @@ import { PrivateNick } from "~/private/PrivateNick";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
-import { ClientIDStorage } from "~/storage/ClientIDStorage";
+import { ClientIDStorage } from "~/store/local-storage/ClientIDStorage";
 import { User } from "~/user/User";
 import { UserManager } from "~/user/UserManager";
 import { useOverlayerStore } from "./OverlayerStore";
@@ -235,14 +235,16 @@ export class ChatStore {
 	/**
 	 * Récupère l'utilisateur sélectionné d'un salon.
 	 */
-	getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
+	getCurrentSelectedChannelMember(room: ChannelRoom): Option<ChannelMemberSelected> {
 		return this.roomManager()
 			.get(room.id())
 			.and_then((room) => {
 				assertChannelRoom(room);
 				return room.users.selected();
 			})
-			.map((cnick) => new ChannelSelectedUser(cnick, this.userManager().isBlocked(cnick.id)));
+			.map(
+				(cnick) => new ChannelMemberSelected(cnick, this.userManager().isBlocked(cnick.id)),
+			);
 	}
 
 	/**
@@ -621,10 +623,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	/**
-	 * @see ChatStore#getSelectedUser
+	 * @see ChatStore#getCurrentSelectedChannelMember
 	 */
-	function getSelectedUser(room: ChannelRoom): Option<ChannelSelectedUser> {
-		return store.getSelectedUser(room);
+	function getCurrentSelectedChannelMember(room: ChannelRoom): Option<ChannelMemberSelected> {
+		return store.getCurrentSelectedChannelMember(room);
 	}
 
 	/**
@@ -651,7 +653,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet la commande /KICK vers le serveur.
 	 */
-	function kickUser(channel: ChannelRoom, cnick: ChannelNick, comment = "Kick.") {
+	function kickChannelMember(channel: ChannelRoom, cnick: ChannelMember, comment = "Kick.") {
 		const module = store.moduleManager().get("KICK").expect("Récupération du module `KICK`");
 		module.send({ channels: [channel.name], knicks: [cnick.nickname], comment });
 	}
@@ -694,11 +696,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * (Dé-)sélectionne un utilisateur d'un salon.
 	 */
-	function toggleSelectUser(room: ChannelRoom, origin: Origin) {
-		const maybeSelectedUser = store.getSelectedUser(room);
-		if (maybeSelectedUser.is_some()) {
-			const selectedUser = maybeSelectedUser.unwrap();
-			if (selectedUser.cnick.id === origin.id) {
+	function toggleSelectChannelMember(room: ChannelRoom, origin: Origin) {
+		const maybeSelectedChannelMember = store.getCurrentSelectedChannelMember(room);
+		if (maybeSelectedChannelMember.is_some()) {
+			const selectedChannelMember = maybeSelectedChannelMember.unwrap();
+			if (selectedChannelMember.cnick.id === origin.id) {
 				store.unsetSelectedUser(room, origin);
 			} else {
 				store.setSelectedUser(room, origin);
@@ -767,7 +769,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function sendSetAccessLevel(
 		channel: ChannelRoom,
-		cnick: ChannelNick,
+		cnick: ChannelMember,
 		accessLevel: ChannelAccessLevel,
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
@@ -804,7 +806,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function sendUnsetAccessLevel(
 		channel: ChannelRoom,
-		cnick: ChannelNick,
+		cnick: ChannelMember,
 		accessLevel: ChannelAccessLevel,
 	) {
 		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
@@ -866,16 +868,16 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		checkUserIsBlocked,
 		closeRoom,
 		connect,
-		getSelectedUser,
+		getCurrentSelectedChannelMember,
 		ignoreUser,
 		joinChannel,
-		kickUser,
+		kickChannelMember,
 		listen,
 		openPrivateOrCreate,
 		sendMessage,
 		sendSetAccessLevel,
 		sendUnsetAccessLevel,
-		toggleSelectUser,
+		toggleSelectChannelMember: toggleSelectChannelMember,
 		unignoreUser,
 		updateTopic,
 	};

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { RoomMessage } from "~/room/RoomMessage";
-
-import { Emits, changeNickRequest, sendMessage } from "./ServerCustomRoom.handlers";
+import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 
 import Room from "#/sys/room/Room.vue";
 
@@ -11,38 +9,38 @@ import Room from "#/sys/room/Room.vue";
 
 interface Props {
 	forumUrl: string;
-	id: string;
-	inputHistory?: Array<string>;
-	messages: Array<RoomMessage>;
-	name: string;
-	currentNick: string;
 	vademecumUrl: string;
+	currentNickname: string;
+	room: ServerCustomRoom;
+}
+
+interface Emits {
+	(evtName: "change-nickname", event: MouseEvent): void;
+	(evtName: "send-message", message: string): void;
 }
 
 // --------- //
 // Composant //
 // --------- //
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const changeNickRequestHandler = changeNickRequest(emit);
-const sendMessageHandler = sendMessage(emit, props.id);
+const changeNickRequest = (event: MouseEvent) => emit("change-nickname", event);
+const sendMessage = (message: string) => emit("send-message", message);
 </script>
 
 <template>
 	<div class="room/custom:server [ flex! ov:h ]">
 		<Room
-			:nick="currentNick"
-			:input-history="inputHistory"
-			:messages="messages"
-			:name="name"
-			@change-nick-request="changeNickRequestHandler"
-			@send-message="sendMessageHandler"
+			:current-client-nickname="currentNickname"
+			:room="room"
+			@change-nickname="changeNickRequest"
+			@send-message="sendMessage"
 		>
 			<template #topic>
 				<p class="[ flex flex/center:full h:full m=0 p=0 select:none ]">
-					Bienvenue sur le Chat de {{ name }} !
+					Bienvenue sur le Chat de {{ room.name }} !
 				</p>
 			</template>
 

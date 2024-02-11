@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import type { ChannelRoom } from "~/channel/ChannelRoom";
-import type { PrivateRoom } from "~/private/PrivateRoom";
+import { Alert } from "@phisyx/flex-uikit";
+import { computed } from "vue";
+
 import type { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import type { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 
-import { Alert } from "@phisyx/flex-uikit";
+import { ChannelJoinDialog, type ChannelRoom } from "~/channel/ChannelRoom";
+import type { PrivateRoom } from "~/private/PrivateRoom";
 
 import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 
 import Navigation from "~/components/navigation/Navigation.vue";
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
@@ -15,16 +18,23 @@ import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
+
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
 import Match from "#/sys/match/Match.vue";
 
-import { rooms } from "./ChatView.state";
-import {
-	joinChannelHandler,
-	requestCreateChannelHandler,
-} from "./ChatView.handlers";
-
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
+
+const rooms = computed(() => chatStore.store.roomManager().rooms());
+
+function joinChannel(name: string) {
+	chatStore.joinChannel(name);
+	chatStore.changeRoom(name);
+}
+
+function openJoinChannelDialog(event: Event) {
+	ChannelJoinDialog.create(overlayerStore.store, { event });
+}
 </script>
 
 <template>
@@ -77,10 +87,8 @@ const chatStore = useChatStore();
 							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as ChannelListCustomRoom)"
 							class="[ flex:full ]"
-							@join-channel="joinChannelHandler"
-							@channel-create-request="
-								requestCreateChannelHandler
-							"
+							@join-channel="joinChannel"
+							@create-channel-dialog="openJoinChannelDialog"
 						/>
 					</KeepAlive>
 				</template>

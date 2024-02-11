@@ -15,7 +15,7 @@ import { Props, inputModel } from "./RoomEditbox.state";
 // ---- //
 
 export interface Emits {
-	(evtName: "change-nick-request", event: MouseEvent): void;
+	(evtName: "change-nickname", event: MouseEvent): void;
 	(evtName: "submit", inputModel: string): void;
 }
 
@@ -37,7 +37,7 @@ export const onSubmit = (emit: Emits, props: Props) => {
 
 export function changeNick(emit: Emits) {
 	function changeNickHandler(event: MouseEvent) {
-		emit("change-nick-request", event);
+		emit("change-nickname", event);
 	}
 	return changeNickHandler;
 }

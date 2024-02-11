@@ -50,7 +50,7 @@ onActivated(() => {
 		class="[ p=1 pl=0 ]"
 		@submit.prevent="submitHandler()"
 	>
-		<input type="hidden" name="target" :value="target" />
+		<input type="hidden" name="target" :value="room.name" />
 
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<UiButton
@@ -58,7 +58,7 @@ onActivated(() => {
 				class="btn-change-nick [ my=1 px=1 py=1 border/radius=1 ]"
 				@click="changeNickHandler"
 			>
-				{{ nick }}
+				{{ currentClientNickname }}
 			</UiButton>
 
 			<div class="[ pos-r flex:full ]">

@@ -1,13 +1,25 @@
 <script setup lang="ts">
 import { Badge, ButtonIcon } from "@phisyx/flex-uikit";
+import { computed } from "vue";
 
-import { type Emits, openRoom, closeRoom } from "./NavigationRoom.handlers";
-import {
-	type Props,
-	computeTotalUnread,
-	computeHasUnreadEvents,
-	computeHasUnreadMessages,
-} from "./NavigationRoom.state";
+// ---- //
+// Type //
+// ---- //
+
+interface Props {
+	active: boolean;
+	id: string;
+	name: string;
+	folded?: boolean;
+	highlight?: boolean;
+	totalUnreadEvents?: number;
+	totalUnreadMessages?: number;
+}
+
+interface Emits {
+	(evtName: "open-room", origin: Origin | string): void;
+	(evtName: "close-room", origin: Origin | string): void;
+}
 
 // --------- //
 // Composant //
@@ -17,27 +29,38 @@ defineOptions({ inheritAttrs: false });
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const openRoomHandler = openRoom(emit, props.id);
-const closeRoomHandler = closeRoom(emit, props.id);
+// Est-ce qu'il y un total des événements non lus supérieur à zéro.
+const hasUnreadEvents = computed(() => (props.totalUnreadEvents || 0) > 0);
 
-const hasEvents = computeHasUnreadEvents(props);
-const hasMessages = computeHasUnreadMessages(props);
-const totalUnread = computeTotalUnread(props);
+// Est-ce qu'il y un total des messages non lus supérieur à zéro.
+const hasUnreadMessages = computed(() => (props.totalUnreadMessages || 0) > 0);
+
+// Nombre total des messages ou des événements reçus.
+const totalUnread = computed(() => {
+	// FIXME
+	// return toUserFriendly(
+	// 	totalUnreadMessages || totalUnreadEvents || 0
+	// );
+	return props.totalUnreadMessages || props.totalUnreadEvents || 0;
+});
+
+const openRoom = () => emit("open-room", props.id);
+const closeRoom = () => emit("close-room", props.id);
 </script>
 
 <template>
 	<li
 		:class="{
-			'has-events': hasEvents,
-			'has-messages': hasMessages,
+			'has-events': hasUnreadEvents,
+			'has-messages': hasUnreadMessages,
 			'is-active': active,
 			'is-highlight': highlight,
 		}"
 		:data-room="name"
-		@click="openRoomHandler"
-		@click.middle="closeRoomHandler"
-		@keypress.space="openRoomHandler"
-		@keypress.enter="openRoomHandler"
+		@click="openRoom"
+		@click.middle="closeRoom"
+		@keypress.space="openRoom"
+		@keypress.enter="openRoom"
 		tabindex="0"
 	>
 		<slot name="icon" />
@@ -51,7 +74,7 @@ const totalUnread = computeTotalUnread(props);
 
 		<div>
 			<Badge
-				v-if="hasEvents || hasMessages"
+				v-if="hasUnreadEvents || hasUnreadMessages"
 				v-show="!folded"
 				class="total-unread"
 			>
@@ -62,7 +85,7 @@ const totalUnread = computeTotalUnread(props);
 				v-show="!folded"
 				icon="close"
 				class="close"
-				@click="closeRoomHandler"
+				@click="closeRoom"
 			/>
 		</div>
 

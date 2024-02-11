@@ -1,67 +1,120 @@
 <script setup lang="ts">
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
-import {
-	type Emits,
-	changeNickRequest,
-	closeRoom,
-	ignoreUser,
-	kickUser,
-	openPrivate,
-	selectUser,
-	sendMessage,
-	setAccessLevel,
-	unignoreUser,
-	unsetAccessLevel,
-openChannelSettings,
-} from "./ChannelRoom.handlers";
+import { Option } from "@phisyx/flex-safety";
+import { computed, ref } from "vue";
+
+import { ChannelRoom } from "~/channel/ChannelRoom";
+import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
+import { ChannelMember } from "~/channel/ChannelMember";
+import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+
 import { useChannelTopic } from "./ChannelRoom.hooks";
-import { type Props, displayUserlist } from "./ChannelRoom.state";
 
 import ChannelUserlistMenu from "#/sys/channel-userlist-menu/ChannelUserlistMenu.vue";
 import ChannelUserlist from "#/sys/channel-userlist/ChannelUserlist.vue";
 import Match from "#/sys/match/Match.vue";
 import Room from "#/sys/room/Room.vue";
 
+// ---- //
+// Type //
+// ---- //
+
+export interface Props {
+	completionList?: Array<string>;
+	currentNickname: string;
+	currentClientMember: Option<ChannelMember>;
+	room: ChannelRoom;
+	selectedMember: Option<ChannelMemberSelected>;
+}
+
+export interface Emits {
+	(evtName: "change-nickname", event: MouseEvent): void;
+	(evtName: "close"): void;
+	(evtName: "ignore-user", origin: Origin): void;
+	(evtName: "kick-member", member: ChannelMember): void;
+	(evtName: "open-channel-settings", event: Event): void;
+	(evtName: "open-private", origin: Origin): void;
+	(evtName: "select-member", origin: Origin): void;
+	(evtName: "send-message", message: string): void;
+	(
+		evtName: "set-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevel
+	): void;
+	(
+		evtName: "create-topic-layer",
+		payload: {
+			event: Event;
+			linkedElement: HTMLInputElement | undefined;
+			mode: boolean;
+		}
+	): void;
+	(evtName: "unignore-user", origin: Origin): void;
+	(
+		evtName: "unset-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevel
+	): void;
+	(evtName: "update-topic", topic: string): void;
+}
+
 // --------- //
 // Composant //
 // --------- //
+
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const changeNickRequestHandler = changeNickRequest(emit);
-const closeRoomHandler = closeRoom(emit);
-const ignoreUserHandler = ignoreUser(emit);
-const kickUserHandler = kickUser(emit);
-const openChannelSettingsHandler = openChannelSettings(emit);
-const openPrivateHandler = openPrivate(emit);
-const selectUserHandler = selectUser(emit);
-const sendMessageHandler = sendMessage(emit, props.name);
-const setAccessLevelHandler = setAccessLevel(emit);
-const unignoreUserHandler = unignoreUser(emit);
-const unsetAccessLevelHandler = unsetAccessLevel(emit);
-
 const {
 	$topic,
+	currentClientMemberCanEditTopic,
 	enableTopicEditModeHandler,
 	submitTopicHandler,
 	topicEditMode,
 	topicInput,
 } = useChannelTopic(props, emit);
+
+const displayUserlist = ref(true);
+
+// La boite de saisie est désactivé quand le membre du salon actuellement
+// connecté au client est sanctionné d'un KICK.
+const isDisabledInput = computed(() => props.room.kicked);
+
+// -------- //
+// Handlers //
+// -------- //
+
+const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
+const closeRoom = () => emit("close");
+const ignoreUser = (origin: Origin) => emit("ignore-user", origin);
+const kickMember = (member: ChannelMember) => emit("kick-member", member);
+const unignoreUser = (origin: Origin) => emit("unignore-user", origin);
+const openChannelSettings = (event: Event) =>
+	emit("open-channel-settings", event);
+const openPrivate = (origin: Origin) => emit("open-private", origin);
+const selectChannelMember = (origin: Origin) => emit("select-member", origin);
+const sendMessage = (message: string) => emit("send-message", message);
+const setAccessLevel = (
+	member: ChannelMember,
+	accessLevel: ChannelAccessLevel
+) => emit("set-access-level", member, accessLevel);
+const unsetAccessLevel = (
+	member: ChannelMember,
+	accessLevel: ChannelAccessLevel
+) => emit("unset-access-level", member, accessLevel);
 </script>
 
 <template>
-	<div class="room/channel [ flex ]" :data-room="name">
+	<div class="room/channel [ flex ]" :data-room="room.name">
 		<Room
-		 	:completion-list="completionList"
-			:disable-input="disableInput"
-			:input-history="inputHistory"
-			:messages="messages"
-			:name="name"
-			:nick="currentNick"
-			@change-nick-request="changeNickRequestHandler"
-			@open-private="openPrivateHandler"
-			@send-message="sendMessageHandler"
-			@dblclick-main="openChannelSettingsHandler"
+			:completion-list="completionList"
+			:disable-input="isDisabledInput"
+			:current-client-nickname="currentNickname"
+			:room="room"
+			@change-nickname="changeNickname"
+			@open-private="openPrivate"
+			@send-message="sendMessage"
+			@dblclick-main="openChannelSettings"
 		>
 			<template #topic>
 				<input
@@ -75,18 +128,18 @@ const {
 					@keydown.esc="submitTopicHandler"
 				/>
 				<output
-					v-else-if="topic.get().length > 0"
+					v-else-if="room.topic.get().length > 0"
 					class="[ d-ib size:full p=1 select:none cursor:default ]"
 					:class="{
-						'cursor:pointer': canEditTopic,
+						'cursor:pointer': currentClientMemberCanEditTopic,
 					}"
 					@dblclick="enableTopicEditModeHandler"
 				>
-					{{ topic.get() }}
+					{{ room.topic.get() }}
 				</output>
 
 				<p
-					v-else-if="canEditTopic"
+					v-else-if="currentClientMemberCanEditTopic"
 					class="[ flex flex/center:full h:full my=0 select:none cursor:pointer ]"
 					@dblclick="enableTopicEditModeHandler"
 				>
@@ -109,11 +162,7 @@ const {
 					icon="users"
 				/>
 
-				<ButtonIcon
-					class="close"
-					icon="close"
-					@click="closeRoomHandler(name)"
-				/>
+				<ButtonIcon class="close" icon="close" @click="closeRoom" />
 			</template>
 
 			<template #after-topic-before-main>
@@ -133,25 +182,25 @@ const {
 					class="room/info [ flex! h:full pt=2 min-w=35 w=35 max-w=35 ]"
 				>
 					<ChannelUserlist
-						:name="name"
-						:users="users"
+						:name="room.name"
+						:users="room.users"
 						class="room/userlist [ flex:full ov:h ]"
-						@open-private="openPrivateHandler"
-						@select-user="selectUserHandler"
+						@open-private="openPrivate"
+						@select-member="selectChannelMember"
 					/>
 
 					<!-- <slot name="userlist-menu" /> -->
-					<Match :maybe="me.zip(selectedUser)">
-						<template #some="{ data: [me, selectedUser] }">
+					<Match :maybe="currentClientMember.zip(selectedMember)">
+						<template #some="{ data: [ccm, sm] }">
 							<ChannelUserlistMenu
-								:me="me"
-								:user="selectedUser"
-								@ignore-user="ignoreUserHandler"
-								@kick-user="kickUserHandler"
-								@open-private="openPrivateHandler"
-								@set-access-level="setAccessLevelHandler"
-								@unignore-user="unignoreUserHandler"
-								@unset-access-level="unsetAccessLevelHandler"
+								:current-client-member="ccm"
+								:selected-member="sm"
+								@ignore-user="ignoreUser"
+								@kick-member="kickMember"
+								@open-private="openPrivate"
+								@set-access-level="setAccessLevel"
+								@unignore-user="unignoreUser"
+								@unset-access-level="unsetAccessLevel"
 							/>
 						</template>
 					</Match>

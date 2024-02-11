@@ -1,20 +1,32 @@
 <script setup lang="ts">
-import Room from "#/sys/room/Room.vue";
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { computed } from "vue";
 
-import {
-	closeRoom,
-	sendMessage,
-	toggleIgnoreUser,
-	type Emits,
-	changeNickRequest,
-} from "./PrivateRoom.handler";
-import {
-	type Props,
-	computeIsMe,
-	computeTitleIgnoreButton,
-} from "./PrivateRoom.state";
-import { computeCompletionList } from "~/components/private/PrivateRoom.state";
+import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateRoom } from "~/private/PrivateRoom";
+
+import Room from "#/sys/room/Room.vue";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props {
+	completionList?: Array<string>;
+	currentClientUser: PrivateNick;
+	currentNickname: string;
+	isRecipientBlocked: boolean;
+	recipient: PrivateNick;
+	room: PrivateRoom;
+}
+
+interface Emits {
+	(evtName: "change-nickname", event: MouseEvent): void;
+	(evtName: "close"): void;
+	(evtName: "send-message", message: string): void;
+	(evtName: "ignore-user", nickname: string): void;
+	(evtName: "unignore-user", nickname: string): void;
+}
 
 // --------- //
 // Composant //
@@ -23,27 +35,38 @@ import { computeCompletionList } from "~/components/private/PrivateRoom.state";
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const changeNickRequestHandler = changeNickRequest(emit);
-const closeRoomHandler = closeRoom(emit);
-const sendMessageHandler = sendMessage(emit, props.recipient.nickname);
-const toggleIgnoreUserHandler = toggleIgnoreUser(emit, props);
+// Est-ce que le client courant est le participant lui-même?
+const isCurrentClientParticipantHimself = computed(() =>
+	props.currentClientUser.partialEq(props.recipient)
+);
 
-const isMe = computeIsMe(props);
-const titleIgnoreButton = computeTitleIgnoreButton(props);
-const completionList = computeCompletionList(props.recipient);
+const titleIgnoreBtn = computed(() => {
+	return props.isRecipientBlocked
+		? `Ne plus ignorer ${props.recipient.nickname}`
+		: `Ignorer ${props.recipient.nickname}`;
+});
+
+const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
+const sendMessage = (message: string) => emit("send-message", message);
+
+function toggleIgnoreUserHandler() {
+	if (props.isRecipientBlocked) {
+		emit("unignore-user", props.recipient.nickname);
+	} else {
+		emit("ignore-user", props.recipient.nickname);
+	}
+}
 </script>
 
 <template>
 	<div class="room/private [ flex ]" :data-room="recipient.nickname">
 		<Room
 			:completion-list="completionList"
-			:disable-input="disableInput"
-			:input-history="inputHistory"
-			:messages="messages"
-			:name="recipient.nickname"
-			:nick="currentNick"
-			@change-nick-request="changeNickRequestHandler"
-			@send-message="sendMessageHandler"
+			:disable-input="isRecipientBlocked"
+			:current-client-nickname="currentNickname"
+			:room="room"
+			@change-nickname="changeNickname"
+			@send-message="sendMessage"
 		>
 			<template #topic>
 				<p class="[ flex flex/center:full h:full my=0 select:none ]">
@@ -53,18 +76,15 @@ const completionList = computeCompletionList(props.recipient);
 
 			<template #topic-action>
 				<UiButton
-					v-if="!isMe"
+					v-if="!isCurrentClientParticipantHimself"
 					icon="user-block"
-					:selected="disableInput"
+					:selected="isRecipientBlocked"
 					:false-value="false"
 					:true-value="true"
-					:title="titleIgnoreButton"
-					@click="toggleIgnoreUserHandler()"
+					:title="titleIgnoreBtn"
+					@click="toggleIgnoreUserHandler"
 				/>
-				<ButtonIcon
-					icon="close"
-					@click="closeRoomHandler(recipient.intoUser())"
-				/>
+				<ButtonIcon icon="close" @click="emit('close')" />
 			</template>
 
 			<template #after-topic-before-main>

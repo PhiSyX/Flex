@@ -8,7 +8,7 @@ const room = new ChannelListCustomRoom();
 room.insert({
 	channel: "#chan",
 	modes_settings: "nt",
-	topic: "Mon super topipc",
+	topic: "Mon super topic",
 	total_members: 42,
 });
 

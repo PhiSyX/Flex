@@ -1,18 +1,31 @@
 <script setup lang="ts">
 import { UiButton } from "@phisyx/flex-uikit";
 
-import { Props, UserlistModeView } from "./ChannelUserlist.state";
-import { useFilterView, useInputFilterUserlist } from "./ChannelUserlist.hooks";
-
+import { ChannelMembers } from "~/channel/ChannelMembers";
 import {
-	type Emits,
-	openPrivate,
-	selectUser,
-} from "./ChannelUserlist.handlers";
+	useFilterView,
+	useInputFilterUserlist,
+	UserlistModeView,
+} from "./ChannelUserlist.hooks";
+
+// ---- //
+// Type //
+// ---- //
+
+export interface Props {
+	name: string;
+	users: ChannelMembers;
+}
+
+interface Emits {
+	(evtName: "open-private", origin: Origin): void;
+	(evtName: "select-member", origin: Origin): void;
+}
 
 // --------- //
 // Composant //
 // --------- //
+
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
@@ -21,8 +34,8 @@ const { filterNick, moderatorsFiltered, vipsFiltered, usersFiltered } =
 
 const { filterView, view } = useFilterView();
 
-const openPrivateHandler = openPrivate(emit);
-const selectUserHandler = selectUser(emit);
+const openPrivate = (origin: Origin) => emit("open-private", origin);
+const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 </script>
 
 <template>
@@ -57,8 +70,8 @@ const selectUserHandler = selectUser(emit);
 					original: users.users,
 					filtered: usersFiltered,
 				}"
-				@open-private="openPrivateHandler"
-				@select-user="selectUserHandler"
+				@open-private="openPrivate"
+				@select-member="selectChannelMember"
 			/>
 		</KeepAlive>
 	</div>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelMember } from "~/channel/ChannelMember";
 import ChannelNicklist from "./ChannelNicklist.vue";
 
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelNickFiltered } from "~/channel/ChannelNickFiltered";
+import { ChannelMemberFiltered } from "~/channel/ChannelMemberFiltered";
 import { User } from "~/user/User";
 
 const origin1: User = new User({
@@ -26,29 +26,29 @@ const origin3: User = new User({
 });
 
 const moderatorsOriginal = [
-	new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.Owner),
-	new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.AdminOperator),
-	new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.Operator),
-	new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.HalfOperator),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.AdminOperator),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Operator),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.HalfOperator),
 ];
 const moderators = {
 	original: moderatorsOriginal,
-	filtered: moderatorsOriginal.map((cnick) => new ChannelNickFiltered(cnick)),
+	filtered: moderatorsOriginal.map((cnick) => new ChannelMemberFiltered(cnick)),
 };
 
 const vipsOriginal = [
-	new ChannelNick(origin2).withAccessLevel(ChannelAccessLevel.Vip),
+	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip),
 ];
 const vips = {
 	original: vipsOriginal,
-	filtered: vipsOriginal.map((cnick) => new ChannelNickFiltered(cnick)),
+	filtered: vipsOriginal.map((cnick) => new ChannelMemberFiltered(cnick)),
 };
 const usersOriginal = [
-	new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User),
+	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User),
 ];
 const users = {
 	original: usersOriginal,
-	filtered: usersOriginal.map((cnick) => new ChannelNickFiltered(cnick)),
+	filtered: usersOriginal.map((cnick) => new ChannelMemberFiltered(cnick)),
 };
 </script>
 

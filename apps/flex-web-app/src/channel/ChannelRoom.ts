@@ -9,11 +9,14 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Option } from "@phisyx/flex-safety";
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChannelUsers } from "~/channel/ChannelUsers";
+
+import { Room } from "~/room/Room";
+import { Layer, OverlayerStore } from "~/store/OverlayerStore";
 import { User, UserID } from "~/user/User";
-import { Room } from "../room/Room";
+
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
+import { ChannelMember } from "./ChannelMember";
+import { ChannelMembers } from "./ChannelMembers";
 import { ChannelTopic } from "./ChannelTopic";
 
 // ---- //
@@ -25,6 +28,54 @@ export type ChannelID = string;
 // -------------- //
 // Implémentation //
 // -------------- //
+
+export class ChannelJoinDialog {
+	// ------ //
+	// Static //
+	// ------ //
+
+	static ID = "channel-join-layer";
+
+	static create(
+		overlayerStore: OverlayerStore,
+		payload: {
+			event: Event;
+		},
+	) {
+		overlayerStore.create({
+			id: ChannelJoinDialog.ID,
+			centered: true,
+			event: payload.event,
+		});
+
+		return new ChannelJoinDialog(overlayerStore);
+	}
+
+	static destroy(overlayerStore: OverlayerStore) {
+		overlayerStore.destroy(ChannelJoinDialog.ID);
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private overlayerStore: OverlayerStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	destroy() {
+		this.overlayerStore.destroy(ChannelJoinDialog.ID);
+	}
+
+	get(): Layer | undefined {
+		return this.overlayerStore.get(ChannelJoinDialog.ID);
+	}
+
+	exists(): boolean {
+		return this.overlayerStore.has(ChannelJoinDialog.ID);
+	}
+}
 
 export class ChannelRoom extends Room<"channel"> {
 	// ------ //
@@ -67,7 +118,7 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Liste des utilisateurs d'un salon.
 	 */
-	users = new ChannelUsers();
+	users = new ChannelMembers();
 
 	// ------- //
 	// Méthode //
@@ -76,32 +127,32 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Ajoute une utilisateur à la liste des utilisateurs.
 	 */
-	addUser(nick: ChannelNick) {
+	addUser(nick: ChannelMember) {
 		this.users.add(nick);
 	}
 
 	/**
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
-	canEditTopic(cnick: ChannelNick): boolean {
+	canEditTopic(cnick: ChannelMember): boolean {
 		return (
 			this.topic.isEditable() ||
 			this.isUserGlobalOperator(cnick.intoUser()) ||
-			this.cnickHasChannelOperatorAccessLevel(cnick)
+			this.memberHasChannelOperatorAccessLevel(cnick)
 		);
 	}
 
 	/**
 	 * Est-ce que le pseudo a des droits d'opérateurs (HalfOperator min).
 	 */
-	cnickHasChannelOperatorAccessLevel(cnick: ChannelNick): boolean {
+	memberHasChannelOperatorAccessLevel(cnick: ChannelMember): boolean {
 		return cnick.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator;
 	}
 
 	/**
 	 * Récupère un utilisateur du salon.
 	 */
-	getUser(id: UserID): Option<ChannelNick> {
+	getUser(id: UserID): Option<ChannelMember> {
 		return this.users.get(id);
 	}
 
@@ -153,7 +204,7 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Met à jour un utilisateur.
 	 */
-	upgradeUser(oldNick: ChannelNick, newNick: ChannelNick) {
+	upgradeUser(oldNick: ChannelMember, newNick: ChannelMember) {
 		this.users.remove(oldNick.id);
 		newNick.highestAccessLevel;
 		this.users.add(newNick);
@@ -170,7 +221,7 @@ export class ChannelRoom extends Room<"channel"> {
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
 	withOwner(user: User): this {
-		this.addUser(new ChannelNick(user).withAccessLevel(ChannelAccessLevel.Owner));
+		this.addUser(new ChannelMember(user).withAccessLevel(ChannelAccessLevel.Owner));
 		return this;
 	}
 }

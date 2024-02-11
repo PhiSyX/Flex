@@ -8,41 +8,43 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { FuzzySearchType } from "@phisyx/flex-search";
+import { ChannelMember } from "./ChannelMember";
+
 // ---- //
 // Type //
 // ---- //
 
-export interface Emits {
-	(evtName: "open-room", origin: Origin | string): void;
-	(evtName: "close-room", origin: Origin | string): void;
+export interface ChannelMemberSearchHits {
+	isSymbol: boolean;
+	type: FuzzySearchType;
+	word: string;
 }
 
-// -------- //
-// Handlers //
-// -------- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export function openRoom(emit: Emits, origin: Origin | string) {
-	function openRoomHandler() {
-		emit("open-room", origin);
+export class ChannelMemberFiltered {
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	/**
+	 * Pseudo de salon filtré.
+	 */
+	declare cnick: ChannelMember;
+
+	/**
+	 * Résultat du filtre de recherche.
+	 */
+	declare searchHits: Array<ChannelMemberSearchHits>;
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(cnick: ChannelMember, searchHits: Array<ChannelMemberSearchHits> = []) {
+		this.cnick = cnick;
+		this.searchHits = searchHits;
 	}
-
-	function onEventHandler(evt: Event) {
-		evt.stopPropagation();
-		openRoomHandler();
-	}
-
-	return onEventHandler;
-}
-
-export function closeRoom(emit: Emits, origin: Origin | string) {
-	function closeRoomHandler() {
-		emit("close-room", origin);
-	}
-
-	function onEventHandler(evt: Event) {
-		evt.stopPropagation();
-		closeRoomHandler();
-	}
-
-	return onEventHandler;
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChannelNickSearchHits } from "~/channel/ChannelNickFiltered";
+import { ChannelMemberSearchHits } from "~/channel/ChannelMemberFiltered";
 
 // ---- //
 // Type //
@@ -7,7 +7,7 @@ import { ChannelNickSearchHits } from "~/channel/ChannelNickFiltered";
 
 interface Props {
 	classes?: string;
-	hits?: Array<ChannelNickSearchHits>;
+	hits?: Array<ChannelMemberSearchHits>;
 	isMe?: boolean;
 	nickname: string;
 	prefix?: string;

@@ -1,15 +1,8 @@
 <script setup lang="ts">
 import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { ref, computed } from "vue";
 
 import { Room } from "~/room/Room";
-
-import { folded, navWidth } from "./NavigationArea.state";
-import {
-	type Emits,
-	changeRoom,
-	closeRoom,
-	openChannelList,
-} from "./NavigationArea.handlers";
 
 import NavigationServer from "#/sys/navigation-server/NavigationServer.vue";
 
@@ -30,15 +23,24 @@ interface Server {
 	rooms: Array<Room>;
 }
 
+interface Emits {
+	(evtName: "change-room", origin: Origin | string): void;
+	(evtName: "close-room", origin: Origin | string): void;
+	(evtName: "open-channel-list"): void;
+}
+
 // --------- //
 // Composant //
 // --------- //
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const changeRoomHandler = changeRoom(emit);
-const closeRoomHandler = closeRoom(emit);
-const openChannelListHandler = openChannelList(emit);
+const folded = ref(false);
+const navWidth = computed(() => (folded.value ? "42px" : "255px"));
+
+const changeRoom = (origin: Origin | string) => emit("change-room", origin);
+const closeRoom = (origin: Origin | string) => emit("close-room", origin);
+const openChannelList = () => emit("open-channel-list");
 </script>
 
 <template>
@@ -49,8 +51,8 @@ const openChannelListHandler = openChannelList(emit);
 				:container-folded="folded"
 				:key="server.name"
 				v-bind="server"
-				@change-room="changeRoomHandler"
-				@close-room="closeRoomHandler"
+				@change-room="changeRoom"
+				@close-room="closeRoom"
 			/>
 		</nav>
 
@@ -68,7 +70,7 @@ const openChannelListHandler = openChannelList(emit);
 					id="goto-channel-list"
 					icon="channel-list"
 					:with-opacity="false"
-					@click="openChannelListHandler()"
+					@click="openChannelList"
 				/>
 
 				<ButtonIcon icon="settings" disabled title="TODO" />

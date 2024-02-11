@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { type Emits, joinChannel } from "./ChannelRoomKicked.handlers";
+import { ref, toRaw, computed } from "vue";
 
-import {
-	type Props,
-	computeReason,
-	computeChannel,
-	computeNickname,
-	displayJoinButton,
-	toRawLastMessage,
-} from "./ChannelRoomKicked.state";
+import { RoomMessage } from "~/room/RoomMessage";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props {
+	lastMessage: RoomMessage;
+}
+
+interface Emits {
+	(evtName: "join-channel", channelName: string): void;
+}
 
 // --------- //
 // Composant //
@@ -17,13 +22,26 @@ import {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const lastMessage = toRawLastMessage(props);
+const displayJoinButton = ref(true);
 
-const nickname = computeNickname(props);
-const channel = computeChannel(props);
-const reason = computeReason(props);
+// NOTE: Nous voulons récupérer le dernier événement du salon juste avant le
+//       KICK, car il contient les données du KICK, mais pas les nouveaux
+//       événements/messages qui pourraient être ajoutés. De nouveaux événements
+//       peuvent être ajoutés au salon au fur & à mesure que le salon en état de
+//       KICK mais actif. Exemple, Lorsqu'un utilisateur entre en contact avec
+//       l'utilisateur qui a été KICK, l'événement "QUERY" est ajouté à la
+//       chambre active.
+const toRawLastMessage = toRaw(
+	props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> }
+);
 
-const joinChannelHandler = joinChannel(emit, { lastMessage });
+const nickname = computed(() => toRawLastMessage.data.origin.nickname);
+const channel = computed(() => toRawLastMessage.data.channel);
+const reason = computed(() => toRawLastMessage.data.reason);
+
+function joinChannelHandler() {
+	emit("join-channel", toRawLastMessage.data.channel);
+}
 </script>
 
 <template>

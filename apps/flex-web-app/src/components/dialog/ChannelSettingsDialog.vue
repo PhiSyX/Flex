@@ -1,71 +1,50 @@
 <script setup lang="ts">
-import { Option } from "@phisyx/flex-safety";
+import { computed } from "vue";
 
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChannelRoom } from "~/channel/ChannelRoom";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 import { useChatStore } from "~/store/ChatStore";
 
-import { getLayer, hasLayer } from "./Dialog.state";
-import { closeLayer } from "./Dialog.handlers";
+import { ChannelSettingsDialog } from "~/channel/ChannelSettings";
 
-import ChannelSettingsDialog from "#/sys/channel-settings-dialog/ChannelSettingsDialog.vue";
-import Match from "#/sys/match/Match.vue";
-
-const LAYER_NAME: string = "channel-settings-layer";
-const channelSettingsLayer = getLayer<{
-	room: ChannelRoom;
-	cnick: Option<ChannelNick>;
-}>(LAYER_NAME);
-const hasChannelSettingsLayer = hasLayer(LAYER_NAME);
-const closeChannelSettingsLayerHandler = closeLayer(LAYER_NAME);
+import ChannelSettingsDialogComponent from "#/sys/channel-settings-dialog/ChannelSettingsDialog.vue";
 
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
-function submitHandler(modesSettings: Command<"MODE">["modes"]) {
+const LAYER_NAME: string = ChannelSettingsDialog.ID;
+
+const dialog = computed(() => new ChannelSettingsDialog(overlayerStore.store));
+const hasLayer = computed(() => dialog.value.exists());
+const layer = computed(() => dialog.value.getUnchecked());
+
+/**
+ * Soumission du formulaire.
+ */
+function submitFormData(modesSettings: Partial<Command<"MODE">["modes"]>) {
 	chatStore.applyChannelSettings(
-		channelSettingsLayer.value.data!.room.name,
-		modesSettings
+		layer.value.data!.room.name,
+		modesSettings as Command<"MODE">["modes"]
 	);
-	closeChannelSettingsLayerHandler();
+	dialog.value.destroy();
 }
 
+/**
+ * Mise à jour du sujet.
+ */
 function updateTopicHandler(topic?: string) {
-	if (channelSettingsLayer.value.data!.room.topic.get() === topic) {
-		return;
-	}
-
-	chatStore.updateTopic(channelSettingsLayer.value.data!.room.name, topic);
+	if (layer.value.data!.room.topic.get() === topic) return;
+	chatStore.updateTopic(layer.value.data!.room.name, topic);
 }
 </script>
 
 <template>
-	<Teleport
-		v-if="hasChannelSettingsLayer && channelSettingsLayer.data"
-		:to="`#${LAYER_NAME}_teleport`"
-	>
-		<Match :maybe="channelSettingsLayer.data.cnick">
-			<template #some="{ data: cnick }">
-				<ChannelSettingsDialog
-					:layer-name="LAYER_NAME"
-					:can-edit-topic="
-						channelSettingsLayer.data.room.canEditTopic(cnick)
-					"
-					:channel="channelSettingsLayer.data.room.name"
-					:settings="
-						Array.from(channelSettingsLayer.data.room.settings)
-					"
-					:is-global-operator="cnick.intoUser().isOperator()"
-					:is-channel-operator="
-						channelSettingsLayer.data.room.cnickHasChannelOperatorAccessLevel(
-							cnick
-						)
-					"
-					:topics="channelSettingsLayer.data.room.topic.history"
-					@close="closeChannelSettingsLayerHandler"
-					@submit="submitHandler"
-					@update-topic="updateTopicHandler"
-				/>
-			</template>
-		</Match>
+	<Teleport v-if="hasLayer && layer.data" :to="`#${LAYER_NAME}_teleport`">
+		<ChannelSettingsDialogComponent
+			:layer-name="LAYER_NAME"
+			v-bind="layer.data"
+			@close="dialog.destroy()"
+			@submit="submitFormData"
+			@update-topic="updateTopicHandler"
+		/>
 	</Teleport>
 </template>

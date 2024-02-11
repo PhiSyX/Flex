@@ -1,16 +1,30 @@
 <script setup lang="ts">
-import {
-	type Emits,
-	changeNickRequest,
-	openPrivate,
-	sendMessage,
-	dblclickMain,
-} from "./Room.handler";
-import { type Props, computeInputPlaceholder } from "./Room.state";
+import { computed } from "vue";
+
+import { Room } from "~/room/Room";
 
 import RoomTopic from "#/sys/room-topic/RoomTopic.vue";
 import RoomHistoryLogs from "#/sys/room-history-logs/RoomHistoryLogs.vue";
 import RoomEditbox from "#/sys/room-editbox/RoomEditbox.vue";
+
+// ---- //
+// Type //
+// ---- //
+
+export interface Props {
+	completionList?: Array<string>;
+	displayInput?: boolean;
+	disableInput?: boolean;
+	room: Room;
+	currentClientNickname: string;
+}
+
+interface Emits {
+	(evtName: "change-nickname", event: MouseEvent): void;
+	(evtName: "dblclick-main", event: MouseEvent): void;
+	(evtName: "open-private", origin: Origin): void;
+	(evtName: "send-message", message: string): void;
+}
 
 // --------- //
 // Composant //
@@ -22,12 +36,16 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-const inputPlaceholder = computeInputPlaceholder(props);
+const inputPlaceholder = computed(() => {
+	return props.disableInput
+		? `La chambre « ${props.room.name} » est en mode lecture uniquement.`
+		: "Commencez à taper / pour obtenir la liste des commandes disponibles...";
+});
 
-const changeNickRequestHandler = changeNickRequest(emit);
-const dblclickMainHandler = dblclickMain(emit);
-const openPrivateHandler = openPrivate(emit);
-const sendMessageHandler = sendMessage(emit);
+const changeNick = (event: MouseEvent) => emit("change-nickname", event);
+const dblclickMain = (evt: MouseEvent) => emit("dblclick-main", evt);
+const openPrivate = (origin: Origin) => emit("open-private", origin);
+const sendMessage = (message: string) => emit("send-message", message);
 </script>
 
 <template>
@@ -46,14 +64,14 @@ const sendMessageHandler = sendMessage(emit);
 
 		<div
 			class="room/main [ flex:full ov:h flex h:full ]"
-			@dblclick="dblclickMainHandler"
+			@dblclick="dblclickMain"
 		>
 			<slot name="before-history" />
 			<slot name="history">
 				<RoomHistoryLogs
-					:messages="messages"
+					:messages="room.messages"
 					class="[ flex:full ]"
-					@open-private="openPrivateHandler"
+					@open-private="openPrivate"
 				/>
 			</slot>
 			<slot name="after-history" />
@@ -63,12 +81,11 @@ const sendMessageHandler = sendMessage(emit);
 			v-if="displayInput"
 			:completion-list="completionList"
 			:disable-input="disableInput"
-			:history="inputHistory"
-			:nick="nick"
+			:current-client-nickname="currentClientNickname"
 			:placeholder="inputPlaceholder"
-			:target="name"
-			@change-nick-request="changeNickRequestHandler"
-			@submit="sendMessageHandler"
+			:room="room"
+			@change-nickname="changeNick"
+			@submit="sendMessage"
 		/>
 	</div>
 </template>

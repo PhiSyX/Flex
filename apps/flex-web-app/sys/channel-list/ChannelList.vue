@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { UiButton } from "@phisyx/flex-uikit";
+import { fuzzy_search } from "@phisyx/flex-search";
+import { ref, computed } from "vue";
 
-import {
-	Emits,
-	joinChannel,
-	joinSelectedChannels,
-	requestCreateChannel,
-} from "./ChannelList.handlers";
-import {
-	type Props,
-	filteredChannelInput,
-	selectedChannels,
-	computeFilteredChannels,
-} from "./ChannelList.state";
+import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props {
+	room: ChannelListCustomRoom;
+}
+
+interface Emits {
+	(evtName: "join-channel", name: string): void;
+	(evtName: "create-channel-dialog", event: MouseEvent): void;
+}
 
 // --------- //
 // Composant //
@@ -21,12 +25,36 @@ import {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const joinChannelHandler = joinChannel(emit);
-const joinSelectedChannelsHandler = joinSelectedChannels(emit);
+const filteredChannelInput = ref("");
+const selectedChannels = ref(new Set<string>());
 
-const requestCreateChannelHandler = requestCreateChannel(emit);
+const filteredChannels = computed(() => {
+	if (filteredChannelInput.value.length === 0) {
+		return props.room.channels;
+	}
+	return Array.from(props.room.channels).filter((channel) =>
+		fuzzy_search(filteredChannelInput.value, channel[0]).is_some()
+	);
+});
 
-const filteredChannels = computeFilteredChannels(props);
+// -------- //
+// Handlers //
+// -------- //
+
+function joinSelectedChannels() {
+	for (const channel of selectedChannels.value) {
+		joinChannel(channel);
+	}
+	selectedChannels.value.clear();
+}
+
+function joinChannel(name: string) {
+	emit("join-channel", name);
+}
+
+function createChannelDialog(event: MouseEvent) {
+	emit("create-channel-dialog", event);
+}
 </script>
 
 <template>
@@ -42,10 +70,10 @@ const filteredChannels = computeFilteredChannels(props);
 
 		<div class="[ flex gap=1 align-jc:end ]">
 			<UiButton
-				id="channel-create-request_btn"
+				id="channel-join-layer_btn"
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
-				@click="requestCreateChannelHandler"
+				@click="createChannelDialog"
 			>
 				Créer un salon
 			</UiButton>
@@ -54,7 +82,7 @@ const filteredChannels = computeFilteredChannels(props);
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
 				:disabled="selectedChannels.size === 0"
-				@click="joinSelectedChannelsHandler()"
+				@click="joinSelectedChannels()"
 			>
 				Rejoindre les salons sélectionnés
 			</UiButton>
@@ -82,7 +110,7 @@ const filteredChannels = computeFilteredChannels(props);
 				<div>
 					<label
 						:for="`chan-${idx}`"
-						@dblclick="joinChannelHandler(channelData.channel)"
+						@dblclick="joinChannel(channelData.channel)"
 					/>
 					<input
 						:id="`chan-${idx}`"

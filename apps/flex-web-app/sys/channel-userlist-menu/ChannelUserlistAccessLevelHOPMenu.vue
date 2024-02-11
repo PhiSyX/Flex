@@ -3,9 +3,9 @@ import { UiButton } from "@phisyx/flex-uikit";
 import { computed } from "vue";
 
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelNick } from "~/channel/ChannelNick";
-import { ChannelSelectedUser } from "~/channel/ChannelSelectedUser";
-import { computeImGlobalOperator } from "./ChannelUserlistMenu.state";
+import { ChannelMember } from "~/channel/ChannelMember";
+import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
+import { UserFlag } from "~/user/User";
 
 // ---- //
 // Type //
@@ -13,20 +13,20 @@ import { computeImGlobalOperator } from "./ChannelUserlistMenu.state";
 
 interface Props {
 	disabled?: boolean;
-	isMe: boolean;
-	me: ChannelNick;
-	user: ChannelSelectedUser;
+	isSameMember: boolean;
+	currentClientMember: ChannelMember;
+	selectedMember: ChannelMemberSelected;
 }
 
 interface Emits {
 	(
 		evtName: "set-access-level",
-		cnick: ChannelNick,
+		cnick: ChannelMember,
 		accessLevel: ChannelAccessLevel
 	): void;
 	(
 		evtName: "unset-access-level",
-		cnick: ChannelNick,
+		cnick: ChannelMember,
 		accessLevel: ChannelAccessLevel
 	): void;
 }
@@ -38,36 +38,43 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
-const imGlobalOperator = computeImGlobalOperator(props);
-
-const imHalfOperator = computed(() =>
-	props.me.accessLevel.has(ChannelAccessLevel.HalfOperator)
+const isCurrentClientMemberGlobalOperator = computed(() =>
+	props.currentClientMember
+		.intoUser()
+		.operator.filter((flag) => flag === UserFlag.GlobalOperator)
+		.is_some()
 );
 
-const iHaveOperatorRights = computed(
-	() => props.me.highestAccessLevel.level >= ChannelAccessLevel.Operator
-);
-const iHaveHalfOperatorRights = computed(
-	() => props.me.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator
-);
-const isUserHalfOperator = computed(() =>
-	props.user.cnick.accessLevel.has(ChannelAccessLevel.HalfOperator)
-);
-const isUserVipRights = computed(() =>
-	props.user.cnick.accessLevel.has(ChannelAccessLevel.Vip)
+const isCurrentClientMemberHalfOperator = computed(() =>
+	props.currentClientMember.accessLevel.has(ChannelAccessLevel.HalfOperator)
 );
 
-function setAccessLevelHandler(accessLevel: ChannelAccessLevel) {
-	emit("set-access-level", props.user.cnick, accessLevel);
-}
+const isCurrentClientMemberHaveOperatorRights = computed(
+	() =>
+		props.currentClientMember.highestAccessLevel.level >=
+		ChannelAccessLevel.Operator
+);
+const isCurrentClientMemberHaveHalfOperatorRights = computed(
+	() =>
+		props.currentClientMember.highestAccessLevel.level >=
+		ChannelAccessLevel.HalfOperator
+);
 
-function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
-	emit("unset-access-level", props.user.cnick, accessLevel);
-}
+const isSelectedMemberHalfOperator = computed(() =>
+	props.selectedMember.cnick.accessLevel.has(ChannelAccessLevel.HalfOperator)
+);
+const isSelectedMemberVipRights = computed(() =>
+	props.selectedMember.cnick.accessLevel.has(ChannelAccessLevel.Vip)
+);
+
+const setAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
+	emit("set-access-level", props.selectedMember.cnick, accessLevel);
+const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
+	emit("unset-access-level", props.selectedMember.cnick, accessLevel);
 </script>
 
 <template>
-	<template v-if="isMe && imHalfOperator">
+	<template v-if="isSameMember && isCurrentClientMemberHalfOperator">
 		<UiButton
 			:disabled="disabled"
 			variant="secondary"
@@ -78,9 +85,14 @@ function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 		</UiButton>
 	</template>
 
-	<template v-if="iHaveOperatorRights || imGlobalOperator">
+	<template
+		v-if="
+			isCurrentClientMemberHaveOperatorRights ||
+			isCurrentClientMemberGlobalOperator
+		"
+	>
 		<UiButton
-			v-if="!isUserHalfOperator"
+			v-if="!isSelectedMemberHalfOperator"
 			:disabled="disabled"
 			variant="secondary"
 			class="is-half-operator"
@@ -90,7 +102,7 @@ function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 			+h
 		</UiButton>
 		<UiButton
-			v-else-if="!isMe"
+			v-else-if="!isSameMember"
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /dehop"
@@ -99,9 +111,14 @@ function unsetAccessLevelHandler(accessLevel: ChannelAccessLevel) {
 			-h
 		</UiButton>
 	</template>
-	<template v-if="iHaveHalfOperatorRights || imGlobalOperator">
+	<template
+		v-if="
+			isCurrentClientMemberHaveHalfOperatorRights ||
+			isCurrentClientMemberGlobalOperator
+		"
+	>
 		<UiButton
-			v-if="!isUserVipRights"
+			v-if="!isSelectedMemberVipRights"
 			:disabled="disabled"
 			variant="secondary"
 			class="is-vip"

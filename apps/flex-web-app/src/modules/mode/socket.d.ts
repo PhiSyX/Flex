@@ -28,6 +28,11 @@ declare interface CommandResponsesFromServer {
 		updated: boolean;
 
 		added: [
+			| ["o", ModeApplyFlag<"owner">]
+			| ["a", ModeApplyFlag<"admin_operator">]
+			| ["o", ModeApplyFlag<"operator">]
+			| ["h", ModeApplyFlag<"half_operator">]
+			| ["v", ModeApplyFlag<"vip">]
 			| ["k", ModeApplyFlag<{ key: string }>]
 			| ["m", ModeApplyFlag<"moderate">]
 			| ["n", ModeApplyFlag<"no_external_messages">]

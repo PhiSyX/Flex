@@ -1,32 +1,37 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
+import { UserChangeNicknameDialog } from "~/user/User";
 
-import { closeLayer } from "./Dialog.handlers";
-import { hasLayer } from "./Dialog.state";
-
-import ChangeNickDialog from "#/sys/change-nick-dialog/ChangeNickDialog.vue";
+import ChangeNickDialogComponent from "#/sys/change-nick-dialog/ChangeNickDialog.vue";
 
 const chatStore = useChatStore();
+const overlayerStore = useOverlayerStore();
 
-const LAYER_NAME: string = "change-nick-request";
-const hasRequestChangeNickLayer = hasLayer(LAYER_NAME);
-const closeRequestChangeNickHandler = closeLayer(LAYER_NAME);
+const LAYER_NAME: string = UserChangeNicknameDialog.ID;
 
-function changeNickHandler(nickname: string) {
+const dialog = computed(
+	() => new UserChangeNicknameDialog(overlayerStore.store)
+);
+const hasLayer = computed(() => dialog.value.exists());
+
+/**
+ * Envoie de la commande de changement de pseudo.
+ */
+function sendChangeNickCommand(nickname: string) {
 	chatStore.changeNick(nickname);
-	closeRequestChangeNickHandler();
+	dialog.value.destroy();
 }
 </script>
 
 <template>
-	<Teleport
-		v-if="hasRequestChangeNickLayer"
-		:to="`#${LAYER_NAME}_teleport`"
-	>
-		<ChangeNickDialog
+	<Teleport v-if="hasLayer" :to="`#${LAYER_NAME}_teleport`">
+		<ChangeNickDialogComponent
 			:layer-name="LAYER_NAME"
-			@close="closeRequestChangeNickHandler"
-			@submit="changeNickHandler"
+			@close="dialog.destroy()"
+			@submit="sendChangeNickCommand"
 		/>
 	</Teleport>
 </template>

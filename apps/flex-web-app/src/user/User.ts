@@ -10,11 +10,15 @@
 
 import { None, Option, Some } from "@phisyx/flex-safety";
 
+import { Layer, OverlayerStore } from "~/store/OverlayerStore";
+
 // ---- //
 // Type //
 // ---- //
 
 export type UserID = UUID;
+
+export interface UserChangeNicknameRecordDialog {}
 
 // ----------- //
 // Énumération //
@@ -34,6 +38,56 @@ export enum UserFlag {
 // -------------- //
 // Implémentation //
 // -------------- //
+
+export class UserChangeNicknameDialog {
+	// ------ //
+	// Static //
+	// ------ //
+
+	static ID = "user-change-nickname-dialog";
+
+	static create(overlayerStore: OverlayerStore, { event }: { event: MouseEvent }) {
+		overlayerStore.create({
+			id: UserChangeNicknameDialog.ID,
+			centered: true,
+			event,
+		});
+		return new UserChangeNicknameDialog(overlayerStore);
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private overlayerStore: OverlayerStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	destroy() {
+		this.overlayerStore.destroy(UserChangeNicknameDialog.ID);
+	}
+
+	get(): Layer<UserChangeNicknameRecordDialog> | undefined {
+		return this.overlayerStore.get(UserChangeNicknameDialog.ID) as
+			| Layer<UserChangeNicknameRecordDialog>
+			| undefined;
+	}
+
+	getUnchecked(): Layer<UserChangeNicknameRecordDialog> {
+		return this.overlayerStore.get(
+			UserChangeNicknameDialog.ID,
+		) as Layer<UserChangeNicknameRecordDialog>;
+	}
+
+	exists(): boolean {
+		return this.overlayerStore.has(UserChangeNicknameDialog.ID);
+	}
+
+	withData(data: UserChangeNicknameRecordDialog) {
+		this.overlayerStore.updateData(UserChangeNicknameDialog.ID, data);
+	}
+}
 
 export class User {
 	// ----------- //
@@ -109,7 +163,7 @@ export class User {
 	/**
 	 * Analyse d'un drapeau.
 	 */
-	#parseFlag(flag: string): Option<UserFlag> {
+	parseFlag(flag: string): Option<UserFlag> {
 		switch (flag.toLowerCase()) {
 			case "localoperator":
 				return Some(UserFlag.LocalOperator);
@@ -186,7 +240,7 @@ export class User {
 	 */
 	withOperatorFlag(flag: UserFlag | string): this {
 		if (typeof flag === "string") {
-			this.operator = this.#parseFlag(flag);
+			this.operator = this.parseFlag(flag);
 			return this;
 		}
 		this.operator.replace(flag);

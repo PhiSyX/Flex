@@ -23,19 +23,15 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const nickRequest = ref("");
-
-function closeHandler() {
-	emit("close");
-}
+const newNickRequest = ref("");
 
 function submitHandler() {
-	emit("submit", nickRequest.value);
+	emit("submit", newNickRequest.value);
 }
 </script>
 
 <template>
-	<Dialog @close="closeHandler()">
+	<Dialog @close="emit('close')">
 		<template #label>Changer son pseudonyme</template>
 
 		<template #footer>
@@ -69,7 +65,7 @@ function submitHandler() {
 					<td>
 						<input
 							id="nickname"
-							v-model="nickRequest"
+							v-model="newNickRequest"
 							placeholder="JohnDoe"
 							required
 							type="text"

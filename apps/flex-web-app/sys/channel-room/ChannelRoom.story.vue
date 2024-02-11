@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { None, Some } from "@phisyx/flex-safety";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelNick } from "~/channel/ChannelNick";
+import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelTopic } from "~/channel/ChannelTopic";
-import { ChannelUsers } from "~/channel/ChannelUsers";
+import { ChannelMembers } from "~/channel/ChannelMembers";
 import { RoomMessage } from "~/room/RoomMessage";
 
 import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
@@ -33,7 +33,7 @@ const origin2: User = new User({
 	nickname: "VipUser",
 });
 
-const me = Some(new ChannelNick(origin1));
+const me = Some(new ChannelMember(origin1));
 
 messages.push(
 	new RoomMessage()
@@ -63,7 +63,7 @@ messages.push(
 		.withType("event:kick")
 );
 
-const users = new ChannelUsers();
+const users = new ChannelMembers();
 
 const origin3: User = new User({
 	id: "k-l-m-n-o" as UUID,
@@ -72,9 +72,9 @@ const origin3: User = new User({
 	nickname: "User",
 });
 
-users.add(new ChannelNick(origin1).withAccessLevel(ChannelAccessLevel.Owner));
-users.add(new ChannelNick(origin2).withAccessLevel(ChannelAccessLevel.Vip));
-users.add(new ChannelNick(origin3).withAccessLevel(ChannelAccessLevel.User));
+users.add(new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner));
+users.add(new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip));
+users.add(new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User));
 </script>
 
 <template>

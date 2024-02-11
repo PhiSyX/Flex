@@ -39,6 +39,7 @@ test("Changer le pseudonyme via la boite de dialogue", async ({ page }) => {
 	await page.goto("/");
 
 	const channelToJoin = generateRandomChannel();
+	const layerName = "user-change-nickname-dialog";
 	const currentNick = await connectChat({ page, channels: channelToJoin });
 
 	const [_, $channelRoom] = await openRoomFromNavigation(page, channelToJoin);
@@ -48,9 +49,7 @@ test("Changer le pseudonyme via la boite de dialogue", async ({ page }) => {
 
 	await page.waitForTimeout(250);
 
-	const $teleportChangeNickRequest = page.locator(
-		"#change-nick-request_teleport",
-	);
+	const $teleportChangeNickRequest = page.locator(`#${layerName}_teleport`);
 
 	const newNick = generateRandomWord();
 	const $inputNickname = $teleportChangeNickRequest.locator("#nickname");
