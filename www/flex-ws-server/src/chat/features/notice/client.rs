@@ -17,8 +17,8 @@ use crate::src::chat::components::{client, ClientSocketInterface};
 
 pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 {
-	/// Émet au client les réponses liées à la commande /NOTICE <target>
-	fn emit_notice<User>(&self, target: &str, text: &str, by: User)
+	/// Émet au client les réponses liées à la commande /NOTICE <nickname>
+	fn emit_notice_on_nick<User>(&self, target: &str, text: &str, by: User)
 	where
 		User: serde::Serialize,
 	{
@@ -30,6 +30,29 @@ pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 		};
 
 		_ = self.socket().emit(notice_command.name(), &notice_command);
+	}
+
+	/// Émet au client les réponses liées à la commande /NOTICE <channel>
+	fn emit_notice_on_channel<User>(&self, target: &str, text: &str, by: User)
+	where
+		User: serde::Serialize,
+	{
+		let notice_command = NoticeCommandResponse {
+			origin: &by,
+			tags: NoticeCommandResponse::default_tags(),
+			target,
+			text,
+		};
+
+		_ = self.socket().emit(notice_command.name(), &notice_command);
+
+		let target_room = format!("channel:{}", target.to_lowercase());
+
+		_ = self
+			.socket()
+			.except(self.useless_people_room())
+			.to(target_room)
+			.emit(notice_command.name(), notice_command);
 	}
 }
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { type Props } from "./RoomEvent.state";
 
 // --------- //
@@ -6,14 +7,23 @@ import { type Props } from "./RoomEvent.state";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-defineProps<Props<"NOTICE">>();
+const props = defineProps<Props<"NOTICE">>();
+
+const target = computed(() =>
+	!props.data.target.startsWith("#")
+		? props.data.target
+		: `${props.data.origin.nickname}:${props.data.target}`
+);
 </script>
 
 <template>
 	<time :datetime="time.datetime">
 		{{ time.formattedTime }}
 	</time>
-	<p>-<strong>{{ data.origin.nickname }}</strong>- {{ data.text }}</p>
+	<p>
+		-<strong>{{ target }}</strong
+		>- {{ data.text }}
+	</p>
 </template>
 
 <style scoped lang="scss">

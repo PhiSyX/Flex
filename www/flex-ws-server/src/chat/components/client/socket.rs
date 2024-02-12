@@ -87,6 +87,12 @@ pub trait ClientSocketInterface
 	fn socket(&self) -> &socketioxide::extract::SocketRef;
 	fn user(&self) -> &crate::src::chat::components::User;
 	fn user_mut(&mut self) -> &mut crate::src::chat::components::User;
+
+	/// La chambre des ignorés/bloqués du client courant.
+	fn useless_people_room(&self) -> String
+	{
+		format!("{}/ignore", self.client().cid())
+	}
 }
 
 // ----------- //
@@ -146,12 +152,6 @@ impl<'a> Socket<'a>
 	pub fn sid(&self) -> Option<socketioxide::socket::Sid>
 	{
 		self.client().sid()
-	}
-
-	/// La chambre des ignorés/bloqués du client courant.
-	pub fn useless_people_room(&self) -> String
-	{
-		format!("{}/ignore", self.cid())
 	}
 }
 

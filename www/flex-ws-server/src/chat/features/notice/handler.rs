@@ -10,10 +10,15 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{NoticeClientSocketCommandResponseInterface, NoticeCommandFormData};
+use super::{
+	NoticeApplicationInterface,
+	NoticeClientSocketCommandResponseInterface,
+	NoticeCommandFormData,
+};
 use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::Origin;
-use crate::src::chat::features::{SilenceApplicationInterface, UserStatusClientSocketInterface};
+use crate::src::chat::components::{permission, Origin};
+use crate::src::chat::features::SilenceApplicationInterface;
+use crate::src::chat::replies::ChannelMemberDTO;
 use crate::src::chat::ChatApplication;
 
 // --------- //
@@ -57,8 +62,30 @@ impl NoticeHandler
 		let client_socket = app.current_client(&socket);
 
 		for target in data.targets.iter() {
+			if target.starts_with('#') {
+				match app.is_client_able_to_notice_on_channel(&client_socket, target) {
+					| permission::ChannelWritePermission::Yes(member) => {
+						let channel_member =
+							ChannelMemberDTO::from((client_socket.client(), member));
+						client_socket.emit_notice_on_channel(target, &data.text, channel_member);
+					}
+					| permission::ChannelWritePermission::Bypass => {
+						client_socket.emit_notice_on_channel(
+							target,
+							&data.text,
+							client_socket.user(),
+						);
+					}
+					| permission::ChannelWritePermission::No => {
+						continue;
+					}
+				}
+
+				continue;
+			}
+
 			let origin = Origin::from(client_socket.client());
-			client_socket.emit_notice(target, &data.text, &origin);
+			client_socket.emit_notice_on_nick(target, &data.text, &origin);
 
 			if client_socket.check_nickname(target) {
 				continue;
@@ -73,7 +100,7 @@ impl NoticeHandler
 				continue;
 			}
 
-			target_client_socket.emit_notice(target, &data.text, &origin);
+			target_client_socket.emit_notice_on_nick(target, &data.text, &origin);
 		}
 	}
 }

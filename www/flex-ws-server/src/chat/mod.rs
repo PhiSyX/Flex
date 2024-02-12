@@ -108,6 +108,7 @@ mod features
 		};
 
 		notice / {
+			application,
 			client,
 			formdata,
 			handler,
