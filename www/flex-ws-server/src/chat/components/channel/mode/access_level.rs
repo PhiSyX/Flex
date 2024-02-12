@@ -20,23 +20,28 @@ pub type CHANNEL_ACCESS_LEVEL_FLAG = u32;
 
 /// Le drapeau du niveau d'accès des propriétaires de salon.
 pub const CHANNEL_ACCESS_LEVEL_OWNER_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 7;
-pub const CHANNEL_ACCESS_LEVEL_OWNER: char = 'q';
+pub const CHANNEL_ACCESS_LEVEL_OWNER_LETTER: char = 'q';
+pub const CHANNEL_ACCESS_LEVEL_OWNER_SYMBOL: char = '@';
 
 /// Le drapeau du niveau d'accès des admins de salon.
 pub const CHANNEL_ACCESS_LEVEL_ADMIN_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 6;
-pub const CHANNEL_ACCESS_LEVEL_ADMIN: char = 'a';
+pub const CHANNEL_ACCESS_LEVEL_ADMIN_LETTER: char = 'a';
+pub const CHANNEL_ACCESS_LEVEL_ADMIN_SYMBOL: char = '&';
 
 /// Le drapeau du niveau d'accès des opérateurs de salon.
 pub const CHANNEL_ACCESS_LEVEL_OPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 5;
-pub const CHANNEL_ACCESS_LEVEL_OPERATOR: char = 'o';
+pub const CHANNEL_ACCESS_LEVEL_OPERATOR_LETTER: char = 'o';
+pub const CHANNEL_ACCESS_LEVEL_OPERATOR_SYMBOL: char = '@';
 
 /// Le drapeau du niveau d'accès des (demi) opérateurs de salon.
 pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 4;
-pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR: char = 'h';
+pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_LETTER: char = 'h';
+pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_SYMBOL: char = '%';
 
 /// Le drapeau du niveau d'accès des VIP's de salon.
 pub const CHANNEL_ACCESS_LEVEL_VIP_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 3;
-pub const CHANNEL_ACCESS_LEVEL_VIP: char = 'v';
+pub const CHANNEL_ACCESS_LEVEL_VIP_LETTER: char = 'v';
+pub const CHANNEL_ACCESS_LEVEL_VIP_SYMBOL: char = '+';
 
 // ----------- //
 // Énumération //
@@ -72,11 +77,11 @@ impl ChannelAccessLevel
 	pub fn letter(&self) -> char
 	{
 		match self {
-			| Self::Owner => CHANNEL_ACCESS_LEVEL_OWNER,
-			| Self::AdminOperator => CHANNEL_ACCESS_LEVEL_ADMIN,
-			| Self::Operator => CHANNEL_ACCESS_LEVEL_OPERATOR,
-			| Self::HalfOperator => CHANNEL_ACCESS_LEVEL_HALFOPERATOR,
-			| Self::Vip => CHANNEL_ACCESS_LEVEL_VIP,
+			| Self::Owner => CHANNEL_ACCESS_LEVEL_OWNER_LETTER,
+			| Self::AdminOperator => CHANNEL_ACCESS_LEVEL_ADMIN_LETTER,
+			| Self::Operator => CHANNEL_ACCESS_LEVEL_OPERATOR_LETTER,
+			| Self::HalfOperator => CHANNEL_ACCESS_LEVEL_HALFOPERATOR_LETTER,
+			| Self::Vip => CHANNEL_ACCESS_LEVEL_VIP_LETTER,
 		}
 	}
 
@@ -90,5 +95,38 @@ impl ChannelAccessLevel
 			| Self::HalfOperator => CHANNEL_ACCESS_LEVEL_HALFOPERATOR_FLAG,
 			| Self::Vip => CHANNEL_ACCESS_LEVEL_VIP_FLAG,
 		}
+	}
+
+	/// Symbole lié à un mode de salon pour utilisateur.
+	pub fn symbol(&self) -> char
+	{
+		match self {
+			| Self::Owner => CHANNEL_ACCESS_LEVEL_OWNER_SYMBOL,
+			| Self::AdminOperator => CHANNEL_ACCESS_LEVEL_ADMIN_SYMBOL,
+			| Self::Operator => CHANNEL_ACCESS_LEVEL_OPERATOR_SYMBOL,
+			| Self::HalfOperator => CHANNEL_ACCESS_LEVEL_HALFOPERATOR_SYMBOL,
+			| Self::Vip => CHANNEL_ACCESS_LEVEL_VIP_SYMBOL,
+		}
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl std::str::FromStr for ChannelAccessLevel
+{
+	type Err = &'static str;
+
+	fn from_str(s: &str) -> Result<Self, Self::Err>
+	{
+		Ok(match s {
+			| "~" => Self::Owner,
+			| "&" => Self::AdminOperator,
+			| "@" => Self::Operator,
+			| "%" => Self::HalfOperator,
+			| "+" => Self::Vip,
+			| _ => return Err("Seuls l'un des symboles suivants sont attendus: ~&@%+"),
+		})
 	}
 }

@@ -54,6 +54,35 @@ pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);
 	}
+
+	/// Émet au client les réponses liées à la commande
+	/// /NOTICE <<prefix>channel>
+	fn emit_notice_on_prefixed_channel<User>(
+		&self,
+		prefix: char,
+		target: &str,
+		text: &str,
+		by: User,
+	) where
+		User: serde::Serialize,
+	{
+		let notice_command = NoticeCommandResponse {
+			origin: &by,
+			tags: NoticeCommandResponse::default_tags(),
+			target,
+			text,
+		};
+
+		_ = self.socket().emit(notice_command.name(), &notice_command);
+
+		let target_room = format!("channel:{}{}", prefix, target.to_lowercase());
+
+		_ = self
+			.socket()
+			.except(self.useless_people_room())
+			.to(target_room)
+			.emit(notice_command.name(), notice_command);
+	}
 }
 
 // -------------- //

@@ -22,8 +22,8 @@ pub trait ModeAccessLevelClientSocketInterface: ClientSocketInterface
 	fn emit_mode_access_level(
 		&self,
 		channel: &components::channel::Channel,
-		added_flags: Vec<(char, ApplyMode<components::mode::ChannelAccessLevel>)>,
-		removed_flags: Vec<(char, ApplyMode<components::mode::ChannelAccessLevel>)>,
+		added_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
+		removed_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
 		updated: bool,
 	)
 	{
@@ -32,8 +32,8 @@ pub trait ModeAccessLevelClientSocketInterface: ClientSocketInterface
 		let mode = ModeCommandResponse {
 			origin: &origin,
 			tags: ModeCommandResponse::<()>::default_tags(),
-			added: added_flags,
-			removed: removed_flags,
+			added: added_flags.to_owned(),
+			removed: removed_flags.to_owned(),
 			target: &channel.name,
 			updated,
 		};

@@ -16,6 +16,7 @@ use super::{
 	NoticeCommandFormData,
 };
 use crate::src::chat::components::client::ClientSocketInterface;
+use crate::src::chat::components::mode::ChannelAccessLevel;
 use crate::src::chat::components::{permission, Origin};
 use crate::src::chat::features::SilenceApplicationInterface;
 use crate::src::chat::replies::ChannelMemberDTO;
@@ -62,6 +63,55 @@ impl NoticeHandler
 		let client_socket = app.current_client(&socket);
 
 		for target in data.targets.iter() {
+			const CHANNEL_PREFIXES: [char; 5] = ['~', '&', '@', '%', '+'];
+
+			if target.starts_with(CHANNEL_PREFIXES) && target.contains('#') {
+				let mut prefixes = target.matches(CHANNEL_PREFIXES);
+
+				// SAFETY(unwrap): on est sûr qu'il existe au moins un préfixe.
+				// De plus, le parsing sur l'un de ces prefixes ne peut pas
+				// échouer.
+				let last_prefix: ChannelAccessLevel =
+					prefixes.next_back().unwrap().parse().unwrap();
+				let target_without_prefixes = target.trim_start_matches(CHANNEL_PREFIXES);
+
+				match app
+					.is_client_able_to_notice_on_channel(&client_socket, target_without_prefixes)
+				{
+					| permission::ChannelWritePermission::Yes(member) => {
+						if member
+							.highest_access_level()
+							.filter(|hal| hal.flag() >= last_prefix.flag())
+							.is_none()
+						{
+							continue;
+						}
+
+						let channel_member =
+							ChannelMemberDTO::from((client_socket.client(), member));
+						client_socket.emit_notice_on_prefixed_channel(
+							last_prefix.symbol(),
+							target_without_prefixes,
+							&data.text,
+							channel_member,
+						);
+					}
+					| permission::ChannelWritePermission::Bypass => {
+						client_socket.emit_notice_on_prefixed_channel(
+							last_prefix.symbol(),
+							target_without_prefixes,
+							&data.text,
+							client_socket.user(),
+						);
+					}
+					| permission::ChannelWritePermission::No => {
+						continue;
+					}
+				}
+
+				continue;
+			}
+
 			if target.starts_with('#') {
 				match app.is_client_able_to_notice_on_channel(&client_socket, target) {
 					| permission::ChannelWritePermission::Yes(member) => {
@@ -92,7 +142,6 @@ impl NoticeHandler
 			}
 
 			let Some(target_client_socket) = app.find_socket_by_nickname(&socket, target) else {
-				client_socket.send_err_nosuchnick(target);
 				continue;
 			};
 
