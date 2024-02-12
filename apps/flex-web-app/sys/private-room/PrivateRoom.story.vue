@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { User } from "~/user/User";
-import PrivateRoom from "./PrivateRoom.vue";
 import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateRoom } from "~/private/PrivateRoom";
+
+import PrivateRoomComponent from "./PrivateRoom.vue";
 
 const origin: User = new User({
 	id: "a-b-c-d-e" as UUID,
@@ -9,6 +11,8 @@ const origin: User = new User({
 	ident: "ident",
 	nickname: "PhiSyX",
 });
+
+const privateRoom = new PrivateRoom(origin.nickname);
 
 const origin1: User = new User({
 	id: "k-l-m-n-o" as UUID,
@@ -25,32 +29,32 @@ const recipient: PrivateNick = new PrivateNick(origin1);
 <template>
 	<Story title="Organisms/PrivateRoom" responsive-disabled>
 		<Variant title="Me">
-			<PrivateRoom
+			<PrivateRoomComponent
 				:current-nickname="origin.nickname"
 				:is-recipient-blocked="disableInput"
 				:current-client-user="me"
 				:recipient="me"
-				:messages="[]"
+				:room="privateRoom"
 			/>
 		</Variant>
 
 		<Variant title="User">
-			<PrivateRoom
+			<PrivateRoomComponent
 				:current-nickname="origin.nickname"
 				:is-recipient-blocked="disableInput"
 				:current-client-user="me"
 				:recipient="recipient"
-				:messages="[]"
+				:room="privateRoom"
 			/>
 		</Variant>
 
 		<Variant title="User blocked">
-			<PrivateRoom
+			<PrivateRoomComponent
 				:current-nickname="origin.nickname"
-				:is-recipient-blocked="true"
+				:is-recipient-blocked="!disableInput"
 				:current-client-user="me"
 				:recipient="recipient"
-				:messages="[]"
+				:room="privateRoom"
 			/>
 		</Variant>
 	</Story>

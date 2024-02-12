@@ -28,11 +28,17 @@ const user2 = new ChannelMemberSelected(new ChannelMember(origin), false);
 <template>
 	<Story title="Molecules/ChannelUserlistMenu" responsive-disabled>
 		<Variant title="Default">
-			<ChannelUserlistMenu :me="me" :user="user1" />
+			<ChannelUserlistMenu
+				:current-client-member="me"
+				:selected-member="user1"
+			/>
 		</Variant>
 
 		<Variant title="Me">
-			<ChannelUserlistMenu :me="me" :user="user2" />
+			<ChannelUserlistMenu
+				:current-client-member="me"
+				:selected-member="user2"
+			/>
 		</Variant>
 	</Story>
 </template>

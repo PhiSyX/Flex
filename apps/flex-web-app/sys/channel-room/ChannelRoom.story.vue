@@ -2,21 +2,17 @@
 import { None, Some } from "@phisyx/flex-safety";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelMember } from "~/channel/ChannelMember";
-import { ChannelTopic } from "~/channel/ChannelTopic";
-import { ChannelMembers } from "~/channel/ChannelMembers";
 import { RoomMessage } from "~/room/RoomMessage";
 
 import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
-import ChannelRoom from "./ChannelRoom.vue";
+import ChannelRoomComponent from "./ChannelRoom.vue";
 import { User } from "~/user/User";
+import { ChannelRoom } from "~/channel/ChannelRoom";
 
 const channelName = "#channel";
 
-const topic = new ChannelTopic();
-topic.set("Mon super topic");
-
-// @ts-expect-error : ?
-const messages = [];
+const channel = new ChannelRoom(channelName);
+channel.topic.set("Mon super topic");
 
 const origin1: User = new User({
 	access_level: ["Owner"],
@@ -35,7 +31,7 @@ const origin2: User = new User({
 
 const me = Some(new ChannelMember(origin1));
 
-messages.push(
+channel.messages.push(
 	new RoomMessage()
 		.withData({ origin: origin1 })
 		.withID("id")
@@ -63,8 +59,6 @@ messages.push(
 		.withType("event:kick")
 );
 
-const users = new ChannelMembers();
-
 const origin3: User = new User({
 	id: "k-l-m-n-o" as UUID,
 	host: { cloaked: "*" },
@@ -72,43 +66,43 @@ const origin3: User = new User({
 	nickname: "User",
 });
 
-users.add(new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner));
-users.add(new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip));
-users.add(new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User));
+channel.users.add(
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner)
+);
+channel.users.add(
+	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip)
+);
+channel.users.add(
+	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User)
+);
 </script>
 
 <template>
 	<Story title="Organisms/ChannelRoom" responsive-disabled>
 		<Variant title="Default">
-			<ChannelRoom
-				:can-edit-topic="false"
-				:current-nick="origin3.nickname"
-				:disable-input="false"
-				:me="me"
-				:messages="messages"
-				:name="channelName"
-				:users="users"
-				:selected-user="None()"
-				:topic="topic"
+			<ChannelRoomComponent
+				:completion-list="[]"
+				:current-nickname="origin3.nickname"
+				:current-client-member="me"
+				:selected-member="None()"
+				:room="channel"
 			/>
 		</Variant>
 
 		<Variant title="Kicked">
-			<ChannelRoom
-				:can-edit-topic="false"
-				:current-nick="origin3.nickname"
-				:disable-input="false"
-				:me="me"
-				:messages="messages"
+			<ChannelRoomComponent
+				:current-nickname="origin3.nickname"
+				:current-client-member="me"
 				:name="channelName"
-				:users="users"
-				:selected-user="None()"
-				:topic="topic"
+				:selected-member="None()"
+				:room="channel"
 			>
 				<template #history>
-					<ChannelRoomKicked :last-message="messages.at(-1)" />
+					<ChannelRoomKicked
+						:last-message="channel.messages.at(-1)!"
+					/>
 				</template>
-			</ChannelRoom>
+			</ChannelRoomComponent>
 		</Variant>
 	</Story>
 </template>
