@@ -8,7 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use super::NickCommandResponse;
 use crate::src::chat::components::{client, ClientSocketInterface, Origin};
+use crate::src::chat::replies::{ErrErroneusnicknameError, ErrNicknameinuseError};
 
 // --------- //
 // Interface //
@@ -19,8 +21,6 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 	/// Émet au client les réponses liées à la commande /NICK.
 	fn emit_nick(&self)
 	{
-		use crate::src::chat::features::NickCommandResponse;
-
 		let (old_nickname, new_nickname): (&str, &str) = (
 			self.user().old_nickname.as_deref().unwrap(),
 			self.user().nickname.as_ref(),
@@ -56,20 +56,28 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 
 pub trait NickClientSocketErrorRepliesInterface: ClientSocketInterface
 {
-	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrNicknameinuseError].
+	/// Émet au client l'erreur [ErrNicknameinuseError].
 	fn send_err_nicknameinuse(&self, nickname: impl AsRef<str>)
 	{
-		use crate::src::chat::replies::ErrNicknameinuseError;
-
 		let origin = Origin::from(self.client());
 		let err_nicknameinuse = ErrNicknameinuseError {
 			origin: &origin,
 			nickname: nickname.as_ref(),
 			tags: ErrNicknameinuseError::default_tags(),
 		};
-
 		self.emit(err_nicknameinuse.name(), err_nicknameinuse);
+	}
+
+	/// Émet au client l'erreur [ErrErroneusnicknameError].
+	fn send_err_erroneusnickname(&self, nickname: &str)
+	{
+		let origin = Origin::from(self.client());
+		let err_erroneusnickname = ErrErroneusnicknameError {
+			origin: &origin,
+			nickname,
+			tags: ErrErroneusnicknameError::default_tags(),
+		};
+		self.emit(err_erroneusnickname.name(), err_erroneusnickname);
 	}
 }
 

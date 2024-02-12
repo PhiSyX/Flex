@@ -270,21 +270,6 @@ impl<'a> Socket<'a>
 	}
 
 	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrCannotsendtochanError].
-	pub fn send_err_cannotsendtochan(&self, channel_name: &str)
-	{
-		use crate::src::chat::replies::ErrCannotsendtochanError;
-
-		let origin = Origin::from(self.client());
-		let err_cannotsendtochan = ErrCannotsendtochanError {
-			channel_name,
-			origin: &origin,
-			tags: ErrCannotsendtochanError::default_tags(),
-		};
-		self.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
-	}
-
-	/// Émet au client l'erreur
 	/// [crate::src::chat::replies::ErrChanoprivsneededError].
 	pub fn send_err_chanoprivsneeded(&self, channel: &str)
 	{
@@ -297,22 +282,6 @@ impl<'a> Socket<'a>
 			tags: ErrChanoprivsneededError::default_tags(),
 		};
 		self.emit(err_chanoprivsneeded.name(), err_chanoprivsneeded);
-	}
-
-	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrErroneusnicknameError].
-	pub fn send_err_erroneusnickname(&self, nickname: &str)
-	{
-		use crate::src::chat::replies::ErrErroneusnicknameError;
-
-		let origin = Origin::from(self.client());
-		let err_erroneusnickname = ErrErroneusnicknameError {
-			origin: &origin,
-			nickname,
-			tags: ErrErroneusnicknameError::default_tags(),
-		};
-
-		self.emit(err_erroneusnickname.name(), err_erroneusnickname);
 	}
 
 	/// Émet au client l'erreur

@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use super::PartCommandResponse;
 use crate::src::chat::components::{client, ClientSocketInterface, Origin};
 
 // --------- //
@@ -21,8 +22,6 @@ pub trait PartChannelClientSocketCommandResponseInterface: ClientSocketInterface
 	where
 		S: std::ops::Deref<Target = str>,
 	{
-		use crate::src::chat::features::PartCommandResponse;
-
 		let origin = Origin::from(self.client());
 
 		let cmd_part = PartCommandResponse {

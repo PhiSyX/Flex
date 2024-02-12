@@ -21,7 +21,6 @@ pub trait SilenceClientSocketInterface: ClientSocketInterface
 	fn emit_silence(&self, users: &[&components::Origin], updated: Option<bool>)
 	{
 		let origin = Origin::from(self.client());
-
 		let silence_command = SilenceCommandResponse {
 			origin: &origin,
 			tags: SilenceCommandResponse::default_tags(),
@@ -30,7 +29,6 @@ pub trait SilenceClientSocketInterface: ClientSocketInterface
 			users,
 			updated: updated.is_some(),
 		};
-
 		self.emit(silence_command.name(), silence_command);
 	}
 }

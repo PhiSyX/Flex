@@ -201,7 +201,6 @@ mod replies
 	lexa_kernel::public_using! {
 		errors / {
 			err_alreadyregistered,
-			err_badchannelkey,
 			err_cannotsendtochan,
 			err_chanoprivsneeded,
 			err_erroneusnickname,
@@ -220,8 +219,6 @@ mod replies
 			rpl_welcome,
 		};
 	}
-
-	pub use super::features::{ErrCannotkickglobopsError, RplYoureoperReply};
 }
 
 mod routes;

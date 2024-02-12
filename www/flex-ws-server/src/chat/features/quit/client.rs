@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use super::QuitCommandResponse;
 use crate::src::chat::components::{client, ClientSocketInterface, Origin};
 
 // --------- //
@@ -19,8 +20,6 @@ pub trait QuitClientSocketInterface: ClientSocketInterface
 	/// Émet au client les réponses liées à la commande /QUIT.
 	fn emit_quit(&self, room: &str, reason: impl ToString)
 	{
-		use crate::src::chat::features::QuitCommandResponse;
-
 		let msg = reason.to_string();
 
 		let origin = Origin::from(self.client());

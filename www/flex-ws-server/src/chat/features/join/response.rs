@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
+use crate::{command_response, error_replies};
 
 command_response! {
 	struct JOIN
@@ -21,4 +21,9 @@ command_response! {
 		/// salon.
 		forced: bool,
 	}
+}
+
+error_replies! {
+	| 475 <-> ERR_BADCHANNELKEY { channel: str }
+		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+k)"
 }

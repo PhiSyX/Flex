@@ -13,6 +13,7 @@ use socketioxide::extract::{Data, SocketRef, State};
 use super::{
 	PubmsgApplicationInterface,
 	PubmsgClientSocketCommandResponseInterface,
+	PubmsgClientSocketErrorRepliesInterface,
 	PubmsgCommandFormData,
 };
 use crate::src::chat::components::client::ClientSocketInterface;

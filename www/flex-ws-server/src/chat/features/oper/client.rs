@@ -10,7 +10,7 @@
 
 use client::Origin;
 
-use super::{ErrNooperhostError, ErrOperonlyError, ErrPasswdmismatchError};
+use super::{ErrNooperhostError, ErrOperonlyError, ErrPasswdmismatchError, RplYoureoperReply};
 use crate::src::chat::components;
 use crate::src::chat::components::client::{self, ClientSocketInterface};
 
@@ -23,8 +23,6 @@ pub trait OperClientSocketCommandResponse: ClientSocketInterface
 	/// Émet au client les réponses liées à la commande /OPER.
 	fn send_rpl_youreoper(&self, oper_type: components::user::Flag)
 	{
-		use crate::src::chat::replies::RplYoureoperReply;
-
 		let origin = Origin::from(self.client());
 		let rpl_youreoper = RplYoureoperReply {
 			origin: &origin,
@@ -37,8 +35,7 @@ pub trait OperClientSocketCommandResponse: ClientSocketInterface
 
 pub trait OperClientSocketErrorRepliesInterface: ClientSocketInterface
 {
-	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrPasswdmismatch].
+	/// Émet au client l'erreur [ErrPasswdmismatchError].
 	fn send_err_passwdmismatch(&self)
 	{
 		let origin = Origin::from(self.client());
@@ -49,8 +46,7 @@ pub trait OperClientSocketErrorRepliesInterface: ClientSocketInterface
 		self.emit(err_passwdmismatch.name(), err_passwdmismatch);
 	}
 
-	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrNooperhostError].
+	/// Émet au client l'erreur [ErrNooperhostError].
 	fn send_err_nooperhost(&self)
 	{
 		let origin = Origin::from(self.client());
@@ -61,8 +57,7 @@ pub trait OperClientSocketErrorRepliesInterface: ClientSocketInterface
 		self.emit(err_nooperhost.name(), err_nooperhost);
 	}
 
-	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrOperonlyError].
+	/// Émet au client l'erreur [ErrOperonlyError].
 	fn send_err_operonly(&self, channel: &str)
 	{
 		let origin = Origin::from(self.client());

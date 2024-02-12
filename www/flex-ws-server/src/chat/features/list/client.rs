@@ -59,7 +59,6 @@ pub trait ListChannelClientSocketCommandResponseInterface: ClientSocketInterface
 			origin: &origin,
 			tags: RplListstartReply::default_tags(),
 		};
-
 		self.emit(rpl_liststart.name(), rpl_liststart);
 	}
 }

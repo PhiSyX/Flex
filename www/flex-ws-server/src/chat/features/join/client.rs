@@ -10,6 +10,7 @@
 
 use client::Origin;
 
+use super::ErrBadchannelkeyError;
 use crate::src::chat::components;
 use crate::src::chat::components::client::{self, ClientSocketInterface};
 use crate::src::chat::features::{
@@ -36,12 +37,9 @@ pub trait JoinChannelClientSocketCommandResponseInterface
 
 pub trait JoinChannelClientSocketErrorRepliesInterface: ClientSocketInterface
 {
-	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrBadchannelkeyError].
+	/// Émet au client l'erreur [ErrBadchannelkeyError].
 	fn send_err_badchannelkey(&self, channel: impl AsRef<str>)
 	{
-		use crate::src::chat::replies::ErrBadchannelkeyError;
-
 		let origin = Origin::from(self.client());
 		let err_badchannelkey = ErrBadchannelkeyError {
 			channel: channel.as_ref(),

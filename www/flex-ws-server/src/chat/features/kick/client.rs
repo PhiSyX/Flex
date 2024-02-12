@@ -10,7 +10,7 @@
 
 use client::Origin;
 
-use super::KickCommandResponse;
+use super::{ErrCannotkickglobopsError, KickCommandResponse};
 use crate::src::chat::components;
 use crate::src::chat::components::client::{self, ClientSocketInterface};
 
@@ -65,12 +65,9 @@ pub trait KickChannelClientSocketCommandResponseInterface: ClientSocketInterface
 
 pub trait KickChannelClientSocketErrorRepliesInterface: ClientSocketInterface
 {
-	/// Émet au client l'erreur
-	/// [crate::src::chat::replies::ErrCannot].
+	/// Émet au client l'erreur [ErrCannotkickglobopsError].
 	fn send_err_cannotkickglobops(&self, channel_name: &str, nickname: &str)
 	{
-		use crate::src::chat::replies::ErrCannotkickglobopsError;
-
 		let origin = Origin::from(self.client());
 		let err_cannotsendtochan = ErrCannotkickglobopsError {
 			channel: channel_name,
