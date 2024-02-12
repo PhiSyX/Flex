@@ -107,6 +107,13 @@ mod features
 			session,
 		};
 
+		notice / {
+			client,
+			formdata,
+			handler,
+			response,
+		};
+
 		oper / {
 			application,
 			client,
