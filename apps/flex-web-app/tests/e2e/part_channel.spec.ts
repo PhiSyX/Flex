@@ -45,30 +45,17 @@ test("Partir d'un salon via la commande /PART", async ({ page }) => {
 	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, () =>
-		sendMessage(
-			page,
-			channelToPart,
-			`/part ${channelToPart} Au revoir les amis.`,
-		),
+		sendMessage(page, channelToPart, `/part ${channelToPart} Au revoir les amis.`),
 	);
 });
 
-test("Partir d'un salon via la commande /PART avec un message", async ({
-	browser,
-}) => {
+test("Partir d'un salon via la commande /PART avec un message", async ({ browser }) => {
 	const channelToPart = generateRandomChannel();
 
-	const { user1, user2 } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToPart },
-	);
+	const { user1, user2 } = await connectUsersToChat({ browser }, { channels: channelToPart });
 
 	await partChannel({ page: user1.page, channel: channelToPart }, () =>
-		sendMessage(
-			user1.page,
-			channelToPart,
-			`/part ${channelToPart} Au revoir les amis.`,
-		),
+		sendMessage(user1.page, channelToPart, `/part ${channelToPart} Au revoir les amis.`),
 	);
 
 	await containsMessage(
@@ -78,16 +65,12 @@ test("Partir d'un salon via la commande /PART avec un message", async ({
 	);
 });
 
-test("Partir d'un salon via le bouton de fermeture du la navigation", async ({
-	page,
-}) => {
+test("Partir d'un salon via le bouton de fermeture du la navigation", async ({ page }) => {
 	await page.goto("/");
 	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, async ({ $navRooms }) => {
-		const $navChannelRoom = $navRooms.locator(
-			`li[data-room="${channelToPart}"]`,
-		);
+		const $navChannelRoom = $navRooms.locator(`li[data-room="${channelToPart}"]`);
 		await $navChannelRoom.click();
 
 		const $btnCloseChannelRoom = $navChannelRoom.locator(".close");
@@ -95,19 +78,40 @@ test("Partir d'un salon via le bouton de fermeture du la navigation", async ({
 	});
 });
 
-test("Partir d'un salon via le bouton de fermeture du salon", async ({
-	page,
-}) => {
+test("Partir d'un salon via le bouton de fermeture du salon", async ({ page }) => {
 	await page.goto("/");
 	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
-	await partChannel(
-		{ page, channel: channelToPart },
-		async ({ $channelRoom }) => {
-			const $topicActions = $channelRoom.locator(".room\\/topic\\:action");
+	await partChannel({ page, channel: channelToPart }, async ({ $channelRoom }) => {
+		const $topicActions = $channelRoom.locator(".room\\/topic\\:action");
 
-			const $btnCloseChannelRoom = $topicActions.locator(".close");
-			await $btnCloseChannelRoom.click();
-		},
+		const $btnCloseChannelRoom = $topicActions.locator(".close");
+		await $btnCloseChannelRoom.click();
+	});
+});
+
+test("Partir d'un salon via la commande /SAPART (globop)", async ({ browser }) => {
+	const forceChannelToPart = generateRandomChannel();
+	const channelToJoin = generateRandomChannel();
+	const { user1: globop, user2: user } = await connectUsersToChat(
+		{ browser },
+		{ channels: forceChannelToPart + "," + channelToJoin },
 	);
+
+	// NOTE: globop n'est pas opérateur global.
+	await sendMessage(globop.page, channelToJoin, `/sapart ${user.nick} ${forceChannelToPart}`);
+	await containsMessage(
+		globop.page,
+		channelToJoin,
+		"* Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects.",
+	);
+
+	// NOTE: user n'a évidemment pas rejoint ce salon, après le fail.
+	const $navRooms = user.page.locator(".navigation-area .navigation-server ul li");
+	await expect($navRooms).toHaveCount(2);
+
+	// NOTE: globop devient opérateur global.
+	await sendMessage(globop.page, channelToJoin, "/oper test-globop test");
+	await sendMessage(globop.page, channelToJoin, `/sapart ${user.nick} ${forceChannelToPart}`);
+	await expect($navRooms).toHaveCount(1);
 });

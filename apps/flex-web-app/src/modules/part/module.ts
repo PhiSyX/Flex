@@ -89,7 +89,7 @@ export class SapartModule implements Module<SapartModule> {
 	// Méthode //
 	// ------- //
 
-	input(nicknamesRaw?: string, channelsRaw?: string, ...messages: Array<string>) {
+	input(_: string, nicknamesRaw?: string, channelsRaw?: string, ...messages: Array<string>) {
 		const nicknames = nicknamesRaw?.split(",");
 		const channels = channelsRaw?.split(",");
 		if (!nicknames || !channels) return;
