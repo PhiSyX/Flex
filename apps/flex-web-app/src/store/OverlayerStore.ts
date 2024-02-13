@@ -52,6 +52,11 @@ export class OverlayerStore {
 
 	static ID = "overlayer-store";
 
+	static default(): OverlayerStore {
+		const self = reactive(new OverlayerStore()) as OverlayerStore;
+		return self;
+	}
+
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -200,7 +205,7 @@ export class OverlayerStore {
 // ----- //
 
 export const useOverlayerStore = defineStore(OverlayerStore.ID, () => {
-	const store = reactive(new OverlayerStore());
+	const store = OverlayerStore.default();
 
 	const layers = computed(() => store.layers);
 	const hasLayers = computed(() => store.hasLayers);

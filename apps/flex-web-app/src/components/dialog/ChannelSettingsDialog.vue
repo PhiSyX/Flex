@@ -13,6 +13,7 @@ const overlayerStore = useOverlayerStore();
 
 const LAYER_NAME: string = ChannelSettingsDialog.ID;
 
+// @ts-expect-error ?
 const dialog = computed(() => new ChannelSettingsDialog(overlayerStore.store));
 const hasLayer = computed(() => dialog.value.exists());
 const layer = computed(() => dialog.value.getUnchecked());

@@ -11,6 +11,7 @@ const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();
 
 const LAYER_NAME: string = ChannelJoinDialog.ID;
+// @ts-expect-error ?
 const dialog = computed(() => new ChannelJoinDialog(overlayerStore.store));
 const hasLayer = computed(() => dialog.value.exists());
 const closeLayer = () => dialog.value.destroy();

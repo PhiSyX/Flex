@@ -78,8 +78,10 @@ function createTopicLayer(payload: {
 	mode: boolean;
 }) {
 	if (payload.mode) {
+		// @ts-expect-error ?
 		ChannelTopicLayer.create(overlayerStore.store, payload);
 	} else {
+		// @ts-expect-error ?
 		ChannelTopicLayer.destroy(overlayerStore.store);
 	}
 }
@@ -112,6 +114,7 @@ const sendSilenceUserCommand = (applyState: "+" | "-") => (origin: Origin) => {
  * Ouvre la boite de dialogue de changement de pseudonyme.
  */
 function openChangeNicknameDialog(event: MouseEvent) {
+	// @ts-expect-error ?
 	UserChangeNicknameDialog.create(overlayerStore.store, { event });
 }
 
@@ -119,6 +122,7 @@ function openChangeNicknameDialog(event: MouseEvent) {
  * Ouvre la boite de dialogue du centre de contrôle du salon actif.
  */
 function openChannelSettingsDialog(_: Event) {
+	// @ts-expect-error ?
 	ChannelSettingsDialog.create(overlayerStore.store, {
 		room: props.room,
 		currentClientChannelMember: currentClientMember.value.unwrap(),
