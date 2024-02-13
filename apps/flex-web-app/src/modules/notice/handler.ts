@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -31,6 +32,18 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE"> {
 	handle(data: GenericReply<"NOTICE">) {
 		const isMe = this.store.isMe(data.origin);
 		const activeRoom = this.store.roomManager().active();
-		activeRoom.addEvent("event:notice", { ...data, isMe });
+
+		const payload = { ...data, isMe };
+		activeRoom.addEvent("event:notice", payload);
+
+		if (!isMe) {
+			const noticeRoom = this.store
+				.roomManager()
+				.getOrInsert(NoticeCustomRoom.ID, () => new NoticeCustomRoom());
+
+			if (activeRoom.id() !== NoticeCustomRoom.ID) {
+				noticeRoom.addEvent("event:notice", payload);
+			}
+		}
 	}
 }

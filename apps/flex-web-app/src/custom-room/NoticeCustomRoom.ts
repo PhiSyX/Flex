@@ -8,36 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed, ref } from "vue";
-
 import { Room } from "~/room/Room";
 
-// ---- //
-// Type //
-// ---- //
+export class NoticeCustomRoom extends Room<"notice-custom-room"> {
+	/**
+	 * ID de la chambre personnalisée.
+	 */
+	public static ID = "@notice";
+	public static NAME = "Notices";
 
-export interface Props {
-	completionList?: Array<string>;
-	currentClientNickname?: string;
-	disableInput?: boolean;
-	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes
-	//background: color;
-	//foreground: color;
-	placeholder?: string;
-	room: Room;
+	// ----------- //
+	// Constructor //
+	// ----------- //
+
+	constructor() {
+		super("notice-custom-room", NoticeCustomRoom.NAME);
+		this.withID(NoticeCustomRoom.ID);
+	}
 }
-
-// ----------- //
-// Local State //
-// ----------- //
-
-export const $input = ref<HTMLInputElement>();
-export const inputModel = ref("");
-
-export const computeFormAction = (props: Props) =>
-	computed(() => {
-		const targetPath = props.room.name.startsWith("#")
-			? `%23${props.room.name.slice(1).toLowerCase()}`
-			: props.room.name.toLowerCase();
-		return `/msg/${targetPath}`;
-	});

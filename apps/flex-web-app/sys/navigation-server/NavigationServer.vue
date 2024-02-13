@@ -139,6 +139,23 @@ function toggleFoldHandler() {
 						</Match>
 					</template>
 				</NavigationRoom>
+
+				<NavigationRoom
+					v-if="room.type === 'notice-custom-room' && !room.isClosed()"
+					:id="room.id()"
+					:active="room.isActive()"
+					:highlight="false"
+					:name="room.name"
+					:folded="containerFolded"
+					:total-unread-events="room.totalUnreadEvents"
+					:total-unread-messages="room.totalUnreadMessages"
+					@open-room="openRoomHandler"
+					@close-room="closeRoomHandler"
+				>
+					<template #icon>
+						<icon-notice />
+					</template>
+				</NavigationRoom>
 			</template>
 		</ul>
 	</details>
