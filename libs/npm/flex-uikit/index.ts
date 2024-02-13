@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { App } from "vue";
+import { App, defineAsyncComponent } from "vue";
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const iconsImports = import.meta.glob<{ default: any }>("./src/icons/Icon*.vue", { eager: true });
+const iconsImports = import.meta.glob<{ default: any }>("./src/icons/Icon*.vue");
 
 const iconsComponents = Object.entries(iconsImports).map(
 	([iconComponentFilepath, iconComponent]) => {
@@ -19,7 +19,11 @@ const iconsComponents = Object.entries(iconsImports).map(
 			"./src/icons/".length,
 			0 - ".vue".length,
 		);
-		return [iconComponentName, iconComponent.default];
+		return [iconComponentName, iconComponent] as unknown as [
+			string,
+			// biome-ignore lint/suspicious/noExplicitAny: OSEF
+			() => Promise<{ default: any }>,
+		];
 	},
 );
 
@@ -38,7 +42,7 @@ export type { Icons } from "./src/icons";
 export default {
 	install(app: App<Element>) {
 		for (const [iconComponentName, iconComponent] of iconsComponents) {
-			app.component(iconComponentName, iconComponent);
+			app.component(iconComponentName, defineAsyncComponent(iconComponent));
 		}
 	},
 };

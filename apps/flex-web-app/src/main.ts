@@ -10,7 +10,7 @@
 
 import "#/assets/scss/style.scss";
 
-import { createApp } from "vue";
+import { createApp, defineAsyncComponent } from "vue";
 
 import type { VuePluginInstall } from "./types/vue";
 
@@ -28,9 +28,7 @@ for (const plugin of Object.values(plugins)) {
 // Chargement des composants (events)
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const eventsComponents = import.meta.glob<{ default: any }>("../sys/room-events/RoomEvent*.vue", {
-	eager: true,
-});
+const eventsComponents = import.meta.glob<{ default: any }>("../sys/room-events/RoomEvent*.vue");
 
 app.provide(
 	"eventsComponents",
@@ -42,7 +40,7 @@ app.provide(
 
 for (const [eventFilepath, eventComponent] of Object.entries(eventsComponents)) {
 	const componentName = eventFilepath.slice("../sys/room-events/".length, 0 - ".vue".length);
-	app.component(componentName, eventComponent.default);
+	app.component(componentName, defineAsyncComponent(eventComponent));
 }
 
 // 2. Run

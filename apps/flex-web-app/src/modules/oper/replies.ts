@@ -10,83 +10,62 @@
 
 import { ChatStore } from "~/store/ChatStore";
 
-import { Module } from "../interface";
-import { JoinCommand, SajoinCommand } from "./command";
-import { JoinHandler } from "./handler";
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class JoinModule implements Module<JoinModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "JOIN";
-
-	static create(store: ChatStore): JoinModule {
-		return new JoinModule(new JoinCommand(store), new JoinHandler(store));
-	}
-
+export class ErrorNooperhostHandler implements SocketEventInterface<"ERR_NOOPERHOST"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(
-		private command: JoinCommand,
-		private handler: JoinHandler,
-	) {}
+	constructor(private store: ChatStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, channelsRaw?: string, keysRaw?: string) {
-		const channels = channelsRaw?.split(",");
-		if (!channels) return;
-		const keys = keysRaw?.split(",");
-		this.send({ channels, keys });
-	}
-
-	send(payload: Command<"JOIN">) {
-		this.command.send(payload);
-	}
-
 	listen() {
-		this.handler.listen();
+		this.store.on("ERR_NOOPERHOST", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERR_NOOPERHOST">) {
+		const currentRoom = this.store.roomManager().active();
+		currentRoom.addEvent("error:err_nooperhost", { ...data, isMe: false }, data.reason);
 	}
 }
 
-export class SajoinModule implements Module<SajoinModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "SAJOIN";
-
-	static create(store: ChatStore): SajoinModule {
-		return new SajoinModule(new SajoinCommand(store));
-	}
-
+export class ErrorPasswdmismatchHandler implements SocketEventInterface<"ERR_PASSWDMISMATCH"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: SajoinCommand) {}
+	constructor(private store: ChatStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, nicknamesRaw?: string, channelsRaw?: string) {
-		const nicknames = nicknamesRaw?.split(",");
-		const channels = channelsRaw?.split(",");
-		if (!nicknames || !channels) return;
-		this.send({ nicknames, channels });
+	listen() {
+		this.store.on("ERR_PASSWDMISMATCH", (data) => this.handle(data));
 	}
 
-	send(payload: Command<"SAJOIN">) {
-		this.command.send(payload);
+	handle(data: GenericReply<"ERR_PASSWDMISMATCH">) {
+		const currentRoom = this.store.roomManager().active();
+		currentRoom.addEvent("error:err_passwdmismatch", { ...data, isMe: false }, data.reason);
+	}
+}
+
+export class ErrorOperonlyHandler implements SocketEventInterface<"ERR_OPERONLY"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("ERR_OPERONLY", (data) => this.handle(data));
 	}
 
-	listen() {}
+	handle(data: GenericReply<"ERR_OPERONLY">) {
+		const currentRoom = this.store.roomManager().active();
+		currentRoom.addEvent("error:err_operonly", { ...data, isMe: false }, data.reason);
+	}
 }

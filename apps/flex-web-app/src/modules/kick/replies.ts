@@ -8,13 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { App, Plugin } from "vue";
+import { ChatStore } from "~/store/ChatStore";
 
-import useFlexUIKit from "@phisyx/flex-uikit";
+export class ErrorCannotkickglobopsHandler
+	implements SocketEventInterface<"ERR_CANNOTKICKGLOBOPS">
+{
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
 
-/**
- * Installe notre plugin Flex UI Kit.
- */
-export function install(app: App<Element>) {
-	app.use(useFlexUIKit as Plugin);
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("ERR_CANNOTKICKGLOBOPS", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERR_CANNOTKICKGLOBOPS">): void {
+		const room = this.store.roomManager().active();
+		room.addEvent("error:err_cannotkickglobops", { ...data, isMe: true }, data.reason);
+	}
 }

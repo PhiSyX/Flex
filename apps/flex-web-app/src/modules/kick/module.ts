@@ -12,7 +12,7 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { KickCommand } from "./command";
-import { ErrorCannotkickglobopsHandler, KickHandler } from "./handler";
+import { KickHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
@@ -26,11 +26,7 @@ export class KickModule implements Module<KickModule> {
 	static NAME = "KICK";
 
 	static create(store: ChatStore): KickModule {
-		return new KickModule(
-			new KickCommand(store),
-			new KickHandler(store),
-			new ErrorCannotkickglobopsHandler(store),
-		);
+		return new KickModule(new KickCommand(store), new KickHandler(store));
 	}
 
 	// ----------- //
@@ -39,7 +35,6 @@ export class KickModule implements Module<KickModule> {
 	constructor(
 		private command: KickCommand,
 		private handler: KickHandler,
-		private numericCannotkickglobopsHandler: ErrorCannotkickglobopsHandler,
 	) {}
 
 	// ------- //
@@ -60,6 +55,5 @@ export class KickModule implements Module<KickModule> {
 
 	listen() {
 		this.handler.listen();
-		this.numericCannotkickglobopsHandler.listen();
 	}
 }

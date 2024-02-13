@@ -12,7 +12,6 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { ListCommand } from "./command";
-import { ReplyListHandler, ReplyListendHandler, ReplyListstartHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
@@ -26,23 +25,13 @@ export class ListModule implements Module<ListModule> {
 	static NAME = "LIST";
 
 	static create(store: ChatStore): ListModule {
-		return new ListModule(
-			new ListCommand(store),
-			new ReplyListHandler(store),
-			new ReplyListstartHandler(store),
-			new ReplyListendHandler(store),
-		);
+		return new ListModule(new ListCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(
-		private command: ListCommand,
-		private numericListHandler: ReplyListHandler,
-		private numericListstartHandler: ReplyListstartHandler,
-		private numericListendHandler: ReplyListendHandler,
-	) {}
+	constructor(private command: ListCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -56,9 +45,5 @@ export class ListModule implements Module<ListModule> {
 		this.command.send(payload);
 	}
 
-	listen() {
-		this.numericListHandler.listen();
-		this.numericListstartHandler.listen();
-		this.numericListendHandler.listen();
-	}
+	listen() {}
 }

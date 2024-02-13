@@ -12,7 +12,6 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { SilenceCommand } from "./command";
-import { ReplySilenceHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
@@ -26,16 +25,13 @@ export class SilenceModule implements Module<SilenceModule> {
 	static NAME = "SILENCE";
 
 	static create(store: ChatStore): SilenceModule {
-		return new SilenceModule(new SilenceCommand(store), new ReplySilenceHandler(store));
+		return new SilenceModule(new SilenceCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(
-		private command: SilenceCommand,
-		private numericSilenceHandler: ReplySilenceHandler,
-	) {}
+	constructor(private command: SilenceCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -55,7 +51,5 @@ export class SilenceModule implements Module<SilenceModule> {
 		this.command.send(payload);
 	}
 
-	listen() {
-		this.numericSilenceHandler.listen();
-	}
+	listen() {}
 }

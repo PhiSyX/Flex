@@ -24,6 +24,13 @@ export class HandlerManager {
 		return this._sets.add(module);
 	}
 
+	extends(it: Iterable<[string, () => Promise<unknown>]>): this {
+		for (const [_, module] of it) {
+			this.add(module);
+		}
+		return this;
+	}
+
 	get<T extends CommandsNames = CommandsNames>(moduleID: T): Option<SocketEventHandler> {
 		return Option.from(this._maps.get(moduleID as HandlerID) as SocketEventHandler | undefined);
 	}

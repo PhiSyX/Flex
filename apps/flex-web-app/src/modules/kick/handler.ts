@@ -55,25 +55,3 @@ export class KickHandler implements SocketEventInterface<"KICK"> {
 		this.store.userManager().removeChannel(data.knick.id, data.channel);
 	}
 }
-
-export class ErrorCannotkickglobopsHandler
-	implements SocketEventInterface<"ERR_CANNOTKICKGLOBOPS">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStore) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("ERR_CANNOTKICKGLOBOPS", (data) => this.handle(data));
-	}
-
-	handle(data: GenericReply<"ERR_CANNOTKICKGLOBOPS">): void {
-		const room = this.store.roomManager().active();
-		room.addEvent("error:err_cannotkickglobops", { ...data, isMe: true }, data.reason);
-	}
-}

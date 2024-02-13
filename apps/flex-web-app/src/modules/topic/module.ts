@@ -12,7 +12,6 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { TopicCommand } from "./command";
-import { ReplyNotopicHandler, ReplyTopicHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
@@ -26,21 +25,13 @@ export class TopicModule implements Module<TopicModule> {
 	static NAME = "TOPIC";
 
 	static create(store: ChatStore): TopicModule {
-		return new TopicModule(
-			new TopicCommand(store),
-			new ReplyTopicHandler(store),
-			new ReplyNotopicHandler(store),
-		);
+		return new TopicModule(new TopicCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(
-		private command: TopicCommand,
-		private numericTopicHandler: ReplyTopicHandler,
-		private numericNoTopicHandler: ReplyNotopicHandler,
-	) {}
+	constructor(private command: TopicCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -68,8 +59,5 @@ export class TopicModule implements Module<TopicModule> {
 		this.command.send(payload);
 	}
 
-	listen() {
-		this.numericTopicHandler.listen();
-		this.numericNoTopicHandler.listen();
-	}
+	listen() {}
 }

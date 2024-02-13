@@ -33,38 +33,9 @@ import { User } from "~/user/User";
 import { UserManager } from "~/user/UserManager";
 import { useOverlayerStore } from "./OverlayerStore";
 
-const ReplyCreatedHandler = () => import("~/handlers/replies/ReplyCreatedHandler");
-const ReplyYourhostHandler = () => import("~/handlers/replies/ReplyYourhostHandler");
-const ReplyWelcomeHandler = () => import("~/handlers/replies/ReplyWelcomeHandler");
-
-const ErrorCannotsendtochanHandler = () => import("~/handlers/errors/ErrorCannotsendtochanHandler");
-const ErrorChanoprivsneededHandler = () => import("~/handlers/errors/ErrorChanoprivsneededHandler");
-const ErrorGeneralHandler = () => import("~/handlers/errors/ErrorGenericHandler");
-const ErrorNicknameinuseHandler = () => import("~/handlers/errors/ErrorNicknameinuseHandler");
-const ErrorNoprivilegesHandler = () => import("~/handlers/errors/ErrorNoprivilegesHandler");
-const ErrorNosuchchannelHandler = () => import("~/handlers/errors/ErrorNosuchchannelHandler");
-const ErrorNosuchnickHandler = () => import("~/handlers/errors/ErrorNosuchnickHandler");
-const ErrorNotonchannelHandler = () => import("~/handlers/errors/ErrorNotonchannelHandler");
-const ErrorUsernotinchannelHandler = () => import("~/handlers/errors/ErrorUsernotinchannelHandler");
-
-const AccessLevelModule = () => import("~/modules/mode/access-level/module");
-const AwayModule = () => import("~/modules/user-status/module");
-const ClearModule = () => import("~/modules/clear/module");
-const JoinModule = () => import("~/modules/join/module");
-const KickModule = () => import("~/modules/kick/module");
-const KillModule = () => import("~/modules/kill/module");
-const ListModule = () => import("~/modules/list/module");
-const ModeModule = () => import("~/modules/mode/module");
-const NickModule = () => import("~/modules/nick/module");
-const NoticeModule = () => import("~/modules/notice/module");
-const OperModule = () => import("~/modules/oper/module");
-const PartModule = () => import("~/modules/part/module");
-const PrivmsgModule = () => import("~/modules/privmsg/module");
-const PubmsgModule = () => import("~/modules/pubmsg/module");
-const QueryModule = () => import("~/modules/query/module");
-const QuitModule = () => import("~/modules/quit/module");
-const SilenceModule = () => import("~/modules/silence/module");
-const TopicModule = () => import("~/modules/topic/module");
+const HANDLERS = import.meta.glob("~/handlers/*/*.ts");
+const MODULES = import.meta.glob("~/modules/**/module.ts");
+const MODULES_REPLIES_HANDLERS = import.meta.glob("~/modules/**/replies.ts");
 
 // ---- //
 // Type //
@@ -94,38 +65,9 @@ export class ChatStore {
 		const self = reactive(new ChatStore()) as ChatStore;
 
 		self._handlerManager
-			.add(ReplyCreatedHandler)
-			.add(ReplyYourhostHandler)
-			.add(ReplyWelcomeHandler)
-			.add(ErrorCannotsendtochanHandler)
-			.add(ErrorChanoprivsneededHandler)
-			.add(ErrorGeneralHandler)
-			.add(ErrorNicknameinuseHandler)
-			.add(ErrorNoprivilegesHandler)
-			.add(ErrorNosuchchannelHandler)
-			.add(ErrorNosuchnickHandler)
-			.add(ErrorNotonchannelHandler)
-			.add(ErrorUsernotinchannelHandler);
-
-		self._moduleManager
-			.add(AccessLevelModule)
-			.add(AwayModule)
-			.add(ClearModule)
-			.add(JoinModule)
-			.add(KickModule)
-			.add(KillModule)
-			.add(ListModule)
-			.add(ModeModule)
-			.add(NoticeModule)
-			.add(NickModule)
-			.add(OperModule)
-			.add(PartModule)
-			.add(PrivmsgModule)
-			.add(PubmsgModule)
-			.add(QueryModule)
-			.add(QuitModule)
-			.add(SilenceModule)
-			.add(TopicModule);
+			.extends(Object.entries(HANDLERS))
+			.extends(Object.entries(MODULES_REPLIES_HANDLERS));
+		self._moduleManager.extends(Object.entries(MODULES));
 
 		const thisServer = new ServerCustomRoom();
 		const channelList = new ChannelListCustomRoom();

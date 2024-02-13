@@ -12,12 +12,7 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
 import { OperCommand } from "./command";
-import {
-	ErrorNooperhostHandler,
-	ErrorOperonlyHandler,
-	ErrorPasswdmismatchHandler,
-	OperHandler,
-} from "./handler";
+import { OperHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
@@ -31,13 +26,7 @@ export class OperModule implements Module<OperModule> {
 	static NAME = "OPER";
 
 	static create(store: ChatStore): OperModule {
-		return new OperModule(
-			new OperCommand(store),
-			new OperHandler(store),
-			new ErrorNooperhostHandler(store),
-			new ErrorOperonlyHandler(store),
-			new ErrorPasswdmismatchHandler(store),
-		);
+		return new OperModule(new OperCommand(store), new OperHandler(store));
 	}
 
 	// ----------- //
@@ -46,9 +35,6 @@ export class OperModule implements Module<OperModule> {
 	constructor(
 		private command: OperCommand,
 		private handler: OperHandler,
-		private numericErrorNooperhostHandler: ErrorNooperhostHandler,
-		private numericErrorOperonlyHandler: ErrorOperonlyHandler,
-		private numericErrorPasswdmismatchHandler: ErrorPasswdmismatchHandler,
 	) {}
 
 	// ------- //
@@ -69,8 +55,5 @@ export class OperModule implements Module<OperModule> {
 
 	listen() {
 		this.handler.listen();
-		this.numericErrorNooperhostHandler.listen();
-		this.numericErrorOperonlyHandler.listen();
-		this.numericErrorPasswdmismatchHandler.listen();
 	}
 }
