@@ -66,6 +66,7 @@ mod features
 		};
 
 		invite / {
+			application,
 			client,
 			formdata,
 			handler,

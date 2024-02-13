@@ -57,10 +57,25 @@ export class RoomManager {
 	}
 
 	/**
-	 * Récupère un chambre à partir de son ID.
+	 * Récupère un chambre ouverte à partir de son ID.
 	 */
-	get(roomID: RoomID): Option<Room> {
-		return Option.from(this._rooms.get(roomID.toLowerCase()));
+	get(roomID: RoomID, options?: { state: "opened" | "closed" | "both" }): Option<Room> {
+		const maybeRoom = Option.from(this._rooms.get(roomID.toLowerCase()));
+
+		if (options) {
+			switch (options.state) {
+				case "both":
+					return maybeRoom;
+
+				case "closed":
+					return maybeRoom.filter((room) => room.isClosed());
+
+				case "opened":
+					return maybeRoom.filter((room) => !room.isClosed());
+			}
+		}
+
+		return maybeRoom;
 	}
 
 	/**
@@ -81,8 +96,8 @@ export class RoomManager {
 	/**
 	 * Vérifie qu'une chambre existe.
 	 */
-	has(roomID: RoomID): boolean {
-		return this.get(roomID).is_some();
+	has(roomID: RoomID, options?: { state: "opened" | "closed" | "both" }): boolean {
+		return this.get(roomID, options).is_some();
 	}
 
 	/**
@@ -96,13 +111,13 @@ export class RoomManager {
 	/**
 	 * Supprime une chambre à partir de son ID.
 	 */
-	remove(roomID: RoomID) {
+	remove(roomID: RoomID, options?: { state: "opened" | "closed" | "both" }) {
 		if (this._currentRoom.is_some()) {
 			if (this.current().eq(roomID)) {
 				this.unsetCurrent();
 			}
 		}
-		const maybeRoom = this.get(roomID);
+		const maybeRoom = this.get(roomID, options);
 		if (maybeRoom.is_some()) {
 			const room = maybeRoom.unwrap();
 			room.marksAsClosed();

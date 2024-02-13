@@ -80,22 +80,22 @@ impl OperApplicationInterface for ChatApplication
 					ApplyMode::new(channel::mode::SettingsFlags::Secret),
 				],
 			);
-			let channel = self
+			let mut channel = self
 				.channels
 				.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel, true);
+			self.join_channel(client_socket, &mut channel, true);
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
 		let can_join = self.channels.can_join(channel_name, None, &client_session);
 
 		if can_join.is_ok() {
-			let channel = self
+			let mut channel = self
 				.channels
 				.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel, true);
+			self.join_channel(client_socket, &mut channel, true);
 			return;
 		}
 

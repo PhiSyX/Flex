@@ -19,7 +19,7 @@ use crate::src::chat::components::{self, ClientSocketInterface};
 pub trait InviteChannelClientSocketCommandResponseInterface: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /INVITE (sender + recv).
-	fn emit_invite(&self, channel: &components::Channel, target: Self)
+	fn emit_invite(&self, channel: &components::Channel, target: &Self)
 	where
 		Self: Sized,
 	{

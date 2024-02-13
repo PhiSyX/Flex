@@ -651,14 +651,18 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 
 		if (!roomID.startsWith("#")) {
 			store.roomManager().setCurrent(roomID);
-			return;
-		}
-
-		if (store.roomManager().has(roomID)) {
-			store.roomManager().setCurrent(roomID);
 			store.roomManager().current().unsetTotalUnreadEvents();
 			store.roomManager().current().unsetTotalUnreadMessages();
 			return;
+		}
+
+		if (store.roomManager().has(roomID, { state: "both" })) {
+			const channel = store.roomManager().get(roomID, { state: "both" }).unwrap();
+			if (!channel.isClosed()) {
+				channel.unsetTotalUnreadEvents();
+				channel.unsetTotalUnreadMessages();
+				return;
+			}
 		}
 
 		const module = store.moduleManager().get("JOIN").expect("Récupération du module `JOIN`");

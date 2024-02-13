@@ -10,7 +10,11 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{InviteChannelClientSocketCommandResponseInterface, InviteCommandFormData};
+use super::{
+	InviteApplicationInterface,
+	InviteChannelClientSocketCommandResponseInterface,
+	InviteCommandFormData,
+};
 use crate::src::chat::components::mode::ChannelAccessLevel;
 use crate::src::chat::components::ClientSocketInterface;
 use crate::src::chat::features::ModeChannelAccessLevelApplicationInterface;
@@ -77,6 +81,8 @@ impl InviteHandler
 			return;
 		}
 
-		client_socket.emit_invite(&channel, target_client_socket);
+		client_socket.emit_invite(&channel, &target_client_socket);
+		drop(channel);
+		app.add_client_to_invite_channel(&data.channel, *target_client_socket.cid());
 	}
 }

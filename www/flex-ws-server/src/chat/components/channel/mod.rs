@@ -13,7 +13,7 @@ pub mod mode;
 pub mod permission;
 pub mod topic;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use flex_web_framework::types::{secret, time};
 
@@ -43,6 +43,9 @@ pub struct Channel
 	pub(crate) users: HashMap<client::ClientID, member::ChannelMember>,
 	/// Topic du salon.
 	pub(crate) topic: topic::ChannelTopic,
+
+	/// Les utilisateurs en attente dans la liste des invitations.
+	pub(crate) invite_list: HashSet<client::ClientID>,
 }
 
 // -------------- //
@@ -59,6 +62,7 @@ impl Channel
 			users: Default::default(),
 			modes_settings: Default::default(),
 			topic: Default::default(),
+			invite_list: Default::default(),
 		}
 	}
 
@@ -80,6 +84,12 @@ impl Channel
 	pub fn add_member(&mut self, id: client::ClientID, nick: member::ChannelMember)
 	{
 		self.users.insert(id, nick);
+	}
+
+	/// Ajoute un client dans la liste des invitations.
+	pub fn add_invite(&mut self, id: client::ClientID) -> bool
+	{
+		self.invite_list.insert(id)
 	}
 
 	/// ID du salon.
@@ -104,6 +114,12 @@ impl Channel
 	pub fn members(&self) -> &HashMap<client::ClientID, member::ChannelMember>
 	{
 		&self.users
+	}
+
+	/// Retire un client de la liste des invitations
+	pub fn remove_to_invite(&mut self, id: &client::ClientID) -> bool
+	{
+		self.invite_list.remove(id)
 	}
 
 	/// Room Socket
