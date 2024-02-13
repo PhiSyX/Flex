@@ -48,6 +48,7 @@ const isCurrentClientChannelMemberChannelOperator = computed(() =>
 // Les paramètres du salon.
 const settings = computed(() => Array.from(props.room.settings));
 const settingsToString = computed(() => settings.value.join(""));
+const inviteOnlySettings = ref<boolean>();
 const moderateSettings = ref<boolean>();
 const operatorsOnlySettings = ref<boolean>();
 const noExternalMessagesSettings = ref<boolean>();
@@ -74,6 +75,7 @@ function onSubmitHandler() {
 	}
 
 	emit("submit", {
+		i: inviteOnlySettings.value,
 		k: keySettings.value,
 		m: moderateSettings.value,
 		n: noExternalMessagesSettings.value,
@@ -136,6 +138,20 @@ function onSubmitHandler() {
 			<h2>Paramètres du salon</h2>
 
 			<ul class="[ list:reset flex! gap=2 px=1 ]">
+				<li>
+					<InputSwitchV2
+						v-model="inviteOnlySettings"
+						name="invite-only-settings"
+						:checked="room.settings.has('i')"
+						:disabled="
+							!isCurrentClientChannelMemberChannelOperator &&
+							!isCurrentClientGlobalOperator
+						"
+					>
+						Salon accessible sur invitation uniquement (+i)
+					</InputSwitchV2>
+				</li>
+
 				<li>
 					<InputSwitchV2
 						v-model="enabledKeySettings"

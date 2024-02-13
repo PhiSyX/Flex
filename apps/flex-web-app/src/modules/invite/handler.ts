@@ -8,50 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Some } from "@phisyx/flex-safety";
 import { ChatStore } from "~/store/ChatStore";
-
-import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class NoticeModule implements Module<NoticeModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "NOTICE";
-
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
-	}
-
+export class InviteHandler implements SocketEventInterface<"INVITE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
-	) {}
+	constructor(private store: ChatStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
-	}
-
-	send(payload: Command<"NOTICE">) {
-		this.command.send(payload);
-	}
-
 	listen() {
-		this.handler.listen();
+		this.store.on("INVITE", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"INVITE">) {
+		const room = this.store
+			.roomManager()
+			.get(data.channel)
+			.or_else(() => Some(this.store.roomManager().active()))
+			.unwrap();
+
+		room.addEvent("event:invite", {
+			...data,
+			isMe: this.store.isMe(data.origin),
+		});
 	}
 }

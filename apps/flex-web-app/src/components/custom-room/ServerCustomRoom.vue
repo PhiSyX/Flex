@@ -47,6 +47,13 @@ function openChangeNicknameDialog(event: MouseEvent) {
 }
 
 /**
+ * Ouvre une chambre.
+ */
+function openRoom(roomName: string) {
+	chatStore.openRoom(roomName);
+}
+
+/**
  * Envoie un message à la chambre active.
  */
 function sendMessage(message: string) {
@@ -63,6 +70,7 @@ function sendMessage(message: string) {
 		:room="room"
 		class="[ flex:full ]"
 		@change-nickname="openChangeNicknameDialog"
+		@open-room="openRoom"
 		@send-message="sendMessage"
 	/>
 </template>

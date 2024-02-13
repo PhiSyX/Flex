@@ -638,6 +638,34 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	}
 
 	/**
+	 * Ouvre une chambre. Dans le cas d'un salon, cette fonction émet la
+	 * commande /JOIN vers le serveur (sans clés).
+	 */
+	function openRoom(target: Origin | string) {
+		let roomID: string;
+		if (typeof target === "string") {
+			roomID = target;
+		} else {
+			roomID = target.id;
+		}
+
+		if (!roomID.startsWith("#")) {
+			store.roomManager().setCurrent(roomID);
+			return;
+		}
+
+		if (store.roomManager().has(roomID)) {
+			store.roomManager().setCurrent(roomID);
+			store.roomManager().current().unsetTotalUnreadEvents();
+			store.roomManager().current().unsetTotalUnreadMessages();
+			return;
+		}
+
+		const module = store.moduleManager().get("JOIN").expect("Récupération du module `JOIN`");
+		module.send({ channels: [roomID] });
+	}
+
+	/**
 	 * (Dé-)sélectionne un utilisateur d'un salon.
 	 */
 	function toggleSelectChannelMember(room: ChannelRoom, origin: Origin) {
@@ -817,6 +845,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		joinChannel,
 		kickChannelMember,
 		listen,
+		openRoom,
 		openPrivateOrCreate,
 		sendMessage,
 		sendSetAccessLevel,

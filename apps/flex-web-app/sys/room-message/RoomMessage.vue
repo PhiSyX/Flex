@@ -39,7 +39,7 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "open-private", origin: Origin): void;
+	(evtName: "open-room", roomName: string): void;
 }
 
 // --------- //
@@ -100,6 +100,8 @@ const isEventOrError = computed(() => {
 		props.type.startsWith("event:rpl_")
 	);
 });
+
+const openRoom = (roomName: string) => emit("open-room", roomName);
 </script>
 
 <template>
@@ -114,7 +116,11 @@ const isEventOrError = computed(() => {
 		@dblclick.stop
 	>
 		<template v-if="componentEventExists && isEvent">
-			<component :is="componentEventName" v-bind="props" />
+			<component
+				:is="componentEventName"
+				v-bind="props"
+				@open-room="openRoom"
+			/>
 		</template>
 		<template v-else>
 			<time :datetime="time.datetime">

@@ -72,6 +72,13 @@ function closePrivate() {
 }
 
 /**
+ * Ouvre une chambre.
+ */
+function openRoom(roomName: string) {
+	chatStore.openRoom(roomName);
+}
+
+/**
  * Envoie du message au destinataire.
  */
 function sendMessage(message: string) {
@@ -81,13 +88,14 @@ function sendMessage(message: string) {
 /**
  * Envoie de la commande /SILENCE.
  */
-const sendSilenceUserCommand = (applyState: "+" | "-") => (nickname: string) => {
-	if (applyState === "+") {
-		chatStore.ignoreUser(nickname);
-	} else {
-		chatStore.unignoreUser(nickname);
-	}
-};
+const sendSilenceUserCommand =
+	(applyState: "+" | "-") => (nickname: string) => {
+		if (applyState === "+") {
+			chatStore.ignoreUser(nickname);
+		} else {
+			chatStore.unignoreUser(nickname);
+		}
+	};
 </script>
 
 <template>
@@ -100,6 +108,7 @@ const sendSilenceUserCommand = (applyState: "+" | "-") => (nickname: string) => 
 		:room="room"
 		@change-nickname="openChangeNicknameDialog"
 		@close="closePrivate"
+		@open-room="openRoom"
 		@ignore-user="(o) => sendSilenceUserCommand('+')(o)"
 		@send-message="sendMessage"
 		@unignore-user="(o) => sendSilenceUserCommand('-')(o)"
