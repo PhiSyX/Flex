@@ -7,7 +7,7 @@ import { UserChangeNicknameDialog } from "~/user/User";
 import { useOverlayerStore } from "~/store/OverlayerStore";
 import { useChatStore } from "~/store/ChatStore";
 
-import ServerCustomRoomComponent from "#/sys/server-custom-room/ServerCustomRoom.vue";
+import CustomRoomServer from "#/sys/custom-room-server/CustomRoomServer.vue";
 
 // ---- //
 // Type //
@@ -54,7 +54,7 @@ function sendMessage(message: string) {
 </script>
 
 <template>
-	<ServerCustomRoomComponent
+	<CustomRoomServer
 		v-if="room.isActive() && !room.isClosed()"
 		:forum-url="forumURL"
 		:vademecum-url="vademecumURL"
