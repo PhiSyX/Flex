@@ -89,7 +89,7 @@ export class SajoinModule implements Module<SajoinModule> {
 	// Méthode //
 	// ------- //
 
-	input(nicknamesRaw?: string, channelsRaw?: string) {
+	input(_: string, nicknamesRaw?: string, channelsRaw?: string) {
 		const nicknames = nicknamesRaw?.split(",");
 		const channels = channelsRaw?.split(",");
 		if (!nicknames || !channels) return;

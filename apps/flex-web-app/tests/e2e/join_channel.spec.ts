@@ -10,7 +10,7 @@
 
 import { type Page, expect, test } from "@playwright/test";
 
-import { containsMessage } from "./helpers/channel.js";
+import { containsMessage, sendMessage } from "./helpers/channel.js";
 import { connectChat, connectUsersToChat } from "./helpers/connect.js";
 import { generateRandomChannel } from "./helpers/context.js";
 import { containsMessageInActiveRoom } from "./helpers/room.js";
@@ -100,4 +100,31 @@ test("Rejoindre un salon via la boite de dialogue (de la vue ChannelList)", asyn
 
 	const $mainRoom = page.locator(".room\\/main");
 	await expect($mainRoom).toContainText(`Vous avez rejoint le salon ${channelToJoin}`);
+});
+
+test("Rejoindre un salon via la commande /SAJOIN (globop)", async ({ browser }) => {
+	const channelToJoin = generateRandomChannel();
+	const { user1: globop, user2: user } = await connectUsersToChat(
+		{ browser },
+		{ channels: channelToJoin },
+	);
+
+	const forceChannelToJoin = generateRandomChannel();
+
+	// NOTE: globop n'est pas opérateur global.
+	await sendMessage(globop.page, channelToJoin, `/sajoin ${user.nick} ${forceChannelToJoin}`);
+	await containsMessage(
+		globop.page,
+		channelToJoin,
+		"* Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects.",
+	);
+
+	// NOTE: user n'a évidemment pas rejoint ce salon, après le fail.
+	const $navRooms = user.page.locator(".navigation-area .navigation-server ul li");
+	await expect($navRooms).toHaveCount(1);
+
+	// NOTE: globop devient opérateur global.
+	await sendMessage(globop.page, channelToJoin, "/oper test-globop test");
+	await sendMessage(globop.page, channelToJoin, `/sajoin ${user.nick} ${forceChannelToJoin}`);
+	await expect($navRooms).toHaveCount(2);
 });
