@@ -21,6 +21,7 @@ use super::{
 	AccessLevelVipCommandFormData,
 };
 use crate::src::chat::components::channel::member;
+use crate::src::chat::components::channel::mode::ChannelAccessLevel;
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::{ApplyMode, OperApplicationInterface};
@@ -50,8 +51,8 @@ impl ModeAccessLevelHandler
 		app: &ChatApplication,
 		channel_name: channel::ChannelIDRef,
 		nicknames: &[String],
-		min_access_level: channel::mode::ChannelAccessLevel,
-		set_access_level: channel::mode::ChannelAccessLevel,
+		min_access_level: ChannelAccessLevel,
+		set_access_level: ChannelAccessLevel,
 	)
 	{
 		let client_socket = app.current_client(socket);
@@ -87,6 +88,95 @@ impl ModeAccessLevelHandler
 						nick: member::ChannelMember,
 					}
 
+					// TODO: à améliorer/mieux réfléchir cette partie de code
+					match set_access_level {
+						| ChannelAccessLevel::Owner => {
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Owner.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::AdminOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Operator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::AdminOperator => {
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::AdminOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Operator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::Operator => {
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Operator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::HalfOperator => {
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::Vip => {
+							_ = target_client_socket.socket().join(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+					}
+
 					TargetNick {
 						client: target_client_socket,
 						nick,
@@ -104,7 +194,7 @@ impl ModeAccessLevelHandler
 			return;
 		};
 
-		let added_flags = updated
+		let added_flags: Vec<_> = updated
 			.iter()
 			.map(|target_nick| {
 				let member =
@@ -121,7 +211,7 @@ impl ModeAccessLevelHandler
 			})
 			.collect();
 
-		client_socket.emit_mode_access_level(&channel, added_flags, vec![], true);
+		client_socket.emit_mode_access_level(&channel, &added_flags, &[], true);
 
 		client_socket.send_rpl_namreply(&channel, move |nick| {
 			let found = updated
@@ -137,8 +227,8 @@ impl ModeAccessLevelHandler
 		app: &ChatApplication,
 		channel_name: &channel::ChannelID,
 		nicknames: &[String],
-		min_access_level: channel::mode::ChannelAccessLevel,
-		unset_access_level: channel::mode::ChannelAccessLevel,
+		min_access_level: ChannelAccessLevel,
+		unset_access_level: ChannelAccessLevel,
 	)
 	{
 		let client_socket = app.current_client(socket);
@@ -177,6 +267,103 @@ impl ModeAccessLevelHandler
 						nick: member::ChannelMember,
 					}
 
+					// TODO: à améliorer/mieux réfléchir cette partie de code
+					match unset_access_level {
+						| ChannelAccessLevel::Owner => {
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Owner.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::AdminOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Operator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::AdminOperator => {
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::AdminOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Operator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::Operator => {
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Operator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::HalfOperator => {
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::HalfOperator.symbol(),
+								channel_name.to_lowercase(),
+							));
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+						| ChannelAccessLevel::Vip => {
+							_ = target_client_socket.socket().leave(format!(
+								"channel:{}{}",
+								ChannelAccessLevel::Vip.symbol(),
+								channel_name.to_lowercase(),
+							));
+						}
+					}
+
+					for access_level in &nick.access_level {
+						_ = target_client_socket.socket().join(format!(
+							"channel:{}{}",
+							access_level.symbol(),
+							channel_name.to_lowercase(),
+						));
+					}
+
 					TargetNick {
 						client: target_client_socket,
 						nick,
@@ -194,7 +381,7 @@ impl ModeAccessLevelHandler
 			return;
 		};
 
-		let removed_flags = updated
+		let removed_flags: Vec<_> = updated
 			.iter()
 			.map(|target_nick| {
 				let member =
@@ -211,7 +398,7 @@ impl ModeAccessLevelHandler
 			})
 			.collect();
 
-		client_socket.emit_mode_access_level(&channel, vec![], removed_flags, true);
+		client_socket.emit_mode_access_level(&channel, &[], &removed_flags, true);
 
 		client_socket.send_rpl_namreply(&channel, move |nick| {
 			let found = updated
@@ -239,8 +426,8 @@ impl ModeAccessLevelQOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Owner,
-			channel::mode::ChannelAccessLevel::Owner,
+			ChannelAccessLevel::Owner,
+			ChannelAccessLevel::Owner,
 		);
 	}
 
@@ -255,8 +442,8 @@ impl ModeAccessLevelQOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Owner,
-			channel::mode::ChannelAccessLevel::Owner,
+			ChannelAccessLevel::Owner,
+			ChannelAccessLevel::Owner,
 		);
 	}
 }
@@ -277,8 +464,8 @@ impl ModeAccessLevelAOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Owner,
-			channel::mode::ChannelAccessLevel::AdminOperator,
+			ChannelAccessLevel::Owner,
+			ChannelAccessLevel::AdminOperator,
 		);
 	}
 
@@ -293,8 +480,8 @@ impl ModeAccessLevelAOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Owner,
-			channel::mode::ChannelAccessLevel::AdminOperator,
+			ChannelAccessLevel::Owner,
+			ChannelAccessLevel::AdminOperator,
 		);
 	}
 }
@@ -315,8 +502,8 @@ impl ModeAccessLevelOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Operator,
-			channel::mode::ChannelAccessLevel::Operator,
+			ChannelAccessLevel::Operator,
+			ChannelAccessLevel::Operator,
 		);
 	}
 
@@ -331,8 +518,8 @@ impl ModeAccessLevelOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Operator,
-			channel::mode::ChannelAccessLevel::Operator,
+			ChannelAccessLevel::Operator,
+			ChannelAccessLevel::Operator,
 		);
 	}
 }
@@ -353,8 +540,8 @@ impl ModeAccessLevelHOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Operator,
-			channel::mode::ChannelAccessLevel::HalfOperator,
+			ChannelAccessLevel::Operator,
+			ChannelAccessLevel::HalfOperator,
 		);
 	}
 
@@ -369,8 +556,8 @@ impl ModeAccessLevelHOPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::Operator,
-			channel::mode::ChannelAccessLevel::HalfOperator,
+			ChannelAccessLevel::Operator,
+			ChannelAccessLevel::HalfOperator,
 		);
 	}
 }
@@ -391,8 +578,8 @@ impl ModeAccessLevelVIPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::HalfOperator,
-			channel::mode::ChannelAccessLevel::Vip,
+			ChannelAccessLevel::HalfOperator,
+			ChannelAccessLevel::Vip,
 		);
 	}
 
@@ -407,8 +594,8 @@ impl ModeAccessLevelVIPHandler
 			app,
 			&data.channel,
 			&data.nicknames,
-			channel::mode::ChannelAccessLevel::HalfOperator,
-			channel::mode::ChannelAccessLevel::Vip,
+			ChannelAccessLevel::HalfOperator,
+			ChannelAccessLevel::Vip,
 		);
 	}
 }

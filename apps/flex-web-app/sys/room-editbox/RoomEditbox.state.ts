@@ -18,7 +18,7 @@ import { Room } from "~/room/Room";
 
 export interface Props {
 	completionList?: Array<string>;
-	currentClientNickname: string;
+	currentClientNickname?: string;
 	disableInput?: boolean;
 	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes
 	//background: color;

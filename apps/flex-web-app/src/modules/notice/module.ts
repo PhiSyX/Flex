@@ -8,42 +8,50 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::{self, client, ClientSocketInterface, Origin};
-use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
+import { ChatStore } from "~/store/ChatStore";
 
-// --------- //
-// Interface //
-// --------- //
+import { Module } from "../interface";
+import { NoticeCommand } from "./command";
+import { NoticeHandler } from "./handler";
 
-pub trait ModeAccessLevelClientSocketInterface: ClientSocketInterface
-{
-	/// Émet au client courant les membres avec leurs niveaux d'accès sur un
-	/// salon.
-	fn emit_mode_access_level(
-		&self,
-		channel: &components::channel::Channel,
-		added_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
-		removed_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
-		updated: bool,
-	)
-	{
-		let origin = Origin::from(self.client());
+// -------------- //
+// Implémentation //
+// -------------- //
 
-		let mode = ModeCommandResponse {
-			origin: &origin,
-			tags: ModeCommandResponse::<()>::default_tags(),
-			added: added_flags.to_owned(),
-			removed: removed_flags.to_owned(),
-			target: &channel.name,
-			updated,
-		};
+export class NoticeModule implements Module<NoticeModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
 
-		self.emit_within(channel.room(), mode.name(), mode);
+	static NAME = "NOTICE";
+
+	static create(store: ChatStore): NoticeModule {
+		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(
+		private command: NoticeCommand,
+		private handler: NoticeHandler,
+	) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(_: string, targetsRaw?: string, ...words: Array<string>) {
+		const targets: Array<string> = targetsRaw?.split(',') || [];
+		const text = words.join(" ");
+		this.send({ targets, text });
+	}
+
+	send(payload: Command<"NOTICE">) {
+		this.command.send(payload);
+	}
+
+	listen() {
+		this.handler.listen();
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> ModeAccessLevelClientSocketInterface for client::Socket<'s> {}

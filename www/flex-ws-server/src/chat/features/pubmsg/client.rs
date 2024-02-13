@@ -22,32 +22,6 @@ pub trait PubmsgClientSocketCommandResponseInterface: ClientSocketInterface
 	/// Émet au client les réponses liées à la commande /PUBMSG <channel>
 	fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User, external: bool)
 	where
-		User: serde::Serialize;
-}
-
-pub trait PubmsgClientSocketErrorRepliesInterface: ClientSocketInterface
-{
-	/// Émet au client l'erreur [ErrCannotsendtochanError].
-	fn send_err_cannotsendtochan(&self, channel_name: &str)
-	{
-		let origin = Origin::from(self.client());
-		let err_cannotsendtochan = ErrCannotsendtochanError {
-			channel_name,
-			origin: &origin,
-			tags: ErrCannotsendtochanError::default_tags(),
-		};
-		self.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
-	}
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> PubmsgClientSocketCommandResponseInterface for client::Socket<'s>
-{
-	fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User, external: bool)
-	where
 		User: serde::Serialize,
 	{
 		let pubmsg_command = PubmsgCommandResponse {
@@ -69,5 +43,26 @@ impl<'s> PubmsgClientSocketCommandResponseInterface for client::Socket<'s>
 			.emit(pubmsg_command.name(), pubmsg_command);
 	}
 }
+
+pub trait PubmsgClientSocketErrorRepliesInterface: ClientSocketInterface
+{
+	/// Émet au client l'erreur [ErrCannotsendtochanError].
+	fn send_err_cannotsendtochan(&self, channel_name: &str)
+	{
+		let origin = Origin::from(self.client());
+		let err_cannotsendtochan = ErrCannotsendtochanError {
+			channel_name,
+			origin: &origin,
+			tags: ErrCannotsendtochanError::default_tags(),
+		};
+		self.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> PubmsgClientSocketCommandResponseInterface for client::Socket<'s> {}
 
 impl<'s> PubmsgClientSocketErrorRepliesInterface for client::Socket<'s> {}

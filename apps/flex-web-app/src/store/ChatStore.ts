@@ -56,6 +56,7 @@ const KillModule = () => import("~/modules/kill/module");
 const ListModule = () => import("~/modules/list/module");
 const ModeModule = () => import("~/modules/mode/module");
 const NickModule = () => import("~/modules/nick/module");
+const NoticeModule = () => import("~/modules/notice/module");
 const OperModule = () => import("~/modules/oper/module");
 const PartModule = () => import("~/modules/part/module");
 const PrivmsgModule = () => import("~/modules/privmsg/module");
@@ -115,6 +116,7 @@ export class ChatStore {
 			.add(KillModule)
 			.add(ListModule)
 			.add(ModeModule)
+			.add(NoticeModule)
 			.add(NickModule)
 			.add(OperModule)
 			.add(PartModule)

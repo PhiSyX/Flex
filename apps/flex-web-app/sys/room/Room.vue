@@ -16,7 +16,7 @@ export interface Props {
 	displayInput?: boolean;
 	disableInput?: boolean;
 	room: Room;
-	currentClientNickname: string;
+	currentClientNickname?: string;
 }
 
 interface Emits {

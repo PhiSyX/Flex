@@ -21,6 +21,8 @@ import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
 import Match from "#/sys/match/Match.vue";
+import CustomRoomNotice from "#/sys/custom-room-notice/CustomRoomNotice.vue";
+import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
 
 const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();
@@ -45,9 +47,9 @@ function openJoinChannelDialog(event: Event) {
 			<template v-for="room in rooms" :key="room.id">
 				<template
 					v-if="room.type === 'server-custom-room'"
-					:key="room.type + '@' + room.name"
+					:key="room.type + '@a' + room.name"
 				>
-					<KeepAlive :key="room.type + '@' + room.name">
+					<KeepAlive :key="room.type + '@a' + room.name">
 						<ServerCustomRoomComponent
 							:room="(room as ServerCustomRoom)"
 							class="[ flex:full ]"
@@ -80,15 +82,27 @@ function openJoinChannelDialog(event: Event) {
 				</template>
 				<template
 					v-else-if="room.type === 'channel-list-custom-room'"
-					:key="room.type + '|' + room.name"
+					:key="room.type + '@b' + room.name"
 				>
-					<KeepAlive :key="room.type + '|' + room.name">
+					<KeepAlive :key="room.type + '@b' + room.name">
 						<ChannelList
 							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as ChannelListCustomRoom)"
 							class="[ flex:full ]"
 							@join-channel="joinChannel"
 							@create-channel-dialog="openJoinChannelDialog"
+						/>
+					</KeepAlive>
+				</template>
+				<template
+					v-else-if="room.type === 'notice-custom-room'"
+					:key="room.type + '@c' + room.name"
+				>
+					<KeepAlive :key="room.type + '@c' + room.name">
+						<CustomRoomNotice
+							v-if="room.isActive() && !room.isClosed()"
+							:room="(room as NoticeCustomRoom)"
+							class="[ flex:full ]"
 						/>
 					</KeepAlive>
 				</template>

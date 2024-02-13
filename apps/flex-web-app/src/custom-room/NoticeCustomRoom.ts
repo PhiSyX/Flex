@@ -8,42 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::{self, client, ClientSocketInterface, Origin};
-use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
+import { Room } from "~/room/Room";
 
-// --------- //
-// Interface //
-// --------- //
+export class NoticeCustomRoom extends Room<"notice-custom-room"> {
+	/**
+	 * ID de la chambre personnalisée.
+	 */
+	public static ID = "@notice";
+	public static NAME = "Notices";
 
-pub trait ModeAccessLevelClientSocketInterface: ClientSocketInterface
-{
-	/// Émet au client courant les membres avec leurs niveaux d'accès sur un
-	/// salon.
-	fn emit_mode_access_level(
-		&self,
-		channel: &components::channel::Channel,
-		added_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
-		removed_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
-		updated: bool,
-	)
-	{
-		let origin = Origin::from(self.client());
+	// ----------- //
+	// Constructor //
+	// ----------- //
 
-		let mode = ModeCommandResponse {
-			origin: &origin,
-			tags: ModeCommandResponse::<()>::default_tags(),
-			added: added_flags.to_owned(),
-			removed: removed_flags.to_owned(),
-			target: &channel.name,
-			updated,
-		};
-
-		self.emit_within(channel.room(), mode.name(), mode);
+	constructor() {
+		super("notice-custom-room", NoticeCustomRoom.NAME);
+		this.withID(NoticeCustomRoom.ID);
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> ModeAccessLevelClientSocketInterface for client::Socket<'s> {}
