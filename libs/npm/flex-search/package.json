@@ -11,6 +11,6 @@
 		"@phisyx/flex-code-quality": "workspace:*",
 		"@phisyx/flex-safety": "workspace:*",
 		"typescript": "^5.3.3",
-		"vitest": "^1.1.1"
+		"vitest": "^1.2.2"
 	}
 }

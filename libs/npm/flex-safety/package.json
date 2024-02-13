@@ -6,7 +6,7 @@
 	"devDependencies": {
 		"@phisyx/flex-code-quality": "workspace:*",
 		"typescript": "^5.3.3",
-		"vitest": "^1.1.1"
+		"vitest": "^1.2.2"
 	},
 	"scripts": {
 		"build": "tsc",
