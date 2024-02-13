@@ -8,49 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::secret;
-
 use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_channel;
+use crate::macro_rules::command_formdata::{validate_channel, validate_nickname};
 
 command_formdata! {
-	struct CHANNEL_MODE
+	struct INVITE
 	{
-		/// Le salon.
+		/// Le pseudo à inviter sur le salon
+		#[serde(deserialize_with = "validate_nickname")]
+		nickname: String,
+		/// Le salon à inviter.
 		#[serde(deserialize_with = "validate_channel")]
-		target: String,
-		/// Les paramètres du salon à appliquer.
-		modes: ChannelModesSettings,
+		channel: String,
 	}
-}
-
-#[derive(Debug)]
-#[derive(Clone)]
-#[derive(PartialEq, Eq, Hash)]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub struct ChannelModesSettings
-{
-	/// Salon sur invitation uniquement.
-	#[serde(rename = "i")]
-	pub invite_only: Option<bool>,
-	/// Clé du salon, pour le rejoindre.
-	#[serde(rename = "k")]
-	pub key: Option<secret::Secret<String>>,
-	/// Salon en modéré.
-	#[serde(rename = "m")]
-	pub moderate: Option<bool>,
-	/// Interdire les messages provenant des utilisateurs externes au salon.
-	#[serde(rename = "n")]
-	pub no_external_messages: Option<bool>,
-	/// Interdire le changement du sujet (topic) par les utilisateurs non
-	/// opérateurs.
-	#[serde(rename = "t")]
-	pub no_topic: Option<bool>,
-	/// Salon réservé aux opérateurs globaux uniquement.
-	#[serde(rename = "O")]
-	pub oper_only: Option<bool>,
-	/// Salon secret. Ces salons ne seront pas affiché dans la liste des salons.
-	#[serde(rename = "s")]
-	pub secret: Option<bool>,
 }

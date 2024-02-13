@@ -360,6 +360,23 @@ impl<'a> Socket<'a>
 
 		self.emit(err_usernotinchannel.name(), err_usernotinchannel);
 	}
+
+	/// Émet au client l'erreur
+	/// [crate::src::chat::replies::ErrUseronchannelError].
+	pub fn send_err_useronchannel(&self, user: &str, channel: &str)
+	{
+		use crate::src::chat::replies::ErrUseronchannelError;
+
+		let origin = Origin::from(self.client());
+		let err_useronchannel = ErrUseronchannelError {
+			origin: &origin,
+			tags: ErrUseronchannelError::default_tags(),
+			user,
+			channel,
+		};
+
+		self.emit(err_useronchannel.name(), err_useronchannel);
+	}
 }
 
 // -------------- //

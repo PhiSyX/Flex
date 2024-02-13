@@ -65,6 +65,13 @@ mod features
 			session,
 		};
 
+		invite / {
+			client,
+			formdata,
+			handler,
+			response,
+		};
+
 		join / {
 			application,
 			client,
@@ -218,6 +225,7 @@ mod replies
 			err_nosuchnick,
 			err_notonchannel,
 			err_usernotinchannel,
+			err_useronchannel,
 		};
 
 		reserved_numerics / {

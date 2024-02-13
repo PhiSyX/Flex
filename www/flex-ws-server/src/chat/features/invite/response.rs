@@ -8,14 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ----------- //
-// Énumération //
-// ----------- //
+use crate::{command_response, error_replies, reserved_numerics};
 
-pub enum ChannelJoinError
-{
-	BadChannelKey,
-	InviteOnly,
-	HasAlreadyClient,
-	OperOnly,
+command_response! {
+	struct INVITE
+	{
+		/// Le salon que le client a reçu comme invitation.
+		channel: &'a str,
+		/// Le pseudo qui a été invité.
+		nick: &'a str,
+	}
+}
+
+reserved_numerics! {
+	/// Renvoyé par le serveur pour indiquer que la tentative de message INVITE
+	/// a abouti et qu'elle est transmise au client final.
+	| 341 <-> RPL_INVITING { channel: str, nick: str } => "{channel} {nick}"
+}
+
+error_replies! {
+	| 473 <-> ERR_INVITEONLYCHAN { channel: str }
+		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+i)"
 }

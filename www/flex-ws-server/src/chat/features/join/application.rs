@@ -11,13 +11,16 @@
 use flex_web_framework::types::secret;
 
 use super::{
+	ChannelJoinError,
 	JoinChannelClientSocketCommandResponseInterface,
 	JoinChannelClientSocketErrorRepliesInterface,
-	JoinChannelError,
 	JoinChannelSessionInterface,
 };
 use crate::src::chat::components::{channel, client};
-use crate::src::chat::features::OperClientSocketErrorRepliesInterface;
+use crate::src::chat::features::{
+	InviteChannelClientSocketErrorReplies,
+	OperClientSocketErrorRepliesInterface,
+};
 use crate::src::chat::replies::ChannelMemberDTO;
 use crate::src::ChatApplication;
 
@@ -46,7 +49,7 @@ pub trait JoinApplicationInterface
 	/// Rejoint un salon ou le crée. Aucune vérification concernant la clé n'est
 	/// faite. Cela veut dire que cette méthode peut joindre un salon même si le
 	/// salon possède une clé.
-	fn join_or_create_channel_bypass_key(
+	fn join_or_create_channel_bypass_permission(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
@@ -103,18 +106,21 @@ impl JoinApplicationInterface for ChatApplication
 
 		if let Err(err) = can_join {
 			match err {
-				| JoinChannelError::BadChannelKey => {
+				| ChannelJoinError::BadChannelKey => {
 					client_socket.send_err_badchannelkey(channel_name);
 				}
-				| JoinChannelError::HasAlreadyClient => {}
-				| JoinChannelError::OperOnly => {
+				| ChannelJoinError::InviteOnly => {
+					client_socket.send_err_inviteonlychan(channel_name);
+				}
+				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::OperOnly => {
 					client_socket.send_err_operonly(channel_name);
 				}
 			}
 		}
 	}
 
-	fn join_or_create_channel_bypass_key(
+	fn join_or_create_channel_bypass_permission(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
@@ -143,14 +149,16 @@ impl JoinApplicationInterface for ChatApplication
 			}
 			| Err(err) => {
 				match err {
-					| JoinChannelError::BadChannelKey | JoinChannelError::OperOnly => {
+					| ChannelJoinError::BadChannelKey
+					| ChannelJoinError::InviteOnly
+					| ChannelJoinError::OperOnly => {
 						let channel = self
 							.channels
 							.add_member(channel_name, client_socket.cid())
 							.expect("Le salon que le client a rejoint");
 						self.join_channel(client_socket, &channel, true);
 					}
-					| JoinChannelError::HasAlreadyClient => {}
+					| ChannelJoinError::HasAlreadyClient => {}
 				}
 			}
 		}

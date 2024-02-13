@@ -19,9 +19,10 @@ use crate::src::chat::components::client::{self, ClientSocketInterface};
 use crate::src::chat::components::{self, channel};
 use crate::src::chat::features::{
 	ApplyMode,
+	ChannelJoinError,
+	InviteChannelClientSocketErrorReplies,
 	JoinApplicationInterface,
 	JoinChannelClientSocketErrorRepliesInterface,
-	JoinChannelError,
 	JoinChannelSessionInterface,
 	UserClientSocketInterface,
 };
@@ -100,11 +101,14 @@ impl OperApplicationInterface for ChatApplication
 
 		if let Err(err) = can_join {
 			match err {
-				| JoinChannelError::BadChannelKey => {
+				| ChannelJoinError::BadChannelKey => {
 					client_socket.send_err_badchannelkey(channel_name);
 				}
-				| JoinChannelError::HasAlreadyClient => {}
-				| JoinChannelError::OperOnly => {
+				| ChannelJoinError::InviteOnly => {
+					client_socket.send_err_inviteonlychan(channel_name);
+				}
+				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::OperOnly => {
 					client_socket.send_err_operonly(channel_name);
 				}
 			}
