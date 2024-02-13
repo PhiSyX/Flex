@@ -21,7 +21,7 @@ pub type CHANNEL_ACCESS_LEVEL_FLAG = u32;
 /// Le drapeau du niveau d'accès des propriétaires de salon.
 pub const CHANNEL_ACCESS_LEVEL_OWNER_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 7;
 pub const CHANNEL_ACCESS_LEVEL_OWNER_LETTER: char = 'q';
-pub const CHANNEL_ACCESS_LEVEL_OWNER_SYMBOL: char = '@';
+pub const CHANNEL_ACCESS_LEVEL_OWNER_SYMBOL: char = '~';
 
 /// Le drapeau du niveau d'accès des admins de salon.
 pub const CHANNEL_ACCESS_LEVEL_ADMIN_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 6;
