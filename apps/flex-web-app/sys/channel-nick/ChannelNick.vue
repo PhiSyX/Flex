@@ -8,7 +8,7 @@ import { ChannelMemberSearchHits } from "~/channel/ChannelMemberFiltered";
 interface Props {
 	classes?: string;
 	hits?: Array<ChannelMemberSearchHits>;
-	isMe?: boolean;
+	isCurrentClient?: boolean;
 	nickname: string;
 	prefix?: string;
 	suffix?: string;
@@ -24,7 +24,7 @@ defineProps<Props>();
 </script>
 
 <template>
-	<component :is="tag" :data-myself="isMe" :class="classes">
+	<component :is="tag" :data-myself="isCurrentClient" :class="classes">
 		<span class="prefix">{{ prefix }}</span>
 		<span class="channel/nick:symbol">{{ symbol }}</span>
 		<bdo v-if="hits && hits.length > 0" :class="classes">

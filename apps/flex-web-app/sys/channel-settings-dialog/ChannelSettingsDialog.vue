@@ -40,9 +40,7 @@ const isCurrentClientGlobalOperator = computed(() =>
 
 // Est-ce que le client courant opérateur du salon?
 const isCurrentClientChannelMemberChannelOperator = computed(() =>
-	props.room.memberHasChannelOperatorAccessLevel(
-		props.currentClientChannelMember
-	)
+	props.currentClientChannelMember.isOperator()
 );
 
 // Les paramètres du salon.

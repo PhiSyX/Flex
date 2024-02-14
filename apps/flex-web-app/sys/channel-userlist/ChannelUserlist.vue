@@ -14,7 +14,7 @@ import {
 
 export interface Props {
 	name: string;
-	users: ChannelMembers;
+	members: ChannelMembers;
 }
 
 interface Emits {
@@ -42,7 +42,7 @@ const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 	<div class="room/userlist [ flex! gap=1 ]">
 		<input
 			v-model="filterNick"
-			:placeholder="`${name} &ndash; filtrer les ${users.size} utilisateurs`"
+			:placeholder="`${name} &ndash; filtrer les ${members.size} utilisateurs`"
 			class="[ input:reset mx=1 p=1 ]"
 			maxlength="30"
 		/>
@@ -59,15 +59,15 @@ const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 			<component
 				:is="view"
 				:moderators="{
-					original: users.moderators,
+					original: members.moderators,
 					filtered: moderatorsFiltered,
 				}"
 				:vips="{
-					original: users.vips,
+					original: members.vips,
 					filtered: vipsFiltered,
 				}"
 				:users="{
-					original: users.users,
+					original: members.users,
 					filtered: usersFiltered,
 				}"
 				@open-private="openPrivate"

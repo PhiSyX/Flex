@@ -15,17 +15,9 @@ import { type FocusTrap, createFocusTrap } from "focus-trap";
 /// Directive `v-trap`.
 ///
 /// Utilise la librairie [focus-trap]
-const trap: Directive<HTMLElement & { trap?: FocusTrap }> = {
+const trap: Directive<HTMLElement & { trap?: FocusTrap }, boolean | undefined> = {
 	mounted(el, binding, _vnode, _pnode) {
-		if (typeof binding.value === "boolean") {
-			if (binding.value) {
-				el.trap = createFocusTrap(el, {
-					escapeDeactivates: false,
-					clickOutsideDeactivates: true,
-				});
-				el.trap.activate();
-			}
-		} else {
+		if (binding.value) {
 			el.trap = createFocusTrap(el, {
 				escapeDeactivates: false,
 				clickOutsideDeactivates: true,

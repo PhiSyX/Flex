@@ -19,7 +19,7 @@ type MessageProperties = {
 	id: string;
 	archived: boolean;
 	message: string;
-	isMe: boolean;
+	isCurrentClient: boolean;
 	nickname: string;
 	target: string;
 	time: {
@@ -44,7 +44,7 @@ export class RoomMessage {
 	declare data: MessageProperties["data"];
 	declare id: MessageProperties["id"];
 	declare message: MessageProperties["message"];
-	isMe: MessageProperties["isMe"] = false;
+	isCurrentClient: MessageProperties["isCurrentClient"] = false;
 	declare nickname: MessageProperties["nickname"];
 	declare target: MessageProperties["target"];
 	declare time: MessageProperties["time"];
@@ -68,8 +68,8 @@ export class RoomMessage {
 		return this;
 	}
 
-	withIsMe(bool: boolean): this {
-		this.isMe = bool;
+	withIsCurrentClient(bool: boolean): this {
+		this.isCurrentClient = bool;
 		return this;
 	}
 

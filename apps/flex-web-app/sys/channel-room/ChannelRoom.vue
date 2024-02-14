@@ -186,7 +186,7 @@ const unsetAccessLevel = (
 				>
 					<ChannelUserlist
 						:name="room.name"
-						:users="room.users"
+						:members="room.members"
 						class="room/userlist [ flex:full ov:h ]"
 						@open-private="openPrivate"
 						@select-member="selectChannelMember"

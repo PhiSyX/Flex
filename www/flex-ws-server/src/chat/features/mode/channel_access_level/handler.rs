@@ -82,10 +82,10 @@ impl ModeAccessLevelHandler
 					set_access_level,
 				)
 				.map(|nick| {
-					struct TargetNick<'a>
+					struct TargetMember<'a>
 					{
 						client: client::Socket<'a>,
-						nick: member::ChannelMember,
+						member: member::ChannelMember,
 					}
 
 					// TODO: à améliorer/mieux réfléchir cette partie de code
@@ -177,9 +177,9 @@ impl ModeAccessLevelHandler
 						}
 					}
 
-					TargetNick {
+					TargetMember {
 						client: target_client_socket,
-						nick,
+						member: nick,
 					}
 				})
 			})
@@ -196,9 +196,9 @@ impl ModeAccessLevelHandler
 
 		let added_flags: Vec<_> = updated
 			.iter()
-			.map(|target_nick| {
+			.map(|target_member| {
 				let member =
-					ChannelMemberDTO::from((target_nick.client.client(), &target_nick.nick));
+					ChannelMemberDTO::from((target_member.client.client(), &target_member.member));
 				(
 					set_access_level.letter(),
 					ApplyMode {
@@ -213,12 +213,12 @@ impl ModeAccessLevelHandler
 
 		client_socket.emit_mode_access_level(&channel, &added_flags, &[], true);
 
-		client_socket.send_rpl_namreply(&channel, move |nick| {
+		client_socket.send_rpl_namreply(&channel, move |member| {
 			let found = updated
 				.iter()
-				.find(|target_nick| target_nick.nick.member_id() == nick.member_id())?;
-			let found_client = app.get_client_by_id(found.nick.member_id())?;
-			Some(ChannelMemberDTO::from((found_client, &found.nick)))
+				.find(|target_nick| target_nick.member.member_id() == member.member_id())?;
+			let found_client = app.get_client_by_id(found.member.member_id())?;
+			Some(ChannelMemberDTO::from((found_client, &found.member)))
 		});
 	}
 
@@ -261,10 +261,10 @@ impl ModeAccessLevelHandler
 					unset_access_level,
 				)
 				.map(|nick| {
-					struct TargetNick<'a>
+					struct TargetMember<'a>
 					{
 						client: client::Socket<'a>,
-						nick: member::ChannelMember,
+						member: member::ChannelMember,
 					}
 
 					// TODO: à améliorer/mieux réfléchir cette partie de code
@@ -364,9 +364,9 @@ impl ModeAccessLevelHandler
 						));
 					}
 
-					TargetNick {
+					TargetMember {
 						client: target_client_socket,
-						nick,
+						member: nick,
 					}
 				})
 			})
@@ -383,9 +383,9 @@ impl ModeAccessLevelHandler
 
 		let removed_flags: Vec<_> = updated
 			.iter()
-			.map(|target_nick| {
+			.map(|target_member| {
 				let member =
-					ChannelMemberDTO::from((target_nick.client.client(), &target_nick.nick));
+					ChannelMemberDTO::from((target_member.client.client(), &target_member.member));
 				(
 					unset_access_level.letter(),
 					ApplyMode {
@@ -400,12 +400,12 @@ impl ModeAccessLevelHandler
 
 		client_socket.emit_mode_access_level(&channel, &[], &removed_flags, true);
 
-		client_socket.send_rpl_namreply(&channel, move |nick| {
+		client_socket.send_rpl_namreply(&channel, move |member| {
 			let found = updated
 				.iter()
-				.find(|target_nick| target_nick.nick.member_id() == nick.member_id())?;
-			let found_client = app.get_client_by_id(found.nick.member_id())?;
-			Some(ChannelMemberDTO::from((found_client, &found.nick)))
+				.find(|target_nick| target_nick.member.member_id() == member.member_id())?;
+			let found_client = app.get_client_by_id(found.member.member_id())?;
+			Some(ChannelMemberDTO::from((found_client, &found.member)))
 		});
 	}
 }

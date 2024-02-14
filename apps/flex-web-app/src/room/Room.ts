@@ -134,7 +134,7 @@ export class Room<Type extends string = string> {
 			| `event:${Lowercase<R>}`
 			| `error:${Uppercase<R>}`
 			| `event:${Uppercase<R>}`,
-		payload: GenericReply<Uppercase<R>> & { isMe: boolean },
+		payload: GenericReply<Uppercase<R>> & { isCurrentClient: boolean },
 		messageText?: string,
 	) {
 		const msg = new RoomMessage()
@@ -145,7 +145,7 @@ export class Room<Type extends string = string> {
 			.withTarget(this.id())
 			.withTime(new Date())
 			.withType(evtName)
-			.withIsMe(payload.isMe);
+			.withIsCurrentClient(payload.isCurrentClient);
 		this.addMessage(msg);
 	}
 

@@ -129,10 +129,10 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	) -> Option<channel::member::ChannelMember>
 	{
 		let mut channel = self.get_mut(channel_id)?;
-		let channel_nick = channel.member_mut(client_id)?;
-		channel_nick
+		let channel_member = channel.member_mut(client_id)?;
+		channel_member
 			.remove_access_level(access_level)
-			.then_some(channel_nick.clone())
+			.then_some(channel_member.clone())
 	}
 
 	/// Met à jour le niveau d'accès d'un pseudo.
@@ -144,9 +144,9 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	) -> Option<channel::member::ChannelMember>
 	{
 		let mut channel = self.get_mut(channel_id)?;
-		let channel_nick = channel.member_mut(client_id)?;
-		channel_nick
+		let channel_member = channel.member_mut(client_id)?;
+		channel_member
 			.update_access_level(access_level)
-			.then_some(channel_nick.clone())
+			.then_some(channel_member.clone())
 	}
 }

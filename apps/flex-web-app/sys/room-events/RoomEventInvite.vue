@@ -26,7 +26,7 @@ function openChannel() {
 	<time :datetime="time.datetime">
 		{{ time.formattedTime }}
 	</time>
-	<p v-if="isMe">
+	<p v-if="isCurrentClient">
 		* <strong>Vous</strong> avez invité <bdo>{{ data.nick }}</bdo> à
 		rejoindre le salon <span>{{ data.channel }}</span>
 	</p>

@@ -21,12 +21,12 @@ interface Props {
 interface Emits {
 	(
 		evtName: "set-access-level",
-		cnick: ChannelMember,
+		member: ChannelMember,
 		accessLevel: ChannelAccessLevel
 	): void;
 	(
 		evtName: "unset-access-level",
-		cnick: ChannelMember,
+		member: ChannelMember,
 		accessLevel: ChannelAccessLevel
 	): void;
 }
@@ -54,13 +54,13 @@ const isCurrentClientMemberHaveOperatorRights = computed(
 );
 
 const isSelectedMemberOperator = computed(() =>
-	props.selectedMember.cnick.accessLevel.has(ChannelAccessLevel.Operator)
+	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.Operator)
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
-	emit("set-access-level", props.selectedMember.cnick, accessLevel);
+	emit("set-access-level", props.selectedMember.member, accessLevel);
 const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
-	emit("unset-access-level", props.selectedMember.cnick, accessLevel);
+	emit("unset-access-level", props.selectedMember.member, accessLevel);
 </script>
 
 <template>

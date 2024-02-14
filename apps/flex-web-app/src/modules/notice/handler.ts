@@ -30,13 +30,13 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE"> {
 	}
 
 	handle(data: GenericReply<"NOTICE">) {
-		const isMe = this.store.isMe(data.origin);
+		const isCurrentClient = this.store.isCurrentClient(data.origin);
 		const activeRoom = this.store.roomManager().active();
 
-		const payload = { ...data, isMe };
+		const payload = { ...data, isCurrentClient };
 		activeRoom.addEvent("event:notice", payload);
 
-		if (!isMe) {
+		if (!isCurrentClient) {
 			const noticeRoom = this.store
 				.roomManager()
 				.getOrInsert(NoticeCustomRoom.ID, () => new NoticeCustomRoom());

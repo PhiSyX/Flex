@@ -44,7 +44,7 @@ export class ChannelMember {
 	/**
 	 * Est-ce le pseudonyme est le pseudonyme courant connecté.
 	 */
-	isMe = false;
+	isCurrentClient = false;
 
 	// --------------- //
 	// Getter | Setter //
@@ -100,15 +100,31 @@ export class ChannelMember {
 	// ------- //
 
 	/**
-	 * Est-ce que le pseudo donné correspond à celui de l'instance.
+	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
+	 * minimal donné.
 	 */
-	eq(cnick: this): boolean {
+	hasAccessLevel(level: ChannelAccessLevel): boolean {
+		return this.highestAccessLevel.level >= level;
+	}
+
+	/**
+	 * Est-ce que le membre est opérateur du salon avec le niveau d'accès
+	 * minimal à demi-opérateur.
+	 */
+	isOperator(): boolean {
+		return this.hasAccessLevel(ChannelAccessLevel.HalfOperator);
+	}
+
+	/**
+	 * Est-ce que le membre donné correspond à celui de l'instance.
+	 */
+	eq(member: this): boolean {
 		return (
-			cnick === this ||
-			(cnick.id === this.id &&
-				cnick.nickname === this.nickname &&
-				cnick.ident === this.ident &&
-				cnick.hostname === this.hostname)
+			member === this ||
+			(member.id === this.id &&
+				member.nickname === this.nickname &&
+				member.ident === this.ident &&
+				member.hostname === this.hostname)
 		);
 	}
 
@@ -116,8 +132,8 @@ export class ChannelMember {
 	 * Est-ce que le pseudo donné correspond à celui de l'instance, comparaison
 	 * partielle
 	 */
-	partialEq(cnick: this): boolean {
-		return cnick.nickname.toLowerCase() === this.nickname.toLowerCase();
+	partialEq(member: this): boolean {
+		return member.nickname.toLowerCase() === this.nickname.toLowerCase();
 	}
 
 	intoUser(): User {
@@ -136,8 +152,8 @@ export class ChannelMember {
 	 * Définit le pseudo comme étant celui actuellement connecté en tant que
 	 * client.
 	 */
-	withIsMe(bool: boolean): this {
-		this.isMe = bool;
+	withIsCurrentClient(bool: boolean): this {
+		this.isCurrentClient = bool;
 		return this;
 	}
 

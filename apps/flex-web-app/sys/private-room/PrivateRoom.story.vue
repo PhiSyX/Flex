@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { User } from "~/user/User";
-import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
 
 import PrivateRoomComponent from "./PrivateRoom.vue";
@@ -22,8 +22,8 @@ const origin1: User = new User({
 });
 
 const disableInput = false;
-const me: PrivateNick = new PrivateNick(origin);
-const recipient: PrivateNick = new PrivateNick(origin1);
+const me: PrivateParticipant = new PrivateParticipant(origin);
+const recipient: PrivateParticipant = new PrivateParticipant(origin1);
 </script>
 
 <template>

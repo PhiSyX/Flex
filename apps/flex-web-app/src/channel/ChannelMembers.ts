@@ -99,9 +99,9 @@ export class ChannelMembers {
 	/**
 	 * Ajoute un pseudo de salon dans la liste des membres du salon.
 	 */
-	add(nick: ChannelMember) {
-		const group = this.members[nick.highestAccessLevel.group];
-		group.set(nick.id, nick);
+	add(member: ChannelMember) {
+		const group = this.members[member.highestAccessLevel.group];
+		group.set(member.id, member);
 	}
 
 	/**
@@ -119,8 +119,8 @@ export class ChannelMembers {
 	 */
 	get(id: UserID): Option<ChannelMember> {
 		for (const map of Object.values(this.members)) {
-			const nick = map.get(id);
-			if (nick) return Some(nick);
+			const member = map.get(id);
+			if (member) return Some(member);
 		}
 		return None();
 	}
@@ -137,16 +137,16 @@ export class ChannelMembers {
 	 * donné, s'il existe.
 	 */
 	remove(id: UserID): Option<ChannelMember> {
-		const foundNick: Option<ChannelMember> = None();
+		const foundMember: Option<ChannelMember> = None();
 		for (const map of Object.values(this.members)) {
-			const nick = map.get(id);
-			if (nick) {
-				foundNick.replace(nick);
+			const member = map.get(id);
+			if (member) {
+				foundMember.replace(member);
 				map.delete(id);
 				break;
 			}
 		}
-		return foundNick;
+		return foundMember;
 	}
 
 	/**

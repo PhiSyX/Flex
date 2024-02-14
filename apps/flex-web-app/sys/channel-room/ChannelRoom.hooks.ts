@@ -93,7 +93,7 @@ export function useChannelTopic(props: Props, emit: Emits) {
 
 	// Est-ce que le client courant peut éditer le sujet.
 	const currentClientMemberCanEditTopic = computed(() =>
-		props.currentClientMember.map((cnick) => props.room.canEditTopic(cnick)).unwrap_or(false),
+		props.currentClientMember.map((member) => props.room.canEditTopic(member)).unwrap_or(false),
 	);
 
 	const submitTopicHandler = submitTopic(emit, props, {

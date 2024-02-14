@@ -35,7 +35,7 @@ channel.messages.push(
 	new RoomMessage()
 		.withData({ origin: origin1 })
 		.withID("id")
-		.withIsMe(false)
+		.withIsCurrentClient(false)
 		.withMessage("Hello World")
 		.withNickname("ModeratorUser")
 		.withTarget(channelName)
@@ -51,7 +51,7 @@ channel.messages.push(
 			tags: { msgid: "id" },
 		} as GenericReply<"KICK">)
 		.withID("id2")
-		.withIsMe(false)
+		.withIsCurrentClient(false)
 		.withMessage("Hello World")
 		.withNickname("ModeratorUser")
 		.withTarget(channelName)
@@ -66,13 +66,13 @@ const origin3: User = new User({
 	nickname: "User",
 });
 
-channel.users.add(
+channel.members.add(
 	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner)
 );
-channel.users.add(
+channel.members.add(
 	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip)
 );
-channel.users.add(
+channel.members.add(
 	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User)
 );
 </script>

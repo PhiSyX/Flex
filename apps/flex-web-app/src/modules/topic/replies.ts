@@ -39,7 +39,7 @@ export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
 		// @ts-expect-error : type à corriger
 		channel.addEvent("event:topic", {
 			...data,
-			isMe: this.store.isMe(data.origin),
+			isCurrentClient: this.store.isCurrentClient(data.origin),
 		});
 	}
 }

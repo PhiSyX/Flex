@@ -2,7 +2,7 @@
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 import { computed } from "vue";
 
-import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
 
 import Room from "#/sys/room/Room.vue";
@@ -13,10 +13,10 @@ import Room from "#/sys/room/Room.vue";
 
 interface Props {
 	completionList?: Array<string>;
-	currentClientUser: PrivateNick;
+	currentClientUser: PrivateParticipant;
 	currentNickname: string;
 	isRecipientBlocked: boolean;
-	recipient: PrivateNick;
+	recipient: PrivateParticipant;
 	room: PrivateRoom;
 }
 

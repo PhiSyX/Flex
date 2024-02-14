@@ -33,7 +33,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 	}
 
 	handle(data: GenericReply<"JOIN">) {
-		if (this.store.isMe(data.origin)) {
+		if (this.store.isCurrentClient(data.origin)) {
 			this.handleMe(data);
 			return;
 		}
@@ -56,7 +56,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 			this.store.roomManager().setCurrent(data.channel);
 		}
 
-		channel.addEvent("event:join", { ...data, isMe: true });
+		channel.addEvent("event:join", { ...data, isCurrentClient: true });
 	}
 
 	handleUser(data: GenericReply<"JOIN">) {
@@ -68,9 +68,9 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
-		const nick = new ChannelMember(user);
-		channel.addUser(nick);
+		const newMember = new ChannelMember(user);
+		channel.addMember(newMember);
 
-		channel.addEvent("event:join", { ...data, isMe: false });
+		channel.addEvent("event:join", { ...data, isCurrentClient: false });
 	}
 }

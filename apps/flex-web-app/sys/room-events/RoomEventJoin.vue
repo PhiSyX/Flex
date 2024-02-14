@@ -15,7 +15,7 @@ const hostname = computeHostname(props.data.origin);
 	<time :datetime="time.datetime">
 		{{ time.formattedTime }}
 	</time>
-	<p v-if="isMe">
+	<p v-if="isCurrentClient">
 		<strong><span>Vous</span></strong> avez rejoint le salon
 		<span>{{ data.channel }}</span>
 	</p>

@@ -48,7 +48,7 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
 			if (data.updated) {
 				currentRoom.addEvent("event:silence", {
 					...data,
-					isMe: true,
+					isCurrentClient: true,
 				});
 			}
 		}

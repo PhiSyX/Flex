@@ -33,7 +33,7 @@ export class ChannelMemberFiltered {
 	/**
 	 * Pseudo de salon filtré.
 	 */
-	declare cnick: ChannelMember;
+	declare member: ChannelMember;
 
 	/**
 	 * Résultat du filtre de recherche.
@@ -43,8 +43,8 @@ export class ChannelMemberFiltered {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(cnick: ChannelMember, searchHits: Array<ChannelMemberSearchHits> = []) {
-		this.cnick = cnick;
+	constructor(member: ChannelMember, searchHits: Array<ChannelMemberSearchHits> = []) {
+		this.member = member;
 		this.searchHits = searchHits;
 	}
 }

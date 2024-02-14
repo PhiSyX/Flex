@@ -150,9 +150,7 @@ export class User {
 	 * Les classes CSS de l'utilisateur à appliquer aux composants de pseudo.
 	 */
 	get className() {
-		if (this.away) {
-			return "is-away";
-		}
+		if (this.away) return "is-away";
 		return "";
 	}
 
@@ -181,22 +179,14 @@ export class User {
 	 * Est-ce que l'utilisateur est un opérateur local?
 	 */
 	isLocalOperator() {
-		return this.operator
-			.filter((flag) => {
-				return flag === UserFlag.LocalOperator;
-			})
-			.is_some();
+		return this.operator.filter((flag) => flag === UserFlag.LocalOperator).is_some();
 	}
 
 	/**
 	 * Est-ce que l'utilisateur est un opérateur global?
 	 */
 	isGlobalOperator() {
-		return this.operator
-			.filter((flag) => {
-				return flag === UserFlag.GlobalOperator;
-			})
-			.is_some();
+		return this.operator.filter((flag) => flag === UserFlag.GlobalOperator).is_some();
 	}
 
 	/**

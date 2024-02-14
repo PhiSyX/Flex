@@ -21,7 +21,7 @@ const updatedAt = computed(() => {
 		{{ time.formattedTime }}
 	</time>
 	<p v-if="data.updated">
-		<template v-if="isMe">
+		<template v-if="isCurrentClient">
 			<strong>Vous</strong> avez mis à jour le sujet du salon
 			<span>{{ data.channel }}: </span> <output>{{ data.topic }}</output>
 		</template>

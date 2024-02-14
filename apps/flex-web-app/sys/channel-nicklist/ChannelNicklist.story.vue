@@ -27,13 +27,17 @@ const origin3: User = new User({
 
 const moderatorsOriginal = [
 	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner),
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.AdminOperator),
+	new ChannelMember(origin1).withAccessLevel(
+		ChannelAccessLevel.AdminOperator
+	),
 	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Operator),
 	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.HalfOperator),
 ];
 const moderators = {
 	original: moderatorsOriginal,
-	filtered: moderatorsOriginal.map((cnick) => new ChannelMemberFiltered(cnick)),
+	filtered: moderatorsOriginal.map(
+		(member) => new ChannelMemberFiltered(member)
+	),
 };
 
 const vipsOriginal = [
@@ -41,14 +45,14 @@ const vipsOriginal = [
 ];
 const vips = {
 	original: vipsOriginal,
-	filtered: vipsOriginal.map((cnick) => new ChannelMemberFiltered(cnick)),
+	filtered: vipsOriginal.map((member) => new ChannelMemberFiltered(member)),
 };
 const usersOriginal = [
 	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User),
 ];
 const users = {
 	original: usersOriginal,
-	filtered: usersOriginal.map((cnick) => new ChannelMemberFiltered(cnick)),
+	filtered: usersOriginal.map((member) => new ChannelMemberFiltered(member)),
 };
 </script>
 

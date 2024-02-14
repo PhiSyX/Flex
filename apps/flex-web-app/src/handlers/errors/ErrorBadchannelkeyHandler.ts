@@ -23,6 +23,6 @@ export class ErrorBadchannelkeyHandler implements SocketEventInterface<"ERR_BADC
 
 	handle(data: GenericReply<"ERR_BADCHANNELKEY">) {
 		const room = this.store.roomManager().active();
-		room.addEvent("error:err_badchannelkey", { ...data, isMe: true }, data.reason);
+		room.addEvent("error:err_badchannelkey", { ...data, isCurrentClient: true }, data.reason);
 	}
 }

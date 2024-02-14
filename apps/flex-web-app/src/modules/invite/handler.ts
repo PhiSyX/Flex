@@ -38,7 +38,7 @@ export class InviteHandler implements SocketEventInterface<"INVITE"> {
 
 		room.addEvent("event:invite", {
 			...data,
-			isMe: this.store.isMe(data.origin),
+			isCurrentClient: this.store.isCurrentClient(data.origin),
 		});
 	}
 }

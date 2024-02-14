@@ -24,17 +24,17 @@ export interface Props {
 
 export interface Emits {
 	(evtName: "ignore-user", user: Origin): void;
-	(evtName: "kick-member", cnick: ChannelMember): void;
+	(evtName: "kick-member", member: ChannelMember): void;
 	(evtName: "open-private", user: Origin): void;
 	(
 		evtName: "set-access-level",
-		cnick: ChannelMember,
+		member: ChannelMember,
 		accessLevel: ChannelAccessLevel
 	): void;
 	(evtName: "unignore-user", user: Origin): void;
 	(
 		evtName: "unset-access-level",
-		cnick: ChannelMember,
+		member: ChannelMember,
 		accessLevel: ChannelAccessLevel
 	): void;
 }
@@ -47,7 +47,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const isSameMember = computed(() =>
-	props.currentClientMember.partialEq(props.selectedMember.cnick)
+	props.currentClientMember.partialEq(props.selectedMember.member)
 );
 
 const isCurrentClientMemberGlobalOperator = computed(() =>
@@ -64,31 +64,32 @@ const isCurrentClientMemberHaveAccessLevel = computed(
 );
 
 const openPrivateHandler = () =>
-	emit("open-private", props.selectedMember.cnick.intoUser());
+	emit("open-private", props.selectedMember.member.intoUser());
 const ignoreUserHandler = () =>
-	emit("ignore-user", props.selectedMember.cnick.intoUser());
-const kickMemberHandler = () => emit("kick-member", props.selectedMember.cnick);
+	emit("ignore-user", props.selectedMember.member.intoUser());
+const kickMemberHandler = () =>
+	emit("kick-member", props.selectedMember.member);
 const unignoreUserHandler = () =>
-	emit("unignore-user", props.selectedMember.cnick.intoUser());
+	emit("unignore-user", props.selectedMember.member.intoUser());
 const setAccessLevelHandler = (
-	cnick: ChannelMember,
+	member: ChannelMember,
 	accessLevel: ChannelAccessLevel
-) => emit("set-access-level", cnick, accessLevel);
+) => emit("set-access-level", member, accessLevel);
 const unsetAccessLevelHandler = (
-	cnick: ChannelMember,
+	member: ChannelMember,
 	accessLevel: ChannelAccessLevel
-) => emit("unset-access-level", cnick, accessLevel);
+) => emit("unset-access-level", member, accessLevel);
 </script>
 
 <template>
 	<menu class="room/userlist:menu [ list:reset flex! m=1 ]">
 		<li>
 			<p>
-				<bdo>{{ selectedMember.cnick.nickname }}</bdo>
+				<bdo>{{ selectedMember.member.nickname }}</bdo>
 				<span>!</span>
-				<bdo>{{ selectedMember.cnick.ident }}</bdo>
+				<bdo>{{ selectedMember.member.ident }}</bdo>
 				<span>@</span>
-				<span>{{ selectedMember.cnick.hostname }}</span>
+				<span>{{ selectedMember.member.hostname }}</span>
 			</p>
 		</li>
 		<li>

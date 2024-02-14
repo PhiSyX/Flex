@@ -11,7 +11,7 @@ const props = defineProps<Props<"NOTICE">>();
 
 const target = computed(() =>
 	!props.data.target.startsWith("#")
-		? props.isMe
+		? props.isCurrentClient
 			? props.data.target
 			: props.data.origin.nickname
 		: `${props.data.origin.nickname}:${props.data.target}`
@@ -22,7 +22,7 @@ const target = computed(() =>
 	<time :datetime="time.datetime">
 		{{ time.formattedTime }}
 	</time>
-	<span v-if="isMe">&ndash;&gt;</span>
+	<span v-if="isCurrentClient">&ndash;&gt;</span>
 	<span v-else>&lt;&ndash;</span>
 	<p>-<strong>{{ target }}</strong>- {{ data.text }}</p>
 </template>

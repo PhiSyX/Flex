@@ -35,7 +35,7 @@ export class KickHandler implements SocketEventInterface<"KICK"> {
 		if (maybeChannel.is_none()) return;
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
-		if (this.store.isMe(data.knick)) {
+		if (this.store.isCurrentClient(data.knick)) {
 			this.handleMe(data, channel);
 			return;
 		}
@@ -43,15 +43,15 @@ export class KickHandler implements SocketEventInterface<"KICK"> {
 	}
 
 	handleMe(data: GenericReply<"KICK">, channel: ChannelRoom) {
-		channel.addEvent("event:kick", { ...data, isMe: true });
-		channel.removeUser(data.knick.id);
+		channel.addEvent("event:kick", { ...data, isCurrentClient: true });
+		channel.removeMember(data.knick.id);
 		channel.setKicked(true);
 		this.store.userManager().removeChannel(data.knick.id, data.channel);
 	}
 
 	handleUser(data: GenericReply<"KICK">, channel: ChannelRoom) {
-		channel.addEvent("event:kick", { ...data, isMe: false });
-		channel.removeUser(data.knick.id);
+		channel.addEvent("event:kick", { ...data, isCurrentClient: false });
+		channel.removeMember(data.knick.id);
 		this.store.userManager().removeChannel(data.knick.id, data.channel);
 	}
 }

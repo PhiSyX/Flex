@@ -4,7 +4,7 @@
 // ---- //
 
 interface Props {
-	isMe?: boolean;
+	isCurrentClient?: boolean;
 	nickname: string;
 	prefix?: string;
 	suffix?: string;
@@ -19,7 +19,7 @@ defineProps<Props>();
 </script>
 
 <template>
-	<component :is="tag" :data-myself="isMe">
+	<component :is="tag" :data-myself="isCurrentClient">
 		<span class="prefix">{{ prefix }}</span>
 		<bdo>{{ nickname }}</bdo>
 		<span class="suffix">{{ suffix }}</span>

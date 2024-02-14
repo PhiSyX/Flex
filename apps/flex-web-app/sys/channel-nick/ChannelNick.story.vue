@@ -47,7 +47,7 @@ function initState() {
 			<template #default="{ state }">
 				<ChannelNick
 					tag="span"
-					:is-me="true"
+					:is-current-client="true"
 					:nickname="state.nickname"
 				/>
 			</template>

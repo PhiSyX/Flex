@@ -23,6 +23,10 @@ export class ErrorUsernotinchannelHandler implements SocketEventInterface<"ERR_U
 
 	handle(data: GenericReply<"ERR_USERNOTINCHANNEL">) {
 		const room = this.store.roomManager().active();
-		room.addEvent("error:err_usernotinchannel", { ...data, isMe: true }, data.reason);
+		room.addEvent(
+			"error:err_usernotinchannel",
+			{ ...data, isCurrentClient: true },
+			data.reason,
+		);
 	}
 }

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { ChatStore } from "~/store/ChatStore";
 import { User } from "~/user/User";
@@ -27,8 +27,10 @@ export class QueryCommand {
 
 		const room = this.store.roomManager().getOrInsert(user.id, () => {
 			const priv = new PrivateRoom(user.nickname).withID(user.id);
-			priv.addParticipant(new PrivateNick(new User(this.store.me())).withIsMe(true));
-			priv.addParticipant(new PrivateNick(user));
+			priv.addParticipant(
+				new PrivateParticipant(new User(this.store.me())).withIsCurrentClient(true),
+			);
+			priv.addParticipant(new PrivateParticipant(user));
 			return priv;
 		});
 

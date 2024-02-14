@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room } from "~/room/Room";
 import { RoomMessage } from "~/room/RoomMessage";
@@ -34,7 +34,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	}
 
 	handle(data: GenericReply<"PRIVMSG">) {
-		if (this.store.isMe(data.origin)) {
+		if (this.store.isCurrentClient(data.origin)) {
 			this.handleMe(data);
 			return;
 		}
@@ -59,10 +59,12 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 				.roomManager()
 				.active()
 				// @ts-expect-error : type à corriger
-				.addEvent("event:query", { ...data, isMe: false });
+				.addEvent("event:query", { ...data, isCurrentClient: false });
 			const room = new PrivateRoom(data.origin.nickname).withID(data.origin.id);
-			room.addParticipant(new PrivateNick(new User(data.origin)));
-			room.addParticipant(new PrivateNick(new User(this.store.me())).withIsMe(true));
+			room.addParticipant(new PrivateParticipant(new User(data.origin)));
+			room.addParticipant(
+				new PrivateParticipant(new User(this.store.me())).withIsCurrentClient(true),
+			);
 			return room;
 		});
 
@@ -72,8 +74,8 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	handleMessage(room: Room, data: GenericReply<"PRIVMSG">) {
 		let hl = false;
 
-		const isMe = this.store.isMe(data.origin);
-		if (!isMe && !room.isActive()) {
+		const isCurrentClient = this.store.isCurrentClient(data.origin);
+		if (!isCurrentClient && !room.isActive()) {
 			const me = this.store.nickname();
 			if (data.text.toLowerCase().indexOf(me.toLowerCase()) >= 0) {
 				hl = true;
@@ -93,7 +95,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 				.withTime(new Date())
 				.withType("privmsg")
 				.withData(data)
-				.withIsMe(isMe),
+				.withIsCurrentClient(isCurrentClient),
 		);
 	}
 }

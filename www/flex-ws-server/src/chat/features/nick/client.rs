@@ -28,7 +28,7 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 
 		let origin = Origin::from(self.client());
 
-		let cmd_nick = NickCommandResponse {
+		let nick_command = NickCommandResponse {
 			origin: &origin,
 			tags: NickCommandResponse::default_tags(),
 			old_nickname,
@@ -43,10 +43,10 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 		// NOTE: notifier toutes les rooms dont fait partie le client que le
 		// pseudonyme du client a été changé.
 
-		self.emit(cmd_nick.name(), &cmd_nick);
+		self.emit(nick_command.name(), &nick_command);
 		// FIXME(phisyx): À améliorer pour n'envoyer qu'une seul événement à
 		// tous les client en communs.
-		self.broadcast(cmd_nick.name(), &cmd_nick);
+		self.broadcast(nick_command.name(), &nick_command);
 
 		_ = self
 			.socket()

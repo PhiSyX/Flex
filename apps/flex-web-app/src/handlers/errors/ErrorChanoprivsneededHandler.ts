@@ -29,6 +29,10 @@ export class ErrorChanoprivsneededHandler implements SocketEventInterface<"ERR_C
 			.or_else(() => Some(this.store.roomManager().active()));
 		if (maybeChannel.is_none()) return;
 		const channel = maybeChannel.unwrap();
-		channel.addEvent("error:err_chanoprivsneeded", { ...data, isMe: true }, data.reason);
+		channel.addEvent(
+			"error:err_chanoprivsneeded",
+			{ ...data, isCurrentClient: true },
+			data.reason,
+		);
 	}
 }

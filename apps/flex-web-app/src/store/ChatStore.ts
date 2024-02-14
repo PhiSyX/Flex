@@ -24,7 +24,7 @@ import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import { HandlerManager } from "~/handlers/manager";
 import { CommandInterface, Module } from "~/modules/interface";
 import { ModuleManager } from "~/modules/manager";
-import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
@@ -184,11 +184,15 @@ export class ChatStore {
 			.get(room.id())
 			.and_then((room) => {
 				assertChannelRoom(room);
-				return room.users.selected();
+				return room.members.selected();
 			})
-			.map(
-				(cnick) => new ChannelMemberSelected(cnick, this.userManager().isBlocked(cnick.id)),
-			);
+			.map((member) => {
+				const channelMemberSelected = new ChannelMemberSelected(
+					member,
+					this.userManager().isBlocked(member.id),
+				);
+				return channelMemberSelected;
+			});
 	}
 
 	/**
@@ -202,7 +206,7 @@ export class ChatStore {
 	 * Vérifie qu'une origine correspond à l'utilisateur actuellement connecté
 	 * à l'application.
 	 */
-	isMe(origin: Origin | string): boolean {
+	isCurrentClient(origin: Origin | string): boolean {
 		if (typeof origin === "string") {
 			return (
 				this.me().id === origin || this.me().nickname.toLowerCase() === origin.toLowerCase()
@@ -420,14 +424,14 @@ export class ChatStore {
 	 * Définit l'utilisateur sélectionné d'un salon.
 	 */
 	setSelectedUser(room: ChannelRoom, origin: Origin) {
-		room.users.select(origin.id);
+		room.members.select(origin.id);
 	}
 
 	/**
 	 * Désélectionne un utilisateur d'un salon.
 	 */
 	unsetSelectedUser(room: ChannelRoom, origin: Origin) {
-		room.users.unselect(origin.id);
+		room.members.unselect(origin.id);
 	}
 
 	/**
@@ -597,9 +601,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet la commande /KICK vers le serveur.
 	 */
-	function kickChannelMember(channel: ChannelRoom, cnick: ChannelMember, comment = "Kick.") {
+	function kickChannelMember(channel: ChannelRoom, member: ChannelMember, comment = "Kick.") {
 		const module = store.moduleManager().get("KICK").expect("Récupération du module `KICK`");
-		module.send({ channels: [channel.name], knicks: [cnick.nickname], comment });
+		module.send({ channels: [channel.name], knicks: [member.nickname], comment });
 	}
 
 	/**
@@ -623,9 +627,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function openPrivateOrCreate(origin: Origin) {
 		const room = store.roomManager().getOrInsert(origin.id, () => {
 			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
-			priv.addParticipant(new PrivateNick(new User(store.me())).withIsMe(true));
+			priv.addParticipant(
+				new PrivateParticipant(new User(store.me())).withIsCurrentClient(true),
+			);
 			const maybeUser = store.userManager().find(origin.id);
-			maybeUser.then((user) => priv.addParticipant(new PrivateNick(user)));
+			maybeUser.then((user) => priv.addParticipant(new PrivateParticipant(user)));
 			return priv;
 		});
 
@@ -676,7 +682,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		const maybeSelectedChannelMember = store.getCurrentSelectedChannelMember(room);
 		if (maybeSelectedChannelMember.is_some()) {
 			const selectedChannelMember = maybeSelectedChannelMember.unwrap();
-			if (selectedChannelMember.cnick.id === origin.id) {
+			if (selectedChannelMember.member.id === origin.id) {
 				store.unsetSelectedUser(room, origin);
 			} else {
 				store.setSelectedUser(room, origin);
@@ -745,10 +751,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function sendSetAccessLevel(
 		channel: ChannelRoom,
-		cnick: ChannelMember,
+		member: ChannelMember,
 		accessLevel: ChannelAccessLevel,
 	) {
-		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
+		const payload = { channel: channel.name, nicknames: [member.nickname] };
 
 		let maybeModule: Option<CommandInterface<"OP">> = None();
 
@@ -782,10 +788,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function sendUnsetAccessLevel(
 		channel: ChannelRoom,
-		cnick: ChannelMember,
+		member: ChannelMember,
 		accessLevel: ChannelAccessLevel,
 	) {
-		const payload = { channel: channel.name, nicknames: [cnick.nickname] };
+		const payload = { channel: channel.name, nicknames: [member.nickname] };
 
 		let maybeModule: Option<CommandInterface<"OP">> = None();
 

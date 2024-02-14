@@ -39,7 +39,7 @@ const currentClientNickname = computed(() => currentClient.value.nickname);
 // NOTE: l'utilisateur courant PEUT être sanctionné à tout moment, c'est
 //       pourquoi l'on évitera de .unwrap() le retour de la fonction `getUser`.
 const currentClientMember = computed(() =>
-	props.room.getUser(currentClient.value.id)
+	props.room.getMember(currentClient.value.id)
 );
 
 // Membre du salon actuellement sélectionné par le client courant.
@@ -54,7 +54,7 @@ const selectedMember = computed(() =>
 // 3. Toutes les commandes.
 const completionList = computed(() => [
 	props.room.name,
-	...props.room.users.all.map((user) => user.nickname),
+	...props.room.members.all.map((user) => user.nickname),
 	...chatStore.allCommands(),
 ]);
 

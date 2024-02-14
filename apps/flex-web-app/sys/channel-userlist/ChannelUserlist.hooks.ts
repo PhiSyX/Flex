@@ -32,14 +32,14 @@ export enum UserlistModeView {
 export function useInputFilterUserlist(props: Props) {
 	const filterNick = ref("");
 
-	const moderatorsFiltered = ref(props.users.moderators) as unknown as Ref<
+	const moderatorsFiltered = ref(props.members.moderators) as unknown as Ref<
 		Array<ChannelMemberFiltered>
 	>;
-	const vipsFiltered = ref(props.users.vips) as unknown as Ref<Array<ChannelMemberFiltered>>;
-	const usersFiltered = ref(props.users.users) as unknown as Ref<Array<ChannelMemberFiltered>>;
+	const vipsFiltered = ref(props.members.vips) as unknown as Ref<Array<ChannelMemberFiltered>>;
+	const usersFiltered = ref(props.members.users) as unknown as Ref<Array<ChannelMemberFiltered>>;
 
 	watchEffect(() => {
-		const filteredModerators = props.users.moderators
+		const filteredModerators = props.members.moderators
 			.map((nick: ChannelMember) => {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
@@ -52,7 +52,7 @@ export function useInputFilterUserlist(props: Props) {
 				return new ChannelMemberFiltered(nick, test.length === 0 ? [] : test);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
-		const filteredVips = props.users.vips
+		const filteredVips = props.members.vips
 			.map((nick: ChannelMember) => {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
@@ -65,7 +65,7 @@ export function useInputFilterUserlist(props: Props) {
 				return new ChannelMemberFiltered(nick, test.length === 0 ? [] : test);
 			})
 			.filter((nick) => nick.searchHits.length > 0);
-		const filteredUsers = props.users.users
+		const filteredUsers = props.members.users
 			.map((nick: ChannelMember) => {
 				const test = fuzzy_search(filterNick.value, nick.nickname)
 					.map(map_search_record(false))
@@ -84,12 +84,14 @@ export function useInputFilterUserlist(props: Props) {
 		const u = filteredUsers.length;
 
 		if (m === 0 && v === 0 && u === 0) {
-			moderatorsFiltered.value = props.users.moderators.map(
-				(cnick) => new ChannelMemberFiltered(cnick),
+			moderatorsFiltered.value = props.members.moderators.map(
+				(member) => new ChannelMemberFiltered(member),
 			);
-			vipsFiltered.value = props.users.vips.map((cnick) => new ChannelMemberFiltered(cnick));
-			usersFiltered.value = props.users.users.map(
-				(cnick) => new ChannelMemberFiltered(cnick),
+			vipsFiltered.value = props.members.vips.map(
+				(member) => new ChannelMemberFiltered(member),
+			);
+			usersFiltered.value = props.members.users.map(
+				(member) => new ChannelMemberFiltered(member),
 			);
 		} else {
 			moderatorsFiltered.value = filteredModerators;

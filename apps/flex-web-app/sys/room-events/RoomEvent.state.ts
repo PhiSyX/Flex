@@ -18,7 +18,7 @@ export interface Props<E extends keyof Replies> {
 	data: GenericReply<E>;
 	id: string;
 	message: string;
-	isMe: boolean;
+	isCurrentClient: boolean;
 	nickname: string;
 	target: string;
 	time: {

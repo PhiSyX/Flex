@@ -26,7 +26,11 @@ export class ErrorNooperhostHandler implements SocketEventInterface<"ERR_NOOPERH
 
 	handle(data: GenericReply<"ERR_NOOPERHOST">) {
 		const currentRoom = this.store.roomManager().active();
-		currentRoom.addEvent("error:err_nooperhost", { ...data, isMe: false }, data.reason);
+		currentRoom.addEvent(
+			"error:err_nooperhost",
+			{ ...data, isCurrentClient: false },
+			data.reason,
+		);
 	}
 }
 
@@ -46,7 +50,11 @@ export class ErrorPasswdmismatchHandler implements SocketEventInterface<"ERR_PAS
 
 	handle(data: GenericReply<"ERR_PASSWDMISMATCH">) {
 		const currentRoom = this.store.roomManager().active();
-		currentRoom.addEvent("error:err_passwdmismatch", { ...data, isMe: false }, data.reason);
+		currentRoom.addEvent(
+			"error:err_passwdmismatch",
+			{ ...data, isCurrentClient: false },
+			data.reason,
+		);
 	}
 }
 
@@ -66,6 +74,10 @@ export class ErrorOperonlyHandler implements SocketEventInterface<"ERR_OPERONLY"
 
 	handle(data: GenericReply<"ERR_OPERONLY">) {
 		const currentRoom = this.store.roomManager().active();
-		currentRoom.addEvent("error:err_operonly", { ...data, isMe: false }, data.reason);
+		currentRoom.addEvent(
+			"error:err_operonly",
+			{ ...data, isCurrentClient: false },
+			data.reason,
+		);
 	}
 }

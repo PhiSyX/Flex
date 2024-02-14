@@ -36,7 +36,7 @@ export class ReplyAwayHandler implements SocketEventInterface<"RPL_AWAY"> {
 		assertPrivateRoom(priv);
 		priv.addEvent("event:rpl_away", {
 			...data,
-			isMe: this.store.isMe(data.origin),
+			isCurrentClient: this.store.isCurrentClient(data.origin),
 		});
 	}
 }

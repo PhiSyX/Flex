@@ -22,7 +22,7 @@ export class ChannelMemberSelected {
 	/**
 	 * Pseudo de salon sélectionné.
 	 */
-	declare cnick: ChannelMember;
+	declare member: ChannelMember;
 	/**
 	 * Est-ce que le pseudo sélectionné est bloqué?
 	 */
@@ -31,8 +31,8 @@ export class ChannelMemberSelected {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(cnick: ChannelMember, isBlocked: boolean) {
-		this.cnick = cnick;
+	constructor(member: ChannelMember, isBlocked: boolean) {
+		this.member = member;
 		this.isBlocked = isBlocked;
 	}
 }

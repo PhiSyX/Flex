@@ -118,56 +118,40 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Liste des utilisateurs d'un salon.
 	 */
-	users = new ChannelMembers();
+	members = new ChannelMembers();
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	/**
-	 * Ajoute une utilisateur à la liste des utilisateurs.
+	 * Ajoute un membre à la liste des membres.
 	 */
-	addUser(nick: ChannelMember) {
-		this.users.add(nick);
+	addMember(member: ChannelMember) {
+		this.members.add(member);
 	}
 
 	/**
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
-	canEditTopic(cnick: ChannelMember): boolean {
+	canEditTopic(member: ChannelMember): boolean {
 		return (
-			this.topic.isEditable() ||
-			this.isUserGlobalOperator(cnick.intoUser()) ||
-			this.memberHasChannelOperatorAccessLevel(cnick)
+			this.topic.isEditable() || member.intoUser().isGlobalOperator() || member.isOperator()
 		);
-	}
-
-	/**
-	 * Est-ce que le pseudo a des droits d'opérateurs (HalfOperator min).
-	 */
-	memberHasChannelOperatorAccessLevel(cnick: ChannelMember): boolean {
-		return cnick.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator;
 	}
 
 	/**
 	 * Récupère un utilisateur du salon.
 	 */
-	getUser(id: UserID): Option<ChannelMember> {
-		return this.users.get(id);
-	}
-
-	/**
-	 * Est-ce que l'utilisateur est un opérateur global.
-	 */
-	isUserGlobalOperator(user: User) {
-		return user.isGlobalOperator();
+	getMember(id: UserID): Option<ChannelMember> {
+		return this.members.get(id);
 	}
 
 	/**
 	 * Supprime un utilisateur du salon.
 	 */
-	removeUser(id: UserID): boolean {
-		return this.users.remove(id).is_some();
+	removeMember(id: UserID): boolean {
+		return this.members.remove(id).is_some();
 	}
 
 	/**
@@ -204,10 +188,10 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Met à jour un utilisateur.
 	 */
-	upgradeUser(oldNick: ChannelMember, newNick: ChannelMember) {
-		this.users.remove(oldNick.id);
+	upgradeMember(oldNick: ChannelMember, newNick: ChannelMember) {
+		this.members.remove(oldNick.id);
 		newNick.highestAccessLevel;
-		this.users.add(newNick);
+		this.members.add(newNick);
 	}
 
 	/**
@@ -221,7 +205,7 @@ export class ChannelRoom extends Room<"channel"> {
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
 	withOwner(user: User): this {
-		this.addUser(new ChannelMember(user).withAccessLevel(ChannelAccessLevel.Owner));
+		this.addMember(new ChannelMember(user).withAccessLevel(ChannelAccessLevel.Owner));
 		return this;
 	}
 }

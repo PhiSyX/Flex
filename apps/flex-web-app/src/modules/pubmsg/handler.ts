@@ -40,8 +40,8 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 	handleMessage(room: Room, data: GenericReply<"PUBMSG">) {
 		let hl = false;
 
-		const isMe = this.store.isMe(data.origin);
-		if (!isMe && !room.isActive()) {
+		const isCurrentClient = this.store.isCurrentClient(data.origin);
+		if (!isCurrentClient && !room.isActive()) {
 			const me = this.store.nickname();
 			if (data.text.toLowerCase().indexOf(me.toLowerCase()) >= 0) {
 				hl = true;
@@ -58,7 +58,7 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 				.withTime(new Date())
 				.withType("pubmsg")
 				.withData(data)
-				.withIsMe(isMe),
+				.withIsCurrentClient(isCurrentClient),
 		);
 	}
 }

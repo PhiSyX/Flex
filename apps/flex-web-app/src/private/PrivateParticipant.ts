@@ -10,11 +10,19 @@
 
 import { User } from "~/user/User";
 
-export class PrivateNick {
+export class PrivateParticipant {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(user: User) {
+	constructor(userOrigin: User | Origin) {
+		let user: User;
+
+		if (!(userOrigin instanceof User)) {
+			user = new User(userOrigin);
+		} else {
+			user = userOrigin;
+		}
+
 		this.user = user;
 	}
 
@@ -28,7 +36,7 @@ export class PrivateNick {
 	 * Est-ce que le pseudo du privé s'agit du client actuellement connecté
 	 * l'application?
 	 */
-	isMe = false;
+	isCurrentClient = false;
 
 	// --------------- //
 	// Getter | Setter //
@@ -93,8 +101,8 @@ export class PrivateNick {
 	 * Définit ou non l'instance comme étant le client actuellement connecté
 	 * l'application.
 	 */
-	withIsMe(bool: boolean): this {
-		this.isMe = bool;
+	withIsCurrentClient(bool: boolean): this {
+		this.isCurrentClient = bool;
 		return this;
 	}
 }

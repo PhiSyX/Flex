@@ -38,7 +38,7 @@ export class PartHandler implements SocketEventInterface<"PART"> {
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
 
-		if (this.store.isMe(data.origin)) {
+		if (this.store.isCurrentClient(data.origin)) {
 			this.handleMe(data, channel);
 			return;
 		}
@@ -54,7 +54,7 @@ export class PartHandler implements SocketEventInterface<"PART"> {
 	}
 
 	handleUser(data: GenericReply<"PART">, channel: ChannelRoom) {
-		channel.addEvent("event:part", { ...data, isMe: false });
-		channel.removeUser(data.origin.id);
+		channel.addEvent("event:part", { ...data, isCurrentClient: false });
+		channel.removeMember(data.origin.id);
 	}
 }

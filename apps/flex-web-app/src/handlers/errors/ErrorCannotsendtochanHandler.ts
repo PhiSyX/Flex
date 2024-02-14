@@ -23,6 +23,10 @@ export class ErrorCannotsendtochanHandler implements SocketEventInterface<"ERR_C
 
 	handle(data: GenericReply<"ERR_CANNOTSENDTOCHAN">) {
 		const room = this.store.roomManager().active();
-		room.addEvent("error:err_cannotsendtochan", { ...data, isMe: true }, data.reason);
+		room.addEvent(
+			"error:err_cannotsendtochan",
+			{ ...data, isCurrentClient: true },
+			data.reason,
+		);
 	}
 }

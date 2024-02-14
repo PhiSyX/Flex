@@ -125,7 +125,8 @@ function toggleFoldHandler() {
 							:maybe="
 								room.lastMessage.filter(
 									(m) =>
-										!m.isMe && !m.type.startsWith('event')
+										!m.isCurrentClient &&
+										!m.type.startsWith('event')
 								)
 							"
 						>
@@ -141,7 +142,9 @@ function toggleFoldHandler() {
 				</NavigationRoom>
 
 				<NavigationRoom
-					v-if="room.type === 'notice-custom-room' && !room.isClosed()"
+					v-if="
+						room.type === 'notice-custom-room' && !room.isClosed()
+					"
 					:id="room.id()"
 					:active="room.isActive()"
 					:highlight="false"

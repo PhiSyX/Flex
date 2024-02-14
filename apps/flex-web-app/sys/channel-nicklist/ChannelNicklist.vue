@@ -40,11 +40,11 @@ const emit = defineEmits<Emits>();
 // -------- //
 
 function openPrivateHandler(member: ChannelMemberFiltered) {
-	emit("open-private", member.cnick.intoUser());
+	emit("open-private", member.member.intoUser());
 }
 
 function selectUserHandler(member: ChannelMemberFiltered) {
-	emit("select-member", member.cnick.intoUser());
+	emit("select-member", member.member.intoUser());
 }
 </script>
 
@@ -60,12 +60,12 @@ function selectUserHandler(member: ChannelMemberFiltered) {
 				<ChannelNickComponent
 					tag="li"
 					v-for="filteredNick in moderators.filtered"
-					:key="filteredNick.cnick.id"
-					:classes="filteredNick.cnick.className"
+					:key="filteredNick.member.id"
+					:classes="filteredNick.member.className"
 					:hits="filteredNick.searchHits"
-					:is-me="filteredNick.cnick.isMe"
-					:nickname="filteredNick.cnick.nickname"
-					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
+					:is-current-client="filteredNick.member.isCurrentClient"
+					:nickname="filteredNick.member.nickname"
+					:symbol="filteredNick.member.highestAccessLevel.symbol"
 					class="channel/nick"
 					@dblclick="openPrivateHandler(filteredNick)"
 					@click="selectUserHandler(filteredNick)"
@@ -83,12 +83,12 @@ function selectUserHandler(member: ChannelMemberFiltered) {
 				<ChannelNickComponent
 					tag="li"
 					v-for="filteredNick in vips.filtered"
-					:key="filteredNick.cnick.id"
-					:classes="filteredNick.cnick.className"
+					:key="filteredNick.member.id"
+					:classes="filteredNick.member.className"
 					:hits="filteredNick.searchHits"
-					:is-me="filteredNick.cnick.isMe"
-					:nickname="filteredNick.cnick.nickname"
-					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
+					:is-current-client="filteredNick.member.isCurrentClient"
+					:nickname="filteredNick.member.nickname"
+					:symbol="filteredNick.member.highestAccessLevel.symbol"
 					class="channel/nick"
 					@dblclick="openPrivateHandler(filteredNick)"
 					@click="selectUserHandler(filteredNick)"
@@ -106,12 +106,12 @@ function selectUserHandler(member: ChannelMemberFiltered) {
 				<ChannelNickComponent
 					tag="li"
 					v-for="filteredNick in users.filtered"
-					:key="filteredNick.cnick.id"
-					:classes="filteredNick.cnick.className"
+					:key="filteredNick.member.id"
+					:classes="filteredNick.member.className"
 					:hits="filteredNick.searchHits"
-					:is-me="filteredNick.cnick.isMe"
-					:nickname="filteredNick.cnick.nickname"
-					:symbol="filteredNick.cnick.highestAccessLevel.symbol"
+					:is-current-client="filteredNick.member.isCurrentClient"
+					:nickname="filteredNick.member.nickname"
+					:symbol="filteredNick.member.highestAccessLevel.symbol"
 					class="channel/nick"
 					@dblclick="openPrivateHandler(filteredNick)"
 					@click="selectUserHandler(filteredNick)"

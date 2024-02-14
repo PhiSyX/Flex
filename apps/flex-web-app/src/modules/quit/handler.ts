@@ -31,7 +31,7 @@ export class QuitHandler implements SocketEventInterface<"QUIT"> {
 	}
 
 	handle(data: GenericReply<"QUIT">) {
-		if (this.store.isMe(data.origin)) {
+		if (this.store.isCurrentClient(data.origin)) {
 			return;
 		}
 
@@ -44,10 +44,10 @@ export class QuitHandler implements SocketEventInterface<"QUIT"> {
 	}
 
 	handleChannel(data: GenericReply<"QUIT">, channel: ChannelRoom) {
-		if (!channel.users.has(data.origin.id)) return;
+		if (!channel.members.has(data.origin.id)) return;
 
-		channel.addEvent("event:quit", { ...data, isMe: false });
+		channel.addEvent("event:quit", { ...data, isCurrentClient: false });
 
-		channel.removeUser(data.origin.id);
+		channel.removeMember(data.origin.id);
 	}
 }

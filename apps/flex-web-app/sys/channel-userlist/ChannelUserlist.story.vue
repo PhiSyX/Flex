@@ -35,7 +35,7 @@ users.add(new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User));
 <template>
 	<Story title="Molecules/ChannelUserlist" responsive-disabled>
 		<Variant title="Default">
-			<ChannelUserlist :name="channelName" :users="users" />
+			<ChannelUserlist :name="channelName" :members="users" />
 		</Variant>
 	</Story>
 </template>

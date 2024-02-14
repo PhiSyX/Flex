@@ -5,7 +5,7 @@ import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
 import { None, Some } from "@phisyx/flex-safety";
 
 import { ChannelMember } from "~/channel/ChannelMember";
-import { PrivateNick } from "~/private/PrivateNick";
+import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { User } from "~/user/User";
 
 import Match from "#/sys/match/Match.vue";
@@ -22,7 +22,7 @@ interface Props {
 	archived: boolean;
 	id: string;
 	message: string;
-	isMe: boolean;
+	isCurrentClient: boolean;
 	nickname: string;
 	target: string;
 	time: {
@@ -58,18 +58,18 @@ const isChannel = computed(
 const isPrivate = computed(() => props.nickname !== "*" && !isChannel.value);
 
 const maybeChannelMember = computed(() => {
-	const cnick = new ChannelMember(new User(props.data.origin));
+	const member = new ChannelMember(new User(props.data.origin));
 	if ("access_level" in props.data.origin) {
-		cnick.withRawAccessLevel(props.data.origin.access_level);
+		member.withRawAccessLevel(props.data.origin.access_level);
 	}
-	return isChannel.value ? Some(cnick) : None();
+	return isChannel.value ? Some(member) : None();
 });
 
 const maybePrivateNick = computed(() => {
 	return isPrivate.value
 		? Some(
-				new PrivateNick(new User(props.data.origin)).withIsMe(
-					props.isMe
+				new PrivateParticipant(new User(props.data.origin)).withIsCurrentClient(
+					props.isCurrentClient
 				)
 		  )
 		: None();
@@ -110,7 +110,7 @@ const openRoom = (roomName: string) => emit("open-room", roomName);
 		:data-archived="archived"
 		:data-external="isExternalMessage.is_some()"
 		:data-type="type"
-		:data-myself="isMe"
+		:data-myself="isCurrentClient"
 		class="room/echo [ d-i max-w:max ]"
 		:title="archived ? `Il s'agit d'un message archivé.` : undefined"
 		@dblclick.stop
@@ -145,7 +145,7 @@ const openRoom = (roomName: string) => emit("open-room", roomName);
 							:nickname="ChannelMember.nickname"
 							:symbol="ChannelMember.highestAccessLevel.symbol"
 							:classes="ChannelMember.className"
-							:is-me="ChannelMember.isMe"
+							:is-current-client="ChannelMember.isCurrentClient"
 							prefix="<"
 							suffix=">"
 						/>
@@ -156,7 +156,7 @@ const openRoom = (roomName: string) => emit("open-room", roomName);
 						<PrivateNickComponent
 							tag="span"
 							:nickname="privateNick.nickname"
-							:is-me="privateNick.isMe"
+							:is-current-client="privateNick.isCurrentClient"
 							suffix=" :"
 						/>
 					</template>

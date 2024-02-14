@@ -34,15 +34,15 @@ export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"
 		for (const userOrigin of data.users) {
 			const user = this.store.userManager().add(userOrigin).withChannel(channel.id());
 
-			const newNick = new ChannelMember(user)
-				.withIsMe(this.store.isMe(user))
+			const newMember = new ChannelMember(user)
+				.withIsCurrentClient(this.store.isCurrentClient(user))
 				.withRawAccessLevel(userOrigin.access_level);
 
-			const maybeNick = channel.getUser(user.id);
-			if (maybeNick.is_some()) {
-				channel.upgradeUser(maybeNick.unwrap(), newNick);
+			const maybeChannelMember = channel.getMember(user.id);
+			if (maybeChannelMember.is_some()) {
+				channel.upgradeMember(maybeChannelMember.unwrap(), newMember);
 			} else {
-				channel.addUser(newNick);
+				channel.addMember(newMember);
 			}
 		}
 	}

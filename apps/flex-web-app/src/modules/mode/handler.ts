@@ -30,7 +30,7 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 	}
 
 	handle(data: GenericReply<"MODE">) {
-		if (this.store.isMe(data.target)) {
+		if (this.store.isCurrentClient(data.target)) {
 			this.handleMe(data);
 			return;
 		}
@@ -40,7 +40,7 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 
 	handleMe(data: GenericReply<"MODE">) {
 		const network = this.store.network();
-		network.addEvent("event:mode", { ...data, isMe: true });
+		network.addEvent("event:mode", { ...data, isCurrentClient: true });
 	}
 
 	handleChannel(data: GenericReply<"MODE">) {
@@ -72,7 +72,7 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 
 		channel.addEvent("event:mode", {
 			...data,
-			isMe: this.store.isMe(data.origin),
+			isCurrentClient: this.store.isCurrentClient(data.origin),
 		});
 	}
 }
