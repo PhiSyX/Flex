@@ -8,36 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::client;
-use crate::src::chat::sessions::ChannelsSession;
-
-// --------- //
-// Interface //
-// --------- //
-
-pub trait PartChannelClientSessionInterface
-{
-	/// Supprime un client de tous ses salons.
-	fn remove_client_from_all_his_channels(&self, client: &client::Client) -> Option<()>;
-}
+import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-impl PartChannelClientSessionInterface for ChannelsSession
-{
-	fn remove_client_from_all_his_channels(&self, client: &client::Client) -> Option<()>
-	{
-		for channel_id in &client.channels {
-			let mut channel = self.get_mut(channel_id)?;
-			channel.users.remove(client.id());
-			if channel.users.is_empty() {
-				drop(channel);
-				self.remove(channel_id);
-				continue;
-			}
-		}
-		Some(())
+export class ErrorUsernotinchannelHandler implements SocketEventInterface<"ERR_USERONCHANNEL"> {
+	constructor(private store: ChatStore) {}
+
+	listen() {
+		this.store.on("ERR_USERONCHANNEL", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERR_USERONCHANNEL">) {
+		const room = this.store.roomManager().active();
+		room.addEvent("error:err_useronchannel", { ...data, isMe: true }, data.reason);
 	}
 }

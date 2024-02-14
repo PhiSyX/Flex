@@ -49,7 +49,7 @@ export class ErrorInviteonlychanHandler implements SocketEventInterface<"ERR_INV
 	}
 
 	handle(data: GenericReply<"ERR_INVITEONLYCHAN">) {
-		const activeRoom = this.store.roomManager().active();
-		activeRoom.addEvent("error:err_inviteonlychan", { ...data, isMe: true }, data.reason);
+		const networkRoom = this.store.network();
+		networkRoom.addEvent("error:err_inviteonlychan", { ...data, isMe: true }, data.reason);
 	}
 }

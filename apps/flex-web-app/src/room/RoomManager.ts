@@ -59,7 +59,10 @@ export class RoomManager {
 	/**
 	 * Récupère un chambre ouverte à partir de son ID.
 	 */
-	get(roomID: RoomID, options?: { state: "opened" | "closed" | "both" }): Option<Room> {
+	get(
+		roomID: RoomID,
+		options: { state: "opened" | "closed" | "both" } = { state: "opened" },
+	): Option<Room> {
 		const maybeRoom = Option.from(this._rooms.get(roomID.toLowerCase()));
 
 		if (options) {
