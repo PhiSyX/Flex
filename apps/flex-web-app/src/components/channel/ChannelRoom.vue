@@ -130,6 +130,13 @@ function openChannelSettingsDialog(_: Event) {
 }
 
 /**
+ * Ouvre une chambre.
+ */
+function openRoom(roomName: string) {
+	chatStore.openRoom(roomName);
+}
+
+/**
  * Ouvre une chambre privé d'un utilisateur.
  */
 function openPrivate(origin: Origin) {
@@ -186,6 +193,7 @@ function toggleSelectChannelMember(origin: Origin) {
 		@ignore-user="(o) => sendSilenceUserCommand('+')(o)"
 		@kick-member="sendKickMemberCommand"
 		@open-channel-settings="openChannelSettingsDialog"
+		@open-room="openRoom"
 		@open-private="openPrivate"
 		@select-member="toggleSelectChannelMember"
 		@send-message="sendMessage"

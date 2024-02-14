@@ -50,6 +50,22 @@ impl ModeChannelSettingsHandler
 
 		// NOTE: les opérateurs globaux peuvent appliquer n'importe quels modes.
 		if app.is_client_global_operator(&client_socket) {
+			if let Some(b) = data.modes.invite_only {
+				if b {
+					added.extend(app.set_settings_on_channel(
+						&client_socket,
+						&data.target,
+						channel::mode::SettingsFlags::InviteOnly,
+					));
+				} else {
+					removed.extend(app.unset_settings_on_channel(
+						&client_socket,
+						&data.target,
+						channel::mode::SettingsFlags::InviteOnly,
+					));
+				}
+			}
+
 			if let Some(key) = data.modes.key.as_ref() {
 				if key.is_empty() {
 					removed.extend(app.unset_settings_on_channel(
@@ -161,6 +177,22 @@ impl ModeChannelSettingsHandler
 			channel::mode::ChannelAccessLevel::HalfOperator,
 		) {
 			return;
+		}
+
+		if let Some(b) = data.modes.invite_only {
+			if b {
+				added.extend(app.set_settings_on_channel(
+					&client_socket,
+					&data.target,
+					channel::mode::SettingsFlags::InviteOnly,
+				));
+			} else {
+				removed.extend(app.unset_settings_on_channel(
+					&client_socket,
+					&data.target,
+					channel::mode::SettingsFlags::InviteOnly,
+				));
+			}
 		}
 
 		if let Some(key) = data.modes.key.as_ref() {

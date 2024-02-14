@@ -8,50 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+use crate::src::chat::components::{channel, client};
+use crate::src::ChatApplication;
 
-import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
+// --------- //
+// Interface //
+// --------- //
+
+pub trait InviteApplicationInterface
+{
+	/// Ajoute un client dans la liste des invitations d'un salon.
+	fn add_client_to_invite_channel(
+		&self,
+		channel: channel::ChannelIDRef,
+		client_invite_id: client::ClientID,
+	);
+}
 
 // -------------- //
-// Implémentation //
+// Implémentation // -> Interface
 // -------------- //
 
-export class NoticeModule implements Module<NoticeModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "NOTICE";
-
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
-	) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
-	}
-
-	send(payload: Command<"NOTICE">) {
-		this.command.send(payload);
-	}
-
-	listen() {
-		this.handler.listen();
+impl InviteApplicationInterface for ChatApplication
+{
+	fn add_client_to_invite_channel(
+		&self,
+		channel_id: channel::ChannelIDRef,
+		client_invite_id: client::ClientID,
+	)
+	{
+		let Some(mut channel) = self.channels.get_mut(channel_id) else {
+			return;
+		};
+		channel.add_invite(client_invite_id);
 	}
 }

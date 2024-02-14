@@ -20,6 +20,7 @@ use crate::src::chat::features::ApplyMode;
 // -------- //
 
 pub const CHANNEL_MODE_SETTINGS_KEY: char = 'k';
+pub const CHANNEL_MODE_SETTINGS_INVITE_ONLY: char = 'i';
 pub const CHANNEL_MODE_SETTINGS_MODERATE: char = 'm';
 pub const CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES: char = 'n';
 pub const CHANNEL_MODE_SETTINGS_NOTOPIC: char = 't';
@@ -37,6 +38,8 @@ pub const CHANNEL_MODE_SETTINGS_SECRET: char = 's';
 #[serde(rename_all = "snake_case")]
 pub enum SettingsFlags
 {
+	/// Salon accessible sur invitation uniquement.
+	InviteOnly,
 	/// Clé du salon, pour le rejoindre.
 	Key(secret::Secret<String>),
 	/// Salon en modéré.
@@ -65,6 +68,20 @@ impl ChannelModes<SettingsFlags>
 		self.modes
 			.values()
 			.any(|mode| mode.flag == SettingsFlags::Key(key.to_owned()))
+	}
+
+	/// Est-ce que les paramètres du salon contiennent le drapeau +i
+	pub fn has_invite_only_flag(&self) -> bool
+	{
+		self.modes.values().any(|mode| {
+			matches!(
+				mode,
+				ApplyMode {
+					flag: SettingsFlags::InviteOnly,
+					..
+				}
+			)
+		})
 	}
 
 	/// Est-ce que les paramètres du salon contiennent le drapeau +k <key>
@@ -184,6 +201,7 @@ impl SettingsFlags
 	{
 		match self {
 			| Self::Key(_) => CHANNEL_MODE_SETTINGS_KEY,
+			| Self::InviteOnly => CHANNEL_MODE_SETTINGS_INVITE_ONLY,
 			| Self::Moderate => CHANNEL_MODE_SETTINGS_MODERATE,
 			| Self::NoExternalMessages => CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES,
 			| Self::NoTopic => CHANNEL_MODE_SETTINGS_NOTOPIC,

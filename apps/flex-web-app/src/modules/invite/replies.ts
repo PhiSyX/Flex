@@ -10,48 +10,46 @@
 
 import { ChatStore } from "~/store/ChatStore";
 
-import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
-
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class NoticeModule implements Module<NoticeModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "NOTICE";
-
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
-	}
-
+export class ReplyInvitingHandler implements SocketEventInterface<"RPL_INVITING"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
-	) {}
+	constructor(private store: ChatStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
+	listen() {
+		this.store.on("RPL_INVITING", (data) => this.handle(data));
 	}
 
-	send(payload: Command<"NOTICE">) {
-		this.command.send(payload);
+	handle(data: GenericReply<"RPL_INVITING">) {
+		const networkRoom = this.store.network();
+		networkRoom.addConnectEvent(data, `* ${data.nick} a été invité sur ${data.channel}`);
 	}
+}
+
+export class ErrorInviteonlychanHandler implements SocketEventInterface<"ERR_INVITEONLYCHAN"> {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private store: ChatStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
 
 	listen() {
-		this.handler.listen();
+		this.store.on("ERR_INVITEONLYCHAN", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERR_INVITEONLYCHAN">) {
+		const networkRoom = this.store.roomManager().active();
+		networkRoom.addEvent("error:err_inviteonlychan", { ...data, isMe: true }, data.reason);
 	}
 }

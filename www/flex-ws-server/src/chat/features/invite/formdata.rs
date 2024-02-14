@@ -8,50 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+use crate::command_formdata;
+use crate::macro_rules::command_formdata::{validate_channel, validate_nickname};
 
-import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class NoticeModule implements Module<NoticeModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "NOTICE";
-
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
-	) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
-	}
-
-	send(payload: Command<"NOTICE">) {
-		this.command.send(payload);
-	}
-
-	listen() {
-		this.handler.listen();
+command_formdata! {
+	struct INVITE
+	{
+		/// Le pseudo à inviter sur le salon
+		#[serde(deserialize_with = "validate_nickname")]
+		nickname: String,
+		/// Le salon à inviter.
+		#[serde(deserialize_with = "validate_channel")]
+		channel: String,
 	}
 }

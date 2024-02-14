@@ -34,6 +34,7 @@ export interface Emits {
 	(evtName: "kick-member", member: ChannelMember): void;
 	(evtName: "open-channel-settings", event: Event): void;
 	(evtName: "open-private", origin: Origin): void;
+	(evtName: "open-room", roomName: string): void;
 	(evtName: "select-member", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
 	(
@@ -85,6 +86,7 @@ const isDisabledInput = computed(() => props.room.kicked);
 // -------- //
 
 const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
+const openRoom = (roomName: string) => emit("open-room", roomName);
 const closeRoom = () => emit("close");
 const ignoreUser = (origin: Origin) => emit("ignore-user", origin);
 const kickMember = (member: ChannelMember) => emit("kick-member", member);
@@ -113,6 +115,7 @@ const unsetAccessLevel = (
 			:room="room"
 			@change-nickname="changeNickname"
 			@open-private="openPrivate"
+			@open-room="openRoom"
 			@send-message="sendMessage"
 			@dblclick-main="openChannelSettings"
 		>

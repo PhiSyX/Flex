@@ -9,49 +9,16 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ChatStore } from "~/store/ChatStore";
-
-import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
+import { CommandInterface } from "../interface";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class NoticeModule implements Module<NoticeModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
+export class InviteCommand implements CommandInterface<"INVITE"> {
+	constructor(private store: ChatStore) {}
 
-	static NAME = "NOTICE";
-
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
-	) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
-	}
-
-	send(payload: Command<"NOTICE">) {
-		this.command.send(payload);
-	}
-
-	listen() {
-		this.handler.listen();
+	send(payload: Command<"INVITE">): void {
+		this.store.emit("INVITE", payload);
 	}
 }

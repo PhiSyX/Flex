@@ -23,6 +23,7 @@ interface Props {
 interface Emits {
 	(evtName: "change-nickname", event: MouseEvent): void;
 	(evtName: "close"): void;
+	(evtName: "open-room", roomName: string): void;
 	(evtName: "send-message", message: string): void;
 	(evtName: "ignore-user", nickname: string): void;
 	(evtName: "unignore-user", nickname: string): void;
@@ -47,6 +48,7 @@ const titleIgnoreBtn = computed(() => {
 });
 
 const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
+const openRoom = (roomName: string) => emit("open-room", roomName);
 const sendMessage = (message: string) => emit("send-message", message);
 
 function toggleIgnoreUserHandler() {
@@ -65,6 +67,7 @@ function toggleIgnoreUserHandler() {
 			:disable-input="isRecipientBlocked"
 			:current-client-nickname="currentNickname"
 			:room="room"
+			@open-room="openRoom"
 			@change-nickname="changeNickname"
 			@send-message="sendMessage"
 		>

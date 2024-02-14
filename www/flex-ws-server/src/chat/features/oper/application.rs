@@ -19,9 +19,10 @@ use crate::src::chat::components::client::{self, ClientSocketInterface};
 use crate::src::chat::components::{self, channel};
 use crate::src::chat::features::{
 	ApplyMode,
+	ChannelJoinError,
+	InviteChannelClientSocketErrorReplies,
 	JoinApplicationInterface,
 	JoinChannelClientSocketErrorRepliesInterface,
-	JoinChannelError,
 	JoinChannelSessionInterface,
 	UserClientSocketInterface,
 };
@@ -79,32 +80,35 @@ impl OperApplicationInterface for ChatApplication
 					ApplyMode::new(channel::mode::SettingsFlags::Secret),
 				],
 			);
-			let channel = self
+			let mut channel = self
 				.channels
 				.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel, true);
+			self.join_channel(client_socket, &mut channel, true);
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
 		let can_join = self.channels.can_join(channel_name, None, &client_session);
 
 		if can_join.is_ok() {
-			let channel = self
+			let mut channel = self
 				.channels
 				.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
-			self.join_channel(client_socket, &channel, true);
+			self.join_channel(client_socket, &mut channel, true);
 			return;
 		}
 
 		if let Err(err) = can_join {
 			match err {
-				| JoinChannelError::BadChannelKey => {
+				| ChannelJoinError::BadChannelKey => {
 					client_socket.send_err_badchannelkey(channel_name);
 				}
-				| JoinChannelError::HasAlreadyClient => {}
-				| JoinChannelError::OperOnly => {
+				| ChannelJoinError::InviteOnly => {
+					client_socket.send_err_inviteonlychan(channel_name);
+				}
+				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::OperOnly => {
 					client_socket.send_err_operonly(channel_name);
 				}
 			}

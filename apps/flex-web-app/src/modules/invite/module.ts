@@ -11,43 +11,46 @@
 import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
+import { InviteCommand } from "./command";
+import { InviteHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class NoticeModule implements Module<NoticeModule> {
+export class InviteModule implements Module<InviteModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
-	static NAME = "NOTICE";
+	static NAME = "INVITE";
 
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
+	static create(store: ChatStore): InviteModule {
+		return new InviteModule(new InviteCommand(store), new InviteHandler(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
+		private command: InviteCommand,
+		private handler: InviteHandler,
 	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
+	input(roomName: string, nickname?: string, channelRaw?: string) {
+		if (!nickname) return;
+		let channel = roomName;
+		if (channelRaw) {
+			channel = channelRaw;
+		}
+		this.send({ nickname, channel });
 	}
 
-	send(payload: Command<"NOTICE">) {
+	send(payload: Command<"INVITE">) {
 		this.command.send(payload);
 	}
 

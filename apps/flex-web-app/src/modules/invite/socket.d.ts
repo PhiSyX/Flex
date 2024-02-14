@@ -8,50 +8,28 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+declare interface InviteFormData {
+	nickname: string;
+	channel: string;
+}
 
-import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
+declare interface InviteDataResponse {
+	channel: string;
+	nick: string;
+}
 
-// -------------- //
-// Implémentation //
-// -------------- //
+declare interface Commands {
+	INVITE: InviteFormData;
+}
 
-export class NoticeModule implements Module<NoticeModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
+declare interface CommandResponsesFromServer {
+	INVITE: InviteDataResponse;
+	RPL_INVITING: {
+		channel: string;
+		nick: string;
+	};
+}
 
-	static NAME = "NOTICE";
-
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
-	) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
-	}
-
-	send(payload: Command<"NOTICE">) {
-		this.command.send(payload);
-	}
-
-	listen() {
-		this.handler.listen();
-	}
+declare interface ErrorReplies {
+	ERR_INVITEONLYCHAN: { channel: string };
 }

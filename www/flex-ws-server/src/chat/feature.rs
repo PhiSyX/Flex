@@ -55,20 +55,21 @@ impl Feature for ChatApplication
 				ConnectionRegistrationHandler::handle_connect(&socket, state, data);
 
 				socket.on(AwayHandler::COMMAND_NAME, AwayHandler::handle);
-				socket.on(SilenceHandler::COMMAND_NAME, SilenceHandler::handle);
+				socket.on(InviteHandler::COMMAND_NAME, InviteHandler::handle);
 				socket.on(JoinHandler::COMMAND_NAME, JoinHandler::handle);
-				socket.on(ListHandler::COMMAND_NAME, ListHandler::handle);
 				socket.on(KickHandler::COMMAND_NAME, KickHandler::handle);
 				socket.on(KillHandler::COMMAND_NAME, KillHandler::handle);
+				socket.on(ListHandler::COMMAND_NAME, ListHandler::handle);
 				socket.on(NickHandler::COMMAND_NAME, NickHandler::handle);
 				socket.on(NoticeHandler::COMMAND_NAME, NoticeHandler::handle);
+				socket.on(OperHandler::COMMAND_NAME, OperHandler::handle);
 				socket.on(PartHandler::COMMAND_NAME, PartHandler::handle);
 				socket.on(PrivmsgHandler::COMMAND_NAME, PrivmsgHandler::handle);
 				socket.on(PubmsgHandler::COMMAND_NAME, PubmsgHandler::handle);
-				socket.on(OperHandler::COMMAND_NAME, OperHandler::handle);
 				socket.on(QuitHandler::COMMAND_NAME, QuitHandler::handle);
 				socket.on(SajoinHandler::COMMAND_NAME, SajoinHandler::handle);
 				socket.on(SapartHandler::COMMAND_NAME, SapartHandler::handle);
+				socket.on(SilenceHandler::COMMAND_NAME, SilenceHandler::handle);
 				socket.on(TopicHandler::COMMAND_NAME, TopicHandler::handle);
 
 				/* Channel Access Level */

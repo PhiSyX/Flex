@@ -16,6 +16,7 @@ interface Props {
 
 interface Emits {
 	(evtName: "change-nickname", event: MouseEvent): void;
+	(evtName: "open-room", roomName: string): void;
 	(evtName: "send-message", message: string): void;
 }
 
@@ -27,6 +28,7 @@ defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const changeNickRequest = (event: MouseEvent) => emit("change-nickname", event);
+const openRoom = (roomName: string) => emit("open-room", roomName);
 const sendMessage = (message: string) => emit("send-message", message);
 </script>
 
@@ -36,6 +38,7 @@ const sendMessage = (message: string) => emit("send-message", message);
 			:current-client-nickname="currentNickname"
 			:room="room"
 			@change-nickname="changeNickRequest"
+			@open-room="openRoom"
 			@send-message="sendMessage"
 		>
 			<template #topic>

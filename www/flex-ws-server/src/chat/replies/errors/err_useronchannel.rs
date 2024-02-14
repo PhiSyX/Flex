@@ -8,50 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+use crate::error_replies;
 
-import { Module } from "../interface";
-import { NoticeCommand } from "./command";
-import { NoticeHandler } from "./handler";
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class NoticeModule implements Module<NoticeModule> {
-	// ------ //
-	// STATIC //
-	// ------ //
-
-	static NAME = "NOTICE";
-
-	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
+error_replies! {
+	/// Renvoyé lorsqu'un client tente d'inviter un utilisateur sur un salon sur
+	/// lequel il se trouve déjà.
+	| 443 <-> ERR_USERONCHANNEL {
+		user: str,
+		channel: str
 	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(
-		private command: NoticeCommand,
-		private handler: NoticeHandler,
-	) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
-		this.send({ targets, text });
-	}
-
-	send(payload: Command<"NOTICE">) {
-		this.command.send(payload);
-	}
-
-	listen() {
-		this.handler.listen();
-	}
+		=> "{user} {channel} :L'utilisateur est déjà dans ce salon"
 }

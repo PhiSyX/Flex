@@ -32,6 +32,11 @@ impl PartChannelClientSessionInterface for ChannelsSession
 		for channel_id in &client.channels {
 			let mut channel = self.get_mut(channel_id)?;
 			channel.users.remove(client.id());
+			if channel.users.is_empty() {
+				drop(channel);
+				self.remove(channel_id);
+				continue;
+			}
 		}
 		Some(())
 	}

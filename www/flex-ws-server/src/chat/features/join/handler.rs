@@ -51,7 +51,7 @@ impl JoinHandler
 	/// spéciale de quitter tous les salons dont le client est actuellement
 	/// membre. Le serveur traitera ce message comme si le client avait envoyé
 	/// une commande PART pour chaque salon dont il est membre.
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<JoinCommandFormData>,
@@ -103,7 +103,7 @@ impl SajoinHandler
 			};
 
 			for channel_name in data.channels.iter() {
-				app.join_or_create_channel_bypass_key(&nickname_socket, channel_name);
+				app.join_or_create_channel_bypass_permission(&nickname_socket, channel_name);
 			}
 		}
 	}

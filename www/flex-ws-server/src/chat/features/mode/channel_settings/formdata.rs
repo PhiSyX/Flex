@@ -31,6 +31,9 @@ command_formdata! {
 #[serde(rename_all = "snake_case")]
 pub struct ChannelModesSettings
 {
+	/// Salon sur invitation uniquement.
+	#[serde(rename = "i")]
+	pub invite_only: Option<bool>,
 	/// Clé du salon, pour le rejoindre.
 	#[serde(rename = "k")]
 	pub key: Option<secret::Secret<String>>,

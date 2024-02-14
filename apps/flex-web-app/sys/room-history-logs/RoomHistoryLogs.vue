@@ -12,12 +12,16 @@ import RoomMessageComponent from "#/sys/room-message/RoomMessage.vue";
 interface Props {
 	messages: Array<RoomMessage>;
 }
+interface Emits {
+	(evtName: "open-room", roomName: string): void;
+}
 
 // --------- //
 // Composant //
 // --------- //
 
 defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 const $root = ref<HTMLElement>();
 const containerNeedsScroll = ref(true);
@@ -40,6 +44,8 @@ function scroll() {
 // -------- //
 // Handlers //
 // -------- //
+
+const openRoom = (roomName: string) => emit("open-room", roomName);
 
 function scrollHandler() {
 	if (!$root.value) {
@@ -64,6 +70,7 @@ onActivated(() => scroll());
 				:key="message.id"
 				v-bind="message"
 				@vue:mounted="scrollHandler"
+				@open-room="openRoom"
 			/>
 		</ul>
 	</div>

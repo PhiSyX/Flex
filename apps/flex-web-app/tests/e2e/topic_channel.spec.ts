@@ -62,10 +62,10 @@ test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) =
 	await $ownerChannelRoom.dblclick();
 	await owner.page.waitForTimeout(250);
 	const $ownerTeleport = owner.page.locator(`#${layerName}_teleport`);
-	const $moderateSettings = $ownerTeleport
+	const $topicSettings = $ownerTeleport
 		.locator("ul li label")
 		.getByText("Seuls les opérateurs peuvent définir un topic (+t)");
-	await $moderateSettings.click();
+	await $topicSettings.click();
 	const $ownerBtnSubmit = $ownerTeleport.locator('button[type="submit"]');
 	await $ownerBtnSubmit.click();
 	await containsMessage(owner.page, channelToJoin, `* ${owner.nick} a défini les modes: -t`);
