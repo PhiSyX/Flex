@@ -17,11 +17,11 @@ use crate::src::ChatApplication;
 
 pub trait InviteApplicationInterface
 {
-	/// Ajoute un client dans la liste des invitations d'un salon.
-	fn add_client_to_invite_channel(
+	/// Ajoute un utilisateur dans la liste des invitations d'un salon.
+	fn add_user_to_invite_channel(
 		&self,
 		channel: channel::ChannelIDRef,
-		client_invite_id: client::ClientID,
+		user_invite_id: client::ClientID,
 	);
 }
 
@@ -31,15 +31,15 @@ pub trait InviteApplicationInterface
 
 impl InviteApplicationInterface for ChatApplication
 {
-	fn add_client_to_invite_channel(
+	fn add_user_to_invite_channel(
 		&self,
 		channel_id: channel::ChannelIDRef,
-		client_invite_id: client::ClientID,
+		user_invite_id: client::ClientID,
 	)
 	{
 		let Some(mut channel) = self.channels.get_mut(channel_id) else {
 			return;
 		};
-		channel.add_invite(client_invite_id);
+		channel.add_invite(user_invite_id);
 	}
 }

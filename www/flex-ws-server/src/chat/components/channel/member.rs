@@ -13,6 +13,13 @@ use std::collections::HashSet;
 use super::mode::ChannelAccessLevel;
 use crate::src::chat::components::client;
 
+// ---- //
+// Type //
+// ---- //
+
+/// ID faisant référence à un client utilisateur.
+pub type MemberID = client::ClientID;
+
 // --------- //
 // Structure //
 // --------- //
@@ -22,9 +29,9 @@ use crate::src::chat::components::client;
 pub struct ChannelMember
 {
 	/// ID faisant référence à un client utilisateur.
-	member_id: client::ClientID,
+	member_id: MemberID,
 	/// Les niveaux d'accès liés au membre du salon.
-	pub(crate) access_level: HashSet<ChannelAccessLevel>,
+	access_level: HashSet<ChannelAccessLevel>,
 }
 
 // -------------- //
@@ -34,7 +41,7 @@ pub struct ChannelMember
 impl ChannelMember
 {
 	/// Crée la structure [ChannelMember]
-	pub fn new(member_id: client::ClientID) -> Self
+	pub fn new(member_id: MemberID) -> Self
 	{
 		Self {
 			member_id,
@@ -52,19 +59,19 @@ impl ChannelMember
 
 impl ChannelMember
 {
-	/// Les niveaux d'access d'un pseudo d'un salon.
+	/// Les niveaux d'access d'un membre d'un salon.
 	pub fn access_level(&self) -> &HashSet<ChannelAccessLevel>
 	{
 		&self.access_level
 	}
 
 	/// ID faisant référence à un [client](Client).
-	pub fn member_id(&self) -> &client::ClientID
+	pub fn id(&self) -> &MemberID
 	{
 		&self.member_id
 	}
 
-	/// Le niveau le plus élevé qu'à le lient
+	/// Le niveau le plus élevé qu'à le membre.
 	pub fn highest_access_level(&self) -> Option<&ChannelAccessLevel>
 	{
 		if self.access_level.is_empty() {
@@ -83,13 +90,13 @@ impl ChannelMember
 		highest
 	}
 
-	/// Supprime le niveau d'accès du pseudo.
+	/// Supprime le niveau d'accès du membre.
 	pub fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
 	{
 		self.access_level.remove(&access_level)
 	}
 
-	/// Met à jour le niveau d'accès du pseudo.
+	/// Met à jour le niveau d'accès du membre.
 	pub fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
 	{
 		self.access_level.insert(access_level)

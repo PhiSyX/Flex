@@ -46,13 +46,7 @@ where
 
 	Ok(v.iter()
 		.filter_map(|s| {
-			if s.starts_with('#')
-				|| s.starts_with('~') && s.contains('#')
-				|| s.starts_with('&') && s.contains('#')
-				|| s.starts_with('@') && s.contains('#')
-				|| s.starts_with('%') && s.contains('#')
-				|| s.starts_with('+') && s.contains('#')
-			{
+			if s.starts_with('#') || s.starts_with(['~', '&', '@', '%', '+']) && s.contains('#') {
 				return Some(s.to_owned());
 			}
 

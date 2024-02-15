@@ -40,10 +40,9 @@ pub struct Channel
 	/// Les paramètres du salon.
 	pub(crate) modes_settings: mode::ChannelModes<mode::SettingsFlags>,
 	/// Liste des utilisateurs du salon.
-	pub(crate) users: HashMap<client::ClientID, member::ChannelMember>,
+	pub(crate) members: HashMap<client::ClientID, member::ChannelMember>,
 	/// Topic du salon.
 	pub(crate) topic: topic::ChannelTopic,
-
 	/// Les utilisateurs en attente dans la liste des invitations.
 	pub(crate) invite_list: HashSet<client::ClientID>,
 }
@@ -59,7 +58,7 @@ impl Channel
 	{
 		Self {
 			name: name.to_string(),
-			users: Default::default(),
+			members: Default::default(),
 			modes_settings: Default::default(),
 			topic: Default::default(),
 			invite_list: Default::default(),
@@ -83,10 +82,10 @@ impl Channel
 	/// Ajoute un membre au salon.
 	pub fn add_member(&mut self, id: client::ClientID, nick: member::ChannelMember)
 	{
-		self.users.insert(id, nick);
+		self.members.insert(id, nick);
 	}
 
-	/// Ajoute un client dans la liste des invitations.
+	/// Ajoute un utilisateur dans la liste des invitations du salon.
 	pub fn add_invite(&mut self, id: client::ClientID) -> bool
 	{
 		self.invite_list.insert(id)
@@ -101,22 +100,22 @@ impl Channel
 	/// Récupère un membre du salon.
 	pub fn member(&self, id: &client::ClientID) -> Option<&member::ChannelMember>
 	{
-		self.users.get(id)
+		self.members.get(id)
 	}
 
 	/// Récupère un membre du salon.
 	pub fn member_mut(&mut self, id: &client::ClientID) -> Option<&mut member::ChannelMember>
 	{
-		self.users.get_mut(id)
+		self.members.get_mut(id)
 	}
 
 	/// Tous les membres du salon.
 	pub fn members(&self) -> &HashMap<client::ClientID, member::ChannelMember>
 	{
-		&self.users
+		&self.members
 	}
 
-	/// Retire un client de la liste des invitations
+	/// Retire un utilisateur de la liste des invitations
 	pub fn remove_to_invite(&mut self, id: &client::ClientID) -> bool
 	{
 		self.invite_list.remove(id)

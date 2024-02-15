@@ -27,7 +27,7 @@ pub trait ModeChannelAccessLevelApplicationInterface
 	) -> bool;
 
 	/// Met à jour les niveaux d'accès d'un client sur un salon.
-	fn update_client_access_level_on_channel(
+	fn update_member_access_level_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel: channel::ChannelIDRef,
@@ -35,7 +35,7 @@ pub trait ModeChannelAccessLevelApplicationInterface
 	) -> Option<channel::member::ChannelMember>;
 
 	/// Supprime un niveau d'accès pour un pseudo d'un salon.
-	fn remove_client_access_level_on_channel(
+	fn remove_member_access_level_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
@@ -67,7 +67,7 @@ impl ModeChannelAccessLevelApplicationInterface for ChatApplication
 		is_ok
 	}
 
-	fn update_client_access_level_on_channel(
+	fn update_member_access_level_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel: channel::ChannelIDRef,
@@ -78,7 +78,7 @@ impl ModeChannelAccessLevelApplicationInterface for ChatApplication
 			.update_client_access_level(channel, client_socket.cid(), set_access_level)
 	}
 
-	fn remove_client_access_level_on_channel(
+	fn remove_member_access_level_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,

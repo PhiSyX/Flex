@@ -73,7 +73,7 @@ impl JoinApplicationInterface for ChatApplication
 			.add_channel(client_socket.cid(), channel.id().as_str());
 
 		client_socket.emit_join(channel, forced, |channel_nick| {
-			let client = self.clients.get(channel_nick.member_id())?;
+			let client = self.clients.get(channel_nick.id())?;
 			Some(ChannelMemberDTO::from((client, channel_nick)))
 		});
 

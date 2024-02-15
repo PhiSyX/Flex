@@ -68,7 +68,7 @@ impl From<(client::Client, member::ChannelMember)> for ChannelMemberDTO
 	{
 		Self {
 			id: client.cid(),
-			access_level: channel_nick.access_level,
+			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
 	}
@@ -80,7 +80,7 @@ impl From<(&client::Client, member::ChannelMember)> for ChannelMemberDTO
 	{
 		Self {
 			id: client.cid(),
-			access_level: channel_nick.access_level,
+			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
 	}
@@ -92,7 +92,7 @@ impl From<(client::Client, &member::ChannelMember)> for ChannelMemberDTO
 	{
 		Self {
 			id: client.cid(),
-			access_level: channel_nick.access_level.clone(),
+			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
 	}
@@ -104,7 +104,7 @@ impl From<(&client::Client, &member::ChannelMember)> for ChannelMemberDTO
 	{
 		Self {
 			id: client.cid(),
-			access_level: channel_nick.access_level.clone(),
+			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
 	}
@@ -116,7 +116,7 @@ impl From<(client::Client, &&member::ChannelMember)> for ChannelMemberDTO
 	{
 		Self {
 			id: client.cid(),
-			access_level: channel_nick.access_level.clone(),
+			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
 	}

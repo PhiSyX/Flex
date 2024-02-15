@@ -205,8 +205,8 @@ impl ChannelsSession
 	) -> Option<()>
 	{
 		let mut channel_entity = self.get_mut(channel_id)?;
-		channel_entity.users.remove(client_id);
-		if channel_entity.users.is_empty() {
+		channel_entity.members.remove(client_id);
+		if channel_entity.members.is_empty() {
 			drop(channel_entity);
 			self.remove(channel_id);
 			return None;
