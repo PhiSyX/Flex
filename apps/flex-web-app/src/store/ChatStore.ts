@@ -135,8 +135,10 @@ export class ChatStore {
 
 		this._ws.replace(
 			io(websocketServerURL, {
-				withCredentials: true,
 				auth: { client_id: clientID },
+				reconnection: true,
+				rememberUpgrade: true,
+				withCredentials: true,
 			}),
 		);
 	}
@@ -467,7 +469,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		).sort();
 	}
 
-	/*
+	/**
 	 * Applique les paramètres d'un salon.
 	 */
 	function applyChannelSettings(target: string, modesSettings: Command<"MODE">["modes"]) {
@@ -550,6 +552,22 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function connect(connectUserInfo: ConnectUserInfo) {
 		store.setConnectUserInfo(connectUserInfo);
 		store.connectWebsocket(connectUserInfo.websocketServerURL);
+
+		if (import.meta.env.DEV) {
+			store.websocket().onAnyOutgoing((evtName, ...payload) => {
+				console.groupCollapsed("> Event %s", evtName);
+				console.debug("Données envoyées:");
+				console.table(payload);
+				console.groupEnd();
+			});
+
+			store.websocket().onAny((evtName, ...payload) => {
+				console.groupCollapsed("< Event %s", evtName);
+				console.debug("Données reçues:");
+				console.table(payload);
+				console.groupEnd();
+			});
+		}
 
 		store.websocket().once("connect", () => {
 			for (const [_, handler] of store.handlerManager().handlers()) {
