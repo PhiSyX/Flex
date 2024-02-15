@@ -46,6 +46,7 @@ impl ConnectionRegistrationHandler
 	/// Événement CONNECT
 	pub fn handle_connect(
 		socket: &SocketRef,
+		State(server_state): State<flex_web_framework::AxumApplicationState>,
 		State(app): State<ChatApplication>,
 		TryData(data): TryData<super::RememberUserFormData>,
 	)
@@ -69,11 +70,23 @@ impl ConnectionRegistrationHandler
 
 		let already_existing_client = |mut client_socket: components::Socket| {
 			client_socket.client_mut().reconnect_with_new_sid(socket.id);
-			Self::complete_registration(app, client_socket);
+			Self::complete_registration(server_state, app, client_socket);
 		};
 
-		if let Some(remember_client_id) = data.ok().and_then(|data| data.client_id) {
-			if let Some(client) = app.get_client_by_id(&remember_client_id) {
+		let cookie_manager = socket
+			.req_parts()
+			.extensions
+			.get::<flex_web_framework::http::TowerCookies>()
+			.map(|cm| flex_web_framework::http::Cookies::new(cm, server_state.get_cookie_key()))
+			.expect("Cookie manager");
+
+		let token = cookie_manager.signed().get("token");
+
+		if let Some((remember_client_id, token)) =
+			data.ok().and_then(|data| data.client_id.zip(token))
+		{
+			if let Some(client) = app.get_client_by_id_and_token(&remember_client_id, token.value())
+			{
 				socket.extensions.insert(client.clone());
 				let client_socket = app.current_client_mut(socket);
 				already_existing_client(client_socket);
@@ -89,6 +102,7 @@ impl ConnectionRegistrationHandler
 
 	/// Compléter l'enregistrement d'un client.
 	pub fn complete_registration(
+		_server_state: &flex_web_framework::AxumApplicationState,
 		app: &ChatApplication,
 		mut client_socket: components::Socket,
 	) -> Option<()>

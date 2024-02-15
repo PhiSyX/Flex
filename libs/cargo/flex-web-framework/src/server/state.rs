@@ -8,12 +8,48 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod cookies;
-mod method;
-pub mod request;
+// --------- //
+// Structure //
+// --------- //
 
-pub use axum::http::StatusCode;
-pub use axum::response::{IntoResponse, Response};
+#[derive(Default)]
+#[derive(Clone)]
+pub struct ServerState
+{
+	cookie_key: Option<tower_cookies::Key>,
+}
 
-pub use self::cookies::*;
-pub use self::method::*;
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl ServerState
+{
+	pub fn cookie_key(&self) -> Option<&tower_cookies::Key>
+	{
+		self.cookie_key.as_ref()
+	}
+
+	pub fn get_cookie_key(&self) -> &tower_cookies::Key
+	{
+		assert!(self.cookie_key.is_some());
+		self.cookie_key.as_ref().unwrap()
+	}
+
+	pub fn set_cookie_key(&mut self, cookie_key: tower_cookies::Key)
+	{
+		self.cookie_key.replace(cookie_key);
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl axum::extract::FromRef<ServerState> for tower_cookies::Key
+{
+	fn from_ref(state: &ServerState) -> Self
+	{
+		state.cookie_key.clone().expect("Clé de cookie.")
+	}
+}

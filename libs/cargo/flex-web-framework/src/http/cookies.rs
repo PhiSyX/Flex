@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,12 +8,55 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod cookies;
-mod method;
-pub mod request;
+use std::ops;
 
-pub use axum::http::StatusCode;
-pub use axum::response::{IntoResponse, Response};
+pub use tower_cookies::{Cookie, Cookies as TowerCookies, Key};
 
-pub use self::cookies::*;
-pub use self::method::*;
+// --------- //
+// Structure //
+// --------- //
+
+pub struct Cookies<'c>
+{
+	manager: &'c TowerCookies,
+	key: &'c Key,
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<'c> Cookies<'c>
+{
+	pub fn new(manager: &'c tower_cookies::Cookies, key: &'c Key) -> Self
+	{
+		Self { manager, key }
+	}
+}
+
+impl<'c> Cookies<'c>
+{
+	pub fn private(&self) -> tower_cookies::PrivateCookies<'_>
+	{
+		self.manager.private(self.key)
+	}
+
+	pub fn signed(&self) -> tower_cookies::SignedCookies<'_>
+	{
+		self.manager.signed(self.key)
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'c> ops::Deref for Cookies<'c>
+{
+	type Target = tower_cookies::Cookies;
+
+	fn deref(&self) -> &Self::Target
+	{
+		self.manager
+	}
+}

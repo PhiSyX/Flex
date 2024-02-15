@@ -8,12 +8,45 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod cookies;
-mod method;
-pub mod request;
+// --------- //
+// Structure //
+// --------- //
 
-pub use axum::http::StatusCode;
-pub use axum::response::{IntoResponse, Response};
+use flex_web_framework::extract::Form;
+use flex_web_framework::http::request::State;
+use flex_web_framework::http::{IntoResponse, StatusCode};
+use flex_web_framework::types::time;
 
-pub use self::cookies::*;
-pub use self::method::*;
+use super::TokenFormData;
+
+pub struct ConnectController;
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl ConnectController
+{
+	pub async fn token(
+		cm: flex_web_framework::http::TowerCookies,
+		State(cookie_key): State<flex_web_framework::http::Key>,
+		Form(token_form_data): Form<TokenFormData>,
+	) -> impl IntoResponse
+	{
+		tracing::debug!(?token_form_data, "Données du formulaire");
+
+		let cookie_manager = flex_web_framework::http::Cookies::new(&cm, &cookie_key);
+		let signed_cookies = cookie_manager.signed();
+
+		let session_token = token_form_data.token;
+		let new_token_cookie = flex_web_framework::http::Cookie::build(("token", session_token))
+			.path("/")
+			.expires(time::OffsetDateTime::now_utc().checked_add(time::Duration::days(3)))
+			.secure(true)
+			.http_only(true);
+
+		signed_cookies.add(new_token_cookie.build());
+
+		StatusCode::OK
+	}
+}

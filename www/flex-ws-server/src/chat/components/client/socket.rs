@@ -241,7 +241,8 @@ impl<'a> Socket<'a>
 			host: &host,
 			tags: RplWelcomeReply::default_tags(),
 		}
-		.with_tags([("client_id", self.client().cid())]);
+		.with_tags([("client_id", self.client().cid())])
+		.with_tags([("token", &self.client().token)]);
 
 		self.emit(welcome_001.name(), welcome_001);
 	}

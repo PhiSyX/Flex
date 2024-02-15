@@ -20,6 +20,11 @@ export default defineConfig({
 	build: {
 		outDir: path.resolve("dist"),
 	},
+	server: {
+		proxy: {
+			"/chat": "http://localhost:8888",
+		},
+	},
 	resolve: {
 		alias: [
 			// Application

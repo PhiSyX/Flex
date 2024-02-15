@@ -10,6 +10,7 @@
 
 mod error;
 mod settings;
+mod state;
 mod net
 {
 	pub use std::net::SocketAddr;
@@ -21,6 +22,7 @@ use console::style;
 
 pub use self::error::Error as ServerError;
 pub use self::settings::Settings;
+pub use self::state::ServerState;
 use crate::routing::RouterCollection;
 use crate::AxumApplicationState;
 

@@ -37,6 +37,23 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> 
 			ident: data.ident,
 		});
 
+		const tokenData = {
+			nick: data.nickname,
+			ident: data.ident,
+			host: data.host,
+			client_id: data.tags.client_id,
+			token: data.tags.token,
+		};
+
+		fetch("/chat/connect", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(tokenData),
+		});
+
 		const networkRoom = this.store.network();
 		networkRoom.addConnectEvent(data, data.message);
 

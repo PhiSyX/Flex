@@ -119,7 +119,9 @@ impl<E, C> ApplicationFeatureExtension for AxumApplication<E, C>
 			scoped_router = scoped_router.layer(axum::Extension(config.user));
 		}
 
-		self.application_adapter.router.merge(scoped_router);
+		self.application_adapter
+			.router
+			.merge(scoped_router.with_state(state.clone()));
 		self.application_adapter.router.extends(router_collection);
 
 		self
@@ -190,7 +192,9 @@ impl<E, C> AsyncApplicationFeatureExtension for AxumApplication<E, C>
 			scoped_router = scoped_router.layer(axum::Extension(config.user));
 		}
 
-		self.application_adapter.router.merge(scoped_router);
+		self.application_adapter
+			.router
+			.merge(scoped_router.with_state(state.clone()));
 		self.application_adapter.router.extends(router_collection);
 
 		self

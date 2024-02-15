@@ -18,7 +18,7 @@ use crate::{http, AxumApplicationState};
 // Structure //
 // --------- //
 
-pub struct Router
+pub struct Router<S>
 {
 	/// Nom de la route.
 	pub name: String,
@@ -27,14 +27,14 @@ pub struct Router
 	/// Méthode HTTP de la route.
 	pub methods: HashSet<http::Method>,
 	/// Action associé à un chemin d'URL.
-	pub action: axum::routing::MethodRouter<()>,
+	pub action: axum::routing::MethodRouter<S>,
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl Router
+impl<S> Router<S>
 {
 	pub fn methods(&self) -> impl Iterator<Item = &http::Method>
 	{
@@ -46,7 +46,7 @@ impl Router
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterBuilder for Router
+impl RouterBuilder for Router<AxumApplicationState>
 {
 	type State = AxumApplicationState;
 
@@ -159,15 +159,15 @@ impl RouterBuilder for Router
 		self
 	}
 
-	fn build(self) -> Router
+	fn build(self) -> Router<Self::State>
 	{
 		self
 	}
 }
 
-impl From<&Router> for axum::Router<AxumApplicationState>
+impl From<&Router<AxumApplicationState>> for axum::Router<AxumApplicationState>
 {
-	fn from(router: &Router) -> Self
+	fn from(router: &Router<AxumApplicationState>) -> Self
 	{
 		Self::new().route(&router.fullpath, router.action.to_owned())
 	}

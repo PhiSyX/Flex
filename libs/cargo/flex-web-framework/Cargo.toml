@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 axum = { version = "0.7.4" }
+axum-sessions = { version = "0.6.1" }
 chrono = { version = "0.4.34", features = ["clock", "serde"] }
 console = { version = "0.15.8" }
 email_address = { version = "0.2.4", features = ["serde"] }
@@ -12,10 +13,12 @@ flex-crypto = { workspace = true }
 hyper = { version = "1.1.0" }
 lexa-kernel = { workspace = true }
 log = { workspace = true }
+mime = "0.3.17"
 serde = { workspace = true }
 thiserror = { workspace = true }
 time = { version = "0.3.34", features = ["serde"] }
 tokio = { workspace = true }
+tower-cookies = { version = "0.10.0", features = ["private", "signed"] }
 tower-http = { version = "0.5.1", features = ["cors", "fs"] }
 url = { version = "2.5.0", features = ["serde"] }
 uuid = { version = "1.7.0", features = ["v4", "serde"] }

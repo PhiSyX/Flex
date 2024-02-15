@@ -12,6 +12,7 @@ use std::process;
 
 use flex_crypto::Argon2Encryption;
 use flex_web_framework::security::SecurityEncryptionService;
+use flex_web_framework::ApplicationCookieLayerExtension;
 use lexa_kernel::{
 	ApplicationCLIExtension,
 	ApplicationEnvExtension,
@@ -52,6 +53,15 @@ async fn main() -> impl process::Termination
 		return process::ExitCode::SUCCESS;
 	}
 
+	let app_secret_key = application.env().app_secret.expose().to_owned();
+
+	let application = {
+		// NOTE: Les features peuvent avoir besoin de cette clé. Cette clé est
+		//       sauvegardée dans un état, sauf que cet état est "cloné" au
+		//       moment où nous définissons la feature.
+		application.define_cookie_key(app_secret_key.as_bytes())
+	};
+
 	// 2. Features / Async Features
 	let application = {
 		use flex_web_framework::ApplicationFeatureExtension;
@@ -61,8 +71,9 @@ async fn main() -> impl process::Termination
 	// 3. Layers, extensions, services
 	let application = {
 		use flex_web_framework::ApplicationExtExtension;
-		let app_secret_key = application.env().app_secret.expose().to_owned();
-		application.extension_with::<SecurityEncryptionService<Argon2Encryption>>(app_secret_key)
+		application
+			.use_cookie_layer()
+			.extension_with::<SecurityEncryptionService<Argon2Encryption>>(app_secret_key)
 	};
 
 	// 4. Run

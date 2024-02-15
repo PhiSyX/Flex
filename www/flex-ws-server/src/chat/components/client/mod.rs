@@ -14,6 +14,7 @@ mod socket;
 use std::collections::HashSet;
 use std::net;
 
+use flex_crypto::SHA2;
 use flex_web_framework::types::uuid;
 
 pub use self::origin::Origin;
@@ -44,6 +45,8 @@ pub struct Client
 	registered: bool,
 	/// Connecté au serveur de Chat?
 	connected: bool,
+	/// Jeton de session
+	pub(crate) token: String,
 	/// Structure utilisateur au client.
 	user: user::User,
 	/// Les salons qu'à rejoint le client.
@@ -59,10 +62,13 @@ impl Client
 	/// Crée une nouvelle structure d'un [client](Self).
 	pub fn new(ip: net::IpAddr, socket_id: socketioxide::socket::Sid) -> Self
 	{
+		let client_id = uuid::Uuid::new_v4();
+		let token = format!("{}:{}:{}", client_id, socket_id, ip).sha2();
 		Self {
 			socket_id: Some(socket_id),
 			connected: Default::default(),
-			id: uuid::Uuid::new_v4(),
+			id: client_id,
+			token,
 			registered: Default::default(),
 			user: user::User::new(ip),
 			channels: Default::default(),

@@ -18,8 +18,8 @@ use crate::AxumApplicationState;
 #[derive(Default)]
 pub struct RouterCollection
 {
-	pub(crate) global: axum::Router<AxumApplicationState>,
-	routers: Vec<Router>,
+	pub(crate) global: axum::Router<()>,
+	routers: Vec<Router<AxumApplicationState>>,
 }
 
 // -------------- //
@@ -37,13 +37,13 @@ impl RouterCollection
 	}
 
 	/// Liste les routeurs.
-	pub fn all(&self) -> impl Iterator<Item = &Router>
+	pub fn all(&self) -> impl Iterator<Item = &Router<AxumApplicationState>>
 	{
 		self.routers.iter()
 	}
 
 	/// Routeur global.
-	pub fn global(self) -> axum::Router<AxumApplicationState>
+	pub fn global(self) -> axum::Router<()>
 	{
 		self.global
 	}
@@ -55,7 +55,7 @@ impl RouterCollection
 	}
 
 	/// Extension d'un routeur Axum vers le routeur axum global.
-	pub fn merge(&mut self, axum_router: axum::Router<AxumApplicationState>)
+	pub fn merge(&mut self, axum_router: axum::Router<()>)
 	{
 		self.global = self.global.clone().merge(axum_router);
 	}

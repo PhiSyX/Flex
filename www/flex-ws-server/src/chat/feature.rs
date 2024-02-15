@@ -38,21 +38,25 @@ impl Feature for ChatApplication
 
 	fn register_services(
 		_config: &flex_web_framework::settings::Config<Self::Config>,
-		_state: &flex_web_framework::AxumApplicationState,
+		server_state: &flex_web_framework::AxumApplicationState,
 		router: flex_web_framework::Router<flex_web_framework::AxumApplicationState>,
 	) -> flex_web_framework::Router<flex_web_framework::AxumApplicationState>
 	{
 		let (layer, io) = socketioxide::SocketIo::builder()
 			.max_buffer_size(1024)
+			.with_state(server_state.clone())
 			.with_state(Self::default())
 			.build_layer();
 
 		io.ns(
 			"/",
 			|socket: socketioxide::extract::SocketRef,
+			 server_state: socketioxide::extract::State<
+				flex_web_framework::AxumApplicationState,
+			>,
 			 state: socketioxide::extract::State<ChatApplication>,
 			 data: socketioxide::extract::TryData<RememberUserFormData>| {
-				ConnectionRegistrationHandler::handle_connect(&socket, state, data);
+				ConnectionRegistrationHandler::handle_connect(&socket, server_state, state, data);
 
 				socket.on(AwayHandler::COMMAND_NAME, AwayHandler::handle);
 				socket.on(InviteHandler::COMMAND_NAME, InviteHandler::handle);

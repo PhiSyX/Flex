@@ -133,7 +133,12 @@ export class ChatStore {
 			clientID = null;
 		}
 
-		this._ws.replace(io(websocketServerURL, { auth: { client_id: clientID } }));
+		this._ws.replace(
+			io(websocketServerURL, {
+				withCredentials: true,
+				auth: { client_id: clientID },
+			}),
+		);
 	}
 
 	/**

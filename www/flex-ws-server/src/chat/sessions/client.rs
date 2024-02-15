@@ -119,6 +119,18 @@ impl ChatApplication
 		self.clients.get(client_id)
 	}
 
+	/// Récupère un client à partir de son ID et son jeton.
+	pub fn get_client_by_id_and_token(
+		&self,
+		client_id: &client::ClientID,
+		token: impl AsRef<str>,
+	) -> Option<client::Client>
+	{
+		self.clients
+			.get(client_id)
+			.filter(|client| client.token.eq(token.as_ref()))
+	}
+
 	/// Récupère un client à partir de son ID.
 	pub fn get_client_mut_by_id(
 		&self,

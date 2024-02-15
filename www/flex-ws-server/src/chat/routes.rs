@@ -14,6 +14,7 @@ use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
 use flex_web_framework::RouterInterface;
 
 use super::controllers::HomeController;
+use super::features::ConnectController;
 
 // --------- //
 // Structure //
@@ -29,6 +30,7 @@ pub struct ChatRouter;
 pub enum ChatRouteID
 {
 	Home,
+	Connect,
 }
 
 // -------------- //
@@ -39,7 +41,9 @@ impl RouterInterface for ChatRouter
 {
 	fn routes() -> RouterCollection
 	{
-		Self::collection().add(Router::path(ChatRouteID::Home).get(HomeController::home_view))
+		Self::collection()
+			.add(Router::path(ChatRouteID::Home).get(HomeController::home_view))
+			.add(Router::path(ChatRouteID::Connect).post(ConnectController::token))
 	}
 }
 
@@ -49,6 +53,7 @@ impl fmt::Display for ChatRouteID
 	{
 		let url_path = match self {
 			| Self::Home => "/chat",
+			| Self::Connect => "/chat/connect",
 		};
 
 		write!(f, "{}", url_path)

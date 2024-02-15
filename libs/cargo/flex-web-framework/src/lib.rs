@@ -10,6 +10,7 @@
 
 mod adapter;
 mod extension;
+pub mod extract;
 pub mod http;
 mod interface;
 pub mod routing;
@@ -22,10 +23,9 @@ pub use axum::{Extension, Router};
 
 pub use self::extension::*;
 pub use self::interface::*;
+pub use self::server::ServerState as AxumApplicationState;
 
 // ---- //
 // Type //
 // ---- //
-
-pub type AxumApplicationState = ();
 pub type AxumApplication<E = (), C = ()> = lexa_kernel::Kernel<adapter::Adapter<E, C>, E, C>;

@@ -55,6 +55,7 @@ impl NickHandler
 
 	pub fn handle_unregistered(
 		socket: SocketRef,
+		State(server_state): State<flex_web_framework::AxumApplicationState>,
 		State(app): State<ChatApplication>,
 		Data(data): Data<NickCommandFormData>,
 	)
@@ -68,7 +69,7 @@ impl NickHandler
 		let check = {
 			let mut client_socket = app.current_client_mut(&socket);
 			client_socket.user_mut().set_nickname(&data.nickname).ok();
-			ConnectionRegistrationHandler::complete_registration(app, client_socket)
+			ConnectionRegistrationHandler::complete_registration(server_state, app, client_socket)
 		};
 
 		if check.is_none() {

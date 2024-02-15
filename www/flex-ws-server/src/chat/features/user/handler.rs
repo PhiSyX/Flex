@@ -35,6 +35,7 @@ impl UserHandler
 	/// utilisateur.
 	pub fn handle(
 		socket: SocketRef,
+		State(server_state): State<flex_web_framework::AxumApplicationState>,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UserCommandFormData>,
 	)
@@ -53,7 +54,11 @@ impl UserHandler
 			} else {
 				client_socket.user_mut().set_realname(data.realname);
 
-				ConnectionRegistrationHandler::complete_registration(app, client_socket)
+				ConnectionRegistrationHandler::complete_registration(
+					server_state,
+					app,
+					client_socket,
+				)
 			}
 		};
 

@@ -8,29 +8,56 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::client;
+use crate::AxumApplication;
 
 // --------- //
-// Structure //
+// Interface //
 // --------- //
 
-/// Envoyée lors de la (re)connexion au WebSocket.
-#[derive(Debug)]
-#[derive(serde::Deserialize)]
-pub struct RememberUserFormData
+/// Extension d'application "Cookie Layer"
+pub trait ApplicationCookieLayerExtension: Sized
 {
-	/// ID d'un client.
-	pub client_id: Option<client::ClientID>,
+	/// Définit une clé de cookie.
+	fn define_cookie_key(self, key: impl TryInto<tower_cookies::Key>) -> Self;
+
+	/// Applique un layer cookie au serveur.
+	fn use_cookie_layer(self) -> Self;
 }
 
-/// Envoyée par le client lors de la réponse serveur `RPL_WELCOME`.
-#[derive(Debug)]
-#[derive(serde::Deserialize)]
-pub struct TokenFormData
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<E, C> ApplicationCookieLayerExtension for AxumApplication<E, C>
 {
-	pub client_id: client::ClientID,
-	pub nick: String,
-	pub ident: String,
-	pub host: String,
-	pub token: String,
+	fn define_cookie_key(mut self, key: impl TryInto<tower_cookies::Key>) -> Self
+	{
+		let Ok(cookie_key) = key.try_into() else {
+			self.signal().send_critical(
+				"La clé de cookie reçue lors de l'initialisation de l'application est incorrecte.",
+			);
+		};
+
+		self.application_adapter.state.set_cookie_key(cookie_key);
+
+		self
+	}
+
+	fn use_cookie_layer(mut self) -> Self
+	{
+		if self.application_adapter.state.cookie_key().is_none() {
+			self.signal().send_critical(
+				"Vous devez définir une clé de cookie avec YourApp#define_cookie_key avant \
+				 d'utiliser le layer de cookie",
+			);
+		};
+
+		self.application_adapter.router.global = self
+			.application_adapter
+			.router
+			.global
+			.layer(tower_cookies::CookieManagerLayer::new());
+
+		self
+	}
 }

@@ -42,7 +42,10 @@ declare interface CommandResponsesReplies {
 		nickname: string;
 		ident: string;
 		host: string;
-		tags: { client_id: UUID };
+		tags: {
+			client_id: UUID;
+			token: string;
+		};
 	};
 	RPL_YOURHOST: { servername: string; version: string };
 	RPL_CREATED: { date: string };

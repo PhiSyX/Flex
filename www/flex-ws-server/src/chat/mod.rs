@@ -60,6 +60,7 @@ mod features
 	lexa_kernel::public_using! {
 		connect / {
 			application,
+			controller,
 			formdata,
 			handler,
 			session,
