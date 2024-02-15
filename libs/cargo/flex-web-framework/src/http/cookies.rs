@@ -10,6 +10,7 @@
 
 use std::ops;
 
+pub use tower_cookies::cookie::SameSite;
 pub use tower_cookies::{Cookie, Cookies as TowerCookies, Key};
 
 // --------- //

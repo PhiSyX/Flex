@@ -14,7 +14,7 @@ use flex_web_framework::types::time;
 use flex_web_framework::types::time::TimeZone;
 use socketioxide::extract::{SocketRef, State, TryData};
 
-use super::ConnectApplicationInterface;
+use super::{ConnectApplicationInterface, ConnectController};
 use crate::config::flex::flex_config;
 use crate::src::chat::components;
 use crate::src::chat::components::{ClientSocketInterface, Origin};
@@ -80,7 +80,9 @@ impl ConnectionRegistrationHandler
 			.map(|cm| flex_web_framework::http::Cookies::new(cm, server_state.get_cookie_key()))
 			.expect("Cookie manager");
 
-		let token = cookie_manager.signed().get("token");
+		let token = cookie_manager
+			.signed()
+			.get(ConnectController::COOKIE_TOKEN_KEY);
 
 		if let Some((remember_client_id, token)) =
 			data.ok().and_then(|data| data.client_id.zip(token))
