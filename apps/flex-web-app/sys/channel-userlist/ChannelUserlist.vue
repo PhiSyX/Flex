@@ -58,6 +58,7 @@ const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 		<KeepAlive>
 			<component
 				:is="view"
+				:filter-input="filterNick"
 				:moderators="{
 					original: members.moderators,
 					filtered: moderatorsFiltered,

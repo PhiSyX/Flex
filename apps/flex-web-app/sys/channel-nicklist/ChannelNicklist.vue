@@ -13,6 +13,7 @@ import { computed } from "vue";
 // ---- //
 
 interface Props {
+	filterInput: string;
 	moderators: {
 		original: Array<ChannelMember>;
 		filtered: Array<ChannelMemberFiltered | ChannelMemberUnfiltered>;
@@ -36,13 +37,51 @@ interface Emits {
 // Composant //
 // --------- //
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const channelMemberTitleAttr = computed(() => {
 	return (
 		"· Simple clique: ouvrir le menu du membre du salon... \n" +
 		"· Double clique: ouvrir la discussion privé avec le membre du salon\n"
+	);
+});
+
+const moderatorsList = computed(() => {
+	return props.moderators.filtered.length > 0
+		? props.moderators.filtered
+		: props.moderators.original;
+});
+
+const vipsList = computed(() => {
+	return props.vips.filtered.length > 0
+		? props.vips.filtered
+		: props.vips.original;
+});
+
+const usersList = computed(() => {
+	return props.users.filtered.length > 0
+		? props.users.filtered
+		: props.users.original;
+});
+
+const hasFilteredModerators = computed(() => {
+	return props.moderators.filtered.some(
+		(m) => m instanceof ChannelMemberFiltered
+	);
+});
+const hasFilteredVips = computed(() => {
+	return props.vips.filtered.some((m) => m instanceof ChannelMemberFiltered);
+});
+const hasFilteredUsers = computed(() => {
+	return props.users.filtered.some((m) => m instanceof ChannelMemberFiltered);
+});
+
+const hasFilters = computed(() => {
+	return (
+		hasFilteredModerators.value ||
+		hasFilteredVips.value ||
+		hasFilteredUsers.value
 	);
 });
 
@@ -60,17 +99,25 @@ function selectUserHandler(member: ChannelMember) {
 </script>
 
 <template>
-	<div class="[ scroll:y flex! gap=3 p=2 select:none ]">
+	<fieldset class="[ scroll:y flex! gap=3 p=2 select:none ]">
+		<legend
+			:class="{
+				'vis-h': filterInput.length === 0 || hasFilters,
+			}"
+		>
+			Aucun résultat
+		</legend>
+
 		<details
 			v-if="moderators.original.length > 0"
-			:open="moderators.filtered.length > 0"
+			:open="moderatorsList.length > 0"
 		>
 			<summary>Modérateurs</summary>
 
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="filteredMember in moderators.filtered"
+					v-for="filteredMember in moderatorsList"
 					:key="filteredMember.id"
 					:classes="filteredMember.className"
 					:hits="filteredMember.searchHits || []"
@@ -85,16 +132,13 @@ function selectUserHandler(member: ChannelMember) {
 			</ul>
 		</details>
 
-		<details
-			v-if="vips.original.length > 0"
-			:open="vips.filtered.length > 0"
-		>
+		<details v-if="vips.original.length > 0" :open="vipsList.length > 0">
 			<summary>VIP</summary>
 
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="filteredMember in vips.filtered"
+					v-for="filteredMember in vipsList"
 					:key="filteredMember.id"
 					:classes="filteredMember.className"
 					:hits="filteredMember.searchHits || []"
@@ -108,16 +152,13 @@ function selectUserHandler(member: ChannelMember) {
 			</ul>
 		</details>
 
-		<details
-			v-if="users.original.length > 0"
-			:open="users.filtered.length > 0"
-		>
+		<details v-if="users.original.length > 0" :open="usersList.length > 0">
 			<summary>Utilisateurs</summary>
 
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="filteredMember in users.filtered"
+					v-for="filteredMember in usersList"
 					:key="filteredMember.id"
 					:classes="filteredMember.className"
 					:hits="filteredMember.searchHits"
@@ -130,11 +171,24 @@ function selectUserHandler(member: ChannelMember) {
 				/>
 			</ul>
 		</details>
-	</div>
+	</fieldset>
 </template>
 
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
+
+.vis-h {
+	visibility: hidden;
+}
+
+fieldset {
+	border: none;
+}
+
+legend {
+	color: var(--color-red300);
+	font-size: 12px;
+}
 
 details {
 	position: sticky;

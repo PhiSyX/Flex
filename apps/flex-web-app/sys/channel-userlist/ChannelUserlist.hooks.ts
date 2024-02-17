@@ -58,9 +58,9 @@ export function useInputFilterUserlist(props: Props) {
 
 	watchEffect(() => {
 		if (!filterNick.value) {
-			moderatorsFiltered.value = props.members.moderators as Array<ChannelMemberUnfiltered>;
-			vipsFiltered.value = props.members.vips as Array<ChannelMemberUnfiltered>;
-			usersFiltered.value = props.members.users as Array<ChannelMemberUnfiltered>;
+			moderatorsFiltered.value = [] as Array<ChannelMemberUnfiltered>;
+			vipsFiltered.value = [] as Array<ChannelMemberUnfiltered>;
+			usersFiltered.value = [] as Array<ChannelMemberUnfiltered>;
 			return;
 		}
 
@@ -109,9 +109,9 @@ export function useInputFilterUserlist(props: Props) {
 		const u = filteredUsers.length;
 
 		if (m === 0 && v === 0 && u === 0) {
-			moderatorsFiltered.value = props.members.moderators as Array<ChannelMemberUnfiltered>;
-			vipsFiltered.value = props.members.vips as Array<ChannelMemberUnfiltered>;
-			usersFiltered.value = props.members.users as Array<ChannelMemberUnfiltered>;
+			moderatorsFiltered.value = [] as Array<ChannelMemberUnfiltered>;
+			vipsFiltered.value = [] as Array<ChannelMemberUnfiltered>;
+			usersFiltered.value = [] as Array<ChannelMemberUnfiltered>;
 		} else {
 			moderatorsFiltered.value = sort(filteredModerators);
 			vipsFiltered.value = sort(filteredVips);
