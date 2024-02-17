@@ -109,6 +109,13 @@ function toggleIgnoreUserHandler() {
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("room/private") {
+	@include fx.class("room/main") {
+		> div {
+			border-radius: 0;
+			border-bottom-left-radius: 4px;
+		}
+	}
+
 	@include fx.class("room/editbox") {
 		background-color: var(--body-bg);
 	}

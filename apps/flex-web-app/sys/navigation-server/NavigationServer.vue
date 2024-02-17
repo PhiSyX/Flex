@@ -170,6 +170,47 @@ function toggleFoldHandler() {
 .is-active {
 	cursor: default;
 	background: var(--room-bg);
+	position: relative;
+
+	--sb: #{fx.space(1)};
+	--sbm: calc(0rem - #{fx.space(1)});
+
+
+	&::before,
+	&::after {
+		content: "";
+
+		position: absolute;
+		display: inline-block;
+
+		pointer-events: none;
+
+		transition: background-color 200ms ease-in-out;
+
+		height: var(--sb);
+        width: var(--sb);
+	}
+
+	&:not(:first-child)::before {
+		top: var(--sbm);
+		right: 0;
+		background: radial-gradient(
+			circle at 0 0,
+			transparent var(--sb),
+			var(--room-bg) var(--sb)
+		);
+	}
+
+	// &:not(:last-child)::after {
+	&::after {
+		bottom: var(--sbm);
+		right: 0;
+		background: radial-gradient(
+			circle at 0 100%,
+			transparent var(--sb),
+			var(--room-bg) var(--sb)
+		);
+	}
 }
 
 p {

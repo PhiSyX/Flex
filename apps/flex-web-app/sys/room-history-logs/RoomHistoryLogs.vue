@@ -80,7 +80,8 @@ onActivated(() => scroll());
 @use "scss:~/flexsheets" as fx;
 
 div {
-	border-bottom-left-radius: 4px;
+	border-radius: 4px;
+	border-top-left-radius: 0;
 	background: var(--room-bg);
 }
 </style>

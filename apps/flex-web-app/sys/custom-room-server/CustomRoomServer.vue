@@ -94,7 +94,7 @@ const sendMessage = (message: string) => emit("send-message", message);
 		background: var(--room-bg);
 	}
 
-	@include fx.class("room/logs") {
+	@include fx.class("room/main") {
 		background: var(--room-bg);
 	}
 
