@@ -2,6 +2,11 @@
 
 @mixin use-overflow-hidden($options...) {
 	$classes: (
+		"...": (
+			overflow: clip,
+			text-overflow: ellipsis,
+			white-space: nowrap,
+		),
 		"ov:c": (
 			overflow: clip,
 		),

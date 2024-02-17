@@ -81,6 +81,12 @@ const displayUserlist = ref(true);
 // connecté au client est sanctionné d'un KICK.
 const isDisabledInput = computed(() => props.room.kicked);
 
+// Attribut title: afficher/cacher liste des pseudo
+const toggleNicklistTitleAttr = computed(() => {
+	let state = displayUserlist.value ? "Cacher" : "Afficher";
+	return `${state} la liste des membres`;
+});
+
 // -------- //
 // Handlers //
 // -------- //
@@ -163,9 +169,15 @@ const unsetAccessLevel = (
 					:true-value="true"
 					:false-value="false"
 					icon="users"
+					:title="toggleNicklistTitleAttr"
 				/>
 
-				<ButtonIcon class="close" icon="close" @click="closeRoom" />
+				<ButtonIcon
+					class="close"
+					icon="close"
+					title="Fermer la chambre active"
+					@click="closeRoom"
+				/>
 			</template>
 
 			<template #after-topic-before-main>

@@ -87,7 +87,11 @@ function toggleIgnoreUserHandler() {
 					:title="titleIgnoreBtn"
 					@click="toggleIgnoreUserHandler"
 				/>
-				<ButtonIcon icon="close" @click="emit('close')" />
+				<ButtonIcon
+					icon="close"
+					title="Fermer la chambre active"
+					@click="emit('close')"
+				/>
 			</template>
 
 			<template #after-topic-before-main>

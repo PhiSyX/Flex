@@ -1,7 +1,9 @@
 @use "./hidden";
+@use "./marquee";
 @use "./scroll";
 
 @mixin use-overflow($options...) {
 	@include hidden.use-overflow-hidden($options...);
+	@include marquee.use-overflow-marquee($options...);
 	@include scroll.use-overflow-scroll($options...);
 }

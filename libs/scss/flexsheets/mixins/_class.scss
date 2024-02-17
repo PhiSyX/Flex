@@ -1,4 +1,5 @@
 @use "sass:map";
+@use "sass:string";
 
 @use "./selector" as selector;
 
@@ -64,6 +65,12 @@
 								@each $prop, $value in $values {
 									#{$prop}: #{$value};
 								}
+							}
+						}
+					} @else if string.slice($prop, 0, 1) == ":" {
+						&:#{string.slice($prop, 2, -1)} {
+							@each $prop, $value in map.get($class, $prop) {
+								#{$prop}: #{$value};
 							}
 						}
 					} @else {

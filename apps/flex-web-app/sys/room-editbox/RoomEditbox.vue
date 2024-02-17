@@ -55,7 +55,8 @@ onActivated(() => {
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<UiButton
 				variant="primary"
-				class="btn-change-nick [ my=1 px=1 py=1 border/radius=1 ]"
+				class="btn-change-nick [ max-w=12 d-i align-jc:stretch my=1 px=1 py=1 border/radius=1 ... ]"
+				:title="currentClientNickname"
 				@click="changeNickHandler"
 			>
 				{{ currentClientNickname }}
@@ -75,7 +76,7 @@ onActivated(() => {
 					:disabled="disableInput"
 					:placeholder="placeholder"
 					type="text"
-					class="[ input:reset size:full py=1 ]"
+					class="[ input:reset flex:shrink=0 size:full py=1 ]"
 					@keydown.down="historyKeydownHandler"
 					@keydown.up="historyKeydownHandler"
 					@keydown="autocompletionKeydownHandler"

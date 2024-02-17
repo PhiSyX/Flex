@@ -26,6 +26,7 @@ const emit = defineEmits<Emits>();
 const newNickRequest = ref("");
 
 function submitHandler() {
+	if (!newNickRequest.value) return;
 	emit("submit", newNickRequest.value);
 }
 </script>

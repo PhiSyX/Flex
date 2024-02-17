@@ -70,6 +70,7 @@ const openChannelList = () => emit("open-channel-list");
 					id="goto-channel-list"
 					icon="channel-list"
 					:with-opacity="false"
+					title="Liste des salons"
 					@click="openChannelList"
 				/>
 

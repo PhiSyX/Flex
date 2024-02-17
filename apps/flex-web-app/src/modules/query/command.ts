@@ -34,9 +34,6 @@ export class QueryCommand {
 			return priv;
 		});
 
-		room.unsetTotalUnreadEvents();
-		room.unsetTotalUnreadMessages();
-
 		this.store.roomManager().setCurrent(room.id());
 	}
 }

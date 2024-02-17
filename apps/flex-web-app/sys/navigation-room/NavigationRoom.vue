@@ -44,6 +44,43 @@ const totalUnread = computed(() => {
 	return props.totalUnreadMessages || props.totalUnreadEvents || 0;
 });
 
+// Attribute title: nom
+const nameTitleAttr = computed(() => {
+	let title = `${props.name} :\n`;
+
+	if (props.highlight) {
+		title +=
+			"· Cet onglet clignote car quelqu'un a écrit votre pseudo dans la conversation. (Highlight)\n";
+	}
+
+	title += "· Fermer la chambre avec :\n";
+	title += "  - la touche du clavier ESC (échap)\n";
+	title += "  - le bouton du milieu de votre souris\n";
+
+	if (props.name.startsWith("#")) {
+		if (!props.active) {
+			title += "\n";
+			title += "· Rejoindre le salon avec :\n";
+			title += "  - un simple clique\n";
+			title += "  - la touche du clavier ESPACE\n";
+		}
+		return title;
+	}
+
+	title += `· Discuter avec ${props.name} avec un simple clique\n`;
+
+	return title;
+});
+
+// Attribute title: fermeture
+const btnCloseAttrTitle = computed(() => {
+	let title = props.name + ":\n";
+	title += props.name.startsWith("#")
+		? "· Partir du salon (Commande /part)"
+		: "· Fermer la fenêtre de discussion";
+	return title;
+});
+
 const openRoom = () => emit("open-room", props.id);
 const closeRoom = () => emit("close-room", props.id);
 </script>
@@ -61,13 +98,15 @@ const closeRoom = () => emit("close-room", props.id);
 		@click.middle="closeRoom"
 		@keypress.space="openRoom"
 		@keypress.enter="openRoom"
+		@keydown.esc="closeRoom"
 		tabindex="0"
 	>
 		<slot name="icon" />
 
 		<bdo
 			v-show="!folded"
-			:class="{ 'scroll:marquee': !name.startsWith('#') }"
+			:class="{ '...': !name.startsWith('#') }"
+			:title="nameTitleAttr"
 		>
 			{{ name }}
 		</bdo>
@@ -86,6 +125,7 @@ const closeRoom = () => emit("close-room", props.id);
 				icon="close"
 				class="close"
 				@click="closeRoom"
+				:title="btnCloseAttrTitle"
 			/>
 		</div>
 

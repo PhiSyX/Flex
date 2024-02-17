@@ -502,11 +502,6 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 
 		store.roomManager().setCurrent(roomID);
-
-		const current = store.roomManager().current();
-
-		current.unsetTotalUnreadEvents();
-		current.unsetTotalUnreadMessages();
 	}
 
 	/**
@@ -658,9 +653,6 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			return priv;
 		});
 
-		room.unsetTotalUnreadEvents();
-		room.unsetTotalUnreadMessages();
-
 		store.roomManager().setCurrent(room.id());
 
 		// store.emit("QUERY", { nickname: name });
@@ -680,16 +672,12 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 
 		if (!roomID.startsWith("#")) {
 			store.roomManager().setCurrent(roomID);
-			store.roomManager().current().unsetTotalUnreadEvents();
-			store.roomManager().current().unsetTotalUnreadMessages();
 			return;
 		}
 
 		if (store.roomManager().has(roomID, { state: "both" })) {
 			const channel = store.roomManager().get(roomID, { state: "both" }).unwrap();
 			if (!channel.isClosed()) {
-				channel.unsetTotalUnreadEvents();
-				channel.unsetTotalUnreadMessages();
 				return;
 			}
 		}

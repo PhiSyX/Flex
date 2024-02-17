@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ButtonIcon } from "@phisyx/flex-uikit";
+
 import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
 
 import Room from "#/sys/room/Room.vue";
@@ -11,11 +13,16 @@ interface Props {
 	room: NoticeCustomRoom;
 }
 
+interface Emits {
+	(evtName: "close"): void;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 defineProps<Props>();
+const emit = defineEmits<Emits>();
 </script>
 
 <template>
@@ -25,6 +32,14 @@ defineProps<Props>();
 				<p class="[ flex flex/center:full h:full m=0 p=0 select:none ]">
 					Liste des notices reçues
 				</p>
+			</template>
+
+			<template #topic-action>
+				<ButtonIcon
+					icon="close"
+					title="Fermer la chambre active"
+					@click="emit('close')"
+				/>
 			</template>
 		</Room>
 	</div>

@@ -143,11 +143,18 @@ export class RoomManager {
 	setCurrent(roomID: RoomID) {
 		if (this._currentRoom.is_some()) {
 			this.current().setActive(false);
+			this.current().setHighlight(false);
+			this.current().unsetTotalUnreadEvents();
+			this.current().unsetTotalUnreadMessages();
 		}
 
 		this._currentRoom.replace(roomID.toLowerCase());
 
 		this.current().setActive(true);
+
+		this.current().setHighlight(false);
+		this.current().unsetTotalUnreadEvents();
+		this.current().unsetTotalUnreadMessages();
 	}
 
 	/**

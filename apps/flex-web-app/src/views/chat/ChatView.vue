@@ -34,6 +34,10 @@ function joinChannel(name: string) {
 	chatStore.changeRoom(name);
 }
 
+function closeRoom(name: string) {
+	chatStore.closeRoom(name);
+}
+
 function openJoinChannelDialog(event: Event) {
 	// @ts-expect-error ?
 	ChannelJoinDialog.create(overlayerStore.store, { event });
@@ -104,6 +108,7 @@ function openJoinChannelDialog(event: Event) {
 							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as NoticeCustomRoom)"
 							class="[ flex:full ]"
+							@close="() => closeRoom(room.id())"
 						/>
 					</KeepAlive>
 				</template>

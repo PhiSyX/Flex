@@ -54,7 +54,12 @@ onMounted(() => {
 	>
 		<div class="[ flex:full ]"><slot /></div>
 
-		<ButtonIcon v-if="canClose" icon="close" @click="closeHandler" />
+		<ButtonIcon
+			v-if="canClose"
+			icon="close"
+			class="[ flex:shrink=0 ]"
+			@click="closeHandler"
+		/>
 	</div>
 </template>
 

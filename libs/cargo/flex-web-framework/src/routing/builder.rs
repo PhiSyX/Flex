@@ -10,9 +10,8 @@
 
 use std::fmt;
 
-use crate::AxumApplicationState;
-
 use super::Router;
+use crate::AxumApplicationState;
 
 // --------- //
 // Interface //

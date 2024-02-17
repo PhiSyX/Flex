@@ -1,27 +1,32 @@
+@use "../mixins/class" as class;
+
+$marquee: (
+	text-indent: var(--marquee-end, -85%),
+	text-overflow: ellipsis clip,
+);
+
 @keyframes marquee {
 	50% {
-		--direction: rtl;
-		--text-overflow: clip;
+		text-indent: var(--marquee-end, -85%);
+		text-overflow: ellipsis clip;
 	}
 }
 
-@include selector.class("scroll:marquee") {
-	--direction: ltr;
-	--text-overflow: ellipsis;
+@mixin use-overflow-marquee($options...) {
+	$classes: (
+		"scroll:marquee": (
+			--marquee-end: -85%,
 
-	overflow-x: hidden;
-	animation: marquee 2s step-start 0s infinite;
-	direction: var(--direction);
-	text-overflow: var(--text-overflow);
-	white-space: nowrap;
+			transition: all 250ms,
+			display: inline,
+			overflow: clip,
+			text-overflow: clip ellipsis,
+			white-space: nowrap,
+			animation: marquee 15s infinite,
+			":active": $marquee,
+			":hover": $marquee,
+		),
+	);
 
-	&:active,
-	&:hover {
-		--direction: rtl;
-		--text-overflow: clip;
-		animation: none;
-		&:after {
-			content: "\200E‎";
-		}
-	}
+	@include class.generate($options, $classes);
 }

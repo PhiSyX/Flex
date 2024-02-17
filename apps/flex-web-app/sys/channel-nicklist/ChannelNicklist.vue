@@ -3,6 +3,7 @@ import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelMemberFiltered } from "~/channel/ChannelMemberFiltered";
 
 import ChannelNickComponent from "#/sys/channel-nick/ChannelNick.vue";
+import { computed } from "vue";
 
 // ---- //
 // Type //
@@ -34,6 +35,13 @@ interface Emits {
 
 defineProps<Props>();
 const emit = defineEmits<Emits>();
+
+const channelMemberTitleAttr = computed(() => {
+	return (
+		"· Simple clique: ouvrir le menu du membre du salon... \n" +
+		"· Double clique: ouvrir la discussion privé avec le membre du salon\n"
+	);
+});
 
 // -------- //
 // Handlers //
@@ -69,6 +77,7 @@ function selectUserHandler(member: ChannelMemberFiltered) {
 					class="channel/nick"
 					@dblclick="openPrivateHandler(filteredNick)"
 					@click="selectUserHandler(filteredNick)"
+					:title="channelMemberTitleAttr"
 				/>
 			</ul>
 		</details>
