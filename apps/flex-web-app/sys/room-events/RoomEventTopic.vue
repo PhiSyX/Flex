@@ -23,15 +23,15 @@ const updatedAt = computed(() => {
 	<p v-if="data.updated">
 		<template v-if="isCurrentClient">
 			<strong>Vous</strong> avez mis à jour le sujet du salon
-			<span>{{ data.channel }}: </span> <output>{{ data.topic }}</output>
+			<span>{{ data.channel }}: </span> <q>{{ data.topic }}</q>
 		</template>
 		<template v-else>
 			* Topic: <span>{{ data.updated_by }}</span> a mis à jour le sujet du
-			salon: <output>{{ data.topic }}</output>
+			salon: <q>{{ data.topic }}</q>
 		</template>
 	</p>
 	<p v-else>
-		* Topic: <output>{{ data.topic }}</output> par
+		* Topic: <q>{{ data.topic }}</q> par
 		<span>{{ data.updated_by }}</span> le
 		<time :datetime="time.datetime">{{ updatedAt }}</time>
 	</p>
@@ -44,20 +44,9 @@ p {
 	color: var(--color-green400);
 }
 
+q,
 strong,
 span {
 	color: var(--default-text-color);
-}
-
-output {
-	color: var(--default-text-color);
-	&::before {
-		content: "« ";
-		color: var(--color-grey400);
-	}
-	&::after {
-		content: " »";
-		color: var(--color-grey400);
-	}
 }
 </style>

@@ -22,7 +22,7 @@ const hostname = computeHostname(props.data.origin);
 		>@<span>{{ hostname }}</span
 		>)
 		<em v-if="data.message">
-			(<output>{{ data.message }}</output>
+			(<q>{{ data.message }}</q>
 			<em v-if="data.forced_by">
 				(Par <bdo>{{ data.forced_by }}</bdo
 				>)</em
@@ -39,19 +39,7 @@ p {
 }
 
 bdo,
-output,
 span {
 	color: var(--default-text-color);
-}
-
-output {
-	&::before {
-		content: "« ";
-		color: var(--color-grey400);
-	}
-	&::after {
-		content: " »";
-		color: var(--color-grey400);
-	}
 }
 </style>

@@ -18,8 +18,7 @@ defineProps<Props<"KICK">>();
 		<span>{{ data.knick.nickname }}</span>
 		a été sanctionné par
 		<span>{{ data.origin.nickname }}</span>
-		(Raison: <output>{{ data.reason }}</output
-		>)
+		(Raison: <q>{{ data.reason }}</q>)
 	</p>
 </template>
 
@@ -30,19 +29,7 @@ p {
 	color: var(--room-event-kick-color);
 }
 
-output,
 span {
 	color: var(--default-text-color);
-}
-
-output {
-	&::before {
-		content: "« ";
-		color: var(--color-grey400);
-	}
-	&::after {
-		content: " »";
-		color: var(--color-grey400);
-	}
 }
 </style>

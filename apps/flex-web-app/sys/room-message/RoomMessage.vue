@@ -68,9 +68,9 @@ const maybeChannelMember = computed(() => {
 const maybePrivateNick = computed(() => {
 	return isPrivate.value
 		? Some(
-				new PrivateParticipant(new User(props.data.origin)).withIsCurrentClient(
-					props.isCurrentClient
-				)
+				new PrivateParticipant(
+					new User(props.data.origin)
+				).withIsCurrentClient(props.isCurrentClient)
 		  )
 		: None();
 });
@@ -209,6 +209,18 @@ const openRoom = (roomName: string) => emit("open-room", roomName);
 		line-height: 1.4rem;
 		word-break: break-all;
 		hyphens: manual;
+	}
+
+	q {
+		color: var(--default-text-color);
+		&::before {
+			margin-right: 4px;
+			color: var(--color-grey400);
+		}
+		&::after {
+			margin-left: 4px;
+			color: var(--color-grey400);
+		}
 	}
 }
 </style>

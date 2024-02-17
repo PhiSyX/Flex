@@ -24,7 +24,7 @@ const hostname = computeHostname(props.data.origin);
 		>@<span>{{ hostname }}</span
 		>)
 		<em v-if="data.message">
-			(<span>{{ data.message }}</span
+			(<q>{{ data.message }}</q
 			>)</em
 		>
 	</p>

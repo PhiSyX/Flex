@@ -20,7 +20,7 @@ const message = computed(() =>
 	</time>
 	<p>
 		* <span>{{ data.nick }}</span> est absent:
-		<output>{{ message }}</output>
+		<q>{{ message }}</q>
 	</p>
 </template>
 
@@ -31,19 +31,7 @@ p {
 	color: var(--color-grey400);
 }
 
-output,
 span {
 	color: var(--default-text-color);
-}
-
-output {
-	&::before {
-		content: "« ";
-		color: var(--color-grey400);
-	}
-	&::after {
-		content: " »";
-		color: var(--color-grey400);
-	}
 }
 </style>
