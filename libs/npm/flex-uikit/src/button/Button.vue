@@ -16,7 +16,7 @@ const isSelected = computeIsSelected(props);
 
 <template>
 	<button
-		class="btn"
+		class="btn flex:shrink=0"
 		:class="{
 			'btn(:active)': isSelected,
 			'btn/without-opacity': withOpacity === false,

@@ -25,15 +25,10 @@ export interface ChannelMemberSearchHits {
 // Implémentation //
 // -------------- //
 
-export class ChannelMemberFiltered {
+export class ChannelMemberFiltered extends ChannelMember {
 	// --------- //
 	// Propriété //
 	// --------- //
-
-	/**
-	 * Pseudo de salon filtré.
-	 */
-	declare member: ChannelMember;
 
 	/**
 	 * Résultat du filtre de recherche.
@@ -43,8 +38,36 @@ export class ChannelMemberFiltered {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(member: ChannelMember, searchHits: Array<ChannelMemberSearchHits> = []) {
-		this.member = member;
+	constructor(member: ChannelMember, searchHits: Array<ChannelMemberSearchHits>) {
+		super(member.intoUser());
+
+		this.accessLevel = member.accessLevel;
+		this.isCurrentClient = member.isCurrentClient;
+
 		this.searchHits = searchHits;
+	}
+}
+
+export class ChannelMemberUnfiltered extends ChannelMember {
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	searchHits: Array<ChannelMemberSearchHits> = [];
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(member: ChannelMember) {
+		super(member.intoUser());
+
+		this.accessLevel = member.accessLevel;
+		this.isCurrentClient = member.isCurrentClient;
+	}
+
+	get className() {
+		let cls = super.className;
+		cls += " opacity=0.75";
+		return cls;
 	}
 }

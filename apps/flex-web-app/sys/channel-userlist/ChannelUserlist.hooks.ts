@@ -12,7 +12,7 @@ import { FuzzySearchRecord, fuzzy_search } from "@phisyx/flex-search";
 import { Ref, ref, shallowRef, watchEffect } from "vue";
 
 import { ChannelMember } from "~/channel/ChannelMember";
-import { ChannelMemberFiltered } from "~/channel/ChannelMemberFiltered";
+import { ChannelMemberFiltered, ChannelMemberUnfiltered } from "~/channel/ChannelMemberFiltered";
 
 import ChannelNicklist from "#/sys/channel-nicklist/ChannelNicklist.vue";
 import { type Props } from "./ChannelUserlist.vue";
@@ -29,74 +29,93 @@ export enum UserlistModeView {
 // Fonction //
 // -------- //
 
+function sort(
+	list: Array<ChannelMemberFiltered | ChannelMemberUnfiltered>,
+): Array<ChannelMemberFiltered | ChannelMemberUnfiltered> {
+	list.sort((l, r) => {
+		const lf = l instanceof ChannelMemberFiltered;
+		const rf = r instanceof ChannelMemberFiltered;
+		if (lf && !rf) return -1;
+		if (!lf && rf) return 1;
+		if (lf && rf) return l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1;
+		return l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 0;
+	});
+	return list;
+}
+
 export function useInputFilterUserlist(props: Props) {
 	const filterNick = ref("");
 
 	const moderatorsFiltered = ref(props.members.moderators) as unknown as Ref<
-		Array<ChannelMemberFiltered>
+		Array<ChannelMemberFiltered | ChannelMemberUnfiltered>
 	>;
-	const vipsFiltered = ref(props.members.vips) as unknown as Ref<Array<ChannelMemberFiltered>>;
-	const usersFiltered = ref(props.members.users) as unknown as Ref<Array<ChannelMemberFiltered>>;
+	const vipsFiltered = ref(props.members.vips) as unknown as Ref<
+		Array<ChannelMemberFiltered | ChannelMemberUnfiltered>
+	>;
+	const usersFiltered = ref(props.members.users) as unknown as Ref<
+		Array<ChannelMemberFiltered | ChannelMemberUnfiltered>
+	>;
 
 	watchEffect(() => {
-		const filteredModerators = props.members.moderators
-			.map((nick: ChannelMember) => {
-				const test = fuzzy_search(filterNick.value, nick.nickname)
-					.map(map_search_record(false))
-					.or_else(() =>
-						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
-							map_search_record(true),
-						),
-					)
-					.unwrap_or([]);
-				return new ChannelMemberFiltered(nick, test.length === 0 ? [] : test);
-			})
-			.filter((nick) => nick.searchHits.length > 0);
-		const filteredVips = props.members.vips
-			.map((nick: ChannelMember) => {
-				const test = fuzzy_search(filterNick.value, nick.nickname)
-					.map(map_search_record(false))
-					.or_else(() =>
-						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
-							map_search_record(true),
-						),
-					)
-					.unwrap_or([]);
-				return new ChannelMemberFiltered(nick, test.length === 0 ? [] : test);
-			})
-			.filter((nick) => nick.searchHits.length > 0);
-		const filteredUsers = props.members.users
-			.map((nick: ChannelMember) => {
-				const test = fuzzy_search(filterNick.value, nick.nickname)
-					.map(map_search_record(false))
-					.or_else(() =>
-						fuzzy_search(filterNick.value, nick.highestAccessLevel.symbol).map(
-							map_search_record(true),
-						),
-					)
-					.unwrap_or([]);
-				return new ChannelMemberFiltered(nick, test.length === 0 ? [] : test);
-			})
-			.filter((nick) => nick.searchHits.length > 0);
+		if (!filterNick.value) {
+			moderatorsFiltered.value = props.members.moderators as Array<ChannelMemberUnfiltered>;
+			vipsFiltered.value = props.members.vips as Array<ChannelMemberUnfiltered>;
+			usersFiltered.value = props.members.users as Array<ChannelMemberUnfiltered>;
+			return;
+		}
+
+		const filteredModerators = props.members.moderators.map((member: ChannelMember) => {
+			const test = fuzzy_search(filterNick.value, member.nickname)
+				.map(mapSearchRecord(false))
+				.or_else(() =>
+					fuzzy_search(filterNick.value, member.highestAccessLevel.symbol).map(
+						mapSearchRecord(true),
+					),
+				)
+				.unwrap_or([]);
+			return test.length === 0
+				? new ChannelMemberUnfiltered(member)
+				: new ChannelMemberFiltered(member, test);
+		});
+		const filteredVips = props.members.vips.map((member: ChannelMember) => {
+			const test = fuzzy_search(filterNick.value, member.nickname)
+				.map(mapSearchRecord(false))
+				.or_else(() =>
+					fuzzy_search(filterNick.value, member.highestAccessLevel.symbol).map(
+						mapSearchRecord(true),
+					),
+				)
+				.unwrap_or([]);
+			return test.length === 0
+				? new ChannelMemberUnfiltered(member)
+				: new ChannelMemberFiltered(member, test);
+		});
+		const filteredUsers = props.members.users.map((member: ChannelMember) => {
+			const test = fuzzy_search(filterNick.value, member.nickname)
+				.map(mapSearchRecord(false))
+				.or_else(() =>
+					fuzzy_search(filterNick.value, member.highestAccessLevel.symbol).map(
+						mapSearchRecord(true),
+					),
+				)
+				.unwrap_or([]);
+			return test.length === 0
+				? new ChannelMemberUnfiltered(member)
+				: new ChannelMemberFiltered(member, test);
+		});
 
 		const m = filteredModerators.length;
 		const v = filteredVips.length;
 		const u = filteredUsers.length;
 
 		if (m === 0 && v === 0 && u === 0) {
-			moderatorsFiltered.value = props.members.moderators.map(
-				(member) => new ChannelMemberFiltered(member),
-			);
-			vipsFiltered.value = props.members.vips.map(
-				(member) => new ChannelMemberFiltered(member),
-			);
-			usersFiltered.value = props.members.users.map(
-				(member) => new ChannelMemberFiltered(member),
-			);
+			moderatorsFiltered.value = props.members.moderators as Array<ChannelMemberUnfiltered>;
+			vipsFiltered.value = props.members.vips as Array<ChannelMemberUnfiltered>;
+			usersFiltered.value = props.members.users as Array<ChannelMemberUnfiltered>;
 		} else {
-			moderatorsFiltered.value = filteredModerators;
-			vipsFiltered.value = filteredVips;
-			usersFiltered.value = filteredUsers;
+			moderatorsFiltered.value = sort(filteredModerators);
+			vipsFiltered.value = sort(filteredVips);
+			usersFiltered.value = sort(filteredUsers);
 		}
 	});
 
@@ -118,7 +137,7 @@ export function useFilterView() {
 	return { filterView, view };
 }
 
-function map_search_record(isSymbol: boolean) {
+function mapSearchRecord(isSymbol: boolean) {
 	return (records: Array<FuzzySearchRecord>) =>
 		records.map((record) => ({ ...record, isSymbol }));
 }

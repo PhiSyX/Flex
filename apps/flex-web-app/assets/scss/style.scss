@@ -156,6 +156,15 @@
 
 @include fx.use(
 	(
+		className: opacity,
+		values: (
+			0.75,
+		),
+	)
+);
+
+@include fx.use(
+	(
 		className: padding,
 		values: (
 			0,
@@ -225,7 +234,7 @@
 	(
 		className: max-width,
 		values: (
-			12
+			12,
 		),
 	),
 	(
