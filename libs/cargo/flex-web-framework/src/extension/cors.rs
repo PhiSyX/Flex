@@ -8,12 +8,44 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod cookie;
-mod cors;
-mod ext;
-mod feature;
+use tower_http::cors::CorsLayer;
 
-pub use self::cookie::*;
-pub use self::cors::*;
-pub use self::ext::*;
-pub use self::feature::*;
+use crate::settings::CORSSettings;
+use crate::AxumApplication;
+
+// --------- //
+// Interface //
+// --------- //
+
+/// Extension d'application "CORS Layer"
+pub trait ApplicationCorsLayerExtension: Sized
+{
+	/// Applique un layer CORS au serveur.
+	fn use_cors_layer(self) -> Self;
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<E, C> ApplicationCorsLayerExtension for AxumApplication<E, C>
+{
+	fn use_cors_layer(mut self) -> Self
+	{
+		let cors_settings = match self.fetch_config::<CORSSettings>(CORSSettings::FILENAME) {
+			| Ok(s) => s,
+			| Err(err) => {
+				self.signal()
+					.send_critical(format!("Erreur liée au CORS : {}", err));
+			}
+		};
+
+		log::debug!("Paramètres CORS: {:#?}", &cors_settings);
+
+		let cors_layer: CorsLayer = cors_settings.into();
+		self.application_adapter.router.global =
+			self.application_adapter.router.global.layer(cors_layer);
+
+		self
+	}
+}
