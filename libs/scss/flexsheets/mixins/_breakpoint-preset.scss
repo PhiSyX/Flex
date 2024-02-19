@@ -1,0 +1,42 @@
+@use "sass:list";
+@use "sass:map";
+
+$presets: (
+	iphone-5se: (
+		320,
+		568,
+	),
+	iphone-8: (
+		375,
+		667,
+	),
+	iphone-8plus: (
+		414,
+		736,
+	),
+	iphone-x: (
+		375,
+		812,
+	),
+	iphone-13pro-max: (
+		428,
+		926,
+	),
+);
+
+@mixin breakpoint($presetName) {
+	$preset: map.get($presets, $presetName);
+
+	$w: list.nth($preset, 1) + 1px;
+	$h: list.nth($preset, 2) + 1px;
+
+	@media (max-width: $w) and (max-height: $h) {
+		@content (x);
+		@content (xy);
+	}
+
+	@media (max-width: $h) and (max-height: $w) {
+		@content (y);
+		@content (xy);
+	}
+}

@@ -1,0 +1,405 @@
+@use "./selector" as sel;
+
+$mobile-xs: 320px !default;
+$mobile-sm: 375px !default;
+$mobile-md: 425px !default;
+
+$tablet: 768px !default;
+$laptop: 1024px !default;
+$laptop-lg: 1440px !default;
+$screen-4k: 2560px !default;
+
+// ------ //
+// Mixins // -> Media Queries Breakpoints
+// ------ //
+
+@mixin breakpoint-x-before($w) {
+	@media (max-width: $w) {
+		@content;
+	}
+}
+@mixin breakpoint-y-before($h) {
+	@media (max-height: $h) {
+		@content;
+	}
+}
+
+@mixin breakpoint-x-between($min-w, $max-w) {
+	@media (min-width: $min-w) and (max-width: $max-w) {
+		@content;
+	}
+}
+@mixin breakpoint-y-between($min-h, $max-h) {
+	@media (min-height: $min-h) and (max-height: $max-h) {
+		@content;
+	}
+}
+
+@mixin breakpoint-x-after($w) {
+	$w: $w + 1px;
+	@media (min-width: $w) {
+		@content;
+	}
+}
+@mixin breakpoint-y-after($h) {
+	$h: $h + 1px;
+	@media (min-height: $h) {
+		@content;
+	}
+}
+
+// XS
+@mixin use-breakpoint-for-xs-screen($selector) {
+	// xs:class-name
+	@include use-breakpoint-xs {
+		@include sel.all-class("xs:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .xs*:class-name
+	@include use-breakpoint-from-xs {
+		@include sel.all-class("xs*:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .*xs:class-name
+	@include use-breakpoint-under-xs {
+		@include sel.all-class("*xs:#{$selector}") {
+			@content;
+		}
+	}
+}
+
+@mixin use-breakpoint-xs {
+	$min: 0px;
+	$max: $mobile-xs + 1px;
+	@include breakpoint-x-between($min, $max) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-from-xs {
+	$min: $mobile-xs + 1px;
+	@include breakpoint-x-after($min) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-under-xs {
+	$max: $mobile-xs + 1px;
+	@include breakpoint-x-before($max) {
+		@content;
+	}
+}
+
+// SM
+@mixin use-breakpoint-for-sm-screen($selector) {
+	// sm:class-name
+	@include use-breakpoint-sm {
+		@include sel.all-class("sm:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .sm*:class-name
+	@include use-breakpoint-from-sm {
+		@include sel.all-class("sm*:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .*sm:class-name
+	@include use-breakpoint-under-sm {
+		@include sel.all-class("*sm:#{$selector}") {
+			@content;
+		}
+	}
+}
+
+@mixin use-breakpoint-sm {
+	$min: $mobile-xs + 1px;
+	$max: $mobile-sm + 1px;
+	@include breakpoint-x-between($min, $max) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-from-sm {
+	$min: $mobile-sm + 1px;
+	@include breakpoint-x-after($min) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-under-sm {
+	$max: $mobile-sm + 1px;
+	@include breakpoint-x-before($max) {
+		@content;
+	}
+}
+
+// MD
+@mixin use-breakpoint-for-md-screen($selector) {
+	// md:class-name
+	@include use-breakpoint-md {
+		@include sel.all-class("md:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .md*:class-name
+	@include use-breakpoint-from-md {
+		@include sel.all-class("md*:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .*md:class-name
+	@include use-breakpoint-under-md {
+		@include sel.all-class("*md:#{$selector}") {
+			@content;
+		}
+	}
+}
+
+@mixin use-breakpoint-md {
+	$min: $mobile-sm + 1px;
+	$max: $mobile-md + 1px;
+	@include breakpoint-x-between($min, $max) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-from-md {
+	$min: $mobile-md + 1px;
+	@include breakpoint-x-after($min) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-under-md {
+	$max: $mobile-md + 1px;
+	@include breakpoint-x-before($max) {
+		@content;
+	}
+}
+
+// LG
+@mixin use-breakpoint-for-lg-screen($selector) {
+	// lg:class-name
+	@include use-breakpoint-lg {
+		@include sel.all-class("lg:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .lg*:class-name
+	@include use-breakpoint-from-lg {
+		@include sel.all-class("lg*:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .*lg:class-name
+	@include use-breakpoint-under-lg {
+		@include sel.all-class("*lg:#{$selector}") {
+			@content;
+		}
+	}
+}
+
+@mixin use-breakpoint-lg {
+	$min: $mobile-md + 1px;
+	$max: $tablet + 1px;
+	@include breakpoint-x-between($min, $max) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-from-lg {
+	$min: $tablet + 1px;
+	@include breakpoint-x-after($min) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-under-lg {
+	$max: $tablet + 1px;
+	@include breakpoint-x-before($max) {
+		@content;
+	}
+}
+
+// XL
+@mixin use-breakpoint-for-xl-screen($selector) {
+	// xl:class-name
+	@include use-breakpoint-xl {
+		@include sel.all-class("xl:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .xl*:class-name
+	@include use-breakpoint-from-xl {
+		@include sel.all-class("xl*:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .*xl:class-name
+	@include use-breakpoint-under-xl {
+		@include sel.all-class("*xl:#{$selector}") {
+			@content;
+		}
+	}
+}
+
+@mixin use-breakpoint-xl {
+	$min: $tablet + 1px;
+	$max: $laptop + 1px;
+	@include breakpoint-x-between($min, $max) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-from-xl {
+	$min: $laptop + 1px;
+	@include breakpoint-x-after($min) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-under-xl {
+	$max: $laptop + 1px;
+	@include breakpoint-x-before($max) {
+		@content;
+	}
+}
+
+// XXL
+@mixin use-breakpoint-for-xxl-screen($selector) {
+	// xxl:class-name
+	@include use-breakpoint-xxl {
+		@include sel.all-class("xxl:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .xxl*:class-name
+	@include use-breakpoint-from-xxl {
+		@include sel.all-class("xxl*:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .*xxl:class-name
+	@include use-breakpoint-under-xxl {
+		@include sel.all-class("*xxl:#{$selector}") {
+			@content;
+		}
+	}
+}
+
+@mixin use-breakpoint-xxl {
+	$min: $laptop + 1px;
+	$max: $laptop-lg + 1px;
+	@include breakpoint-x-between($min, $max) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-from-xxl {
+	$min: $laptop-lg + 1px;
+	@include breakpoint-x-after($min) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-under-xxl {
+	$max: $laptop-lg + 1px;
+	@include breakpoint-x-before($max) {
+		@content;
+	}
+}
+
+// 4K (screen 4k)
+@mixin use-breakpoint-for-s4k-screen($selector) {
+	// s4k:class-name
+	@include use-breakpoint-s4k {
+		@include sel.all-class("s4k:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .s4k*:class-name
+	@include use-breakpoint-from-s4k {
+		@include sel.all-class("s4k*:#{$selector}") {
+			@content;
+		}
+	}
+
+	// .*s4k:class-name
+	@include use-breakpoint-under-s4k {
+		@include sel.all-class("*s4k:#{$selector}") {
+			@content;
+		}
+	}
+}
+
+@mixin use-breakpoint-s4k {
+	$min: $laptop-lg + 1px;
+	$max: $screen-4k + 1px;
+	@include breakpoint-x-between($min, $max) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-from-s4k {
+	$min: $screen-4k + 1px;
+	@include breakpoint-x-after($min) {
+		@content;
+	}
+}
+
+@mixin use-breakpoint-under-s4k {
+	$max: $screen-4k + 1px;
+	@include breakpoint-x-before($max) {
+		@content;
+	}
+}
+
+@mixin use-all-breakpoints($selector) {
+	@include use-breakpoint-for-xs-screen($selector) {
+		@content;
+	}
+
+	@include use-breakpoint-for-sm-screen($selector) {
+		@content;
+	}
+
+	@include use-breakpoint-for-md-screen($selector) {
+		@content;
+	}
+
+	@include use-breakpoint-for-lg-screen($selector) {
+		@content;
+	}
+
+	@include use-breakpoint-for-xl-screen($selector) {
+		@content;
+	}
+
+	@include use-breakpoint-for-xxl-screen($selector) {
+		@content;
+	}
+
+	@include use-breakpoint-for-s4k-screen($selector) {
+		@content;
+	}
+
+	.#{$selector} {
+		@content;
+	}
+}

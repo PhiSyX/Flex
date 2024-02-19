@@ -1,10 +1,5 @@
 @use "../functions/escape" as fn;
 
-/**
- * @example ```scss
- * 	@include class("py=1") { ... } // -> .py\=1 { ... }
- * ```
- */
 @mixin class($selector, $breakpoints: null) {
 	.#{fn.escape_selector($selector)} {
 		@content;
@@ -13,6 +8,14 @@
 
 @mixin in-class($selector) {
 	&.#{fn.escape_selector($selector)} {
+		@content;
+	}
+}
+
+@mixin all-class($selector) {
+	.#{fn.escape_selector($selector)},
+	.#{fn.escape_selector($selector)}#{fn.escape_selector("(:focus)")}:focus,
+	.#{fn.escape_selector($selector)}#{fn.escape_selector("(:hover)")}:hover {
 		@content;
 	}
 }

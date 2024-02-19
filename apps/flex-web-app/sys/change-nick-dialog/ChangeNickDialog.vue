@@ -43,7 +43,7 @@ function submitHandler() {
 			<UiButton
 				type="submit"
 				variant="primary"
-				class="[ ml=1 ]"
+				class="[ ml=1 mt=1 ]"
 				:form="`${layerName}_form`"
 				@click="submitHandler()"
 			>

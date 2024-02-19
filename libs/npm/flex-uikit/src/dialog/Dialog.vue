@@ -59,8 +59,18 @@ const emit = defineEmits<Emits>();
 @use "scss:~/flexsheets" as fx;
 
 dialog {
-	min-width: fx.space(400);
-	min-height: fx.space(215);
+	width: 100%;
+	height: 100%;
+
+	@media (min-width: 530px) and (min-height: 530px) {
+		width: max-content;
+		height: max-content;
+		max-height: fx.space(500);
+		max-width: fx.space(400);
+	}
+}
+
+dialog {
 	box-shadow: var(--box-shadow);
 
 	background: var(--dialog-bg, canvas);
