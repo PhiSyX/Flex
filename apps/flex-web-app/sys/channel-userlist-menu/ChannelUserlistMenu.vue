@@ -23,6 +23,8 @@ export interface Props {
 }
 
 export interface Emits {
+	(evtName: "ban-member", member: ChannelMember): void;
+	(evtName: "ban-nick", member: ChannelMember): void;
 	(evtName: "ignore-user", user: Origin): void;
 	(evtName: "kick-member", member: ChannelMember): void;
 	(evtName: "open-private", user: Origin): void;
@@ -31,6 +33,8 @@ export interface Emits {
 		member: ChannelMember,
 		accessLevel: ChannelAccessLevel
 	): void;
+	(evtName: "unban-member", member: ChannelMemberSelected): void;
+	(evtName: "unban-nick", member: ChannelMemberSelected): void;
 	(evtName: "unignore-user", user: Origin): void;
 	(
 		evtName: "unset-access-level",
@@ -62,6 +66,12 @@ const isCurrentClientMemberHaveAccessLevel = computed(
 		props.currentClientMember.highestAccessLevel.level >
 		ChannelAccessLevel.Vip
 );
+
+const banMemberHandler = () => emit("ban-member", props.selectedMember.member);
+const banMemberNickHandler = () =>
+	emit("ban-nick", props.selectedMember.member);
+const unbanMemberHandler = () => emit("unban-member", props.selectedMember);
+const unbanMemberNickHandler = () => emit("unban-nick", props.selectedMember);
 
 const openPrivateHandler = () =>
 	emit("open-private", props.selectedMember.member.intoUser());
@@ -98,7 +108,7 @@ const unsetAccessLevelHandler = (
 				position="right"
 				title="Commande /query"
 				variant="primary"
-				@click="openPrivateHandler()"
+				@click="openPrivateHandler"
 			>
 				<span v-if="!isSameMember">Discuter en privé</span>
 				<span v-else>Ouvrir mon privé</span>
@@ -111,7 +121,7 @@ const unsetAccessLevelHandler = (
 				position="right"
 				title="Commande /ignore <nickname>"
 				variant="primary"
-				@click="ignoreUserHandler()"
+				@click="ignoreUserHandler"
 			>
 				<span>Ignorer</span>
 			</UiButton>
@@ -124,7 +134,7 @@ const unsetAccessLevelHandler = (
 				:selected="selectedMember.isBlocked"
 				:true-value="true"
 				:false-value="false"
-				@click="unignoreUserHandler()"
+				@click="unignoreUserHandler"
 			>
 				<span>Ne plus ignorer</span>
 			</UiButton>
@@ -144,6 +154,44 @@ const unsetAccessLevelHandler = (
 				@click="kickMemberHandler"
 			>
 				Kick
+			</UiButton>
+
+			<UiButton
+				v-if="!selectedMember.isBanned"
+				:disabled="disabled"
+				variant="secondary"
+				title="Commande /ban"
+				@click="banMemberHandler"
+			>
+				Ban
+			</UiButton>
+			<UiButton
+				v-else
+				:disabled="disabled"
+				variant="secondary"
+				title="Commande /unban"
+				@click="unbanMemberHandler"
+			>
+				Unban
+			</UiButton>
+
+			<UiButton
+				v-if="!selectedMember.isNickBanned"
+				:disabled="disabled"
+				variant="secondary"
+				title="Commande /bannick"
+				@click="banMemberNickHandler"
+			>
+				Bannick
+			</UiButton>
+			<UiButton
+				v-else
+				:disabled="disabled"
+				variant="secondary"
+				title="Commande /unbannick"
+				@click="unbanMemberNickHandler"
+			>
+				Unbannick
 			</UiButton>
 		</li>
 

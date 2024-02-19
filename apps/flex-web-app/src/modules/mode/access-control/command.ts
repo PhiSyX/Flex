@@ -8,48 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod access_control;
-mod access_level;
-mod settings;
-
-use std::collections::HashMap;
-use std::ops;
-
-pub use self::access_control::*;
-pub use self::access_level::*;
-pub use self::settings::*;
-use crate::src::chat::features::ApplyMode;
-
-// --------- //
-// Structure //
-// --------- //
-
-#[derive(Clone)]
-#[derive(Debug)]
-pub struct ChannelModes<F>
-{
-	/// Les modes de salon.
-	modes: HashMap<String, ApplyMode<F>>,
-}
+import { CommandInterface } from "~/modules/interface";
+import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-impl<T> ops::Deref for ChannelModes<T>
-{
-	type Target = HashMap<String, ApplyMode<T>>;
+export class BanCommand implements CommandInterface<"BAN"> {
+	constructor(private store: ChatStore) {}
 
-	fn deref(&self) -> &Self::Target
-	{
-		&self.modes
+	send(payload: Command<"BAN">) {
+		this.store.emit("BAN", payload);
 	}
 }
 
-impl<T> ops::DerefMut for ChannelModes<T>
-{
-	fn deref_mut(&mut self) -> &mut Self::Target
-	{
-		&mut self.modes
+export class UnbanCommand implements CommandInterface<"UNBAN"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"UNBAN">) {
+		this.store.emit("UNBAN", payload);
 	}
 }

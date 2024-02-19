@@ -133,6 +133,20 @@ function onSubmitHandler() {
 				<option v-for="topic in room.topic.history" :value="topic" />
 			</datalist>
 
+			<h2>Liste des bannissements</h2>
+
+			<select multiple class="[ w:full max-w=44 ]">
+				<option
+					v-for="[addr, ban] in room.accessControl.banList"
+					:disabled="
+						!isCurrentClientChannelMemberChannelOperator &&
+						!isCurrentClientGlobalOperator
+					"
+				>
+					{{ addr }} par {{ ban.updated_by }} le {{ ban.updated_at }}
+				</option>
+			</select>
+
 			<h2>Paramètres du salon</h2>
 
 			<ul class="[ list:reset flex! gap=2 px=1 ]">
@@ -254,6 +268,12 @@ function onSubmitHandler() {
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
+dialog {
+	// @media (max-height: 515px) {
+	// 	height: 100%;
+	// }
+}
+
 h1,
 h2 {
 	font: inherit;
@@ -266,6 +286,7 @@ li {
 	align-items: center;
 }
 
+select,
 input {
 	--default-placeholder-color: var(--color-grey900);
 	background: var(--color-ultra-white);

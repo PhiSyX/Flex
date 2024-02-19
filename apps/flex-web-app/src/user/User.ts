@@ -154,9 +154,77 @@ export class User {
 		return "";
 	}
 
+	get fullAddress(): MaskAddr {
+		return `${this.nickname}!${this.ident}@${this.hostname}` as MaskAddr;
+	}
+
 	// ------- //
 	// Méthode //
 	// ------- //
+
+	address(
+		ty:
+			| "*!ident@hostname"
+			| "*!*ident@hostname"
+			| "*!*@hostname"
+			| "*!*ident@*.hostname"
+			| "*!*@*.hostname"
+			| "nick!ident@hostname"
+			| "nick!*ident@hostname"
+			| "nick!*@hostname"
+			| "nick!*ident@*.hostname"
+			| "nick!*@*.hostname"
+			| "nick!*@*"
+			| "*!*@*",
+	): MaskAddr {
+		let tmp: MaskAddr | string = this.fullAddress;
+
+		switch (ty) {
+			case "*!ident@hostname":
+				tmp = `*!${this.ident}@${this.hostname}`;
+				break;
+			case "*!*ident@hostname":
+				tmp = `*!*${this.ident}@${this.hostname}`;
+				break;
+			case "*!*@hostname":
+				tmp = `*!*@${this.hostname}`;
+				break;
+			case "*!*ident@*.hostname":
+				tmp = `*!*${this.ident}@${this.hostname}`.replace(/[@][^.]+(.*)/, "@*$1");
+				break;
+			case "*!*@*.hostname":
+				tmp = `*!*@${this.hostname}`.replace(/[@][^.]+(.*)/, "@*$1");
+				break;
+			case "nick!ident@hostname":
+				break;
+			case "nick!*ident@hostname":
+				tmp = `${this.nickname}!*${this.ident}@${this.hostname}`;
+				break;
+			case "nick!*@hostname":
+				tmp = `${this.nickname}!*@${this.hostname}`;
+				break;
+			case "nick!*ident@*.hostname":
+				tmp = `${this.nickname}!*${this.ident}@${this.hostname}`.replace(
+					/[@][^.]+(.*)/,
+					"@*$1",
+				);
+				break;
+			case "nick!*@*.hostname":
+				tmp = `${this.nickname}!*@${this.hostname}`.replace(/[@][^.]+(.*)/, "@*$1");
+				break;
+			case "nick!*@*":
+				tmp = `${this.nickname}!*@*`;
+				break;
+			case "*!*@*":
+				tmp = "*!*@*";
+				break;
+
+			default:
+				throw new Error(`[$address]: le type ${ty} n'existe pas`);
+		}
+
+		return tmp as MaskAddr;
+	}
 
 	/**
 	 * Analyse d'un drapeau.

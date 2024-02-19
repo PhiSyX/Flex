@@ -37,6 +37,8 @@ pub struct Channel
 {
 	/// Nom du salon.
 	pub name: String,
+	/// Les modes de contrôles d'accès
+	pub(crate) access_control: mode::AccessControl,
 	/// Les paramètres du salon.
 	pub(crate) modes_settings: mode::ChannelModes<mode::SettingsFlags>,
 	/// Liste des utilisateurs du salon.
@@ -59,6 +61,7 @@ impl Channel
 		Self {
 			name: name.to_string(),
 			members: Default::default(),
+			access_control: Default::default(),
 			modes_settings: Default::default(),
 			topic: Default::default(),
 			invite_list: Default::default(),
@@ -79,6 +82,37 @@ impl Channel
 
 impl Channel
 {
+	/// Les contrôles d'accès.
+	pub fn access_controls(&self) -> Vec<(char, ApplyMode<mode::AccessControlMode>)>
+	{
+		let mut list = Vec::default();
+
+		let banlist = self
+			.access_control
+			.banlist
+			.values()
+			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN, mode.clone()));
+
+		list.extend(banlist);
+
+		list
+	}
+
+	/// Ajoute un ban au salon.
+	pub fn add_ban(
+		&mut self,
+		apply_by: &super::User,
+		mask: impl Into<mode::Mask>,
+	) -> Option<ApplyMode<mode::AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMode::new(mask))
+			.with_update_by(&apply_by.nickname)
+			.with_args([mask_s.clone()]);
+		self.access_control.add_ban(mask_s, mode)
+	}
+
 	/// Ajoute un membre au salon.
 	pub fn add_member(&mut self, id: client::ClientID, nick: member::ChannelMember)
 	{
@@ -113,6 +147,22 @@ impl Channel
 	pub fn members(&self) -> &HashMap<client::ClientID, member::ChannelMember>
 	{
 		&self.members
+	}
+
+	/// Retire un ban du salon.
+	pub fn remove_ban(
+		&mut self,
+		apply_by: &super::User,
+		mask: impl Into<mode::Mask>,
+	) -> Option<ApplyMode<mode::AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMode::new(mask))
+			.with_update_by(&apply_by.nickname)
+			.with_args([mask_s.clone()]);
+		self.access_control.remove_ban(mask_s)?;
+		Some(mode)
 	}
 
 	/// Retire un utilisateur de la liste des invitations

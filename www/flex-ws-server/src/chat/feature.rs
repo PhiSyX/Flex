@@ -77,6 +77,10 @@ impl Feature for ChatApplication
 				socket.on(TopicHandler::COMMAND_NAME, TopicHandler::handle);
 
 				/* Channel Access Level */
+				socket.on(BanHandler::COMMAND_NAME, BanHandler::handle);
+				socket.on(UnbanHandler::COMMAND_NAME, UnbanHandler::handle);
+
+				/* Channel Access Level */
 				socket.on(
 					ModeAccessLevelQOPHandler::SET_COMMAND_NAME,
 					ModeAccessLevelQOPHandler::handle,

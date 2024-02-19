@@ -13,6 +13,7 @@ import { useOverlayerStore } from "~/store/OverlayerStore";
 
 import ChannelRoomComponent from "#/sys/channel-room/ChannelRoom.vue";
 import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
+import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 
 interface Props {
 	// Le salon actif.
@@ -145,6 +146,25 @@ function openPrivate(origin: Origin) {
 
 /**
  * Le client courant, membre du salon et opérateur du salon, envoie la commande
+ * de sanction BAN à un autre membre du salon.
+ */
+function sendBanMemberCommand(member: ChannelMember) {
+	chatStore.banChannelMemberMask(
+		props.room,
+		member.address("*!ident@hostname")
+	);
+}
+
+/**
+ * Le client courant, membre du salon et opérateur du salon, envoie la commande
+ * de sanction BAN à un autre membre du salon.
+ */
+function sendBanMemberNickCommand(member: ChannelMember) {
+	chatStore.banChannelMemberMask(props.room, member.address("nick!*@*"));
+}
+
+/**
+ * Le client courant, membre du salon et opérateur du salon, envoie la commande
  * de sanction KICK à un autre membre du salon.
  */
 function sendKickMemberCommand(member: ChannelMember) {
@@ -163,6 +183,24 @@ function sendJoinChannelCommand() {
  */
 function sendMessage(message: string) {
 	chatStore.sendMessage(props.room.name, message);
+}
+
+/**
+ * Le client courant, membre du salon et opérateur du salon, envoie la commande
+ * de sanction UNBAN à un autre membre du salon.
+ */
+function sendUnbanMemberCommand(member: ChannelMemberSelected) {
+	const mask = member.banned.expect("Banmask du membre")[0];
+	chatStore.unbanChannelMemberMask(props.room, mask);
+}
+
+/**
+ * Le client courant, membre du salon et opérateur du salon, envoie la commande
+ * de sanction UNBAN à un autre membre du salon.
+ */
+function sendUnbanMemberNickCommand(member: ChannelMemberSelected) {
+	const mask = member.banned.expect("Banmask du membre")[0];
+	chatStore.unbanChannelMemberMask(props.room, mask);
 }
 
 /**
@@ -187,6 +225,8 @@ function toggleSelectChannelMember(origin: Origin) {
 		:current-client-member="currentClientMember"
 		:room="room"
 		:selected-member="selectedMember"
+		@ban-member="sendBanMemberCommand"
+		@ban-nick="sendBanMemberNickCommand"
 		@change-nickname="openChangeNicknameDialog"
 		@create-topic-layer="createTopicLayer"
 		@close="closeChannel"
@@ -198,6 +238,8 @@ function toggleSelectChannelMember(origin: Origin) {
 		@select-member="toggleSelectChannelMember"
 		@send-message="sendMessage"
 		@set-access-level="(m, a) => sendAccessLevel('+')(m, a)"
+		@unban-member="sendUnbanMemberCommand"
+		@unban-nick="sendUnbanMemberNickCommand"
 		@unignore-user="(o) => sendSilenceUserCommand('-')(o)"
 		@unset-access-level="(m, a) => sendAccessLevel('-')(m, a)"
 		@update-topic="sendUpdateTopic"

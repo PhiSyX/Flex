@@ -28,6 +28,7 @@ declare interface CommandResponsesFromServer {
 		updated: boolean;
 
 		added: [
+			| ["b", ModeApplyFlag<AccessControlMode>]
 			| ["o", ModeApplyFlag<"owner">]
 			| ["a", ModeApplyFlag<"admin_operator">]
 			| ["o", ModeApplyFlag<"operator">]

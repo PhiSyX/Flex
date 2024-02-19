@@ -197,7 +197,7 @@ export class ChatStore {
 				const channelMemberSelected = new ChannelMemberSelected(
 					member,
 					this.userManager().isBlocked(member.id),
-				);
+				).withBanned(room.findBan(member));
 				return channelMemberSelected;
 			});
 	}
@@ -850,11 +850,28 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		module.send({ channel: channelName, topic });
 	}
 
+	/**
+	 * Émet la commande /BAN vers le serveur.
+	 */
+	function banChannelMemberMask(channel: ChannelRoom, mask: MaskAddr) {
+		const module = store.moduleManager().get("BAN").expect("Récupération du module `BAN`");
+		module.send({ channels: [channel.name], masks: [mask] });
+	}
+
+	/**
+	 * Émet la commande /UNBAN vers le serveur.
+	 */
+	function unbanChannelMemberMask(channel: ChannelRoom, mask: MaskAddr) {
+		const module = store.moduleManager().get("UNBAN").expect("Récupération du module `UNBAN`");
+		module.send({ channels: [channel.name], masks: [mask] });
+	}
+
 	return {
 		store,
 
 		allCommands,
 		applyChannelSettings,
+		banChannelMemberMask,
 		changeNick,
 		changeRoom,
 		channelList,
@@ -866,12 +883,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		joinChannel,
 		kickChannelMember,
 		listen,
-		openRoom,
 		openPrivateOrCreate,
+		openRoom,
 		sendMessage,
 		sendSetAccessLevel,
 		sendUnsetAccessLevel,
-		toggleSelectChannelMember: toggleSelectChannelMember,
+		toggleSelectChannelMember,
+		unbanChannelMemberMask,
 		unignoreUser,
 		updateTopic,
 	};

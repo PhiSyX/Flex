@@ -8,48 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod access_control;
-mod access_level;
-mod settings;
+use flex_serde_validation::array::validate_vec_string_filter;
 
-use std::collections::HashMap;
-use std::ops;
+use crate::command_formdata;
+use crate::macro_rules::command_formdata::validate_channels;
 
-pub use self::access_control::*;
-pub use self::access_level::*;
-pub use self::settings::*;
-use crate::src::chat::features::ApplyMode;
-
-// --------- //
-// Structure //
-// --------- //
-
-#[derive(Clone)]
-#[derive(Debug)]
-pub struct ChannelModes<F>
-{
-	/// Les modes de salon.
-	modes: HashMap<String, ApplyMode<F>>,
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<T> ops::Deref for ChannelModes<T>
-{
-	type Target = HashMap<String, ApplyMode<T>>;
-
-	fn deref(&self) -> &Self::Target
+command_formdata! {
+	struct BAN
 	{
-		&self.modes
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		#[serde(deserialize_with = "validate_vec_string_filter")]
+		masks: Vec<String>,
 	}
-}
 
-impl<T> ops::DerefMut for ChannelModes<T>
-{
-	fn deref_mut(&mut self) -> &mut Self::Target
+	struct UNBAN
 	{
-		&mut self.modes
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		#[serde(deserialize_with = "validate_vec_string_filter")]
+		masks: Vec<String>,
 	}
 }

@@ -8,48 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod access_control;
-mod access_level;
-mod settings;
-
-use std::collections::HashMap;
-use std::ops;
-
-pub use self::access_control::*;
-pub use self::access_level::*;
-pub use self::settings::*;
-use crate::src::chat::features::ApplyMode;
-
-// --------- //
-// Structure //
-// --------- //
-
-#[derive(Clone)]
-#[derive(Debug)]
-pub struct ChannelModes<F>
-{
-	/// Les modes de salon.
-	modes: HashMap<String, ApplyMode<F>>,
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<T> ops::Deref for ChannelModes<T>
-{
-	type Target = HashMap<String, ApplyMode<T>>;
-
-	fn deref(&self) -> &Self::Target
-	{
-		&self.modes
-	}
-}
-
-impl<T> ops::DerefMut for ChannelModes<T>
-{
-	fn deref_mut(&mut self) -> &mut Self::Target
-	{
-		&mut self.modes
-	}
+declare interface Commands {
+	BAN: { channels: Array<string>; masks: Array<MaskAddr> };
+	UNBAN: Commands["BAN"];
 }

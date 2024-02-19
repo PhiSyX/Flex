@@ -8,59 +8,63 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option } from "@phisyx/flex-safety";
-import { ChannelMember } from "./ChannelMember";
+import { assertChannelRoom } from "~/asserts/room";
+import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelMemberSelected {
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	/**
-	 * Pseudo de salon sélectionné.
-	 */
-	declare member: ChannelMember;
-
-	/**
-	 * Mask contenant le ban du membre.
-	 */
-	banned: Option<[MaskAddr, AccessControlMode["mask"]]> = None();
-
-	/**
-	 * Est-ce que le membre sélectionné est bloqué?
-	 */
-	declare isBlocked: boolean;
-
+export class BanHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(member: ChannelMember, isBlocked: boolean) {
-		this.member = member;
-		this.isBlocked = isBlocked;
+	constructor(private store: ChatStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	listen() {
+		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	/**
-	 * Est-ce que le membre sélectionné est banni du salon?
-	 */
-	get isBanned() {
-		return this.banned.is_some();
+	handle(data: GenericReply<"MODE">) {
+		if (this.store.isCurrentClient(data.target)) return;
+		this.handleChannel(data);
 	}
 
-	/**
-	 * Est-ce que le pseudo du membre sélectionné est banni du salon?
-	 */
-	get isNickBanned() {
-		return this.banned
-			.filter(([_, mask]) => mask.nick !== "*" && mask.ident === "*" && mask.host === "*")
-			.is_some();
-	}
+	handleChannel(data: GenericReply<"MODE">) {
+		const maybeRoom = this.store.roomManager().get(data.target);
+		if (maybeRoom.is_none()) return;
 
-	withBanned(mask: this["banned"]) {
-		this.banned = mask;
-		return this;
+		const channel = maybeRoom.unwrap();
+		assertChannelRoom(channel);
+
+		if (data.added) {
+			for (const [letter, mode] of Array.from(data.added)) {
+				if (letter !== "b") {
+					continue;
+				}
+
+				const maskAddr =
+					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
+
+				channel.accessControl.banList.set(maskAddr, mode);
+			}
+		}
+
+		if (data.removed) {
+			for (const [letter, mode] of Array.from(data.removed)) {
+				if (letter !== "b") {
+					continue;
+				}
+
+				const maskAddr =
+					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
+
+				channel.accessControl.banList.delete(maskAddr);
+			}
+		}
 	}
 }
