@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::src::chat::components::channel::permission::ChannelNoPermissionCause;
 use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::OperApplicationInterface;
 use crate::src::ChatApplication;
@@ -37,7 +38,7 @@ impl NoticeApplicationInterface for ChatApplication
 		use channel::permission::ChannelWritePermission;
 
 		let Some(channel) = self.get_channel(channel_name) else {
-			return ChannelWritePermission::No;
+			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_NOSUCHCHANNEL);
 		};
 
 		let moderate_flag = channel.modes_settings.has_moderate_flag();
@@ -51,8 +52,12 @@ impl NoticeApplicationInterface for ChatApplication
 				return ChannelWritePermission::Bypass;
 			}
 
-			if moderate_flag || no_external_messages_flag {
-				return ChannelWritePermission::No;
+			if moderate_flag  {
+				return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_CHANISINMODERATED);
+			}
+
+			if no_external_messages_flag {
+				return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_NOTMEMBEROFCHAN);
 			}
 
 			return ChannelWritePermission::Bypass;
@@ -68,7 +73,7 @@ impl NoticeApplicationInterface for ChatApplication
 				.filter(|level| level.flag() >= channel::mode::ChannelAccessLevel::Vip.flag())
 				.is_none()
 		{
-			return ChannelWritePermission::No;
+			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_CHANISINMODERATED);
 		}
 
 		ChannelWritePermission::Yes(member.clone())

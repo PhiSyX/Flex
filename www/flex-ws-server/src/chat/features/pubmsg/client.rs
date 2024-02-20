@@ -47,11 +47,12 @@ pub trait PubmsgClientSocketCommandResponseInterface: ClientSocketInterface
 pub trait PubmsgClientSocketErrorRepliesInterface: ClientSocketInterface
 {
 	/// Émet au client l'erreur [ErrCannotsendtochanError].
-	fn send_err_cannotsendtochan(&self, channel_name: &str)
+	fn send_err_cannotsendtochan(&self, channel_name: &str, why: &str)
 	{
 		let origin = Origin::from(self.client());
 		let err_cannotsendtochan = ErrCannotsendtochanError {
 			channel_name,
+			why,
 			origin: &origin,
 			tags: ErrCannotsendtochanError::default_tags(),
 		};

@@ -82,6 +82,74 @@ impl User
 
 impl User
 {
+	/// Adresse de l'utilisateur en fonction d'un pattern.
+	///
+	/// Les types de patterns:
+	///   - "*!ident@hostname"
+	///   - "*!*ident@hostname"
+	///   - "*!*@hostname"
+	///   - "*!*ident@*.hostname"
+	///   - "*!*@*.hostname"
+	///   - "nick!ident@hostname"
+	///   - "nick!*ident@hostname"
+	///   - "nick!*@hostname"
+	///   - "nick!*ident@*.hostname"
+	///   - "nick!*@*.hostname"
+	///   - "nick!*@*"
+	///   - "*!*@*"
+	pub fn address(&self, pattern: &str) -> String
+	{
+		match pattern {
+			| "*!ident@hostname" => format!("*!{}@{}", self.ident, self.host),
+			| "*!*ident@hostname" => format!("*!*{}@{}", self.ident, self.host),
+			| "*!*@hostname" => format!("*!*@{}", self.host),
+			| "*!*ident@*.hostname" => {
+				let full_hostname = self.host.to_string();
+				let (_, hostname) = full_hostname
+					.split_once('.')
+					.unwrap_or(("_", &full_hostname));
+				format!("*!{}@*.{}", self.ident, hostname)
+			}
+			| "*!*@*.hostname" => {
+				let full_hostname = self.host.to_string();
+				let (_, hostname) = full_hostname
+					.split_once('.')
+					.unwrap_or(("_", &full_hostname));
+				format!("*!*@*.{}", hostname)
+			}
+			| "nick!*ident@hostname" => {
+				format!("{}!*{}@{}", self.nickname, self.ident, self.host)
+			}
+			| "nick!*@hostname" => {
+				format!("{}!*@{}", self.nickname, self.host)
+			}
+			| "nick!*ident@*.hostname" => {
+				let full_hostname = self.host.to_string();
+				let (_, hostname) = full_hostname
+					.split_once('.')
+					.unwrap_or(("_", &full_hostname));
+				format!("{}!*{}@*.{}", self.nickname, self.ident, hostname)
+			}
+			| "nick!*@*.hostname" => {
+				let full_hostname = self.host.to_string();
+				let (_, hostname) = full_hostname
+					.split_once('.')
+					.unwrap_or(("_", &full_hostname));
+				format!("{}!*@*.{}", self.nickname, hostname)
+			}
+			| "nick!*@*" => format!("{}!*@*", self.nickname),
+			| "*!*@*" => String::from("*!*@*"),
+			| _ => self.full_address(),
+		}
+		// address
+	}
+
+	/// Adresse complète de l'utilisateur.
+	pub fn full_address(&self) -> String
+	{
+		format!("{}!{}@{}", self.nickname, self.ident, self.host)
+	}
+
 	/// Message d'absence de l'utilisateur.
 	pub fn away_message(&self) -> String
 	{

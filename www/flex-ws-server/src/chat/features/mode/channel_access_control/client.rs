@@ -9,13 +9,13 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::src::chat::components::{channel, client, ClientSocketInterface, Origin};
-use crate::src::chat::features::ApplyMode;
+use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait ModeAccessControlClientSocketInterface: ClientSocketInterface
+pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInterface
 {
 	/// Émet au client courant les modes d'accès de contrôles d'un salon.
 	fn emit_mode_access_control(
@@ -26,11 +26,9 @@ pub trait ModeAccessControlClientSocketInterface: ClientSocketInterface
 		updated: bool,
 	)
 	{
-		use crate::src::chat::features::ModeCommandResponse;
-
 		let origin = Origin::from(self.client());
 
-		let mode = ModeCommandResponse {
+		let mode_cmd = ModeCommandResponse {
 			origin: &origin,
 			tags: ModeCommandResponse::<()>::default_tags(),
 			added: added_flags,
@@ -38,7 +36,7 @@ pub trait ModeAccessControlClientSocketInterface: ClientSocketInterface
 			target: &channel.name,
 			updated,
 		};
-		self.emit_within(channel.room(), mode.name(), mode);
+		self.emit_within(channel.room(), mode_cmd.name(), mode_cmd);
 	}
 
 	/// Émet au client courant tous les controls d'accès du salon.
@@ -50,11 +48,9 @@ pub trait ModeAccessControlClientSocketInterface: ClientSocketInterface
 			return;
 		}
 
-		use crate::src::chat::features::ModeCommandResponse;
-
 		let origin = Origin::from(self.client());
 
-		let channel_access_controls = ModeCommandResponse {
+		let mode_cmd = ModeCommandResponse {
 			origin: &origin,
 			tags: ModeCommandResponse::<()>::default_tags(),
 			target: &channel.name,
@@ -63,7 +59,7 @@ pub trait ModeAccessControlClientSocketInterface: ClientSocketInterface
 			updated: false,
 		};
 
-		self.emit(channel_access_controls.name(), channel_access_controls);
+		self.emit(mode_cmd.name(), mode_cmd);
 	}
 }
 
@@ -71,4 +67,4 @@ pub trait ModeAccessControlClientSocketInterface: ClientSocketInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> ModeAccessControlClientSocketInterface for client::Socket<'s> {}
+impl<'s> ModeAccessControlClientSocketCommandResponseInterface for client::Socket<'s> {}

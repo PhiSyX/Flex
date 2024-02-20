@@ -1,7 +1,7 @@
 use socketioxide::extract::{Data, SocketRef, State};
 
 use super::application::ModeChannelAccessControlApplicationInterface;
-use super::client::ModeAccessControlClientSocketInterface;
+use super::client::ModeAccessControlClientSocketCommandResponseInterface;
 use crate::src::chat::components::channel;
 use crate::src::chat::features::{
 	ModeChannelAccessLevelApplicationInterface,

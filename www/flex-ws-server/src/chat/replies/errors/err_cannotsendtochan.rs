@@ -15,6 +15,6 @@ error_replies! {
 	/// pas un opérateur (ou mode +v) sur un salon en mode +m ou lorsque
 	/// l'utilisateur est banni et essaie d'envoyer un message PUBMSG à ce
 	/// salon.
-	| 404 <-> ERR_CANNOTSENDTOCHAN { channel_name: str }
-		=> "{channel_name} :Impossible d'envoyer un message au salon"
+	| 404 <-> ERR_CANNOTSENDTOCHAN { channel_name: str, why: str }
+		=> "{channel_name} :Impossible d'envoyer un message au salon {why}"
 }

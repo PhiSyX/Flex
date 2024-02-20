@@ -17,7 +17,8 @@ use super::{
 	PubmsgCommandFormData,
 };
 use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::permission::ChannelWritePermission;
+use crate::src::chat::components::permission::{ChannelNoPermissionCause, ChannelWritePermission};
+use crate::src::chat::features::ModeAccessControlClientSocketErrorRepliesInterface;
 use crate::src::chat::replies::*;
 use crate::src::chat::ChatApplication;
 
@@ -54,8 +55,14 @@ impl PubmsgHandler
 				| ChannelWritePermission::Bypass => {
 					client_socket.emit_pubmsg(channel, &data.text, client_socket.user(), true);
 				}
-				| ChannelWritePermission::No => {
-					client_socket.send_err_cannotsendtochan(channel);
+				| ChannelWritePermission::No(cause) => {
+					let why = match cause {
+						| ChannelNoPermissionCause::ERR_NOSUCHCHANNEL => "",
+						| ChannelNoPermissionCause::ERR_BANNEDFROMCHAN => "(+b)",
+						| ChannelNoPermissionCause::ERR_CHANISINMODERATED => "(+m)",
+						| ChannelNoPermissionCause::ERR_NOTMEMBEROFCHAN => "(+n)",
+					};
+					client_socket.send_err_cannotsendtochan(channel, why);
 				}
 			}
 		}
