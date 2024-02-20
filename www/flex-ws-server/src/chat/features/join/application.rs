@@ -19,6 +19,7 @@ use super::{
 use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::{
 	InviteChannelClientSocketErrorReplies,
+	ModeAccessControlClientSocketErrorRepliesInterface,
 	OperClientSocketErrorRepliesInterface,
 };
 use crate::src::chat::replies::ChannelMemberDTO;
@@ -113,13 +114,16 @@ impl JoinApplicationInterface for ChatApplication
 
 		if let Err(err) = can_join {
 			match err {
+				| ChannelJoinError::ERR_BANNEDFROMCHAN => {
+					client_socket.send_err_bannedfromchan(channel_name);
+				}
 				| ChannelJoinError::BadChannelKey => {
 					client_socket.send_err_badchannelkey(channel_name);
 				}
 				| ChannelJoinError::InviteOnly => {
 					client_socket.send_err_inviteonlychan(channel_name);
 				}
-				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::HasAlreadyMember => {}
 				| ChannelJoinError::OperOnly => {
 					client_socket.send_err_operonly(channel_name);
 				}
@@ -156,6 +160,7 @@ impl JoinApplicationInterface for ChatApplication
 			}
 			| Err(err) => {
 				match err {
+					| ChannelJoinError::ERR_BANNEDFROMCHAN
 					| ChannelJoinError::BadChannelKey
 					| ChannelJoinError::InviteOnly
 					| ChannelJoinError::OperOnly => {
@@ -165,7 +170,7 @@ impl JoinApplicationInterface for ChatApplication
 							.expect("Le salon que le client a rejoint");
 						self.join_channel(client_socket, &mut channel, true);
 					}
-					| ChannelJoinError::HasAlreadyClient => {}
+					| ChannelJoinError::HasAlreadyMember => {}
 				}
 			}
 		}

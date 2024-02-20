@@ -32,6 +32,7 @@ mod features
 				client,
 				formdata,
 				handler,
+				response,
 			}
 		}
 

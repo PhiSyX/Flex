@@ -8,15 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ----------- //
-// Énumération //
-// ----------- //
+use crate::error_replies;
 
-pub enum ChannelJoinError
-{
-	ERR_BANNEDFROMCHAN,
-	BadChannelKey,
-	InviteOnly,
-	HasAlreadyMember,
-	OperOnly,
+error_replies! {
+	| 474 <-> ERR_BANNEDFROMCHAN { channel: str }
+		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+b)"
 }

@@ -47,7 +47,32 @@ impl JoinChannelSessionInterface for ChannelsSession
 			.expect("à cette étape, le salon DOIT forcément exister");
 
 		if self.has_member(channel_id, client.id()) {
-			return Err(ChannelJoinError::HasAlreadyClient);
+			return Err(ChannelJoinError::HasAlreadyMember);
+		}
+
+		let check_is_ban = || {
+			let check_ban = |addr| {
+				// NOTE(phisyx): pour le futur, vérifier que l'adresse se
+				// trouve dans la liste des exceptions.
+				channel.access_control.banlist.contains_key(&addr)
+			};
+
+			check_ban(client.user().address("*!*@*"))
+				|| check_ban(client.user().address("*!ident@hostname"))
+				|| check_ban(client.user().address("*!*ident@hostname"))
+				|| check_ban(client.user().address("*!*@hostname"))
+				|| check_ban(client.user().address("*!*ident@*.hostname"))
+				|| check_ban(client.user().address("*!*@*.hostname"))
+				|| check_ban(client.user().address("nick!ident@hostname"))
+				|| check_ban(client.user().address("nick!*ident@hostname"))
+				|| check_ban(client.user().address("nick!*@hostname"))
+				|| check_ban(client.user().address("nick!*ident@*.hostname"))
+				|| check_ban(client.user().address("nick!*@*.hostname"))
+				|| check_ban(client.user().address("nick!*@*"))
+		};
+
+		if check_is_ban() {
+			return Err(ChannelJoinError::ERR_BANNEDFROMCHAN);
 		}
 
 		if channel.modes_settings.has_key_flag() {

@@ -24,6 +24,7 @@ use crate::src::chat::features::{
 	JoinApplicationInterface,
 	JoinChannelClientSocketErrorRepliesInterface,
 	JoinChannelSessionInterface,
+	ModeAccessControlClientSocketErrorRepliesInterface,
 	UserClientSocketInterface,
 };
 
@@ -101,13 +102,16 @@ impl OperApplicationInterface for ChatApplication
 
 		if let Err(err) = can_join {
 			match err {
+				| ChannelJoinError::ERR_BANNEDFROMCHAN => {
+					client_socket.send_err_bannedfromchan(channel_name);
+				}
 				| ChannelJoinError::BadChannelKey => {
 					client_socket.send_err_badchannelkey(channel_name);
 				}
 				| ChannelJoinError::InviteOnly => {
 					client_socket.send_err_inviteonlychan(channel_name);
 				}
-				| ChannelJoinError::HasAlreadyClient => {}
+				| ChannelJoinError::HasAlreadyMember => {}
 				| ChannelJoinError::OperOnly => {
 					client_socket.send_err_operonly(channel_name);
 				}

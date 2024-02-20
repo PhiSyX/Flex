@@ -66,6 +66,7 @@ declare interface ErrorReplies {
 	ERROR: {};
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_ALREADYREGISTERED: {};
+	ERR_BANNEDFROMCHAN: { channel: string };
 	ERR_CANNOTSENDTOCHAN: { channel_name: string };
 	ERR_CHANOPRIVSNEEDED: { channel: string };
 	ERR_ERRONEUSNICKNAME: { nickname: string };

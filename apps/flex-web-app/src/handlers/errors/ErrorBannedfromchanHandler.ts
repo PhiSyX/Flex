@@ -8,15 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ----------- //
-// Énumération //
-// ----------- //
+import { ChatStore } from "~/store/ChatStore";
 
-pub enum ChannelJoinError
-{
-	ERR_BANNEDFROMCHAN,
-	BadChannelKey,
-	InviteOnly,
-	HasAlreadyMember,
-	OperOnly,
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ErrorBannedfromchanHandler implements SocketEventInterface<"ERR_BANNEDFROMCHAN"> {
+	constructor(private store: ChatStore) {}
+
+	listen() {
+		this.store.on("ERR_BANNEDFROMCHAN", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">) {
+		const room = this.store.roomManager().active();
+		room.addEvent("error:err_bannedfromchan", { ...data, isCurrentClient: true }, data.reason);
+	}
 }

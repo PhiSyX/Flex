@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use super::ErrBannedfromchanError;
 use crate::src::chat::components::{channel, client, ClientSocketInterface, Origin};
 use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
 
@@ -63,8 +64,26 @@ pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInt
 	}
 }
 
+pub trait ModeAccessControlClientSocketErrorRepliesInterface: ClientSocketInterface
+{
+	fn send_err_bannedfromchan(&self, channel_name: &str)
+	{
+		let origin = Origin::from(self.client());
+
+		let err_bannedfromchan = ErrBannedfromchanError {
+			origin: &origin,
+			tags: ErrBannedfromchanError::default_tags(),
+			channel: channel_name,
+		};
+
+		self.emit(err_bannedfromchan.name(), err_bannedfromchan);
+	}
+}
+
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
 impl<'s> ModeAccessControlClientSocketCommandResponseInterface for client::Socket<'s> {}
+
+impl<'s> ModeAccessControlClientSocketErrorRepliesInterface for client::Socket<'s> {}
