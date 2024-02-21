@@ -64,6 +64,14 @@ impl ModeChannelSettingsHandler
 				&mut added_list,
 				&mut removed_list,
 			);
+			apply_bans_except(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.bans_except.as_deref(),
+				&mut added_list,
+				&mut removed_list,
+			);
 			apply_mode_settings_bool(
 				app,
 				&client_socket,
@@ -162,6 +170,14 @@ impl ModeChannelSettingsHandler
 			&mut added_list,
 			&mut removed_list,
 		);
+		apply_bans_except(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.bans_except.as_deref(),
+			&mut added_list,
+			&mut removed_list,
+		);
 		apply_mode_settings_bool(
 			app,
 			&client_socket,
@@ -256,6 +272,32 @@ fn apply_bans(
 			alist.extend(
 				app.apply_ban_on_channel(client_socket, channel, banmask)
 					.map(|mode| ('b', mode)),
+			);
+		}
+	}
+}
+
+fn apply_bans_except(
+	app: &ChatApplication,
+	client_socket: &crate::src::chat::components::client::Socket,
+	channel: &str,
+	bans_except: Option<&[String]>,
+	alist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
+	rlist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
+)
+{
+	let bans_except = bans_except.unwrap_or_default();
+
+	for banmask in bans_except {
+		if app.has_banmask_except_on_channel(client_socket, channel, banmask) {
+			rlist.extend(
+				app.apply_unban_except_on_channel(client_socket, channel, banmask)
+					.map(|mode| ('e', mode)),
+			);
+		} else {
+			alist.extend(
+				app.apply_ban_except_on_channel(client_socket, channel, banmask)
+					.map(|mode| ('e', mode)),
 			);
 		}
 	}

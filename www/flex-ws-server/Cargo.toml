@@ -15,6 +15,7 @@ path = "./bin/ws-server.rs"
 clap = { version = "4.5.0", features = ["derive", "env"] }
 dashmap = { version = "5.5.3", features = ["serde"] }
 dns-lookup = "2.0.4"
+lexa-wildcard-matching = "0.1.0"
 flex-cli = { workspace = true }
 flex-crypto = { workspace = true }
 flex-serde-validation = { workspace = true }

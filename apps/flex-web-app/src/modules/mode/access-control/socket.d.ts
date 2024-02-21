@@ -11,4 +11,7 @@
 declare interface Commands {
 	BAN: { channels: Array<string>; masks: Array<MaskAddr> };
 	UNBAN: Commands["BAN"];
+
+	BANEX: { channels: Array<string>; masks: Array<MaskAddr> };
+	UNBANEX: Commands["BANEX"];
 }

@@ -85,6 +85,7 @@ impl User
 	/// Adresse de l'utilisateur en fonction d'un pattern.
 	///
 	/// Les types de patterns:
+	///   - "*!ident@*"
 	///   - "*!ident@hostname"
 	///   - "*!*ident@hostname"
 	///   - "*!*@hostname"
@@ -100,6 +101,8 @@ impl User
 	pub fn address(&self, pattern: &str) -> String
 	{
 		match pattern {
+			| "*!ident@*" => format!("*!{}@*", self.ident),
+			| "*!*ident@*" => format!("*!*{}@*", self.ident),
 			| "*!ident@hostname" => format!("*!{}@{}", self.ident, self.host),
 			| "*!*ident@hostname" => format!("*!*{}@{}", self.ident, self.host),
 			| "*!*@hostname" => format!("*!*@{}", self.host),

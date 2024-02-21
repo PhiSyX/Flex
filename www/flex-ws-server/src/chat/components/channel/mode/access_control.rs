@@ -18,6 +18,7 @@ use crate::src::chat::features::ApplyMode;
 // -------- //
 
 pub const CHANNEL_MODE_LIST_BAN: char = 'b';
+pub const CHANNEL_MODE_LIST_BAN_EXCEPT: char = 'e';
 
 // --------- //
 // Structure //
@@ -29,6 +30,7 @@ pub const CHANNEL_MODE_LIST_BAN: char = 'b';
 pub struct AccessControl
 {
 	pub banlist: HashMap<String, ApplyMode<AccessControlMode>>,
+	pub banlist_exceptions: HashMap<String, ApplyMode<AccessControlMode>>,
 }
 
 #[derive(Debug)]
@@ -83,11 +85,39 @@ impl AccessControl
 		Some(mode)
 	}
 
+	pub fn add_ban_except(
+		&mut self,
+		mask: impl Into<Mask>,
+		mode: ApplyMode<AccessControlMode>,
+	) -> Option<ApplyMode<AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_key = mask.to_string();
+
+		if self.banlist_exceptions.contains_key(&mask_key) {
+			return None;
+		}
+
+		self.banlist_exceptions.insert(mask_key, mode.clone());
+
+		Some(mode)
+	}
+
 	pub fn remove_ban(&mut self, mask: impl Into<Mask>) -> Option<ApplyMode<AccessControlMode>>
 	{
 		let mask = mask.into();
 		let mask_key = mask.to_string();
 		self.banlist.remove(&mask_key)
+	}
+
+	pub fn remove_ban_except(
+		&mut self,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_key = mask.to_string();
+		self.banlist_exceptions.remove(&mask_key)
 	}
 }
 

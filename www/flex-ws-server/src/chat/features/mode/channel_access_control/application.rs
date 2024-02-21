@@ -27,8 +27,24 @@ pub trait ModeChannelAccessControlApplicationInterface
 		mask: impl Into<channel::mode::Mask>,
 	) -> Option<ApplyMode<channel::mode::AccessControlMode>>;
 
-	/// Applique un unban sur un salon.
+	/// Applique une exception de ban sur un salon.
+	fn apply_ban_except_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> Option<ApplyMode<channel::mode::AccessControlMode>>;
+
+	/// Retire un ban sur un salon.
 	fn apply_unban_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> Option<ApplyMode<channel::mode::AccessControlMode>>;
+
+	/// Retire une exception de ban sur un salon.
+	fn apply_unban_except_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
@@ -38,6 +54,15 @@ pub trait ModeChannelAccessControlApplicationInterface
 	/// Est-qu'un adresse mask d'un ban existe dans la liste des bannissement
 	/// d'un salon.
 	fn has_banmask_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> bool;
+
+	/// Est-qu'un adresse mask d'une exception de ban existe dans la liste des
+	/// exceptions des bannissement d'un salon.
+	fn has_banmask_except_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
@@ -65,6 +90,20 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		channel.add_ban(client_socket.user(), mask)
 	}
 
+	fn apply_ban_except_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> Option<ApplyMode<channel::mode::AccessControlMode>>
+	{
+		let Some(mut channel) = self.channels.get_mut(channel_name) else {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return None;
+		};
+		channel.add_ban_except(client_socket.user(), mask)
+	}
+
 	fn apply_unban_on_channel(
 		&self,
 		client_socket: &client::Socket,
@@ -77,6 +116,20 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 			return None;
 		};
 		channel.remove_ban(client_socket.user(), mask)
+	}
+
+	fn apply_unban_except_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> Option<ApplyMode<channel::mode::AccessControlMode>>
+	{
+		let Some(mut channel) = self.channels.get_mut(channel_name) else {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return None;
+		};
+		channel.remove_ban_except(client_socket.user(), mask)
 	}
 
 	fn has_banmask_on_channel(
@@ -92,5 +145,20 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		};
 		let mask_r = &mask.into();
 		channel.has_banmask(mask_r)
+	}
+
+	fn has_banmask_except_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> bool
+	{
+		let Some(channel) = self.channels.get(channel_name) else {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return false;
+		};
+		let mask_r = &mask.into();
+		channel.has_banmask_except(mask_r)
 	}
 }

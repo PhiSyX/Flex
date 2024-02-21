@@ -30,3 +30,19 @@ export class UnbanCommand implements CommandInterface<"UNBAN"> {
 		this.store.emit("UNBAN", payload);
 	}
 }
+
+export class BanExCommand implements CommandInterface<"BANEX"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"BANEX">) {
+		this.store.emit("BANEX", payload);
+	}
+}
+
+export class UnbanExCommand implements CommandInterface<"UNBANEX"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"UNBANEX">) {
+		this.store.emit("UNBANEX", payload);
+	}
+}

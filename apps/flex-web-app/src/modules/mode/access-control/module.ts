@@ -11,7 +11,7 @@
 import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "~/modules/interface";
-import { BanCommand, UnbanCommand } from "./command";
+import { BanCommand, BanExCommand, UnbanCommand, UnbanExCommand } from "./command";
 import { BanHandler } from "./handler";
 
 // -------------- //
@@ -45,7 +45,7 @@ export class BanModule implements Module<BanModule> {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw;
+			const masks = masksRaw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
@@ -53,7 +53,7 @@ export class BanModule implements Module<BanModule> {
 		if (channelsRaw?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw;
+			const masks = masksRaw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
@@ -62,7 +62,7 @@ export class BanModule implements Module<BanModule> {
 		if (channelsRaw) {
 			masksRaw.unshift(channelsRaw);
 		}
-		const masks = masksRaw;
+		const masks = masksRaw as Array<MaskAddr>;
 		this.send({ channels, masks });
 	}
 
@@ -99,7 +99,7 @@ export class UnbanModule implements Module<UnbanModule> {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw;
+			const masks = masksRaw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
@@ -107,7 +107,7 @@ export class UnbanModule implements Module<UnbanModule> {
 		if (channelsRaw?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw;
+			const masks = masksRaw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
@@ -116,11 +116,115 @@ export class UnbanModule implements Module<UnbanModule> {
 		if (channelsRaw) {
 			masksRaw.unshift(channelsRaw);
 		}
-		const masks = masksRaw;
+		const masks = masksRaw as Array<MaskAddr>;
 		this.send({ channels, masks });
 	}
 
 	send(payload: Command<"UNBAN">) {
+		this.command.send(payload);
+	}
+
+	listen() {}
+}
+
+export class BanExModule implements Module<BanExModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "BANEX";
+
+	static create(store: ChatStore): BanExModule {
+		return new BanExModule(new BanExCommand(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: BanExCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(roomName?: string, channelsRaw?: string, ...masksRaw: Array<string>) {
+		if (!roomName?.startsWith("#")) {
+			const channels = channelsRaw?.split(",");
+			if (!channels) return;
+			const masks = masksRaw as Array<MaskAddr>;
+			this.send({ channels, masks });
+			return;
+		}
+
+		if (channelsRaw?.startsWith("#")) {
+			const channels = channelsRaw?.split(",");
+			if (!channels) return;
+			const masks = masksRaw as Array<MaskAddr>;
+			this.send({ channels, masks });
+			return;
+		}
+
+		const channels = [roomName];
+		if (channelsRaw) {
+			masksRaw.unshift(channelsRaw);
+		}
+		const masks = masksRaw as Array<MaskAddr>;
+		this.send({ channels, masks });
+	}
+
+	send(payload: Command<"BANEX">) {
+		this.command.send(payload);
+	}
+
+	listen() {}
+}
+
+export class UnbanExModule implements Module<UnbanExModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "UNBANEX";
+
+	static create(store: ChatStore): UnbanExModule {
+		return new UnbanExModule(new UnbanExCommand(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: UnbanExCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(roomName?: string, channelsRaw?: string, ...masksRaw: Array<string>) {
+		if (!roomName?.startsWith("#")) {
+			const channels = channelsRaw?.split(",");
+			if (!channels) return;
+			const masks = masksRaw as Array<MaskAddr>;
+			this.send({ channels, masks });
+			return;
+		}
+
+		if (channelsRaw?.startsWith("#")) {
+			const channels = channelsRaw?.split(",");
+			if (!channels) return;
+			const masks = masksRaw as Array<MaskAddr>;
+			this.send({ channels, masks });
+			return;
+		}
+
+		const channels = [roomName];
+		if (channelsRaw) {
+			masksRaw.unshift(channelsRaw);
+		}
+		const masks = masksRaw as Array<MaskAddr>;
+		this.send({ channels, masks });
+	}
+
+	send(payload: Command<"UNBANEX">) {
 		this.command.send(payload);
 	}
 

@@ -41,29 +41,47 @@ export class BanHandler implements SocketEventInterface<"MODE"> {
 		const channel = maybeRoom.unwrap();
 		assertChannelRoom(channel);
 
+		function isControlAccessLetter(
+			letter: string,
+			// biome-ignore lint/suspicious/noExplicitAny: ?
+			mode: ModeApplyFlag<any>,
+		): mode is ModeApplyFlag<AccessControlMode> {
+			return ["b", "e"].includes(letter) && "mask" in mode.flag;
+		}
+
 		if (data.added) {
 			for (const [letter, mode] of Array.from(data.added)) {
-				if (letter !== "b") {
+				if (!isControlAccessLetter(letter, mode)) {
 					continue;
 				}
 
 				const maskAddr =
 					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
 
-				channel.accessControl.banList.set(maskAddr, mode);
+				if (letter === "b") {
+					channel.accessControl.banList.set(maskAddr, mode);
+				}
+				if (letter === "e") {
+					channel.accessControl.banExceptList.set(maskAddr, mode);
+				}
 			}
 		}
 
 		if (data.removed) {
 			for (const [letter, mode] of Array.from(data.removed)) {
-				if (letter !== "b") {
+				if (!isControlAccessLetter(letter, mode)) {
 					continue;
 				}
 
 				const maskAddr =
 					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
 
-				channel.accessControl.banList.delete(maskAddr);
+				if (letter === "b") {
+					channel.accessControl.banList.delete(maskAddr);
+				}
+				if (letter === "e") {
+					channel.accessControl.banExceptList.delete(maskAddr);
+				}
 			}
 		}
 	}

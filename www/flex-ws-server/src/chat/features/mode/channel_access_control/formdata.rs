@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_serde_validation::array::validate_vec_string_filter;
-
 use crate::command_formdata;
 use crate::macro_rules::command_formdata::validate_channels;
 
@@ -18,7 +16,6 @@ command_formdata! {
 	{
 		#[serde(deserialize_with = "validate_channels")]
 		channels: Vec<String>,
-		#[serde(deserialize_with = "validate_vec_string_filter")]
 		masks: Vec<String>,
 	}
 
@@ -26,7 +23,20 @@ command_formdata! {
 	{
 		#[serde(deserialize_with = "validate_channels")]
 		channels: Vec<String>,
-		#[serde(deserialize_with = "validate_vec_string_filter")]
+		masks: Vec<String>,
+	}
+
+	struct BANEX
+	{
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		masks: Vec<String>,
+	}
+
+	struct UNBANEX
+	{
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
 		masks: Vec<String>,
 	}
 }
