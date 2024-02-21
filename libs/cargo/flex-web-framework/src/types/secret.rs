@@ -89,6 +89,16 @@ impl<S> From<S> for Secret<S>
 	}
 }
 
+impl<S> From<&S> for Secret<S>
+where
+	S: ToOwned<Owned = S>,
+{
+	fn from(secret: &S) -> Self
+	{
+		Self(secret.to_owned())
+	}
+}
+
 impl<S> PartialEq<S> for Secret<S>
 where
 	S: PartialEq,

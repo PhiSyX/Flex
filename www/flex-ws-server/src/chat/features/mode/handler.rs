@@ -16,6 +16,7 @@ use super::{
 	ModeChannelSettingsClientSocketCommandResponseInterface,
 };
 use crate::src::chat::components::channel;
+use crate::src::chat::components::channel::mode::AccessControlMode;
 use crate::src::chat::features::{
 	ApplyMode,
 	ChannelModeCommandFormData,
@@ -55,132 +56,70 @@ impl ModeChannelSettingsHandler
 
 		// NOTE: les opérateurs globaux peuvent appliquer n'importe quels modes.
 		if app.is_client_global_operator(&client_socket) {
-			if let Some(bans) = data.modes.bans.as_deref() {
-				for banmask in bans {
-					if app.has_banmask_on_channel(&client_socket, &data.target, banmask) {
-						removed_list.extend(
-							app.apply_unban_on_channel(&client_socket, &data.target, banmask)
-								.map(|mode| ('b', mode)),
-						);
-					} else {
-						added_list.extend(
-							app.apply_ban_on_channel(&client_socket, &data.target, banmask)
-								.map(|mode| ('b', mode)),
-						);
-					}
-				}
-			}
+			apply_bans(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.bans.as_deref(),
+				&mut added_list,
+				&mut removed_list,
+			);
+			apply_mode_settings_bool(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.invite_only,
+				channel::mode::SettingsFlags::InviteOnly,
+				&mut added_settings,
+				&mut removed_settings,
+			);
+			apply_mode_settings_bool(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.moderate,
+				channel::mode::SettingsFlags::Moderate,
+				&mut added_settings,
+				&mut removed_settings,
+			);
+			apply_mode_settings_bool(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.no_external_messages,
+				channel::mode::SettingsFlags::NoExternalMessages,
+				&mut added_settings,
+				&mut removed_settings,
+			);
+			apply_mode_settings_bool(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.no_topic,
+				channel::mode::SettingsFlags::NoTopic,
+				&mut added_settings,
+				&mut removed_settings,
+			);
+			apply_mode_settings_bool(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.secret,
+				channel::mode::SettingsFlags::Secret,
+				&mut added_settings,
+				&mut removed_settings,
+			);
 
-			if let Some(b) = data.modes.invite_only {
-				if b {
-					added_settings.extend(app.set_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::InviteOnly,
-					));
-				} else {
-					removed_settings.extend(app.unset_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::InviteOnly,
-					));
-				}
-			}
-
-			if let Some(key) = data.modes.key.as_ref() {
-				if key.is_empty() {
-					removed_settings.extend(app.unset_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::Key(key.to_owned()),
-					));
-				} else {
-					added_settings.extend(app.set_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::Key(key.to_owned()),
-					));
-				}
-			}
-
-			if let Some(b) = data.modes.moderate {
-				if b {
-					added_settings.extend(app.set_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::Moderate,
-					));
-				} else {
-					removed_settings.extend(app.unset_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::Moderate,
-					));
-				}
-			}
-
-			if let Some(b) = data.modes.no_external_messages {
-				if b {
-					added_settings.extend(app.set_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::NoExternalMessages,
-					));
-				} else {
-					removed_settings.extend(app.unset_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::NoExternalMessages,
-					));
-				}
-			}
-
-			if let Some(b) = data.modes.no_topic {
-				if b {
-					added_settings.extend(app.set_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::NoTopic,
-					));
-				} else {
-					removed_settings.extend(app.unset_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::NoTopic,
-					));
-				}
-			}
-
-			if let Some(b) = data.modes.oper_only {
-				if b {
-					added_settings.extend(app.set_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::OperOnly,
-					));
-				} else {
-					removed_settings.extend(app.unset_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::OperOnly,
-					));
-				}
-			}
-
-			if let Some(b) = data.modes.secret {
-				if b {
-					added_settings.extend(app.set_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::Secret,
-					));
-				} else {
-					removed_settings.extend(app.unset_settings_on_channel(
-						&client_socket,
-						&data.target,
-						channel::mode::SettingsFlags::Secret,
-					));
-				}
+			if let Some(key) = data.modes.key.as_deref() {
+				apply_mode_settings_str(
+					app,
+					&client_socket,
+					&data.target,
+					key,
+					channel::mode::SettingsFlags::Key(key.into()),
+					&mut added_settings,
+					&mut removed_settings,
+				);
 			}
 
 			if !added_list.is_empty() || !removed_list.is_empty() {
@@ -215,116 +154,70 @@ impl ModeChannelSettingsHandler
 			return;
 		}
 
-		if let Some(bans) = data.modes.bans.as_deref() {
-			for banmask in bans {
-				if app.has_banmask_on_channel(&client_socket, &data.target, banmask) {
-					removed_list.extend(
-						app.apply_unban_on_channel(&client_socket, &data.target, banmask)
-							.map(|mode| ('b', mode)),
-					);
-				} else {
-					added_list.extend(
-						app.apply_ban_on_channel(&client_socket, &data.target, banmask)
-							.map(|mode| ('b', mode)),
-					);
-				}
-			}
-		}
+		apply_bans(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.bans.as_deref(),
+			&mut added_list,
+			&mut removed_list,
+		);
+		apply_mode_settings_bool(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.invite_only,
+			channel::mode::SettingsFlags::InviteOnly,
+			&mut added_settings,
+			&mut removed_settings,
+		);
+		apply_mode_settings_bool(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.moderate,
+			channel::mode::SettingsFlags::Moderate,
+			&mut added_settings,
+			&mut removed_settings,
+		);
+		apply_mode_settings_bool(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.no_external_messages,
+			channel::mode::SettingsFlags::NoExternalMessages,
+			&mut added_settings,
+			&mut removed_settings,
+		);
+		apply_mode_settings_bool(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.no_topic,
+			channel::mode::SettingsFlags::NoTopic,
+			&mut added_settings,
+			&mut removed_settings,
+		);
+		apply_mode_settings_bool(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.secret,
+			channel::mode::SettingsFlags::Secret,
+			&mut added_settings,
+			&mut removed_settings,
+		);
 
-		if let Some(b) = data.modes.invite_only {
-			if b {
-				added_settings.extend(app.set_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::InviteOnly,
-				));
-			} else {
-				removed_settings.extend(app.unset_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::InviteOnly,
-				));
-			}
-		}
-
-		if let Some(key) = data.modes.key.as_ref() {
-			if key.is_empty() {
-				removed_settings.extend(app.unset_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::Key(key.to_owned()),
-				));
-			} else {
-				added_settings.extend(app.set_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::Key(key.to_owned()),
-				));
-			}
-		}
-
-		if let Some(b) = data.modes.moderate {
-			if b {
-				added_settings.extend(app.set_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::Moderate,
-				));
-			} else {
-				removed_settings.extend(app.unset_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::Moderate,
-				));
-			}
-		}
-
-		if let Some(b) = data.modes.no_external_messages {
-			if b {
-				added_settings.extend(app.set_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::NoExternalMessages,
-				));
-			} else {
-				removed_settings.extend(app.unset_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::NoExternalMessages,
-				));
-			}
-		}
-
-		if let Some(b) = data.modes.no_topic {
-			if b {
-				added_settings.extend(app.set_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::NoTopic,
-				));
-			} else {
-				removed_settings.extend(app.unset_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::NoTopic,
-				));
-			}
-		}
-
-		if let Some(b) = data.modes.secret {
-			if b {
-				added_settings.extend(app.set_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::Secret,
-				));
-			} else {
-				removed_settings.extend(app.unset_settings_on_channel(
-					&client_socket,
-					&data.target,
-					channel::mode::SettingsFlags::Secret,
-				));
-			}
+		if let Some(key) = data.modes.key.as_deref() {
+			apply_mode_settings_str(
+				app,
+				&client_socket,
+				&data.target,
+				key,
+				channel::mode::SettingsFlags::Key(key.into()),
+				&mut added_settings,
+				&mut removed_settings,
+			);
 		}
 
 		if !added_list.is_empty() || !removed_list.is_empty() {
@@ -339,5 +232,67 @@ impl ModeChannelSettingsHandler
 		if !added_settings.is_empty() || !removed_settings.is_empty() {
 			client_socket.emit_channel_settings(&data.target, &added_settings, &removed_settings);
 		}
+	}
+}
+
+fn apply_bans(
+	app: &ChatApplication,
+	client_socket: &crate::src::chat::components::client::Socket,
+	channel: &str,
+	bans: Option<&[String]>,
+	alist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
+	rlist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
+)
+{
+	let bans = bans.unwrap_or_default();
+
+	for banmask in bans {
+		if app.has_banmask_on_channel(client_socket, channel, banmask) {
+			rlist.extend(
+				app.apply_unban_on_channel(client_socket, channel, banmask)
+					.map(|mode| ('b', mode)),
+			);
+		} else {
+			alist.extend(
+				app.apply_ban_on_channel(client_socket, channel, banmask)
+					.map(|mode| ('b', mode)),
+			);
+		}
+	}
+}
+
+fn apply_mode_settings_bool(
+	app: &ChatApplication,
+	client_socket: &crate::src::chat::components::client::Socket,
+	channel: &str,
+	maybe_bool: Option<bool>,
+	flag: channel::mode::SettingsFlags,
+	alist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
+	rlist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
+)
+{
+	if let Some(b) = maybe_bool {
+		if b {
+			alist.extend(app.set_settings_on_channel(client_socket, channel, flag));
+		} else {
+			rlist.extend(app.unset_settings_on_channel(client_socket, channel, flag));
+		}
+	}
+}
+
+fn apply_mode_settings_str(
+	app: &ChatApplication,
+	client_socket: &crate::src::chat::components::client::Socket,
+	channel: &str,
+	s: &str,
+	flag: channel::mode::SettingsFlags,
+	alist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
+	rlist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
+)
+{
+	if !s.is_empty() {
+		alist.extend(app.set_settings_on_channel(client_socket, channel, flag));
+	} else {
+		rlist.extend(app.unset_settings_on_channel(client_socket, channel, flag));
 	}
 }

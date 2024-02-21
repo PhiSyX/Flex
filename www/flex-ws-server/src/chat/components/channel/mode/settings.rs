@@ -178,6 +178,9 @@ impl ChannelModes<SettingsFlags>
 	{
 		let mode: ApplyMode<SettingsFlags> = mode.into();
 		let letter = mode.letter().to_string();
+		if letter != "k" && self.modes.contains_key(&letter) {
+			return None;
+		}
 		self.modes.insert(letter, mode.clone());
 		Some(mode)
 	}
@@ -189,6 +192,9 @@ impl ChannelModes<SettingsFlags>
 	{
 		let mode: ApplyMode<SettingsFlags> = mode.into();
 		let letter = mode.letter().to_string();
+		if letter != "k" && !self.modes.contains_key(&letter) {
+			return None;
+		}
 		self.modes.remove(&letter);
 		Some(mode)
 	}
