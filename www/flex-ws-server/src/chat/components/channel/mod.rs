@@ -125,6 +125,13 @@ impl Channel
 		self.invite_list.insert(id)
 	}
 
+	// Est-ce qu'une mask existe dans la liste des bans.
+	pub fn has_banmask(&self, mask: &mode::Mask) -> bool
+	{
+		let mask_s = mask.to_string();
+		self.access_control.banlist.contains_key(&mask_s)
+	}
+
 	/// ID du salon.
 	pub fn id(&self) -> String
 	{

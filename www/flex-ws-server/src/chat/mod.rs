@@ -52,18 +52,20 @@ mod features
 			lexa_kernel::public_using! {
 				application,
 				client,
-				formdata,
-				handler,
 			}
 		}
 
 		mod apply;
+		mod handler;
+		mod formdata;
 		mod response;
 
 		pub use self::apply::*;
 		pub use self::channel_access_control::*;
 		pub use self::channel_access_level::*;
 		pub use self::channel_settings::*;
+		pub use self::handler::*;
+		pub use self::formdata::*;
 		pub use self::response::*;
 	}
 

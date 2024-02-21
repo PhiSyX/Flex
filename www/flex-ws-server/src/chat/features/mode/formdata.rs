@@ -31,6 +31,9 @@ command_formdata! {
 #[serde(rename_all = "snake_case")]
 pub struct ChannelModesSettings
 {
+	/// Liste des bannissements à retirer.
+	#[serde(rename = "b")]
+	pub bans: Option<Vec<String>>,
 	/// Salon sur invitation uniquement.
 	#[serde(rename = "i")]
 	pub invite_only: Option<bool>,

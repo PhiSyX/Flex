@@ -52,6 +52,7 @@ const operatorsOnlySettings = ref<boolean>();
 const noExternalMessagesSettings = ref<boolean>();
 const secretSettings = ref<boolean>();
 const topicSettings = ref<boolean>();
+const selectedBans = ref<Array<string>>([]);
 
 const enabledKeySettings = ref();
 const keySettings = ref();
@@ -80,6 +81,20 @@ function onSubmitHandler() {
 		s: secretSettings.value,
 		t: topicSettings.value,
 		O: operatorsOnlySettings.value,
+	});
+}
+
+function onDeleteSelectedMasksHandler() {
+	if (
+		!isCurrentClientChannelMemberChannelOperator.value &&
+		!isCurrentClientGlobalOperator.value
+	) {
+		emit("close");
+		return;
+	}
+
+	emit("submit", {
+		b: selectedBans.value,
 	});
 }
 </script>
@@ -117,6 +132,7 @@ function onSubmitHandler() {
 
 		<form
 			:id="`${layerName}_form`"
+			class="[ flex! gap=1 ]"
 			method="dialog"
 			@submit="onSubmitHandler()"
 		>
@@ -135,17 +151,30 @@ function onSubmitHandler() {
 
 			<h2>Liste des bannissements</h2>
 
-			<select multiple class="[ w:full max-w=44 ]">
+			<select multiple class="[ w:full max-w=44 ]" v-model="selectedBans">
 				<option
 					v-for="[addr, ban] in room.accessControl.banList"
 					:disabled="
 						!isCurrentClientChannelMemberChannelOperator &&
 						!isCurrentClientGlobalOperator
 					"
+					:value="addr"
 				>
 					{{ addr }} par {{ ban.updated_by }} le {{ ban.updated_at }}
 				</option>
 			</select>
+
+			<div class="[ flex gap=1 ]">
+				<UiButton
+					type="button"
+					variant="secondary"
+					:disabled="selectedBans.length === 0"
+					class="flex:shrink=1"
+					@click="onDeleteSelectedMasksHandler"
+				>
+					Supprimer
+				</UiButton>
+			</div>
 
 			<h2>Paramètres du salon</h2>
 

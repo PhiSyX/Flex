@@ -19,6 +19,7 @@ use crate::src::ChatApplication;
 
 pub trait ModeChannelAccessControlApplicationInterface
 {
+	/// Applique un ban sur un salon.
 	fn apply_ban_on_channel(
 		&self,
 		client_socket: &client::Socket,
@@ -26,12 +27,22 @@ pub trait ModeChannelAccessControlApplicationInterface
 		mask: impl Into<channel::mode::Mask>,
 	) -> Option<ApplyMode<channel::mode::AccessControlMode>>;
 
-	fn apply_unban_for_channel(
+	/// Applique un unban sur un salon.
+	fn apply_unban_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
 		mask: impl Into<channel::mode::Mask>,
 	) -> Option<ApplyMode<channel::mode::AccessControlMode>>;
+
+	/// Est-qu'un adresse mask d'un ban existe dans la liste des bannissement
+	/// d'un salon.
+	fn has_banmask_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> bool;
 }
 
 // -------------- //
@@ -40,7 +51,6 @@ pub trait ModeChannelAccessControlApplicationInterface
 
 impl ModeChannelAccessControlApplicationInterface for ChatApplication
 {
-	/// Applique un ban sur un salon.
 	fn apply_ban_on_channel(
 		&self,
 		client_socket: &client::Socket,
@@ -55,8 +65,7 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		channel.add_ban(client_socket.user(), mask)
 	}
 
-	/// Applique un unban sur un salon.
-	fn apply_unban_for_channel(
+	fn apply_unban_on_channel(
 		&self,
 		client_socket: &client::Socket,
 		channel_name: channel::ChannelIDRef,
@@ -68,5 +77,20 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 			return None;
 		};
 		channel.remove_ban(client_socket.user(), mask)
+	}
+
+	fn has_banmask_on_channel(
+		&self,
+		client_socket: &client::Socket,
+		channel_name: channel::ChannelIDRef,
+		mask: impl Into<channel::mode::Mask>,
+	) -> bool
+	{
+		let Some(channel) = self.channels.get(channel_name) else {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return false;
+		};
+		let mask_r = &mask.into();
+		channel.has_banmask(mask_r)
 	}
 }

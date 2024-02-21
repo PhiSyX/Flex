@@ -19,11 +19,23 @@ use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
 pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInterface
 {
 	/// Émet au client courant les modes d'accès de contrôles d'un salon.
-	fn emit_mode_access_control(
+	fn emit_channel_access_control(
 		&self,
 		channel: &channel::Channel,
 		added_flags: Vec<(char, ApplyMode<channel::mode::AccessControlMode>)>,
 		removed_flags: Vec<(char, ApplyMode<channel::mode::AccessControlMode>)>,
+		updated: bool,
+	)
+	{
+		self.emit_target_access_control(&channel.name, &added_flags, &removed_flags, updated);
+	}
+
+	/// Émet au client courant les modes d'accès de contrôles d'un salon.
+	fn emit_target_access_control(
+		&self,
+		channel_name: channel::ChannelIDRef,
+		added_flags: &[(char, ApplyMode<channel::mode::AccessControlMode>)],
+		removed_flags: &[(char, ApplyMode<channel::mode::AccessControlMode>)],
 		updated: bool,
 	)
 	{
@@ -32,16 +44,17 @@ pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInt
 		let mode_cmd = ModeCommandResponse {
 			origin: &origin,
 			tags: ModeCommandResponse::<()>::default_tags(),
-			added: added_flags,
-			removed: removed_flags,
-			target: &channel.name,
+			added: added_flags.to_vec(),
+			removed: removed_flags.to_vec(),
+			target: channel_name,
 			updated,
 		};
-		self.emit_within(channel.room(), mode_cmd.name(), mode_cmd);
+		let channel_room = format!("channel:{}", channel_name.to_lowercase());
+		self.emit_within(channel_room, mode_cmd.name(), mode_cmd);
 	}
 
 	/// Émet au client courant tous les controls d'accès du salon.
-	fn emit_all_access_control(&self, channel: &channel::Channel)
+	fn emit_all_channel_access_control(&self, channel: &channel::Channel)
 	{
 		let list: Vec<_> = channel.access_controls().into_iter().collect();
 

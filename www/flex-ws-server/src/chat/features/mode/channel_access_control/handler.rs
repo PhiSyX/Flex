@@ -62,7 +62,7 @@ impl BanHandler
 				.map(|mode| (channel::mode::CHANNEL_MODE_LIST_BAN, mode))
 				.collect();
 
-			client_socket.emit_mode_access_control(&channel, added_flags, vec![], true);
+			client_socket.emit_channel_access_control(&channel, added_flags, vec![], true);
 		}
 	}
 }
@@ -92,7 +92,7 @@ impl UnbanHandler
 			let updated: Vec<_> = data
 				.masks
 				.iter()
-				.filter_map(|mask| app.apply_unban_for_channel(&client_socket, &channel_name, mask))
+				.filter_map(|mask| app.apply_unban_on_channel(&client_socket, &channel_name, mask))
 				.collect();
 
 			if updated.is_empty() {
@@ -109,7 +109,7 @@ impl UnbanHandler
 				.map(|mode| (channel::mode::CHANNEL_MODE_LIST_BAN, mode))
 				.collect();
 
-			client_socket.emit_mode_access_control(&channel, vec![], removed_flags, true);
+			client_socket.emit_channel_access_control(&channel, vec![], removed_flags, true);
 		}
 	}
 }
