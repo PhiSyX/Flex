@@ -79,11 +79,11 @@
 
     -   [ ] Contrôles d'accès d'un salon
 
-        -   [ ] Liste des bannissements `b`
+        -   [x] Liste des bannissements `b`
         -   [ ] Liste des exceptions de bans `e`
         -   [ ] Liste des exception d'invite `I`
         -   [ ] Commande /mode `beI`
-        -   [ ] Commande /ban | /unban
+        -   [x] Commande /ban | /unban
 
 -   [x] Module NICK
 
