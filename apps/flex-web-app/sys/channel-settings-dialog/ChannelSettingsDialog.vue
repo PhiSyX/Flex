@@ -54,8 +54,8 @@ const secretSettings = ref<boolean>();
 const topicSettings = ref<boolean>();
 const selectedBans = ref<Array<string>>([]);
 
-const enabledKeySettings = ref();
-const keySettings = ref();
+const enabledKeySettings = props.room.settings.has("k") ? ref(true) : ref();
+const keySettings = props.room.settings.has("k") ? ref("") : ref();
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
 const topicModel = ref(Array.from(props.room.topic.history).at(-1));
