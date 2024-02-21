@@ -250,9 +250,15 @@ impl User
 	/// Type d'opérateur.
 	pub fn operator_type(&self) -> Option<&flag::Flag>
 	{
-		self.flags
-			.iter()
-			.find_map(|mode| self.is_operator().then_some(&mode.flag))
+		if self.is_global_operator() {
+			return Some(&flag::Flag::GlobalOperator);
+		}
+
+		if self.is_local_operator() {
+			return Some(&flag::Flag::LocalOperator);
+		}
+
+		None
 	}
 }
 

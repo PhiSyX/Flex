@@ -145,6 +145,6 @@ impl OperApplicationInterface for ChatApplication
 
 		client_socket.emit_user_modes(&[ApplyMode::new(flag_oper.clone())]);
 
-		client_socket.send_rpl_youreoper(flag_oper);
+		client_socket.send_rpl_youreoper(&flag_oper);
 	}
 }

@@ -195,8 +195,7 @@ impl ConnectionRegistrationHandler
 
 		// NOTE(phisyx): transmet à l'utilisateur son rôle d'opérateur global.
 		if client_socket.user().is_operator() {
-			client_socket
-				.send_rpl_youreoper(client_socket.user().operator_type().cloned().unwrap());
+			client_socket.send_rpl_youreoper(client_socket.user().operator_type().unwrap());
 			for channel_name in config.operator.auto_join.iter() {
 				app.join_or_create_oper_channel(&client_socket, channel_name);
 			}
