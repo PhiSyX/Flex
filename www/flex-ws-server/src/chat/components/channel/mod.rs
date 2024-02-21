@@ -131,6 +131,29 @@ impl Channel
 		self.name.to_lowercase()
 	}
 
+	/// Est-ce qu'un membre donné est banni du salon.
+	pub fn is_banned(&self, user: &super::User) -> bool
+	{
+		let check_ban = |addr| {
+			// NOTE(phisyx): pour le futur, vérifier que l'adresse se
+			// trouve dans la liste des exceptions.
+			self.access_control.banlist.contains_key(&addr)
+		};
+
+		check_ban(user.address("*!*@*"))
+			|| check_ban(user.address("*!ident@hostname"))
+			|| check_ban(user.address("*!*ident@hostname"))
+			|| check_ban(user.address("*!*@hostname"))
+			|| check_ban(user.address("*!*ident@*.hostname"))
+			|| check_ban(user.address("*!*@*.hostname"))
+			|| check_ban(user.address("nick!ident@hostname"))
+			|| check_ban(user.address("nick!*ident@hostname"))
+			|| check_ban(user.address("nick!*@hostname"))
+			|| check_ban(user.address("nick!*ident@*.hostname"))
+			|| check_ban(user.address("nick!*@*.hostname"))
+			|| check_ban(user.address("nick!*@*"))
+	}
+
 	/// Récupère un membre du salon.
 	pub fn member(&self, id: &client::ClientID) -> Option<&member::ChannelMember>
 	{
