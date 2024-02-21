@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::src::chat::components::channel::permission::ChannelNoPermissionCause;
+use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::OperApplicationInterface;
 use crate::src::ChatApplication;
@@ -44,15 +45,12 @@ impl NoticeApplicationInterface for ChatApplication
 		let moderate_flag = channel.modes_settings.has_moderate_flag();
 		let no_external_messages_flag = channel.modes_settings.has_no_external_messages_flag();
 
-		// NOTE(phisyx): pour le futur, vérifier que celui qui essaie d'écrire
-		// dans le salon n'est pas bannie.
-
 		let Some(member) = channel.member(client_socket.cid()) else {
 			if self.is_client_global_operator(client_socket) {
 				return ChannelWritePermission::Bypass;
 			}
 
-			if moderate_flag  {
+			if moderate_flag {
 				return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_CHANISINMODERATED);
 			}
 
@@ -67,9 +65,35 @@ impl NoticeApplicationInterface for ChatApplication
 			return ChannelWritePermission::Yes(member.clone());
 		}
 
+		let check_is_ban = || {
+			let check_ban = |addr| {
+				// NOTE(phisyx): pour le futur, vérifier que l'adresse se
+				// trouve dans la liste des exceptions.
+				channel.access_control.banlist.contains_key(&addr)
+			};
+
+			check_ban(client_socket.user().address("*!*@*"))
+				|| check_ban(client_socket.user().address("*!ident@hostname"))
+				|| check_ban(client_socket.user().address("*!*ident@hostname"))
+				|| check_ban(client_socket.user().address("*!*@hostname"))
+				|| check_ban(client_socket.user().address("*!*ident@*.hostname"))
+				|| check_ban(client_socket.user().address("*!*@*.hostname"))
+				|| check_ban(client_socket.user().address("nick!ident@hostname"))
+				|| check_ban(client_socket.user().address("nick!*ident@hostname"))
+				|| check_ban(client_socket.user().address("nick!*@hostname"))
+				|| check_ban(client_socket.user().address("nick!*ident@*.hostname"))
+				|| check_ban(client_socket.user().address("nick!*@*.hostname"))
+				|| check_ban(client_socket.user().address("nick!*@*"))
+		};
+
+		let member_hal = member.highest_access_level();
+
+		if check_is_ban() && member_hal.is_none() {
+			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_BANNEDFROMCHAN);
+		}
+
 		if moderate_flag
-			&& member
-				.highest_access_level()
+			&& member_hal
 				.filter(|level| level.flag() >= channel::mode::ChannelAccessLevel::Vip.flag())
 				.is_none()
 		{

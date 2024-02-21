@@ -18,7 +18,6 @@ use super::{
 };
 use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::permission::{ChannelNoPermissionCause, ChannelWritePermission};
-use crate::src::chat::features::ModeAccessControlClientSocketErrorRepliesInterface;
 use crate::src::chat::replies::*;
 use crate::src::chat::ChatApplication;
 
