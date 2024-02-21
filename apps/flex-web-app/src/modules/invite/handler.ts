@@ -32,8 +32,8 @@ export class InviteHandler implements SocketEventInterface<"INVITE"> {
 	handle(data: GenericReply<"INVITE">) {
 		const room = this.store
 			.roomManager()
-			.get(data.channel)
-			.or_else(() => Some(this.store.roomManager().active()))
+			.get(data.channel, { state: "opened:not-kicked" })
+			.or_else(() => Some(this.store.network()))
 			.unwrap();
 
 		room.addEvent("event:invite", {

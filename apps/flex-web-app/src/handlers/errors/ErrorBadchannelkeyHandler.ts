@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Some } from "@phisyx/flex-safety";
 import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
@@ -22,7 +23,11 @@ export class ErrorBadchannelkeyHandler implements SocketEventInterface<"ERR_BADC
 	}
 
 	handle(data: GenericReply<"ERR_BADCHANNELKEY">) {
-		const room = this.store.roomManager().active();
+		const room = this.store
+			.roomManager()
+			.get(data.channel, { state: "opened:not-kicked" })
+			.or_else(() => Some(this.store.network()))
+			.unwrap();
 		room.addEvent("error:err_badchannelkey", { ...data, isCurrentClient: true }, data.reason);
 	}
 }

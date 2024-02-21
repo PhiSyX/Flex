@@ -675,9 +675,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			return;
 		}
 
-		if (store.roomManager().has(roomID, { state: "both" })) {
-			const channel = store.roomManager().get(roomID, { state: "both" }).unwrap();
-			if (!channel.isClosed()) {
+		if (store.roomManager().has(roomID)) {
+			const channel = store.roomManager().get(roomID).unwrap();
+			assertChannelRoom(channel);
+			if (!channel.isClosed() && !channel.kicked) {
 				return;
 			}
 		}

@@ -23,12 +23,11 @@ export class ErrorChanoprivsneededHandler implements SocketEventInterface<"ERR_C
 	}
 
 	handle(data: GenericReply<"ERR_CHANOPRIVSNEEDED">) {
-		const maybeChannel = this.store
+		const channel = this.store
 			.roomManager()
-			.get(data.channel)
-			.or_else(() => Some(this.store.roomManager().active()));
-		if (maybeChannel.is_none()) return;
-		const channel = maybeChannel.unwrap();
+			.get(data.channel, { state: "opened:not-kicked" })
+			.or_else(() => Some(this.store.network()))
+			.unwrap();
 		channel.addEvent(
 			"error:err_chanoprivsneeded",
 			{ ...data, isCurrentClient: true },

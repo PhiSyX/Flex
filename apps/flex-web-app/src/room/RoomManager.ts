@@ -10,6 +10,7 @@
 
 import { None, Option, Some } from "@phisyx/flex-safety";
 
+import { assertChannelRoom } from "~/asserts/room";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import { Room, RoomID } from "./Room";
 
@@ -61,20 +62,28 @@ export class RoomManager {
 	 */
 	get(
 		roomID: RoomID,
-		options: { state: "opened" | "closed" | "both" } = { state: "opened" },
+		options: {
+			state: "opened" | "closed" | "opened:not-kicked";
+		} = { state: "opened" },
 	): Option<Room> {
 		const maybeRoom = Option.from(this._rooms.get(roomID.toLowerCase()));
 
 		if (options) {
 			switch (options.state) {
-				case "both":
-					return maybeRoom;
-
 				case "closed":
 					return maybeRoom.filter((room) => room.isClosed());
 
 				case "opened":
 					return maybeRoom.filter((room) => !room.isClosed());
+
+				case "opened:not-kicked":
+					return maybeRoom.filter((room) => {
+						if (room.type === "channel") {
+							assertChannelRoom(room);
+							return !room.kicked;
+						}
+						return true;
+					});
 			}
 		}
 
@@ -99,7 +108,7 @@ export class RoomManager {
 	/**
 	 * Vérifie qu'une chambre existe.
 	 */
-	has(roomID: RoomID, options?: { state: "opened" | "closed" | "both" }): boolean {
+	has(roomID: RoomID, options?: { state: "opened" | "closed" }): boolean {
 		return this.get(roomID, options).is_some();
 	}
 
@@ -114,7 +123,7 @@ export class RoomManager {
 	/**
 	 * Supprime une chambre à partir de son ID.
 	 */
-	remove(roomID: RoomID, options?: { state: "opened" | "closed" | "both" }) {
+	remove(roomID: RoomID, options?: { state: "opened" | "closed" }) {
 		if (this._currentRoom.is_some()) {
 			if (this.current().eq(roomID)) {
 				this.unsetCurrent();
