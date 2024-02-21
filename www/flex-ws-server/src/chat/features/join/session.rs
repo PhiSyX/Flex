@@ -50,28 +50,7 @@ impl JoinChannelSessionInterface for ChannelsSession
 			return Err(ChannelJoinError::HasAlreadyMember);
 		}
 
-		let check_is_ban = || {
-			let check_ban = |addr| {
-				// NOTE(phisyx): pour le futur, vérifier que l'adresse se
-				// trouve dans la liste des exceptions.
-				channel.access_control.banlist.contains_key(&addr)
-			};
-
-			check_ban(client.user().address("*!*@*"))
-				|| check_ban(client.user().address("*!ident@hostname"))
-				|| check_ban(client.user().address("*!*ident@hostname"))
-				|| check_ban(client.user().address("*!*@hostname"))
-				|| check_ban(client.user().address("*!*ident@*.hostname"))
-				|| check_ban(client.user().address("*!*@*.hostname"))
-				|| check_ban(client.user().address("nick!ident@hostname"))
-				|| check_ban(client.user().address("nick!*ident@hostname"))
-				|| check_ban(client.user().address("nick!*@hostname"))
-				|| check_ban(client.user().address("nick!*ident@*.hostname"))
-				|| check_ban(client.user().address("nick!*@*.hostname"))
-				|| check_ban(client.user().address("nick!*@*"))
-		};
-
-		if check_is_ban() {
+		if channel.is_banned(client.user()) {
 			return Err(ChannelJoinError::ERR_BANNEDFROMCHAN);
 		}
 

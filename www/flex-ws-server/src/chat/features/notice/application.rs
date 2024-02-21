@@ -65,30 +65,9 @@ impl NoticeApplicationInterface for ChatApplication
 			return ChannelWritePermission::Yes(member.clone());
 		}
 
-		let check_is_ban = || {
-			let check_ban = |addr| {
-				// NOTE(phisyx): pour le futur, vérifier que l'adresse se
-				// trouve dans la liste des exceptions.
-				channel.access_control.banlist.contains_key(&addr)
-			};
-
-			check_ban(client_socket.user().address("*!*@*"))
-				|| check_ban(client_socket.user().address("*!ident@hostname"))
-				|| check_ban(client_socket.user().address("*!*ident@hostname"))
-				|| check_ban(client_socket.user().address("*!*@hostname"))
-				|| check_ban(client_socket.user().address("*!*ident@*.hostname"))
-				|| check_ban(client_socket.user().address("*!*@*.hostname"))
-				|| check_ban(client_socket.user().address("nick!ident@hostname"))
-				|| check_ban(client_socket.user().address("nick!*ident@hostname"))
-				|| check_ban(client_socket.user().address("nick!*@hostname"))
-				|| check_ban(client_socket.user().address("nick!*ident@*.hostname"))
-				|| check_ban(client_socket.user().address("nick!*@*.hostname"))
-				|| check_ban(client_socket.user().address("nick!*@*"))
-		};
-
 		let member_hal = member.highest_access_level();
 
-		if check_is_ban() && member_hal.is_none() {
+		if channel.is_banned(client_socket.user()) && member_hal.is_none() {
 			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_BANNEDFROMCHAN);
 		}
 
