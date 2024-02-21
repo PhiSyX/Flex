@@ -26,7 +26,6 @@ function submitFormData(modesSettings: Partial<Command<"MODE">["modes"]>) {
 		layer.value.data!.room.name,
 		modesSettings as Command<"MODE">["modes"]
 	);
-	dialog.value.destroy();
 }
 
 /**

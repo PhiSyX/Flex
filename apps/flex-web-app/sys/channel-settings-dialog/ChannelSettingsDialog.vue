@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { UiButton, Dialog, InputSwitchV2 } from "@phisyx/flex-uikit";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelRoom } from "~/channel/ChannelRoom";
@@ -52,13 +52,43 @@ const operatorsOnlySettings = ref<boolean>();
 const noExternalMessagesSettings = ref<boolean>();
 const secretSettings = ref<boolean>();
 const topicSettings = ref<boolean>();
-const selectedBans = ref<Array<string>>([]);
 
 const enabledKeySettings = props.room.settings.has("k") ? ref(true) : ref();
 const keySettings = props.room.settings.has("k") ? ref("") : ref();
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
 const topicModel = ref(Array.from(props.room.topic.history).at(-1));
+
+enum AccessControl {
+	BanList,
+	BanListException,
+}
+
+const selectedAccessControlList = ref<Array<string>>([]);
+
+const activeAccessControl = ref(AccessControl.BanList);
+const activeAccessControlList = computed(() => {
+	switch (activeAccessControl.value) {
+		case AccessControl.BanList:
+			return props.room.accessControl.banlist;
+		case AccessControl.BanListException:
+			return props.room.accessControl.banlistException;
+	}
+});
+
+// Titre courant du type de contrôles d'accès
+const activeTitleAccessControl = computed(() => {
+	switch (activeAccessControl.value) {
+		case AccessControl.BanList:
+			return "Liste des bannissements";
+		case AccessControl.BanListException:
+			return "Liste des exceptions de bannissements";
+	}
+});
+
+watch(activeAccessControl, () => {
+	selectedAccessControlList.value = [];
+});
 
 function onSubmitHandler() {
 	if (isCurrentClientChannelMemberCanEditTopic.value) {
@@ -82,6 +112,7 @@ function onSubmitHandler() {
 		t: topicSettings.value,
 		O: operatorsOnlySettings.value,
 	});
+	emit("close");
 }
 
 function onDeleteSelectedMasksHandler() {
@@ -93,8 +124,23 @@ function onDeleteSelectedMasksHandler() {
 		return;
 	}
 
+	let list: "b" | "e";
+
+	switch (activeAccessControl.value) {
+		case AccessControl.BanList:
+			{
+				list = "b";
+			}
+			break;
+		case AccessControl.BanListException:
+			{
+				list = "e";
+			}
+			break;
+	}
+
 	emit("submit", {
-		b: selectedBans.value,
+		[list]: selectedAccessControlList.value,
 	});
 }
 </script>
@@ -149,18 +195,23 @@ function onDeleteSelectedMasksHandler() {
 				<option v-for="topic in room.topic.history" :value="topic" />
 			</datalist>
 
-			<h2>Liste des bannissements</h2>
+			<h2>{{ activeTitleAccessControl }}</h2>
 
-			<select multiple class="[ w:full max-w=44 ]" v-model="selectedBans">
+			<select
+				multiple
+				class="[ w:full min-h=10 max-w=44 ]"
+				v-model="selectedAccessControlList"
+			>
 				<option
-					v-for="[addr, ban] in room.accessControl.banList"
+					v-for="[addr, mode] in activeAccessControlList"
 					:disabled="
 						!isCurrentClientChannelMemberChannelOperator &&
 						!isCurrentClientGlobalOperator
 					"
 					:value="addr"
 				>
-					{{ addr }} par {{ ban.updated_by }} le {{ ban.updated_at }}
+					{{ addr }} par {{ mode.updated_by }} le
+					{{ mode.updated_at }}
 				</option>
 			</select>
 
@@ -168,8 +219,25 @@ function onDeleteSelectedMasksHandler() {
 				<UiButton
 					type="button"
 					variant="secondary"
-					:disabled="selectedBans.length === 0"
-					class="flex:shrink=1"
+					v-model:selected="activeAccessControl"
+					:value="AccessControl.BanList"
+				>
+					Bans
+				</UiButton>
+
+				<UiButton
+					type="button"
+					variant="secondary"
+					v-model:selected="activeAccessControl"
+					:value="AccessControl.BanListException"
+				>
+					Bans Excepts
+				</UiButton>
+
+				<UiButton
+					type="button"
+					variant="secondary"
+					:disabled="selectedAccessControlList.length === 0"
 					@click="onDeleteSelectedMasksHandler"
 				>
 					Supprimer
@@ -338,6 +406,12 @@ button[type="button"] {
 		outline: 3px solid var(--dialog-border-color);
 	}
 }
+
+@include fx.class("btn(:active)") {
+	--btn-secondary-bg: var(--color-grey50) !important;
+	// background-color: red;
+}
+
 button[type="submit"] {
 	--btn-primary-bg: var(--color-ultra-white);
 	--btn-primary-color: var(--color-black);

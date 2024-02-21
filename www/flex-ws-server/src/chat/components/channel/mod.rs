@@ -94,7 +94,14 @@ impl Channel
 			.values()
 			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN, mode.clone()));
 
+		let banlist_exception = self
+			.access_control
+			.banlist_exceptions
+			.values()
+			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN_EXCEPT, mode.clone()));
+
 		list.extend(banlist);
+		list.extend(banlist_exception);
 
 		list
 	}

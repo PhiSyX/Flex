@@ -150,7 +150,7 @@ export class ChannelRoom extends Room<"channel"> {
 	 * Cherche si membre se trouve dans la liste des bans.
 	 */
 	findBan(member: ChannelMember): Option<[MaskAddr, AccessControlMode["mask"]]> {
-		const banList = this.accessControl.banList;
+		const banList = this.accessControl.banlist;
 
 		const get = (addr: MaskAddr): Option<[MaskAddr, AccessControlMode["mask"]]> => {
 			return Option.from(banList.get(addr)).map((mode) => [addr, mode.flag.mask]);
@@ -196,6 +196,9 @@ export class ChannelRoom extends Room<"channel"> {
 	 */
 	setSettingMode(mode: string) {
 		if (["q", "a", "o", "h", "v"].includes(mode)) {
+			return;
+		}
+		if (["b", "e"].includes(mode)) {
 			return;
 		}
 		this.settings.add(mode);

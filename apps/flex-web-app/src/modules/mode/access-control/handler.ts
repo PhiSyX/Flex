@@ -59,10 +59,10 @@ export class BanHandler implements SocketEventInterface<"MODE"> {
 					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
 
 				if (letter === "b") {
-					channel.accessControl.banList.set(maskAddr, mode);
+					channel.accessControl.banlist.set(maskAddr, mode);
 				}
 				if (letter === "e") {
-					channel.accessControl.banExceptList.set(maskAddr, mode);
+					channel.accessControl.banlistException.set(maskAddr, mode);
 				}
 			}
 		}
@@ -77,10 +77,10 @@ export class BanHandler implements SocketEventInterface<"MODE"> {
 					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
 
 				if (letter === "b") {
-					channel.accessControl.banList.delete(maskAddr);
+					channel.accessControl.banlist.delete(maskAddr);
 				}
 				if (letter === "e") {
-					channel.accessControl.banExceptList.delete(maskAddr);
+					channel.accessControl.banlistException.delete(maskAddr);
 				}
 			}
 		}
