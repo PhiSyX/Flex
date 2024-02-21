@@ -70,9 +70,11 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 			}
 		}
 
-		channel.addEvent("event:mode", {
-			...data,
-			isCurrentClient: this.store.isCurrentClient(data.origin),
-		});
+		if (data.updated) {
+			channel.addEvent("event:mode", {
+				...data,
+				isCurrentClient: this.store.isCurrentClient(data.origin),
+			});
+		}
 	}
 }

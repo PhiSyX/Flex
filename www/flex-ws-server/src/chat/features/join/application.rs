@@ -18,9 +18,7 @@ use super::{
 };
 use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::{
-	InviteChannelClientSocketErrorReplies,
-	ModeAccessControlClientSocketErrorRepliesInterface,
-	OperClientSocketErrorRepliesInterface,
+	InviteChannelClientSocketErrorReplies, ModeAccessControlClientSocketCommandResponseInterface, ModeAccessControlClientSocketErrorRepliesInterface, OperClientSocketErrorRepliesInterface
 };
 use crate::src::chat::replies::ChannelMemberDTO;
 use crate::src::ChatApplication;
@@ -79,6 +77,8 @@ impl JoinApplicationInterface for ChatApplication
 		});
 
 		channel.remove_to_invite(client_socket.cid());
+
+		client_socket.emit_all_channel_access_control(channel);
 	}
 
 	fn join_or_create_channel(
