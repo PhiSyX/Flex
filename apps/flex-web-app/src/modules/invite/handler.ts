@@ -33,7 +33,7 @@ export class InviteHandler implements SocketEventInterface<"INVITE"> {
 		const room = this.store
 			.roomManager()
 			.get(data.channel, { state: "opened:not-kicked" })
-			.or_else(() => Some(this.store.network()))
+			.or_else(() => Some(this.store.roomManager().active({ state: "opened:not-kicked" })))
 			.unwrap();
 
 		room.addEvent("event:invite", {

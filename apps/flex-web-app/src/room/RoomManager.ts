@@ -27,14 +27,26 @@ export class RoomManager {
 	 *
 	 * 	- "channel-list-custom-room"
 	 */
-	active(): Room {
+	active(
+		options: {
+			state: "opened" | "closed" | "opened:not-kicked";
+		} = { state: "opened" },
+	): Room {
 		return this._currentRoom
 			.and_then((currentRoom) => this.get(currentRoom))
-			.filter_map((customRoom) => {
-				if (customRoom.type === "channel-list-custom-room") {
+			.filter_map((room) => {
+				if (room.type === "channel-list-custom-room") {
 					return this.get(ServerCustomRoom.ID);
 				}
-				return Some(customRoom);
+				if (room.type === "channel") {
+					if (options.state === "opened:not-kicked") {
+						assertChannelRoom(room);
+						if (!room.isClosed() && room.kicked) {
+							return this.get(ServerCustomRoom.ID);
+						}
+					}
+				}
+				return Some(room);
 			})
 			.expect("La chambre courante");
 	}
