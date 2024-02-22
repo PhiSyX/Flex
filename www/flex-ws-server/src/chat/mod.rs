@@ -56,16 +56,16 @@ mod features
 		}
 
 		mod apply;
-		mod handler;
 		mod formdata;
+		mod handler;
 		mod response;
 
 		pub use self::apply::*;
 		pub use self::channel_access_control::*;
 		pub use self::channel_access_level::*;
 		pub use self::channel_settings::*;
-		pub use self::handler::*;
 		pub use self::formdata::*;
+		pub use self::handler::*;
 		pub use self::response::*;
 	}
 
