@@ -14,8 +14,9 @@
 
 pub enum ChannelJoinError
 {
+	ERR_BANNEDFROMCHAN,
 	BadChannelKey,
 	InviteOnly,
-	HasAlreadyClient,
+	HasAlreadyMember,
 	OperOnly,
 }

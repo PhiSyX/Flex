@@ -16,6 +16,7 @@ pub mod topic;
 use std::collections::{HashMap, HashSet};
 
 use flex_web_framework::types::{secret, time};
+use lexa_wildcard_matching::WildcardMatching;
 
 use super::client;
 use crate::src::chat::features::ApplyMode;
@@ -37,6 +38,8 @@ pub struct Channel
 {
 	/// Nom du salon.
 	pub name: String,
+	/// Les modes de contrôles d'accès
+	pub(crate) access_control: mode::AccessControl,
 	/// Les paramètres du salon.
 	pub(crate) modes_settings: mode::ChannelModes<mode::SettingsFlags>,
 	/// Liste des utilisateurs du salon.
@@ -59,6 +62,7 @@ impl Channel
 		Self {
 			name: name.to_string(),
 			members: Default::default(),
+			access_control: Default::default(),
 			modes_settings: Default::default(),
 			topic: Default::default(),
 			invite_list: Default::default(),
@@ -79,6 +83,59 @@ impl Channel
 
 impl Channel
 {
+	/// Les contrôles d'accès.
+	pub fn access_controls(&self) -> Vec<(char, ApplyMode<mode::AccessControlMode>)>
+	{
+		let mut list = Vec::default();
+
+		let banlist = self
+			.access_control
+			.banlist
+			.values()
+			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN, mode.clone()));
+
+		let banlist_exception = self
+			.access_control
+			.banlist_exceptions
+			.values()
+			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN_EXCEPT, mode.clone()));
+
+		list.extend(banlist);
+		list.extend(banlist_exception);
+
+		list
+	}
+
+	/// Ajoute un ban au salon.
+	pub fn add_ban(
+		&mut self,
+		apply_by: &super::User,
+		mask: impl Into<mode::Mask>,
+	) -> Option<ApplyMode<mode::AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMode::new(mask))
+			.with_update_by(&apply_by.nickname)
+			.with_args([mask_s.clone()]);
+		self.access_control.add_ban(mask_s, mode)
+	}
+
+	/// Ajoute une exception de ban au salon.
+	pub fn add_ban_except(
+		&mut self,
+		apply_by: &super::User,
+		mask: impl Into<mode::Mask>,
+	) -> Option<ApplyMode<mode::AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMode::new(mask))
+			.with_update_by(&apply_by.nickname)
+			.with_args([mask_s.clone()]);
+		self.access_control.add_ban_except(mask_s, mode)
+	}
+
 	/// Ajoute un membre au salon.
 	pub fn add_member(&mut self, id: client::ClientID, nick: member::ChannelMember)
 	{
@@ -91,10 +148,87 @@ impl Channel
 		self.invite_list.insert(id)
 	}
 
+	// Est-ce qu'une mask existe dans la liste des bans.
+	pub fn has_banmask(&self, mask: &mode::Mask) -> bool
+	{
+		let mask_s = mask.to_string();
+		self.access_control.banlist.contains_key(&mask_s)
+	}
+
+	// Est-ce qu'une mask existe dans la liste des exceptions de bans.
+	pub fn has_banmask_except(&self, mask: &mode::Mask) -> bool
+	{
+		let mask_s = mask.to_string();
+		self.access_control.banlist_exceptions.contains_key(&mask_s)
+	}
+
 	/// ID du salon.
 	pub fn id(&self) -> String
 	{
 		self.name.to_lowercase()
+	}
+
+	/// Est-ce qu'un membre donné est banni du salon.
+	pub fn is_banned(&self, user: &super::User) -> bool
+	{
+		if self.isin_banlist_exception(user) {
+			return false;
+		}
+
+		let check = |addr| self.access_control.banlist.contains_key(&addr);
+
+		let check2 = || {
+			self.access_control
+				.banlist
+				.keys()
+				.any(|mask| user.full_address().iswm(mask))
+		};
+
+		check(user.address("*!*@*"))
+			|| check(user.address("*!ident@*"))
+			|| check(user.address("*!*ident@*"))
+			|| check(user.address("*!ident@hostname"))
+			|| check(user.address("*!*ident@hostname"))
+			|| check(user.address("*!*@hostname"))
+			|| check(user.address("*!*ident@*.hostname"))
+			|| check(user.address("*!*@*.hostname"))
+			|| check(user.address("nick!ident@hostname"))
+			|| check(user.address("nick!*ident@hostname"))
+			|| check(user.address("nick!*@hostname"))
+			|| check(user.address("nick!*ident@*.hostname"))
+			|| check(user.address("nick!*@*.hostname"))
+			|| check(user.address("nick!*@*"))
+			|| check2()
+	}
+
+	/// Est-ce qu'un membre donné est dans la liste des exceptions des
+	/// bannissement
+	pub fn isin_banlist_exception(&self, user: &super::User) -> bool
+	{
+		let check = |addr| self.access_control.banlist_exceptions.contains_key(&addr);
+
+		let check2 = || {
+			self.access_control
+				.banlist_exceptions
+				.keys()
+				.any(|mask| user.full_address().iswm(mask))
+		};
+
+		check(user.address("*!*@*"))
+			|| check(user.address("*!ident@*"))
+			|| check(user.address("*!*ident@*"))
+			|| check(user.address("*!ident@hostname"))
+			|| check(user.address("*!*ident@hostname"))
+			|| check(user.address("*!*@hostname"))
+			|| check(user.address("*!*ident@*.hostname"))
+			|| check(user.address("*!*@*.hostname"))
+			|| check(user.address("nick!ident@hostname"))
+			|| check(user.address("nick!*ident@hostname"))
+			|| check(user.address("nick!*@hostname"))
+			|| check(user.address("nick!*ident@*.hostname"))
+			|| check(user.address("nick!*@*.hostname"))
+			|| check(user.address("nick!*@*"))
+			|| check2()
 	}
 
 	/// Récupère un membre du salon.
@@ -113,6 +247,38 @@ impl Channel
 	pub fn members(&self) -> &HashMap<client::ClientID, member::ChannelMember>
 	{
 		&self.members
+	}
+
+	/// Retire un ban du salon.
+	pub fn remove_ban(
+		&mut self,
+		apply_by: &super::User,
+		mask: impl Into<mode::Mask>,
+	) -> Option<ApplyMode<mode::AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMode::new(mask))
+			.with_update_by(&apply_by.nickname)
+			.with_args([mask_s.clone()]);
+		self.access_control.remove_ban(mask_s)?;
+		Some(mode)
+	}
+
+	/// Retire une exception de ban du salon.
+	pub fn remove_ban_except(
+		&mut self,
+		apply_by: &super::User,
+		mask: impl Into<mode::Mask>,
+	) -> Option<ApplyMode<mode::AccessControlMode>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMode::new(mask))
+			.with_update_by(&apply_by.nickname)
+			.with_args([mask_s.clone()]);
+		self.access_control.remove_ban_except(mask_s)?;
+		Some(mode)
 	}
 
 	/// Retire un utilisateur de la liste des invitations

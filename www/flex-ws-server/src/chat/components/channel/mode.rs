@@ -8,12 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod access_control;
 mod access_level;
 mod settings;
 
 use std::collections::HashMap;
 use std::ops;
 
+pub use self::access_control::*;
 pub use self::access_level::*;
 pub use self::settings::*;
 use crate::src::chat::features::ApplyMode;

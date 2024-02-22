@@ -21,13 +21,13 @@ use crate::src::chat::components::client::{self, ClientSocketInterface};
 pub trait OperClientSocketCommandResponse: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /OPER.
-	fn send_rpl_youreoper(&self, oper_type: components::user::Flag)
+	fn send_rpl_youreoper(&self, oper_type: &components::user::Flag)
 	{
 		let origin = Origin::from(self.client());
 		let rpl_youreoper = RplYoureoperReply {
 			origin: &origin,
 			tags: RplYoureoperReply::default_tags(),
-			oper_type: &oper_type,
+			oper_type,
 		};
 		self.emit(rpl_youreoper.name(), rpl_youreoper);
 	}

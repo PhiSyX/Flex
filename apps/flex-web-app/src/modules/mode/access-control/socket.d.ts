@@ -8,45 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
-}
-
 declare interface Commands {
-	MODE: {
-		target: string;
-		modes: Record<
-			CommandResponsesFromServer["MODE"]["added"][0][0],
-			string | Array<string> | boolean
-		>;
-	};
-}
+	BAN: { channels: Array<string>; masks: Array<MaskAddr> };
+	UNBAN: Commands["BAN"];
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
-
-		added: [
-			| ["b", ModeApplyFlag<AccessControlMode>]
-			| ["e", ModeApplyFlag<AccessControlMode>]
-			| ["o", ModeApplyFlag<"owner">]
-			| ["a", ModeApplyFlag<"admin_operator">]
-			| ["o", ModeApplyFlag<"operator">]
-			| ["h", ModeApplyFlag<"half_operator">]
-			| ["v", ModeApplyFlag<"vip">]
-			| ["k", ModeApplyFlag<{ key: string }>]
-			| ["i", ModeApplyFlag<"invite_only">]
-			| ["m", ModeApplyFlag<"moderate">]
-			| ["n", ModeApplyFlag<"no_external_messages">]
-			| ["O", ModeApplyFlag<"oper_only">]
-			| ["s", ModeApplyFlag<"secret">]
-			| ["t", ModeApplyFlag<"no_topic">],
-		];
-
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+	BANEX: { channels: Array<string>; masks: Array<MaskAddr> };
+	UNBANEX: Commands["BANEX"];
 }

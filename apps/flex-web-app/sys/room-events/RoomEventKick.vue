@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { type Props } from "./RoomEvent.state";
 
+interface Emits {
+	(evtName: "open-room", roomName: string): void;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-defineProps<Props<"KICK">>();
+const props = defineProps<Props<"KICK">>();
+
+const emit = defineEmits<Emits>();
+
+const openChannel = () => emit("open-room", props.data.channel);
 </script>
 
 <template>
@@ -15,11 +23,15 @@ defineProps<Props<"KICK">>();
 	</time>
 	<p>
 		* Kicks:
-		<span>{{ data.knick.nickname }}</span>
+		<bdo>{{ data.knick.nickname }}</bdo>
 		a été sanctionné par
-		<span>{{ data.origin.nickname }}</span>
-		(Raison: <q>{{ data.reason }}</q>)
+		<bdo>{{ data.origin.nickname }}</bdo>
+		(Raison: <q>{{ data.reason }}</q
+		>)
 	</p>
+	<span v-if="isCurrentClient" @dblclick="openChannel"
+		>({{ data.channel }})</span
+	>
 </template>
 
 <style scoped lang="scss">
@@ -29,7 +41,11 @@ p {
 	color: var(--room-event-kick-color);
 }
 
-span {
+bdo {
 	color: var(--default-text-color);
+}
+
+span {
+	cursor: pointer;
 }
 </style>

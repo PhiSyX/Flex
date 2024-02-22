@@ -99,6 +99,24 @@ export class ChannelMember {
 	// Méthode //
 	// ------- //
 
+	address(
+		ty:
+			| "*!ident@hostname"
+			| "*!*ident@hostname"
+			| "*!*@hostname"
+			| "*!*ident@*.hostname"
+			| "*!*@*.hostname"
+			| "nick!ident@hostname"
+			| "nick!*ident@hostname"
+			| "nick!*@hostname"
+			| "nick!*ident@*.hostname"
+			| "nick!*@*.hostname"
+			| "nick!*@*"
+			| "*!*@*",
+	): MaskAddr {
+		return this.user.address(ty);
+	}
+
 	/**
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * minimal donné.

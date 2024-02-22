@@ -12,7 +12,7 @@ use std::net;
 
 use dashmap::mapref::multiple::RefMutMulti;
 use dashmap::{DashMap, DashSet};
-use flex_web_framework::http::request;
+use flex_web_framework::extract::InsecureClientIp;
 use socketioxide::extract::SocketRef;
 
 use crate::src::chat::components::client;
@@ -48,13 +48,12 @@ impl ChatApplication
 	/// Crée une nouvelle session d'un client à partir d'une socket.
 	pub fn create_client(&self, socket: &SocketRef) -> client::Client
 	{
-		let request::ConnectInfo(addr) = socket
-			.req_parts()
-			.extensions
-			.get::<request::ConnectInfo<net::SocketAddr>>()
-			.expect("Adresse IP de la Socket");
+		// TODO: SecureClientIp ?
+		let InsecureClientIp(ip) =
+			InsecureClientIp::from(&socket.req_parts().headers, &socket.req_parts().extensions)
+				.expect("Adresse IP de la Socket");
 		let sid = socket.id;
-		self.clients.create(addr.ip(), sid)
+		self.clients.create(ip, sid)
 	}
 
 	/// Récupère le client courant (immuable) à partir d'une socket.

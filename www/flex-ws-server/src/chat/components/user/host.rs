@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use std::borrow::Cow;
-use std::{fmt, net, ops};
+use std::{fmt, net};
 
 use flex_crypto::SHA2;
 use flex_web_framework::types::secret;
@@ -33,9 +33,6 @@ pub struct Host
 	pub ip_addr: secret::Secret<net::IpAddr>,
 	/// Nom d'hôte masqué de l'adresse IP.
 	pub cloaked: String,
-	/// Nom d'hôte de l'adresse IP.
-	#[serde(skip_serializing)]
-	pub raw: secret::Secret<String>,
 	/// Nom d'hôte virtuel (perso) de l'utilisateur.
 	#[serde(rename = "vhost", skip_serializing_if = "Option::is_none")]
 	pub virtual_host: Option<String>,
@@ -55,13 +52,11 @@ impl Host
 		let resolve_addr =
 			dns_lookup::lookup_addr(&ip_addr).unwrap_or_else(|_| String::from("localhost"));
 
-		let cloaked = Self::get_cloaked_ip(&resolve_addr, 1..);
-		let raw = Self::get_cloaked_ip(&resolve_addr, 0..);
+		let cloaked = Self::get_cloaked_ip(&resolve_addr);
 
 		Self {
 			ip_addr: secret::Secret::new(ip_addr),
 			cloaked,
-			raw: secret::Secret::new(raw),
 			virtual_host: Default::default(),
 		}
 	}
@@ -79,22 +74,18 @@ impl Host
 impl Host
 {
 	/// Génère un nom d'hôte à partir de l'adresse IP.
-	fn get_cloaked_ip(hostname: &str, rng: ops::RangeFrom<usize>) -> String
+	fn get_cloaked_ip(hostname: &str) -> String
 	{
 		hostname
 			.split('.')
-			.enumerate()
-			.map(|(idx, part): (usize, &str)| -> Cow<str> {
-				if rng.contains(&idx) {
+			.map(|part: &str| -> Cow<str> {
+				if part.contains(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) {
 					let parsed: Result<u8, _> = part.parse();
 					if parsed.is_err() {
-						Cow::Owned(part.sha2_sliced(10..14))
-					} else {
-						Cow::Borrowed(part)
+						return Cow::Owned(part.sha2_sliced(0..part.len()));
 					}
-				} else {
-					Cow::Owned(part.sha2_sliced(2..10))
 				}
+				Cow::Borrowed(part)
 			})
 			.collect::<Vec<Cow<str>>>()
 			.join(".")
@@ -131,7 +122,6 @@ impl Default for Host
 		Self {
 			ip_addr: secret::Secret::new(net::IpAddr::V4(net::Ipv4Addr::LOCALHOST)),
 			cloaked: Default::default(),
-			raw: secret::Secret::new(Default::default()),
 			virtual_host: Default::default(),
 		}
 	}

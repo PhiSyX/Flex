@@ -33,6 +33,16 @@ declare interface ChannelOrigin {
 	};
 }
 
+declare type MaskAddr = Opaque<`${string}!${string}@${string}`, "MaskAddr">;
+
+declare interface AccessControlMode {
+	mask: {
+		nick: string;
+		ident: string;
+		host: string;
+	};
+}
+
 // NOTE(phisyx): les réponses des commandes sont déclarées dans chaque modules
 //  	EXAMPLE: ~/modules/<module>/socket.d.ts
 declare interface CommandResponsesFromServer {}
@@ -56,6 +66,7 @@ declare interface ErrorReplies {
 	ERROR: {};
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_ALREADYREGISTERED: {};
+	ERR_BANNEDFROMCHAN: { channel: string };
 	ERR_CANNOTSENDTOCHAN: { channel_name: string };
 	ERR_CHANOPRIVSNEEDED: { channel: string };
 	ERR_ERRONEUSNICKNAME: { nickname: string };

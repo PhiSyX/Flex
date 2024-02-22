@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { None, Option } from "@phisyx/flex-safety";
 import { ChannelMember } from "./ChannelMember";
 
 // -------------- //
@@ -23,8 +24,14 @@ export class ChannelMemberSelected {
 	 * Pseudo de salon sélectionné.
 	 */
 	declare member: ChannelMember;
+
 	/**
-	 * Est-ce que le pseudo sélectionné est bloqué?
+	 * Mask contenant le ban du membre.
+	 */
+	banned: Option<[MaskAddr, AccessControlMode["mask"]]> = None();
+
+	/**
+	 * Est-ce que le membre sélectionné est bloqué?
 	 */
 	declare isBlocked: boolean;
 
@@ -34,5 +41,26 @@ export class ChannelMemberSelected {
 	constructor(member: ChannelMember, isBlocked: boolean) {
 		this.member = member;
 		this.isBlocked = isBlocked;
+	}
+
+	/**
+	 * Est-ce que le membre sélectionné est banni du salon?
+	 */
+	get isBanned() {
+		return this.banned.is_some();
+	}
+
+	/**
+	 * Est-ce que le pseudo du membre sélectionné est banni du salon?
+	 */
+	get isNickBanned() {
+		return this.banned
+			.filter(([_, mask]) => mask.nick !== "*" && mask.ident === "*" && mask.host === "*")
+			.is_some();
+	}
+
+	withBanned(mask: this["banned"]) {
+		this.banned = mask;
+		return this;
 	}
 }

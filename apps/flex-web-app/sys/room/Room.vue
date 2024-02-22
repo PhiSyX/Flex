@@ -64,10 +64,7 @@ const sendMessage = (message: string) => emit("send-message", message);
 
 		<slot name="after-topic-before-main" />
 
-		<div
-			class="room/main [ flex:full ov:h flex h:full ]"
-			@dblclick="dblclickMain"
-		>
+		<div class="room/main [ flex:full ov:h flex h:full ]">
 			<slot name="before-history" />
 			<slot name="history">
 				<RoomHistoryLogs
@@ -75,6 +72,7 @@ const sendMessage = (message: string) => emit("send-message", message);
 					class="[ flex:full ]"
 					@open-private="openPrivate"
 					@open-room="openRoom"
+					@dblclick="dblclickMain"
 				/>
 			</slot>
 			<slot name="after-history" />

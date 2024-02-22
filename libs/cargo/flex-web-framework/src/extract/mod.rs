@@ -10,4 +10,6 @@
 
 mod form;
 
+pub use axum_client_ip::{InsecureClientIp, SecureClientIp};
+
 pub use self::form::*;

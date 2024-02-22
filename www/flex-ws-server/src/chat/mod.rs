@@ -25,6 +25,17 @@ mod features
 {
 	mod mode
 	{
+		mod channel_access_control
+		{
+			lexa_kernel::public_using! {
+				application,
+				client,
+				formdata,
+				handler,
+				response,
+			}
+		}
+
 		mod channel_access_level
 		{
 			lexa_kernel::public_using! {
@@ -41,17 +52,20 @@ mod features
 			lexa_kernel::public_using! {
 				application,
 				client,
-				formdata,
-				handler,
 			}
 		}
 
 		mod apply;
+		mod formdata;
+		mod handler;
 		mod response;
 
 		pub use self::apply::*;
+		pub use self::channel_access_control::*;
 		pub use self::channel_access_level::*;
 		pub use self::channel_settings::*;
+		pub use self::formdata::*;
+		pub use self::handler::*;
 		pub use self::response::*;
 	}
 

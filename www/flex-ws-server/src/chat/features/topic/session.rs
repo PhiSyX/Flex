@@ -22,7 +22,7 @@ pub trait TopicChannelsSessionInterface
 	fn is_client_can_edit_topic(
 		&self,
 		channel_id: impl AsRef<str>,
-		client_id: &client::ClientID,
+		client: &client::Client,
 	) -> Result<(), ChannelTopicError>;
 
 	fn update_topic(
@@ -42,21 +42,27 @@ impl TopicChannelsSessionInterface for ChannelsSession
 	fn is_client_can_edit_topic(
 		&self,
 		channel_id: impl AsRef<str>,
-		client_id: &client::ClientID,
+		client: &client::Client,
 	) -> Result<(), ChannelTopicError>
 	{
 		let Some(channel) = self.get(channel_id) else {
-			return Err(ChannelTopicError::Notonchannel);
+			return Err(ChannelTopicError::ERR_NOTONCHANNEL);
 		};
 
 		let topic_flag = channel.modes_settings.has_topic_flag();
 
-		let Some(channel_nick) = channel.members().get(client_id) else {
+		let Some(member) = channel.members().get(client.id()) else {
 			if topic_flag {
-				return Err(ChannelTopicError::Chanoprivsneeded);
+				return Err(ChannelTopicError::ERR_CHANOPRIVSNEEDED);
 			}
 			return Ok(());
 		};
+
+		// NOTE(phisyx): une personne bannie, membre du salon, ne peut pas
+		// 				 définir un topic.
+		if channel.is_banned(client.user()) {
+			return Err(ChannelTopicError::ERR_BANNEDFROMCHAN);
+		}
 
 		// NOTE(phisyx): tout le monde peut éditer le sujet du salon si le
 		//               drapeau topic n'est pas définit.
@@ -66,13 +72,13 @@ impl TopicChannelsSessionInterface for ChannelsSession
 
 		// NOTE(phisyx): seuls les utilisateurs avec un niveau d'accès minimal à
 		// 				 HalfOperator peuvent éditer le sujet du salon.
-		let level_access = channel_nick
+		let level_access = member
 			.access_level()
 			.iter()
 			.fold(0, |acc, mode| mode.flag() | acc);
 
 		if level_access <= channel::mode::ChannelAccessLevel::Vip.flag() {
-			return Err(ChannelTopicError::Chanoprivsneeded);
+			return Err(ChannelTopicError::ERR_CHANOPRIVSNEEDED);
 		}
 		Ok(())
 	}

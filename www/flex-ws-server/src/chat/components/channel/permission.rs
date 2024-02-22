@@ -18,5 +18,13 @@ pub enum ChannelWritePermission
 {
 	Yes(member::ChannelMember),
 	Bypass,
-	No,
+	No(ChannelNoPermissionCause),
+}
+
+pub enum ChannelNoPermissionCause
+{
+	ERR_NOSUCHCHANNEL,
+	ERR_BANNEDFROMCHAN,
+	ERR_CHANISINMODERATED,
+	ERR_NOTMEMBEROFCHAN,
 }

@@ -14,6 +14,7 @@ import { Room } from "~/room/Room";
 import { Layer, OverlayerStore } from "~/store/OverlayerStore";
 import { User, UserID } from "~/user/User";
 
+import { ChannelAccessControl } from "./ChannelAccessControl";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 import { ChannelMember } from "./ChannelMember";
 import { ChannelMembers } from "./ChannelMembers";
@@ -101,6 +102,11 @@ export class ChannelRoom extends Room<"channel"> {
 	// --------- //
 
 	/**
+	 * Control d'accès
+	 */
+	accessControl = new ChannelAccessControl();
+
+	/**
 	 * Le salon rejoint est en état de sanction.
 	 */
 	kicked = false;
@@ -141,6 +147,30 @@ export class ChannelRoom extends Room<"channel"> {
 	}
 
 	/**
+	 * Cherche si membre se trouve dans la liste des bans.
+	 */
+	findBan(member: ChannelMember): Option<[MaskAddr, AccessControlMode["mask"]]> {
+		const banList = this.accessControl.banlist;
+
+		const get = (addr: MaskAddr): Option<[MaskAddr, AccessControlMode["mask"]]> => {
+			return Option.from(banList.get(addr)).map((mode) => [addr, mode.flag.mask]);
+		};
+
+		return get(member.address("nick!ident@hostname"))
+			.or_else(() => get(member.address("*!*@*.hostname")))
+			.or_else(() => get(member.address("*!*@hostname")))
+			.or_else(() => get(member.address("*!*ident@*.hostname")))
+			.or_else(() => get(member.address("*!*ident@hostname")))
+			.or_else(() => get(member.address("*!ident@hostname")))
+			.or_else(() => get(member.address("nick!*@*")))
+			.or_else(() => get(member.address("nick!*@*.hostname")))
+			.or_else(() => get(member.address("nick!*@hostname")))
+			.or_else(() => get(member.address("nick!*ident@*.hostname")))
+			.or_else(() => get(member.address("nick!*ident@hostname")))
+			.or_else(() => get(member.address("*!*@*")));
+	}
+
+	/**
 	 * Récupère un utilisateur du salon.
 	 */
 	getMember(id: UserID): Option<ChannelMember> {
@@ -166,6 +196,9 @@ export class ChannelRoom extends Room<"channel"> {
 	 */
 	setSettingMode(mode: string) {
 		if (["q", "a", "o", "h", "v"].includes(mode)) {
+			return;
+		}
+		if (["b", "e"].includes(mode)) {
 			return;
 		}
 		this.settings.add(mode);

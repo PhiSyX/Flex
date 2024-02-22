@@ -20,7 +20,6 @@ test("Connexion au Chat", async ({ page }) => {
 
 	await page.goto("/");
 
-
 	await page.locator("#nickname").fill(nickname);
 	await page.locator("#channels").fill(channelToJoin);
 
@@ -34,9 +33,7 @@ test("Connexion au Chat", async ({ page }) => {
 	await $navChannelRoom.click();
 
 	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(
-		`Vous avez rejoint le salon ${channelToJoin}`,
-	);
+	await expect($mainRoom).toContainText(`Vous avez rejoint le salon ${channelToJoin}`);
 });
 
 test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {
@@ -53,7 +50,5 @@ test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {
 	await expect($navServer).toHaveText("Flex");
 
 	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(
-		`Bienvenue sur le réseau ${nickname}!${nickname}@F65E28A7.57B2.F6AB`,
-	);
+	await expect($mainRoom).toContainText(`Bienvenue sur le réseau ${nickname}!${nickname}@adm.phisy.rc`);
 });

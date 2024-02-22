@@ -61,7 +61,7 @@ test("Partir d'un salon via la commande /PART avec un message", async ({ browser
 	await containsMessage(
 		user2.page,
 		channelToPart,
-		`* Parts: ${user1.nick} (${user1.nick}@F65E28A7.57B2.F6AB) (Au revoir les amis.) `,
+		`* Parts: ${user1.nick} (${user1.nick}@adm.phisy.rc) (Au revoir les amis.) `,
 	);
 });
 

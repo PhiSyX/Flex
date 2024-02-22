@@ -28,6 +28,8 @@ export interface Props {
 }
 
 export interface Emits {
+	(evtName: "ban-member", member: ChannelMember): void;
+	(evtName: "ban-nick", member: ChannelMember): void;
 	(evtName: "change-nickname", event: MouseEvent): void;
 	(evtName: "close"): void;
 	(evtName: "ignore-user", origin: Origin): void;
@@ -50,6 +52,8 @@ export interface Emits {
 			mode: boolean;
 		}
 	): void;
+	(evtName: "unban-member", member: ChannelMemberSelected): void;
+	(evtName: "unban-nick", member: ChannelMemberSelected): void;
 	(evtName: "unignore-user", origin: Origin): void;
 	(
 		evtName: "unset-access-level",
@@ -91,6 +95,11 @@ const toggleNicklistTitleAttr = computed(() => {
 // Handlers //
 // -------- //
 
+const banMember = (member: ChannelMember) => emit("ban-member", member);
+const banNick = (member: ChannelMember) => emit("ban-nick", member);
+const unbanMember = (member: ChannelMemberSelected) =>
+	emit("unban-member", member);
+const unbanNick = (member: ChannelMemberSelected) => emit("unban-nick", member);
 const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
 const openRoom = (roomName: string) => emit("open-room", roomName);
 const closeRoom = () => emit("close");
@@ -210,12 +219,16 @@ const unsetAccessLevel = (
 							<ChannelUserlistMenu
 								:current-client-member="ccm"
 								:selected-member="sm"
+								@ban-member="banMember"
+								@ban-nick="banNick"
 								@ignore-user="ignoreUser"
 								@kick-member="kickMember"
 								@open-private="openPrivate"
 								@set-access-level="setAccessLevel"
 								@unignore-user="unignoreUser"
 								@unset-access-level="unsetAccessLevel"
+								@unban-member="unbanMember"
+								@unban-nick="unbanNick"
 							/>
 						</template>
 					</Match>

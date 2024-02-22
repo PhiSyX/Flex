@@ -14,6 +14,7 @@
 
 pub enum ChannelTopicError
 {
-	Notonchannel,
-	Chanoprivsneeded,
+	ERR_NOTONCHANNEL,
+	ERR_BANNEDFROMCHAN,
+	ERR_CHANOPRIVSNEEDED,
 }

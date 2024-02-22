@@ -47,7 +47,11 @@ impl JoinChannelSessionInterface for ChannelsSession
 			.expect("à cette étape, le salon DOIT forcément exister");
 
 		if self.has_member(channel_id, client.id()) {
-			return Err(ChannelJoinError::HasAlreadyClient);
+			return Err(ChannelJoinError::HasAlreadyMember);
+		}
+
+		if channel.is_banned(client.user()) {
+			return Err(ChannelJoinError::ERR_BANNEDFROMCHAN);
 		}
 
 		if channel.modes_settings.has_key_flag() {

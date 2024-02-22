@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::src::chat::components::channel::permission::ChannelNoPermissionCause;
+use crate::src::chat::components::client::ClientSocketInterface;
 use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::OperApplicationInterface;
 use crate::src::ChatApplication;
@@ -37,22 +39,23 @@ impl NoticeApplicationInterface for ChatApplication
 		use channel::permission::ChannelWritePermission;
 
 		let Some(channel) = self.get_channel(channel_name) else {
-			return ChannelWritePermission::No;
+			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_NOSUCHCHANNEL);
 		};
 
 		let moderate_flag = channel.modes_settings.has_moderate_flag();
 		let no_external_messages_flag = channel.modes_settings.has_no_external_messages_flag();
-
-		// NOTE(phisyx): pour le futur, vérifier que celui qui essaie d'écrire
-		// dans le salon n'est pas bannie.
 
 		let Some(member) = channel.member(client_socket.cid()) else {
 			if self.is_client_global_operator(client_socket) {
 				return ChannelWritePermission::Bypass;
 			}
 
-			if moderate_flag || no_external_messages_flag {
-				return ChannelWritePermission::No;
+			if moderate_flag {
+				return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_CHANISINMODERATED);
+			}
+
+			if no_external_messages_flag {
+				return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_NOTMEMBEROFCHAN);
 			}
 
 			return ChannelWritePermission::Bypass;
@@ -62,13 +65,18 @@ impl NoticeApplicationInterface for ChatApplication
 			return ChannelWritePermission::Yes(member.clone());
 		}
 
+		let member_hal = member.highest_access_level();
+
+		if channel.is_banned(client_socket.user()) && member_hal.is_none() {
+			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_BANNEDFROMCHAN);
+		}
+
 		if moderate_flag
-			&& member
-				.highest_access_level()
+			&& member_hal
 				.filter(|level| level.flag() >= channel::mode::ChannelAccessLevel::Vip.flag())
 				.is_none()
 		{
-			return ChannelWritePermission::No;
+			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_CHANISINMODERATED);
 		}
 
 		ChannelWritePermission::Yes(member.clone())

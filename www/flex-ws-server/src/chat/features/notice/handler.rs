@@ -104,7 +104,7 @@ impl NoticeHandler
 							client_socket.user(),
 						);
 					}
-					| permission::ChannelWritePermission::No => {
+					| permission::ChannelWritePermission::No(_) => {
 						continue;
 					}
 				}
@@ -126,7 +126,7 @@ impl NoticeHandler
 							client_socket.user(),
 						);
 					}
-					| permission::ChannelWritePermission::No => {
+					| permission::ChannelWritePermission::No(_) => {
 						continue;
 					}
 				}

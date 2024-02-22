@@ -15,7 +15,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ModeHandler implements SocketEventInterface<"MODE"> {
+export class BanHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -30,17 +30,8 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 	}
 
 	handle(data: GenericReply<"MODE">) {
-		if (this.store.isCurrentClient(data.target)) {
-			this.handleMe(data);
-			return;
-		}
-
+		if (this.store.isCurrentClient(data.target)) return;
 		this.handleChannel(data);
-	}
-
-	handleMe(data: GenericReply<"MODE">) {
-		const network = this.store.network();
-		network.addEvent("event:mode", { ...data, isCurrentClient: true });
 	}
 
 	handleChannel(data: GenericReply<"MODE">) {
@@ -50,31 +41,48 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 		const channel = maybeRoom.unwrap();
 		assertChannelRoom(channel);
 
-		if (data.added) {
-			for (const [letter, _] of Array.from(data.added)) {
-				channel.setSettingMode(letter);
+		function isControlAccessLetter(
+			letter: string,
+			// biome-ignore lint/suspicious/noExplicitAny: ?
+			mode: ModeApplyFlag<any>,
+		): mode is ModeApplyFlag<AccessControlMode> {
+			return ["b", "e"].includes(letter) && "mask" in mode.flag;
+		}
 
-				if (letter === "t") {
-					channel.topic.setEditable(false);
+		if (data.added) {
+			for (const [letter, mode] of Array.from(data.added)) {
+				if (!isControlAccessLetter(letter, mode)) {
+					continue;
+				}
+
+				const maskAddr =
+					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
+
+				if (letter === "b") {
+					channel.accessControl.banlist.set(maskAddr, mode);
+				}
+				if (letter === "e") {
+					channel.accessControl.banlistException.set(maskAddr, mode);
 				}
 			}
 		}
 
 		if (data.removed) {
-			for (const [letter, _] of Array.from(data.removed)) {
-				channel.unsetSettingMode(letter);
+			for (const [letter, mode] of Array.from(data.removed)) {
+				if (!isControlAccessLetter(letter, mode)) {
+					continue;
+				}
 
-				if (letter === "t") {
-					channel.topic.setEditable(true);
+				const maskAddr =
+					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
+
+				if (letter === "b") {
+					channel.accessControl.banlist.delete(maskAddr);
+				}
+				if (letter === "e") {
+					channel.accessControl.banlistException.delete(maskAddr);
 				}
 			}
-		}
-
-		if (data.updated) {
-			channel.addEvent("event:mode", {
-				...data,
-				isCurrentClient: this.store.isCurrentClient(data.origin),
-			});
 		}
 	}
 }

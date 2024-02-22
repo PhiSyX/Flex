@@ -56,15 +56,18 @@ impl TopicApplicationInterface for ChatApplication
 
 		match self
 			.channels
-			.is_client_can_edit_topic(channel_name, client_socket.cid())
+			.is_client_can_edit_topic(channel_name, client_socket.client())
 		{
 			| Ok(_) => true,
 			| Err(err) => {
 				match err {
-					| ChannelTopicError::Notonchannel => {
+					| ChannelTopicError::ERR_NOTONCHANNEL => {
 						client_socket.send_err_notonchannel(channel_name);
 					}
-					| ChannelTopicError::Chanoprivsneeded => {
+					| ChannelTopicError::ERR_BANNEDFROMCHAN => {
+						client_socket.send_err_chanoprivsneeded(channel_name);
+					}
+					| ChannelTopicError::ERR_CHANOPRIVSNEEDED => {
 						client_socket.send_err_chanoprivsneeded(channel_name);
 					}
 				};

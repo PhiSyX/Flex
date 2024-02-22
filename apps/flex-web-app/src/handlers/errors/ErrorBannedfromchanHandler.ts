@@ -8,45 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
-}
+import { Some } from "@phisyx/flex-safety";
+import { ChatStore } from "~/store/ChatStore";
 
-declare interface Commands {
-	MODE: {
-		target: string;
-		modes: Record<
-			CommandResponsesFromServer["MODE"]["added"][0][0],
-			string | Array<string> | boolean
-		>;
-	};
-}
+// -------------- //
+// Implémentation //
+// -------------- //
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
+export class ErrorBannedfromchanHandler implements SocketEventInterface<"ERR_BANNEDFROMCHAN"> {
+	constructor(private store: ChatStore) {}
 
-		added: [
-			| ["b", ModeApplyFlag<AccessControlMode>]
-			| ["e", ModeApplyFlag<AccessControlMode>]
-			| ["o", ModeApplyFlag<"owner">]
-			| ["a", ModeApplyFlag<"admin_operator">]
-			| ["o", ModeApplyFlag<"operator">]
-			| ["h", ModeApplyFlag<"half_operator">]
-			| ["v", ModeApplyFlag<"vip">]
-			| ["k", ModeApplyFlag<{ key: string }>]
-			| ["i", ModeApplyFlag<"invite_only">]
-			| ["m", ModeApplyFlag<"moderate">]
-			| ["n", ModeApplyFlag<"no_external_messages">]
-			| ["O", ModeApplyFlag<"oper_only">]
-			| ["s", ModeApplyFlag<"secret">]
-			| ["t", ModeApplyFlag<"no_topic">],
-		];
+	listen() {
+		this.store.on("ERR_BANNEDFROMCHAN", (data) => this.handle(data));
+	}
 
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">) {
+		const room = this.store
+			.roomManager()
+			.get(data.channel, { state: "opened:not-kicked" })
+			.or_else(() => Some(this.store.network()))
+			.unwrap();
+		room.addEvent("error:err_bannedfromchan", { ...data, isCurrentClient: true }, data.reason);
+	}
 }

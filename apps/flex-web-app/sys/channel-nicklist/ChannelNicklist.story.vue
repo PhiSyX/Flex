@@ -36,7 +36,7 @@ const moderatorsOriginal = [
 const moderators = {
 	original: moderatorsOriginal,
 	filtered: moderatorsOriginal.map(
-		(member) => new ChannelMemberFiltered(member)
+		(member) => new ChannelMemberFiltered(member, [])
 	),
 };
 
@@ -45,14 +45,18 @@ const vipsOriginal = [
 ];
 const vips = {
 	original: vipsOriginal,
-	filtered: vipsOriginal.map((member) => new ChannelMemberFiltered(member)),
+	filtered: vipsOriginal.map(
+		(member) => new ChannelMemberFiltered(member, [])
+	),
 };
 const usersOriginal = [
 	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User),
 ];
 const users = {
 	original: usersOriginal,
-	filtered: usersOriginal.map((member) => new ChannelMemberFiltered(member)),
+	filtered: usersOriginal.map(
+		(member) => new ChannelMemberFiltered(member, [])
+	),
 };
 </script>
 
@@ -60,6 +64,7 @@ const users = {
 	<Story title="Molecules/ChannelNicklist" responsive-disabled>
 		<Variant title="Default">
 			<ChannelNicklist
+				filter-input=""
 				:moderators="moderators"
 				:vips="vips"
 				:users="users"

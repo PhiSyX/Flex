@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { UiButton, Dialog, InputSwitchV2 } from "@phisyx/flex-uikit";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelRoom } from "~/channel/ChannelRoom";
@@ -53,11 +53,42 @@ const noExternalMessagesSettings = ref<boolean>();
 const secretSettings = ref<boolean>();
 const topicSettings = ref<boolean>();
 
-const enabledKeySettings = ref();
-const keySettings = ref();
+const enabledKeySettings = props.room.settings.has("k") ? ref(true) : ref();
+const keySettings = props.room.settings.has("k") ? ref("") : ref();
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
 const topicModel = ref(Array.from(props.room.topic.history).at(-1));
+
+enum AccessControl {
+	BanList,
+	BanListException,
+}
+
+const selectedAccessControlList = ref<Array<string>>([]);
+
+const activeAccessControl = ref(AccessControl.BanList);
+const activeAccessControlList = computed(() => {
+	switch (activeAccessControl.value) {
+		case AccessControl.BanList:
+			return props.room.accessControl.banlist;
+		case AccessControl.BanListException:
+			return props.room.accessControl.banlistException;
+	}
+});
+
+// Titre courant du type de contrôles d'accès
+const activeTitleAccessControl = computed(() => {
+	switch (activeAccessControl.value) {
+		case AccessControl.BanList:
+			return "Liste des bannissements";
+		case AccessControl.BanListException:
+			return "Liste des exceptions de bannissements";
+	}
+});
+
+watch(activeAccessControl, () => {
+	selectedAccessControlList.value = [];
+});
 
 function onSubmitHandler() {
 	if (isCurrentClientChannelMemberCanEditTopic.value) {
@@ -80,6 +111,36 @@ function onSubmitHandler() {
 		s: secretSettings.value,
 		t: topicSettings.value,
 		O: operatorsOnlySettings.value,
+	});
+	emit("close");
+}
+
+function onDeleteSelectedMasksHandler() {
+	if (
+		!isCurrentClientChannelMemberChannelOperator.value &&
+		!isCurrentClientGlobalOperator.value
+	) {
+		emit("close");
+		return;
+	}
+
+	let list: "b" | "e";
+
+	switch (activeAccessControl.value) {
+		case AccessControl.BanList:
+			{
+				list = "b";
+			}
+			break;
+		case AccessControl.BanListException:
+			{
+				list = "e";
+			}
+			break;
+	}
+
+	emit("submit", {
+		[list]: selectedAccessControlList.value,
 	});
 }
 </script>
@@ -117,6 +178,7 @@ function onSubmitHandler() {
 
 		<form
 			:id="`${layerName}_form`"
+			class="[ flex! gap=1 ]"
 			method="dialog"
 			@submit="onSubmitHandler()"
 		>
@@ -132,6 +194,55 @@ function onSubmitHandler() {
 			<datalist id="topics">
 				<option v-for="topic in room.topic.history" :value="topic" />
 			</datalist>
+
+			<h2>{{ activeTitleAccessControl }}</h2>
+
+			<select
+				multiple
+				class="[ w:full min-h=10 max-w=44 ]"
+				v-model="selectedAccessControlList"
+			>
+				<option
+					v-for="[addr, mode] in activeAccessControlList"
+					:disabled="
+						!isCurrentClientChannelMemberChannelOperator &&
+						!isCurrentClientGlobalOperator
+					"
+					:value="addr"
+				>
+					{{ addr }} par {{ mode.updated_by }} le
+					{{ mode.updated_at }}
+				</option>
+			</select>
+
+			<div class="[ flex gap=1 ]">
+				<UiButton
+					type="button"
+					variant="secondary"
+					v-model:selected="activeAccessControl"
+					:value="AccessControl.BanList"
+				>
+					Bans
+				</UiButton>
+
+				<UiButton
+					type="button"
+					variant="secondary"
+					v-model:selected="activeAccessControl"
+					:value="AccessControl.BanListException"
+				>
+					Bans Excepts
+				</UiButton>
+
+				<UiButton
+					type="button"
+					variant="secondary"
+					:disabled="selectedAccessControlList.length === 0"
+					@click="onDeleteSelectedMasksHandler"
+				>
+					Supprimer
+				</UiButton>
+			</div>
 
 			<h2>Paramètres du salon</h2>
 
@@ -254,6 +365,12 @@ function onSubmitHandler() {
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
+dialog {
+	// @media (max-height: 515px) {
+	// 	height: 100%;
+	// }
+}
+
 h1,
 h2 {
 	font: inherit;
@@ -266,6 +383,7 @@ li {
 	align-items: center;
 }
 
+select,
 input {
 	--default-placeholder-color: var(--color-grey900);
 	background: var(--color-ultra-white);
@@ -288,6 +406,12 @@ button[type="button"] {
 		outline: 3px solid var(--dialog-border-color);
 	}
 }
+
+@include fx.class("btn(:active)") {
+	--btn-secondary-bg: var(--color-grey50) !important;
+	// background-color: red;
+}
+
 button[type="submit"] {
 	--btn-primary-bg: var(--color-ultra-white);
 	--btn-primary-color: var(--color-black);

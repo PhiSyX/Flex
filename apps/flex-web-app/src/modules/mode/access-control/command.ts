@@ -8,45 +8,41 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ModeApplyFlag<F> {
-	flag: F;
-	args: Array<string>;
-	updated_at: string;
-	updated_by: string;
+import { CommandInterface } from "~/modules/interface";
+import { ChatStore } from "~/store/ChatStore";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class BanCommand implements CommandInterface<"BAN"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"BAN">) {
+		this.store.emit("BAN", payload);
+	}
 }
 
-declare interface Commands {
-	MODE: {
-		target: string;
-		modes: Record<
-			CommandResponsesFromServer["MODE"]["added"][0][0],
-			string | Array<string> | boolean
-		>;
-	};
+export class UnbanCommand implements CommandInterface<"UNBAN"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"UNBAN">) {
+		this.store.emit("UNBAN", payload);
+	}
 }
 
-declare interface CommandResponsesFromServer {
-	MODE: {
-		target: string;
-		updated: boolean;
+export class BanExCommand implements CommandInterface<"BANEX"> {
+	constructor(private store: ChatStore) {}
 
-		added: [
-			| ["b", ModeApplyFlag<AccessControlMode>]
-			| ["e", ModeApplyFlag<AccessControlMode>]
-			| ["o", ModeApplyFlag<"owner">]
-			| ["a", ModeApplyFlag<"admin_operator">]
-			| ["o", ModeApplyFlag<"operator">]
-			| ["h", ModeApplyFlag<"half_operator">]
-			| ["v", ModeApplyFlag<"vip">]
-			| ["k", ModeApplyFlag<{ key: string }>]
-			| ["i", ModeApplyFlag<"invite_only">]
-			| ["m", ModeApplyFlag<"moderate">]
-			| ["n", ModeApplyFlag<"no_external_messages">]
-			| ["O", ModeApplyFlag<"oper_only">]
-			| ["s", ModeApplyFlag<"secret">]
-			| ["t", ModeApplyFlag<"no_topic">],
-		];
+	send(payload: Command<"BANEX">) {
+		this.store.emit("BANEX", payload);
+	}
+}
 
-		removed: CommandResponsesFromServer["MODE"]["added"];
-	};
+export class UnbanExCommand implements CommandInterface<"UNBANEX"> {
+	constructor(private store: ChatStore) {}
+
+	send(payload: Command<"UNBANEX">) {
+		this.store.emit("UNBANEX", payload);
+	}
 }
