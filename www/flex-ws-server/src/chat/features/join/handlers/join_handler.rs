@@ -10,8 +10,18 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{JoinApplicationInterface, JoinCommandFormData, SajoinCommandFormData};
-use crate::src::chat::features::PartChannelApplicationInterface;
+use crate::src::chat::features::join::{
+	JoinChannelPermissionError,
+	JoinCommandFormData,
+	JoinErrorResponseInterface,
+	JoinApplicationInterface,
+};
+use crate::src::chat::features::{
+	InviteChannelClientSocketErrorReplies,
+	ModeAccessControlClientSocketErrorRepliesInterface,
+	OperClientSocketErrorRepliesInterface,
+	PartChannelApplicationInterface,
+};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -19,7 +29,6 @@ use crate::src::ChatApplication;
 // --------- //
 
 pub struct JoinHandler;
-pub struct SajoinHandler;
 
 // -------------- //
 // Implémentation //
@@ -75,35 +84,26 @@ impl JoinHandler
 		let channel_keys = &data.keys;
 		for (idx, channel_name) in data.channels.iter().enumerate() {
 			let channel_key = channel_keys.get(idx).filter(|key| !key.is_empty());
-			app.join_or_create_channel(&client_socket, channel_name, channel_key);
-		}
-	}
-}
-
-impl SajoinHandler
-{
-	pub const COMMAND_NAME: &'static str = "SAJOIN";
-
-	/// La commande SAJOIN est utilisée par un client de type opérateur global
-	/// pour forcer les pseudo à rejoindre des salons spécifiques.
-	pub fn handle(
-		socket: SocketRef,
-		State(app): State<ChatApplication>,
-		Data(data): Data<SajoinCommandFormData>,
-	)
-	{
-		let Some(client_socket) = app.current_client_operator(&socket) else {
-			return;
-		};
-
-		for nickname in data.nicknames.iter() {
-			let Some(nickname_socket) = app.find_socket_by_nickname(&socket, nickname) else {
-				client_socket.send_err_nosuchnick(nickname);
-				continue;
-			};
-
-			for channel_name in data.channels.iter() {
-				app.join_or_create_channel_bypass_permission(&nickname_socket, channel_name);
+			match app.join_or_create_channel(&client_socket, channel_name, channel_key) {
+				| Ok(_) => continue,
+				| Err(err) => {
+					match err {
+						| JoinChannelPermissionError::ERR_NOSUCHCHANNEL => {}
+						| JoinChannelPermissionError::ERR_BANNEDFROMCHAN => {
+							client_socket.send_err_bannedfromchan(channel_name);
+						}
+						| JoinChannelPermissionError::ERR_BADCHANNELKEY => {
+							client_socket.send_err_badchannelkey(channel_name);
+						}
+						| JoinChannelPermissionError::ERR_INVITEONLYCHAN => {
+							client_socket.send_err_inviteonlychan(channel_name);
+						}
+						| JoinChannelPermissionError::ERR_USERONCHANNEL => {}
+						| JoinChannelPermissionError::ERR_OPERONLY => {
+							client_socket.send_err_operonly(channel_name);
+						}
+					}
+				}
 			}
 		}
 	}

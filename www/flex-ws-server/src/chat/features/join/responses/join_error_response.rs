@@ -8,31 +8,42 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::secret;
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::{validate_channels, validate_nicknames};
+use crate::src::chat::features::join::ErrBadchannelkeyError;
 
-command_formdata! {
-	struct JOIN
-	{
-		/// Les salons à rejoindre.
-		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
-		/// Les clés associées aux salons à rejoindre.
-		#[serde(default)]
-		keys: Vec<secret::Secret<String>>,
-	}
+// --------- //
+// Interface //
+// --------- //
+
+pub trait JoinErrorResponseInterface: ClientSocketInterface
+{
+	/// Émet au client l'erreur [crate::ERR_BADCHANNELKEY].
+	fn send_err_badchannelkey(&self, channel_name: &str);
+
+	// TODO: ERR_CHANNELISFULL
+	#[allow(dead_code)]
+	fn send_err_channelisfull(&self) {}
+
+	// TODO: ERR_TOOMANYCHANNELS
+	#[allow(dead_code)]
+	fn send_err_toomanychannels(&self) {}
 }
 
-command_formdata! {
-	struct SAJOIN
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> JoinErrorResponseInterface for Socket<'s>
+{
+	fn send_err_badchannelkey(&self, channel_name: &str)
 	{
-		/// Les pseudos à forcer à rejoindre les salons.
-		#[serde(deserialize_with = "validate_nicknames")]
-		nicknames: Vec<String>,
-		/// Les salons à rejoindre.
-		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
+		let origin = Origin::from(self.client());
+		let err_badchannelkey = ErrBadchannelkeyError {
+			channel: channel_name,
+			tags: ErrBadchannelkeyError::default_tags(),
+			origin: &origin,
+		};
+		self.emit(err_badchannelkey.name(), err_badchannelkey);
 	}
 }

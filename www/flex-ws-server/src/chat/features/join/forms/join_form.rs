@@ -8,15 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ----------- //
-// Énumération //
-// ----------- //
+use flex_chat_channel::validate_channels;
+use flex_chat_macro::{command_formdata, serde};
+use flex_web_framework::types::secret::Secret;
 
-pub enum ChannelJoinError
-{
-	ERR_BANNEDFROMCHAN,
-	BadChannelKey,
-	InviteOnly,
-	HasAlreadyMember,
-	OperOnly,
+command_formdata! {
+	struct JOIN
+	{
+		/// Les salons à rejoindre.
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		/// Les clés associées aux salons à rejoindre.
+		#[serde(default)]
+		keys: Vec<Secret<String>>,
+	}
 }

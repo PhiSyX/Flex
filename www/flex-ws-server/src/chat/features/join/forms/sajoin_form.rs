@@ -8,22 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::{command_response, error_replies};
+use flex_chat_channel::validate_channels;
+use flex_chat_macro::{command_formdata, serde};
+use flex_chat_user::validate_nicknames;
 
-command_response! {
-	struct JOIN
+command_formdata! {
+	struct SAJOIN
 	{
-		/// Les salons que le client DOIT rejoindre.
-		channel: &'a str,
-		/// Est-ce que le client a été forcé de rejoindre ces salons?
-		///
-		/// NOTE: Seuls les admins peuvent forcer un client de rejoindre un
-		/// salon.
-		forced: bool,
+		/// Les pseudos à forcer à rejoindre les salons.
+		#[serde(deserialize_with = "validate_nicknames")]
+		nicknames: Vec<String>,
+		/// Les salons à rejoindre.
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
 	}
-}
-
-error_replies! {
-	| 475 <-> ERR_BADCHANNELKEY { channel: str }
-		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+k)"
 }
