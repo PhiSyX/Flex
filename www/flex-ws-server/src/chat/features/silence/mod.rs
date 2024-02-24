@@ -8,33 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::SilenceCommandResponse;
-use crate::src::chat::components::{self, client, ClientSocketInterface, Origin};
-
-// --------- //
-// Interface //
-// --------- //
-
-pub trait SilenceClientSocketInterface: ClientSocketInterface
-{
-	/// Émet au client les réponses liées à la commande /SILENCE.
-	fn emit_silence(&self, users: &[&components::Origin], updated: Option<bool>)
-	{
-		let origin = Origin::from(self.client());
-		let silence_command = SilenceCommandResponse {
-			origin: &origin,
-			tags: SilenceCommandResponse::default_tags(),
-			added: matches!(updated, Some(true) | None),
-			removed: matches!(updated, Some(false)),
-			users,
-			updated: updated.is_some(),
-		};
-		self.emit(silence_command.name(), silence_command);
-	}
+lexa_kernel::public_using! {
+	application,
 }
 
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
+lexa_kernel::public_using! {
+	handlers / {
+		silence_handler,
+	};
 
-impl<'s> SilenceClientSocketInterface for client::Socket<'s> {}
+	responses / {
+		silence_command_response,
+	};
+
+	sessions / {
+		silence_clients_session,
+	};
+}
+
+lexa_kernel::using! {
+	forms / {
+		pub(super) silence_form,
+	};
+}

@@ -8,15 +8,46 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
-use crate::src::chat::components::Origin;
+use flex_chat_client::{Client, ClientSocketInterface, Origin, Socket};
+use flex_chat_macro::command_response;
 
 command_response! {
 	struct SILENCE
 	{
 		added: bool,
 		removed: bool,
-		users: &'a [&'a Origin],
+		users: &'a [&'a Origin<Client>],
 		updated: bool,
+	}
+}
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait SilenceClientSocketInterface: ClientSocketInterface
+{
+	/// Émet au client les réponses liées à la commande /SILENCE.
+	fn emit_silence(&self, users: &[&Origin<Self::Client>], updated: Option<bool>);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> SilenceClientSocketInterface for Socket<'s>
+{
+	fn emit_silence(&self, users: &[&Origin<Self::Client>], updated: Option<bool>)
+	{
+		let origin = Origin::from(self.client());
+		let silence_command = SilenceCommandResponse {
+			origin: &origin,
+			tags: SilenceCommandResponse::default_tags(),
+			added: matches!(updated, Some(true) | None),
+			removed: matches!(updated, Some(false)),
+			users,
+			updated: updated.is_some(),
+		};
+		self.emit(silence_command.name(), silence_command);
 	}
 }
