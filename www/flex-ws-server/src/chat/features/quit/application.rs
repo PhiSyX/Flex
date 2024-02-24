@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
+
 use super::QuitClientSocketInterface;
-use crate::src::chat::components::client;
-use crate::src::chat::features::PartChannelClientSessionInterface;
+use crate::src::chat::features::PartChannelsSessionInterface;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -20,7 +21,7 @@ use crate::src::ChatApplication;
 pub trait QuitApplicationInterface
 {
 	/// Déconnecte un client de session.
-	fn disconnect_client(&self, client_socket: client::Socket, reason: impl ToString);
+	fn disconnect_client(&self, client_socket: Socket, reason: impl ToString);
 }
 
 // -------------- //
@@ -29,7 +30,7 @@ pub trait QuitApplicationInterface
 
 impl QuitApplicationInterface for ChatApplication
 {
-	fn disconnect_client(&self, client_socket: client::Socket, reason: impl ToString)
+	fn disconnect_client(&self, client_socket: Socket, reason: impl ToString)
 	{
 		let Some(mut session_client) = self.get_client_mut_by_id(client_socket.cid()) else {
 			return;
