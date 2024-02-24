@@ -75,10 +75,11 @@ export class RememberMeStorage {
 	/**
 	 * Validation du JSON
 	 */
-	fromJSON(key: string, value: unknown) {
-		if (key.length === 0 && typeof value === "boolean") {
-			return value;
+	fromJSON(key: string, value: unknown): boolean | undefined {
+		if (!(key.length === 0 && typeof value === "boolean")) {
+			return;
 		}
+		return value;
 	}
 
 	toString() {

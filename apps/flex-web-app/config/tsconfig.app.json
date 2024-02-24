@@ -1,31 +1,36 @@
 {
 	"compilerOptions": {
-		"target": "ES2020",
-		"useDefineForClassFields": true,
-		"module": "ESNext",
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"skipLibCheck": true,
-
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "preserve",
-		"jsxFactory": "h",
-		"jsxImportSource": "vue",
-
-		"strict": true,
+		"allowUnreachableCode": false,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
+		"strict": true,
 
+		"allowImportingTsExtensions": true,
 		"baseUrl": ".",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
 		"rootDir": "..",
 		"paths": {
 			"~/*": ["../src/*"],
 			"#/*": ["../*"]
-		}
+		},
+
+		"noEmit": true,
+
+		"isolatedModules": true,
+
+		"jsx": "preserve",
+		"jsxFactory": "h",
+		"jsxImportSource": "vue",
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+
+		"skipLibCheck": true
 	},
 	"include": [
 		"../src/**/*.ts",

@@ -1,11 +1,15 @@
 {
 	"compilerOptions": {
-		"composite": true,
-		"skipLibCheck": true,
 		"module": "ESNext",
 		"moduleResolution": "bundler",
+
+		"types": ["node"],
+
 		"allowSyntheticDefaultImports": true,
-		"types": ["node"]
+
+		"composite": true,
+
+		"skipLibCheck": true
 	},
 	"include": ["*.config.ts"]
 }

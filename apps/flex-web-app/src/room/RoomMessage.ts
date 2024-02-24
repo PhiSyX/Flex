@@ -96,7 +96,7 @@ export class RoomMessage {
 	withTime(date: Date): this {
 		const time = {
 			datetime: date.toISOString(),
-			formattedTime: formatDate("`H:i:s`", new Date()),
+			formattedTime: formatDate("`H:i:s`", date),
 		};
 
 		this.time = time;
