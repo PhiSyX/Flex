@@ -8,17 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::{validate_channel, validate_nickname};
+use flex_chat_macro::error_replies;
 
-command_formdata! {
-	struct INVITE
-	{
-		/// Le pseudo à inviter sur le salon
-		#[serde(deserialize_with = "validate_nickname")]
-		nickname: String,
-		/// Le salon à inviter.
-		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
-	}
+error_replies! {
+	| 473 <-> ERR_INVITEONLYCHAN { channel: str }
+		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+i)"
 }

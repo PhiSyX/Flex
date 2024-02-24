@@ -8,29 +8,56 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::{ErrInviteonlychanError, InviteCommandResponse, RplInvitingReply};
-use crate::src::chat::components::client::{self, Origin};
-use crate::src::chat::components::{self, ClientSocketInterface};
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
+use flex_chat_macro::command_response;
+use flex_chat_user::UserInterface;
+
+use super::RplInvitingReply;
+
+command_response! {
+	struct INVITE
+	{
+		/// Le salon que le client a reçu comme invitation.
+		channel: &'a str,
+		/// Le pseudo qui a été invité.
+		nick: &'a str,
+	}
+}
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait InviteChannelClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait InviteClientSocketCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client les réponses liées à la commande /INVITE (sender + recv).
-	fn emit_invite(&self, channel: &components::Channel, target: &Self)
-	where
-		Self: Sized,
+	fn emit_invite(&self, channel: &Self::Channel, target: &Self);
+
+	/// Émet au client les réponses liées à la commande /INVITE (sender).
+	fn send_rpl_inviting(&self, channel: &Self::Channel, target: &str);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> InviteClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_invite(&self, channel: &Self::Channel, target: &Self)
 	{
-		self.send_rpl_inviting(channel, &target.user().nickname);
+		self.send_rpl_inviting(channel, target.user().nickname());
 
 		let client_origin = Origin::from(self.client());
 		let invite_command = InviteCommandResponse {
 			origin: &client_origin,
 			tags: InviteCommandResponse::default_tags(),
-			channel: &channel.name,
-			nick: &target.user().nickname,
+			channel: channel.name(),
+			nick: target.user().nickname(),
 		};
 
 		self.emit(invite_command.name(), &invite_command);
@@ -38,37 +65,15 @@ pub trait InviteChannelClientSocketCommandResponseInterface: ClientSocketInterfa
 		target.emit(invite_command.name(), invite_command);
 	}
 
-	/// Émet au client les réponses liées à la commande /INVITE (sender).
-	fn send_rpl_inviting(&self, channel: &components::Channel, target: impl AsRef<str>)
+	fn send_rpl_inviting(&self, channel: &Self::Channel, target: &str)
 	{
 		let origin = Origin::from(self.client());
 		let rpl_inviting = RplInvitingReply {
 			origin: &origin,
 			tags: RplInvitingReply::default_tags(),
-			channel: &channel.name,
-			nick: target.as_ref(),
+			channel: channel.name(),
+			nick: target,
 		};
 		self.emit(rpl_inviting.name(), rpl_inviting);
 	}
 }
-
-pub trait InviteChannelClientSocketErrorReplies: ClientSocketInterface
-{
-	fn send_err_inviteonlychan(&self, channel: impl AsRef<str>)
-	{
-		let origin = Origin::from(self.client());
-		let err_inviteonlychan = ErrInviteonlychanError {
-			origin: &origin,
-			tags: ErrInviteonlychanError::default_tags(),
-			channel: channel.as_ref(),
-		};
-		self.emit(err_inviteonlychan.name(), err_inviteonlychan);
-	}
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> InviteChannelClientSocketCommandResponseInterface for client::Socket<'s> {}
-impl<'s> InviteChannelClientSocketErrorReplies for client::Socket<'s> {}

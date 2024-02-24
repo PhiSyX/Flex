@@ -8,16 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{ChannelAccessLevel, ChannelInterface, ChannelMemberInterface};
+use flex_chat_client::ClientSocketInterface;
+use flex_chat_client_channel::ChannelClientSocketErrorReplies;
+use flex_chat_client_nick::NickClientSocketErrorReplies;
+use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{
-	InviteApplicationInterface,
-	InviteChannelClientSocketCommandResponseInterface,
+use crate::src::chat::features::invite::{
+	InviteClientSocketCommandResponseInterface,
 	InviteCommandFormData,
 };
-use crate::src::chat::components::mode::ChannelAccessLevel;
-use crate::src::chat::components::ClientSocketInterface;
-use crate::src::chat::features::ModeChannelAccessLevelApplicationInterface;
+use crate::src::chat::features::{
+	InviteApplicationInterface,
+	ModeChannelAccessLevelApplicationInterface,
+};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -65,7 +70,7 @@ impl InviteHandler
 
 		if channel.member(target_client_socket.cid()).is_some() {
 			client_socket
-				.send_err_useronchannel(&target_client_socket.user().nickname, &channel.name);
+				.send_err_useronchannel(target_client_socket.user().nickname(), channel.name());
 			return;
 		}
 
