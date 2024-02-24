@@ -8,86 +8,125 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::secret;
+use std::borrow::Cow;
+
+use flex_chat_channel::{
+	Channel,
+	ChannelAccessControlInterface,
+	ChannelInterface,
+	ChannelMember,
+	ChannelsSessionInterface,
+	MemberInterface,
+};
+use flex_chat_client::{
+	ClientServerApplicationInterface,
+	ClientSocketInterface,
+	ClientsChannelSessionInterface,
+	ClientsSessionInterface,
+	Socket,
+};
+use flex_chat_client_channel::ChannelClientSocketCommandResponse;
 
 use super::{
-	ChannelJoinError,
-	JoinChannelClientSocketCommandResponseInterface,
-	JoinChannelClientSocketErrorRepliesInterface,
-	JoinChannelSessionInterface,
+	JoinChannelPermissionError,
+	JoinChannelsSessionInterface,
+	JoinCommandResponseInterface,
+	JoinErrorResponseInterface,
 };
-use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::{
-	InviteChannelClientSocketErrorReplies, ModeAccessControlClientSocketCommandResponseInterface, ModeAccessControlClientSocketErrorRepliesInterface, OperClientSocketErrorRepliesInterface
+	ChannelMemberDTO,
+	ModeAccessControlClientSocketCommandResponseInterface,
+	ModeChannelSettingsClientSocketCommandResponseInterface,
+	TopicClientSocketInterface,
 };
-use crate::src::chat::replies::ChannelMemberDTO;
 use crate::src::ChatApplication;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait JoinApplicationInterface
+pub trait JoinApplicationInterface<'a>
 {
-	/// Rejoint un salon.
+	type ClientSocket<'cs>: JoinCommandResponseInterface + JoinErrorResponseInterface;
+	type Channel: ChannelInterface + 'a;
+
+	/// Rejoint un salon du serveur.
 	fn join_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel: &mut channel::Channel,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &mut Self::Channel,
 		forced: bool,
 	);
 
-	/// Rejoint un salon ou le crée.
+	/// Rejoint un salon du serveur ou le crée.
 	fn join_or_create_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-		channel_key: Option<&secret::Secret<String>>,
-	);
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
+	) -> Result<(), JoinChannelPermissionError>;
 
-	/// Rejoint un salon ou le crée. Aucune vérification concernant la clé n'est
-	/// faite. Cela veut dire que cette méthode peut joindre un salon même si le
-	/// salon possède une clé.
+	/// Rejoint un salon du serveur ou le crée. Aucune vérification concernant
+	/// la clé n'est faite. Cela veut dire que cette méthode peut joindre un
+	/// salon même si le salon possède une clé. Cette méthode est généralement
+	/// utilisé lorsqu'un opérateur global (GLOBOP) utilise la commande /SAJOIN
+	/// OU qu'un utilisateur se fait inviter via la commande /INVITE par les
+	/// membres d'un salon.
 	fn join_or_create_channel_bypass_permission(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-	);
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+	) -> Result<(), JoinChannelPermissionError>;
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl JoinApplicationInterface for ChatApplication
+impl<'a> JoinApplicationInterface<'a> for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'s> = Socket<'s>;
+
 	fn join_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel: &mut channel::Channel,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &mut Self::Channel,
 		forced: bool,
 	)
 	{
 		self.clients
-			.add_channel(client_socket.cid(), channel.id().as_str());
+			.add_channel_on_client(client_socket.cid(), &channel.id());
 
-		client_socket.emit_join(channel, forced, |channel_nick| {
-			let client = self.clients.get(channel_nick.id())?;
-			Some(ChannelMemberDTO::from((client, channel_nick)))
-		});
+		client_socket.emit_join(channel, forced);
 
-		channel.remove_to_invite(client_socket.cid());
+		// NOTE: Émettre le sujet du salon au client courant.
+		client_socket.send_rpl_topic(channel, false);
+
+		// NOTE: Émettre les paramètres du salon au client courant.
+		client_socket.emit_all_channels_settings(channel, false);
+
+		// NOTE: Émettre au client courant les membres du salon.
+		let map_member = |member: &ChannelMember| -> Option<ChannelMemberDTO> {
+			let client = self.clients.get(member.id())?;
+			Some(ChannelMemberDTO::from((client, member)))
+		};
+		client_socket.send_rpl_namreply(channel, map_member);
+
+		channel.remove_invite(client_socket.cid());
 
 		client_socket.emit_all_channel_access_control(channel);
 	}
 
 	fn join_or_create_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-		channel_key: Option<&secret::Secret<String>>,
-	)
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
+	) -> Result<(), JoinChannelPermissionError>
 	{
+		let channel_name: &<Self::Channel as ChannelInterface>::RefID<'a> = &channel_name.into();
+
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, channel_key.cloned());
 			let mut channel = self
@@ -95,13 +134,14 @@ impl JoinApplicationInterface for ChatApplication
 				.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
+			return Ok(());
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
 
 		let can_join = self
 			.channels
-			.can_join(channel_name, channel_key, &client_session);
+			.can_join(&client_session, channel_name, channel_key);
 
 		if can_join.is_ok() {
 			let mut channel = self
@@ -109,34 +149,19 @@ impl JoinApplicationInterface for ChatApplication
 				.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
-			return;
+			return Ok(());
 		}
 
-		if let Err(err) = can_join {
-			match err {
-				| ChannelJoinError::ERR_BANNEDFROMCHAN => {
-					client_socket.send_err_bannedfromchan(channel_name);
-				}
-				| ChannelJoinError::BadChannelKey => {
-					client_socket.send_err_badchannelkey(channel_name);
-				}
-				| ChannelJoinError::InviteOnly => {
-					client_socket.send_err_inviteonlychan(channel_name);
-				}
-				| ChannelJoinError::HasAlreadyMember => {}
-				| ChannelJoinError::OperOnly => {
-					client_socket.send_err_operonly(channel_name);
-				}
-			}
-		}
+		can_join
 	}
 
 	fn join_or_create_channel_bypass_permission(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-	)
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+	) -> Result<(), JoinChannelPermissionError>
 	{
+		let channel_name: &<Self::Channel as ChannelInterface>::RefID<'a> = &channel_name.into();
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, None);
 			let mut channel = self
@@ -144,35 +169,23 @@ impl JoinApplicationInterface for ChatApplication
 				.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
+			return Ok(());
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
 
-		let can_join = self.channels.can_join(channel_name, None, &client_session);
+		let can_join = self.channels.can_join(&client_session, channel_name, None);
 
-		match can_join {
-			| Ok(_) => {
-				let mut channel = self
-					.channels
-					.add_member(channel_name, client_socket.cid())
-					.expect("Le salon que le client a rejoint");
-				self.join_channel(client_socket, &mut channel, true);
-			}
-			| Err(err) => {
-				match err {
-					| ChannelJoinError::ERR_BANNEDFROMCHAN
-					| ChannelJoinError::BadChannelKey
-					| ChannelJoinError::InviteOnly
-					| ChannelJoinError::OperOnly => {
-						let mut channel = self
-							.channels
-							.add_member(channel_name, client_socket.cid())
-							.expect("Le salon que le client a rejoint");
-						self.join_channel(client_socket, &mut channel, true);
-					}
-					| ChannelJoinError::HasAlreadyMember => {}
-				}
-			}
+		if let Err(JoinChannelPermissionError::ERR_USERONCHANNEL) = &can_join {
+			return can_join;
 		}
+
+		let mut channel = self
+			.channels
+			.add_member(channel_name, client_socket.cid())
+			.expect("Le salon que le client a rejoint");
+		self.join_channel(client_socket, &mut channel, true);
+
+		can_join
 	}
 }
