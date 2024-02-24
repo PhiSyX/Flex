@@ -8,6 +8,8 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace.dependencies]
+chrono = { version = "0.4.34", features = ["clock", "serde"] }
+dashmap = { version = "5.5.3", features = ["serde"] }
 lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "76efd03faec3de953761b6cd5c07ec78c9d73947", features = [
 	"tracing",
 ] }
@@ -20,3 +22,4 @@ serde = { version = "1.0.196", features = ["derive"] }
 thiserror = { version = "1.0.57" }
 tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread"] }
 tracing = { version = "0.1.40" }
+uuid = { version = "1.7.0", features = ["v4", "serde"] }

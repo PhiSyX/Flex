@@ -8,10 +8,34 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
+// --------- //
+// Structure //
+// --------- //
+
+#[derive(Debug)]
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct Origin<C>
+where
+	C: super::ClientInterface,
 {
-	pub use flex_secret::Secret;
+	pub id: C::ClientID,
+	#[serde(flatten)]
+	pub user: C::User,
 }
-pub mod time;
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<C> From<&C> for Origin<C>
+where
+	C: super::ClientInterface,
+{
+	fn from(client: &C) -> Self
+	{
+		Self {
+			id: client.cid().clone(),
+			user: client.user().clone(),
+		}
+	}
+}

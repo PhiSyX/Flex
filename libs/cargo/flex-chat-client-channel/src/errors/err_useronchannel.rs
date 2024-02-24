@@ -8,10 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
+use flex_chat_macro::error_replies;
+
+error_replies! {
+	/// Renvoyé lorsqu'un client tente d'inviter un utilisateur sur un salon sur
+	/// lequel il se trouve déjà.
+	| 443 <-> ERR_USERONCHANNEL {
+		user: str,
+		channel: str
+	}
+		=> "{user} {channel} :L'utilisateur est déjà dans ce salon"
 }
-pub mod time;

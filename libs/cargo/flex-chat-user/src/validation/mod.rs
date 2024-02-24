@@ -8,10 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
-}
-pub mod time;
+mod nickname;
+
+pub use self::nickname::*;

@@ -8,10 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
+use flex_chat_macro::error_replies;
+
+error_replies! {
+	/// Renvoyé par le serveur pour indiquer que l'utilisateur cible de la
+	/// commande n'est pas sur le salon donné.
+	| 441 <-> ERR_USERNOTINCHANNEL {
+		nick: str,
+		channel: str
+	}
+		=> "{nick} {channel} :L'utilisateur n'est pas dans ce salon"
 }
-pub mod time;

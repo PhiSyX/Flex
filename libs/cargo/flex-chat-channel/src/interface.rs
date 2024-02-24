@@ -8,10 +8,47 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
+mod access_control_interface;
+mod member_interface;
+mod session_interface;
+mod settings_interface;
+mod topic_interface;
+
+pub use self::access_control_interface::*;
+pub use self::member_interface::*;
+pub use self::session_interface::*;
+pub use self::settings_interface::*;
+pub use self::topic_interface::*;
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait ChannelInterface:
+	ChannelAccessControlInterface
+	+ ChannelMemberInterface
+	+ ChannelSettingsInterface
+	+ ChannelTopicInterface
 {
-	pub use flex_secret::Secret;
+	/// Type représentant l'ID d'un salon.
+	type OwnedID: ToString + Clone;
+	type RefID<'a>: ?Sized + 'a + ToOwned<Owned = Self::OwnedID>
+	where
+		Self: 'a;
+
+	/// Type représentant la clé d'un salon.
+	type Key: ToString;
+
+	/// ID du salon.
+	fn id(&self) -> Self::OwnedID;
+
+	/// Nom du salon.
+	fn name(&self) -> &Self::RefID<'_>;
+
+	// TODO: à déplacer?
+	// Chambre Socket.
+	fn room(&self) -> String
+	{
+		format!("channel:{}", self.id().to_string())
+	}
 }
-pub mod time;

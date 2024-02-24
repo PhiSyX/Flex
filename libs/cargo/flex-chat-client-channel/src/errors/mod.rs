@@ -8,10 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
-}
-pub mod time;
+mod err_chanoprivsneeded;
+mod err_nosuchchannel;
+mod err_notonchannel;
+mod err_usernotinchannel;
+mod err_useronchannel;
+
+pub use self::err_chanoprivsneeded::*;
+pub use self::err_nosuchchannel::*;
+pub use self::err_notonchannel::*;
+pub use self::err_usernotinchannel::*;
+pub use self::err_useronchannel::*;

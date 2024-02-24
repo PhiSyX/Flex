@@ -8,10 +8,24 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
+use super::member;
+
+// ----------- //
+// Énumération //
+// ----------- //
+
+pub enum ChannelWritePermission
 {
-	pub use flex_secret::Secret;
+	Yes(member::ChannelMember),
+	Bypass,
+	No(ChannelNoPermissionCause),
 }
-pub mod time;
+
+#[allow(non_camel_case_types)]
+pub enum ChannelNoPermissionCause
+{
+	ERR_NOSUCHCHANNEL,
+	ERR_BANNEDFROMCHAN,
+	ERR_CHANISINMODERATED,
+	ERR_NOTMEMBEROFCHAN,
+}

@@ -8,10 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
+use flex_chat_macro::error_replies;
+
+error_replies! {
+	/// Toute commande nécessitant des privilèges "chanop" (tels que les
+	/// messages MODE) DOIT renvoyer cette erreur si le client effectuant la
+	/// tentative n'est pas un chanop sur le salon spécifié.
+	| 482 <-> ERR_CHANOPRIVSNEEDED { channel: str }
+		=> "{channel} :Vous n'êtes pas opérateur sur ce salon"
 }
-pub mod time;

@@ -8,10 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
+mod errors;
+
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
+
+use self::errors::ErrNosuchnickError;
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait NickClientSocketErrorReplies: ClientSocketInterface
 {
-	pub use flex_secret::Secret;
+	/// Émet au client l'erreur [crate::ErrNosuchnickError].
+	fn send_err_nosuchnick(&self, nickname: &str);
 }
-pub mod time;
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'a> NickClientSocketErrorReplies for Socket<'a>
+{
+	fn send_err_nosuchnick(&self, nickname: &str)
+	{
+		let origin = Origin::from(self.client());
+		let err_nosuchnick = ErrNosuchnickError {
+			origin: &origin,
+			nickname,
+			tags: ErrNosuchnickError::default_tags(),
+		};
+		self.emit(err_nosuchnick.name(), err_nosuchnick);
+	}
+}

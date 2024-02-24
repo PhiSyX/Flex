@@ -8,10 +8,40 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
+// Cette macro génère une structure avec comme nom: $command + CommandFormData
+// où $command est transformé en camelCase.
+//
+// Exemple pour le nom de commande "PASS" => "PassCommandFormData"
+#[macro_export]
+macro_rules! command_formdata {
+	(
+		$(
+		$(#[$doc_struct:meta])*
+		struct $command:ident {
+			$(
+				$(#[$doc_field:meta])*
+				$field:ident : $ty:ty,
+			)*
+		}
+		)*
+	) => {
+// --------- //
+// Structure //
+// --------- //
+
+$crate::paste::paste! { $(
+
+	#[derive(Debug)]
+	#[derive(serde::Serialize, serde::Deserialize)]
+	$(#[$doc_struct])*
+	pub struct [ <$command:camel CommandFormData> ]
+	{
+		$(
+			$(#[$doc_field])*
+			pub $field: $ty,
+		)*
+	}
+
+)* }
+	}
 }
-pub mod time;

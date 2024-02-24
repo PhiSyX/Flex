@@ -8,10 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
+use flex_chat_macro::{command_response, reserved_numerics};
+
+reserved_numerics! {
+	| 353 <-> RPL_NAMREPLY {
+		visibility: str,
+		channel: str,
+		nicks: str
+	}
+		=> "{visibility} {channel} :{nicks}"
 }
-pub mod time;
+
+reserved_numerics! {
+	| 366 <-> RPL_ENDOFNAMES {
+		channel: str
+	} => "{channel} :Fin de la liste `/NAMES`"
+}
+
+command_response! {
+	struct RPL_NAMREPLY<Member>
+	{
+		code: u16,
+		channel: &'a str,
+		users: Vec<Member>,
+	}
+}
+
+impl<'c, Member> RplNamreplyCommandResponse<'c, Member>
+{
+	pub fn code() -> u16
+	{
+		353
+	}
+}

@@ -8,10 +8,30 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
+use std::collections::HashMap;
+
+use flex_chat_mode::ApplyMode;
+use flex_secret::Secret;
+
+use crate::SettingsFlagInterface;
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait ChannelSettingsInterface
 {
-	pub use flex_secret::Secret;
+	type SettingsFlag: SettingsFlagInterface;
+
+	/// Crée une nouvelle structure d'un salon avec des drapeaux.
+	fn with_creation_flags(
+		self,
+		flags: impl IntoIterator<Item = ApplyMode<Self::SettingsFlag>>,
+	) -> Self;
+
+	/// Définit la clé du salon.
+	fn set_key(&mut self, updated_by: &str, key: impl Into<Secret<String>>);
+
+	/// Paramètres du salon.
+	fn settings(&self) -> HashMap<char, ApplyMode<Self::SettingsFlag>>;
 }
-pub mod time;

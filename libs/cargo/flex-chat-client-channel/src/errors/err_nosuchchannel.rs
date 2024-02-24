@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
+use flex_chat_macro::error_replies;
+
+error_replies! {
+	/// Utilisé pour indiquer que le nom du salin donné n'est pas valide.
+	| 403 <-> ERR_NOSUCHCHANNEL { channel_name: str }
+		=> "{channel_name} :Aucun salon de ce type"
 }
-pub mod time;

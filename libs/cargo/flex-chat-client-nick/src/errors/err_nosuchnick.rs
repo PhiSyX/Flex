@@ -8,10 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
-{
-	pub use flex_secret::Secret;
+use flex_chat_macro::error_replies;
+
+error_replies! {
+	/// Utilisé pour indiquer que le paramètre "nickname" fourni à une commande
+	/// est actuellement inutilisé.
+	| 401 <-> ERR_NOSUCHNICK { nickname: str }
+		=> "{nickname} :Aucun pseudonyme de ce type"
 }
-pub mod time;

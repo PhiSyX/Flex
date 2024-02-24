@@ -8,10 +8,43 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
+// -------- //
+// Fonction //
+// -------- //
+
+pub fn validate_channel<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+	D: serde::Deserializer<'de>,
 {
-	pub use flex_secret::Secret;
+	use serde::Deserialize;
+	let s = String::deserialize(deserializer)?;
+	let c = s.trim();
+	if c.is_empty() || c.len() > 30 || !c.starts_with('#') {
+		return Err(serde::de::Error::custom(format!(
+			"Le nom du salon « {s} » est incorrect"
+		)));
+	}
+
+	Ok(c.to_owned())
 }
-pub mod time;
+
+pub fn validate_channels<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
+where
+	D: serde::Deserializer<'de>,
+{
+	use serde::Deserialize;
+	let v = Vec::<String>::deserialize(deserializer)?;
+
+	let chans = v
+		.iter()
+		.filter_map(|s| {
+			let c = s.trim();
+			if c.is_empty() || c.len() > 30 || !c.starts_with('#') {
+				return None;
+			}
+			Some(c.to_owned())
+		})
+		.collect();
+
+	Ok(chans)
+}

@@ -8,10 +8,44 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod port;
-pub use {email_address as email, url, uuid};
-pub mod secret
+// --------- //
+// Interface //
+// --------- //
+
+pub trait ChannelTopicInterface
 {
-	pub use flex_secret::Secret;
+	type Topic: TopicInterface;
+
+	/// Accès à la structure du sujet.
+	fn topic(&self) -> &Self::Topic;
+
+	/// Accès à la structure du sujet (version mutable).
+	fn topic_mut(&mut self) -> &mut Self::Topic;
+
+	/// Sujet du salon.
+	fn topic_text(&self) -> &str
+	{
+		self.topic().get()
+	}
 }
-pub mod time;
+
+pub trait TopicInterface
+{
+	/// Récupère le sujet actuel.
+	fn get(&self) -> &str;
+
+	/// Vérifie si le sujet est vide ou non.
+	fn is_empty(&self) -> bool;
+
+	/// Définit le sujet d'un salon.
+	fn set(&mut self, topic: impl ToString, updated_by: impl ToString);
+
+	/// Définit le sujet d'un salon comme étant vide.
+	fn unset(&mut self, updated_by: impl ToString);
+
+	/// Date de mis à jour du sujet.
+	fn updated_at(&self) -> &chrono::DateTime<chrono::Utc>;
+
+	/// Origine de la mis à jour du sujet.
+	fn updated_by(&self) -> &str;
+}
