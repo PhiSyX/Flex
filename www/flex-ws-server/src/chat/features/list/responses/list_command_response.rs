@@ -8,11 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use client::Origin;
+use flex_chat_channel::{Channel, ChannelInterface, ChannelMemberInterface, ChannelTopicInterface};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 
 use super::{RplListReply, RplListendReply, RplListstartReply};
-use crate::src::chat::components;
-use crate::src::chat::components::client::{self, ClientSocketInterface};
 
 // --------- //
 // Interface //
@@ -20,25 +19,10 @@ use crate::src::chat::components::client::{self, ClientSocketInterface};
 
 pub trait ListChannelClientSocketCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client les réponses liées à la commande /LIST (2).
-	fn send_rpl_list(&self, channel: &components::Channel)
-	{
-		let origin = Origin::from(self.client());
-
-		let mode_settings = channel.modes_settings.to_string();
-		let topic = channel.topic_text();
-		let total_members = channel.members().len();
-
-		let rpl_list = RplListReply {
-			origin: &origin,
-			tags: RplListReply::default_tags(),
-			channel: &channel.name,
-			modes_settings: &mode_settings,
-			topic,
-			total_members: &total_members,
-		};
-		self.emit(rpl_list.name(), rpl_list);
-	}
+	fn send_rpl_list(&self, channel: &Self::Channel);
 
 	/// Émet au client les réponses liées à la commande /LIST (3).
 	fn send_rpl_listend(&self)
@@ -67,4 +51,26 @@ pub trait ListChannelClientSocketCommandResponseInterface: ClientSocketInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> ListChannelClientSocketCommandResponseInterface for client::Socket<'s> {}
+impl<'s> ListChannelClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn send_rpl_list(&self, channel: &Self::Channel)
+	{
+		let origin = Origin::from(self.client());
+
+		let mode_settings = channel.modes_settings.to_string();
+		let topic = channel.topic_text();
+		let total_members = channel.members().len();
+
+		let rpl_list = RplListReply {
+			origin: &origin,
+			tags: RplListReply::default_tags(),
+			channel: channel.name(),
+			modes_settings: &mode_settings,
+			topic,
+			total_members: &total_members,
+		};
+		self.emit(rpl_list.name(), rpl_list);
+	}
+}

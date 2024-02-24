@@ -8,17 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::reserved_numerics;
+use flex_chat_macro::reserved_numerics;
 
 reserved_numerics! {
-	| 321 <-> RPL_LISTSTART => ":Début de /LIST"
-
-	| 322 <-> RPL_LIST {
-		channel: str,
-		modes_settings: str,
-		topic: str,
-		total_members: usize
-	} => "{channel} {modes_settings} :{topic}"
-
 	| 323 <-> RPL_LISTEND => ":Fin de /LIST"
 }
