@@ -8,17 +8,51 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_serde_validation::string::validate_opt_string_filter;
+use flex_chat_client::Client;
+use socketioxide::extract::{Data, SocketRef, State};
+use socketioxide::socket;
 
-use crate::command_formdata;
+use crate::src::chat::features::quit::{QuitApplicationInterface, QuitCommandFormData};
+use crate::src::ChatApplication;
 
-command_formdata! {
-	/// Une session client se termine par un message de déconnexion. Le serveur
-	/// en prend acte en envoyant un message ERROR au client.
-	struct QUIT
+// --------- //
+// Structure //
+// --------- //
+
+pub struct QuitHandler;
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl QuitHandler
+{
+	pub const COMMAND_NAME: &'static str = "QUIT";
+
+	pub fn handle(
+		socket: SocketRef,
+		State(app): State<ChatApplication>,
+		Data(data): Data<QuitCommandFormData>,
+	)
 	{
-		/// Message de déconnexion du client.
-		#[serde(deserialize_with = "validate_opt_string_filter")]
-		message: Option<String>,
+		let _client_socket = app.current_client(&socket);
+
+		println!("DATA: {data:?}");
+	}
+}
+
+impl QuitHandler
+{
+	/// Gestion de l'événement de déconnexion.
+	pub async fn handle_disconnect(
+		socket: SocketRef,
+		State(app): State<ChatApplication>,
+		reason: socket::DisconnectReason,
+	)
+	{
+		let client_socket = app.current_client(&socket);
+		app.disconnect_client(client_socket, reason);
+		socket.extensions.remove::<Client>();
+		drop(socket);
 	}
 }

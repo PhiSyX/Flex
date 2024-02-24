@@ -8,37 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::QuitCommandResponse;
-use crate::src::chat::components::{client, ClientSocketInterface, Origin};
-
-// --------- //
-// Interface //
-// --------- //
-
-pub trait QuitClientSocketInterface: ClientSocketInterface
-{
-	/// Émet au client les réponses liées à la commande /QUIT.
-	fn emit_quit(&self, room: &str, reason: impl ToString)
-	{
-		let msg = reason.to_string();
-
-		let origin = Origin::from(self.client());
-		let quit_command = QuitCommandResponse {
-			origin: &origin,
-			tags: QuitCommandResponse::default_tags(),
-			message: msg.as_str(),
-		};
-
-		self.emit_to(
-			format!("channel:{}", room.to_lowercase()),
-			quit_command.name(),
-			quit_command,
-		);
-	}
+lexa_kernel::using! {
+	application,
 }
 
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
+lexa_kernel::public_using! {
+	handlers / {
+		quit_handler,
+	};
+}
 
-impl<'s> QuitClientSocketInterface for client::Socket<'s> {}
+lexa_kernel::using! {
+	forms / {
+		pub(super) quit_form,
+	};
+
+	responses / {
+		pub(super) quit_command_response,
+	};
+}
