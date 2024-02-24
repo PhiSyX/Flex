@@ -8,14 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::secret;
+use flex_chat_macro::error_replies;
 
-use crate::command_formdata;
-
-command_formdata! {
-	struct OPER
-	{
-		name: secret::Secret<String>,
-		password: secret::Secret<String>,
-	}
+error_replies! {
+	/// Renvoyé pour indiquer à l'utilisateur que le salon qui tente de joindre
+	/// est réservé aux opérateurs globaux et locaux du serveur uniquement.
+	| 520 <-> ERR_OPERONLY { channel: str }
+		=> ":Vous ne pouvez pas rejoindre le salon {channel} (OPÉRATEUR uniquement)"
 }

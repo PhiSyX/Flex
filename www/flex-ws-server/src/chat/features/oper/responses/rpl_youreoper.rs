@@ -8,43 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::config::flex;
-use crate::src::chat::components::client;
-use crate::src::chat::sessions::ClientsSession;
+use flex_chat_macro::reserved_numerics;
+use flex_chat_user::Flag;
 
-// --------- //
-// Interface //
-// --------- //
-
-pub trait OperClientSessionInterface
-{
-	/// Marque un client comme étant un opérateur.
-	fn marks_client_as_operator(
-		&self,
-		client_id: &client::ClientID,
-		oper: &flex::flex_config_operator_auth,
-	);
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl OperClientSessionInterface for ClientsSession
-{
-	fn marks_client_as_operator(
-		&self,
-		client_id: &client::ClientID,
-		oper: &flex::flex_config_operator_auth,
-	)
-	{
-		let Some(mut client) = self.get_mut(client_id) else {
-			return;
-		};
-
-		client.marks_client_as_operator(oper);
-		if let Some(vhost) = oper.virtual_host.as_deref() {
-			client.set_vhost(vhost);
-		}
-	}
+reserved_numerics! {
+	/// RPL_YOUREOPER est renvoyé à un client qui vient d'émettre avec succès un
+	/// message OPER et d'obtenir le statut d'opérateur.
+	| 381 <-> RPL_YOUREOPER { oper_type: Flag }
+		=> ":Vous êtes maintenant un OPÉRATEUR"
 }

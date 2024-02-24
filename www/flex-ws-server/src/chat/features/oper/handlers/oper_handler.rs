@@ -8,13 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::ClientSocketInterface;
 use flex_crypto::{Argon2Encryption, Encryption};
 use flex_web_framework::security::SecurityEncryptionService;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{OperApplicationInterface, OperClientSocketErrorRepliesInterface, OperCommandFormData};
 use crate::config::flex::flex_config;
-use crate::src::chat::components::ClientSocketInterface;
+use crate::src::chat::features::oper::{
+	OperClientSocketErrorRepliesInterface,
+	OperCommandFormData,
+};
+use crate::src::chat::features::OperApplicationInterface;
 use crate::src::ChatApplication;
 
 // --------- //

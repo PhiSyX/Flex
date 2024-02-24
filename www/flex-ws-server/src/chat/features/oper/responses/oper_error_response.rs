@@ -8,30 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use client::Origin;
+use flex_chat_client::{self, ClientSocketInterface, Origin, Socket};
 
-use super::{ErrNooperhostError, ErrOperonlyError, ErrPasswdmismatchError, RplYoureoperReply};
-use crate::src::chat::components;
-use crate::src::chat::components::client::{self, ClientSocketInterface};
+use crate::src::chat::features::oper::{
+	ErrNooperhostError,
+	ErrNoprivilegesError,
+	ErrOperonlyError,
+	ErrPasswdmismatchError,
+};
 
 // --------- //
 // Interface //
 // --------- //
-
-pub trait OperClientSocketCommandResponse: ClientSocketInterface
-{
-	/// Émet au client les réponses liées à la commande /OPER.
-	fn send_rpl_youreoper(&self, oper_type: &components::user::Flag)
-	{
-		let origin = Origin::from(self.client());
-		let rpl_youreoper = RplYoureoperReply {
-			origin: &origin,
-			tags: RplYoureoperReply::default_tags(),
-			oper_type,
-		};
-		self.emit(rpl_youreoper.name(), rpl_youreoper);
-	}
-}
 
 pub trait OperClientSocketErrorRepliesInterface: ClientSocketInterface
 {
@@ -68,11 +56,21 @@ pub trait OperClientSocketErrorRepliesInterface: ClientSocketInterface
 		};
 		self.emit(err_operonly.name(), err_operonly);
 	}
+
+	/// Émet au client l'erreur [ErrNoprivilegesError].
+	fn send_err_noprivileges(&self)
+	{
+		let origin = Origin::from(self.client());
+		let err_noprivileges = ErrNoprivilegesError {
+			origin: &origin,
+			tags: ErrNoprivilegesError::default_tags(),
+		};
+		self.emit(err_noprivileges.name(), err_noprivileges);
+	}
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> OperClientSocketCommandResponse for client::Socket<'s> {}
-impl<'s> OperClientSocketErrorRepliesInterface for client::Socket<'s> {}
+impl<'s> OperClientSocketErrorRepliesInterface for Socket<'s> {}
