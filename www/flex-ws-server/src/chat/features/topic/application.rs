@@ -8,9 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{ClientSocketInterface, Socket};
+use flex_chat_client_channel::ChannelClientSocketErrorReplies;
+use flex_chat_user::UserInterface;
+
 use super::{ChannelTopicError, TopicChannelsSessionInterface, TopicClientSocketInterface};
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::OperApplicationInterface;
 use crate::src::ChatApplication;
 
@@ -20,18 +23,21 @@ use crate::src::ChatApplication;
 
 pub trait TopicApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Est-ce que le client PEUT éditer le sujet d'un salon.
 	fn is_client_can_edit_topic(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> bool;
 
 	/// Met à jour le sujet d'un salon.
 	fn update_topic(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		topic: impl AsRef<str>,
 	);
 }
@@ -42,10 +48,13 @@ pub trait TopicApplicationInterface
 
 impl TopicApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn is_client_can_edit_topic(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> bool
 	{
 		let is_client_operator = self.is_client_global_operator(client_socket);
@@ -78,13 +87,13 @@ impl TopicApplicationInterface for ChatApplication
 
 	fn update_topic(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		topic: impl AsRef<str>,
 	)
 	{
 		self.channels
-			.update_topic(channel_name, topic, &client_socket.user().nickname);
+			.update_topic(channel_name, topic, client_socket.user().nickname());
 
 		let Some(channel) = self.get_channel(channel_name) else {
 			return;

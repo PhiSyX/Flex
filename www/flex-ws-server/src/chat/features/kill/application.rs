@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::client::{self, ClientSocketInterface};
+use flex_chat_client::Socket;
+use flex_chat_user::UserOperatorInterface;
+
+use flex_chat_client::ClientSocketInterface;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -17,11 +20,13 @@ use crate::src::ChatApplication;
 
 pub trait KillApplicationInterface
 {
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Est-ce qu'un opérateur (a) PEUT KILL un client (b)?
 	fn is_operator_able_to_kill_client(
 		&self,
-		operator_socket: &client::Socket,
-		other_socket: &client::Socket,
+		operator_socket: &Self::ClientSocket<'_>,
+		other_socket: &Self::ClientSocket<'_>,
 	) -> bool
 	{
 		assert!(operator_socket.user().is_operator());
@@ -49,4 +54,7 @@ pub trait KillApplicationInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl KillApplicationInterface for ChatApplication {}
+impl KillApplicationInterface for ChatApplication
+{
+	type ClientSocket<'cs> = Socket<'cs>;
+}

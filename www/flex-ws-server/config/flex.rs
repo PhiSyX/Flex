@@ -10,10 +10,9 @@
 
 use std::collections::HashSet;
 
+use flex_chat_channel::validate_channels;
 use flex_web_framework::types::{email, secret};
 use flex_web_framework::FeatureConfig;
-
-use crate::macro_rules::command_formdata::validate_channels;
 
 // --------- //
 // Structure //

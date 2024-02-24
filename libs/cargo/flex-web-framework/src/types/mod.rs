@@ -9,6 +9,9 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 pub mod port;
-pub mod secret;
 pub use {email_address as email, url, uuid};
+pub mod secret
+{
+	pub use flex_secret::Secret;
+}
 pub mod time;

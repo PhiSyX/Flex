@@ -1,0 +1,16 @@
+[package]
+name = "flex-chat-channel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+flex-chat-mode = { path = "../flex-chat-mode" }
+flex-chat-user = { path = "../flex-chat-user" }
+flex-secret = { path = "../flex-secret" }
+
+lexa-wildcard-matching = "0.1.0"
+
+chrono = { workspace = true }
+dashmap = { workspace = true }
+serde = { workspace = true }
+uuid = { workspace = true }

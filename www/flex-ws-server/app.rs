@@ -10,14 +10,6 @@
 
 #![allow(non_camel_case_types)]
 
-mod macro_rules
-{
-	pub(crate) mod command_formdata;
-	pub(crate) mod command_responses;
-	pub(crate) mod error_replies;
-	pub(crate) mod reserved_numerics;
-}
-
 pub mod commands;
 
 pub mod config

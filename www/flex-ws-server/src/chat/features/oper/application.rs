@@ -8,6 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{Channel, ChannelInterface, ChannelsSessionInterface, SettingsFlag};
+use flex_chat_client::{
+	self,
+	ClientInterface,
+	ClientServerApplicationInterface,
+	ClientSocketInterface,
+	Socket,
+};
+use flex_chat_mode::ApplyMode;
+use flex_chat_user::{Flag, UserInterface, UserOperatorInterface};
+
 use super::{
 	OperClientSessionInterface,
 	OperClientSocketCommandResponse,
@@ -15,15 +26,14 @@ use super::{
 };
 use crate::config::flex;
 use crate::features::ChatApplication;
-use crate::src::chat::components::client::{self, ClientSocketInterface};
-use crate::src::chat::components::{self, channel};
-use crate::src::chat::features::{
-	ApplyMode,
-	ChannelJoinError,
-	InviteChannelClientSocketErrorReplies,
+use crate::src::chat::features::join::{
 	JoinApplicationInterface,
-	JoinChannelClientSocketErrorRepliesInterface,
-	JoinChannelSessionInterface,
+	JoinChannelPermissionError,
+	JoinChannelsSessionInterface,
+	JoinErrorResponseInterface,
+};
+use crate::src::chat::features::{
+	InviteChannelClientSocketErrorReplies,
 	ModeAccessControlClientSocketErrorRepliesInterface,
 	UserClientSocketInterface,
 };
@@ -34,20 +44,23 @@ use crate::src::chat::features::{
 
 pub trait OperApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Est-ce que le client est un opérateur global?
-	fn is_client_global_operator(&self, client_socket: &client::Socket) -> bool;
+	fn is_client_global_operator(&self, client_socket: &Self::ClientSocket<'_>) -> bool;
 
 	/// Rejoint un salon opérateur ou le crée.
 	fn join_or_create_oper_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	);
 
 	/// Marque le client en session comme étant un opérateur.
 	fn marks_client_as_operator(
 		&self,
-		client_socket: &mut client::Socket,
+		client_socket: &mut Self::ClientSocket<'_>,
 		oper: &flex::flex_config_operator_auth,
 	);
 }
@@ -58,7 +71,10 @@ pub trait OperApplicationInterface
 
 impl OperApplicationInterface for ChatApplication
 {
-	fn is_client_global_operator(&self, client_socket: &client::Socket) -> bool
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
+	fn is_client_global_operator(&self, client_socket: &Self::ClientSocket<'_>) -> bool
 	{
 		let Some(client) = self.get_client_by_id(client_socket.cid()) else {
 			return false;
@@ -68,8 +84,8 @@ impl OperApplicationInterface for ChatApplication
 
 	fn join_or_create_oper_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	)
 	{
 		if !self.channels.has(channel_name) {
@@ -77,8 +93,8 @@ impl OperApplicationInterface for ChatApplication
 				channel_name,
 				None,
 				[
-					ApplyMode::new(channel::mode::SettingsFlags::OperOnly),
-					ApplyMode::new(channel::mode::SettingsFlags::Secret),
+					ApplyMode::new(SettingsFlag::OperOnly),
+					ApplyMode::new(SettingsFlag::Secret),
 				],
 			);
 			let mut channel = self
@@ -89,7 +105,7 @@ impl OperApplicationInterface for ChatApplication
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
-		let can_join = self.channels.can_join(channel_name, None, &client_session);
+		let can_join = self.channels.can_join(&client_session, channel_name, None);
 
 		if can_join.is_ok() {
 			let mut channel = self
@@ -102,17 +118,19 @@ impl OperApplicationInterface for ChatApplication
 
 		if let Err(err) = can_join {
 			match err {
-				| ChannelJoinError::ERR_BANNEDFROMCHAN => {
+				| JoinChannelPermissionError::ERR_NOSUCHCHANNEL => {}
+
+				| JoinChannelPermissionError::ERR_BANNEDFROMCHAN => {
 					client_socket.send_err_bannedfromchan(channel_name);
 				}
-				| ChannelJoinError::BadChannelKey => {
+				| JoinChannelPermissionError::ERR_BADCHANNELKEY => {
 					client_socket.send_err_badchannelkey(channel_name);
 				}
-				| ChannelJoinError::InviteOnly => {
+				| JoinChannelPermissionError::ERR_INVITEONLYCHAN => {
 					client_socket.send_err_inviteonlychan(channel_name);
 				}
-				| ChannelJoinError::HasAlreadyMember => {}
-				| ChannelJoinError::OperOnly => {
+				| JoinChannelPermissionError::ERR_USERONCHANNEL => {}
+				| JoinChannelPermissionError::ERR_OPERONLY => {
 					client_socket.send_err_operonly(channel_name);
 				}
 			}
@@ -121,7 +139,7 @@ impl OperApplicationInterface for ChatApplication
 
 	fn marks_client_as_operator(
 		&self,
-		client_socket: &mut client::Socket,
+		client_socket: &mut Self::ClientSocket<'_>,
 		oper: &flex::flex_config_operator_auth,
 	)
 	{
@@ -132,19 +150,38 @@ impl OperApplicationInterface for ChatApplication
 			client_socket.user_mut().set_vhost(vhost);
 		}
 
-		client_socket.client_mut().marks_client_as_operator(oper);
+		client_socket
+			.client_mut()
+			.marks_client_as_operator(oper.oper_type, &oper.flags);
 
 		let flag_oper = match oper.oper_type {
-			| flex::flex_config_operator_type::LocalOperator => {
-				components::user::Flag::LocalOperator
-			}
-			| flex::flex_config_operator_type::GlobalOperator => {
-				components::user::Flag::GlobalOperator
-			}
+			| flex::flex_config_operator_type::LocalOperator => Flag::LocalOperator,
+			| flex::flex_config_operator_type::GlobalOperator => Flag::GlobalOperator,
 		};
 
 		client_socket.emit_user_modes(&[ApplyMode::new(flag_oper.clone())]);
 
 		client_socket.send_rpl_youreoper(&flag_oper);
+	}
+}
+
+impl From<flex::flex_config_operator_type> for flex_chat_user::Flag
+{
+	fn from(ty: flex::flex_config_operator_type) -> Self
+	{
+		match ty {
+			| flex::flex_config_operator_type::LocalOperator => Self::LocalOperator,
+			| flex::flex_config_operator_type::GlobalOperator => Self::GlobalOperator,
+		}
+	}
+}
+
+impl From<&flex::flex_config_operator_flags> for flex_chat_user::Flag
+{
+	fn from(flag: &flex::flex_config_operator_flags) -> Self
+	{
+		match flag {
+			| flex::flex_config_operator_flags::NoKick => Self::NoKick,
+		}
 	}
 }

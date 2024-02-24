@@ -8,15 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{Channel, ChannelAccessLevel, ChannelInterface, ChannelsSessionInterface};
+use flex_chat_client::{ClientSocketInterface, Socket};
+use flex_chat_client_channel::ChannelClientSocketErrorReplies;
+use flex_chat_client_nick::NickClientSocketErrorReplies;
+use flex_chat_user::UserFlagInterface;
+
 use super::{
 	KickChannelClientSocketCommandResponseInterface,
 	KickChannelClientSocketErrorRepliesInterface,
 };
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::{channel, client};
 use crate::src::chat::features::{
 	ModeChannelAccessLevelChannelsSessionInterface,
 	OperApplicationInterface,
+	PartChannelApplicationInterface,
 };
 use crate::src::ChatApplication;
 
@@ -26,11 +31,14 @@ use crate::src::ChatApplication;
 
 pub trait KickApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Sanctionne un membre d'un salon
 	fn kick_clients_on_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		knicks: &[String],
 		comment: Option<&str>,
 	);
@@ -42,10 +50,13 @@ pub trait KickApplicationInterface
 
 impl KickApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn kick_clients_on_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		knicks: &[String],
 		comment: Option<&str>,
 	)
@@ -111,7 +122,7 @@ impl KickApplicationInterface for ChatApplication
 		if !self.channels.does_member_have_rights(
 			channel_name,
 			client_socket.cid(),
-			channel::mode::ChannelAccessLevel::HalfOperator,
+			ChannelAccessLevel::HalfOperator,
 		) {
 			client_socket.send_err_chanoprivsneeded(channel_name);
 			return;

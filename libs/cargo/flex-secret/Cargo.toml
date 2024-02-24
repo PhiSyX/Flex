@@ -1,0 +1,8 @@
+[package]
+name = "flex-secret"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+console = { version = "0.15.8" }
+serde = { workspace = true }

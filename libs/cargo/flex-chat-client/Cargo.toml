@@ -1,0 +1,14 @@
+[package]
+name = "flex-chat-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+flex-chat-user = { path = "../flex-chat-user" }
+flex-crypto = { workspace = true }
+chrono = { workspace = true }
+dashmap = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
+socketioxide = { version = "0.10.2" }
+uuid = { workspace = true }

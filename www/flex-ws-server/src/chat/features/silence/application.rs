@@ -8,8 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::{ClientSocketInterface, Socket};
+
 use super::SilenceClientsSessionInterface;
-use crate::src::chat::components::client;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -18,28 +19,30 @@ use crate::src::ChatApplication;
 
 pub trait SilenceApplicationInterface
 {
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Ajoute un client (2) à la liste des clients bloqués/ignorés du client
 	/// (1).
 	fn add_client_to_blocklist(
 		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool;
 
 	/// Est-ce que le client (2) est dans la liste des clients bloqués du
 	/// client(1) ?
 	fn client_isin_blocklist(
 		&self,
-		client_socket: &client::Socket,
-		other_client_socket: &client::Socket,
+		client_socket: &Self::ClientSocket<'_>,
+		other_client_socket: &Self::ClientSocket<'_>,
 	) -> bool;
 
 	/// Supprime un client (2) de la liste des clients bloqués/ignorés du client
 	/// (1).
 	fn remove_client_to_blocklist(
 		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool;
 }
 
@@ -49,10 +52,12 @@ pub trait SilenceApplicationInterface
 
 impl SilenceApplicationInterface for ChatApplication
 {
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn add_client_to_blocklist(
 		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool
 	{
 		self.clients
@@ -61,8 +66,8 @@ impl SilenceApplicationInterface for ChatApplication
 
 	fn client_isin_blocklist(
 		&self,
-		client_socket: &client::Socket,
-		other_client_socket: &client::Socket,
+		client_socket: &Self::ClientSocket<'_>,
+		other_client_socket: &Self::ClientSocket<'_>,
 	) -> bool
 	{
 		self.clients
@@ -71,8 +76,8 @@ impl SilenceApplicationInterface for ChatApplication
 
 	fn remove_client_to_blocklist(
 		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool
 	{
 		self.clients

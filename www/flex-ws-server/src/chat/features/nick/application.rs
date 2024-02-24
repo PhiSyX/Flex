@@ -8,13 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::{self, ClientSocketInterface, Socket};
+use flex_chat_user::UserInterface;
+
 use super::{
 	NickClientSessionInterface,
 	NickClientSocketCommandResponseInterface,
 	NickClientSocketErrorRepliesInterface,
 };
 use crate::features::ChatApplication;
-use crate::src::chat::components::client::{self, ClientSocketInterface};
 
 // --------- //
 // Interface //
@@ -22,11 +24,13 @@ use crate::src::chat::components::client::{self, ClientSocketInterface};
 
 pub trait NickApplicationInterface
 {
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Peut-on localiser un client de session via un pseudonyme ?
 	fn can_locate_client_by_nickname(&self, nickname: impl AsRef<str>) -> bool;
 
 	/// Change le pseudonyme d'un client
-	fn change_nickname_of_client(&self, client_socket: &mut client::Socket, nickname: &str);
+	fn change_nickname_of_client(&self, client_socket: &mut Self::ClientSocket<'_>, nickname: &str);
 }
 
 // -------------- //
@@ -35,12 +39,14 @@ pub trait NickApplicationInterface
 
 impl NickApplicationInterface for ChatApplication
 {
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn can_locate_client_by_nickname(&self, nickname: impl AsRef<str>) -> bool
 	{
 		self.clients.can_locate_by_nickname(nickname)
 	}
 
-	fn change_nickname_of_client(&self, client_socket: &mut client::Socket, nickname: &str)
+	fn change_nickname_of_client(&self, client_socket: &mut Self::ClientSocket<'_>, nickname: &str)
 	{
 		if let Err(error) = client_socket.user_mut().set_nickname(nickname) {
 			tracing::error!(?error, "Changement de pseudonyme impossible");

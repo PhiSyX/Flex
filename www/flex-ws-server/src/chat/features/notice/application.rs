@@ -8,20 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::channel::permission::ChannelNoPermissionCause;
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::{channel, client};
+use flex_chat_channel::{
+	Channel,
+	ChannelAccessControlInterface,
+	ChannelAccessLevel,
+	ChannelInterface,
+	ChannelMemberInterface,
+	ChannelNoPermissionCause,
+	ChannelWritePermission,
+	MemberInterface,
+};
+use flex_chat_client::{ClientSocketInterface, Socket};
+
 use crate::src::chat::features::OperApplicationInterface;
 use crate::src::ChatApplication;
 
 pub trait NoticeApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Le client peut-il écrire sur le salon?
 	fn is_client_able_to_notice_on_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-	) -> channel::permission::ChannelWritePermission;
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	) -> ChannelWritePermission;
 }
 
 // -------------- //
@@ -30,13 +42,16 @@ pub trait NoticeApplicationInterface
 
 impl NoticeApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn is_client_able_to_notice_on_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-	) -> channel::permission::ChannelWritePermission
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	) -> ChannelWritePermission
 	{
-		use channel::permission::ChannelWritePermission;
+		use flex_chat_channel::ChannelWritePermission;
 
 		let Some(channel) = self.get_channel(channel_name) else {
 			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_NOSUCHCHANNEL);
@@ -73,7 +88,7 @@ impl NoticeApplicationInterface for ChatApplication
 
 		if moderate_flag
 			&& member_hal
-				.filter(|level| level.flag() >= channel::mode::ChannelAccessLevel::Vip.flag())
+				.filter(|level| level.flag() >= ChannelAccessLevel::Vip.flag())
 				.is_none()
 		{
 			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_CHANISINMODERATED);

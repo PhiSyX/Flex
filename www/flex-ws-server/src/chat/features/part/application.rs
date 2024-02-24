@@ -8,9 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::{PartChannelClientSessionInterface, PartChannelClientSocketCommandResponseInterface};
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::{channel, client};
+use flex_chat_channel::{Channel, ChannelInterface, ChannelsSessionInterface};
+use flex_chat_client::{ClientSocketInterface, ClientsChannelSessionInterface, Socket};
+use flex_chat_client_channel::ChannelClientSocketErrorReplies;
+use flex_chat_user::UserInterface;
+
+use super::{PartChannelsSessionInterface, PartClientSocketCommandResponseInterface};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -19,10 +22,13 @@ use crate::src::ChatApplication;
 
 pub trait PartChannelApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	fn internal_part_channel<S>(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		message: Option<S>,
 		forced: Option<&str>,
 	) where
@@ -31,9 +37,9 @@ pub trait PartChannelApplicationInterface
 	/// Force un utilisateur à quitter un salon.
 	fn force_part_channel<S>(
 		&self,
-		client_socket: &client::Socket,
-		force_to_part: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		force_to_part: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		message: Option<S>,
 	) where
 		S: std::ops::Deref<Target = str>,
@@ -42,15 +48,15 @@ pub trait PartChannelApplicationInterface
 			force_to_part,
 			channel_name,
 			message,
-			Some(&client_socket.user().nickname),
+			Some(client_socket.user().nickname()),
 		)
 	}
 
 	/// Part d'un salon.
 	fn part_channel<S>(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		message: Option<S>,
 	) where
 		S: std::ops::Deref<Target = str>,
@@ -59,15 +65,23 @@ pub trait PartChannelApplicationInterface
 	}
 
 	/// Part de tous les salons.
-	fn part_all_channels(&self, client_socket: &client::Socket)
+	fn part_all_channels(&self, client_socket: &Self::ClientSocket<'_>)
 	{
 		self.remove_client_from_all_his_channels(client_socket, Some("/PARTALL"))
 	}
 
+	/// Supprime un membre d'un salon. Si le salon n'a plus de membres, il sera
+	/// également supprimé.
+	fn remove_member_from_channel(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		member_client_socket: &Self::ClientSocket<'_>,
+	) -> Option<()>;
+
 	/// Supprime le client courant de tous ses salons.
 	fn remove_client_from_all_his_channels<S>(
 		&self,
-		client_socket: &client::Socket,
+		client_socket: &Self::ClientSocket<'_>,
 		reason: Option<S>,
 	) where
 		S: std::ops::Deref<Target = str>,
@@ -80,10 +94,13 @@ pub trait PartChannelApplicationInterface
 
 impl PartChannelApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn internal_part_channel<S>(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		message: Option<S>,
 		forced: Option<&str>,
 	) where
@@ -104,9 +121,22 @@ impl PartChannelApplicationInterface for ChatApplication
 		client_socket.emit_part(channel_name, message, forced)
 	}
 
+	fn remove_member_from_channel(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+
+		member_client_socket: &Self::ClientSocket<'_>,
+	) -> Option<()>
+	{
+		self.clients
+			.remove_channel_on_client(member_client_socket.cid(), channel_name);
+		self.channels
+			.remove_member(channel_name, member_client_socket.cid())
+	}
+
 	fn remove_client_from_all_his_channels<S>(
 		&self,
-		client_socket: &client::Socket,
+		client_socket: &Self::ClientSocket<'_>,
 		reason: Option<S>,
 	) where
 		S: std::ops::Deref<Target = str>,
