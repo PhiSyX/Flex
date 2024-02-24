@@ -8,54 +8,46 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::{RplAwayReply, RplNowawayReply, RplUnawayReply};
-use crate::src::chat::components::{client, ClientSocketInterface, Origin};
+use flex_chat_client::{ClientSocketInterface, Socket};
+
+use super::{UserStatusAwayClientsSessionInterface, UserStatusClientSocketInterface};
+use crate::src::ChatApplication;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait UserStatusClientSocketInterface: ClientSocketInterface
+pub trait UserStatusAwayApplicationInterface
 {
-	/// Émet au client les réponses liées à la commande /AWAY + /PRIVMSG
-	fn send_rpl_away(&self, target_client_socket: &Self)
-	{
-		let origin = Origin::from(target_client_socket.client());
-		let message = target_client_socket.user().away_message();
-		let rpl_away = RplAwayReply {
-			origin: &origin,
-			tags: RplAwayReply::default_tags(),
-			message: &message,
-			nick: &target_client_socket.user().nickname,
-		};
-		self.emit(rpl_away.name(), rpl_away);
-	}
+	/// Marque le client en session comme étant absent.
+	fn marks_client_as_away(&self, client_socket: &Socket, text: impl ToString);
 
-	/// Émet au client les réponses liées à la commande /AWAY.
-	fn send_rpl_nowaway(&self)
-	{
-		let origin = Origin::from(self.client());
-		let rpl_nowaway = RplNowawayReply {
-			origin: &origin,
-			tags: RplNowawayReply::default_tags(),
-		};
-		self.emit(rpl_nowaway.name(), rpl_nowaway);
-	}
-
-	/// Émet au client les réponses liées à la commande /AWAY.
-	fn send_rpl_unaway(&self)
-	{
-		let origin = Origin::from(self.client());
-		let rpl_nowaway = RplUnawayReply {
-			origin: &origin,
-			tags: RplUnawayReply::default_tags(),
-		};
-		self.emit(rpl_nowaway.name(), rpl_nowaway);
-	}
+	/// Marque le client en session comme n'étant plus absent.
+	fn marks_client_as_no_longer_away(&self, client_socket: &Socket);
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> UserStatusClientSocketInterface for client::Socket<'s> {}
+impl UserStatusAwayApplicationInterface for ChatApplication
+{
+	fn marks_client_as_away(&self, client_socket: &Socket, text: impl ToString)
+	{
+		self.clients.marks_client_as_away(client_socket.cid(), text);
+		client_socket.send_rpl_nowaway();
+	}
+
+	fn marks_client_as_no_longer_away(&self, client_socket: &Socket)
+	{
+		if self.clients.is_client_away(client_socket.cid()) {
+			self.clients
+				.marks_client_as_no_longer_away(client_socket.cid());
+			client_socket.send_rpl_unaway();
+		} else {
+			self.clients
+				.marks_client_as_away(client_socket.cid(), "Je suis absent.");
+			client_socket.send_rpl_nowaway();
+		}
+	}
+}

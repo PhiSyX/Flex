@@ -10,7 +10,10 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{AwayCommandFormData, UserStatusAwayApplicationInterface};
+use crate::src::chat::features::user_status::{
+	AwayCommandFormData,
+	UserStatusAwayApplicationInterface,
+};
 use crate::src::ChatApplication;
 
 // --------- //

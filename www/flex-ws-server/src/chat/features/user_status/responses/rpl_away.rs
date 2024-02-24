@@ -8,13 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::reserved_numerics;
+use flex_chat_macro::reserved_numerics;
 
 reserved_numerics! {
 	| 301 <-> RPL_AWAY { nick: str, message: str }
 		=> "{nick} :{message}"
-	| 305 <-> RPL_UNAWAY
-		=> ":Vous n'êtes plus marqué comme étant absent"
-	| 306 <-> RPL_NOWAWAY
-		 => ":Vous avez été marqué comme étant absent"
 }

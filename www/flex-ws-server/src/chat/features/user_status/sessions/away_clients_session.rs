@@ -8,7 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::client;
+use flex_chat_client::{ClientID, ClientInterface, ClientsSessionInterface};
+use flex_chat_user::UserAwayInterface;
+
 use crate::src::chat::sessions::ClientsSession;
 
 // --------- //
@@ -18,13 +20,13 @@ use crate::src::chat::sessions::ClientsSession;
 pub trait UserStatusAwayClientsSessionInterface
 {
 	/// Vérifie si un client en session est absent.
-	fn is_client_away(&self, client_id: &client::ClientID) -> bool;
+	fn is_client_away(&self, client_id: &ClientID) -> bool;
 
 	/// Marque un client comme étant absent.
-	fn marks_client_as_away(&self, client_id: &client::ClientID, text: impl ToString);
+	fn marks_client_as_away(&self, client_id: &ClientID, text: impl ToString);
 
 	/// Marque un client comme n'étant plus absent.
-	fn marks_client_as_no_longer_away(&self, client_id: &client::ClientID);
+	fn marks_client_as_no_longer_away(&self, client_id: &ClientID);
 }
 
 // -------------- //
@@ -34,7 +36,7 @@ pub trait UserStatusAwayClientsSessionInterface
 impl UserStatusAwayClientsSessionInterface for ClientsSession
 {
 	/// Vérifie si un client en session est absent.
-	fn is_client_away(&self, client_id: &client::ClientID) -> bool
+	fn is_client_away(&self, client_id: &ClientID) -> bool
 	{
 		let Some(client) = self.get(client_id) else {
 			return false;
@@ -44,7 +46,7 @@ impl UserStatusAwayClientsSessionInterface for ClientsSession
 	}
 
 	/// Marque un client comme étant absent.
-	fn marks_client_as_away(&self, client_id: &client::ClientID, text: impl ToString)
+	fn marks_client_as_away(&self, client_id: &ClientID, text: impl ToString)
 	{
 		let Some(mut client) = self.get_mut(client_id) else {
 			return;
@@ -54,7 +56,7 @@ impl UserStatusAwayClientsSessionInterface for ClientsSession
 	}
 
 	/// Marque un client comme n'étant plus absent.
-	fn marks_client_as_no_longer_away(&self, client_id: &client::ClientID)
+	fn marks_client_as_no_longer_away(&self, client_id: &ClientID)
 	{
 		let Some(mut client) = self.get_mut(client_id) else {
 			return;

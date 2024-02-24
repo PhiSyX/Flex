@@ -8,14 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_serde_validation::string::validate_opt_string_filter;
+lexa_kernel::using! {
+	application,
+}
 
-use crate::command_formdata;
+lexa_kernel::public_using! {
+	handlers / {
+		away_handler,
+	};
 
-command_formdata! {
-	struct AWAY
-	{
-		#[serde(default, deserialize_with = "validate_opt_string_filter")]
-		text: Option<String>,
-	}
+	sessions / {
+		away_clients_session,
+	};
+}
+
+lexa_kernel::using! {
+	forms / {
+		pub(super) away_form,
+	};
+
+	pub(in crate::src::chat::features) responses / {
+		pub(in crate::src::chat::features) away_command_response,
+		pub(super) rpl_away,
+		pub(super) rpl_nowaway,
+		pub(super) rpl_unaway,
+	};
 }
