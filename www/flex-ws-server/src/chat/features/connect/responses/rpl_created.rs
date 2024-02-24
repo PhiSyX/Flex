@@ -8,29 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::client;
+use flex_chat_macro::reserved_numerics;
+use flex_web_framework::types::time;
 
-// --------- //
-// Structure //
-// --------- //
-
-/// Envoyée lors de la (re)connexion au WebSocket.
-#[derive(Debug)]
-#[derive(serde::Deserialize)]
-pub struct RememberUserFormData
-{
-	/// ID d'un client.
-	pub client_id: Option<client::ClientID>,
-}
-
-/// Envoyée par le client lors de la réponse serveur `RPL_WELCOME`.
-#[derive(Debug)]
-#[derive(serde::Deserialize)]
-pub struct TokenFormData
-{
-	pub client_id: client::ClientID,
-	pub nick: String,
-	pub ident: String,
-	pub host: String,
-	pub token: String,
+reserved_numerics! {
+	| 003 <-> RPL_CREATED {
+		/// Date de création du serveur.
+		date: time::DateTime<time::Utc>
+	} => "Ce serveur a été créé le {date}"
 }

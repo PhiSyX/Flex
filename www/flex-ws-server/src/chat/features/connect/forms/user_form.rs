@@ -8,29 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::client;
-use crate::src::chat::sessions::ClientsSession;
+use flex_chat_macro::command_formdata;
+use flex_chat_user::validate_nickname;
+use flex_serde_validation::string::validate_string_filter;
 
-// --------- //
-// Interface //
-// --------- //
-
-pub trait ConnectClientsSessionInterface
-{
-	/// Peut-on localiser un client non enregistré par son ID.
-	fn can_locate_unregistered_client(&self, client_id: &client::ClientID) -> bool;
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl ConnectClientsSessionInterface for ClientsSession
-{
-	fn can_locate_unregistered_client(&self, client_id: &client::ClientID) -> bool
+command_formdata! {
+	struct USER
 	{
-		self.clients
-			.iter_mut()
-			.any(|client| client_id.eq(client.id()) && !client.is_registered())
+		/// Identifiant du client.
+		#[serde(deserialize_with = "validate_nickname")]
+		user: String,
+
+		/// Le paramètre `<mode>` doit être un numérique, et peut être utilisé
+		/// pour définir automatiquement les modes utilisateur lors de
+		/// l'enregistrement avec le serveur. Ce paramètre est un masque de
+		/// bits, avec seulement 2 bits ayant une signification : si le bit 2
+		/// est défini, le mode utilisateur 'w' sera défini et si le bit 3 est
+		/// défini, le mode utilisateur 'i' sera défini.
+		mode: u8,
+
+		/// Le `<realname>` peut contenir des caractères d'espacement.
+		#[serde(deserialize_with = "validate_string_filter")]
+		realname: String,
 	}
 }

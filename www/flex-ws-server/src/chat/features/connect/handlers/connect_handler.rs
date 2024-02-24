@@ -8,26 +8,30 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
+use flex_chat_user::{UserInterface, UserOperatorInterface};
 use flex_crypto::{Argon2Encryption, Encryption};
 use flex_web_framework::security::SecurityEncryptionService;
 use flex_web_framework::types::time;
 use flex_web_framework::types::time::TimeZone;
 use socketioxide::extract::{SocketRef, State, TryData};
 
-use super::{ConnectApplicationInterface, ConnectController};
+use super::{UNickHandler, UserHandler};
 use crate::config::flex::flex_config;
-use crate::src::chat::components;
-use crate::src::chat::components::{ClientSocketInterface, Origin};
+use crate::src::chat::features::connect::{
+	ConnectClientSocketCommandResponseInterface,
+	RememberUserFormData,
+	UserClientSocketInterface,
+};
 use crate::src::chat::features::{
-	NickHandler,
+	ConnectApplicationInterface,
 	OperApplicationInterface,
 	OperClientSocketCommandResponse,
 	PassHandler,
 	QuitHandler,
 	SilenceClientSocketInterface,
 	SilenceClientsSessionInterface,
-	UserClientSocketInterface,
-	UserHandler,
+	TokenController,
 };
 use crate::src::ChatApplication;
 
@@ -48,7 +52,7 @@ impl ConnectionRegistrationHandler
 		socket: &SocketRef,
 		State(server_state): State<flex_web_framework::AxumApplicationState>,
 		State(app): State<ChatApplication>,
-		TryData(data): TryData<super::RememberUserFormData>,
+		TryData(data): TryData<RememberUserFormData>,
 	)
 	{
 		let new_client = || {
@@ -62,13 +66,10 @@ impl ConnectionRegistrationHandler
 			//               d'une reconnexion.
 			socket.on(PassHandler::COMMAND_NAME, PassHandler::handle);
 			socket.on(UserHandler::COMMAND_NAME, UserHandler::handle);
-			socket.on(
-				NickHandler::UNREGISTERED_COMMAND_NAME,
-				NickHandler::handle_unregistered,
-			);
+			socket.on(UNickHandler::COMMAND_NAME, UNickHandler::handle);
 		};
 
-		let already_existing_client = |mut client_socket: components::Socket| {
+		let already_existing_client = |mut client_socket: Socket| {
 			client_socket.client_mut().reconnect_with_new_sid(socket.id);
 			Self::complete_registration(server_state, app, client_socket);
 		};
@@ -82,7 +83,7 @@ impl ConnectionRegistrationHandler
 
 		let token = cookie_manager
 			.signed()
-			.get(ConnectController::COOKIE_TOKEN_KEY);
+			.get(TokenController::COOKIE_TOKEN_KEY);
 
 		if let Some((remember_client_id, token)) =
 			data.ok().and_then(|data| data.client_id.zip(token))
@@ -106,10 +107,10 @@ impl ConnectionRegistrationHandler
 	pub fn complete_registration(
 		_server_state: &flex_web_framework::AxumApplicationState,
 		app: &ChatApplication,
-		mut client_socket: components::Socket,
+		mut client_socket: Socket,
 	) -> Option<()>
 	{
-		if client_socket.user().nickname.is_empty() || client_socket.user().ident.is_empty() {
+		if client_socket.user().nickname().is_empty() || client_socket.user().ident().is_empty() {
 			return Some(());
 		}
 
@@ -120,7 +121,7 @@ impl ConnectionRegistrationHandler
 			.get::<flex_config>()?
 			.clone();
 
-		if config.server.password.is_some() && client_socket.user().pass.is_none() {
+		if config.server.password.is_some() && client_socket.user().server_password().is_none() {
 			// FIXME(phisyx): à déplacer
 			_ = client_socket.socket().emit(
 				"ERROR",
@@ -134,7 +135,7 @@ impl ConnectionRegistrationHandler
 			.server
 			.password
 			.as_deref()
-			.zip(client_socket.user().pass.as_deref())
+			.zip(client_socket.user().server_password_exposed())
 		{
 			let security_encryption = client_socket
 				.socket()
