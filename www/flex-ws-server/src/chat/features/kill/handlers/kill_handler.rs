@@ -8,14 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::ClientSocketInterface;
+use flex_chat_client_nick::NickClientSocketErrorReplies;
+use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{
+use crate::src::chat::features::kill::KillCommandFormData;
+use crate::src::chat::features::{
 	KillApplicationInterface,
 	KillClientSocketCommandResponseInterface,
-	KillCommandFormData,
 };
-use crate::src::chat::components::ClientSocketInterface;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -90,7 +92,7 @@ impl KillHandler
 
 		let error = format!(
 			"Déconnexion: vous avez été sanctionné d'un KILL par {} ({})",
-			client_socket.user().nickname,
+			client_socket.user().nickname(),
 			&data.comment
 		);
 		knick_socket.send_err(error);

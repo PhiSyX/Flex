@@ -8,15 +8,52 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
-use crate::src::chat::components::Origin;
+use flex_chat_client::{Client, ClientSocketInterface, Origin, Socket};
+use flex_chat_macro::command_response;
 
 command_response! {
 	struct KILL
 	{
 		/// La victime.
-		knick: &'a Origin,
+		knick: &'a Origin<Client>,
 		/// Raison du kill.
 		reason: &'a str,
+	}
+}
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait KillClientSocketCommandResponseInterface: ClientSocketInterface
+{
+	/// Émet au client les réponses liées à la commande /KILL.
+	fn emit_kill(&self, knick_client_socket: &Self, reason: &str);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> KillClientSocketCommandResponseInterface for Socket<'s>
+{
+	fn emit_kill(&self, knick_client_socket: &Self, reason: &str)
+	{
+		let origin = Origin::from(self.client());
+
+		let knick_origin = Origin::from(knick_client_socket.client());
+
+		let cmd_kill = KillCommandResponse {
+			origin: &origin,
+			knick: &knick_origin,
+			reason,
+			tags: KillCommandResponse::default_tags(),
+		};
+
+		self.emit_within(
+			knick_client_socket.channels_rooms(),
+			cmd_kill.name(),
+			cmd_kill,
+		);
 	}
 }

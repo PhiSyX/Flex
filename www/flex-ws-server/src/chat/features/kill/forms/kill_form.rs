@@ -8,10 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_macro::command_formdata;
+use flex_chat_user::validate_nickname;
 use flex_serde_validation::string::validate_string_filter;
-
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_nickname;
 
 command_formdata! {
 	struct KILL
