@@ -8,8 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::{ClientSocketInterface, Socket};
+
 use super::SilenceClientsSessionInterface;
-use crate::src::chat::components::client;
 use crate::src::ChatApplication;
 
 // --------- //
@@ -20,27 +21,15 @@ pub trait SilenceApplicationInterface
 {
 	/// Ajoute un client (2) à la liste des clients bloqués/ignorés du client
 	/// (1).
-	fn add_client_to_blocklist(
-		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
-	) -> bool;
+	fn add_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool;
 
 	/// Est-ce que le client (2) est dans la liste des clients bloqués du
 	/// client(1) ?
-	fn client_isin_blocklist(
-		&self,
-		client_socket: &client::Socket,
-		other_client_socket: &client::Socket,
-	) -> bool;
+	fn client_isin_blocklist(&self, client_socket: &Socket, other_client_socket: &Socket) -> bool;
 
 	/// Supprime un client (2) de la liste des clients bloqués/ignorés du client
 	/// (1).
-	fn remove_client_to_blocklist(
-		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
-	) -> bool;
+	fn remove_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool;
 }
 
 // -------------- //
@@ -49,31 +38,19 @@ pub trait SilenceApplicationInterface
 
 impl SilenceApplicationInterface for ChatApplication
 {
-	fn add_client_to_blocklist(
-		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
-	) -> bool
+	fn add_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool
 	{
 		self.clients
 			.add_to_block(client.cid(), to_ignore_client.cid())
 	}
 
-	fn client_isin_blocklist(
-		&self,
-		client_socket: &client::Socket,
-		other_client_socket: &client::Socket,
-	) -> bool
+	fn client_isin_blocklist(&self, client_socket: &Socket, other_client_socket: &Socket) -> bool
 	{
 		self.clients
 			.isin_blocklist(client_socket.cid(), other_client_socket.cid())
 	}
 
-	fn remove_client_to_blocklist(
-		&self,
-		client: &client::Socket,
-		to_ignore_client: &client::Socket,
-	) -> bool
+	fn remove_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool
 	{
 		self.clients
 			.remove_to_block(client.cid(), to_ignore_client.cid())
