@@ -8,9 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::ChannelTopicError;
-use crate::src::chat::components::{channel, client};
-use crate::src::chat::sessions::ChannelsSession;
+use flex_chat_channel::{
+	ChannelAccessControlInterface,
+	ChannelAccessLevel,
+	ChannelMemberInterface,
+	ChannelNameSRef,
+	ChannelTopic,
+	ChannelTopicInterface,
+	ChannelsSessionInterface,
+	MemberInterface,
+	TopicInterface,
+};
+use flex_chat_client::{Client, ClientInterface};
+
+use crate::src::chat::{features::topic::ChannelTopicError, sessions::ChannelsSession};
 
 // --------- //
 // Interface //
@@ -21,16 +32,16 @@ pub trait TopicChannelsSessionInterface
 	/// Est-ce qu'un client PEUT éditer un topic.
 	fn is_client_can_edit_topic(
 		&self,
-		channel_id: impl AsRef<str>,
-		client: &client::Client,
+		channel_id: ChannelNameSRef,
+		client: &Client,
 	) -> Result<(), ChannelTopicError>;
 
 	fn update_topic(
 		&self,
-		channel_id: impl AsRef<str>,
+		channel_id: ChannelNameSRef,
 		topic: impl AsRef<str>,
 		updated_by: impl ToString,
-	) -> Option<channel::topic::ChannelTopic>;
+	) -> Option<ChannelTopic>;
 }
 
 // -------------- //
@@ -41,8 +52,8 @@ impl TopicChannelsSessionInterface for ChannelsSession
 {
 	fn is_client_can_edit_topic(
 		&self,
-		channel_id: impl AsRef<str>,
-		client: &client::Client,
+		channel_id: ChannelNameSRef,
+		client: &Client,
 	) -> Result<(), ChannelTopicError>
 	{
 		let Some(channel) = self.get(channel_id) else {
@@ -77,7 +88,7 @@ impl TopicChannelsSessionInterface for ChannelsSession
 			.iter()
 			.fold(0, |acc, mode| mode.flag() | acc);
 
-		if level_access <= channel::mode::ChannelAccessLevel::Vip.flag() {
+		if level_access <= ChannelAccessLevel::Vip.flag() {
 			return Err(ChannelTopicError::ERR_CHANOPRIVSNEEDED);
 		}
 		Ok(())
@@ -86,21 +97,21 @@ impl TopicChannelsSessionInterface for ChannelsSession
 	/// Met à jour un topic.
 	fn update_topic(
 		&self,
-		channel_id: impl AsRef<str>,
+		channel_id: ChannelNameSRef,
 		topic: impl AsRef<str>,
 		updated_by: impl ToString,
-	) -> Option<channel::topic::ChannelTopic>
+	) -> Option<ChannelTopic>
 	{
 		let mut channel = self.get_mut(channel_id)?;
 		let topic = topic.as_ref();
-		if topic == channel.topic.get() {
-			return Some(channel.topic.clone());
+		if topic == channel.topic().get() {
+			return Some(channel.topic().clone());
 		}
 		if topic.trim().is_empty() {
-			channel.topic.unset(updated_by);
+			channel.topic_mut().unset(updated_by);
 		} else {
-			channel.topic.set(topic, updated_by);
+			channel.topic_mut().set(topic, updated_by);
 		}
-		Some(channel.topic.clone())
+		Some(channel.topic().clone())
 	}
 }

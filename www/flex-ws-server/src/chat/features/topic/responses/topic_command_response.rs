@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{Channel, ChannelInterface, ChannelTopicInterface, TopicInterface};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
+
 use super::{RplNotopicReply, RplTopicReply};
-use crate::src::chat::components::{self, client, ClientSocketInterface, Origin};
 
 // --------- //
 // Interface //
@@ -18,7 +20,7 @@ use crate::src::chat::components::{self, client, ClientSocketInterface, Origin};
 pub trait TopicClientSocketInterface: ClientSocketInterface
 {
 	/// Émet au client le sujet du salon.
-	fn send_rpl_topic(&self, channel: &components::channel::Channel, updated: bool)
+	fn send_rpl_topic(&self, channel: &Channel, updated: bool)
 	{
 		let origin = Origin::from(self.client());
 		if channel.topic_text().is_empty() {
@@ -55,4 +57,4 @@ pub trait TopicClientSocketInterface: ClientSocketInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> TopicClientSocketInterface for client::Socket<'s> {}
+impl<'s> TopicClientSocketInterface for Socket<'s> {}

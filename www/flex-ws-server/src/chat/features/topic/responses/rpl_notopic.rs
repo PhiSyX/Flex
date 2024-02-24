@@ -8,27 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_channel;
+use flex_chat_macro::reserved_numerics;
 
-command_formdata! {
-	struct TOPIC
-	{
-		/// Le salon qui DOIT recevoir la modification du sujet.
-		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
-		/// Sujet à modifier ou à supprimer s'il est vide.
-		#[serde(default, deserialize_with = "validate_topic")]
-		topic: Option<String>,
-	}
-}
-
-/// Valide la valeur utilisateur d'un topic.
-pub fn validate_topic<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
-where
-	D: serde::Deserializer<'de>,
-{
-	use serde::Deserialize;
-	let o = Option::<String>::deserialize(deserializer)?;
-	Ok(o.filter(|s| s.trim().is_empty() || s.len() < 100))
+reserved_numerics! {
+	| 331 <-> RPL_NOTOPIC { channel: str }
+		=> "{channel} :Aucun sujet n'est défini"
 }

@@ -10,7 +10,8 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{TopicApplicationInterface, TopicClientSocketInterface, TopicCommandFormData};
+use crate::src::chat::features::topic::TopicCommandFormData;
+use crate::src::chat::features::{TopicApplicationInterface, TopicClientSocketInterface};
 use crate::src::ChatApplication;
 
 // --------- //

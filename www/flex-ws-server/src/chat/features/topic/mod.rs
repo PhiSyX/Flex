@@ -8,21 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::time;
-
-use crate::reserved_numerics;
-
-reserved_numerics! {
-	| 331 <-> RPL_NOTOPIC { channel: str }
-		=> "{channel} :Aucun sujet n'est défini"
+lexa_kernel::public_using! {
+	application,
 }
 
-reserved_numerics! {
-	| 332 <-> RPL_TOPIC {
-		channel: str,
-		topic: str,
-		updated: bool,
-		updated_by: str,
-		updated_at: time::DateTime<time::Utc>
-	} => "{channel} :{topic}"
+lexa_kernel::public_using! {
+	handlers / {
+		topic_handler,
+	};
+
+	sessions / {
+		topic_channels_session,
+	};
+}
+
+lexa_kernel::using! {
+	errors / {
+		pub(super) topic_channel_permission_error,
+	};
+
+	forms / {
+		pub(super) topic_form,
+	};
+
+
+	pub(in crate::src::chat::features) responses / {
+		pub(in crate::src::chat::features) topic_command_response,
+		pub(super) rpl_notopic,
+		pub(super) rpl_topic,
+	};
 }
