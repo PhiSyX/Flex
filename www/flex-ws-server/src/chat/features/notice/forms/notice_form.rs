@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_macro::command_formdata;
+use flex_chat_user::{do_nickname_with_config, DoNicknameFnOptions, NICK_MAX_SIZE};
 use flex_serde_validation::array::validate_vec_string_filter;
 use flex_serde_validation::string::validate_string_filter;
-
-use crate::command_formdata;
 
 command_formdata! {
 	struct NOTICE
@@ -50,10 +50,10 @@ where
 				return Some(s.to_owned());
 			}
 
-			crate::src::chat::components::user::do_nickname_with_config(
+			do_nickname_with_config(
 				s,
-				crate::src::chat::components::user::DoNicknameFnOptions {
-					max_size: crate::src::chat::components::user::NICK_MAX_SIZE,
+				DoNicknameFnOptions {
+					max_size: NICK_MAX_SIZE,
 					reserved_list: vec![String::from("flex")],
 				},
 			)

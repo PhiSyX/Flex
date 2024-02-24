@@ -8,18 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{ChannelAccessLevel, ChannelWritePermission, MemberInterface};
+use flex_chat_client::{ClientSocketInterface, Origin};
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{
-	NoticeApplicationInterface,
+use crate::src::chat::features::notice::{
 	NoticeClientSocketCommandResponseInterface,
 	NoticeCommandFormData,
 };
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::mode::ChannelAccessLevel;
-use crate::src::chat::components::{permission, Origin};
-use crate::src::chat::features::SilenceApplicationInterface;
-use crate::src::chat::replies::ChannelMemberDTO;
+use crate::src::chat::features::{
+	ChannelMemberDTO,
+	NoticeApplicationInterface,
+	SilenceApplicationInterface,
+};
 use crate::src::chat::ChatApplication;
 
 // --------- //
@@ -73,12 +74,13 @@ impl NoticeHandler
 				// échouer.
 				let last_prefix: ChannelAccessLevel =
 					prefixes.next_back().unwrap().parse().unwrap();
-				let target_without_prefixes = target.trim_start_matches(CHANNEL_PREFIXES);
+				let target_without_prefixes =
+					String::from(target.trim_start_matches(CHANNEL_PREFIXES));
 
 				match app
-					.is_client_able_to_notice_on_channel(&client_socket, target_without_prefixes)
+					.is_client_able_to_notice_on_channel(&client_socket, &target_without_prefixes)
 				{
-					| permission::ChannelWritePermission::Yes(member) => {
+					| ChannelWritePermission::Yes(member) => {
 						if member
 							.highest_access_level()
 							.filter(|hal| hal.flag() >= last_prefix.flag())
@@ -91,20 +93,20 @@ impl NoticeHandler
 							ChannelMemberDTO::from((client_socket.client(), member));
 						client_socket.emit_notice_on_prefixed_channel(
 							last_prefix.symbol(),
-							target_without_prefixes,
+							&target_without_prefixes,
 							&data.text,
 							channel_member,
 						);
 					}
-					| permission::ChannelWritePermission::Bypass => {
+					| ChannelWritePermission::Bypass => {
 						client_socket.emit_notice_on_prefixed_channel(
 							last_prefix.symbol(),
-							target_without_prefixes,
+							&target_without_prefixes,
 							&data.text,
 							client_socket.user(),
 						);
 					}
-					| permission::ChannelWritePermission::No(_) => {
+					| ChannelWritePermission::No(_) => {
 						continue;
 					}
 				}
@@ -114,19 +116,19 @@ impl NoticeHandler
 
 			if target.starts_with('#') {
 				match app.is_client_able_to_notice_on_channel(&client_socket, target) {
-					| permission::ChannelWritePermission::Yes(member) => {
+					| ChannelWritePermission::Yes(member) => {
 						let channel_member =
 							ChannelMemberDTO::from((client_socket.client(), member));
 						client_socket.emit_notice_on_channel(target, &data.text, channel_member);
 					}
-					| permission::ChannelWritePermission::Bypass => {
+					| ChannelWritePermission::Bypass => {
 						client_socket.emit_notice_on_channel(
 							target,
 							&data.text,
 							client_socket.user(),
 						);
 					}
-					| permission::ChannelWritePermission::No(_) => {
+					| ChannelWritePermission::No(_) => {
 						continue;
 					}
 				}

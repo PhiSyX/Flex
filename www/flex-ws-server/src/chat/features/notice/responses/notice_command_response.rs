@@ -8,8 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::NoticeCommandResponse;
-use crate::src::chat::components::{client, ClientSocketInterface};
+use flex_chat_client::{ClientSocketInterface, Socket};
+use flex_chat_macro::command_response;
+
+command_response! {
+	struct NOTICE
+	{
+		/// La cible du message.
+		target: &'a str,
+		/// Le texte.
+		text: &'a str,
+	}
+}
 
 // --------- //
 // Interface //
@@ -89,4 +99,4 @@ pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> NoticeClientSocketCommandResponseInterface for client::Socket<'s> {}
+impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s> {}

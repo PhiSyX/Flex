@@ -8,14 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
+lexa_kernel::public_using! {
+	application,
+}
 
-command_response! {
-	struct NOTICE
-	{
-		/// La cible du message.
-		target: &'a str,
-		/// Le texte.
-		text: &'a str,
-	}
+lexa_kernel::public_using! {
+	handlers / {
+		notice_handler,
+	};
+}
+
+lexa_kernel::using! {
+	forms / {
+		pub(super) notice_form,
+	};
+
+	responses / {
+		pub(super) notice_command_response,
+	};
 }
