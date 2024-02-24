@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
+use flex_chat_macro::command_formdata;
+use flex_chat_user::validate_nickname;
 
-command_response! {
+command_formdata! {
 	struct NICK
 	{
-		/// Ancien pseudonyme.
-		old_nickname: &'a str,
-		/// Nouveau pseudonyme.
-		new_nickname: &'a str,
+		/// Pseudonyme à définir pour le client.
+		#[serde(deserialize_with = "validate_nickname")]
+		nickname: String,
 	}
 }

@@ -8,14 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_nickname;
+use flex_chat_macro::error_replies;
 
-command_formdata! {
-	struct NICK
-	{
-		/// Pseudonyme à définir pour le client.
-		#[serde(deserialize_with = "validate_nickname")]
-		nickname: String,
-	}
+error_replies! {
+	/// Renvoyé après réception d'un message NICK contenant des caractères qui
+	/// ne font pas partie de l'ensemble défini.
+	| 432 <-> ERR_ERRONEUSNICKNAME { nickname: str }
+		=> "{nickname}: Pseudonyme erroné"
 }

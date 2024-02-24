@@ -8,38 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::client;
-use crate::src::chat::sessions::ClientsSession;
-
-// --------- //
-// Interface //
-// --------- //
-
-pub trait NickClientSessionInterface
-{
-	/// Peut-on localiser un client par son pseudonyme.
-	fn can_locate_by_nickname(&self, nickname: impl AsRef<str>) -> bool;
-
-	/// Change le pseudo d'un client par un nouveau.
-	fn change_nickname(&self, client_id: &client::ClientID, new_nickname: impl ToString);
+lexa_kernel::public_using! {
+	application,
 }
 
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
+lexa_kernel::public_using! {
+	handlers / {
+		nick_handler,
+	};
 
-impl NickClientSessionInterface for ClientsSession
-{
-	fn can_locate_by_nickname(&self, nickname: impl AsRef<str>) -> bool
-	{
-		self.clients
-			.iter()
-			.any(|client| client.user().nickname.to_lowercase() == nickname.as_ref().to_lowercase())
-	}
+	sessions / {
+		nick_clients_session,
+	};
+}
 
-	fn change_nickname(&self, client_id: &client::ClientID, new_nickname: impl ToString)
-	{
-		let mut client = self.clients.get_mut(client_id).unwrap();
-		client.user_mut().set_nickname(new_nickname).ok();
-	}
+lexa_kernel::using! {
+	errors / {
+		pub(super) err_erroneusnickname,
+		pub(super) err_nicknameinuse,
+	};
+
+	pub(in crate::src::chat::features) forms / {
+		pub(in crate::src::chat::features) nick_form,
+	};
+
+	pub(in crate::src::chat::features) responses / {
+		pub(super) nick_command_response,
+		pub(in crate::src::chat::features) nick_error_response,
+	};
 }
