@@ -8,32 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-#![allow(non_camel_case_types)]
+use flex_chat_macro::error_replies;
 
-pub mod commands;
-
-pub mod config
-{
-	pub mod env;
-	pub mod flex;
+error_replies! {
+	| 474 <-> ERR_BANNEDFROMCHAN { channel: str }
+		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+b)"
 }
-
-pub mod constant;
-
-pub mod features
-{
-	pub use super::src::*;
-}
-
-mod src
-{
-	pub(crate) mod chat;
-
-	pub use self::chat::ChatApplication;
-}
-
-// ---- //
-// Type //
-// ---- //
-
-pub type Flex = flex_web_framework::AxumApplication<config::env::flex_env, commands::flex_clix>;

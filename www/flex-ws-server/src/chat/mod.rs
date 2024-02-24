@@ -8,248 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod components
-{
-	pub(crate) mod channel;
-	pub(crate) mod client;
-	pub(crate) mod user;
-
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
-	pub(crate) use self::user::*;
-}
-
 mod feature;
 
 mod features
 {
-	mod mode
-	{
-		mod channel_access_control
-		{
-			lexa_kernel::public_using! {
-				application,
-				client,
-				formdata,
-				handler,
-				response,
-			}
-		}
-
-		mod channel_access_level
-		{
-			lexa_kernel::public_using! {
-				application,
-				client,
-				formdata,
-				handler,
-				session,
-			}
-		}
-
-		mod channel_settings
-		{
-			lexa_kernel::public_using! {
-				application,
-				client,
-			}
-		}
-
-		mod apply;
-		mod formdata;
-		mod handler;
-		mod response;
-
-		pub use self::apply::*;
-		pub use self::channel_access_control::*;
-		pub use self::channel_access_level::*;
-		pub use self::channel_settings::*;
-		pub use self::formdata::*;
-		pub use self::handler::*;
-		pub use self::response::*;
-	}
-
-	pub use self::mode::*;
-
 	lexa_kernel::public_using! {
-		connect / {
-			application,
-			controller,
-			formdata,
-			handler,
-			session,
-		};
-
-		invite / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		join / {
-			application,
-			client,
-			error,
-			formdata,
-			handler,
-			response,
-			session,
-		};
-
-		kick / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		kill / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		list / {
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		nick / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-			session,
-		};
-
-		notice / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		oper / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-			session,
-		};
-
-		part / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-			session,
-		};
-
-		pass / {
-			formdata,
-			handler,
-		};
-
-		privmsg / {
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		pubmsg / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		quit / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-		};
-
-		silence / {
-			application,
-			client,
-			formdata,
-			handler,
-			response,
-			session,
-		};
-
-		topic / {
-			application,
-			client,
-			error,
-			formdata,
-			handler,
-			response,
-			session,
-		};
-
-		user / {
-			client,
-			formdata,
-			handler,
-		};
-	}
-
-	mod user_status
-	{
-		lexa_kernel::public_using! {
-			away / {
-				application,
-				client,
-				formdata,
-				handler,
-				response,
-				session,
-			};
-		}
-	}
-
-	pub use self::user_status::*;
-}
-
-mod replies
-{
-	lexa_kernel::public_using! {
-		errors / {
-			err_alreadyregistered,
-			err_cannotsendtochan,
-			err_chanoprivsneeded,
-			err_erroneusnickname,
-			err_nicknameinuse,
-			err_noprivileges,
-			err_nosuchchannel,
-			err_nosuchnick,
-			err_notonchannel,
-			err_usernotinchannel,
-			err_useronchannel,
-		};
-
-		reserved_numerics / {
-			rpl_created,
-			rpl_namreply,
-			rpl_yourhost,
-			rpl_welcome,
-		};
+		connect,
+		invite,
+		join,
+		kick,
+		kill,
+		list,
+		message,
+		mode,
+		nick,
+		notice,
+		oper,
+		part,
+		quit,
+		silence,
+		topic,
+		user_status,
 	}
 }
 
@@ -265,9 +44,3 @@ mod sessions
 }
 
 pub use self::feature::*;
-
-lexa_kernel::using! {
-	controllers / {
-		pub home,
-	};
-}

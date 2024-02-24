@@ -8,8 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::{self, client, ClientSocketInterface, Origin};
-use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
+use flex_chat_channel::{Channel, ChannelAccessLevel, ChannelInterface};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
+use flex_chat_mode::ApplyMode;
+
+use super::ModeCommandResponse;
 
 // --------- //
 // Interface //
@@ -17,13 +20,32 @@ use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
 
 pub trait ModeAccessLevelClientSocketInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client courant les membres avec leurs niveaux d'accès sur un
 	/// salon.
 	fn emit_mode_access_level(
 		&self,
-		channel: &components::channel::Channel,
-		added_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
-		removed_flags: &[(char, ApplyMode<components::mode::ChannelAccessLevel>)],
+		channel: &Self::Channel,
+		added_flags: &[(char, ApplyMode<ChannelAccessLevel>)],
+		removed_flags: &[(char, ApplyMode<ChannelAccessLevel>)],
+		updated: bool,
+	);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> ModeAccessLevelClientSocketInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_mode_access_level(
+		&self,
+		channel: &Self::Channel,
+		added_flags: &[(char, ApplyMode<ChannelAccessLevel>)],
+		removed_flags: &[(char, ApplyMode<ChannelAccessLevel>)],
 		updated: bool,
 	)
 	{
@@ -41,9 +63,3 @@ pub trait ModeAccessLevelClientSocketInterface: ClientSocketInterface
 		self.emit_within(channel.room(), mode.name(), mode);
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> ModeAccessLevelClientSocketInterface for client::Socket<'s> {}

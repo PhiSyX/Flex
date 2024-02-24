@@ -8,20 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{AccessControlMask, ChannelAccessLevel, ChannelNameSRef, SettingsFlag};
+use flex_chat_client::Socket;
+use flex_chat_mode::ApplyMode;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::{
+use crate::src::chat::features::mode::{
+	ChannelModeCommandFormData,
 	ModeAccessControlClientSocketCommandResponseInterface,
-	ModeChannelSettingsApplicationInterface,
 	ModeChannelSettingsClientSocketCommandResponseInterface,
 };
-use crate::src::chat::components::channel;
-use crate::src::chat::components::channel::mode::AccessControlMode;
 use crate::src::chat::features::{
-	ApplyMode,
-	ChannelModeCommandFormData,
 	ModeChannelAccessControlApplicationInterface,
 	ModeChannelAccessLevelApplicationInterface,
+	ModeChannelSettingsApplicationInterface,
 	OperApplicationInterface,
 };
 use crate::src::ChatApplication;
@@ -77,7 +77,7 @@ impl ModeChannelSettingsHandler
 				&client_socket,
 				&data.target,
 				data.modes.invite_only,
-				channel::mode::SettingsFlags::InviteOnly,
+				SettingsFlag::InviteOnly,
 				&mut added_settings,
 				&mut removed_settings,
 			);
@@ -86,7 +86,7 @@ impl ModeChannelSettingsHandler
 				&client_socket,
 				&data.target,
 				data.modes.moderate,
-				channel::mode::SettingsFlags::Moderate,
+				SettingsFlag::Moderate,
 				&mut added_settings,
 				&mut removed_settings,
 			);
@@ -95,7 +95,7 @@ impl ModeChannelSettingsHandler
 				&client_socket,
 				&data.target,
 				data.modes.no_external_messages,
-				channel::mode::SettingsFlags::NoExternalMessages,
+				SettingsFlag::NoExternalMessages,
 				&mut added_settings,
 				&mut removed_settings,
 			);
@@ -104,7 +104,7 @@ impl ModeChannelSettingsHandler
 				&client_socket,
 				&data.target,
 				data.modes.no_topic,
-				channel::mode::SettingsFlags::NoTopic,
+				SettingsFlag::NoTopic,
 				&mut added_settings,
 				&mut removed_settings,
 			);
@@ -113,7 +113,7 @@ impl ModeChannelSettingsHandler
 				&client_socket,
 				&data.target,
 				data.modes.secret,
-				channel::mode::SettingsFlags::Secret,
+				SettingsFlag::Secret,
 				&mut added_settings,
 				&mut removed_settings,
 			);
@@ -124,7 +124,7 @@ impl ModeChannelSettingsHandler
 					&client_socket,
 					&data.target,
 					key,
-					channel::mode::SettingsFlags::Key(key.into()),
+					SettingsFlag::Key(key.into()),
 					&mut added_settings,
 					&mut removed_settings,
 				);
@@ -151,13 +151,13 @@ impl ModeChannelSettingsHandler
 		}
 
 		// NOTE: seuls les membres ayant un niveau d'accès minimal à
-		// channel::mode::ChannelAccessLevel::HalfOperator peuvent appliquer
+		// [ChannelAccessLevel::HalfOperator] peuvent appliquer
 		// les modes suivants:
 
 		if !app.does_client_have_rights_on_channel(
 			&client_socket,
 			&data.target,
-			channel::mode::ChannelAccessLevel::HalfOperator,
+			ChannelAccessLevel::HalfOperator,
 		) {
 			return;
 		}
@@ -183,7 +183,7 @@ impl ModeChannelSettingsHandler
 			&client_socket,
 			&data.target,
 			data.modes.invite_only,
-			channel::mode::SettingsFlags::InviteOnly,
+			SettingsFlag::InviteOnly,
 			&mut added_settings,
 			&mut removed_settings,
 		);
@@ -192,7 +192,7 @@ impl ModeChannelSettingsHandler
 			&client_socket,
 			&data.target,
 			data.modes.moderate,
-			channel::mode::SettingsFlags::Moderate,
+			SettingsFlag::Moderate,
 			&mut added_settings,
 			&mut removed_settings,
 		);
@@ -201,7 +201,7 @@ impl ModeChannelSettingsHandler
 			&client_socket,
 			&data.target,
 			data.modes.no_external_messages,
-			channel::mode::SettingsFlags::NoExternalMessages,
+			SettingsFlag::NoExternalMessages,
 			&mut added_settings,
 			&mut removed_settings,
 		);
@@ -210,7 +210,7 @@ impl ModeChannelSettingsHandler
 			&client_socket,
 			&data.target,
 			data.modes.no_topic,
-			channel::mode::SettingsFlags::NoTopic,
+			SettingsFlag::NoTopic,
 			&mut added_settings,
 			&mut removed_settings,
 		);
@@ -219,7 +219,7 @@ impl ModeChannelSettingsHandler
 			&client_socket,
 			&data.target,
 			data.modes.secret,
-			channel::mode::SettingsFlags::Secret,
+			SettingsFlag::Secret,
 			&mut added_settings,
 			&mut removed_settings,
 		);
@@ -230,7 +230,7 @@ impl ModeChannelSettingsHandler
 				&client_socket,
 				&data.target,
 				key,
-				channel::mode::SettingsFlags::Key(key.into()),
+				SettingsFlag::Key(key.into()),
 				&mut added_settings,
 				&mut removed_settings,
 			);
@@ -253,24 +253,24 @@ impl ModeChannelSettingsHandler
 
 fn apply_bans(
 	app: &ChatApplication,
-	client_socket: &crate::src::chat::components::client::Socket,
-	channel: &str,
+	client_socket: &Socket,
+	channel_name: ChannelNameSRef,
 	bans: Option<&[String]>,
-	alist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
-	rlist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
+	alist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
+	rlist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 )
 {
 	let bans = bans.unwrap_or_default();
 
 	for banmask in bans {
-		if app.has_banmask_on_channel(client_socket, channel, banmask) {
+		if app.has_banmask_on_channel(client_socket, channel_name, banmask) {
 			rlist.extend(
-				app.apply_unban_on_channel(client_socket, channel, banmask)
+				app.apply_unban_on_channel(client_socket, channel_name, banmask)
 					.map(|mode| ('b', mode)),
 			);
 		} else {
 			alist.extend(
-				app.apply_ban_on_channel(client_socket, channel, banmask)
+				app.apply_ban_on_channel(client_socket, channel_name, banmask)
 					.map(|mode| ('b', mode)),
 			);
 		}
@@ -279,24 +279,24 @@ fn apply_bans(
 
 fn apply_bans_except(
 	app: &ChatApplication,
-	client_socket: &crate::src::chat::components::client::Socket,
-	channel: &str,
+	client_socket: &Socket,
+	channel_name: ChannelNameSRef,
 	bans_except: Option<&[String]>,
-	alist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
-	rlist: &mut Vec<(char, ApplyMode<AccessControlMode>)>,
+	alist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
+	rlist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 )
 {
 	let bans_except = bans_except.unwrap_or_default();
 
 	for banmask in bans_except {
-		if app.has_banmask_except_on_channel(client_socket, channel, banmask) {
+		if app.has_banmask_except_on_channel(client_socket, channel_name, banmask) {
 			rlist.extend(
-				app.apply_unban_except_on_channel(client_socket, channel, banmask)
+				app.apply_unban_except_on_channel(client_socket, channel_name, banmask)
 					.map(|mode| ('e', mode)),
 			);
 		} else {
 			alist.extend(
-				app.apply_ban_except_on_channel(client_socket, channel, banmask)
+				app.apply_ban_except_on_channel(client_socket, channel_name, banmask)
 					.map(|mode| ('e', mode)),
 			);
 		}
@@ -305,36 +305,36 @@ fn apply_bans_except(
 
 fn apply_mode_settings_bool(
 	app: &ChatApplication,
-	client_socket: &crate::src::chat::components::client::Socket,
-	channel: &str,
+	client_socket: &Socket,
+	channel_name: ChannelNameSRef,
 	maybe_bool: Option<bool>,
-	flag: channel::mode::SettingsFlags,
-	alist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
-	rlist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
+	flag: SettingsFlag,
+	alist: &mut Vec<ApplyMode<SettingsFlag>>,
+	rlist: &mut Vec<ApplyMode<SettingsFlag>>,
 )
 {
 	if let Some(b) = maybe_bool {
 		if b {
-			alist.extend(app.set_settings_on_channel(client_socket, channel, flag));
+			alist.extend(app.set_settings_on_channel(client_socket, channel_name, flag));
 		} else {
-			rlist.extend(app.unset_settings_on_channel(client_socket, channel, flag));
+			rlist.extend(app.unset_settings_on_channel(client_socket, channel_name, flag));
 		}
 	}
 }
 
 fn apply_mode_settings_str(
 	app: &ChatApplication,
-	client_socket: &crate::src::chat::components::client::Socket,
-	channel: &str,
+	client_socket: &Socket,
+	channel_name: ChannelNameSRef,
 	s: &str,
-	flag: channel::mode::SettingsFlags,
-	alist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
-	rlist: &mut Vec<ApplyMode<channel::mode::SettingsFlags>>,
+	flag: SettingsFlag,
+	alist: &mut Vec<ApplyMode<SettingsFlag>>,
+	rlist: &mut Vec<ApplyMode<SettingsFlag>>,
 )
 {
 	if !s.is_empty() {
-		alist.extend(app.set_settings_on_channel(client_socket, channel, flag));
+		alist.extend(app.set_settings_on_channel(client_socket, channel_name, flag));
 	} else {
-		rlist.extend(app.unset_settings_on_channel(client_socket, channel, flag));
+		rlist.extend(app.unset_settings_on_channel(client_socket, channel_name, flag));
 	}
 }

@@ -8,9 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::error_replies;
+lexa_kernel::public_using! {
+	application,
+}
 
-error_replies! {
-	| 474 <-> ERR_BANNEDFROMCHAN { channel: str }
-		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+b)"
+lexa_kernel::public_using! {
+	handlers / {
+		channel_access_control_handler,
+		channel_access_level_handler,
+		channel_mode_handler,
+	};
+
+	responses / {
+		channel_access_control_command_response,
+		channel_access_control_error_response,
+		channel_access_level_command_response,
+		channel_settings_command_response,
+		mode_response,
+	};
+
+	sessions / {
+		channel_access_level_channels_session,
+	};
+}
+
+lexa_kernel::using! {
+	errors / {
+		pub(super) err_bannedfromchan,
+	};
+
+	forms / {
+		pub(super) channel_access_control_form,
+		pub(super) channel_access_level_form,
+		pub(super) channel_mode_form,
+	};
 }

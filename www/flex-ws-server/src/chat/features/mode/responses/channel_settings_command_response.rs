@@ -8,11 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use client::Origin;
+use flex_chat_channel::{
+	Channel,
+	ChannelInterface,
+	ChannelSettingsInterface,
+	SettingsFlagInterface,
+};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
+use flex_chat_mode::ApplyMode;
 
-use crate::src::chat::components;
-use crate::src::chat::components::client::{self, ClientSocketInterface};
-use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
+use super::ModeCommandResponse;
 
 // --------- //
 // Interface //
@@ -20,15 +25,36 @@ use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
 
 pub trait ModeChannelSettingsClientSocketCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface + ChannelSettingsInterface;
+
 	/// Émet au client courant les paramètres un salon.
-	fn emit_all_channels_settings(&self, channel: &components::channel::Channel, updated: bool)
+	fn emit_all_channels_settings(&self, channel: &Self::Channel, updated: bool);
+
+	/// Émet au client courant les paramètres un salon.
+	fn emit_channel_settings(
+		&self,
+		target: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		added: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
+		removed: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
+	);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> ModeChannelSettingsClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_all_channels_settings(&self, channel: &Self::Channel, updated: bool)
 	{
 		let origin = Origin::from(self.client());
 
 		let channel_settings = ModeCommandResponse {
 			origin: &origin,
 			tags: ModeCommandResponse::<()>::default_tags(),
-			target: &channel.name,
+			target: channel.name(),
 			removed: Default::default(),
 			added: channel.settings().into_iter().collect(),
 			updated,
@@ -36,12 +62,11 @@ pub trait ModeChannelSettingsClientSocketCommandResponseInterface: ClientSocketI
 		self.emit(channel_settings.name(), channel_settings);
 	}
 
-	/// Émet au client courant les paramètres un salon.
 	fn emit_channel_settings(
 		&self,
-		target: &str,
-		added: &[ApplyMode<components::mode::SettingsFlags>],
-		removed: &[ApplyMode<components::mode::SettingsFlags>],
+		target: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		added: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
+		removed: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
 	)
 	{
 		if added.is_empty() && removed.is_empty() {
@@ -69,9 +94,3 @@ pub trait ModeChannelSettingsClientSocketCommandResponseInterface: ClientSocketI
 		self.emit_within(channel_room, channel_settings.name(), channel_settings);
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> ModeChannelSettingsClientSocketCommandResponseInterface for client::Socket<'s> {}

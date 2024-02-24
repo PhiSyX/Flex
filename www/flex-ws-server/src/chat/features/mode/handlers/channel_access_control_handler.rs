@@ -1,9 +1,14 @@
+use flex_chat_channel::{ChannelAccessLevel, CHANNEL_MODE_LIST_BAN, CHANNEL_MODE_LIST_BAN_EXCEPT};
+use flex_chat_client_channel::ChannelClientSocketErrorReplies;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::application::ModeChannelAccessControlApplicationInterface;
-use super::client::ModeAccessControlClientSocketCommandResponseInterface;
-use crate::src::chat::components::channel;
+use crate::src::chat::features::mode::{
+	BanCommandFormData,
+	ModeAccessControlClientSocketCommandResponseInterface,
+	UnbanCommandFormData,
+};
 use crate::src::chat::features::{
+	ModeChannelAccessControlApplicationInterface,
 	ModeChannelAccessLevelApplicationInterface,
 	OperApplicationInterface,
 };
@@ -26,10 +31,10 @@ impl BanHandler
 {
 	pub const COMMAND_NAME: &'static str = "BAN";
 
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::BanCommandFormData>,
+		Data(data): Data<BanCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
@@ -39,7 +44,7 @@ impl BanHandler
 				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
-					channel::mode::ChannelAccessLevel::HalfOperator,
+					ChannelAccessLevel::HalfOperator,
 				) {
 				continue;
 			}
@@ -61,7 +66,7 @@ impl BanHandler
 
 			let added_flags = updated
 				.into_iter()
-				.map(|mode| (channel::mode::CHANNEL_MODE_LIST_BAN, mode))
+				.map(|mode| (CHANNEL_MODE_LIST_BAN, mode))
 				.collect();
 
 			client_socket.emit_channel_access_control(&channel, added_flags, vec![], true);
@@ -73,10 +78,10 @@ impl UnbanHandler
 {
 	pub const COMMAND_NAME: &'static str = "UNBAN";
 
-	pub async fn handle(
+	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::UnbanCommandFormData>,
+		Data(data): Data<UnbanCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
@@ -86,7 +91,7 @@ impl UnbanHandler
 				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
-					channel::mode::ChannelAccessLevel::HalfOperator,
+					ChannelAccessLevel::HalfOperator,
 				) {
 				continue;
 			}
@@ -108,7 +113,7 @@ impl UnbanHandler
 
 			let removed_flags = updated
 				.into_iter()
-				.map(|mode| (channel::mode::CHANNEL_MODE_LIST_BAN, mode))
+				.map(|mode| (CHANNEL_MODE_LIST_BAN, mode))
 				.collect();
 
 			client_socket.emit_channel_access_control(&channel, vec![], removed_flags, true);
@@ -123,7 +128,7 @@ impl BanExHandler
 	pub async fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::BanCommandFormData>,
+		Data(data): Data<BanCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
@@ -133,7 +138,7 @@ impl BanExHandler
 				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
-					channel::mode::ChannelAccessLevel::HalfOperator,
+					ChannelAccessLevel::HalfOperator,
 				) {
 				continue;
 			}
@@ -157,7 +162,7 @@ impl BanExHandler
 
 			let added_flags = updated
 				.into_iter()
-				.map(|mode| (channel::mode::CHANNEL_MODE_LIST_BAN_EXCEPT, mode))
+				.map(|mode| (CHANNEL_MODE_LIST_BAN_EXCEPT, mode))
 				.collect();
 
 			client_socket.emit_channel_access_control(&channel, added_flags, vec![], true);
@@ -172,7 +177,7 @@ impl UnbanExHandler
 	pub async fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(data): Data<super::UnbanCommandFormData>,
+		Data(data): Data<UnbanCommandFormData>,
 	)
 	{
 		let client_socket = app.current_client(&socket);
@@ -182,7 +187,7 @@ impl UnbanExHandler
 				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
-					channel::mode::ChannelAccessLevel::HalfOperator,
+					ChannelAccessLevel::HalfOperator,
 				) {
 				continue;
 			}
@@ -206,7 +211,7 @@ impl UnbanExHandler
 
 			let removed_flags = updated
 				.into_iter()
-				.map(|mode| (channel::mode::CHANNEL_MODE_LIST_BAN_EXCEPT, mode))
+				.map(|mode| (CHANNEL_MODE_LIST_BAN_EXCEPT, mode))
 				.collect();
 
 			client_socket.emit_channel_access_control(&channel, vec![], removed_flags, true);

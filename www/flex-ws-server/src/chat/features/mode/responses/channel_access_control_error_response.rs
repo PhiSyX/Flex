@@ -8,15 +8,43 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::ApplyMode;
-use crate::command_response;
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 
-command_response! {
-	struct MODE<F>
+use crate::src::chat::features::mode::ErrBannedfromchanError;
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait ModeAccessControlClientSocketErrorRepliesInterface: ClientSocketInterface
+{
+	type Channel: ChannelInterface;
+
+	fn send_err_bannedfromchan(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> ModeAccessControlClientSocketErrorRepliesInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn send_err_bannedfromchan(&self, channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>)
 	{
-		target: &'a str,
-		added: Vec<(char, ApplyMode<F>)>,
-		removed: Vec<(char, ApplyMode<F>)>,
-		updated: bool,
+		let origin = Origin::from(self.client());
+
+		let err_bannedfromchan = ErrBannedfromchanError {
+			origin: &origin,
+			tags: ErrBannedfromchanError::default_tags(),
+			channel: channel_name,
+		};
+
+		self.emit(err_bannedfromchan.name(), err_bannedfromchan);
 	}
 }

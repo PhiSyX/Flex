@@ -8,9 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::ErrBannedfromchanError;
-use crate::src::chat::components::{channel, client, ClientSocketInterface, Origin};
-use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
+use flex_chat_channel::{
+	AccessControlMask,
+	Channel,
+	ChannelAccessControlInterface,
+	ChannelInterface,
+};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
+use flex_chat_mode::ApplyMode;
+
+use super::ModeCommandResponse;
 
 // --------- //
 // Interface //
@@ -18,24 +25,54 @@ use crate::src::chat::features::{ApplyMode, ModeCommandResponse};
 
 pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client courant les modes d'accès de contrôles d'un salon.
 	fn emit_channel_access_control(
 		&self,
-		channel: &channel::Channel,
-		added_flags: Vec<(char, ApplyMode<channel::mode::AccessControlMode>)>,
-		removed_flags: Vec<(char, ApplyMode<channel::mode::AccessControlMode>)>,
+		channel: &Self::Channel,
+		added_flags: Vec<(char, ApplyMode<AccessControlMask>)>,
+		removed_flags: Vec<(char, ApplyMode<AccessControlMask>)>,
 		updated: bool,
-	)
-	{
-		self.emit_target_access_control(&channel.name, &added_flags, &removed_flags, updated);
-	}
+	);
 
 	/// Émet au client courant les modes d'accès de contrôles d'un salon.
 	fn emit_target_access_control(
 		&self,
-		channel_name: channel::ChannelIDRef,
-		added_flags: &[(char, ApplyMode<channel::mode::AccessControlMode>)],
-		removed_flags: &[(char, ApplyMode<channel::mode::AccessControlMode>)],
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		added_flags: &[(char, ApplyMode<AccessControlMask>)],
+		removed_flags: &[(char, ApplyMode<AccessControlMask>)],
+		updated: bool,
+	);
+
+	/// Émet au client courant tous les controls d'accès du salon.
+	fn emit_all_channel_access_control(&self, channel: &Self::Channel);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> ModeAccessControlClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_channel_access_control(
+		&self,
+		channel: &Self::Channel,
+		added_flags: Vec<(char, ApplyMode<AccessControlMask>)>,
+		removed_flags: Vec<(char, ApplyMode<AccessControlMask>)>,
+		updated: bool,
+	)
+	{
+		self.emit_target_access_control(channel.name(), &added_flags, &removed_flags, updated);
+	}
+
+	fn emit_target_access_control(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		added_flags: &[(char, ApplyMode<AccessControlMask>)],
+		removed_flags: &[(char, ApplyMode<AccessControlMask>)],
 		updated: bool,
 	)
 	{
@@ -53,8 +90,7 @@ pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInt
 		self.emit_within(channel_room, mode_cmd.name(), mode_cmd);
 	}
 
-	/// Émet au client courant tous les controls d'accès du salon.
-	fn emit_all_channel_access_control(&self, channel: &channel::Channel)
+	fn emit_all_channel_access_control(&self, channel: &Self::Channel)
 	{
 		let list: Vec<_> = channel.access_controls().into_iter().collect();
 
@@ -67,7 +103,7 @@ pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInt
 		let mode_cmd = ModeCommandResponse {
 			origin: &origin,
 			tags: ModeCommandResponse::<()>::default_tags(),
-			target: &channel.name,
+			target: channel.name(),
 			removed: Default::default(),
 			added: list,
 			updated: false,
@@ -76,27 +112,3 @@ pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInt
 		self.emit(mode_cmd.name(), mode_cmd);
 	}
 }
-
-pub trait ModeAccessControlClientSocketErrorRepliesInterface: ClientSocketInterface
-{
-	fn send_err_bannedfromchan(&self, channel_name: &str)
-	{
-		let origin = Origin::from(self.client());
-
-		let err_bannedfromchan = ErrBannedfromchanError {
-			origin: &origin,
-			tags: ErrBannedfromchanError::default_tags(),
-			channel: channel_name,
-		};
-
-		self.emit(err_bannedfromchan.name(), err_bannedfromchan);
-	}
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> ModeAccessControlClientSocketCommandResponseInterface for client::Socket<'s> {}
-
-impl<'s> ModeAccessControlClientSocketErrorRepliesInterface for client::Socket<'s> {}

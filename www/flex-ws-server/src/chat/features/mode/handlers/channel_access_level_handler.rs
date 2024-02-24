@@ -8,24 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{
+	ChannelAccessLevel,
+	ChannelMember,
+	ChannelName,
+	ChannelNameSRef,
+	MemberInterface,
+};
+use flex_chat_client::{ClientServerApplicationInterface, ClientSocketInterface, Socket};
+use flex_chat_client_channel::{
+	ChannelClientSocketCommandResponse,
+	ChannelClientSocketErrorReplies,
+};
+use flex_chat_client_nick::NickClientSocketErrorReplies;
+use flex_chat_mode::ApplyMode;
+use flex_chat_user::UserInterface;
 use flex_web_framework::types::time;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use super::application::ModeChannelAccessLevelApplicationInterface;
-use super::client::ModeAccessLevelClientSocketInterface;
-use super::{
+use crate::src::chat::features::mode::{
 	AccessLevelAdminOperatorCommandFormData,
 	AccessLevelHalfOperatorCommandFormData,
 	AccessLevelOperatorCommandFormData,
 	AccessLevelOwnerOperatorCommandFormData,
 	AccessLevelVipCommandFormData,
+	ChannelMemberDTO,
+	ModeAccessLevelClientSocketInterface,
 };
-use crate::src::chat::components::channel::member;
-use crate::src::chat::components::channel::mode::ChannelAccessLevel;
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::{channel, client};
-use crate::src::chat::features::{ApplyMode, OperApplicationInterface};
-use crate::src::chat::replies::ChannelMemberDTO;
+use crate::src::chat::features::{
+	ModeChannelAccessLevelApplicationInterface,
+	OperApplicationInterface,
+};
 use crate::src::ChatApplication;
 
 // --------- //
@@ -49,7 +62,7 @@ impl ModeAccessLevelHandler
 	fn update_member_access_level(
 		socket: &SocketRef,
 		app: &ChatApplication,
-		channel_name: channel::ChannelIDRef,
+		channel_name: ChannelNameSRef,
 		nicknames: &[String],
 		min_access_level: ChannelAccessLevel,
 		set_access_level: ChannelAccessLevel,
@@ -84,8 +97,8 @@ impl ModeAccessLevelHandler
 				.map(|member| {
 					struct TargetMember<'a>
 					{
-						client: client::Socket<'a>,
-						member: member::ChannelMember,
+						client: Socket<'a>,
+						member: ChannelMember,
 					}
 
 					let join_room = |access_level: ChannelAccessLevel| {
@@ -151,9 +164,9 @@ impl ModeAccessLevelHandler
 					set_access_level.letter(),
 					ApplyMode {
 						flag: set_access_level,
-						args: vec![member.user.nickname.to_owned()],
+						args: vec![member.user.nickname().to_owned()],
 						updated_at: time::Utc::now(),
-						updated_by: client_socket.user().nickname.to_owned(),
+						updated_by: client_socket.user().nickname().to_owned(),
 					},
 				)
 			})
@@ -173,7 +186,7 @@ impl ModeAccessLevelHandler
 	fn remove_member_access_level(
 		socket: &SocketRef,
 		app: &ChatApplication,
-		channel_name: &channel::ChannelID,
+		channel_name: &ChannelName,
 		nicknames: &[String],
 		min_access_level: ChannelAccessLevel,
 		unset_access_level: ChannelAccessLevel,
@@ -211,8 +224,8 @@ impl ModeAccessLevelHandler
 				.map(|member| {
 					struct TargetMember<'a>
 					{
-						client: client::Socket<'a>,
-						member: member::ChannelMember,
+						client: Socket<'a>,
+						member: ChannelMember,
 					}
 
 					let join_room = |access_level: ChannelAccessLevel| {
@@ -289,9 +302,9 @@ impl ModeAccessLevelHandler
 					unset_access_level.letter(),
 					ApplyMode {
 						flag: unset_access_level,
-						args: vec![member.user.nickname.to_owned()],
+						args: vec![member.user.nickname().to_owned()],
 						updated_at: time::Utc::now(),
-						updated_by: client_socket.user().nickname.to_owned(),
+						updated_by: client_socket.user().nickname().to_owned(),
 					},
 				)
 			})

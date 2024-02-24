@@ -8,10 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::validate_channel;
+use flex_chat_macro::command_formdata;
 use flex_web_framework::types::secret;
-
-use crate::command_formdata;
-use crate::macro_rules::command_formdata::validate_channel;
 
 command_formdata! {
 	struct CHANNEL_MODE
