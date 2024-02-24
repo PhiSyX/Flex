@@ -8,18 +8,54 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::PartCommandResponse;
-use crate::src::chat::components::{client, ClientSocketInterface, Origin};
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{ClientSocketInterface, Origin, Socket};
+use flex_chat_macro::command_response;
+
+command_response! {
+	struct PART
+	{
+		/// Les salons que le client DOIT quitter.
+		channel: &'a str,
+		/// Raison du message.
+		message: Option<&'a str>,
+		/// Par qui l'utilisateur a été forcé de quitter le salon.
+		forced_by: Option<&'a str>,
+	}
+}
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait PartChannelClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait PartClientSocketCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client les réponses liées à la commande /PART.
-	fn emit_part<S>(&self, channel: &str, message: Option<S>, forced_by: Option<&str>)
-	where
+	fn emit_part<S>(
+		&self,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		message: Option<S>,
+		forced_by: Option<&str>,
+	) where
+		S: std::ops::Deref<Target = str>;
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> PartClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_part<S>(
+		&self,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		message: Option<S>,
+		forced_by: Option<&str>,
+	) where
 		S: std::ops::Deref<Target = str>,
 	{
 		let origin = Origin::from(self.client());
@@ -38,9 +74,3 @@ pub trait PartChannelClientSocketCommandResponseInterface: ClientSocketInterface
 		_ = self.socket().leave(channel_room);
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> PartChannelClientSocketCommandResponseInterface for client::Socket<'s> {}

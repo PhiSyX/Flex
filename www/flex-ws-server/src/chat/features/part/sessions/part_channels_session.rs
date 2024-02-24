@@ -8,16 +8,42 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::command_response;
+use flex_chat_channel::{ChannelMemberInterface, ChannelsSessionInterface};
+use flex_chat_client::{Client, ClientInterface};
 
-command_response! {
-	struct PART
+use crate::src::chat::sessions::ChannelsSession;
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait PartChannelsSessionInterface: ChannelsSessionInterface
+{
+	type Client: ClientInterface;
+
+	/// Supprime un client de tous ses salons.
+	fn remove_client_from_all_his_channels(&self, client: &Self::Client) -> Option<()>;
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl PartChannelsSessionInterface for ChannelsSession
+{
+	type Client = Client;
+
+	fn remove_client_from_all_his_channels(&self, client: &Self::Client) -> Option<()>
 	{
-		/// Les salons que le client DOIT quitter.
-		channel: &'a str,
-		/// Raison du message.
-		message: Option<&'a str>,
-		/// Par qui l'utilisateur a été forcé de quitter le salon.
-		forced_by: Option<&'a str>,
+		for channel_id in client.channels() {
+			let mut channel = self.get_mut(channel_id)?;
+			channel.members_mut().remove(client.id());
+			if channel.members().is_empty() {
+				drop(channel);
+				self.remove(channel_id);
+				continue;
+			}
+		}
+		Some(())
 	}
 }
