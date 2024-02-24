@@ -45,7 +45,7 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> 
 			token: data.tags.token,
 		};
 
-		fetch("/chat/connect", {
+		fetch("/chat/connect/token", {
 			method: "POST",
 			credentials: "include",
 			headers: {
