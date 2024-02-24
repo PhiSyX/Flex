@@ -14,6 +14,7 @@ use flex_chat_user::UserOperatorInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::src::chat::features::list::{
+	ListApplicationInterface,
 	ListChannelClientSocketCommandResponseInterface,
 	ListCommandFormData,
 };

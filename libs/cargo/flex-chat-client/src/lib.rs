@@ -27,8 +27,8 @@ pub use self::socket::*;
 // ---- //
 
 // TODO: à améliorer.
-pub type ChannelName = String;
-pub type ChannelNameRef<'a> = &'a str;
+pub(crate) type ChannelName = String;
+pub(crate) type ChannelNameRef<'a> = &'a str;
 
 pub type ClientID = uuid::Uuid;
 

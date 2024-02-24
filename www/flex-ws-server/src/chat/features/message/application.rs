@@ -9,10 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat_channel::{
+	Channel,
 	ChannelAccessControlInterface,
 	ChannelAccessLevel,
+	ChannelInterface,
 	ChannelMemberInterface,
-	ChannelNameSRef,
 	ChannelNoPermissionCause,
 	ChannelWritePermission,
 	MemberInterface,
@@ -24,11 +25,14 @@ use crate::src::ChatApplication;
 
 pub trait MessageApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Le client peut-il écrire sur le salon?
 	fn is_client_able_to_write_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> ChannelWritePermission;
 }
 
@@ -38,10 +42,13 @@ pub trait MessageApplicationInterface
 
 impl MessageApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn is_client_able_to_write_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> ChannelWritePermission
 	{
 		let Some(channel) = self.get_channel(channel_name) else {

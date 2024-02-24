@@ -36,8 +36,8 @@ pub use self::validation::*;
 // TODO: à améliorer.
 pub type UserID = uuid::Uuid;
 
-pub type ChannelName = String;
-pub type ChannelNameSRef<'a> = &'a str;
+pub(crate) type ChannelName = String;
+pub(crate) type ChannelNameSRef<'a> = &'a str;
 
 // --------- //
 // Structure //

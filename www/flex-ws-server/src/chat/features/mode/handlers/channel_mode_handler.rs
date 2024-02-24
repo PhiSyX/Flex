@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{AccessControlMask, ChannelAccessLevel, ChannelNameSRef, SettingsFlag};
+use flex_chat_channel::{AccessControlMask, ChannelAccessLevel, SettingsFlag};
 use flex_chat_client::Socket;
 use flex_chat_mode::ApplyMode;
 use socketioxide::extract::{Data, SocketRef, State};
@@ -254,7 +254,7 @@ impl ModeChannelSettingsHandler
 fn apply_bans(
 	app: &ChatApplication,
 	client_socket: &Socket,
-	channel_name: ChannelNameSRef,
+	channel_name: &str,
 	bans: Option<&[String]>,
 	alist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 	rlist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
@@ -280,7 +280,7 @@ fn apply_bans(
 fn apply_bans_except(
 	app: &ChatApplication,
 	client_socket: &Socket,
-	channel_name: ChannelNameSRef,
+	channel_name: &str,
 	bans_except: Option<&[String]>,
 	alist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 	rlist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
@@ -306,7 +306,7 @@ fn apply_bans_except(
 fn apply_mode_settings_bool(
 	app: &ChatApplication,
 	client_socket: &Socket,
-	channel_name: ChannelNameSRef,
+	channel_name: &str,
 	maybe_bool: Option<bool>,
 	flag: SettingsFlag,
 	alist: &mut Vec<ApplyMode<SettingsFlag>>,
@@ -325,7 +325,7 @@ fn apply_mode_settings_bool(
 fn apply_mode_settings_str(
 	app: &ChatApplication,
 	client_socket: &Socket,
-	channel_name: ChannelNameSRef,
+	channel_name: &str,
 	s: &str,
 	flag: SettingsFlag,
 	alist: &mut Vec<ApplyMode<SettingsFlag>>,

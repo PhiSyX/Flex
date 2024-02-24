@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientID, ClientInterface, ClientsSessionInterface};
+use flex_chat_client::{ClientInterface, ClientsSessionInterface};
 
 use crate::config::flex;
 use crate::src::chat::sessions::ClientsSession;
@@ -17,12 +17,12 @@ use crate::src::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
-pub trait OperClientSessionInterface
+pub trait OperClientSessionInterface: ClientsSessionInterface
 {
 	/// Marque un client comme étant un opérateur.
 	fn marks_client_as_operator(
 		&self,
-		client_id: &ClientID,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
 		oper: &flex::flex_config_operator_auth,
 	);
 }
@@ -33,7 +33,11 @@ pub trait OperClientSessionInterface
 
 impl OperClientSessionInterface for ClientsSession
 {
-	fn marks_client_as_operator(&self, client_id: &ClientID, oper: &flex::flex_config_operator_auth)
+	fn marks_client_as_operator(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		oper: &flex::flex_config_operator_auth,
+	)
 	{
 		let Some(mut client) = self.get_mut(client_id) else {
 			return;

@@ -20,8 +20,10 @@ use crate::src::ChatApplication;
 
 pub trait QuitApplicationInterface
 {
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Déconnecte un client de session.
-	fn disconnect_client(&self, client_socket: Socket, reason: impl ToString);
+	fn disconnect_client(&self, client_socket: Self::ClientSocket<'_>, reason: impl ToString);
 }
 
 // -------------- //
@@ -30,7 +32,9 @@ pub trait QuitApplicationInterface
 
 impl QuitApplicationInterface for ChatApplication
 {
-	fn disconnect_client(&self, client_socket: Socket, reason: impl ToString)
+	type ClientSocket<'cs> = Socket<'cs>;
+
+	fn disconnect_client(&self, client_socket: Self::ClientSocket<'_>, reason: impl ToString)
 	{
 		let Some(mut session_client) = self.get_client_mut_by_id(client_socket.cid()) else {
 			return;

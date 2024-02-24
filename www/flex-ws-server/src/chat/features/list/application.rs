@@ -8,25 +8,51 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::using! {
-	application,
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{
+	ClientInterface,
+	ClientServerApplicationInterface,
+	ClientSocketInterface,
+	Socket,
+};
+
+use crate::src::ChatApplication;
+
+// --------- //
+// Interface //
+// --------- //
+
+pub trait ListApplicationInterface
+{
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
+	/// Est-ce qu'un client a un salon donné dans sa liste de salons rejoint.
+	fn is_client_has_channel(
+		&self,
+		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	) -> bool;
 }
 
-lexa_kernel::public_using! {
-	handlers / {
-		list_handler,
-	};
-}
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
 
-lexa_kernel::using! {
-	forms / {
-		pub(super) list_form,
-	};
+impl ListApplicationInterface for ChatApplication
+{
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
 
-	pub(super) responses / {
-		pub(super) list_command_response,
-		pub(super) rpl_list,
-		pub(super) rpl_liststart,
-		pub(super) rpl_listend,
-	};
+	fn is_client_has_channel(
+		&self,
+		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	) -> bool
+	{
+		let Some(client) = self.get_client_by_id(client_id) else {
+			return false;
+		};
+		client.has_channel(channel_name)
+	}
 }

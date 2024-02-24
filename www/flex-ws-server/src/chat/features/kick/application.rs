@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{ChannelAccessLevel, ChannelName, ChannelsSessionInterface};
+use flex_chat_channel::{Channel, ChannelAccessLevel, ChannelInterface, ChannelsSessionInterface};
 use flex_chat_client::{ClientSocketInterface, Socket};
 use flex_chat_client_channel::ChannelClientSocketErrorReplies;
 use flex_chat_client_nick::NickClientSocketErrorReplies;
@@ -31,11 +31,14 @@ use crate::src::ChatApplication;
 
 pub trait KickApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Sanctionne un membre d'un salon
 	fn kick_clients_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: &ChannelName,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		knicks: &[String],
 		comment: Option<&str>,
 	);
@@ -47,10 +50,13 @@ pub trait KickApplicationInterface
 
 impl KickApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn kick_clients_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: &ChannelName,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		knicks: &[String],
 		comment: Option<&str>,
 	)

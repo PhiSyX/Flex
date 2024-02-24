@@ -10,10 +10,11 @@
 
 use flex_chat_channel::{
 	AccessControlMask,
+	Channel,
 	ChannelAccessControlInterface,
 	ChannelAccessLevel,
+	ChannelInterface,
 	ChannelMember,
-	ChannelNameSRef,
 	ChannelsSessionInterface,
 	Mask,
 	SettingsFlag,
@@ -32,35 +33,38 @@ use crate::src::ChatApplication;
 
 pub trait ModeChannelAccessControlApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Applique un ban sur un salon.
 	fn apply_ban_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>;
 
 	/// Applique une exception de ban sur un salon.
 	fn apply_ban_except_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>;
 
 	/// Retire un ban sur un salon.
 	fn apply_unban_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>;
 
 	/// Retire une exception de ban sur un salon.
 	fn apply_unban_except_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>;
 
@@ -68,8 +72,8 @@ pub trait ModeChannelAccessControlApplicationInterface
 	/// d'un salon.
 	fn has_banmask_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> bool;
 
@@ -77,54 +81,60 @@ pub trait ModeChannelAccessControlApplicationInterface
 	/// exceptions des bannissement d'un salon.
 	fn has_banmask_except_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> bool;
 }
 
 pub trait ModeChannelAccessLevelApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Est-ce que le client courant a le droit demandé sur le salon.
 	fn does_client_have_rights_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		min_access_level: ChannelAccessLevel,
 	) -> bool;
 
 	/// Met à jour les niveaux d'accès d'un client sur un salon.
 	fn update_member_access_level_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		set_access_level: ChannelAccessLevel,
 	) -> Option<ChannelMember>;
 
 	/// Supprime un niveau d'accès pour un pseudo d'un salon.
 	fn remove_member_access_level_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		unset_access_level: ChannelAccessLevel,
 	) -> Option<ChannelMember>;
 }
 
 pub trait ModeChannelSettingsApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Définit un nouveau mode de salon.
 	fn set_settings_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		flag: SettingsFlag,
 	) -> Option<ApplyMode<SettingsFlag>>;
 
 	/// Retire un mode de salon existant.
 	fn unset_settings_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		flag: SettingsFlag,
 	) -> Option<ApplyMode<SettingsFlag>>;
 }
@@ -135,10 +145,13 @@ pub trait ModeChannelSettingsApplicationInterface
 
 impl ModeChannelAccessControlApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn apply_ban_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>
 	{
@@ -151,8 +164,8 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 
 	fn apply_ban_except_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>
 	{
@@ -165,8 +178,8 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 
 	fn apply_unban_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>
 	{
@@ -179,8 +192,8 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 
 	fn apply_unban_except_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>
 	{
@@ -193,8 +206,8 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 
 	fn has_banmask_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> bool
 	{
@@ -208,8 +221,8 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 
 	fn has_banmask_except_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> bool
 	{
@@ -224,10 +237,13 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 
 impl ModeChannelAccessLevelApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	fn does_client_have_rights_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		min_access_level: ChannelAccessLevel,
 	) -> bool
 	{
@@ -244,8 +260,8 @@ impl ModeChannelAccessLevelApplicationInterface for ChatApplication
 
 	fn update_member_access_level_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		set_access_level: ChannelAccessLevel,
 	) -> Option<ChannelMember>
 	{
@@ -255,8 +271,8 @@ impl ModeChannelAccessLevelApplicationInterface for ChatApplication
 
 	fn remove_member_access_level_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel_name: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		unset_access_level: ChannelAccessLevel,
 	) -> Option<ChannelMember>
 	{
@@ -270,11 +286,14 @@ impl ModeChannelAccessLevelApplicationInterface for ChatApplication
 
 impl ModeChannelSettingsApplicationInterface for ChatApplication
 {
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
 	/// Définit un nouveau mode de salon.
 	fn set_settings_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		flag: SettingsFlag,
 	) -> Option<ApplyMode<SettingsFlag>>
 	{
@@ -291,8 +310,8 @@ impl ModeChannelSettingsApplicationInterface for ChatApplication
 	/// Retire un mode de salon existant.
 	fn unset_settings_on_channel(
 		&self,
-		client_socket: &Socket,
-		channel: ChannelNameSRef,
+		client_socket: &Self::ClientSocket<'_>,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		flag: SettingsFlag,
 	) -> Option<ApplyMode<SettingsFlag>>
 	{

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{ChannelName, ChannelsSessionInterface, SettingsFlag};
+use flex_chat_channel::{Channel, ChannelInterface, ChannelsSessionInterface, SettingsFlag};
 use flex_chat_client::{
 	self,
 	ClientInterface,
@@ -44,16 +44,23 @@ use crate::src::chat::features::{
 
 pub trait OperApplicationInterface
 {
+	type Channel: ChannelInterface;
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Est-ce que le client est un opérateur global?
-	fn is_client_global_operator(&self, client_socket: &Socket) -> bool;
+	fn is_client_global_operator(&self, client_socket: &Self::ClientSocket<'_>) -> bool;
 
 	/// Rejoint un salon opérateur ou le crée.
-	fn join_or_create_oper_channel(&self, client_socket: &Socket, channel_name: &ChannelName);
+	fn join_or_create_oper_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	);
 
 	/// Marque le client en session comme étant un opérateur.
 	fn marks_client_as_operator(
 		&self,
-		client_socket: &mut Socket,
+		client_socket: &mut Self::ClientSocket<'_>,
 		oper: &flex::flex_config_operator_auth,
 	);
 }
@@ -64,7 +71,10 @@ pub trait OperApplicationInterface
 
 impl OperApplicationInterface for ChatApplication
 {
-	fn is_client_global_operator(&self, client_socket: &Socket) -> bool
+	type Channel = Channel;
+	type ClientSocket<'cs> = Socket<'cs>;
+
+	fn is_client_global_operator(&self, client_socket: &Self::ClientSocket<'_>) -> bool
 	{
 		let Some(client) = self.get_client_by_id(client_socket.cid()) else {
 			return false;
@@ -72,7 +82,11 @@ impl OperApplicationInterface for ChatApplication
 		client.user().is_global_operator()
 	}
 
-	fn join_or_create_oper_channel(&self, client_socket: &Socket, channel_name: &ChannelName)
+	fn join_or_create_oper_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	)
 	{
 		if !self.channels.has(channel_name) {
 			self.channels.create_with_flags(
@@ -125,7 +139,7 @@ impl OperApplicationInterface for ChatApplication
 
 	fn marks_client_as_operator(
 		&self,
-		client_socket: &mut Socket,
+		client_socket: &mut Self::ClientSocket<'_>,
 		oper: &flex::flex_config_operator_auth,
 	)
 	{

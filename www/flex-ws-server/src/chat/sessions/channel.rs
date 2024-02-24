@@ -18,19 +18,11 @@ use flex_chat_channel::{
 	ChannelInterface,
 	ChannelMember,
 	ChannelMemberInterface,
-	ChannelName,
-	ChannelNameSRef,
 	ChannelSettingsInterface,
 	ChannelsSessionInterface,
 	MemberInterface,
 };
-use flex_chat_client::{
-	Client,
-	ClientID,
-	ClientInterface,
-	ClientServerApplicationInterface,
-	ClientsChannelSessionInterface,
-};
+use flex_chat_client::{Client, ClientsChannelSessionInterface};
 use flex_chat_mode::ApplyMode;
 use flex_web_framework::types::secret;
 
@@ -42,7 +34,7 @@ use crate::src::ChatApplication;
 // --------- //
 
 #[derive(Default)]
-pub struct ChannelsSession(DashMap<ChannelName, Channel>);
+pub struct ChannelsSession(DashMap<String, Channel>);
 
 // -------------- //
 // Implémentation //
@@ -51,22 +43,9 @@ pub struct ChannelsSession(DashMap<ChannelName, Channel>);
 impl ChatApplication
 {
 	/// Récupère un salon à partir de son nom.
-	pub fn get_channel(
-		&self,
-		channel_name: ChannelNameSRef,
-	) -> Option<Ref<'_, ChannelName, Channel>>
+	pub fn get_channel(&self, channel_name: &str) -> Option<Ref<'_, String, Channel>>
 	{
 		self.channels.get(channel_name)
-	}
-
-	/// Est-ce qu'un client a un salon donné dans sa liste de salons rejoint.
-	pub fn is_client_has_channel(&self, client_id: &ClientID, channel_name: ChannelNameSRef)
-		-> bool
-	{
-		let Some(client) = self.get_client_by_id(client_id) else {
-			return false;
-		};
-		client.has_channel(channel_name)
 	}
 }
 
@@ -77,7 +56,7 @@ impl ClientsChannelSessionInterface for ClientsSession
 	fn add_channel_on_client(
 		&self,
 		client_id: &<Self::Client as flex_chat_client::ClientInterface>::ClientID,
-		channel_id: ChannelNameSRef,
+		channel_id: &str,
 	)
 	{
 		let chid = channel_id.to_lowercase();
@@ -88,7 +67,7 @@ impl ClientsChannelSessionInterface for ClientsSession
 	fn remove_channel_on_client(
 		&self,
 		client_id: &<Self::Client as flex_chat_client::ClientInterface>::ClientID,
-		channel_id: ChannelNameSRef,
+		channel_id: &str,
 	)
 	{
 		let chid = channel_id.to_lowercase();
@@ -118,7 +97,7 @@ impl ChannelsSessionInterface for ChannelsSession
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-	) -> Option<RefMut<'_, ChannelName, Channel>>
+	) -> Option<RefMut<'_, String, Channel>>
 	{
 		let mut channel_entity = self.get_mut(channel_id)?;
 

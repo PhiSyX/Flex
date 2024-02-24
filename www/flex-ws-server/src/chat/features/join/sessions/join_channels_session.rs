@@ -23,12 +23,14 @@ use crate::src::chat::sessions::ChannelsSession;
 // Interface //
 // --------- //
 
-pub trait JoinChannelsSessionInterface<Client>: ChannelsSessionInterface
+pub trait JoinChannelsSessionInterface: ChannelsSessionInterface
 {
+	type Client: ClientInterface;
+
 	/// Est-ce qu'un client en session PEUT rejoindre le salon
 	fn can_join(
 		&self,
-		client: &Client,
+		client: &Self::Client,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
 	) -> Result<(), JoinChannelPermissionError>;
@@ -38,11 +40,13 @@ pub trait JoinChannelsSessionInterface<Client>: ChannelsSessionInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl JoinChannelsSessionInterface<Client> for ChannelsSession
+impl JoinChannelsSessionInterface for ChannelsSession
 {
+	type Client = Client;
+
 	fn can_join(
 		&self,
-		client: &Client,
+		client: &Self::Client,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
 	) -> Result<(), JoinChannelPermissionError>

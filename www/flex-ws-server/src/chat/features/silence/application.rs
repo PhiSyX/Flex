@@ -19,17 +19,31 @@ use crate::src::ChatApplication;
 
 pub trait SilenceApplicationInterface
 {
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Ajoute un client (2) à la liste des clients bloqués/ignorés du client
 	/// (1).
-	fn add_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool;
+	fn add_client_to_blocklist(
+		&self,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
+	) -> bool;
 
 	/// Est-ce que le client (2) est dans la liste des clients bloqués du
 	/// client(1) ?
-	fn client_isin_blocklist(&self, client_socket: &Socket, other_client_socket: &Socket) -> bool;
+	fn client_isin_blocklist(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		other_client_socket: &Self::ClientSocket<'_>,
+	) -> bool;
 
 	/// Supprime un client (2) de la liste des clients bloqués/ignorés du client
 	/// (1).
-	fn remove_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool;
+	fn remove_client_to_blocklist(
+		&self,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
+	) -> bool;
 }
 
 // -------------- //
@@ -38,19 +52,33 @@ pub trait SilenceApplicationInterface
 
 impl SilenceApplicationInterface for ChatApplication
 {
-	fn add_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool
+	type ClientSocket<'cs> = Socket<'cs>;
+
+	fn add_client_to_blocklist(
+		&self,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
+	) -> bool
 	{
 		self.clients
 			.add_to_block(client.cid(), to_ignore_client.cid())
 	}
 
-	fn client_isin_blocklist(&self, client_socket: &Socket, other_client_socket: &Socket) -> bool
+	fn client_isin_blocklist(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		other_client_socket: &Self::ClientSocket<'_>,
+	) -> bool
 	{
 		self.clients
 			.isin_blocklist(client_socket.cid(), other_client_socket.cid())
 	}
 
-	fn remove_client_to_blocklist(&self, client: &Socket, to_ignore_client: &Socket) -> bool
+	fn remove_client_to_blocklist(
+		&self,
+		client: &Self::ClientSocket<'_>,
+		to_ignore_client: &Self::ClientSocket<'_>,
+	) -> bool
 	{
 		self.clients
 			.remove_to_block(client.cid(), to_ignore_client.cid())

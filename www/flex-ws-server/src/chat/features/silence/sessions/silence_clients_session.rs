@@ -8,31 +8,46 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use dashmap::DashSet;
+use flex_chat_client::{ClientInterface, ClientsSessionInterface};
+
+use crate::src::chat::sessions::ClientsSession;
+
 // --------- //
 // Interface //
 // --------- //
 
-use dashmap::DashSet;
-use flex_chat_client::{Client, ClientID, ClientsSessionInterface};
-
-use crate::src::chat::sessions::ClientsSession;
-
-pub trait SilenceClientsSessionInterface
+pub trait SilenceClientsSessionInterface: ClientsSessionInterface
 {
 	/// Ajoute un client dans la liste des bloqués/ignorés pour les deux
 	/// clients.
-	fn add_to_block(&self, client_id: &ClientID, to_ignore_client_id: &ClientID) -> bool;
+	fn add_to_block(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		to_ignore_client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> bool;
 
 	/// La liste des clients bloqués d'un client.
-	fn blocklist(&self, client_id: &ClientID) -> Vec<Client>;
+	fn blocklist(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> Vec<Self::Client>;
 
 	/// Est-ce que le client (2) est dans la liste des clients bloqués du client
 	/// (1).
-	fn isin_blocklist(&self, client_id: &ClientID, other_client_id: &ClientID) -> bool;
+	fn isin_blocklist(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		other_client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> bool;
 
 	/// Supprime un client (2) de la liste des clients bloqués/ignorés d'un
 	/// client (1)
-	fn remove_to_block(&self, client_id: &ClientID, to_ignore_client_id: &ClientID) -> bool;
+	fn remove_to_block(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		to_ignore_client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> bool;
 }
 
 // -------------- //
@@ -41,7 +56,11 @@ pub trait SilenceClientsSessionInterface
 
 impl SilenceClientsSessionInterface for ClientsSession
 {
-	fn add_to_block(&self, client_id: &ClientID, to_ignore_client_id: &ClientID) -> bool
+	fn add_to_block(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		to_ignore_client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> bool
 	{
 		let Some(blocklist) = self.blocklist.get_mut(client_id) else {
 			self.blocklist.insert(
@@ -53,7 +72,10 @@ impl SilenceClientsSessionInterface for ClientsSession
 		blocklist.insert(to_ignore_client_id.to_owned())
 	}
 
-	fn blocklist(&self, client_id: &ClientID) -> Vec<Client>
+	fn blocklist(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> Vec<Self::Client>
 	{
 		self.blocklist
 			.get(client_id)
@@ -61,7 +83,11 @@ impl SilenceClientsSessionInterface for ClientsSession
 			.unwrap_or_default()
 	}
 
-	fn isin_blocklist(&self, client_id: &ClientID, other_client_id: &ClientID) -> bool
+	fn isin_blocklist(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		other_client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> bool
 	{
 		let Some(blocklist) = self.blocklist.get(client_id) else {
 			return false;
@@ -69,7 +95,11 @@ impl SilenceClientsSessionInterface for ClientsSession
 		blocklist.contains(other_client_id)
 	}
 
-	fn remove_to_block(&self, client_id: &ClientID, to_ignore_client_id: &ClientID) -> bool
+	fn remove_to_block(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		to_ignore_client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> bool
 	{
 		let Some(blocklist) = self.blocklist.get_mut(client_id) else {
 			return false;

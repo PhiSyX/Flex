@@ -19,11 +19,13 @@ use crate::src::ChatApplication;
 
 pub trait UserStatusAwayApplicationInterface
 {
+	type ClientSocket<'cs>: ClientSocketInterface;
+
 	/// Marque le client en session comme étant absent.
-	fn marks_client_as_away(&self, client_socket: &Socket, text: impl ToString);
+	fn marks_client_as_away(&self, client_socket: &Self::ClientSocket<'_>, text: impl ToString);
 
 	/// Marque le client en session comme n'étant plus absent.
-	fn marks_client_as_no_longer_away(&self, client_socket: &Socket);
+	fn marks_client_as_no_longer_away(&self, client_socket: &Self::ClientSocket<'_>);
 }
 
 // -------------- //
@@ -32,13 +34,15 @@ pub trait UserStatusAwayApplicationInterface
 
 impl UserStatusAwayApplicationInterface for ChatApplication
 {
-	fn marks_client_as_away(&self, client_socket: &Socket, text: impl ToString)
+	type ClientSocket<'cs> = Socket<'cs>;
+
+	fn marks_client_as_away(&self, client_socket: &Self::ClientSocket<'_>, text: impl ToString)
 	{
 		self.clients.marks_client_as_away(client_socket.cid(), text);
 		client_socket.send_rpl_nowaway();
 	}
 
-	fn marks_client_as_no_longer_away(&self, client_socket: &Socket)
+	fn marks_client_as_no_longer_away(&self, client_socket: &Self::ClientSocket<'_>)
 	{
 		if self.clients.is_client_away(client_socket.cid()) {
 			self.clients

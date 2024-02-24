@@ -8,13 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{
-	ChannelAccessLevel,
-	ChannelMember,
-	ChannelName,
-	ChannelNameSRef,
-	MemberInterface,
-};
+use flex_chat_channel::{ChannelAccessLevel, ChannelMember, MemberInterface};
 use flex_chat_client::{ClientServerApplicationInterface, ClientSocketInterface, Socket};
 use flex_chat_client_channel::{
 	ChannelClientSocketCommandResponse,
@@ -62,7 +56,7 @@ impl ModeAccessLevelHandler
 	fn update_member_access_level(
 		socket: &SocketRef,
 		app: &ChatApplication,
-		channel_name: ChannelNameSRef,
+		channel_name: &str,
 		nicknames: &[String],
 		min_access_level: ChannelAccessLevel,
 		set_access_level: ChannelAccessLevel,
@@ -186,7 +180,7 @@ impl ModeAccessLevelHandler
 	fn remove_member_access_level(
 		socket: &SocketRef,
 		app: &ChatApplication,
-		channel_name: &ChannelName,
+		channel_name: &str,
 		nicknames: &[String],
 		min_access_level: ChannelAccessLevel,
 		unset_access_level: ChannelAccessLevel,

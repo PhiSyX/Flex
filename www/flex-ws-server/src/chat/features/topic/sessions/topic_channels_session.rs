@@ -11,9 +11,8 @@
 use flex_chat_channel::{
 	ChannelAccessControlInterface,
 	ChannelAccessLevel,
+	ChannelInterface,
 	ChannelMemberInterface,
-	ChannelNameSRef,
-	ChannelTopic,
 	ChannelTopicInterface,
 	ChannelsSessionInterface,
 	MemberInterface,
@@ -21,27 +20,30 @@ use flex_chat_channel::{
 };
 use flex_chat_client::{Client, ClientInterface};
 
-use crate::src::chat::{features::topic::ChannelTopicError, sessions::ChannelsSession};
+use crate::src::chat::features::topic::ChannelTopicError;
+use crate::src::chat::sessions::ChannelsSession;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait TopicChannelsSessionInterface
+pub trait TopicChannelsSessionInterface: ChannelsSessionInterface
 {
+	type Client: ClientInterface;
+
 	/// Est-ce qu'un client PEUT éditer un topic.
 	fn is_client_can_edit_topic(
 		&self,
-		channel_id: ChannelNameSRef,
-		client: &Client,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		client: &Self::Client,
 	) -> Result<(), ChannelTopicError>;
 
 	fn update_topic(
 		&self,
-		channel_id: ChannelNameSRef,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		topic: impl AsRef<str>,
 		updated_by: impl ToString,
-	) -> Option<ChannelTopic>;
+	) -> Option<<Self::Channel as ChannelTopicInterface>::Topic>;
 }
 
 // -------------- //
@@ -50,10 +52,12 @@ pub trait TopicChannelsSessionInterface
 
 impl TopicChannelsSessionInterface for ChannelsSession
 {
+	type Client = Client;
+
 	fn is_client_can_edit_topic(
 		&self,
-		channel_id: ChannelNameSRef,
-		client: &Client,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		client: &Self::Client,
 	) -> Result<(), ChannelTopicError>
 	{
 		let Some(channel) = self.get(channel_id) else {
@@ -97,10 +101,10 @@ impl TopicChannelsSessionInterface for ChannelsSession
 	/// Met à jour un topic.
 	fn update_topic(
 		&self,
-		channel_id: ChannelNameSRef,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		topic: impl AsRef<str>,
 		updated_by: impl ToString,
-	) -> Option<ChannelTopic>
+	) -> Option<<Self::Channel as ChannelTopicInterface>::Topic>
 	{
 		let mut channel = self.get_mut(channel_id)?;
 		let topic = topic.as_ref();
