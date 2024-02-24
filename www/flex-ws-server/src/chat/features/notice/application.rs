@@ -8,9 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::channel::permission::ChannelNoPermissionCause;
-use crate::src::chat::components::client::ClientSocketInterface;
-use crate::src::chat::components::{channel, client};
+use flex_chat_channel::{
+	ChannelAccessControlInterface,
+	ChannelAccessLevel,
+	ChannelMemberInterface,
+	ChannelNameSRef,
+	ChannelNoPermissionCause,
+	ChannelWritePermission,
+	MemberInterface,
+};
+use flex_chat_client::{ClientSocketInterface, Socket};
+
 use crate::src::chat::features::OperApplicationInterface;
 use crate::src::ChatApplication;
 
@@ -19,9 +27,9 @@ pub trait NoticeApplicationInterface
 	/// Le client peut-il écrire sur le salon?
 	fn is_client_able_to_notice_on_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-	) -> channel::permission::ChannelWritePermission;
+		client_socket: &Socket,
+		channel_name: ChannelNameSRef,
+	) -> ChannelWritePermission;
 }
 
 // -------------- //
@@ -32,11 +40,11 @@ impl NoticeApplicationInterface for ChatApplication
 {
 	fn is_client_able_to_notice_on_channel(
 		&self,
-		client_socket: &client::Socket,
-		channel_name: channel::ChannelIDRef,
-	) -> channel::permission::ChannelWritePermission
+		client_socket: &Socket,
+		channel_name: ChannelNameSRef,
+	) -> ChannelWritePermission
 	{
-		use channel::permission::ChannelWritePermission;
+		use flex_chat_channel::ChannelWritePermission;
 
 		let Some(channel) = self.get_channel(channel_name) else {
 			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_NOSUCHCHANNEL);
@@ -73,7 +81,7 @@ impl NoticeApplicationInterface for ChatApplication
 
 		if moderate_flag
 			&& member_hal
-				.filter(|level| level.flag() >= channel::mode::ChannelAccessLevel::Vip.flag())
+				.filter(|level| level.flag() >= ChannelAccessLevel::Vip.flag())
 				.is_none()
 		{
 			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_CHANISINMODERATED);
