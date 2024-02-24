@@ -8,11 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use client::Origin;
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{Client, Origin, Socket};
+use flex_chat_macro::command_response;
 
-use super::{ErrCannotkickglobopsError, KickCommandResponse};
-use crate::src::chat::components;
-use crate::src::chat::components::client::{self, ClientSocketInterface};
+use flex_chat_client::ClientSocketInterface;
+
+command_response! {
+	struct KICK
+	{
+		/// Le salon que le client DOIT quitter, car victime d'un KICK.
+		channel: &'a str,
+		/// Raison du kick.
+		reason: Option<&'a str>,
+		/// La victime.
+		knick: &'a Origin<Client>,
+	}
+}
 
 // --------- //
 // Interface //
@@ -20,13 +32,29 @@ use crate::src::chat::components::client::{self, ClientSocketInterface};
 
 pub trait KickChannelClientSocketCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client les réponses liées à la commande /KICK.
-	fn emit_kick(
+	fn emit_kick(&self, channel: &Self::Channel, knick_client_socket: &Self, reason: Option<&str>);
+
+	/// Émet au client les réponses liées à la commande /KICK.
+	fn emit_self_kick(
 		&self,
-		channel: &components::channel::Channel,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		knick_client_socket: &Self,
 		reason: Option<&str>,
-	)
+	);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> KickChannelClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_kick(&self, channel: &Self::Channel, knick_client_socket: &Self, reason: Option<&str>)
 	{
 		let origin = Origin::from(self.client());
 		let knick_origin = Origin::from(knick_client_socket.client());
@@ -43,8 +71,12 @@ pub trait KickChannelClientSocketCommandResponseInterface: ClientSocketInterface
 		_ = knick_client_socket.socket().leave(channel.room());
 	}
 
-	/// Émet au client les réponses liées à la commande /KICK.
-	fn emit_self_kick(&self, channel: &str, knick_client_socket: &Self, reason: Option<&str>)
+	fn emit_self_kick(
+		&self,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		knick_client_socket: &Self,
+		reason: Option<&str>,
+	)
 	{
 		let origin = Origin::from(self.client());
 		let knick_origin = Origin::from(knick_client_socket.client());
@@ -62,27 +94,3 @@ pub trait KickChannelClientSocketCommandResponseInterface: ClientSocketInterface
 		_ = knick_client_socket.socket().leave(room);
 	}
 }
-
-pub trait KickChannelClientSocketErrorRepliesInterface: ClientSocketInterface
-{
-	/// Émet au client l'erreur [ErrCannotkickglobopsError].
-	fn send_err_cannotkickglobops(&self, channel_name: &str, nickname: &str)
-	{
-		let origin = Origin::from(self.client());
-		let err_cannotsendtochan = ErrCannotkickglobopsError {
-			channel: channel_name,
-			nick: nickname,
-			origin: &origin,
-			tags: ErrCannotkickglobopsError::default_tags(),
-		};
-		self.emit(err_cannotsendtochan.name(), err_cannotsendtochan);
-	}
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> KickChannelClientSocketCommandResponseInterface for client::Socket<'s> {}
-
-impl<'s> KickChannelClientSocketErrorRepliesInterface for client::Socket<'s> {}

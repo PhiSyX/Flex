@@ -8,24 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::src::chat::components::Origin;
-use crate::{command_response, error_replies};
+use flex_chat_channel::validate_channels;
+use flex_chat_macro::command_formdata;
+use flex_chat_user::validate_nicknames;
+use flex_serde_validation::string::validate_opt_string_filter;
 
-command_response! {
+command_formdata! {
 	struct KICK
 	{
-		/// Le salon que le client DOIT quitter, car victime d'un KICK.
-		channel: &'a str,
-		/// Raison du kick.
-		reason: Option<&'a str>,
-		/// La victime.
-		knick: &'a Origin,
+		#[serde(deserialize_with = "validate_channels")]
+		channels: Vec<String>,
+		#[serde(deserialize_with = "validate_nicknames")]
+		knicks: Vec<String>,
+		#[serde(default, deserialize_with = "validate_opt_string_filter")]
+		comment: Option<String>,
 	}
-}
-
-error_replies! {
-	/// Renvoyé pour indiquer l'échec d'une tentative de sanction KICK sur un
-	/// utilisateur (opérateur global) ayant le drapeau utilisateur +q.
-	| 480 <-> ERR_CANNOTKICKGLOBOPS { channel: str, nick: str }
-		=> "{channel} {nick} :Vous n'avez pas le droit de sanctionner d'un KICK cet utilisateur (protégé par le drapeau +q)"
 }
