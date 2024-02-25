@@ -17,7 +17,7 @@ import { Room } from "~/room/Room";
 // Implémentation //
 // -------------- //
 
-export class PrivateRoom extends Room<"private"> {
+export class PrivateRoom extends Room<UserID, "private"> {
 	/**
 	 * Liste des participant de la chambre privé.
 	 */

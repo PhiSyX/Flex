@@ -20,7 +20,7 @@ import { User } from "~/user/User";
 export class QueryCommand {
 	constructor(private store: ChatStore) {}
 
-	handle(roomName: string) {
+	handle(roomName: RoomID) {
 		const maybeUser = this.store.userManager().findByNickname(roomName);
 		if (maybeUser.is_none()) return;
 		const user = maybeUser.unwrap();

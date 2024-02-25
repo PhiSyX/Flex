@@ -13,7 +13,7 @@
 // ---- //
 
 declare interface Origin {
-	id: UUID;
+	id: UserID;
 	nickname: string;
 	ident: string;
 	host: {
@@ -24,7 +24,7 @@ declare interface Origin {
 
 declare interface ChannelOrigin {
 	access_level: Array<string>;
-	id: UUID;
+	id: UserID;
 	nickname: string;
 	ident: string;
 	host: {
@@ -33,15 +33,16 @@ declare interface ChannelOrigin {
 	};
 }
 
-declare type MaskAddr = Opaque<`${string}!${string}@${string}`, "MaskAddr">;
+// Salon
+declare type ChannelID = Opaque<string, "ChannelID">;
+// Utilisateur
+declare type UserID = Opaque<`${string}-${string}-${string}-${string}-${string}`, "UserID">;
+// Chambre perso.
+declare type CustomRoomID = Opaque<`@${string}`, "CustomRoomID">;
+// Chambre
+declare type RoomID = ChannelID | UserID | CustomRoomID;
 
-declare interface AccessControlMode {
-	mask: {
-		nick: string;
-		ident: string;
-		host: string;
-	};
-}
+declare type MaskAddr = Opaque<`${string}!${string}@${string}`, "MaskAddr">;
 
 // NOTE(phisyx): les réponses des commandes sont déclarées dans chaque modules
 //  	EXAMPLE: ~/modules/<module>/socket.d.ts
@@ -53,7 +54,7 @@ declare interface CommandResponsesReplies {
 		ident: string;
 		host: string;
 		tags: {
-			client_id: UUID;
+			client_id: UserID;
 			token: string;
 		};
 	};
@@ -66,18 +67,18 @@ declare interface ErrorReplies {
 	ERROR: {};
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_ALREADYREGISTERED: {};
-	ERR_BANNEDFROMCHAN: { channel: string };
-	ERR_CANNOTSENDTOCHAN: { channel_name: string };
-	ERR_CHANOPRIVSNEEDED: { channel: string };
+	ERR_BANNEDFROMCHAN: { channel: ChannelID };
+	ERR_CANNOTSENDTOCHAN: { channel_name: ChannelID };
+	ERR_CHANOPRIVSNEEDED: { channel: ChannelID };
 	ERR_ERRONEUSNICKNAME: { nickname: string };
 	ERR_NICKNAMEINUSE: { nickname: string };
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_NOPRIVILEGES: {};
-	ERR_NOSUCHCHANNEL: { channel_name: string };
+	ERR_NOSUCHCHANNEL: { channel_name: ChannelID };
 	ERR_NOSUCHNICK: { nickname: string };
-	ERR_NOTONCHANNEL: { channel: string };
-	ERR_USERNOTINCHANNEL: { channel: string; nick: string };
-	ERR_USERONCHANNEL: { channel: string; user: string };
+	ERR_NOTONCHANNEL: { channel: ChannelID };
+	ERR_USERNOTINCHANNEL: { channel: ChannelID; nick: string };
+	ERR_USERONCHANNEL: { channel: ChannelID; user: string };
 }
 
 declare interface Replies

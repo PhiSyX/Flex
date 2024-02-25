@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 declare interface TopicFormData {
-	channel: string;
+	channel: ChannelID;
 	topic?: string;
 }
 
@@ -19,11 +19,11 @@ declare interface Commands {
 
 declare interface CommandResponsesReplies {
 	RPL_NOTOPIC: {
-		channel: string;
+		channel: ChannelID;
 	};
 
 	RPL_TOPIC: {
-		channel: string;
+		channel: ChannelID;
 		topic: string;
 		updated: boolean;
 		updated_by: string;

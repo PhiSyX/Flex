@@ -10,7 +10,6 @@
 
 import { None, Option, Some } from "@phisyx/flex-safety";
 
-import { UserID } from "~/user/User";
 import { ChannelAccessLevelGroup } from "./ChannelAccessLevel";
 import { ChannelMember } from "./ChannelMember";
 

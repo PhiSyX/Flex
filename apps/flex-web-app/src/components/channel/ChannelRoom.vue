@@ -133,7 +133,7 @@ function openChannelSettingsDialog(_: Event) {
 /**
  * Ouvre une chambre.
  */
-function openRoom(roomName: string) {
+function openRoom(roomName: RoomID) {
 	chatStore.openRoom(roomName);
 }
 

@@ -16,8 +16,6 @@ import { Layer, OverlayerStore } from "~/store/OverlayerStore";
 // Type //
 // ---- //
 
-export type UserID = UUID;
-
 export interface UserChangeNicknameRecordDialog {}
 
 // ----------- //

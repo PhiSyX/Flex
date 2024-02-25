@@ -15,7 +15,7 @@ declare interface KickFormData {
 }
 
 declare interface KickDataResponse {
-	channel: string;
+	channel: ChannelID;
 	reason: string;
 	knick: Origin;
 }
@@ -30,7 +30,7 @@ declare interface CommandResponsesFromServer {
 
 declare interface ErrorReplies {
 	ERR_CANNOTKICKGLOBOPS: {
-		channel: string;
+		channel: ChannelID;
 		nick: string;
 	};
 }

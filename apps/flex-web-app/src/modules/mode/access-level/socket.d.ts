@@ -9,18 +9,18 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 declare interface Commands {
-	QOP: { channel: string; nicknames: Array<string> };
+	QOP: { channel: ChannelID; nicknames: Array<string> };
 	DEQOP: Commands["QOP"];
 
-	OP: { channel: string; nicknames: Array<string> };
+	OP: { channel: ChannelID; nicknames: Array<string> };
 	DEOP: Commands["OP"];
 
-	AOP: { channel: string; nicknames: Array<string> };
+	AOP: { channel: ChannelID; nicknames: Array<string> };
 	DEAOP: Commands["AOP"];
 
-	HOP: { channel: string; nicknames: Array<string> };
+	HOP: { channel: ChannelID; nicknames: Array<string> };
 	DEHOP: Commands["HOP"];
 
-	VIP: { channel: string; nicknames: Array<string> };
+	VIP: { channel: ChannelID; nicknames: Array<string> };
 	DEVIP: Commands["VIP"];
 }

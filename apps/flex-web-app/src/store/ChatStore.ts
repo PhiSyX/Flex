@@ -13,7 +13,7 @@ import { defineStore } from "pinia";
 import { Socket, io } from "socket.io-client";
 import { reactive } from "vue";
 
-import { assertChannelRoom } from "~/asserts/room";
+import { assertChannelRoom, isChannel } from "~/asserts/room";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
@@ -26,7 +26,6 @@ import { CommandInterface, Module } from "~/modules/interface";
 import { ModuleManager } from "~/modules/manager";
 import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
-import { Room, RoomID } from "~/room/Room";
 import { RoomManager } from "~/room/RoomManager";
 import { ClientIDStorage } from "~/store/local-storage/ClientIDStorage";
 import { User } from "~/user/User";
@@ -42,7 +41,7 @@ const MODULES_REPLIES_HANDLERS = import.meta.glob("~/modules/**/replies.ts");
 // ---- //
 
 type ConnectUserInfo = {
-	channels: string;
+	channels: ChannelID;
 	alternativeNickname: string;
 	nickname: string;
 	passwordServer: string | null;
@@ -71,14 +70,12 @@ export class ChatStore {
 
 		const thisServer = new ServerCustomRoom();
 		const channelList = new ChannelListCustomRoom();
-		// @ts-expect-error test
-		const rooms: Map<RoomID, Room> = new Map([
+
+		self.setNetworkName(thisServer.id());
+		self.roomManager().extends([
 			[thisServer.id(), thisServer],
 			[channelList.id(), channelList],
 		]);
-
-		self.setNetworkName(thisServer.id());
-		self.roomManager().extends(rooms);
 		self.roomManager().setCurrent(thisServer.id());
 
 		return self;
@@ -93,7 +90,7 @@ export class ChatStore {
 	private _client: Option<Origin> = None();
 	public clientError: Option<{ id: string; data: unknown }> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
-	private _network: Option<string> = None();
+	private _network: Option<CustomRoomID> = None();
 	private _roomManager: RoomManager = new RoomManager();
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
 	private _userManager: UserManager = new UserManager();
@@ -172,8 +169,9 @@ export class ChatStore {
 	/**
 	 * Récupère les salons à rejoindre automatiquement.
 	 */
-	getAutoJoinChannels(): Array<string> {
-		return this.getConnectUserInfo().channels.split(",");
+	getAutoJoinChannels(): Array<ChannelID> {
+		const channels: ChannelID = this.getConnectUserInfo().channels;
+		return channels.split(",") as Array<ChannelID>;
 	}
 
 	/**
@@ -337,7 +335,7 @@ export class ChatStore {
 	/**
 	 * Le nom du serveur.
 	 */
-	networkName(): string {
+	networkName(): CustomRoomID {
 		return this._network.expect("Nom du réseau");
 	}
 
@@ -416,7 +414,7 @@ export class ChatStore {
 	/**
 	 * Définit le nom du serveur.
 	 */
-	setNetworkName(networkName: string) {
+	setNetworkName(networkName: CustomRoomID) {
 		this._network.replace(networkName);
 	}
 
@@ -488,8 +486,8 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Change de chambre.
 	 */
-	function changeRoom(target: Origin | string) {
-		let roomID: string;
+	function changeRoom(target: Origin | RoomID) {
+		let roomID: RoomID;
 
 		if (typeof target === "string") {
 			roomID = target;
@@ -524,15 +522,15 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Ferme une chambre. Dans le cas d'un salon, cette fonction émet la
 	 * commande /PART vers le serveur.
 	 */
-	function closeRoom(target: Origin | string, message?: string) {
-		let roomID: string;
+	function closeRoom(target: Origin | RoomID, message?: string) {
+		let roomID: RoomID;
 		if (typeof target === "string") {
 			roomID = target;
 		} else {
 			roomID = target.id;
 		}
 
-		if (!roomID.startsWith("#")) {
+		if (!isChannel(roomID)) {
 			store.roomManager().remove(roomID);
 			return;
 		}
@@ -609,9 +607,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet la commande /JOIN vers le serveur.
 	 */
-	function joinChannel(channelsRaw: string, keysRaw?: string) {
+	function joinChannel(channelsRaw: ChannelID, keysRaw?: string) {
 		const module = store.moduleManager().get("JOIN").expect("Récupération du module `JOIN`");
-		const channels = channelsRaw.split(",");
+		const channels = channelsRaw.split(",") as Array<ChannelID>;
 		const keys = keysRaw?.split(",");
 		module.send({ channels, keys });
 	}
@@ -662,15 +660,15 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Ouvre une chambre. Dans le cas d'un salon, cette fonction émet la
 	 * commande /JOIN vers le serveur (sans clés).
 	 */
-	function openRoom(target: Origin | string) {
-		let roomID: string;
+	function openRoom(target: Origin | RoomID) {
+		let roomID: RoomID;
 		if (typeof target === "string") {
 			roomID = target;
 		} else {
 			roomID = target.id;
 		}
 
-		if (!roomID.startsWith("#")) {
+		if (!isChannel(roomID)) {
 			store.roomManager().setCurrent(roomID);
 			return;
 		}
@@ -707,7 +705,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet les commandes au serveur.
 	 */
-	function sendMessage(name: string, message: string) {
+	function sendMessage(name: RoomID, message: string) {
 		const room = store
 			.roomManager()
 			.get(name)
@@ -846,7 +844,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet la commande /TOPIC vers le serveur.
 	 */
-	function updateTopic(channelName: string, topic?: string) {
+	function updateTopic(channelName: ChannelID, topic?: string) {
 		const module = store.moduleManager().get("TOPIC").expect("Récupération du module `TOPIC`");
 		module.send({ channel: channelName, topic });
 	}

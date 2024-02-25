@@ -29,12 +29,12 @@ const overlayerStore = useOverlayerStore();
 
 const rooms = computed(() => chatStore.store.roomManager().rooms());
 
-function joinChannel(name: string) {
+function joinChannel(name: ChannelID) {
 	chatStore.joinChannel(name);
 	chatStore.changeRoom(name);
 }
 
-function closeRoom(name: string) {
+function closeRoom(name: RoomID) {
 	chatStore.closeRoom(name);
 }
 

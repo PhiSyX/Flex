@@ -12,19 +12,13 @@ import { Option } from "@phisyx/flex-safety";
 
 import { Room } from "~/room/Room";
 import { Layer, OverlayerStore } from "~/store/OverlayerStore";
-import { User, UserID } from "~/user/User";
+import { User } from "~/user/User";
 
 import { ChannelAccessControl } from "./ChannelAccessControl";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";
 import { ChannelMember } from "./ChannelMember";
 import { ChannelMembers } from "./ChannelMembers";
 import { ChannelTopic } from "./ChannelTopic";
-
-// ---- //
-// Type //
-// ---- //
-
-export type ChannelID = string;
 
 // -------------- //
 // Implémentation //
@@ -78,7 +72,7 @@ export class ChannelJoinDialog {
 	}
 }
 
-export class ChannelRoom extends Room<"channel"> {
+export class ChannelRoom extends Room<ChannelID, "channel"> {
 	// ------ //
 	// Static //
 	// ------ //
@@ -86,14 +80,14 @@ export class ChannelRoom extends Room<"channel"> {
 	/**
 	 * Crée un salon avec un propriétaire.
 	 */
-	static createWithOwner(name: string, user: User): ChannelRoom {
+	static createWithOwner(name: ChannelID, user: User): ChannelRoom {
 		return new ChannelRoom(name).withID(name).withOwner(user);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(name: string) {
+	constructor(name: ChannelID) {
 		super("channel", name);
 	}
 

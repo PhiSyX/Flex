@@ -15,3 +15,11 @@ declare interface Commands {
 	BANEX: { channels: Array<string>; masks: Array<MaskAddr> };
 	UNBANEX: Commands["BANEX"];
 }
+
+declare interface AccessControlMode {
+	mask: {
+		nick: string;
+		ident: string;
+		host: string;
+	};
+}

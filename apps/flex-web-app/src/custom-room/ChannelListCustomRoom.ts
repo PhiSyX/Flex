@@ -10,11 +10,11 @@
 
 import { Room } from "~/room/Room";
 
-export class ChannelListCustomRoom extends Room<"channel-list-custom-room"> {
+export class ChannelListCustomRoom extends Room<CustomRoomID, "channel-list-custom-room"> {
 	/**
 	 * ID de la chambre personnalisée.
 	 */
-	public static ID = "@channel-list";
+	public static ID: CustomRoomID = "@channel-list" as CustomRoomID;
 
 	// ----------- //
 	// Constructor //

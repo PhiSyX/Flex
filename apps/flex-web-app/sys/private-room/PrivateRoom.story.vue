@@ -6,7 +6,7 @@ import { PrivateRoom } from "~/private/PrivateRoom";
 import PrivateRoomComponent from "./PrivateRoom.vue";
 
 const origin: User = new User({
-	id: "a-b-c-d-e" as UUID,
+	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "PhiSyX",
@@ -15,7 +15,7 @@ const origin: User = new User({
 const privateRoom = new PrivateRoom(origin.nickname);
 
 const origin1: User = new User({
-	id: "k-l-m-n-o" as UUID,
+	id: "k-l-m-n-o" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",

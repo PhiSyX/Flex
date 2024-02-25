@@ -10,11 +10,11 @@
 
 import { Room } from "~/room/Room";
 
-export class ServerCustomRoom extends Room<"server-custom-room"> {
+export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room"> {
 	/**
 	 * ID de la chambre personnalisée.
 	 */
-	public static ID = "@flex";
+	public static ID: CustomRoomID = "@flex" as CustomRoomID;
 	public static NAME = "Flex";
 
 	// ----------- //

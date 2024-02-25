@@ -14,7 +14,7 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "join-channel", name: string): void;
+	(evtName: "join-channel", name: ChannelID): void;
 	(evtName: "create-channel-dialog", event: MouseEvent): void;
 }
 
@@ -26,7 +26,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const filteredChannelInput = ref("");
-const selectedChannels = ref(new Set<string>());
+const selectedChannels = ref(new Set<ChannelID>());
 
 const filteredChannels = computed(() => {
 	if (filteredChannelInput.value.length === 0) {
@@ -48,7 +48,7 @@ function joinSelectedChannels() {
 	selectedChannels.value.clear();
 }
 
-function joinChannel(name: string) {
+function joinChannel(name: ChannelID) {
 	emit("join-channel", name);
 }
 

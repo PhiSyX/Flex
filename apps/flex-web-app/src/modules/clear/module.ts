@@ -37,9 +37,9 @@ export class ClearModule implements Module<ClearModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName: string, channelsRaw?: string) {
-		for (const channelName of channelsRaw?.split(",") || [roomName]) {
-			this.command.handle(channelName);
+	input(roomName: RoomID, roomsRaw?: RoomID) {
+		for (const room of roomsRaw?.split(",") || [roomName]) {
+			this.command.handle(room as RoomID);
 		}
 	}
 

@@ -6,6 +6,8 @@
 
 -   Éviter d'utiliser `localStorage`. Ca n'est pas une priorité.
 
+-	Éviter de caster avec `as`, surtout pour les types Opaque.
+
 -   Utiliser des schémas de validation pour autoriser les données du serveur à
     être utiliser par notre application. Ca n'est pas une priorité.
 

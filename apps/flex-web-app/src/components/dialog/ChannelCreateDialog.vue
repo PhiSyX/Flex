@@ -16,7 +16,7 @@ const dialog = computed(() => new ChannelJoinDialog(overlayerStore.store));
 const hasLayer = computed(() => dialog.value.exists());
 const closeLayer = () => dialog.value.destroy();
 
-function joinChannel(channels: string, keys: string) {
+function joinChannel(channels: ChannelID, keys: string) {
 	if (!channels) return;
 	chatStore.joinChannel(channels, keys);
 	closeLayer();

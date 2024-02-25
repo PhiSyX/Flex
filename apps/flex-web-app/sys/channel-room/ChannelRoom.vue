@@ -36,7 +36,7 @@ export interface Emits {
 	(evtName: "kick-member", member: ChannelMember): void;
 	(evtName: "open-channel-settings", event: Event): void;
 	(evtName: "open-private", origin: Origin): void;
-	(evtName: "open-room", roomName: string): void;
+	(evtName: "open-room", roomName: RoomID): void;
 	(evtName: "select-member", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
 	(
@@ -101,7 +101,7 @@ const unbanMember = (member: ChannelMemberSelected) =>
 	emit("unban-member", member);
 const unbanNick = (member: ChannelMemberSelected) => emit("unban-nick", member);
 const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
-const openRoom = (roomName: string) => emit("open-room", roomName);
+const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 const closeRoom = () => emit("close");
 const ignoreUser = (origin: Origin) => emit("ignore-user", origin);
 const kickMember = (member: ChannelMember) => emit("kick-member", member);

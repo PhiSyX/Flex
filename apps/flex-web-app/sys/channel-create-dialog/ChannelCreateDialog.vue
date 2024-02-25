@@ -13,7 +13,7 @@ interface Props {
 
 interface Emits {
 	(evtName: "close"): void;
-	(evtName: "submit", channels: string, keys: string): void;
+	(evtName: "submit", channels: ChannelID, keys: string): void;
 }
 
 // --------- //
@@ -23,7 +23,7 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const channelsRequest = ref("");
+const channelsRequest = ref<ChannelID>("" as ChannelID);
 const keysRequest = ref("");
 
 function submitHandler() {

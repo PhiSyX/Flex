@@ -7,19 +7,19 @@ import { ChannelMemberFiltered } from "~/channel/ChannelMemberFiltered";
 import { User } from "~/user/User";
 
 const origin1: User = new User({
-	id: "a-b-c-d-e" as UUID,
+	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 });
 const origin2: User = new User({
-	id: "f-g-h-i-j" as UUID,
+	id: "f-g-h-i-j" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
 });
 const origin3: User = new User({
-	id: "k-l-m-n-o" as UUID,
+	id: "k-l-m-n-o" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",

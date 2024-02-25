@@ -9,17 +9,17 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 declare interface JoinFormData {
-	channels: Array<string>;
+	channels: Array<ChannelID>;
 	keys?: Array<string>;
 }
 
 declare interface SajoinFormData {
+	channels: Array<ChannelID>;
 	nicknames?: Array<string>;
-	channels: Array<string>;
 }
 
 declare interface JoinDataResponse {
-	channel: string;
+	channel: ChannelID;
 	forced: boolean;
 }
 
@@ -38,12 +38,12 @@ declare interface CommandResponsesReplies {
 	RPL_ENDOFNAMES: {};
 
 	RPL_NAMREPLY: {
-		channel: string;
+		channel: ChannelID;
 		code: number;
 		users: Array<ChannelOrigin>;
 	};
 }
 
 declare interface ErrorReplies {
-	ERR_BADCHANNELKEY: { channel: string };
+	ERR_BADCHANNELKEY: { channel: ChannelID };
 }

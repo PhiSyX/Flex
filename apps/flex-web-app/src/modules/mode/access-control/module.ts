@@ -41,7 +41,7 @@ export class BanModule implements Module<BanModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: string, ...masksRaw: Array<string>) {
+	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
@@ -95,7 +95,7 @@ export class UnbanModule implements Module<UnbanModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: string, ...masksRaw: Array<string>) {
+	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
@@ -147,7 +147,7 @@ export class BanExModule implements Module<BanExModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: string, ...masksRaw: Array<string>) {
+	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
@@ -199,7 +199,7 @@ export class UnbanExModule implements Module<UnbanExModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: string, ...masksRaw: Array<string>) {
+	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;

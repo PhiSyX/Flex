@@ -8,8 +8,8 @@ import { computed } from "vue";
 
 interface Props {
 	active: boolean;
-	id: string;
-	name: string;
+	id: RoomID;
+	name: RoomID;
 	folded?: boolean;
 	highlight?: boolean;
 	totalUnreadEvents?: number;
@@ -17,8 +17,8 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "open-room", origin: Origin | string): void;
-	(evtName: "close-room", origin: Origin | string): void;
+	(evtName: "open-room", origin: Origin | RoomID): void;
+	(evtName: "close-room", origin: Origin | RoomID): void;
 }
 
 // --------- //

@@ -13,7 +13,7 @@ interface Props {
 	messages: Array<RoomMessage>;
 }
 interface Emits {
-	(evtName: "open-room", roomName: string): void;
+	(evtName: "open-room", roomName: RoomID): void;
 }
 
 // --------- //
@@ -45,7 +45,7 @@ function scroll() {
 // Handlers //
 // -------- //
 
-const openRoom = (roomName: string) => emit("open-room", roomName);
+const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 
 function scrollHandler() {
 	if (!$root.value) {

@@ -9,13 +9,13 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 declare interface PubmsgFormData {
-	channels: Array<string>;
+	channels: Array<ChannelID>;
 	text: string;
 }
 
 declare interface PubmsgDataResponse {
 	tags: { msgid: string };
-	channel: string;
+	channel: ChannelID;
 	external: boolean;
 	text: string;
 	origin: {

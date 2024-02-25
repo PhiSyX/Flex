@@ -17,7 +17,7 @@ import { ChatStore } from "~/store/ChatStore";
 export class ClearCommand {
 	constructor(private store: ChatStore) {}
 
-	handle(roomName: string) {
+	handle(roomName: RoomID) {
 		const maybeRoom = this.store.roomManager().get(roomName);
 		if (maybeRoom.is_none()) return;
 		const room = maybeRoom.unwrap();

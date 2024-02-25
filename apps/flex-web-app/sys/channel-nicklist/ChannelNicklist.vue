@@ -47,19 +47,25 @@ const channelMemberTitleAttr = computed(() => {
 	);
 });
 
-const moderatorsList = computed(() => {
+const moderatorsList = computed<
+	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
+>(() => {
 	return props.moderators.filtered.length > 0
 		? props.moderators.filtered
 		: props.moderators.original;
 });
 
-const vipsList = computed(() => {
+const vipsList = computed<
+	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
+>(() => {
 	return props.vips.filtered.length > 0
 		? props.vips.filtered
 		: props.vips.original;
 });
 
-const usersList = computed(() => {
+const usersList = computed<
+	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
+>(() => {
 	return props.users.filtered.length > 0
 		? props.users.filtered
 		: props.users.original;
@@ -120,7 +126,11 @@ function selectUserHandler(member: ChannelMember) {
 					v-for="filteredMember in moderatorsList"
 					:key="filteredMember.id"
 					:classes="filteredMember.className"
-					:hits="filteredMember.searchHits || []"
+					:hits="
+						'searchHits' in filteredMember
+							? filteredMember.searchHits
+							: []
+					"
 					:is-current-client="filteredMember.isCurrentClient"
 					:nickname="filteredMember.nickname"
 					:symbol="filteredMember.highestAccessLevel.symbol"
@@ -141,7 +151,11 @@ function selectUserHandler(member: ChannelMember) {
 					v-for="filteredMember in vipsList"
 					:key="filteredMember.id"
 					:classes="filteredMember.className"
-					:hits="filteredMember.searchHits || []"
+					:hits="
+						'searchHits' in filteredMember
+							? filteredMember.searchHits
+							: []
+					"
 					:is-current-client="filteredMember.isCurrentClient"
 					:nickname="filteredMember.nickname"
 					:symbol="filteredMember.highestAccessLevel.symbol"
@@ -161,7 +175,11 @@ function selectUserHandler(member: ChannelMember) {
 					v-for="filteredMember in usersList"
 					:key="filteredMember.id"
 					:classes="filteredMember.className"
-					:hits="filteredMember.searchHits"
+					:hits="
+						'searchHits' in filteredMember
+							? filteredMember.searchHits
+							: []
+					"
 					:is-current-client="filteredMember.isCurrentClient"
 					:nickname="filteredMember.nickname"
 					:symbol="filteredMember.highestAccessLevel.symbol"

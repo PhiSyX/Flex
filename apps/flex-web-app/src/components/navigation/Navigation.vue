@@ -21,11 +21,11 @@ const servers = computed(() => {
 	];
 });
 
-function changeRoom(origin: Origin | string) {
+function changeRoom(origin: Origin | RoomID) {
 	chatStore.changeRoom(origin);
 }
 
-function closeRoom(origin: Origin | string) {
+function closeRoom(origin: Origin | RoomID) {
 	chatStore.closeRoom(origin);
 }
 

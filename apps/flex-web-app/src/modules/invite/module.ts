@@ -10,6 +10,7 @@
 
 import { ChatStore } from "~/store/ChatStore";
 
+import { isChannel } from "~/asserts/room";
 import { Module } from "../interface";
 import { InviteCommand } from "./command";
 import { InviteHandler } from "./handler";
@@ -41,12 +42,13 @@ export class InviteModule implements Module<InviteModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName: string, nickname?: string, channelRaw?: string) {
+	input(roomName: RoomID, nickname?: string, channelRaw?: ChannelID) {
 		if (!nickname) return;
 		let channel = roomName;
 		if (channelRaw) {
 			channel = channelRaw;
 		}
+		if (!isChannel(channel)) return;
 		this.send({ nickname, channel });
 	}
 

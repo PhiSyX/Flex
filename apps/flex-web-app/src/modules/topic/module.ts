@@ -10,6 +10,7 @@
 
 import { ChatStore } from "~/store/ChatStore";
 
+import { isChannel } from "~/asserts/room";
 import { Module } from "../interface";
 import { TopicCommand } from "./command";
 
@@ -37,7 +38,7 @@ export class TopicModule implements Module<TopicModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName: string, channelRaw?: string, ...words: Array<string>) {
+	input(roomName: RoomID, channelRaw?: string, ...words: Array<string>) {
 		let channelR = channelRaw;
 
 		if (channelR) {
@@ -49,7 +50,7 @@ export class TopicModule implements Module<TopicModule> {
 			channelR = roomName;
 		}
 
-		if (!channelR?.startsWith("#")) return;
+		if (!isChannel(channelR)) return;
 
 		const topic = words.join(" ");
 		this.send({ channel: channelR, topic });

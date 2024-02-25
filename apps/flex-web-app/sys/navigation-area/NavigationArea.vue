@@ -18,14 +18,14 @@ interface Server {
 	active: boolean;
 	connected: boolean;
 	folded: boolean;
-	id: string;
-	name: string;
+	id: CustomRoomID;
+	name: CustomRoomID;
 	rooms: Array<Room>;
 }
 
 interface Emits {
-	(evtName: "change-room", origin: Origin | string): void;
-	(evtName: "close-room", origin: Origin | string): void;
+	(evtName: "change-room", origin: Origin | RoomID): void;
+	(evtName: "close-room", origin: Origin | RoomID): void;
 	(evtName: "open-channel-list"): void;
 }
 
@@ -38,8 +38,8 @@ const emit = defineEmits<Emits>();
 const folded = ref(false);
 const navWidth = computed(() => (folded.value ? "42px" : "255px"));
 
-const changeRoom = (origin: Origin | string) => emit("change-room", origin);
-const closeRoom = (origin: Origin | string) => emit("close-room", origin);
+const changeRoom = (origin: Origin | RoomID) => emit("change-room", origin);
+const closeRoom = (origin: Origin | RoomID) => emit("close-room", origin);
 const openChannelList = () => emit("open-channel-list");
 </script>
 

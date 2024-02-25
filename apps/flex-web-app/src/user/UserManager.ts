@@ -10,8 +10,7 @@
 
 import { Option } from "@phisyx/flex-safety";
 
-import { ChannelID } from "~/channel/ChannelRoom";
-import { User, UserID } from "./User";
+import { User } from "./User";
 
 export class UserManager {
 	// --------- //

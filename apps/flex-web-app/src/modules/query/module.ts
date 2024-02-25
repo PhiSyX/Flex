@@ -37,9 +37,9 @@ export class QueryModule implements Module<QueryModule> {
 	// Méthode //
 	// ------- //
 
-	input(__: string, nicknamesRaw?: string) {
+	input(__: string, nicknamesRaw?: RoomID) {
 		for (const nickname of nicknamesRaw?.split(",") || []) {
-			this.command.handle(nickname);
+			this.command.handle(nickname as RoomID);
 		}
 	}
 

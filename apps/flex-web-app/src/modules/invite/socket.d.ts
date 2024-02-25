@@ -10,11 +10,11 @@
 
 declare interface InviteFormData {
 	nickname: string;
-	channel: string;
+	channel: ChannelID;
 }
 
 declare interface InviteDataResponse {
-	channel: string;
+	channel: ChannelID;
 	nick: string;
 }
 
@@ -25,11 +25,11 @@ declare interface Commands {
 declare interface CommandResponsesFromServer {
 	INVITE: InviteDataResponse;
 	RPL_INVITING: {
-		channel: string;
+		channel: ChannelID;
 		nick: string;
 	};
 }
 
 declare interface ErrorReplies {
-	ERR_INVITEONLYCHAN: { channel: string };
+	ERR_INVITEONLYCHAN: { channel: ChannelID };
 }

@@ -41,9 +41,9 @@ export class PubmsgModule implements Module<PubmsgModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomMessage: string, channelsRaw?: string, ...words: Array<string>) {
+	input(roomMessage: RoomID, channelsRaw?: ChannelID, ...words: Array<string>) {
 		if (!roomMessage.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+			const channels = channelsRaw?.split(",") as Array<ChannelID> | undefined;
 			if (!channels) return;
 			const text = words.join(" ");
 			this.send({ channels, text });
@@ -51,14 +51,14 @@ export class PubmsgModule implements Module<PubmsgModule> {
 		}
 
 		if (channelsRaw?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+			const channels = channelsRaw?.split(",") as Array<ChannelID> | undefined;
 			if (!channels) return;
 			const text = words.join(" ");
 			this.send({ channels, text });
 			return;
 		}
 
-		const channels = [roomMessage];
+		const channels = [roomMessage] as Array<ChannelID>;
 		if (channelsRaw) {
 			words.unshift(channelsRaw);
 		}

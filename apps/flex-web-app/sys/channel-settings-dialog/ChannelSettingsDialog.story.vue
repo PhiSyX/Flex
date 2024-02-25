@@ -4,19 +4,19 @@ import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
 import { ChannelMember } from "~/channel/ChannelMember";
 import { User } from "~/user/User";
 
-const channel1 = new ChannelRoom("#chan1");
+const channel1 = new ChannelRoom("#chan1" as ChannelID);
 channel1.setSettingMode("s");
 channel1.setSettingMode("m");
 const currentClientChannelMember = new ChannelMember(
 	new User({
 		host: { cloaked: "*" },
-		id: "uuid" as UUID,
+		id: "uuid" as UserID,
 		ident: "ident",
 		nickname: "nickname",
 	})
 );
 
-const channel2 = new ChannelRoom("#chan2");
+const channel2 = new ChannelRoom("#chan2" as ChannelID);
 channel2.setSettingMode("n");
 channel2.setSettingMode("t");
 </script>

@@ -22,7 +22,7 @@ export interface Props {
 interface Emits {
 	(evtName: "change-nickname", event: MouseEvent): void;
 	(evtName: "dblclick-main", event: MouseEvent): void;
-	(evtName: "open-room", roomName: string): void;
+	(evtName: "open-room", roomName: RoomID): void;
 	(evtName: "open-private", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
 }
@@ -45,7 +45,7 @@ const inputPlaceholder = computed(() => {
 
 const changeNick = (event: MouseEvent) => emit("change-nickname", event);
 const dblclickMain = (evt: MouseEvent) => emit("dblclick-main", evt);
-const openRoom = (roomName: string) => emit("open-room", roomName);
+const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 const openPrivate = (origin: Origin) => emit("open-private", origin);
 const sendMessage = (message: string) => emit("send-message", message);
 </script>

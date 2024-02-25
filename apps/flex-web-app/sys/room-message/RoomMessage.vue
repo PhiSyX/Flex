@@ -39,7 +39,7 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "open-room", roomName: string): void;
+	(evtName: "open-room", roomName: RoomID): void;
 }
 
 // --------- //
@@ -101,7 +101,7 @@ const isEventOrError = computed(() => {
 	);
 });
 
-const openRoom = (roomName: string) => emit("open-room", roomName);
+const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 </script>
 
 <template>

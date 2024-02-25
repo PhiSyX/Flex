@@ -11,12 +11,6 @@
 import { None, Option } from "@phisyx/flex-safety";
 import { MESSAGES_LIMIT, RoomMessage } from "./RoomMessage";
 
-// ---- //
-// Type //
-// ---- //
-
-export type RoomID = string;
-
 // -------- //
 // Constant //
 // -------- //
@@ -27,11 +21,11 @@ export const INPUT_HISTORY_LIMIT: number = 50;
 // Implémentation //
 // -------------- //
 
-export class Room<Type extends string = string> {
+export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * ID de la chambre.
 	 */
-	declare _id: RoomID;
+	declare _id: R;
 
 	/**
 	 * Définit l'état de la chambre, active ou non.
@@ -46,7 +40,7 @@ export class Room<Type extends string = string> {
 	/**
 	 * Nom personnalisé de la fenêtre.
 	 */
-	private customName: Option<string> = None();
+	private customName: Option<R> = None();
 
 	/**
 	 * TODO: trouver une meilleur nomenclature.
@@ -83,7 +77,7 @@ export class Room<Type extends string = string> {
 
 	constructor(
 		public type: Type,
-		protected _name: string,
+		protected _name: R | string,
 	) {}
 
 	// --------------- //
@@ -94,8 +88,8 @@ export class Room<Type extends string = string> {
 		return Option.from(this.messages.at(-1));
 	}
 
-	get name(): string {
-		return this.customName.unwrap_or(this._name);
+	get name(): R {
+		return this.customName.unwrap_or(this._name as NonNullable<R>);
 	}
 
 	// ------- //
@@ -202,9 +196,9 @@ export class Room<Type extends string = string> {
 		this.messages = [];
 	}
 
-	eq($1: string | Room<Type>): boolean {
+	eq($1: string | this): boolean {
 		if (typeof $1 === "string") {
-			return this.id() === $1 || this.name.toLowerCase() === $1.toLowerCase();
+			return this.id() === $1 || (this.name as string).toLowerCase() === $1.toLowerCase();
 		}
 		return $1.id() === this.id();
 	}
@@ -212,14 +206,14 @@ export class Room<Type extends string = string> {
 	/**
 	 * ID de la chambre.
 	 */
-	id(): RoomID {
+	id(): R {
 		return this._id;
 	}
 
 	/**
 	 * Définit un ID de chambre.
 	 */
-	withID(id: RoomID): this {
+	withID(id: R): this {
 		this._id = id;
 		return this;
 	}
@@ -268,7 +262,7 @@ export class Room<Type extends string = string> {
 	/**
 	 * Définit un nom personnalisé pour la chambre.
 	 */
-	setCustomName(name: string) {
+	setCustomName(name: NonNullable<R>) {
 		this.customName.replace(name);
 	}
 

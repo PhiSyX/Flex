@@ -9,18 +9,18 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 declare interface PartFormData {
-	channels: Array<string>;
+	channels: Array<ChannelID>;
 	message?: string;
 }
 
 declare interface SapartFormData {
-	channels: Array<string>;
+	channels: Array<ChannelID>;
 	nicknames: Array<string>;
 	message?: string;
 }
 
 declare interface PartDataResponse {
-	channel: string;
+	channel: ChannelID;
 	message: string | null;
 	forced_by: string | null;
 }

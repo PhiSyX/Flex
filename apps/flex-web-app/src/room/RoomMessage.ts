@@ -14,14 +14,15 @@ import { formatDate } from "@phisyx/flex-date";
 // Type //
 // ---- //
 
-type MessageProperties = {
+// biome-ignore lint/suspicious/noExplicitAny: à corriger.
+type MessageProperties<T = any> = {
 	data: object & { origin: Origin };
 	id: string;
 	archived: boolean;
 	message: string;
 	isCurrentClient: boolean;
 	nickname: string;
-	target: string;
+	target: T;
 	time: {
 		datetime: string;
 		formattedTime: string;

@@ -25,7 +25,7 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> 
 		});
 	}
 
-	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<string> }) {
+	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<ChannelID> }) {
 		const { channels } = payload;
 
 		this.store.setConnected(true);

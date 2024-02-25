@@ -74,7 +74,7 @@ function closePrivate() {
 /**
  * Ouvre une chambre.
  */
-function openRoom(roomName: string) {
+function openRoom(roomName: RoomID) {
 	chatStore.openRoom(roomName);
 }
 
@@ -82,7 +82,8 @@ function openRoom(roomName: string) {
  * Envoie du message au destinataire.
  */
 function sendMessage(message: string) {
-	chatStore.sendMessage(recipient.value.nickname, message);
+	// FIXME: type à corriger
+	chatStore.sendMessage(recipient.value.nickname as UserID, message);
 }
 
 /**

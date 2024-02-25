@@ -27,7 +27,7 @@ declare interface Commands {
 
 declare interface CommandResponsesFromServer {
 	MODE: {
-		target: string;
+		target: RoomID;
 		updated: boolean;
 
 		added: [

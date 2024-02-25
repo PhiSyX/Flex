@@ -12,7 +12,7 @@ import { None, Option, Some } from "@phisyx/flex-safety";
 
 import { assertChannelRoom } from "~/asserts/room";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
-import { Room, RoomID } from "./Room";
+import { Room } from "./Room";
 
 // -------------- //
 // Implémentation //
@@ -56,7 +56,7 @@ export class RoomManager {
 	 */
 	extends(rooms: Iterable<[RoomID, Room]>) {
 		for (const [roomID, room] of rooms) {
-			this._rooms.set(roomID.toLowerCase(), room);
+			this._rooms.set(roomID.toLowerCase() as RoomID, room);
 		}
 	}
 
@@ -78,7 +78,7 @@ export class RoomManager {
 			state: "opened" | "closed" | "opened:not-kicked";
 		} = { state: "opened" },
 	): Option<Room> {
-		const maybeRoom = Option.from(this._rooms.get(roomID.toLowerCase()));
+		const maybeRoom = Option.from(this._rooms.get(roomID.toLowerCase() as RoomID));
 
 		if (options) {
 			switch (options.state) {
@@ -128,7 +128,7 @@ export class RoomManager {
 	 * Ajoute une nouvelle chambre.
 	 */
 	insert(roomID: RoomID, room: Room): Room {
-		this._rooms.set(roomID.toLowerCase(), room);
+		this._rooms.set(roomID.toLowerCase() as RoomID, room);
 		return room;
 	}
 
@@ -169,7 +169,7 @@ export class RoomManager {
 			this.current().unsetTotalUnreadMessages();
 		}
 
-		this._currentRoom.replace(roomID.toLowerCase());
+		this._currentRoom.replace(roomID.toLowerCase() as RoomID);
 
 		this.current().setActive(true);
 

@@ -13,8 +13,8 @@ interface Props {
 	connected: boolean;
 	containerFolded?: boolean;
 	folded: boolean;
-	id: string;
-	name: string;
+	id: CustomRoomID;
+	name: CustomRoomID;
 	rooms: Array<Room>;
 }
 
@@ -23,8 +23,8 @@ interface Props {
 // ---- //
 
 export interface Emits {
-	(evtName: "change-room", origin: Origin | string): void;
-	(evtName: "close-room", origin: Origin | string): void;
+	(evtName: "change-room", origin: Origin | RoomID): void;
+	(evtName: "close-room", origin: Origin | RoomID): void;
 }
 
 // --------- //
@@ -41,11 +41,11 @@ function changeRoomHandler(evt: Event) {
 	openRoomHandler(props.id);
 }
 
-function openRoomHandler(origin: Origin | string) {
+function openRoomHandler(origin: Origin | RoomID) {
 	emit("change-room", origin);
 }
 
-function closeRoomHandler(origin: Origin | string) {
+function closeRoomHandler(origin: Origin | RoomID) {
 	emit("close-room", origin);
 }
 

@@ -41,8 +41,8 @@ export class JoinModule implements Module<JoinModule> {
 	// Méthode //
 	// ------- //
 
-	input(_: string, channelsRaw?: string, keysRaw?: string) {
-		const channels = channelsRaw?.split(",");
+	input(_: string, channelsRaw?: ChannelID, keysRaw?: string) {
+		const channels = channelsRaw?.split(",") as Array<ChannelID>;
 		if (!channels) return;
 		const keys = keysRaw?.split(",");
 		this.send({ channels, keys });
@@ -77,9 +77,9 @@ export class SajoinModule implements Module<SajoinModule> {
 	// Méthode //
 	// ------- //
 
-	input(_: string, nicknamesRaw?: string, channelsRaw?: string) {
+	input(_: string, nicknamesRaw?: string, channelsRaw?: ChannelID) {
 		const nicknames = nicknamesRaw?.split(",");
-		const channels = channelsRaw?.split(",");
+		const channels = channelsRaw?.split(",") as Array<ChannelID>;
 		if (!nicknames || !channels) return;
 		this.send({ nicknames, channels });
 	}

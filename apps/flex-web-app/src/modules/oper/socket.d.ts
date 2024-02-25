@@ -26,7 +26,7 @@ declare interface CommandResponsesReplies {
 declare interface ErrorReplies {
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_NOOPERHOST: {};
-	ERR_OPERONLY: { channel: string };
+	ERR_OPERONLY: { channel: ChannelID };
 	// biome-ignore lint/complexity/noBannedTypes: ?
 	ERR_PASSWDMISMATCH: {};
 }

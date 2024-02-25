@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 declare interface ListDataResponse {
-	channel: string;
+	channel: ChannelID;
 	modes_settings: string;
 	topic: string;
 	total_members: number;

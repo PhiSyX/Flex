@@ -9,21 +9,21 @@ import ChannelRoomComponent from "./ChannelRoom.vue";
 import { User } from "~/user/User";
 import { ChannelRoom } from "~/channel/ChannelRoom";
 
-const channelName = "#channel";
+const channelName = "#channel" as ChannelID;
 
 const channel = new ChannelRoom(channelName);
 channel.topic.set("Mon super topic");
 
 const origin1: User = new User({
 	access_level: ["Owner"],
-	id: "a-b-c-d-e" as UUID,
+	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 } as ChannelOrigin);
 
 const origin2: User = new User({
-	id: "f-g-h-i-j" as UUID,
+	id: "f-g-h-i-j" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
@@ -44,7 +44,7 @@ channel.messages.push(
 	new RoomMessage()
 		.withData({
 			origin: origin1,
-			channel: "#channel",
+			channel: "#channel" as ChannelID,
 			knick: origin2,
 			name: "KICK",
 			reason: "Dehors !",
@@ -60,7 +60,7 @@ channel.messages.push(
 );
 
 const origin3: User = new User({
-	id: "k-l-m-n-o" as UUID,
+	id: "k-l-m-n-o" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",
