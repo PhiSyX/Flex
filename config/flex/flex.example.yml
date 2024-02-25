@@ -1,7 +1,12 @@
 # Les champs en commentaires ne sont pas obligatoires.
 
 cors:
-  preset: permissive
+  preset: default
+  allow_credentials: true
+  allow_origin:
+    - "http://localhost:5173" # à changer, au cas où
+  allow_headers:
+    - "Content-Type"
 
 network:
   name: Nom d'example
