@@ -51,7 +51,7 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 		assertChannelRoom(channel);
 
 		if (data.added) {
-			for (const [letter, _] of Array.from(data.added)) {
+			for (const [letter, _] of data.added) {
 				channel.setSettingMode(letter);
 
 				if (letter === "t") {
@@ -61,7 +61,7 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 		}
 
 		if (data.removed) {
-			for (const [letter, _] of Array.from(data.removed)) {
+			for (const [letter, _] of data.removed) {
 				channel.unsetSettingMode(letter);
 
 				if (letter === "t") {

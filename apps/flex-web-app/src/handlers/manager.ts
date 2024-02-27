@@ -10,11 +10,9 @@
 
 import { Option } from "@phisyx/flex-safety";
 
-export type HandlerID = Opaque<string, "HandlerID">;
-
 export class HandlerManager {
 	private _sets: Set<() => Promise<unknown>> = new Set();
-	private _maps: Map<HandlerID, SocketEventHandler> = new Map();
+	private _maps: Map<string, SocketEventHandler> = new Map();
 
 	get size() {
 		return this._sets.size;
@@ -24,19 +22,19 @@ export class HandlerManager {
 		return this._sets.add(module);
 	}
 
-	extends(it: Iterable<[string, () => Promise<unknown>]>): this {
-		for (const [_, module] of it) {
-			this.add(module);
+	extends(record: Record<string, () => Promise<unknown>>): this {
+		for (const moduleKey in record) {
+			this.add(record[moduleKey]);
 		}
 		return this;
 	}
 
 	get<T extends CommandsNames = CommandsNames>(moduleID: T): Option<SocketEventHandler> {
-		return Option.from(this._maps.get(moduleID as HandlerID) as SocketEventHandler | undefined);
+		return Option.from(this._maps.get(moduleID) as SocketEventHandler | undefined);
 	}
 
 	set(moduleID: string, module: SocketEventHandler) {
-		return this._maps.set(moduleID as HandlerID, module);
+		return this._maps.set(moduleID, module);
 	}
 
 	free() {

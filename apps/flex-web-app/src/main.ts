@@ -12,7 +12,7 @@ import "#/assets/scss/style.scss";
 
 import { createApp, defineAsyncComponent } from "vue";
 
-import type { VuePluginInstall } from "./types/vue";
+import type { VuePluginInstall } from "#/types/vue";
 
 import AppComponent from "./App.vue";
 
@@ -27,19 +27,23 @@ for (const plugin of Object.values(plugins)) {
 
 // Chargement des composants (events)
 
-// biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const eventsComponents = import.meta.glob<{ default: any }>("../sys/room-events/RoomEvent*.vue");
+const eventsComponentsImports = import.meta.glob<{ default: unknown }>(
+	"../sys/room-events/RoomEvent*.vue",
+);
+
+const eventsComponentsEntries = Object.entries(eventsComponentsImports).map(
+	([eventFilepath, eventComponent]) => {
+		const componentName = eventFilepath.slice("../sys/room-events/".length, 0 - ".vue".length);
+		return [componentName, eventComponent] as [string, () => Promise<{ default: unknown }>];
+	},
+);
 
 app.provide(
 	"eventsComponents",
-	Object.keys(eventsComponents).map((eventFilepath) => {
-		const componentName = eventFilepath.slice("../sys/room-events/".length, 0 - ".vue".length);
-		return componentName;
-	}),
+	eventsComponentsEntries.map(([key]) => key),
 );
 
-for (const [eventFilepath, eventComponent] of Object.entries(eventsComponents)) {
-	const componentName = eventFilepath.slice("../sys/room-events/".length, 0 - ".vue".length);
+for (const [componentName, eventComponent] of eventsComponentsEntries) {
 	app.component(componentName, defineAsyncComponent(eventComponent));
 }
 

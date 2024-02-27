@@ -22,27 +22,9 @@ declare interface Origin {
 	};
 }
 
-declare interface ChannelOrigin {
+declare interface ChannelOrigin extends Origin {
 	access_level: Array<string>;
-	id: UserID;
-	nickname: string;
-	ident: string;
-	host: {
-		cloaked: string;
-		vhost?: string;
-	};
 }
-
-// Salon
-declare type ChannelID = Opaque<string, "ChannelID">;
-// Utilisateur
-declare type UserID = Opaque<`${string}-${string}-${string}-${string}-${string}`, "UserID">;
-// Chambre perso.
-declare type CustomRoomID = Opaque<`@${string}`, "CustomRoomID">;
-// Chambre
-declare type RoomID = ChannelID | UserID | CustomRoomID;
-
-declare type MaskAddr = Opaque<`${string}!${string}@${string}`, "MaskAddr">;
 
 // NOTE(phisyx): les réponses des commandes sont déclarées dans chaque modules
 //  	EXAMPLE: ~/modules/<module>/socket.d.ts

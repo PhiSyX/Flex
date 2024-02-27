@@ -11,11 +11,9 @@
 import { Option } from "@phisyx/flex-safety";
 import { CommandInterface, ModuleInterface } from "./interface";
 
-export type ModuleID = Opaque<string, "ModuleID">;
-
 export class ModuleManager {
 	private _sets: Set<() => Promise<unknown>> = new Set();
-	private _maps: Map<ModuleID, { listen(): void }> = new Map();
+	private _maps: Map<string, { listen(): void }> = new Map();
 
 	get size() {
 		return this._sets.size;
@@ -25,9 +23,9 @@ export class ModuleManager {
 		return this._sets.add(module);
 	}
 
-	extends(it: Iterable<[string, () => Promise<unknown>]>): this {
-		for (const [_, module] of it) {
-			this.add(module);
+	extends(record: Record<string, () => Promise<unknown>>): this {
+		for (const moduleKey in record) {
+			this.add(record[moduleKey]);
 		}
 		return this;
 	}
@@ -35,15 +33,14 @@ export class ModuleManager {
 	get<T extends CommandsNames = CommandsNames>(
 		moduleID: T,
 	): Option<ModuleInterface & CommandInterface<T>> {
-		return Option.from(
-			this._maps.get(moduleID as ModuleID) as
-				| (ModuleInterface & CommandInterface<T>)
-				| undefined,
-		);
+		let maybe_module = this._maps.get(moduleID) as
+			| (ModuleInterface & CommandInterface<T>)
+			| undefined;
+		return Option.from(maybe_module);
 	}
 
 	set(moduleID: string, module: ModuleInterface & CommandInterface) {
-		return this._maps.set(moduleID as ModuleID, module);
+		return this._maps.set(moduleID, module);
 	}
 
 	free() {

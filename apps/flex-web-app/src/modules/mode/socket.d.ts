@@ -33,7 +33,7 @@ declare interface CommandResponsesFromServer {
 		added: [
 			| ["b", ModeApplyFlag<AccessControlMode>]
 			| ["e", ModeApplyFlag<AccessControlMode>]
-			| ["o", ModeApplyFlag<"owner">]
+			| ["q", ModeApplyFlag<"owner">]
 			| ["a", ModeApplyFlag<"admin_operator">]
 			| ["o", ModeApplyFlag<"operator">]
 			| ["h", ModeApplyFlag<"half_operator">]

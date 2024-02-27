@@ -63,10 +63,8 @@ export class ChatStore {
 	static default(): ChatStore {
 		const self = reactive(new ChatStore()) as ChatStore;
 
-		self._handlerManager
-			.extends(Object.entries(HANDLERS))
-			.extends(Object.entries(MODULES_REPLIES_HANDLERS));
-		self._moduleManager.extends(Object.entries(MODULES));
+		self._handlerManager.extends(HANDLERS).extends(MODULES_REPLIES_HANDLERS);
+		self._moduleManager.extends(MODULES);
 
 		const thisServer = new ServerCustomRoom();
 		const channelList = new ChannelListCustomRoom();
