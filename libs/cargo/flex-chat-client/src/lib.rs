@@ -26,10 +26,6 @@ pub use self::socket::*;
 // Type //
 // ---- //
 
-// TODO: à améliorer.
-pub(crate) type ChannelName = String;
-pub(crate) type ChannelNameRef<'a> = &'a str;
-
 pub type ClientID = uuid::Uuid;
 
 // --------- //
@@ -53,7 +49,7 @@ pub struct Client
 	/// Structure utilisateur au client.
 	user: User,
 	/// Les salons qu'à rejoint le client.
-	pub channels: HashSet<ChannelName>,
+	pub channels: HashSet<String>,
 }
 
 // -------------- //
@@ -76,27 +72,6 @@ impl Client
 			user: User::new(ip),
 			channels: Default::default(),
 		}
-	}
-}
-
-impl Client
-{
-	/// ID du client.
-	pub fn id(&self) -> &ClientID
-	{
-		&self.id
-	}
-
-	/// ID du client.
-	pub fn cid(&self) -> ClientID
-	{
-		self.id
-	}
-
-	/// ID de la Socket.
-	pub fn sid(&self) -> Option<socketioxide::socket::Sid>
-	{
-		self.socket_id
 	}
 }
 
@@ -126,20 +101,16 @@ impl ClientInterface for Client
 		self.connected = false;
 	}
 
-	/// Est-ce que le client a comme salon, un salon donné, dans sa liste des
-	/// salons rejoint.
 	fn has_channel(&self, channel_name: &str) -> bool
 	{
 		self.channels.contains(channel_name)
 	}
 
-	/// Est-ce que le client est connecté du serveur de Chat?
 	fn is_connected(&self) -> bool
 	{
 		self.connected
 	}
 
-	/// Est-ce que le client est enregistré sur le serveur de Chat?
 	fn is_registered(&self) -> bool
 	{
 		self.registered
@@ -170,7 +141,11 @@ impl ClientInterface for Client
 		self.user.unset_flag(|flag| matches!(flag, Flag::Away(_)));
 	}
 
-	/// Chambre privé de l'utilisateur.
+	fn maybe_sid(&self) -> Option<&Self::SocketID>
+	{
+		self.socket_id.as_ref()
+	}
+
 	fn private_room(&self) -> String
 	{
 		format!("private:{}", self.user.nickname().to_lowercase())

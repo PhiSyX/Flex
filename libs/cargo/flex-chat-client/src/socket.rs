@@ -10,6 +10,8 @@
 
 use flex_chat_user::UserInterface;
 
+use crate::ClientSocketInterface;
+
 // ----------- //
 // Énumération //
 // ----------- //
@@ -42,7 +44,6 @@ impl<'a> Socket<'a>
 	/// Les salons de la socket.
 	pub fn channels_rooms(&self) -> Vec<String>
 	{
-		use crate::interface::ClientSocketInterface;
 		self.socket()
 			.rooms()
 			.iter()
@@ -55,7 +56,6 @@ impl<'a> Socket<'a>
 	/// l'instance du client courant.
 	pub fn check_nickname(&self, nickname: &str) -> bool
 	{
-		use crate::interface::ClientSocketInterface;
 		self.user().is_itself(nickname)
 	}
 }
@@ -64,7 +64,6 @@ impl<'a> Socket<'a>
 {
 	pub fn send_err(&self, comment: impl ToString)
 	{
-		use crate::interface::ClientSocketInterface;
 		self.emit("ERROR", comment.to_string());
 	}
 }
@@ -73,7 +72,7 @@ impl<'a> Socket<'a>
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> crate::interface::ClientSocketInterface for Socket<'s>
+impl<'s> ClientSocketInterface for Socket<'s>
 {
 	type Client = super::Client;
 	type Socket = socketioxide::extract::SocketRef;

@@ -8,56 +8,50 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use std::net;
+use dashmap::mapref::multiple::RefMutMulti;
 
-use flex_chat_client::{Client, ClientInterface, ClientsSessionInterface};
-
-use crate::src::chat::sessions::ClientsSession;
+use crate::ClientInterface;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait ConnectClientsSessionInterface: ClientsSessionInterface
+pub trait ClientsSessionInterface
 {
-	/// Crée une nouvelle session d'un client.
-	fn create(
-		&self,
-		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-	) -> Self::Client;
+	// Type représentant un client.
+	type Client: ClientInterface;
 
-	/// Peut-on localiser un client non enregistré par son ID.
-	fn can_locate_unregistered_client(
+	/// Cherche un client en fonction de son ID.
+	fn get(&self, client_id: &<Self::Client as ClientInterface>::ClientID) -> Option<Self::Client>;
+
+	/// Cherche un client en fonction de son ID.
+	fn get_mut(
 		&self,
 		client_id: &<Self::Client as ClientInterface>::ClientID,
-	) -> bool;
+	) -> Option<RefMutMulti<'_, <Self::Client as ClientInterface>::ClientID, Self::Client>>;
+
+	/// Enregistre un client.
+	fn register(&self, client: &Self::Client);
+	/// Mise à niveau d'un client.
+	fn upgrade(&self, client: &Self::Client);
 }
 
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl ConnectClientsSessionInterface for ClientsSession
+pub trait ClientsChannelSessionInterface
 {
-	fn create(
-		&self,
-		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-	) -> Self::Client
-	{
-		let client = Client::new(ip, socket_id);
-		self.clients.insert(*client.cid(), client.clone());
-		client
-	}
+	// Type représentant un client.
+	type Client: ClientInterface;
 
-	fn can_locate_unregistered_client(
+	/// Ajoute un salon pour une session d'un client
+	fn add_channel_on_client(
 		&self,
 		client_id: &<Self::Client as ClientInterface>::ClientID,
-	) -> bool
-	{
-		self.clients
-			.iter_mut()
-			.any(|client| client_id.eq(client.cid()) && !client.is_registered())
-	}
+		channel_id: &str,
+	);
+
+	/// Supprime un salon pour une session d'un client.
+	fn remove_channel_on_client(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+		channel_id: &str,
+	);
 }

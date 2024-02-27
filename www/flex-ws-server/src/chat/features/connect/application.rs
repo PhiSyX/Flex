@@ -76,7 +76,7 @@ impl ConnectApplicationInterface for ChatApplication
 		client: &<Self::ClientSocket<'_> as ClientSocketInterface>::Client,
 	) -> bool
 	{
-		self.clients.can_locate_unregistered_client(client.id())
+		self.clients.can_locate_unregistered_client(client.cid())
 	}
 
 	fn get_client_by_id_and_token(

@@ -8,56 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use std::net;
-
-use flex_chat_client::{Client, ClientInterface, ClientsSessionInterface};
-
-use crate::src::chat::sessions::ClientsSession;
+use crate::{ClientInterface, ClientSocketInterface};
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait ConnectClientsSessionInterface: ClientsSessionInterface
+/// Interface de l'application pour la gestion des clients
+pub trait ClientServerApplicationInterface
 {
-	/// Crée une nouvelle session d'un client.
-	fn create(
-		&self,
-		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-	) -> Self::Client;
+	type ClientSocket<'cs>: ClientSocketInterface
+	where
+		Self: 'cs;
 
-	/// Peut-on localiser un client non enregistré par son ID.
-	fn can_locate_unregistered_client(
+	/// Récupère un client à partir de son ID.
+	fn get_client_by_id(
 		&self,
-		client_id: &<Self::Client as ClientInterface>::ClientID,
-	) -> bool;
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl ConnectClientsSessionInterface for ClientsSession
-{
-	fn create(
-		&self,
-		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-	) -> Self::Client
-	{
-		let client = Client::new(ip, socket_id);
-		self.clients.insert(*client.cid(), client.clone());
-		client
-	}
-
-	fn can_locate_unregistered_client(
-		&self,
-		client_id: &<Self::Client as ClientInterface>::ClientID,
-	) -> bool
-	{
-		self.clients
-			.iter_mut()
-			.any(|client| client_id.eq(client.cid()) && !client.is_registered())
-	}
+		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+	) -> Option<<Self::ClientSocket<'_> as ClientSocketInterface>::Client>;
 }

@@ -74,7 +74,7 @@ impl JoinChannelsSessionInterface for ChannelsSession
 		}
 
 		if channel.modes_settings.has_invite_only_flag() {
-			if channel.access_control.invite_list.contains(client.id()) {
+			if channel.access_control.invite_list.contains(client.cid()) {
 				return Ok(());
 			}
 			return Err(JoinChannelPermissionError::ERR_INVITEONLYCHAN);

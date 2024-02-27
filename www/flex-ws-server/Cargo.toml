@@ -32,6 +32,6 @@ lexa-kernel = { workspace = true }
 lexa-logger = { version = "0.3.2" }
 paste = { version = "1.0.14" }
 serde = { workspace = true }
-socketioxide = { version = "0.10.2", features = ["extensions", "state"] }
+socketioxide = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }

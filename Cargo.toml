@@ -19,6 +19,7 @@ flex-crypto = { path = "libs/cargo/flex-crypto" }
 flex-serde-validation = { path = "libs/cargo/flex-serde-validation" }
 flex-web-framework = { path = "libs/cargo/flex-web-framework" }
 serde = { version = "1.0.196", features = ["derive"] }
+socketioxide = { version = "0.10.2", features = ["extensions", "state"] }
 thiserror = { version = "1.0.57" }
 tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread"] }
 tracing = { version = "0.1.40" }

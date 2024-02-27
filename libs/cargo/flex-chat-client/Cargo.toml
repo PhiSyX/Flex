@@ -10,5 +10,5 @@ chrono = { workspace = true }
 dashmap = { workspace = true }
 serde = { workspace = true }
 tracing = { workspace = true }
-socketioxide = { version = "0.10.2" }
+socketioxide = { workspace = true }
 uuid = { workspace = true }

@@ -47,7 +47,7 @@ impl From<(Client, ChannelMember)> for ChannelMemberDTO
 	fn from((client, channel_nick): (Client, ChannelMember)) -> Self
 	{
 		Self {
-			id: client.cid(),
+			id: *client.cid(),
 			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
@@ -59,7 +59,7 @@ impl From<(&Client, ChannelMember)> for ChannelMemberDTO
 	fn from((client, channel_nick): (&Client, ChannelMember)) -> Self
 	{
 		Self {
-			id: client.cid(),
+			id: *client.cid(),
 			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
@@ -71,7 +71,7 @@ impl From<(Client, &ChannelMember)> for ChannelMemberDTO
 	fn from((client, channel_nick): (Client, &ChannelMember)) -> Self
 	{
 		Self {
-			id: client.cid(),
+			id: *client.cid(),
 			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
@@ -83,7 +83,7 @@ impl From<(&Client, &ChannelMember)> for ChannelMemberDTO
 	fn from((client, channel_nick): (&Client, &ChannelMember)) -> Self
 	{
 		Self {
-			id: client.cid(),
+			id: *client.cid(),
 			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}
@@ -95,7 +95,7 @@ impl From<(Client, &&ChannelMember)> for ChannelMemberDTO
 	fn from((client, channel_nick): (Client, &&ChannelMember)) -> Self
 	{
 		Self {
-			id: client.cid(),
+			id: *client.cid(),
 			access_level: channel_nick.access_level().clone(),
 			user: client.user().to_owned(),
 		}

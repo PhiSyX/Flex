@@ -95,7 +95,7 @@ impl ChatApplication
 	) -> Option<Socket>
 	{
 		let client = self.clients.get_by_nickname(nickname)?;
-		let socket = socket.broadcast().get_socket(client.sid()?)?;
+		let socket = socket.broadcast().get_socket(*client.maybe_sid()?)?;
 		Some(Socket::Owned {
 			client: Box::new(client),
 			socket,
@@ -171,9 +171,9 @@ impl ClientsSessionInterface for ClientsSession
 	/// Enregistre un client.
 	fn register(&self, client: &Client)
 	{
-		let mut session_client = self.clients.get_mut(client.id()).unwrap();
-		if let Some(sid) = client.sid() {
-			session_client.set_sid(sid);
+		let mut session_client = self.clients.get_mut(client.cid()).unwrap();
+		if let Some(sid) = client.maybe_sid() {
+			session_client.set_sid(*sid);
 		}
 		session_client.set_connected();
 		session_client.set_registered();
@@ -182,7 +182,7 @@ impl ClientsSessionInterface for ClientsSession
 	/// Mise à niveau d'un client.
 	fn upgrade(&self, client: &Client)
 	{
-		self.clients.remove(client.id());
-		self.clients.insert(client.cid(), client.clone());
+		self.clients.remove(client.cid());
+		self.clients.insert(*client.cid(), client.clone());
 	}
 }

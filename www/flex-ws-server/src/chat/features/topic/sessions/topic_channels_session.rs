@@ -66,7 +66,7 @@ impl TopicChannelsSessionInterface for ChannelsSession
 
 		let topic_flag = channel.modes_settings.has_topic_flag();
 
-		let Some(member) = channel.members().get(client.id()) else {
+		let Some(member) = channel.members().get(client.cid()) else {
 			if topic_flag {
 				return Err(ChannelTopicError::ERR_CHANOPRIVSNEEDED);
 			}
