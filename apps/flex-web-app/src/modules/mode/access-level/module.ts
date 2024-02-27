@@ -24,10 +24,36 @@ import {
 	AccessLevelQOPCommand,
 	AccessLevelVIPCommand,
 } from "./command";
+import { ModeAccessLevelHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
+
+export class ModeAccessLevelModule implements Module<ModeAccessLevelModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "MODE_ACCESS_LEVEL";
+
+	static create(store: ChatStore): ModeAccessLevelModule {
+		return new ModeAccessLevelModule(new ModeAccessLevelHandler(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private handler: ModeAccessLevelHandler) {}
+
+	input() {}
+
+	send() {}
+
+	listen() {
+		this.handler.listen();
+	}
+}
 
 export class AccessLevelQOPModule implements Module<AccessLevelQOPModule> {
 	// ------ //

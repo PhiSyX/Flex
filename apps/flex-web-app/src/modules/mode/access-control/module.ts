@@ -12,11 +12,36 @@ import { ChatStore } from "~/store/ChatStore";
 
 import { Module } from "~/modules/interface";
 import { BanCommand, BanExCommand, UnbanCommand, UnbanExCommand } from "./command";
-import { BanHandler } from "./handler";
+import { ModeAccessControlHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
+
+export class ModeAccessControlModule implements Module<ModeAccessControlModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "MODE_ACCESS_CONTROL";
+
+	static create(store: ChatStore): ModeAccessControlModule {
+		return new ModeAccessControlModule(new ModeAccessControlHandler(store));
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private handler: ModeAccessControlHandler) {}
+
+	input() {}
+
+	send() {}
+
+	listen() {
+		this.handler.listen();
+	}
+}
 
 export class BanModule implements Module<BanModule> {
 	// ------ //
@@ -26,16 +51,13 @@ export class BanModule implements Module<BanModule> {
 	static NAME = "BAN";
 
 	static create(store: ChatStore): BanModule {
-		return new BanModule(new BanCommand(store), new BanHandler(store));
+		return new BanModule(new BanCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(
-		private command: BanCommand,
-		private handler: BanHandler,
-	) {}
+	constructor(private command: BanCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -70,9 +92,7 @@ export class BanModule implements Module<BanModule> {
 		this.command.send(payload);
 	}
 
-	listen() {
-		this.handler.listen();
-	}
+	listen() {}
 }
 
 export class UnbanModule implements Module<UnbanModule> {

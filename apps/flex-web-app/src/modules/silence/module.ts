@@ -42,8 +42,6 @@ export class SilenceModule implements Module<SilenceModule> {
 			return;
 		}
 
-		console.log(2, { nickname });
-
 		this.send({ nickname });
 	}
 

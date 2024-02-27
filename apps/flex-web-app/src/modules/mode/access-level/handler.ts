@@ -15,7 +15,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ModeAccessControlHandler implements SocketEventInterface<"MODE"> {
+export class ModeAccessLevelHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -43,45 +43,20 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE"> {
 
 		function isControlAccessLetter(
 			letter: string,
-			// biome-ignore lint/suspicious/noExplicitAny: ?
-			mode: ModeApplyFlag<any>,
-		): mode is ModeApplyFlag<AccessControlMode> {
-			return ["b", "e"].includes(letter) && "mask" in mode.flag;
+			_: ModeApplyFlag<unknown>,
+		): _ is ModeApplyFlag<AccessControlMode> {
+			return ["q", "a", "o", "h", "v"].includes(letter);
 		}
 
 		if (data.added) {
 			for (const [letter, mode] of data.added) {
-				if (!isControlAccessLetter(letter, mode)) {
-					continue;
-				}
-
-				const maskAddr =
-					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
-
-				if (letter === "b") {
-					channel.accessControl.banlist.set(maskAddr, mode);
-				}
-				if (letter === "e") {
-					channel.accessControl.banlistException.set(maskAddr, mode);
-				}
+				if (!isControlAccessLetter(letter, mode)) continue;
 			}
 		}
 
 		if (data.removed) {
 			for (const [letter, mode] of data.removed) {
-				if (!isControlAccessLetter(letter, mode)) {
-					continue;
-				}
-
-				const maskAddr =
-					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
-
-				if (letter === "b") {
-					channel.accessControl.banlist.delete(maskAddr);
-				}
-				if (letter === "e") {
-					channel.accessControl.banlistException.delete(maskAddr);
-				}
+				if (!isControlAccessLetter(letter, mode)) continue;
 			}
 		}
 	}

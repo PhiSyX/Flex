@@ -203,7 +203,7 @@ function onDeleteSelectedMasksHandler() {
 				v-model="selectedAccessControlList"
 			>
 				<option
-					v-for="[addr, mode] in activeAccessControlList"
+					v-for="[addr, mode] of activeAccessControlList"
 					:disabled="
 						!isCurrentClientChannelMemberChannelOperator &&
 						!isCurrentClientGlobalOperator

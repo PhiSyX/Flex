@@ -42,7 +42,7 @@ const settingsWord = computed(() =>
 		</template>
 
 		<output v-if="hasAddedModes">+</output>
-		<output v-for="[letter, _] in data.added">
+		<output v-for="[letter, _] of data.added">
 			{{ letter }}
 		</output>
 
@@ -51,11 +51,11 @@ const settingsWord = computed(() =>
 			{{ letter }}
 		</output>
 		{{ " " }}
-		<bdo v-for="[_, mode] in data.added">
+		<bdo v-for="[_, mode] of data.added">
 			{{ mode.args.join(" ") }}{{ " " }}
 		</bdo>
 		{{ " " }}
-		<bdo v-for="[_, mode] in data.removed">
+		<bdo v-for="[_, mode] of data.removed">
 			{{ mode.args.join(" ") }}{{ " " }}
 		</bdo>
 	</p>

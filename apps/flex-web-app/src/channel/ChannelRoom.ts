@@ -189,12 +189,6 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	 * Définit un paramètre de salon.
 	 */
 	setSettingMode(mode: string) {
-		if (["q", "a", "o", "h", "v"].includes(mode)) {
-			return;
-		}
-		if (["b", "e"].includes(mode)) {
-			return;
-		}
 		this.settings.add(mode);
 	}
 

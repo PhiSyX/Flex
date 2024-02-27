@@ -15,7 +15,7 @@ import { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ModeAccessControlHandler implements SocketEventInterface<"MODE"> {
+export class ModeSettingsHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -41,46 +41,31 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE"> {
 		const channel = maybeRoom.unwrap();
 		assertChannelRoom(channel);
 
-		function isControlAccessLetter(
+		function isChannelSettings(
 			letter: string,
-			// biome-ignore lint/suspicious/noExplicitAny: ?
-			mode: ModeApplyFlag<any>,
-		): mode is ModeApplyFlag<AccessControlMode> {
-			return ["b", "e"].includes(letter) && "mask" in mode.flag;
+			_: ModeApplyFlag<unknown>,
+		): _ is ModeApplyFlag<AccessControlMode> {
+			return ["k", "i", "m", "n", "O", "s", "t"].includes(letter);
 		}
 
 		if (data.added) {
 			for (const [letter, mode] of data.added) {
-				if (!isControlAccessLetter(letter, mode)) {
-					continue;
-				}
+				if (!isChannelSettings(letter, mode)) continue;
 
-				const maskAddr =
-					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
-
-				if (letter === "b") {
-					channel.accessControl.banlist.set(maskAddr, mode);
-				}
-				if (letter === "e") {
-					channel.accessControl.banlistException.set(maskAddr, mode);
+				channel.setSettingMode(letter);
+				if (letter === "t") {
+					channel.topic.setEditable(false);
 				}
 			}
 		}
 
 		if (data.removed) {
 			for (const [letter, mode] of data.removed) {
-				if (!isControlAccessLetter(letter, mode)) {
-					continue;
-				}
+				if (!isChannelSettings(letter, mode)) continue;
 
-				const maskAddr =
-					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
-
-				if (letter === "b") {
-					channel.accessControl.banlist.delete(maskAddr);
-				}
-				if (letter === "e") {
-					channel.accessControl.banlistException.delete(maskAddr);
+				channel.unsetSettingMode(letter);
+				if (letter === "t") {
+					channel.topic.setEditable(true);
 				}
 			}
 		}
