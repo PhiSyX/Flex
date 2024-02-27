@@ -131,7 +131,9 @@ export class ChatStore {
 		this._ws.replace(
 			io(websocketServerURL, {
 				auth: { client_id: clientID },
+				transports: ["websocket"],
 				reconnection: true,
+				reconnectionDelay: 10_000,
 				rememberUpgrade: true,
 				withCredentials: true,
 			}),
@@ -580,6 +582,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 				user: connectUserInfo.nickname,
 				mode: 1 << 3,
 				realname: connectUserInfo.realname,
+			});
+
+			store.websocket().once("disconnect", (reason) => {
+				setTimeout(() => store.disconnectError(reason), 1_500);
 			});
 		});
 	}

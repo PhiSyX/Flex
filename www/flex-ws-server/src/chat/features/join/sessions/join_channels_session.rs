@@ -55,7 +55,7 @@ impl JoinChannelsSessionInterface for ChannelsSession
 			.get(channel_id)
 			.ok_or(JoinChannelPermissionError::ERR_NOSUCHCHANNEL)?;
 
-		if self.has_member(channel_id, &client.cid()) {
+		if self.has_member(channel_id, client.cid()) {
 			return Err(JoinChannelPermissionError::ERR_USERONCHANNEL);
 		}
 
