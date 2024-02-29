@@ -1,0 +1,35 @@
+[package]
+name = "flex-chat-server"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "lib_flex_chat_server"
+path = "./app.rs"
+
+[[bin]]
+name = "flex-chat-server"
+path = "./bin/chat-server.rs"
+
+[dependencies]
+flex-chat-channel = { path = "../../libs/cargo/flex-chat-channel" }
+flex-chat-client = { path = "../../libs/cargo/flex-chat-client" }
+flex-chat-client-channel = { path = "../../libs/cargo/flex-chat-client-channel" }
+flex-chat-client-nick = { path = "../../libs/cargo/flex-chat-client-nick" }
+flex-chat-macro = { path = "../../libs/cargo/flex-chat-macro" }
+flex-chat-mode = { path = "../../libs/cargo/flex-chat-mode" }
+flex-chat-user = { path = "../../libs/cargo/flex-chat-user" }
+
+clap = { version = "4.5.1", features = ["derive", "env"] }
+dashmap = { workspace = true }
+lexa-wildcard-matching = "0.1.0"
+flex-cli = { workspace = true }
+flex-crypto = { workspace = true }
+flex-serde-validation = { workspace = true }
+flex-web-framework = { workspace = true }
+lexa-kernel = { workspace = true }
+lexa-logger = { version = "0.3.2" }
+serde = { workspace = true }
+socketioxide = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }

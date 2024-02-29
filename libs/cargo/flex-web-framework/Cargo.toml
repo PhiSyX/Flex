@@ -12,7 +12,7 @@ console = { version = "0.15.8" }
 email_address = { version = "0.2.4", features = ["serde"] }
 flex-crypto = { workspace = true }
 flex-secret = { path = "../flex-secret" }
-hyper = { version = "1.1.0" }
+hyper = { version = "1.2.0" }
 lexa-kernel = { workspace = true }
 log = { workspace = true }
 mime = "0.3.17"
@@ -21,6 +21,6 @@ thiserror = { workspace = true }
 time = { version = "0.3.34", features = ["serde"] }
 tokio = { workspace = true }
 tower-cookies = { version = "0.10.0", features = ["private", "signed"] }
-tower-http = { version = "0.5.1", features = ["cors", "fs"] }
+tower-http = { version = "0.5.2", features = ["cors", "fs"] }
 url = { version = "2.5.0", features = ["serde"] }
 uuid = { workspace = true }

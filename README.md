@@ -26,7 +26,7 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
     -   [x] Client Web (`pnpm webapp`)
 
-		1. Un fichier `apps/flex-web-app/.env` DOIT être crée.
+		1. Un fichier `apps/flex-chat-webapp/.env` DOIT être crée.
 
     -   [x] Serveur (`cargo run --bin flex-ws-server`)
 
