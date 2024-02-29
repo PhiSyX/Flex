@@ -139,7 +139,13 @@ input[type="search"] {
 }
 
 .btn-change-nick {
-	--btn-primary-bg: var(--body-bg_alt);
+	@include fx.theme using ($name) {
+		@if $name == dark {
+			--btn-primary-bg: var(--body-bg);
+		} @else {
+			--btn-primary-bg: var(--body-bg_alt);
+		}
+	}
 	font-size: 14px;
 }
 </style>

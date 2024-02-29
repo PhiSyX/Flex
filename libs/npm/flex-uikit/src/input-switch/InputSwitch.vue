@@ -98,6 +98,9 @@ ol {
 		} @else if $name == ice {
 			--bc: var(--color-grey50);
 			--bg: var(--color-black);
+		} @else if $name == dark {
+			--bc: var(--color-grey50);
+			--bg: var(--color-black);
 		}
 	}
 
@@ -154,6 +157,8 @@ input:checked ~ label[for] {
 		@if $name == light {
 			color: var(--color-white);
 		} @else if $name == ice {
+			color: var(--color-white);
+		} @else if $name == dark {
 			color: var(--color-white);
 		}
 	}

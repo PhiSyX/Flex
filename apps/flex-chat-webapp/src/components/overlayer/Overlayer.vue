@@ -48,6 +48,8 @@ const { store, destroyHandler } = useOverlayer();
 			--overlayer-bg: var(--color-black_hsl);
 		} @else if $name == light {
 			--overlayer-bg: var(--color-grey700_hsl);
+		} @else if $name == dark {
+			--overlayer-bg: var(--color-black_hsl);
 		}
 	}
 }
@@ -71,6 +73,10 @@ const { store, destroyHandler } = useOverlayer();
 
 	@include fx.theme using ($name) {
 		@if $name == ice {
+			--overlayer-bg: var(--color-black_hsl);
+			--layer-border: var(--color-blue300);
+			--layer-box-shadow: hsla(var(--color-white_hsl), 50%);
+		} @else if $name == dark {
 			--overlayer-bg: var(--color-black_hsl);
 			--layer-border: var(--color-blue300);
 			--layer-box-shadow: hsla(var(--color-white_hsl), 50%);

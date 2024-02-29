@@ -74,7 +74,7 @@ dialog {
 	box-shadow: var(--box-shadow);
 
 	background: var(--dialog-bg, canvas);
-	color: var(--default-text-color_alt);
+	color: var(--dialog-color, var(--default-text-color_alt));
 	border-color: var(--dialog-border-color);
 
 	font-size: 13px;

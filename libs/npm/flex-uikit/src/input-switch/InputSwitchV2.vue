@@ -101,6 +101,9 @@ watchEffect(() => {
 					var(--color-blue-grey400) 0%,
 					var(--color-blue-grey200) 100%
 				);
+			} @else if $name == dark {
+				border-color: #d8af20;
+				background: linear-gradient(90deg, #b69a36 0%, #d8af20 100%);
 			}
 		}
 	}
@@ -111,6 +114,8 @@ watchEffect(() => {
 				box-shadow: -2px 2px 4px var(--color-ultra-black);
 			} @else if $name == ice {
 				box-shadow: -2px 2px 4px var(--color-blue-grey700);
+			} @else if $name == dark {
+				box-shadow: -2px 2px 4px var(--color-ultra-black);
 			}
 		}
 	}
@@ -129,6 +134,8 @@ watchEffect(() => {
 			box-shadow: 0px 2px 4px var(--color-blue-grey700);
 		} @else if $name == ice {
 			box-shadow: 0px 2px 4px var(--color-blue-grey700);
+		} @else if $name == dark {
+			box-shadow: 0px 2px 4px var(--color-blue-grey700);
 		}
 	}
 
@@ -139,6 +146,8 @@ watchEffect(() => {
 				box-shadow: 2px 2px 4px var(--color-ultra-black);
 			} @else if $name == ice {
 				box-shadow: 2px 2px 4px var(--color-blue-grey700);
+			} @else if $name == dark {
+				box-shadow: 2px 2px 4px var(--color-ultra-black);
 			}
 		}
 	}

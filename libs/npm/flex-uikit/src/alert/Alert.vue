@@ -82,6 +82,10 @@ onMounted(() => {
 			border-color: #50a097;
 			color: #50a097;
 			background-color: #ccfff9;
+		} @else if $name == dark {
+			border-color: #ffd133;
+			color: #a27718;
+			background-color: #ffffcb;
 		}
 	}
 }
@@ -93,6 +97,10 @@ onMounted(() => {
 			color: var(--color-red700);
 			background-color: var(--color-red200);
 		} @else if $name == ice {
+			border-color: var(--color-red300);
+			color: var(--color-white);
+			background-color: var(--color-red900);
+		} @else if $name == dark {
 			border-color: var(--color-red300);
 			color: var(--color-white);
 			background-color: var(--color-red900);

@@ -140,6 +140,9 @@ function createChannelDialog(event: MouseEvent) {
 		@if $name == ice {
 			--btn-primary-bg: var(--color-blue-grey700);
 			--btn-primary-bg-hover: var(--color-blue-grey800);
+		} @else if $name == dark {
+			--btn-primary-bg: var(--color-grey900);
+			--btn-primary-bg-hover: var(--color-ultra-black);
 		} @else if $name == light {
 			--btn-primary-color: var(--color-white);
 			--btn-primary-bg: var(--color-grey800);

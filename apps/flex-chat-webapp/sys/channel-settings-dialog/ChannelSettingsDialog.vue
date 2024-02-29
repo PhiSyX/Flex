@@ -398,7 +398,14 @@ input {
 }
 
 button[type="button"] {
-	--btn-secondary-bg: var(--color-blue-grey200);
+	@include fx.theme using($name)
+	{
+		@if $name == dark {
+			--btn-secondary-bg: var(--color-grey400);
+		} @else {
+			--btn-secondary-bg: var(--color-blue-grey200);
+		}
+	}
 	--btn-secondary-color: var(--color-black);
 	padding: fx.space(1) fx.space(2);
 	border-radius: 2px;
@@ -408,7 +415,7 @@ button[type="button"] {
 }
 
 @include fx.class("btn(:active)") {
-	--btn-secondary-bg: var(--color-grey50) !important;
+	--btn-secondary-bg: var(--color-ultra-white) !important;
 	// background-color: red;
 }
 
