@@ -72,14 +72,13 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	}
 
 	handleMessage(room: Room, data: GenericReply<"PRIVMSG">) {
-		let hl = false;
-
 		const isCurrentClient = this.store.isCurrentClient(data.origin);
 		if (!isCurrentClient && !room.isActive()) {
-			const me = this.store.nickname();
-			if (data.text.toLowerCase().indexOf(me.toLowerCase()) >= 0) {
-				hl = true;
-				room.setHighlight(hl);
+			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
+			// message.
+			const currentClientNickname = this.store.nickname();
+			if (data.text.toLowerCase().indexOf(currentClientNickname.toLowerCase()) >= 0) {
+				room.setHighlighted(true);
 			}
 		}
 

@@ -43,10 +43,10 @@ export class Room<R = RoomID, Type extends string = string> {
 	private customName: Option<R> = None();
 
 	/**
-	 * TODO: trouver une meilleur nomenclature.
-	 * Highlight de la chambre
+	 * Chambre marqué comme étant "Highlight". Cela signifie que le client
+	 * courant a été mentionné sur cette chambre.
 	 */
-	highlight = false;
+	highlighted = false;
 
 	/**
 	 * Historique des champs de saisie de l'utilisateur.
@@ -269,8 +269,8 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Définit la chambre comme étant "highlight".
 	 */
-	setHighlight(bool: boolean) {
-		this.highlight = bool;
+	setHighlighted(bool: boolean) {
+		this.highlighted = bool;
 	}
 
 	/**

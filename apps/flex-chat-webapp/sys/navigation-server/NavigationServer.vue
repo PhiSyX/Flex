@@ -35,18 +35,19 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 const folded = defineModel<boolean>("folded");
 
+const openRoomHandler = (origin: Origin | RoomID) =>
+	emit("change-room", origin);
+const closeRoomHandler = (origin: Origin | RoomID) =>
+	emit("close-room", origin);
+
+function shouldBeListedInNav(room: Room) {
+	return ["channel", "private", "notice-custom-room"].includes(room.type);
+}
+
 function changeRoomHandler(evt: Event) {
 	evt.preventDefault();
 	evt.stopPropagation();
 	openRoomHandler(props.id);
-}
-
-function openRoomHandler(origin: Origin | RoomID) {
-	emit("change-room", origin);
-}
-
-function closeRoomHandler(origin: Origin | RoomID) {
-	emit("close-room", origin);
 }
 
 function toggleFoldHandler() {
@@ -88,10 +89,10 @@ function toggleFoldHandler() {
 		<ul class="[ list:reset }">
 			<template v-for="room in rooms" :key="room.type + ':' + room.name">
 				<NavigationRoom
-					v-if="room.type === 'channel' && !room.isClosed()"
+					v-if="shouldBeListedInNav(room) && !room.isClosed()"
 					:id="room.id()"
 					:active="room.isActive() && !room.isClosed()"
-					:highlight="room.highlight"
+					:highlight="room.highlighted"
 					:name="room.name"
 					:folded="containerFolded"
 					:total-unread-events="room.totalUnreadEvents"
@@ -100,63 +101,31 @@ function toggleFoldHandler() {
 					@close-room="closeRoomHandler"
 				>
 					<template #icon>
-						<icon-message />
-					</template>
-				</NavigationRoom>
-
-				<NavigationRoom
-					v-if="room.type === 'private' && !room.isClosed()"
-					:id="room.id()"
-					:active="room.isActive()"
-					:highlight="room.highlight"
-					:name="room.name"
-					:folded="containerFolded"
-					:total-unread-events="room.totalUnreadEvents"
-					:total-unread-messages="room.totalUnreadMessages"
-					@open-room="openRoomHandler"
-					@close-room="closeRoomHandler"
-				>
-					<template #icon>
-						<icon-user />
+						<icon-message v-if="room.type === 'channel'" />
+						<icon-user v-else-if="room.type === 'private'" />
+						<icon-notice
+							v-else-if="room.type === 'notice-custom-room'"
+						/>
 					</template>
 
-					<template #extra>
+					<template v-if="room.type === 'private'" #extra>
 						<Match
 							:maybe="
 								room.lastMessage.filter(
-									(m) =>
-										!m.isCurrentClient &&
-										!m.type.startsWith('event')
+									(message) =>
+										!message.isCurrentClient &&
+										!message.type.startsWith('event')
 								)
 							"
 						>
 							<template #some="{ data: message }">
 								<p
-									class="[ scroll:y w:full min-h=6 max-h=8 my=0 p=:1 border/radius=1 cursor: pointer ]"
+									class="[ scroll:y w:full min-h=6 max-h=8 my=0 p=1 cursor: pointer ]"
 								>
 									{{ message.message }}
 								</p>
 							</template>
 						</Match>
-					</template>
-				</NavigationRoom>
-
-				<NavigationRoom
-					v-if="
-						room.type === 'notice-custom-room' && !room.isClosed()
-					"
-					:id="room.id()"
-					:active="room.isActive()"
-					:highlight="false"
-					:name="room.name"
-					:folded="containerFolded"
-					:total-unread-events="room.totalUnreadEvents"
-					:total-unread-messages="room.totalUnreadMessages"
-					@open-room="openRoomHandler"
-					@close-room="closeRoomHandler"
-				>
-					<template #icon>
-						<icon-notice />
 					</template>
 				</NavigationRoom>
 			</template>
@@ -175,7 +144,6 @@ function toggleFoldHandler() {
 	--sb: #{fx.space(1)};
 	--sbm: calc(0rem - #{fx.space(1)});
 
-
 	&::before,
 	&::after {
 		content: "";
@@ -188,7 +156,7 @@ function toggleFoldHandler() {
 		transition: background-color 200ms ease-in-out;
 
 		height: var(--sb);
-        width: var(--sb);
+		width: var(--sb);
 	}
 
 	&:not(:first-child)::before {
@@ -217,7 +185,23 @@ p {
 	font-size: 14px;
 	justify-self: start;
 	grid-column-start: 2;
-	grid-column-end: 3;
+	grid-column-end: 4;
 	overflow-wrap: break-word;
+	border-radius: 4px;
+	background: var(--last-message-bg);
+	color: var(--last-message-color);
+
+	@include fx.theme using($name) {
+		@if $name == ice {
+			--last-message-bg: var(--color-blue-grey800);
+			--last-message-color: var(--default-text-color);
+		} @else if $name == light {
+			--last-message-bg: var(--color-grey300);
+			--last-message-color: var(--default-text-color);
+		} @else if $name == dark {
+			--last-message-bg: var(--color-grey800);
+			--last-message-color: var(--default-text-color);
+		}
+	}
 }
 </style>

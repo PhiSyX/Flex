@@ -154,18 +154,18 @@ li {
 }
 
 .close {
-	display: none;
+	visibility: hidden;
 }
 
 li:hover .close {
-	display: inline-block;
+	visibility: visible;
 }
 
 .is-active {
 	background: var(--room-bg);
 	cursor: default !important;
 	.close {
-		display: block;
+		visibility: visible;
 	}
 }
 
@@ -188,7 +188,7 @@ li:hover .close {
 }
 
 li:hover > div > .total-unread {
-	display: none;
+	visibility: hidden;
 }
 
 @keyframes blink {
