@@ -39,7 +39,6 @@ function closeRoom(name: RoomID) {
 }
 
 function openJoinChannelDialog(event: Event) {
-	// @ts-expect-error ?
 	ChannelJoinDialog.create(overlayerStore.store, { event });
 }
 </script>

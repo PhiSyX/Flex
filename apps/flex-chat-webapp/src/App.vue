@@ -8,7 +8,7 @@ import Overlayer from "./components/overlayer/Overlayer.vue";
 // ------ //
 
 // FIXME(phisyx): dynamiser ça
-document.documentElement.dataset["theme"] = "ice";
+document.documentElement.dataset["scheme"] = "ice";
 
 // --------- //
 // Composant //

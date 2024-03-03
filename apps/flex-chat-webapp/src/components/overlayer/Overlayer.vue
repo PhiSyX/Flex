@@ -43,7 +43,7 @@ const { store, destroyHandler } = useOverlayer();
 
 	background-color: hsla(var(--overlayer-bg), 0.75);
 
-	@include fx.theme using ($name) {
+	@include fx.scheme using ($name) {
 		@if $name == ice {
 			--overlayer-bg: var(--color-black_hsl);
 		} @else if $name == light {
@@ -71,7 +71,7 @@ const { store, destroyHandler } = useOverlayer();
 	border: 1px solid var(--layer-border);
 	box-shadow: 0 2px 16px var(--layer-box-shadow);
 
-	@include fx.theme using ($name) {
+	@include fx.scheme using ($name) {
 		@if $name == ice {
 			--overlayer-bg: var(--color-black_hsl);
 			--layer-border: var(--color-blue300);

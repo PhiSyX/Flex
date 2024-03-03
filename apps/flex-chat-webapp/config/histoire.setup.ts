@@ -16,5 +16,5 @@ import "#/assets/scss/style.scss";
 export const setupVue3 = defineSetupVue3(({ app, story, variant }) => {
 	app.use(useFlexUIKit);
 
-	document.documentElement.dataset.theme = "ice";
+	document.documentElement.dataset.scheme = "ice";
 });

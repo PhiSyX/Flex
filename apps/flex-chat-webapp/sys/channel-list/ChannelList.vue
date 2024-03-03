@@ -136,7 +136,7 @@ function createChannelDialog(event: MouseEvent) {
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("channel/list") {
-	@include fx.theme using($name) {
+	@include fx.scheme using($name) {
 		@if $name == ice {
 			--btn-primary-bg: var(--color-blue-grey700);
 			--btn-primary-bg-hover: var(--color-blue-grey800);

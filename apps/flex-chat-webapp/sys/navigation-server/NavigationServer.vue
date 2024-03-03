@@ -191,7 +191,7 @@ p {
 	background: var(--last-message-bg);
 	color: var(--last-message-color);
 
-	@include fx.theme using($name) {
+	@include fx.scheme using($name) {
 		@if $name == ice {
 			--last-message-bg: var(--color-blue-grey800);
 			--last-message-color: var(--default-text-color);

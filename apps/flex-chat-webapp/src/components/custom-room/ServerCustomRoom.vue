@@ -42,7 +42,6 @@ const vademecumURL = import.meta.env.VITE_APP_VADEMECUM_URL || "#";
  * Ouvre la boite de dialogue de changement de pseudonyme.
  */
 function openChangeNicknameDialog(event: MouseEvent) {
-	// @ts-expect-error ?
 	UserChangeNicknameDialog.create(overlayerStore.store, { event });
 }
 

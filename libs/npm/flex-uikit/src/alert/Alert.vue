@@ -73,7 +73,7 @@ onMounted(() => {
 }
 
 @include fx.class("alert/warning") {
-	@include fx.theme using ($name) {
+	@include fx.scheme using ($name) {
 		@if $name == light {
 			border-color: #ffd133;
 			color: #a27718;
@@ -91,7 +91,7 @@ onMounted(() => {
 }
 
 @include fx.class("alert/error") {
-	@include fx.theme using ($name) {
+	@include fx.scheme using ($name) {
 		@if $name == light {
 			border-color: var(--color-red600);
 			color: var(--color-red700);

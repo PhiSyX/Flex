@@ -1,10 +1,10 @@
 @use "scss:~/flexsheets" as fx;
 
-@mixin use-dark-theme {
+@mixin use-ice-scheme {
 	:root {
-		@include fx.theme(true) using ($name) {
-			@if $name == dark {
-				--default-border-color: #282c2f;
+		@include fx.scheme(true) using ($name) {
+			@if $name == ice {
+				--default-border-color: var(--color-blue-grey500);
 				--default-text-color: var(--color-white);
 				--default-text-color_alt: var(--color-grey900);
 				--default-placeholder-color: var(--color-blue-grey200);
@@ -12,36 +12,45 @@
 
 				--disabled-color: var(--color-blue-grey500);
 
-				--body-bg: #31363a;
-				--body-bg_alt: ##282c2f;
+				--body-bg: linear-gradient(
+					var(--color-blue-grey600),
+					var(--color-blue-grey400)
+				);
+				--body-bg_alt: var(--color-blue-grey600);
 
-				--dialog-bg: var(--color-black);
-				--dialog-color: var(--default-text-color);
-				--dialog-border-color: var(--color-white);
+				--dialog-bg: var(--color-blue-grey100);
+				--dialog-color: var(--default-text-color_alt);
+				--dialog-border-color: var(--color-blue-grey400);
 
 				--text-input-color-error: #4dd2d4;
 
 				--login-page-bg: var(--body-bg);
-				--login-form-bg: #3c4043;
-				--login-form-shadow: var(--color-grey900);
-				--login-form-color: hsl(var(--color-white_hsl), 0.55);
+				--login-form-bg: var(--color-blue-grey600);
+				--login-form-shadow: var(--color-blue-grey700);
+				--login-form-color: hsl(var(--color-white_hsl), 0.75);
 				--login-form-hover-color: var(--color-white);
-				--login-button-submit-bg: var(--color-grey50);
-				--login-button-submit-bg-hover: var(--color-grey300);
+				--login-button-submit-bg: linear-gradient(
+					hsl(var(--color-grey50_hsl), 55%),
+					hsl(var(--color-grey50_hsl), 15%)
+				);
+				--login-button-submit-bg-hover: linear-gradient(
+					hsl(var(--color-grey50_hsl), 75%),
+					hsl(var(--color-grey50_hsl), 25%)
+				);
 				--login-button-submit-color: var(--color-grey800);
-				--login-button-submit-outline-color: var(--color-white);
+				--login-button-submit-outline-color: var(--color-blue-grey600);
 
 				--navigation-room-focus-color: var(--color-grey600);
-				--navigation-room-border-left-color: var(--color-grey400);
+				--navigation-room-border-left-color: var(--color-grey800);
 
-				--room-bg: var(--color-black);
+				--room-bg: var(--color-blue-grey700);
 				--room-editbox-bg: var(--room-bg);
 				--room-kicked-bg: var(--color-grey900);
 				--room-kicked-button-bg: var(--color-grey50);
 				--room-kicked-button-color: var(--color-grey900);
 				--room-event-join-color: var(--color-green400);
 				--room-event-kick-color: var(--color-red300);
-				--room-event-mode-color: var(--color-blue300);
+				--room-event-mode-color: var(--color-grey500);
 				--room-event-nick-color: var(--color-blue300);
 				--room-event-notice-color: var(--color-red300);
 				--room-event-query-color: var(--color-blue300);
@@ -54,21 +63,21 @@
 
 				--room-userlist-bg: var(--body-bg);
 				--room-userlist-search-bg: var(--room-bg);
-				--room-userlist-search-outline-focus: #009DFF;
+				// --room-userlist-search-outline-focus: #009DFF;
 				--room-userlist-filter-bg_hsl: var(--color-cyan300_hsl);
 
-				--thead-bg: var(--color-grey900);
+				--thead-bg: var(--color-blue-grey700);
 				--tbody-bg: var(--color-blue-grey100);
 				--tbody-bg-hover: var(--color-blue-grey200);
 
-				--channel-list-filter-input-bg: var(--color-grey900);
+				--channel-list-filter-input-bg: var(--color-blue-grey700);
 			}
 		}
 	}
 
 	.has-events {
-		@include fx.theme using($name) {
-			@if $name == dark {
+		@include fx.scheme using($name) {
+			@if $name == ice {
 				--navigation-room-events-color: var(--color-blue300);
 				--navigation-room-border-left-color: var(--color-blue500);
 			}
@@ -76,17 +85,17 @@
 	}
 
 	.has-messages {
-		@include fx.theme using ($name) {
-			@if $name == dark {
-				--navigation-room-messages-color: var(--color-red300);
-				--navigation-room-border-left-color: var(--color-red300);
+		@include fx.scheme using ($name) {
+			@if $name == ice {
+				--navigation-room-messages-color: var(--color-orange400);
+				--navigation-room-border-left-color: var(--color-orange700);
 			}
 		}
 	}
 
 	.is-highlight {
-		@include fx.theme using ($name) {
-			@if $name == dark {
+		@include fx.scheme using ($name) {
+			@if $name == ice {
 				--navigation-room-highlight-color: var(--color-lime500);
 				--navigation-room-border-left-color: var(--color-lime700);
 			}
@@ -96,45 +105,45 @@
 	.is-owner,
 	.is-admin-operator,
 	.is-operator {
-		@include fx.theme using ($name) {
-			@if $name == dark {
-				--room-nick-symbol: var(--color-red400);
-				--room-nick-color: var(--color-red400);
+		@include fx.scheme using ($name) {
+			@if $name == ice {
+				--room-nick-symbol: var(--color-orange200);
+				--room-nick-color: var(--color-orange500);
 			}
 		}
 	}
 
 	.is-half-operator {
-		@include fx.theme using($name) {
-			@if $name == dark {
-				--room-nick-symbol: var(--color-cyan500);
-				--room-nick-color: var(--color-cyan300);
+		@include fx.scheme using($name) {
+			@if $name == ice {
+				--room-nick-symbol: var(--color-cyan200);
+				--room-nick-color: var(--color-cyan400);
 			}
 		}
 	}
 
 	.is-vip {
-		@include fx.theme using($name) {
-			@if $name == dark {
-				--room-nick-symbol: var(--color-orange400);
-				--room-nick-color: var(--color-orange300);
+		@include fx.scheme using($name) {
+			@if $name == ice {
+				--room-nick-symbol: var(--color-indigo200);
+				--room-nick-color: var(--color-indigo100);
 			}
 		}
 	}
 
 	bdo.is-away {
-		@include fx.theme using ($name) {
-			@if $name == dark {
+		@include fx.scheme using ($name) {
+			@if $name == ice {
 				--room-nick-color: var(--color-grey500);
 			}
 		}
 	}
 
 	@include fx.class("room/userlist:menu") {
-		@include fx.theme using ($name) {
-			@if $name == dark {
-				--btn-primary-bg: var(--color-grey900);
-				--btn-primary-bg-hover: var(--color-grey800);
+		@include fx.scheme using ($name) {
+			@if $name == ice {
+				--btn-primary-bg: var(--color-blue-grey600);
+				--btn-primary-bg-hover: var(--color-blue-grey700);
 				--btn-secondary-bg: var(--color-blue-grey700);
 				--btn-secondary-bg-hover: var(--color-blue-grey500);
 				--btn-danger-bg: var(--color-red500);

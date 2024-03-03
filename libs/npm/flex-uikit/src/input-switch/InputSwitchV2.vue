@@ -90,7 +90,7 @@ watchEffect(() => {
 	}
 
 	input[type="checkbox"]:checked ~ & {
-		@include fx.theme using ($name) {
+		@include fx.scheme using ($name) {
 			@if $name == light {
 				border-color: #d8af20;
 				background: linear-gradient(90deg, #b69a36 0%, #d8af20 100%);
@@ -109,7 +109,7 @@ watchEffect(() => {
 	}
 
 	input[type="checkbox"]:checked:not(:disabled) ~ & {
-		@include fx.theme using ($name) {
+		@include fx.scheme using ($name) {
 			@if $name == light {
 				box-shadow: -2px 2px 4px var(--color-ultra-black);
 			} @else if $name == ice {
@@ -129,7 +129,7 @@ watchEffect(() => {
 	transition: 200ms translate ease, 200ms background-color, 200ms border-color,
 		200ms box-shadow;
 
-	@include fx.theme using ($name) {
+	@include fx.scheme using ($name) {
 		@if $name == light {
 			box-shadow: 0px 2px 4px var(--color-blue-grey700);
 		} @else if $name == ice {
@@ -141,7 +141,7 @@ watchEffect(() => {
 
 	input[type="checkbox"]:checked ~ * & {
 		translate: #{fx.space(2)};
-		@include fx.theme using ($name) {
+		@include fx.scheme using ($name) {
 			@if $name == light {
 				box-shadow: 2px 2px 4px var(--color-ultra-black);
 			} @else if $name == ice {

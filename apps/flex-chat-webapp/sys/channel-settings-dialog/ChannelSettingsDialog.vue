@@ -398,7 +398,7 @@ input {
 }
 
 button[type="button"] {
-	@include fx.theme using($name)
+	@include fx.scheme using($name)
 	{
 		@if $name == dark {
 			--btn-secondary-bg: var(--color-grey400);

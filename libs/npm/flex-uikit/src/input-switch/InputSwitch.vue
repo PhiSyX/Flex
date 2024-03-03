@@ -91,7 +91,7 @@ ol {
 	border-radius: var(--r);
 	border: 2px solid var(--bc);
 
-	@include fx.theme using ($name) {
+	@include fx.scheme using ($name) {
 		@if $name == light {
 			--bc: var(--color-black);
 			--bg: var(--color-black);
@@ -153,7 +153,7 @@ label[for] {
 input:checked ~ label[for] {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	@include fx.theme using ($name) {
+	@include fx.scheme using ($name) {
 		@if $name == light {
 			color: var(--color-white);
 		} @else if $name == ice {

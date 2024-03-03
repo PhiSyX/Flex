@@ -1,0 +1,33 @@
+// Les thèmes supportés par défaut.
+$schemes: (light, dark, ice) !default;
+
+@mixin scheme($root: false) {
+	@each $scheme in $schemes {
+		@if $scheme == light or $scheme == dark {
+			@media (prefers-color-scheme: #{$scheme}) {
+				& {
+					@content ($scheme);
+				}
+			}
+		}
+
+		@if $root {
+			$dr: $scheme;
+			@if $dr == light {
+				$dr: dimmed;
+			}
+			&[data-scheme*='#{"" + $scheme}'],
+			&[data-darkreader-scheme='#{"" + $dr}'] {
+				@content ($scheme);
+			}
+		} @else if & {
+			[data-scheme*='#{"" + $scheme}'] & {
+				@content ($scheme);
+			}
+		} @else {
+			&[data-scheme*='#{"" + $scheme}'] {
+				@content ($scheme);
+			}
+		}
+	}
+}

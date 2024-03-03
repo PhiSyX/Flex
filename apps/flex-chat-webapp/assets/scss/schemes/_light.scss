@@ -1,8 +1,8 @@
 @use "scss:~/flexsheets" as fx;
 
-@mixin use-light-theme {
+@mixin use-light-scheme {
 	:root {
-		@include fx.theme(true) using ($name) {
+		@include fx.scheme(true) using ($name) {
 			@if $name == light {
 				--default-border-color: var(--color-white);
 				--default-text-color: var(--color-grey900);
@@ -68,7 +68,7 @@
 	}
 
 	.has-events {
-		@include fx.theme using($name) {
+		@include fx.scheme using($name) {
 			@if $name == light {
 				--navigation-room-events-color: var(--color-blue700);
 				--navigation-room-border-left-color: var(--color-blue100);
@@ -77,7 +77,7 @@
 	}
 
 	.has-messages {
-		@include fx.theme using($name) {
+		@include fx.scheme using($name) {
 			@if $name == light {
 				--navigation-room-messages-color: var(--color-red500);
 				--navigation-room-border-left-color: var(--color-red300);
@@ -86,7 +86,7 @@
 	}
 
 	.is-highlight {
-		@include fx.theme using ($name) {
+		@include fx.scheme using ($name) {
 			@if $name == light {
 				--navigation-room-highlight-color: var(--color-green500);
 				--navigation-room-border-left-color: var(--color-green400);
@@ -95,7 +95,7 @@
 	}
 
 	.total-unread {
-		@include fx.theme using ($name) {
+		@include fx.scheme using ($name) {
 			@if $name == light {
 				--navigation-total-unread-bg: var(--color-black);
 				--navigation-total-unread-color: var(--color-grey400);
@@ -104,7 +104,7 @@
 	}
 
 	bdo.is-away {
-		@include fx.theme using ($name) {
+		@include fx.scheme using ($name) {
 			@if $name == light {
 				--room-nick-color: var(--color-grey400);
 			}
@@ -112,7 +112,7 @@
 	}
 
 	@include fx.class("room/userlist:menu") {
-		@include fx.theme using ($name) {
+		@include fx.scheme using ($name) {
 			@if $name == light {
 				--btn-primary-bg: var(--room-bg);
 				--btn-primary-bg-hover: var(--color-grey200);

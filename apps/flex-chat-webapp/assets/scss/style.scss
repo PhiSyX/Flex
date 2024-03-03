@@ -13,9 +13,9 @@
 @use "scss:~/flexsheets" as fx with($spacing: var.$spacing);
 
 @use "./colors" as colors;
-@use "./ice/module" as ice;
-@use "./dark/module" as darkMode;
-@use "./light/module" as lightMode;
+@use "./schemes/ice" as ice;
+@use "./schemes/dark" as darkMode;
+@use "./schemes/light" as lightMode;
 
 @layer flexsheets, userland;
 
@@ -31,9 +31,9 @@
 	@include colors.use-colors;
 }
 
-@include ice.use-ice-theme;
-@include lightMode.use-light-theme;
-@include darkMode.use-dark-theme;
+@include ice.use-ice-scheme;
+@include lightMode.use-light-scheme;
+@include darkMode.use-dark-scheme;
 
 @import "./base";
 
