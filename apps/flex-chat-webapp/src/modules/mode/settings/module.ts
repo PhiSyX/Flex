@@ -22,7 +22,7 @@ export class ModeSettingsModule implements Module<ModeSettingsModule> {
 	// STATIC //
 	// ------ //
 
-	static NAME = "MODE_ACCESS_CONTROL";
+	static NAME = "MODE_SETTINGS";
 
 	static create(store: ChatStore): ModeSettingsModule {
 		return new ModeSettingsModule(new ModeSettingsHandler(store));
