@@ -113,7 +113,14 @@ export class ChatStore {
 	 * ID du client actuellement connecté à l'application.
 	 */
 	clientID() {
-		return this.me().id;
+		return this.client().id;
+	}
+
+	/**
+	 * L'utilisateur actuellement connecté à l'application.
+	 */
+	client(): Origin {
+		return this._client.expect("Le client courant connecté");
 	}
 
 	/**
@@ -214,11 +221,12 @@ export class ChatStore {
 	isCurrentClient(origin: Origin | string): boolean {
 		if (typeof origin === "string") {
 			return (
-				this.me().id === origin || this.me().nickname.toLowerCase() === origin.toLowerCase()
+				this.client().id === origin ||
+				this.client().nickname.toLowerCase() === origin.toLowerCase()
 			);
 		}
 
-		return this.me().id === origin.id;
+		return this.client().id === origin.id;
 	}
 
 	/**
@@ -305,13 +313,6 @@ export class ChatStore {
 	}
 
 	/**
-	 * L'utilisateur actuellement connecté à l'application.
-	 */
-	me(): Origin {
-		return this._client.expect("Le client courant connecté");
-	}
-
-	/**
 	 * Gestion des handlers.
 	 */
 	handlerManager(): HandlerManager {
@@ -343,7 +344,7 @@ export class ChatStore {
 	 * Le pseudonyme du client actuellement connecté à l'application.
 	 */
 	nickname(): string {
-		return this.me().nickname;
+		return this.client().nickname;
 	}
 
 	/**
@@ -398,17 +399,11 @@ export class ChatStore {
 	}
 
 	/**
-	 * Définit l'ID du client.
-	 */
-	setClientID(clientID: string) {
-		this._clientIDStorage.set(clientID);
-	}
-
-	/**
 	 * Définit l'origine du client.
 	 */
-	setMe(me: Origin) {
-		this._client.replace(me);
+	setClient(origin: Origin) {
+		this._clientIDStorage.set(origin.id);
+		this._client.replace(origin);
 	}
 
 	/**
@@ -421,8 +416,8 @@ export class ChatStore {
 	/**
 	 * Définit le nom du client connecté au serveur.
 	 */
-	setNickname(nickname: string) {
-		this.me().nickname = nickname;
+	setClientNickname(nickname: string) {
+		this.client().nickname = nickname;
 	}
 
 	/**
@@ -647,9 +642,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function openPrivateOrCreate(origin: Origin) {
 		const room = store.roomManager().getOrInsert(origin.id, () => {
 			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
-			priv.addParticipant(
-				new PrivateParticipant(new User(store.me())).withIsCurrentClient(true),
-			);
+			priv.addParticipant(new PrivateParticipant(store.client()).withIsCurrentClient(true));
 			const maybeUser = store.userManager().find(origin.id);
 			maybeUser.then((user) => priv.addParticipant(new PrivateParticipant(user)));
 			return priv;

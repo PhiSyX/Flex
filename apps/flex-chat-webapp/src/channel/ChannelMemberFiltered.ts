@@ -39,7 +39,7 @@ export class ChannelMemberFiltered extends ChannelMember {
 	// Constructor //
 	// ----------- //
 	constructor(member: ChannelMember, searchHits: Array<ChannelMemberSearchHits>) {
-		super(member.intoUser());
+		super(member);
 
 		this.accessLevel = member.accessLevel;
 		this.isCurrentClient = member.isCurrentClient;
@@ -59,7 +59,7 @@ export class ChannelMemberUnfiltered extends ChannelMember {
 	// Constructor //
 	// ----------- //
 	constructor(member: ChannelMember) {
-		super(member.intoUser());
+		super(member);
 
 		this.accessLevel = member.accessLevel;
 		this.isCurrentClient = member.isCurrentClient;

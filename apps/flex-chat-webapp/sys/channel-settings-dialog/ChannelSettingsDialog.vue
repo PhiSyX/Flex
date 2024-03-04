@@ -35,12 +35,12 @@ const isCurrentClientChannelMemberCanEditTopic = computed(() =>
 
 // Est-ce que le client courant est opérateur global?
 const isCurrentClientGlobalOperator = computed(() =>
-	props.currentClientChannelMember.intoUser().isOperator()
+	props.currentClientChannelMember.isOperator()
 );
 
 // Est-ce que le client courant opérateur du salon?
 const isCurrentClientChannelMemberChannelOperator = computed(() =>
-	props.currentClientChannelMember.isOperator()
+	props.currentClientChannelMember.isChanOperator()
 );
 
 // Les paramètres du salon.
@@ -398,8 +398,7 @@ input {
 }
 
 button[type="button"] {
-	@include fx.scheme using($name)
-	{
+	@include fx.scheme using($name) {
 		@if $name == dark {
 			--btn-secondary-bg: var(--color-grey400);
 		} @else {

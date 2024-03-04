@@ -10,7 +10,7 @@
 
 import { User } from "~/user/User";
 
-export class PrivateParticipant {
+export class PrivateParticipant extends User {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -23,51 +23,7 @@ export class PrivateParticipant {
 			user = userOrigin;
 		}
 
-		this.user = user;
-	}
-
-	// -------- //
-	// Property //
-	// -------- //
-
-	private declare user: User;
-
-	/**
-	 * Est-ce que le pseudo du privé s'agit du client actuellement connecté
-	 * l'application?
-	 */
-	isCurrentClient = false;
-
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
-
-	/**
-	 * @see User#id
-	 */
-	get id() {
-		return this.user.id;
-	}
-
-	/**
-	 * @see User#nickname
-	 */
-	get nickname() {
-		return this.user.nickname;
-	}
-
-	/**
-	 * @see User#ident
-	 */
-	get ident() {
-		return this.user.ident;
-	}
-
-	/**
-	 * @see User#username
-	 */
-	get hostname() {
-		return this.user.hostname;
+		super(user);
 	}
 
 	// ------- //
@@ -75,34 +31,9 @@ export class PrivateParticipant {
 	// ------- //
 
 	/**
-	 * Comparaison du pseudo privé.
-	 */
-	eq(other: this) {
-		return (
-			other.id === this.id &&
-			other.nickname === this.nickname &&
-			other.ident === this.ident &&
-			other.hostname === this.hostname
-		);
-	}
-
-	/**
 	 * Comparaison partielle du pseudo privé.
 	 */
 	partialEq(other: this) {
 		return other.id === this.id;
-	}
-
-	intoUser(): User {
-		return this.user;
-	}
-
-	/**
-	 * Définit ou non l'instance comme étant le client actuellement connecté
-	 * l'application.
-	 */
-	withIsCurrentClient(bool: boolean): this {
-		this.isCurrentClient = bool;
-		return this;
 	}
 }

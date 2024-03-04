@@ -36,13 +36,13 @@ export class KickHandler implements SocketEventInterface<"KICK"> {
 		const channel = maybeChannel.unwrap();
 		assertChannelRoom(channel);
 		if (this.store.isCurrentClient(data.knick)) {
-			this.handleMe(data, channel);
+			this.handleClientItself(data, channel);
 			return;
 		}
 		this.handleUser(data, channel);
 	}
 
-	handleMe(data: GenericReply<"KICK">, channel: ChannelRoom) {
+	handleClientItself(data: GenericReply<"KICK">, channel: ChannelRoom) {
 		this.store.network().addEvent("event:kick", { ...data, isCurrentClient: true });
 		channel.addEvent("event:kick", { ...data, isCurrentClient: true });
 		channel.removeMember(data.knick.id);

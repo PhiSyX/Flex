@@ -135,9 +135,7 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
 	canEditTopic(member: ChannelMember): boolean {
-		return (
-			this.topic.isEditable() || member.intoUser().isGlobalOperator() || member.isOperator()
-		);
+		return this.topic.isEditable() || member.isGlobalOperator() || member.isChanOperator();
 	}
 
 	/**

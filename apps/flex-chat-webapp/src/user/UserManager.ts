@@ -26,7 +26,7 @@ export class UserManager {
 	 * Pseudonymes mis en cache pour faciliter la récupération d'un utilisateur
 	 * par son pseudonyme.
 	 */
-	private _nicks: Map<string, UserID> = new Map();
+	private _nicks: Map<User["nickname"], UserID> = new Map();
 
 	/**
 	 * Tous les utilisateurs connus ou en commun.

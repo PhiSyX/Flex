@@ -20,31 +20,17 @@ import {
 // Implémentation //
 // -------------- //
 
-export class ChannelMember {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(user: User) {
-		this.user = user;
-	}
-
+export class ChannelMember extends User {
 	// --------- //
 	// Propriété //
 	// --------- //
 
 	private declare _highestAccessLevel: HighestAccessLevelOutput;
 
-	private declare user: User;
-
 	/**
 	 * Les niveaux d'accès du pseudo.
 	 */
 	accessLevel: Set<ChannelAccessLevel> = new Set();
-
-	/**
-	 * Est-ce le pseudonyme est le pseudonyme courant connecté.
-	 */
-	isCurrentClient = false;
 
 	// --------------- //
 	// Getter | Setter //
@@ -53,8 +39,8 @@ export class ChannelMember {
 	/**
 	 * Les classes CSS qu'il faut appliquer aux éléments de pseudo de salon.
 	 */
-	get className() {
-		return `${this.user.className} ${this.highestAccessLevel.className}`;
+	get className(): string {
+		return `${super.className} ${this.highestAccessLevel.className}`;
 	}
 
 	/**
@@ -67,55 +53,9 @@ export class ChannelMember {
 		return this._highestAccessLevel;
 	}
 
-	/**
-	 * @see User#id
-	 */
-	get id() {
-		return this.user.id;
-	}
-
-	/**
-	 * @see User#nickname
-	 */
-	get nickname() {
-		return this.user.nickname;
-	}
-
-	/**
-	 * @see User#ident
-	 */
-	get ident() {
-		return this.user.ident;
-	}
-
-	/**
-	 * @see User#hostname
-	 */
-	get hostname() {
-		return this.user.hostname;
-	}
-
 	// ------- //
 	// Méthode //
 	// ------- //
-
-	address(
-		ty:
-			| "*!ident@hostname"
-			| "*!*ident@hostname"
-			| "*!*@hostname"
-			| "*!*ident@*.hostname"
-			| "*!*@*.hostname"
-			| "nick!ident@hostname"
-			| "nick!*ident@hostname"
-			| "nick!*@hostname"
-			| "nick!*ident@*.hostname"
-			| "nick!*@*.hostname"
-			| "nick!*@*"
-			| "*!*@*",
-	): MaskAddr {
-		return this.user.address(ty);
-	}
 
 	/**
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
@@ -129,33 +69,8 @@ export class ChannelMember {
 	 * Est-ce que le membre est opérateur du salon avec le niveau d'accès
 	 * minimal à demi-opérateur.
 	 */
-	isOperator(): boolean {
+	isChanOperator(): boolean {
 		return this.hasAccessLevel(ChannelAccessLevel.HalfOperator);
-	}
-
-	/**
-	 * Est-ce que le membre donné correspond à celui de l'instance.
-	 */
-	eq(member: this): boolean {
-		return (
-			member === this ||
-			(member.id === this.id &&
-				member.nickname === this.nickname &&
-				member.ident === this.ident &&
-				member.hostname === this.hostname)
-		);
-	}
-
-	/**
-	 * Est-ce que le pseudo donné correspond à celui de l'instance, comparaison
-	 * partielle
-	 */
-	partialEq(member: this): boolean {
-		return member.nickname.toLowerCase() === this.nickname.toLowerCase();
-	}
-
-	intoUser(): User {
-		return this.user;
 	}
 
 	/**
@@ -163,15 +78,6 @@ export class ChannelMember {
 	 */
 	withAccessLevel(level: ChannelAccessLevel): this {
 		this.accessLevel.add(level);
-		return this;
-	}
-
-	/**
-	 * Définit le pseudo comme étant celui actuellement connecté en tant que
-	 * client.
-	 */
-	withIsCurrentClient(bool: boolean): this {
-		this.isCurrentClient = bool;
 		return this;
 	}
 

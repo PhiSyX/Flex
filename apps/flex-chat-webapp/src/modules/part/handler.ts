@@ -39,14 +39,14 @@ export class PartHandler implements SocketEventInterface<"PART"> {
 		assertChannelRoom(channel);
 
 		if (this.store.isCurrentClient(data.origin)) {
-			this.handleMe(data, channel);
+			this.handleClientItself(data, channel);
 			return;
 		}
 
 		this.handleUser(data, channel);
 	}
 
-	handleMe(_: GenericReply<"PART">, channel: ChannelRoom) {
+	handleClientItself(_: GenericReply<"PART">, channel: ChannelRoom) {
 		this.store.roomManager().remove(channel.name);
 		// FIXME(phisyx): Définir la chambre courante à la chambre juste au
 		// dessus ou en au dessous de la chambre venant d'être fermée.

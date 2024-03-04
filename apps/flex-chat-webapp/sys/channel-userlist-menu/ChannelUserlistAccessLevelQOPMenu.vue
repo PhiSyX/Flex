@@ -39,10 +39,7 @@ const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
 const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember
-		.intoUser()
-		.operator.filter((flag) => flag === UserFlag.GlobalOperator)
-		.is_some()
+	props.currentClientMember.isGlobalOperator()
 );
 const isCurrentClientMemberOwner = computed(() =>
 	props.currentClientMember.accessLevel.has(ChannelAccessLevel.Owner)

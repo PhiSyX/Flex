@@ -37,56 +37,6 @@ export enum UserFlag {
 // Implémentation //
 // -------------- //
 
-export class UserChangeNicknameDialog {
-	// ------ //
-	// Static //
-	// ------ //
-
-	static ID = "user-change-nickname-dialog";
-
-	static create(overlayerStore: OverlayerStore, { event }: { event: MouseEvent }) {
-		overlayerStore.create({
-			id: UserChangeNicknameDialog.ID,
-			centered: true,
-			event,
-		});
-		return new UserChangeNicknameDialog(overlayerStore);
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private overlayerStore: OverlayerStore) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	destroy() {
-		this.overlayerStore.destroy(UserChangeNicknameDialog.ID);
-	}
-
-	get(): Layer<UserChangeNicknameRecordDialog> | undefined {
-		return this.overlayerStore.get(UserChangeNicknameDialog.ID) as
-			| Layer<UserChangeNicknameRecordDialog>
-			| undefined;
-	}
-
-	getUnchecked(): Layer<UserChangeNicknameRecordDialog> {
-		return this.overlayerStore.get(
-			UserChangeNicknameDialog.ID,
-		) as Layer<UserChangeNicknameRecordDialog>;
-	}
-
-	exists(): boolean {
-		return this.overlayerStore.has(UserChangeNicknameDialog.ID);
-	}
-
-	withData(data: UserChangeNicknameRecordDialog) {
-		this.overlayerStore.updateData(UserChangeNicknameDialog.ID, data);
-	}
-}
-
 export class User {
 	// ----------- //
 	// Constructor //
@@ -128,6 +78,11 @@ export class User {
 	declare host: Origin["host"];
 
 	/**
+	 * Est-ce le pseudonyme est le pseudonyme courant connecté.
+	 */
+	isCurrentClient = false;
+
+	/**
 	 * Drapeau d'opérateur de l'utilisateur.
 	 */
 	operator: Option<UserFlag> = None();
@@ -147,7 +102,7 @@ export class User {
 	/**
 	 * Les classes CSS de l'utilisateur à appliquer aux composants de pseudo.
 	 */
-	get className() {
+	get className(): string {
 		if (this.away) return "is-away";
 		return "";
 	}
@@ -242,6 +197,19 @@ export class User {
 	// ------- //
 
 	/**
+	 * Est-ce que l'utilisateur donné correspond à celui de l'instance.
+	 */
+	eq(other: this): boolean {
+		return (
+			other === this ||
+			(other.id === this.id &&
+				other.nickname === this.nickname &&
+				other.ident === this.ident &&
+				other.hostname === this.hostname)
+		);
+	}
+
+	/**
 	 * Est-ce que l'utilisateur est un opérateur local?
 	 */
 	isLocalOperator() {
@@ -277,6 +245,14 @@ export class User {
 	}
 
 	/**
+	 * Est-ce que l'utilisateur donné correspond à celui de l'instance,
+	 * comparaison partielle
+	 */
+	partialEq(user: this): boolean {
+		return user.nickname.toLowerCase() === this.nickname.toLowerCase();
+	}
+
+	/**
 	 * Définit un nouveau pseudonyme pour l'utilisateur.
 	 */
 	setNickname(nickname: string) {
@@ -292,6 +268,15 @@ export class User {
 	}
 
 	/**
+	 * Définit le pseudo comme étant celui actuellement connecté en tant que
+	 * client.
+	 */
+	withIsCurrentClient(bool: boolean): this {
+		this.isCurrentClient = bool;
+		return this;
+	}
+
+	/**
 	 * Ajoute des drapeaux d'opérateurs à l'utilisateur.
 	 */
 	withOperatorFlag(flag: UserFlag | string): this {
@@ -301,5 +286,55 @@ export class User {
 		}
 		this.operator.replace(flag);
 		return this;
+	}
+}
+
+export class UserChangeNicknameDialog {
+	// ------ //
+	// Static //
+	// ------ //
+
+	static ID = "user-change-nickname-dialog";
+
+	static create(overlayerStore: OverlayerStore, { event }: { event: MouseEvent }) {
+		overlayerStore.create({
+			id: UserChangeNicknameDialog.ID,
+			centered: true,
+			event,
+		});
+		return new UserChangeNicknameDialog(overlayerStore);
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private overlayerStore: OverlayerStore) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	destroy() {
+		this.overlayerStore.destroy(UserChangeNicknameDialog.ID);
+	}
+
+	get(): Layer<UserChangeNicknameRecordDialog> | undefined {
+		return this.overlayerStore.get(UserChangeNicknameDialog.ID) as
+			| Layer<UserChangeNicknameRecordDialog>
+			| undefined;
+	}
+
+	getUnchecked(): Layer<UserChangeNicknameRecordDialog> {
+		return this.overlayerStore.get(
+			UserChangeNicknameDialog.ID,
+		) as Layer<UserChangeNicknameRecordDialog>;
+	}
+
+	exists(): boolean {
+		return this.overlayerStore.has(UserChangeNicknameDialog.ID);
+	}
+
+	withData(data: UserChangeNicknameRecordDialog) {
+		this.overlayerStore.updateData(UserChangeNicknameDialog.ID, data);
 	}
 }

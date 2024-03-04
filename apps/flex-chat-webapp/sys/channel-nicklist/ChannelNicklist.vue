@@ -96,11 +96,11 @@ const hasFilters = computed(() => {
 // -------- //
 
 function openPrivateHandler(member: ChannelMember) {
-	emit("open-private", member.intoUser());
+	emit("open-private", member);
 }
 
 function selectUserHandler(member: ChannelMember) {
-	emit("select-member", member.intoUser());
+	emit("select-member", member);
 }
 </script>
 

@@ -13,7 +13,6 @@ import { PrivateRoom } from "~/private/PrivateRoom";
 import { Room } from "~/room/Room";
 import { RoomMessage } from "~/room/RoomMessage";
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
@@ -35,14 +34,14 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 
 	handle(data: GenericReply<"PRIVMSG">) {
 		if (this.store.isCurrentClient(data.origin)) {
-			this.handleMe(data);
+			this.handleClientItself(data);
 			return;
 		}
 
 		this.handleUser(data);
 	}
 
-	handleMe(data: GenericReply<"PRIVMSG">) {
+	handleClientItself(data: GenericReply<"PRIVMSG">) {
 		const user = this.store
 			.userManager()
 			.findByNickname(data.target)
@@ -50,7 +49,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 		const maybeRoom = this.store.roomManager().get(user.id);
 		if (maybeRoom.is_none()) return;
 		const room = maybeRoom.unwrap();
-		this.handleMessage(room, data);
+		this.handleClientItselfssage(room, data);
 	}
 
 	handleUser(data: GenericReply<"PRIVMSG">) {
@@ -61,17 +60,17 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 				// @ts-expect-error : type à corriger
 				.addEvent("event:query", { ...data, isCurrentClient: false });
 			const room = new PrivateRoom(data.origin.nickname).withID(data.origin.id);
-			room.addParticipant(new PrivateParticipant(new User(data.origin)));
+			room.addParticipant(new PrivateParticipant(data.origin));
 			room.addParticipant(
-				new PrivateParticipant(new User(this.store.me())).withIsCurrentClient(true),
+				new PrivateParticipant(this.store.client()).withIsCurrentClient(true),
 			);
 			return room;
 		});
 
-		this.handleMessage(priv, data);
+		this.handleClientItselfssage(priv, data);
 	}
 
-	handleMessage(room: Room, data: GenericReply<"PRIVMSG">) {
+	handleClientItselfssage(room: Room, data: GenericReply<"PRIVMSG">) {
 		const isCurrentClient = this.store.isCurrentClient(data.origin);
 		if (!isCurrentClient && !room.isActive()) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le

@@ -10,7 +10,6 @@ import ChannelUserlistOperatorMenu from "./ChannelUserlistAccessLevelOPMenu.vue"
 import ChannelUserlistHalfOperatorMenu from "./ChannelUserlistAccessLevelHOPMenu.vue";
 import { computed } from "vue";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { UserFlag } from "~/user/User";
 
 // ---- //
 // Type //
@@ -55,10 +54,7 @@ const isSameMember = computed(() =>
 );
 
 const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember
-		.intoUser()
-		.operator.filter((flag) => flag === UserFlag.GlobalOperator)
-		.is_some()
+	props.currentClientMember.isGlobalOperator()
 );
 
 const isCurrentClientMemberHaveAccessLevel = computed(
@@ -74,13 +70,13 @@ const unbanMemberHandler = () => emit("unban-member", props.selectedMember);
 const unbanMemberNickHandler = () => emit("unban-nick", props.selectedMember);
 
 const openPrivateHandler = () =>
-	emit("open-private", props.selectedMember.member.intoUser());
+	emit("open-private", props.selectedMember.member);
 const ignoreUserHandler = () =>
-	emit("ignore-user", props.selectedMember.member.intoUser());
+	emit("ignore-user", props.selectedMember.member);
 const kickMemberHandler = () =>
 	emit("kick-member", props.selectedMember.member);
 const unignoreUserHandler = () =>
-	emit("unignore-user", props.selectedMember.member.intoUser());
+	emit("unignore-user", props.selectedMember.member);
 const setAccessLevelHandler = (
 	member: ChannelMember,
 	accessLevel: ChannelAccessLevel

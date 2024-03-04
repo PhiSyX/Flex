@@ -34,11 +34,10 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 		const maybeChannel = this.store.roomManager().get(data.channel);
 		if (maybeChannel.is_none()) return;
 		const channel = maybeChannel.unwrap();
-		this.handleMessage(channel, data);
+		this.handleClientItselfssage(channel, data);
 	}
 
-	handleMessage(room: Room, data: GenericReply<"PUBMSG">) {
-
+	handleClientItselfssage(room: Room, data: GenericReply<"PUBMSG">) {
 		const isCurrentClient = this.store.isCurrentClient(data.origin);
 		if (!isCurrentClient && !room.isActive()) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le

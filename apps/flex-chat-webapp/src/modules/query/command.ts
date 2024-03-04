@@ -11,7 +11,6 @@
 import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { ChatStore } from "~/store/ChatStore";
-import { User } from "~/user/User";
 
 // -------------- //
 // Implémentation //
@@ -28,7 +27,7 @@ export class QueryCommand {
 		const room = this.store.roomManager().getOrInsert(user.id, () => {
 			const priv = new PrivateRoom(user.nickname).withID(user.id);
 			priv.addParticipant(
-				new PrivateParticipant(new User(this.store.me())).withIsCurrentClient(true),
+				new PrivateParticipant(this.store.client()).withIsCurrentClient(true),
 			);
 			priv.addParticipant(new PrivateParticipant(user));
 			return priv;

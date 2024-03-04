@@ -31,14 +31,14 @@ export class ModeHandler implements SocketEventInterface<"MODE"> {
 
 	handle(data: GenericReply<"MODE">) {
 		if (this.store.isCurrentClient(data.target)) {
-			this.handleMe(data);
+			this.handleClientItself(data);
 			return;
 		}
 
 		this.handleChannel(data);
 	}
 
-	handleMe(data: GenericReply<"MODE">) {
+	handleClientItself(data: GenericReply<"MODE">) {
 		const network = this.store.network();
 		network.addEvent("event:mode", { ...data, isCurrentClient: true });
 	}

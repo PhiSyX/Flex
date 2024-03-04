@@ -30,7 +30,7 @@ const overlayerStore = useOverlayerStore();
 const props = defineProps<Props>();
 
 // Le client courant.
-const currentClient = computed(() => chatStore.store.me());
+const currentClient = computed(() => chatStore.store.client());
 
 // Le pseudo du client courant.
 const currentClientNickname = computed(() => currentClient.value.nickname);

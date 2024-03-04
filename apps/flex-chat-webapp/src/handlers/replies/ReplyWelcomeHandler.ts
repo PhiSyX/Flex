@@ -29,8 +29,7 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> 
 		const { channels } = payload;
 
 		this.store.setConnected(true);
-		this.store.setClientID(data.tags.client_id);
-		this.store.setMe({
+		this.store.setClient({
 			id: data.tags.client_id,
 			nickname: data.nickname,
 			host: { cloaked: data.host },
@@ -47,7 +46,7 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> 
 
 		fetch("/chat/connect/token", {
 			method: "POST",
-			credentials: "include",
+			credentials: "same-origin",
 			headers: {
 				"Content-Type": "application/json",
 			},

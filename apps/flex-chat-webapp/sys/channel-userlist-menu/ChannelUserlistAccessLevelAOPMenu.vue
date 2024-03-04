@@ -5,7 +5,6 @@ import { computed } from "vue";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
 import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
-import { UserFlag } from "~/user/User";
 
 // ---- //
 // Type //
@@ -39,10 +38,7 @@ const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
 const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember
-		.intoUser()
-		.operator.filter((flag) => flag === UserFlag.GlobalOperator)
-		.is_some()
+	props.currentClientMember.isGlobalOperator()
 );
 const isCurrentClientMemberOwner = computed(() =>
 	props.currentClientMember.accessLevel.has(ChannelAccessLevel.Owner)
@@ -52,7 +48,9 @@ const isCurrentClientMemberAdmin = computed(() =>
 );
 
 const isSelectedMemberAdmin = computed(() =>
-	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.AdminOperator)
+	props.selectedMember.member.accessLevel.has(
+		ChannelAccessLevel.AdminOperator
+	)
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>

@@ -34,14 +34,14 @@ export class JoinHandler implements SocketEventInterface<"JOIN"> {
 
 	handle(data: GenericReply<"JOIN">) {
 		if (this.store.isCurrentClient(data.origin)) {
-			this.handleMe(data);
+			this.handleClientItself(data);
 			return;
 		}
 
 		this.handleUser(data);
 	}
 
-	handleMe(data: GenericReply<"JOIN">) {
+	handleClientItself(data: GenericReply<"JOIN">) {
 		const user = new User(data.origin);
 
 		const channel = this.store

@@ -27,7 +27,7 @@ const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();
 
 // Client courant.
-const currentClient = computed(() => chatStore.store.me());
+const currentClient = computed(() => chatStore.store.client());
 // Pseudo du client courant.
 const currentClientNickname = computed(() => currentClient.value.nickname);
 
@@ -43,7 +43,7 @@ const recipient = computed(() =>
 
 // Est-ce que le participant est bloqué?
 const isRecipientBlocked = computed(() =>
-	chatStore.checkUserIsBlocked(recipient.value.intoUser())
+	chatStore.checkUserIsBlocked(recipient.value)
 );
 
 // La liste de la complétion de la boite de saisie, il y contient:
