@@ -13,6 +13,6 @@ use flex_chat_macro::error_replies;
 error_replies! {
 	/// Renvoyé par le serveur chaque fois qu'un client tente d'exécuter une
 	/// commande affectant un salon dont il n'est pas membre.
-	| 442 <-> ERR_NOTONCHANNEL { channel: str }
+	| 442 <-> ERR_NOTONCHANNEL { channel }
 		=> "{channel} :Vous n'êtes pas dans ce salon"
 }

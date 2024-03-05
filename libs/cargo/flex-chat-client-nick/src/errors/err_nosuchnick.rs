@@ -13,6 +13,6 @@ use flex_chat_macro::error_replies;
 error_replies! {
 	/// Utilisé pour indiquer que le paramètre "nickname" fourni à une commande
 	/// est actuellement inutilisé.
-	| 401 <-> ERR_NOSUCHNICK { nickname: str }
+	| 401 <-> ERR_NOSUCHNICK { nickname }
 		=> "{nickname} :Aucun pseudonyme de ce type"
 }

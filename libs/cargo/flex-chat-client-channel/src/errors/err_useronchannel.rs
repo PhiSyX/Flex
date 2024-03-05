@@ -13,9 +13,6 @@ use flex_chat_macro::error_replies;
 error_replies! {
 	/// Renvoyé lorsqu'un client tente d'inviter un utilisateur sur un salon sur
 	/// lequel il se trouve déjà.
-	| 443 <-> ERR_USERONCHANNEL {
-		user: str,
-		channel: str
-	}
+	| 443 <-> ERR_USERONCHANNEL { user, channel }
 		=> "{user} {channel} :L'utilisateur est déjà dans ce salon"
 }

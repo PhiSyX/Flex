@@ -15,7 +15,7 @@ macro_rules! error_replies {
 			$(#[$attr:meta])*
 			| $code:tt <-> $numeric:ident $({ $(
 				$(#[$attr_field:meta])*
-				$field:ident : $ty:ty
+				$field:ident
 			),* })?
 					=> $str:literal
 			)*

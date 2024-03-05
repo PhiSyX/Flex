@@ -14,6 +14,6 @@ error_replies! {
 	/// Toute commande nécessitant des privilèges "chanop" (tels que les
 	/// messages MODE) DOIT renvoyer cette erreur si le client effectuant la
 	/// tentative n'est pas un chanop sur le salon spécifié.
-	| 482 <-> ERR_CHANOPRIVSNEEDED { channel: str }
+	| 482 <-> ERR_CHANOPRIVSNEEDED { channel }
 		=> "{channel} :Vous n'êtes pas opérateur sur ce salon"
 }

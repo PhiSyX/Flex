@@ -13,9 +13,6 @@ use flex_chat_macro::error_replies;
 error_replies! {
 	/// Renvoyé par le serveur pour indiquer que l'utilisateur cible de la
 	/// commande n'est pas sur le salon donné.
-	| 441 <-> ERR_USERNOTINCHANNEL {
-		nick: str,
-		channel: str
-	}
+	| 441 <-> ERR_USERNOTINCHANNEL { nick, channel }
 		=> "{nick} {channel} :L'utilisateur n'est pas dans ce salon"
 }

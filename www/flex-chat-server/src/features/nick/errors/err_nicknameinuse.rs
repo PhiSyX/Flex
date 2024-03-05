@@ -13,6 +13,6 @@ use flex_chat_macro::error_replies;
 error_replies! {
 	/// Renvoyé lorsqu'un message `NICK` est traité qui résulte en une tentative
 	/// de changement vers un surnom (`nickname`) existant.
-	| 433 <-> ERR_NICKNAMEINUSE { nickname: str }
+	| 433 <-> ERR_NICKNAMEINUSE { nickname }
 		=> "{nickname} :Le pseudonyme est déjà utilisé"
 }

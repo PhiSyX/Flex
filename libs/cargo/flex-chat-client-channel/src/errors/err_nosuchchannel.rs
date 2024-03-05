@@ -12,6 +12,6 @@ use flex_chat_macro::error_replies;
 
 error_replies! {
 	/// Utilisé pour indiquer que le nom du salin donné n'est pas valide.
-	| 403 <-> ERR_NOSUCHCHANNEL { channel_name: str }
+	| 403 <-> ERR_NOSUCHCHANNEL { channel_name }
 		=> "{channel_name} :Aucun salon de ce type"
 }

@@ -13,6 +13,6 @@ use flex_chat_macro::error_replies;
 error_replies! {
 	/// Renvoyé pour indiquer à l'utilisateur que le salon qui tente de joindre
 	/// est réservé aux opérateurs globaux et locaux du serveur uniquement.
-	| 520 <-> ERR_OPERONLY { channel: str }
+	| 520 <-> ERR_OPERONLY { channel }
 		=> ":Vous ne pouvez pas rejoindre le salon {channel} (OPÉRATEUR uniquement)"
 }

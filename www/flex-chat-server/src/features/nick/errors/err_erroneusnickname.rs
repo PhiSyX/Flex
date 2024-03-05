@@ -13,6 +13,6 @@ use flex_chat_macro::error_replies;
 error_replies! {
 	/// Renvoyé après réception d'un message NICK contenant des caractères qui
 	/// ne font pas partie de l'ensemble défini.
-	| 432 <-> ERR_ERRONEUSNICKNAME { nickname: str }
+	| 432 <-> ERR_ERRONEUSNICKNAME { nickname }
 		=> "{nickname}: Pseudonyme erroné"
 }

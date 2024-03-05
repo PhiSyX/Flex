@@ -11,6 +11,6 @@
 use flex_chat_macro::error_replies;
 
 error_replies! {
-	| 473 <-> ERR_INVITEONLYCHAN { channel: str }
+	| 473 <-> ERR_INVITEONLYCHAN { channel }
 		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+i)"
 }
