@@ -3,6 +3,9 @@ name = "flex-chat-client"
 version = "0.1.0"
 edition = "2021"
 
+[lints]
+workspace = true
+
 [dependencies]
 flex-chat-user = { path = "../flex-chat-user" }
 flex-crypto = { workspace = true }

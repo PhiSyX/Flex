@@ -3,6 +3,9 @@ name = "flex-chat-user"
 version = "0.1.0"
 edition = "2021"
 
+[lints]
+workspace = true
+
 [dependencies]
 dns-lookup = "2.0.4"
 flex-crypto = { workspace = true }

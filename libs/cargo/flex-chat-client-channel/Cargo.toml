@@ -3,6 +3,9 @@ name = "flex-chat-client-channel"
 version = "0.1.0"
 edition = "2021"
 
+[lints]
+workspace = true
+
 [dependencies]
 flex-chat-channel = { path = "../flex-chat-channel" }
 flex-chat-client = { path = "../flex-chat-client" }

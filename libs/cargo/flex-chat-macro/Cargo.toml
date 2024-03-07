@@ -3,6 +3,9 @@ name = "flex-chat-macro"
 version = "0.1.0"
 edition = "2021"
 
+[lints]
+workspace = true
+
 [dependencies]
 paste = { version = "1.0.14" }
 flex-web-framework = { path = "../flex-web-framework" }
