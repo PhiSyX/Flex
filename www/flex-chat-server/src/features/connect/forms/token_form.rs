@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_client::ClientID;
 
 // --------- //
@@ -20,8 +22,8 @@ use flex_chat_client::ClientID;
 pub struct TokenFormData
 {
 	pub client_id: ClientID,
-	pub nick: String,
-	pub ident: String,
-	pub host: String,
-	pub token: String,
+	pub nick: Arc<str>,
+	pub ident: Arc<str>,
+	pub host: Arc<str>,
+	pub token: Arc<str>,
 }

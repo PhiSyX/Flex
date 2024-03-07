@@ -8,35 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::command_formdata;
+use std::sync::Arc;
+
 use flex_chat_channel::validate_channels;
+use flex_chat_macro::command_formdata;
 
 command_formdata! {
 	struct BAN
 	{
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
-		masks: Vec<String>,
+		channels: Vec<Arc<str>>,
+		masks: Vec<Arc<str>>,
 	}
 
 	struct UNBAN
 	{
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
-		masks: Vec<String>,
+		channels: Vec<Arc<str>>,
+		masks: Vec<Arc<str>>,
 	}
 
 	struct BANEX
 	{
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
-		masks: Vec<String>,
+		channels: Vec<Arc<str>>,
+		masks: Vec<Arc<str>>,
 	}
 
 	struct UNBANEX
 	{
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
-		masks: Vec<String>,
+		channels: Vec<Arc<str>>,
+		masks: Vec<Arc<str>>,
 	}
 }

@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_channel::validate_channels;
 use flex_chat_macro::{command_formdata, serde};
 use flex_web_framework::types::secret::Secret;
@@ -17,9 +19,9 @@ command_formdata! {
 	{
 		/// Les salons à rejoindre.
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
+		channels: Vec<Arc<str>>,
 		/// Les clés associées aux salons à rejoindre.
 		#[serde(default)]
-		keys: Vec<Secret<String>>,
+		keys: Vec<Secret<Arc<str>>>,
 	}
 }

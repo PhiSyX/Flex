@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_channel::validate_channel;
 use flex_chat_macro::command_formdata;
 use flex_web_framework::types::secret;
@@ -17,7 +19,7 @@ command_formdata! {
 	{
 		/// Le salon.
 		#[serde(deserialize_with = "validate_channel")]
-		target: String,
+		target: Arc<str>,
 		/// Les paramètres du salon à appliquer.
 		modes: ChannelModesSettings,
 	}
@@ -32,16 +34,16 @@ pub struct ChannelModesSettings
 {
 	/// Liste des bannissements à appliquer/retirer.
 	#[serde(rename = "b")]
-	pub bans: Option<Vec<String>>,
+	pub bans: Option<Vec<Arc<str>>>,
 	/// Liste des exceptions de bannissements à appliquer/retirer.
 	#[serde(rename = "e")]
-	pub bans_except: Option<Vec<String>>,
+	pub bans_except: Option<Vec<Arc<str>>>,
 	/// Salon sur invitation uniquement.
 	#[serde(rename = "i")]
 	pub invite_only: Option<bool>,
 	/// Clé du salon, pour le rejoindre.
 	#[serde(rename = "k")]
-	pub key: Option<secret::Secret<String>>,
+	pub key: Option<secret::Secret<Arc<str>>>,
 	/// Salon en modéré.
 	#[serde(rename = "m")]
 	pub moderate: Option<bool>,

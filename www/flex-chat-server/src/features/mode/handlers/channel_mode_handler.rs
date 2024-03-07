@@ -8,9 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_channel::{AccessControlMask, ChannelAccessLevel, SettingsFlag};
 use flex_chat_client::Socket;
 use flex_chat_mode::ApplyMode;
+use flex_web_framework::types::secret;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::src::features::mode::{
@@ -118,7 +121,12 @@ impl ModeChannelSettingsHandler
 				&mut removed_settings,
 			);
 
-			if let Some(key) = data.modes.key.as_deref() {
+			if let Some(key) = data
+				.modes
+				.key
+				.map(|s| secret::Secret::new(s.to_string()))
+				.as_deref()
+			{
 				apply_mode_settings_str(
 					app,
 					&client_socket,
@@ -224,7 +232,12 @@ impl ModeChannelSettingsHandler
 			&mut removed_settings,
 		);
 
-		if let Some(key) = data.modes.key.as_deref() {
+		if let Some(key) = data
+			.modes
+			.key
+			.map(|s| secret::Secret::new(s.to_string()))
+			.as_deref()
+		{
 			apply_mode_settings_str(
 				app,
 				&client_socket,
@@ -255,7 +268,7 @@ fn apply_bans(
 	app: &ChatApplication,
 	client_socket: &Socket,
 	channel_name: &str,
-	bans: Option<&[String]>,
+	bans: Option<&[Arc<str>]>,
 	alist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 	rlist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 )
@@ -281,7 +294,7 @@ fn apply_bans_except(
 	app: &ChatApplication,
 	client_socket: &Socket,
 	channel_name: &str,
-	bans_except: Option<&[String]>,
+	bans_except: Option<&[Arc<str>]>,
 	alist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 	rlist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
 )

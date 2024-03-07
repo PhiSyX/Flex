@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_macro::command_formdata;
 use flex_serde_validation::string::validate_opt_string_filter;
 
@@ -15,6 +17,6 @@ command_formdata! {
 	struct AWAY
 	{
 		#[serde(default, deserialize_with = "validate_opt_string_filter")]
-		text: Option<String>,
+		text: Option<Arc<str>>,
 	}
 }

@@ -47,7 +47,10 @@ impl SajoinHandler
 			};
 
 			for channel_name in data.channels.iter() {
-				_ = app.join_or_create_channel_bypass_permission(&nickname_socket, channel_name);
+				_ = app.join_or_create_channel_bypass_permission(
+					&nickname_socket,
+					channel_name.as_ref(),
+				);
 			}
 		}
 	}

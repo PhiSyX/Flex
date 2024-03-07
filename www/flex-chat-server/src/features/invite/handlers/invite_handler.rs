@@ -88,6 +88,6 @@ impl InviteHandler
 
 		client_socket.emit_invite(&channel, &target_client_socket);
 		drop(channel);
-		app.add_user_to_invite_channel(&data.channel, *target_client_socket.cid());
+		app.add_user_to_invite_channel(data.channel.as_ref(), *target_client_socket.cid());
 	}
 }

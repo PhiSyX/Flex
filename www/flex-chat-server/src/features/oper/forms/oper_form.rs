@@ -8,13 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_macro::command_formdata;
 use flex_web_framework::types::secret;
 
 command_formdata! {
 	struct OPER
 	{
-		name: secret::Secret<String>,
-		password: secret::Secret<String>,
+		name: secret::Secret<Arc<str>>,
+		password: secret::Secret<Arc<str>>,
 	}
 }

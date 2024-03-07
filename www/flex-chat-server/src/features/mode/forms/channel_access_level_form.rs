@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_channel::validate_channel;
 use flex_chat_macro::command_formdata;
 use flex_chat_user::validate_nicknames;
@@ -17,7 +19,7 @@ command_formdata! {
 	{
 		/// Le salon.
 		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
+		channel: Arc<str>,
 		/// Les pseudonymes à élever au rang d'opérateur admin.
 		#[serde(deserialize_with = "validate_nicknames")]
 		nicknames: Vec<String>,
@@ -29,7 +31,7 @@ command_formdata! {
 	{
 		/// Le salon.
 		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
+		channel: Arc<str>,
 		/// Les pseudonymes à élever au rang de demi opérateur.
 		#[serde(deserialize_with = "validate_nicknames")]
 		nicknames: Vec<String>,
@@ -41,7 +43,7 @@ command_formdata! {
 	{
 		/// Le salon.
 		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
+		channel: Arc<str>,
 		/// Les pseudonymes à élever au rang d'opérateur.
 		#[serde(deserialize_with = "validate_nicknames")]
 		nicknames: Vec<String>,
@@ -53,7 +55,7 @@ command_formdata! {
 	{
 		/// Le salon.
 		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
+		channel: Arc<str>,
 		/// Les pseudonymes à élever au rang d'opérateur "owner".
 		#[serde(deserialize_with = "validate_nicknames")]
 		nicknames: Vec<String>,
@@ -65,7 +67,7 @@ command_formdata! {
 	{
 		/// Le salon.
 		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
+		channel: Arc<str>,
 		/// Les pseudonymes à élever au rang de VIP.
 		#[serde(deserialize_with = "validate_nicknames")]
 		nicknames: Vec<String>,

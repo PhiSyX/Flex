@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::secret;
+use std::sync::Arc;
 
 use flex_chat_macro::command_formdata;
+use flex_web_framework::types::secret;
 
 command_formdata! {
 	struct PASS
@@ -18,6 +19,6 @@ command_formdata! {
 		/// Mot de passe serveur envoyé par le client. Ce mot de passe serveur
 		/// est censé matcher avec le mot de passe serveur de la configuration
 		/// pour pouvoir accéder au serveur.
-		password: secret::Secret<String>,
+		password: secret::Secret<Arc<str>>,
 	}
 }

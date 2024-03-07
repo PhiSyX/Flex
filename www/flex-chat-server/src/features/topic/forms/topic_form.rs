@@ -8,27 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::command_formdata;
+use std::sync::Arc;
+
 use flex_chat_channel::validate_channel;
+use flex_chat_macro::command_formdata;
 
 command_formdata! {
 	struct TOPIC
 	{
 		/// Le salon qui DOIT recevoir la modification du sujet.
 		#[serde(deserialize_with = "validate_channel")]
-		channel: String,
+		channel: Arc<str>,
 		/// Sujet à modifier ou à supprimer s'il est vide.
 		#[serde(default, deserialize_with = "validate_topic")]
-		topic: Option<String>,
+		topic: Option<Arc<str>>,
 	}
 }
 
 /// Valide la valeur utilisateur d'un topic.
-pub fn validate_topic<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+pub fn validate_topic<'de, D>(deserializer: D) -> Result<Option<Arc<str>>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let o = Option::<String>::deserialize(deserializer)?;
+	let o = Option::<Arc<str>>::deserialize(deserializer)?;
 	Ok(o.filter(|s| s.trim().is_empty() || s.len() < 100))
 }

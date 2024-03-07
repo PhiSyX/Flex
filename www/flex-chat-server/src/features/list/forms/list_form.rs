@@ -8,13 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::command_formdata;
+use std::sync::Arc;
+
 use flex_chat_channel::validate_channels;
+use flex_chat_macro::command_formdata;
 
 command_formdata! {
 	struct LIST
 	{
 		#[serde(default, deserialize_with = "validate_channels")]
-		channels: Vec<String>,
+		channels: Vec<Arc<str>>,
 	}
 }

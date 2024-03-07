@@ -8,19 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::types::secret;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::src::features::join::{
+	JoinApplicationInterface,
 	JoinChannelPermissionError,
 	JoinCommandFormData,
 	JoinErrorResponseInterface,
-	JoinApplicationInterface,
 };
 use crate::src::features::{
 	InviteChannelClientSocketErrorReplies,
 	ModeAccessControlClientSocketErrorRepliesInterface,
 	OperClientSocketErrorRepliesInterface,
-	PartChannelApplicationInterface,
 };
 use crate::src::ChatApplication;
 
@@ -56,7 +56,7 @@ impl JoinHandler
 	/// RPL_TOPIC) et la liste des membres qui sont sur le salon (en utilisant
 	/// RPL_NAMREPLY), qui DOIT inclure le client qui s'est joint.
 	///
-	/// NOTE: ce message accepte un argument spécial ("0"), qui est une demande
+	/// TODO: ce message accepte un argument spécial ("0"), qui est une demande
 	/// spéciale de quitter tous les salons dont le client est actuellement
 	/// membre. Le serveur traitera ce message comme si le client avait envoyé
 	/// une commande PART pour chaque salon dont il est membre.
@@ -68,12 +68,6 @@ impl JoinHandler
 	{
 		let client_socket = app.current_client(&socket);
 
-		// NOTE: Cas spécial "/JOIN 0" : partir de tous les salons.
-		if data.channels.first().filter(|s| s.eq(&"0")).is_some() {
-			app.part_all_channels(&client_socket);
-			return;
-		}
-
 		// NOTE: étapes à suivre pour rejoindre le salon.
 		//
 		// 1. Si le salon existe déjà, ignorer la demande JOIN du client. Cependant, si
@@ -83,8 +77,16 @@ impl JoinHandler
 
 		let channel_keys = &data.keys;
 		for (idx, channel_name) in data.channels.iter().enumerate() {
-			let channel_key = channel_keys.get(idx).filter(|key| !key.is_empty());
-			match app.join_or_create_channel(&client_socket, channel_name, channel_key) {
+			let channel_key = channel_keys
+				.get(idx)
+				.filter(|key| !key.is_empty())
+				.map(|s| secret::Secret::new(s.expose().to_string()));
+
+			match app.join_or_create_channel(
+				&client_socket,
+				channel_name.as_ref(),
+				channel_key.as_ref(),
+			) {
 				| Ok(_) => continue,
 				| Err(err) => {
 					match err {

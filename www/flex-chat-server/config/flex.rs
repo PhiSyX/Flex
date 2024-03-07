@@ -9,8 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use std::collections::HashSet;
+use std::sync::Arc;
 
-use flex_chat_channel::validate_channels;
 use flex_web_framework::types::{email, secret};
 use flex_web_framework::FeatureConfig;
 
@@ -43,10 +43,10 @@ pub struct flex_config
 pub struct flex_config_network
 {
 	/// Nom du réseau du serveur de Chat.
-	pub name: String,
+	pub name: Arc<str>,
 	/// Description du réseau du serveur de Chat.
 	#[serde(default)]
-	pub description: Option<String>,
+	pub description: Option<Arc<str>>,
 }
 
 #[derive(Debug)]
@@ -55,15 +55,15 @@ pub struct flex_config_network
 pub struct flex_config_admin
 {
 	/// Nom de l'administrateur du serveur de Chat.
-	pub name: String,
+	pub name: Arc<str>,
 	/// Adresse mail de l'administrateur du serveur de Chat.
 	pub email: email::EmailAddress,
 	/// Pseudonyme de l'administrateur du serveur de Chat.
 	#[serde(default)]
-	pub nick: Option<String>,
+	pub nick: Option<Arc<str>>,
 	/// Description de l'administrateur du serveur de Chat.
 	#[serde(default)]
-	pub description: Option<String>,
+	pub description: Option<Arc<str>>,
 }
 
 #[derive(Debug)]
@@ -75,9 +75,9 @@ pub struct flex_config_server
 	///
 	/// La valeur de ce champ sert à s'afficher dans les messages de connexion
 	/// au serveur pour le client.
-	pub name: String,
+	pub name: Arc<str>,
 	/// Le mot de passe du serveur, qui DOIT être chiffré hein ;-).
-	pub password: Option<secret::Secret<String>>,
+	pub password: Option<secret::Secret<Arc<str>>>,
 	/// Date de création du serveur.
 	pub created_at: Option<i64>,
 }
@@ -87,8 +87,7 @@ pub struct flex_config_server
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct flex_config_operator
 {
-	#[serde(deserialize_with = "validate_channels")]
-	pub auto_join: Vec<String>,
+	pub auto_join: Vec<Arc<str>>,
 }
 
 #[derive(Debug)]
@@ -97,15 +96,15 @@ pub struct flex_config_operator
 pub struct flex_config_operator_auth
 {
 	/// Identifiant de l'opérateur.
-	pub identifier: secret::Secret<String>,
+	pub identifier: secret::Secret<Arc<str>>,
 	/// Mot de passe de l'opérateur (chiffré).
-	pub password: secret::Secret<String>,
+	pub password: secret::Secret<Arc<str>>,
 	/// Type d'opérateur.
 	#[serde(rename = "type")]
 	pub oper_type: flex_config_operator_type,
 	/// Hôte virtuel.
 	#[serde(rename = "vhost")]
-	pub virtual_host: Option<String>,
+	pub virtual_host: Option<Arc<str>>,
 	/// Drapeau par défaut à appliquer automatiquement.
 	#[serde(default)]
 	pub flags: HashSet<flex_config_operator_flags>,

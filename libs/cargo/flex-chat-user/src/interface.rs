@@ -10,6 +10,7 @@
 
 use std::fmt;
 use std::hash::Hash;
+use std::sync::Arc;
 
 use flex_chat_mode::ApplyMode;
 use flex_secret::Secret;
@@ -48,10 +49,10 @@ pub trait UserInterface:
 	fn old_nickname(&self) -> &str;
 
 	/// Mot de passe utilisateur utilisé pour la connexion au serveur.
-	fn server_password(&self) -> Option<&Secret<String>>;
+	fn server_password(&self) -> Option<&Secret<Arc<str>>>;
 
 	/// Mot de passe utilisateur utilisé pour la connexion au serveur (exposed).
-	fn server_password_exposed(&self) -> Option<&str>;
+	fn server_password_exposed(&self) -> Option<&Arc<str>>;
 
 	/// Définit l'ident de l'[utilisateur](Self).
 	fn set_ident(&mut self, ident: impl ToString) -> Result<String, nick::Error>;
@@ -64,7 +65,7 @@ pub trait UserInterface:
 
 	/// Définit le mot de passe entré par l'[utilisateur](Self) lors de la
 	/// commande PASS.
-	fn set_password(&mut self, password: impl Into<Secret<String>>);
+	fn set_password(&mut self, password: impl Into<Secret<Arc<str>>>);
 
 	/// Définit le nom réel de l'[utilisateur](Self).
 	fn set_realname(&mut self, realname: impl ToString);

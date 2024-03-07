@@ -14,10 +14,7 @@ use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::src::features::kill::KillCommandFormData;
-use crate::src::features::{
-	KillApplicationInterface,
-	KillClientSocketCommandResponseInterface,
-};
+use crate::src::features::{KillApplicationInterface, KillClientSocketCommandResponseInterface};
 use crate::src::ChatApplication;
 
 // --------- //

@@ -16,6 +16,7 @@ mod validation;
 
 use std::collections::HashSet;
 use std::net;
+use std::sync::Arc;
 
 use flex_chat_mode::ApplyMode;
 use flex_secret::Secret;
@@ -45,7 +46,7 @@ pub struct User
 	host: self::host::Host,
 	/// Mot de passe serveur, reçu par la commande /PASS.
 	#[serde(skip_serializing)]
-	pub server_password: Option<Secret<String>>,
+	pub server_password: Option<Secret<Arc<str>>>,
 	/// Ancien pseudonyme de l'utilisateur.
 	#[serde(skip_serializing)]
 	pub old_nickname: Option<String>,
@@ -133,14 +134,14 @@ impl UserInterface for User
 		self.old_nickname.as_deref().unwrap()
 	}
 
-	fn server_password(&self) -> Option<&Secret<String>>
+	fn server_password(&self) -> Option<&Secret<Arc<str>>>
 	{
 		self.server_password.as_ref()
 	}
 
-	fn server_password_exposed(&self) -> Option<&str>
+	fn server_password_exposed(&self) -> Option<&Arc<str>>
 	{
-		self.server_password.as_deref().map(|x| x.as_str())
+		self.server_password.as_deref()
 	}
 
 	/// Définit l'ident de l'[utilisateur](Self).
@@ -179,7 +180,7 @@ impl UserInterface for User
 
 	/// Définit le mot de passe entré par l'[utilisateur](Self) lors de la
 	/// commande PASS.
-	fn set_password(&mut self, password: impl Into<Secret<String>>)
+	fn set_password(&mut self, password: impl Into<Secret<Arc<str>>>)
 	{
 		self.server_password.replace(password.into());
 	}

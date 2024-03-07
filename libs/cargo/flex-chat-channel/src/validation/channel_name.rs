@@ -8,41 +8,42 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 // -------- //
 // Fonction //
 // -------- //
 
-pub fn validate_channel<'de, D>(deserializer: D) -> Result<String, D::Error>
+pub fn validate_channel<'de, D>(deserializer: D) -> Result<Arc<str>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let s = String::deserialize(deserializer)?;
-	let c = s.trim();
-	if c.is_empty() || c.len() > 30 || !c.starts_with('#') {
+	let s: Arc<str> = Arc::<str>::deserialize(deserializer)?;
+
+	if s.is_empty() || s.len() > 30 || !s.starts_with('#') {
 		return Err(serde::de::Error::custom(format!(
 			"Le nom du salon « {s} » est incorrect"
 		)));
 	}
 
-	Ok(c.to_owned())
+	Ok(s)
 }
 
-pub fn validate_channels<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
+pub fn validate_channels<'de, D>(deserializer: D) -> Result<Vec<Arc<str>>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let v = Vec::<String>::deserialize(deserializer)?;
+	let v = Vec::<Arc<str>>::deserialize(deserializer)?;
 
 	let chans = v
-		.iter()
+		.into_iter()
 		.filter_map(|s| {
-			let c = s.trim();
-			if c.is_empty() || c.len() > 30 || !c.starts_with('#') {
+			if s.is_empty() || s.len() > 30 || !s.starts_with('#') {
 				return None;
 			}
-			Some(c.to_owned())
+			Some(s)
 		})
 		.collect();
 

@@ -8,18 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_serde_validation::string::validate_string_filter;
+use std::sync::Arc;
 
-use flex_chat_macro::command_formdata;
 use flex_chat_channel::validate_channels;
+use flex_chat_macro::command_formdata;
+use flex_serde_validation::string::validate_string_filter;
 
 command_formdata! {
 	struct PUBMSG
 	{
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
+		channels: Vec<Arc<str>>,
 		/// Le message envoyé.
 		#[serde(deserialize_with = "validate_string_filter")]
-		text: String,
+		text: Arc<str>,
 	}
 }

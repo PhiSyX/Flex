@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_macro::command_formdata;
 use flex_chat_user::{do_nickname_with_config, DoNicknameFnOptions, NICK_MAX_SIZE};
 use flex_serde_validation::array::validate_vec_string_filter;
@@ -33,7 +35,7 @@ command_formdata! {
 		targets: Vec<String>,
 		/// Le message envoyé.
 		#[serde(deserialize_with = "validate_string_filter")]
-		text: String,
+		text: Arc<str>,
 	}
 }
 

@@ -40,7 +40,7 @@ impl TokenController
 		let cookie_manager = flex_web_framework::http::Cookies::new(&cm, &cookie_key);
 		let signed_cookies = cookie_manager.signed();
 
-		let session_token = token_form_data.token;
+		let session_token = token_form_data.token.to_string();
 		let new_token_cookie =
 			flex_web_framework::http::Cookie::build((Self::COOKIE_TOKEN_KEY, session_token))
 				.path("/")

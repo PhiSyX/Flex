@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_chat_channel::validate_channels;
 use flex_chat_macro::command_formdata;
 use flex_chat_user::validate_nicknames;
@@ -17,9 +19,9 @@ command_formdata! {
 	{
 		/// Salons à quitter.
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
+		channels: Vec<Arc<str>>,
 		/// Message part du client.
-		message: Option<String>,
+		message: Option<Arc<str>>,
 	}
 }
 
@@ -31,8 +33,8 @@ command_formdata! {
 		nicknames: Vec<String>,
 		/// Salons à quitter.
 		#[serde(deserialize_with = "validate_channels")]
-		channels: Vec<String>,
+		channels: Vec<Arc<str>>,
 		/// Message part du client.
-		message: Option<String>,
+		message: Option<Arc<str>>,
 	}
 }
