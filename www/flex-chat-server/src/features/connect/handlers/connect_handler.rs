@@ -50,7 +50,7 @@ impl ConnectionRegistrationHandler
 	/// Événement CONNECT
 	pub fn handle_connect(
 		socket: &SocketRef,
-		State(server_state): State<flex_web_framework::AxumApplicationState>,
+		State(server_state): State<flex_web_framework::AxumState>,
 		State(app): State<ChatApplication>,
 		TryData(data): TryData<RememberUserFormData>,
 	)
@@ -105,7 +105,7 @@ impl ConnectionRegistrationHandler
 
 	/// Compléter l'enregistrement d'un client.
 	pub fn complete_registration(
-		_server_state: &flex_web_framework::AxumApplicationState,
+		_server_state: &flex_web_framework::AxumState,
 		app: &ChatApplication,
 		mut client_socket: Socket,
 	) -> Option<()>

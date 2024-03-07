@@ -24,7 +24,7 @@ pub use self::error::Error as ServerError;
 pub use self::settings::Settings;
 pub use self::state::ServerState;
 use crate::routing::RouterCollection;
-use crate::AxumApplicationState;
+use crate::AxumState;
 
 // --------- //
 // Structure //
@@ -42,7 +42,7 @@ pub struct Server<UserEnv, UserCLI>
 	/// Routeur du serveur HTTP.
 	pub router: RouterCollection,
 	/// État global du serveur.
-	pub state: AxumApplicationState,
+	pub state: AxumState,
 }
 
 // -------------- //

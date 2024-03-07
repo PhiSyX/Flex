@@ -11,7 +11,7 @@
 use std::fmt;
 
 use super::Router;
-use crate::AxumApplicationState;
+use crate::AxumState;
 
 // --------- //
 // Interface //
@@ -78,5 +78,5 @@ pub trait RouterBuilder
 		Action: axum::handler::Handler<ActionType, Self::State>,
 		ActionType: 'static;
 
-	fn build(self) -> Router<AxumApplicationState>;
+	fn build(self) -> Router<AxumState>;
 }

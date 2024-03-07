@@ -29,29 +29,26 @@ use crate::src::features::mode::{
 	ChannelMemberDTO,
 	ModeAccessLevelClientSocketInterface,
 };
-use crate::src::features::{
-	ModeChannelAccessLevelApplicationInterface,
-	OperApplicationInterface,
-};
+use crate::src::features::{ModeChannelAccessLevelApplicationInterface, OperApplicationInterface};
 use crate::src::ChatApplication;
 
 // --------- //
 // Structure //
 // --------- //
 
-struct ModeAccessLevelHandler;
+struct ModeChannelAccessLevelHandler;
 
-pub struct ModeAccessLevelQOPHandler;
-pub struct ModeAccessLevelAOPHandler;
-pub struct ModeAccessLevelOPHandler;
-pub struct ModeAccessLevelHOPHandler;
-pub struct ModeAccessLevelVIPHandler;
+pub struct ModeChannelAccessLevelQOPHandler;
+pub struct ModeChannelAccessLevelAOPHandler;
+pub struct ModeChannelAccessLevelOPHandler;
+pub struct ModeChannelAccessLevelHOPHandler;
+pub struct ModeChannelAccessLevelVIPHandler;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl ModeAccessLevelHandler
+impl ModeChannelAccessLevelHandler
 {
 	fn update_member_access_level(
 		socket: &SocketRef,
@@ -316,18 +313,18 @@ impl ModeAccessLevelHandler
 	}
 }
 
-impl ModeAccessLevelQOPHandler
+impl ModeChannelAccessLevelQOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "QOP";
 	pub const UNSET_COMMAND_NAME: &'static str = "DEQOP";
 
-	pub fn handle(
+	pub fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOwnerOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::update_member_access_level(
+		ModeChannelAccessLevelHandler::update_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -337,13 +334,13 @@ impl ModeAccessLevelQOPHandler
 		);
 	}
 
-	pub fn handle_remove(
+	pub fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOwnerOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::remove_member_access_level(
+		ModeChannelAccessLevelHandler::remove_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -354,18 +351,18 @@ impl ModeAccessLevelQOPHandler
 	}
 }
 
-impl ModeAccessLevelAOPHandler
+impl ModeChannelAccessLevelAOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "AOP";
 	pub const UNSET_COMMAND_NAME: &'static str = "DEAOP";
 
-	pub fn handle(
+	pub fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelAdminOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::update_member_access_level(
+		ModeChannelAccessLevelHandler::update_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -375,13 +372,13 @@ impl ModeAccessLevelAOPHandler
 		);
 	}
 
-	pub fn handle_remove(
+	pub fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelAdminOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::remove_member_access_level(
+		ModeChannelAccessLevelHandler::remove_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -392,18 +389,18 @@ impl ModeAccessLevelAOPHandler
 	}
 }
 
-impl ModeAccessLevelOPHandler
+impl ModeChannelAccessLevelOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "OP";
 	pub const UNSET_COMMAND_NAME: &'static str = "DEOP";
 
-	pub fn handle(
+	pub fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::update_member_access_level(
+		ModeChannelAccessLevelHandler::update_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -413,13 +410,13 @@ impl ModeAccessLevelOPHandler
 		);
 	}
 
-	pub fn handle_remove(
+	pub fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::remove_member_access_level(
+		ModeChannelAccessLevelHandler::remove_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -430,18 +427,18 @@ impl ModeAccessLevelOPHandler
 	}
 }
 
-impl ModeAccessLevelHOPHandler
+impl ModeChannelAccessLevelHOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "HOP";
 	pub const UNSET_COMMAND_NAME: &'static str = "DEHOP";
 
-	pub fn handle(
+	pub fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelHalfOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::update_member_access_level(
+		ModeChannelAccessLevelHandler::update_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -451,13 +448,13 @@ impl ModeAccessLevelHOPHandler
 		);
 	}
 
-	pub fn handle_remove(
+	pub fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelHalfOperatorCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::remove_member_access_level(
+		ModeChannelAccessLevelHandler::remove_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -468,18 +465,18 @@ impl ModeAccessLevelHOPHandler
 	}
 }
 
-impl ModeAccessLevelVIPHandler
+impl ModeChannelAccessLevelVIPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "VIP";
 	pub const UNSET_COMMAND_NAME: &'static str = "DEVIP";
 
-	pub fn handle(
+	pub fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelVipCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::update_member_access_level(
+		ModeChannelAccessLevelHandler::update_member_access_level(
 			&socket,
 			app,
 			&data.channel,
@@ -489,13 +486,13 @@ impl ModeAccessLevelVIPHandler
 		);
 	}
 
-	pub fn handle_remove(
+	pub fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelVipCommandFormData>,
 	)
 	{
-		ModeAccessLevelHandler::remove_member_access_level(
+		ModeChannelAccessLevelHandler::remove_member_access_level(
 			&socket,
 			app,
 			&data.channel,

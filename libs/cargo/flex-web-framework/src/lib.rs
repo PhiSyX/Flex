@@ -19,13 +19,16 @@ mod server;
 pub mod settings;
 pub mod types;
 
-pub use axum::{Extension, Router};
+pub use axum::Extension;
 
 pub use self::extension::*;
 pub use self::interface::*;
-pub use self::server::ServerState as AxumApplicationState;
+pub use self::server::ServerState as AxumState;
+pub use self::settings::Config;
 
 // ---- //
 // Type //
 // ---- //
+
 pub type AxumApplication<E = (), C = ()> = lexa_kernel::Kernel<adapter::Adapter<E, C>, E, C>;
+pub type AxumRouter = axum::Router<AxumState>;

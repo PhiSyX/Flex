@@ -27,36 +27,36 @@ pub trait Feature
 
 	fn register_services(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}
 
 	fn register_extensions(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}
 
 	fn register_layers(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}
 
 	fn register_middlewares(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}
@@ -76,36 +76,36 @@ pub trait AsyncFeature
 
 	async fn register_services(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}
 
 	async fn register_extensions(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}
 
 	async fn register_layers(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}
 
 	async fn register_middlewares(
 		_config: &crate::settings::Config<Self::Config>,
-		_state: &crate::AxumApplicationState,
-		router: crate::Router<crate::AxumApplicationState>,
-	) -> crate::Router<crate::AxumApplicationState>
+		_state: &crate::AxumState,
+		router: crate::AxumRouter,
+	) -> crate::AxumRouter
 	{
 		router
 	}

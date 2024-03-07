@@ -12,14 +12,7 @@ use console::style;
 use tower_http::cors::CorsLayer;
 
 use crate::settings::Config;
-use crate::{
-	AsyncFeature,
-	AxumApplication,
-	AxumApplicationState,
-	Feature,
-	FeatureConfig,
-	RouterInterface,
-};
+use crate::{AsyncFeature, AxumApplication, AxumState, Feature, FeatureConfig, RouterInterface};
 
 // --------- //
 // Interface //
@@ -65,7 +58,7 @@ impl<E, C> ApplicationFeatureExtension for AxumApplication<E, C>
 
 		let router_collection = <F::Router as RouterInterface>::routes();
 
-		let mut scoped_router = axum::Router::<AxumApplicationState>::new();
+		let mut scoped_router = axum::Router::<AxumState>::new();
 
 		for router in router_collection.all() {
 			scoped_router = scoped_router.merge(router);
@@ -138,7 +131,7 @@ impl<E, C> AsyncApplicationFeatureExtension for AxumApplication<E, C>
 
 		let router_collection = <F::Router as RouterInterface>::routes();
 
-		let mut scoped_router = axum::Router::<AxumApplicationState>::new();
+		let mut scoped_router = axum::Router::<AxumState>::new();
 
 		for router in router_collection.all() {
 			scoped_router = scoped_router.merge(router);

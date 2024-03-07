@@ -18,20 +18,18 @@ use crate::src::ChatApplication;
 // Structure //
 // --------- //
 
-pub struct BanHandler;
-pub struct BanExHandler;
-pub struct UnbanHandler;
-pub struct UnbanExHandler;
+pub struct ModeChannelAccessControlBanHandler;
+pub struct ModeChannelAccessControlBanExceptionHandler;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl BanHandler
+impl ModeChannelAccessControlBanHandler
 {
-	pub const COMMAND_NAME: &'static str = "BAN";
+	pub const SET_COMMAND_NAME: &'static str = "BAN";
 
-	pub fn handle(
+	pub fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<BanCommandFormData>,
@@ -74,11 +72,11 @@ impl BanHandler
 	}
 }
 
-impl UnbanHandler
+impl ModeChannelAccessControlBanHandler
 {
-	pub const COMMAND_NAME: &'static str = "UNBAN";
+	pub const UNSET_COMMAND_NAME: &'static str = "UNBAN";
 
-	pub fn handle(
+	pub fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UnbanCommandFormData>,
@@ -121,11 +119,11 @@ impl UnbanHandler
 	}
 }
 
-impl BanExHandler
+impl ModeChannelAccessControlBanExceptionHandler
 {
-	pub const COMMAND_NAME: &'static str = "BANEX";
+	pub const SET_COMMAND_NAME: &'static str = "BANEX";
 
-	pub async fn handle(
+	pub async fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<BanCommandFormData>,
@@ -170,11 +168,11 @@ impl BanExHandler
 	}
 }
 
-impl UnbanExHandler
+impl ModeChannelAccessControlBanExceptionHandler
 {
-	pub const COMMAND_NAME: &'static str = "UNBANEX";
+	pub const UNSET_COMMAND_NAME: &'static str = "UNBANEX";
 
-	pub async fn handle(
+	pub async fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UnbanCommandFormData>,

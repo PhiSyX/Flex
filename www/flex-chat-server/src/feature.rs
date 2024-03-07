@@ -8,11 +8,48 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::Feature;
+use flex_web_framework::{AxumState, Feature};
+use socketioxide::extract::{SocketRef, State, TryData};
 
 use super::features::*;
 use super::{routes, sessions};
 use crate::config;
+
+// ----- //
+// Macro //
+// ----- //
+
+macro_rules! handlers {
+	(
+		$socket:expr,
+
+		$( + use $struct_handler:tt ; )*
+	) => {
+		$(
+			$socket.on(
+				$struct_handler::COMMAND_NAME,
+				$struct_handler::handle
+			);
+		)*
+	};
+
+	(
+		$socket:expr,
+
+		$( -/+ use $struct_handler:tt ; )*
+	) => {
+		$(
+			$socket.on(
+				$struct_handler::SET_COMMAND_NAME,
+				$struct_handler::handle_set
+			);
+			$socket.on(
+				$struct_handler::UNSET_COMMAND_NAME,
+				$struct_handler::handle_unset
+			);
+		)*
+	};
+}
 
 // --------- //
 // Structure //
@@ -37,97 +74,61 @@ impl Feature for ChatApplication
 	const NAME: &'static str = "ChatApplication";
 
 	fn register_services(
-		_config: &flex_web_framework::settings::Config<Self::Config>,
-		server_state: &flex_web_framework::AxumApplicationState,
-		router: flex_web_framework::Router<flex_web_framework::AxumApplicationState>,
-	) -> flex_web_framework::Router<flex_web_framework::AxumApplicationState>
+		_config: &flex_web_framework::Config<Self::Config>,
+		axum_state: &flex_web_framework::AxumState,
+		router: flex_web_framework::AxumRouter,
+	) -> flex_web_framework::AxumRouter
 	{
 		let (layer, io) = socketioxide::SocketIo::builder()
 			.max_buffer_size(1024)
-			.with_state(server_state.clone())
+			.with_state(axum_state.clone())
 			.with_state(Self::default())
 			.build_layer();
 
 		io.ns(
 			"/",
-			|socket: socketioxide::extract::SocketRef,
-			 server_state: socketioxide::extract::State<
-				flex_web_framework::AxumApplicationState,
-			>,
-			 state: socketioxide::extract::State<ChatApplication>,
-			 data: socketioxide::extract::TryData<RememberUserFormData>| {
+			|socket: SocketRef,
+			 server_state: State<AxumState>,
+			 state: State<ChatApplication>,
+			 data: TryData<RememberUserFormData>| {
 				ConnectionRegistrationHandler::handle_connect(&socket, server_state, state, data);
 
-				socket.on(AwayHandler::COMMAND_NAME, AwayHandler::handle);
-				socket.on(InviteHandler::COMMAND_NAME, InviteHandler::handle);
-				socket.on(JoinHandler::COMMAND_NAME, JoinHandler::handle);
-				socket.on(KickHandler::COMMAND_NAME, KickHandler::handle);
-				socket.on(KillHandler::COMMAND_NAME, KillHandler::handle);
-				socket.on(ListHandler::COMMAND_NAME, ListHandler::handle);
-				socket.on(NickHandler::COMMAND_NAME, NickHandler::handle);
-				socket.on(NoticeHandler::COMMAND_NAME, NoticeHandler::handle);
-				socket.on(OperHandler::COMMAND_NAME, OperHandler::handle);
-				socket.on(PartHandler::COMMAND_NAME, PartHandler::handle);
-				socket.on(PrivmsgHandler::COMMAND_NAME, PrivmsgHandler::handle);
-				socket.on(PubmsgHandler::COMMAND_NAME, PubmsgHandler::handle);
-				socket.on(QuitHandler::COMMAND_NAME, QuitHandler::handle);
-				socket.on(SajoinHandler::COMMAND_NAME, SajoinHandler::handle);
-				socket.on(SapartHandler::COMMAND_NAME, SapartHandler::handle);
-				socket.on(SilenceHandler::COMMAND_NAME, SilenceHandler::handle);
-				socket.on(TopicHandler::COMMAND_NAME, TopicHandler::handle);
-
-				/* Channel Access Level */
-				socket.on(BanHandler::COMMAND_NAME, BanHandler::handle);
-				socket.on(UnbanHandler::COMMAND_NAME, UnbanHandler::handle);
-				socket.on(BanExHandler::COMMAND_NAME, BanExHandler::handle);
-				socket.on(UnbanExHandler::COMMAND_NAME, UnbanExHandler::handle);
-
-				/* Channel Access Level */
-				socket.on(
-					ModeAccessLevelQOPHandler::SET_COMMAND_NAME,
-					ModeAccessLevelQOPHandler::handle,
-				);
-				socket.on(
-					ModeAccessLevelQOPHandler::UNSET_COMMAND_NAME,
-					ModeAccessLevelQOPHandler::handle_remove,
-				);
-				socket.on(
-					ModeAccessLevelAOPHandler::SET_COMMAND_NAME,
-					ModeAccessLevelAOPHandler::handle,
-				);
-				socket.on(
-					ModeAccessLevelAOPHandler::UNSET_COMMAND_NAME,
-					ModeAccessLevelAOPHandler::handle_remove,
-				);
-				socket.on(
-					ModeAccessLevelOPHandler::SET_COMMAND_NAME,
-					ModeAccessLevelOPHandler::handle,
-				);
-				socket.on(
-					ModeAccessLevelOPHandler::UNSET_COMMAND_NAME,
-					ModeAccessLevelOPHandler::handle_remove,
-				);
-				socket.on(
-					ModeAccessLevelHOPHandler::SET_COMMAND_NAME,
-					ModeAccessLevelHOPHandler::handle,
-				);
-				socket.on(
-					ModeAccessLevelHOPHandler::UNSET_COMMAND_NAME,
-					ModeAccessLevelHOPHandler::handle_remove,
-				);
-				socket.on(
-					ModeAccessLevelVIPHandler::SET_COMMAND_NAME,
-					ModeAccessLevelVIPHandler::handle,
-				);
-				socket.on(
-					ModeAccessLevelVIPHandler::UNSET_COMMAND_NAME,
-					ModeAccessLevelVIPHandler::handle_remove,
+				handlers!( socket,
+					+ use AwayHandler;
+					+ use InviteHandler;
+					+ use JoinHandler;
+					+ use KickHandler;
+					+ use KillHandler;
+					+ use ListHandler;
+					+ use NickHandler;
+					+ use NoticeHandler;
+					+ use OperHandler;
+					+ use PartHandler;
+					+ use PrivmsgHandler;
+					+ use PubmsgHandler;
+					+ use QuitHandler;
+					+ use SajoinHandler;
+					+ use SapartHandler;
+					+ use SilenceHandler;
+					+ use TopicHandler;
 				);
 
 				/* Channel Modes */
-				socket.on(
-					ModeChannelSettingsHandler::COMMAND_NAME,
-					ModeChannelSettingsHandler::handle,
+				handlers!( socket,
+					+ use ModeChannelSettingsHandler;
+				);
+				/* Channel Access Control */
+				handlers!( socket,
+					-/+ use ModeChannelAccessControlBanHandler;
+					-/+ use ModeChannelAccessControlBanExceptionHandler;
+				);
+				/* Channel Access Level */
+				handlers!( socket,
+					-/+ use ModeChannelAccessLevelQOPHandler;
+					-/+ use ModeChannelAccessLevelAOPHandler;
+					-/+ use ModeChannelAccessLevelOPHandler;
+					-/+ use ModeChannelAccessLevelHOPHandler;
+					-/+ use ModeChannelAccessLevelVIPHandler;
 				);
 			},
 		);

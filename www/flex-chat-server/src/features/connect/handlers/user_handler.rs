@@ -39,7 +39,7 @@ impl UserHandler
 	/// utilisateur.
 	pub fn handle(
 		socket: SocketRef,
-		State(server_state): State<flex_web_framework::AxumApplicationState>,
+		State(server_state): State<flex_web_framework::AxumState>,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UserCommandFormData>,
 	)

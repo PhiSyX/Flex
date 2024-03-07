@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use super::{Router, RouterBuilder};
-use crate::AxumApplicationState;
+use crate::AxumState;
 
 // --------- //
 // Structure //
@@ -19,7 +19,7 @@ use crate::AxumApplicationState;
 pub struct RouterCollection
 {
 	pub(crate) global: axum::Router<()>,
-	routers: Vec<Router<AxumApplicationState>>,
+	routers: Vec<Router<AxumState>>,
 }
 
 // -------------- //
@@ -37,7 +37,7 @@ impl RouterCollection
 	}
 
 	/// Liste les routeurs.
-	pub fn all(&self) -> impl Iterator<Item = &Router<AxumApplicationState>>
+	pub fn all(&self) -> impl Iterator<Item = &Router<AxumState>>
 	{
 		self.routers.iter()
 	}

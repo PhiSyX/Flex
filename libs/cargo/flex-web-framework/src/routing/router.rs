@@ -12,7 +12,7 @@ use std::collections::HashSet;
 use std::fmt;
 
 use super::RouterBuilder;
-use crate::{http, AxumApplicationState};
+use crate::{http, AxumState};
 
 // --------- //
 // Structure //
@@ -46,9 +46,9 @@ impl<S> Router<S>
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterBuilder for Router<AxumApplicationState>
+impl RouterBuilder for Router<AxumState>
 {
-	type State = AxumApplicationState;
+	type State = AxumState;
 
 	fn path(url_path: impl ToString + fmt::Debug) -> Self
 	{
@@ -165,9 +165,9 @@ impl RouterBuilder for Router<AxumApplicationState>
 	}
 }
 
-impl From<&Router<AxumApplicationState>> for axum::Router<AxumApplicationState>
+impl From<&Router<AxumState>> for axum::Router<AxumState>
 {
-	fn from(router: &Router<AxumApplicationState>) -> Self
+	fn from(router: &Router<AxumState>) -> Self
 	{
 		Self::new().route(&router.fullpath, router.action.to_owned())
 	}

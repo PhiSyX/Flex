@@ -36,11 +36,10 @@ mod routes;
 
 mod sessions
 {
-	mod channel;
-	mod client;
-
-	pub(crate) use self::channel::*;
-	pub(crate) use self::client::*;
+	lexa_kernel::using! {
+		pub(crate) channel,
+		pub(crate) client,
+	}
 }
 
 pub use self::feature::*;
