@@ -11,7 +11,7 @@
 use std::ops;
 use std::sync::Arc;
 
-use flex_crypto::EncryptionCtor;
+use flex_crypto::HasherCtor;
 
 use crate::ExtensionInterface;
 
@@ -20,7 +20,7 @@ use crate::ExtensionInterface;
 // --------- //
 
 #[derive(Clone)]
-pub struct SecurityEncryptionService<T>
+pub struct SecurityPasswordHasherService<T>
 {
 	encryption: T,
 }
@@ -29,9 +29,9 @@ pub struct SecurityEncryptionService<T>
 // Implémentation // -> Interface
 // -------------- //
 
-impl<T> ExtensionInterface for SecurityEncryptionService<T>
+impl<T> ExtensionInterface for SecurityPasswordHasherService<T>
 where
-	T: EncryptionCtor + Clone + Send + Sync + 'static,
+	T: HasherCtor + Clone + Send + Sync + 'static,
 {
 	type Payload = Arc<str>;
 
@@ -43,7 +43,7 @@ where
 	}
 }
 
-impl<T> ops::Deref for SecurityEncryptionService<T>
+impl<T> ops::Deref for SecurityPasswordHasherService<T>
 {
 	type Target = T;
 

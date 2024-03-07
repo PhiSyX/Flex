@@ -8,10 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod argon2;
 mod interface;
 mod sha2;
 
-pub use self::argon2::Argon2Encryption;
-pub use self::interface::{Encryption, EncryptionCtor};
+pub use self::interface::{Hasher, HasherCtor};
 pub use self::sha2::SHA256;

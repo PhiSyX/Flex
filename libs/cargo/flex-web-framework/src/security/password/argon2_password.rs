@@ -8,23 +8,42 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::{Encryption, EncryptionCtor};
+use argon2::password_hash::rand_core::OsRng;
+use argon2::password_hash::SaltString;
+use argon2::{
+	Algorithm,
+	Argon2,
+	ParamsBuilder,
+	PasswordHash,
+	PasswordHasher,
+	PasswordVerifier,
+	Version,
+};
+use flex_crypto::{Hasher, HasherCtor};
+
+use crate::security::SecurityPasswordHasherService;
+
+// ---- //
+// Type //
+// ---- //
+
+pub type Argon2Password = SecurityPasswordHasherService<Argon2PasswordHasher>;
 
 // --------- //
 // Structure //
 // --------- //
 
 #[derive(Clone)]
-pub struct Argon2Encryption
+pub struct Argon2PasswordHasher
 {
 	secret: std::sync::Arc<str>,
 }
 
 // -------------- //
-// Implémentation //
+// Implémentation // -> Interface
 // -------------- //
 
-impl EncryptionCtor for Argon2Encryption
+impl HasherCtor for Argon2PasswordHasher
 {
 	fn new(secret: impl Into<std::sync::Arc<str>>) -> Self
 	{
@@ -34,27 +53,20 @@ impl EncryptionCtor for Argon2Encryption
 	}
 }
 
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl Encryption for Argon2Encryption
+impl Hasher for Argon2PasswordHasher
 {
-	type Err = Box<dyn std::error::Error + Send + Sync>;
+	type Err = argon2::password_hash::Error;
 
 	fn encrypt(&self, input: impl AsRef<str>) -> Result<String, Self::Err>
 	{
-		let config = argon2::Config {
-			variant: argon2::Variant::Argon2id,
-			thread_mode: argon2::ThreadMode::Parallel,
-			version: argon2::Version::Version13,
-			..Default::default()
-		};
-
-		let encoded =
-			argon2::hash_encoded(input.as_ref().as_bytes(), self.secret.as_bytes(), &config)?;
-
-		Ok(encoded)
+		let algorithm = Algorithm::Argon2id;
+		let version = Version::V0x13;
+		let params = ParamsBuilder::new().build()?;
+		let argon2_hasher =
+			Argon2::new_with_secret(self.secret.as_bytes(), algorithm, version, params)?;
+		let salt = SaltString::generate(&mut OsRng);
+		let encoded = argon2_hasher.hash_password(input.as_ref().as_bytes(), &salt)?;
+		Ok(encoded.to_string())
 	}
 
 	fn verify(&self, input: impl AsRef<str>) -> bool
@@ -64,10 +76,21 @@ impl Encryption for Argon2Encryption
 
 	fn cmp(&self, secret: impl AsRef<str>, input: impl AsRef<str>) -> bool
 	{
-		let Ok(b) = argon2::verify_encoded(secret.as_ref(), input.as_ref().as_bytes()) else {
+		let algorithm = Algorithm::Argon2id;
+		let version = Version::V0x13;
+		let Ok(params) = ParamsBuilder::new().build() else {
 			return false;
 		};
-
-		b
+		let Ok(argon2_hasher) =
+			Argon2::new_with_secret(self.secret.as_bytes(), algorithm, version, params)
+		else {
+			return false;
+		};
+		let Ok(password_hasher) = PasswordHash::new(secret.as_ref()) else {
+			return false;
+		};
+		argon2_hasher
+			.verify_password(input.as_ref().as_bytes(), &password_hasher)
+			.is_ok()
 	}
 }

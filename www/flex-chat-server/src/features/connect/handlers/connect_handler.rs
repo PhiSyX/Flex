@@ -10,8 +10,8 @@
 
 use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
 use flex_chat_user::{UserInterface, UserOperatorInterface};
-use flex_crypto::{Argon2Encryption, Encryption};
-use flex_web_framework::security::SecurityEncryptionService;
+use flex_crypto::Hasher;
+use flex_web_framework::security::Argon2Password;
 use flex_web_framework::types::time;
 use flex_web_framework::types::time::TimeZone;
 use socketioxide::extract::{SocketRef, State, TryData};
@@ -138,14 +138,14 @@ impl ConnectionRegistrationHandler
 			.as_deref()
 			.zip(client_socket.user().server_password_exposed())
 		{
-			let security_encryption = client_socket
+			let password_hasher = client_socket
 				.socket()
 				.req_parts()
 				.extensions
-				.get::<SecurityEncryptionService<Argon2Encryption>>()
+				.get::<Argon2Password>()
 				.expect("Le service de chiffrement Argon2.");
 
-			if !security_encryption.cmp(server_password, client_password) {
+			if !password_hasher.cmp(server_password, client_password) {
 				// FIXME(phisyx): à déplacer
 				_ = client_socket.socket().emit(
 					"ERROR",

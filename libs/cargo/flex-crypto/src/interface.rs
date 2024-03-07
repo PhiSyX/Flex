@@ -14,12 +14,12 @@ use std::sync::Arc;
 // Interface //
 // --------- //
 
-pub trait EncryptionCtor
+pub trait HasherCtor
 {
 	fn new(secret: impl Into<Arc<str>>) -> Self;
 }
 
-pub trait Encryption
+pub trait Hasher
 {
 	type Err;
 

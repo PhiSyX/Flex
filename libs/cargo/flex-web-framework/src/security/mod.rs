@@ -8,6 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod password
+{
+	mod argon2_password;
+
+	pub use self::argon2_password::*;
+}
+
 mod service;
 
+pub use self::password::*;
 pub use self::service::*;

@@ -10,8 +10,7 @@
 
 use std::process;
 
-use flex_crypto::Argon2Encryption;
-use flex_web_framework::security::SecurityEncryptionService;
+use flex_web_framework::security::Argon2Password;
 use flex_web_framework::ApplicationCookieLayerExtension;
 use lexa_kernel::{
 	ApplicationCLIExtension,
@@ -72,7 +71,7 @@ async fn main() -> impl process::Termination
 		use flex_web_framework::ApplicationExtExtension;
 		application
 			.use_cookie_layer()
-			.extension_with::<SecurityEncryptionService<Argon2Encryption>>(app_secret_key)
+			.extension_with::<Argon2Password>(app_secret_key)
 	};
 
 	// 4. Run

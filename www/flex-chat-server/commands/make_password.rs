@@ -11,8 +11,10 @@
 use std::fmt;
 
 use flex_cli::style;
-use flex_crypto::{Encryption, EncryptionCtor};
+use flex_crypto::Hasher;
+use flex_web_framework::security::Argon2Password;
 use flex_web_framework::types::secret;
+use flex_web_framework::ExtensionInterface;
 use lexa_logger::layout;
 
 // --------- //
@@ -74,12 +76,13 @@ impl MakePassword
 
 				let app_secret_key = self.app_secret.as_ref().unwrap();
 
-				let argon2 = flex_crypto::Argon2Encryption::new(app_secret_key.expose().as_str());
+				let exposed_secret = app_secret_key.expose();
+				let argon2 = Argon2Password::new(exposed_secret.as_str().into());
 				let encoded = argon2
 					.encrypt(self.password.expose())
 					.expect("Impossible d'encoder le mot de passe avec l'algorithme Argon2.");
 
-				display_output::<flex_crypto::Argon2Encryption>(encoded);
+				display_output::<Argon2Password>(encoded);
 			}
 		}
 

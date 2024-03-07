@@ -9,15 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat_client::ClientSocketInterface;
-use flex_crypto::{Argon2Encryption, Encryption};
-use flex_web_framework::security::SecurityEncryptionService;
+use flex_crypto::Hasher;
+use flex_web_framework::security::Argon2Password;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::config::flex::flex_config;
-use crate::src::features::oper::{
-	OperClientSocketErrorRepliesInterface,
-	OperCommandFormData,
-};
+use crate::src::features::oper::{OperClientSocketErrorRepliesInterface, OperCommandFormData};
 use crate::src::features::OperApplicationInterface;
 use crate::src::ChatApplication;
 
@@ -61,13 +58,13 @@ impl OperHandler
 			return;
 		};
 
-		let security_encryption = socket
+		let password_hasher = socket
 			.req_parts()
 			.extensions
-			.get::<SecurityEncryptionService<Argon2Encryption>>()
+			.get::<Argon2Password>()
 			.expect("Le service de chiffrement Argon2.");
 
-		if !security_encryption.cmp(operator.password.expose(), data.password.expose()) {
+		if !password_hasher.cmp(operator.password.expose(), data.password.expose()) {
 			client_socket.send_err_passwdmismatch();
 			return;
 		}
