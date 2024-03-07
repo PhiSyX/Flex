@@ -14,4 +14,4 @@ mod sha2;
 
 pub use self::argon2::Argon2Encryption;
 pub use self::interface::{Encryption, EncryptionCtor};
-pub use self::sha2::SHA2;
+pub use self::sha2::SHA256;

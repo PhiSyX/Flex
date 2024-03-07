@@ -11,7 +11,7 @@
 use std::borrow::Cow;
 use std::{fmt, net};
 
-use flex_crypto::SHA2;
+use flex_crypto::SHA256;
 use flex_secret::Secret;
 
 // --------- //
@@ -82,7 +82,7 @@ impl Host
 				if part.contains(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) {
 					let parsed: Result<u8, _> = part.parse();
 					if parsed.is_err() {
-						return Cow::Owned(part.sha2_sliced(0..part.len()));
+						return Cow::Owned(part.sha256_sliced(0..part.len()));
 					}
 				}
 				Cow::Borrowed(part)

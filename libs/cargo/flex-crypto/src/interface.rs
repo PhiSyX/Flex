@@ -8,13 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 // --------- //
 // Interface //
 // --------- //
 
 pub trait EncryptionCtor
 {
-	fn new(secret: impl ToString) -> Self;
+	fn new(secret: impl Into<Arc<str>>) -> Self;
 }
 
 pub trait Encryption

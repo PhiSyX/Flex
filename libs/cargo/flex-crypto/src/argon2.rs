@@ -17,7 +17,7 @@ use crate::{Encryption, EncryptionCtor};
 #[derive(Clone)]
 pub struct Argon2Encryption
 {
-	secret: String,
+	secret: std::sync::Arc<str>,
 }
 
 // -------------- //
@@ -26,10 +26,10 @@ pub struct Argon2Encryption
 
 impl EncryptionCtor for Argon2Encryption
 {
-	fn new(secret: impl ToString) -> Self
+	fn new(secret: impl Into<std::sync::Arc<str>>) -> Self
 	{
 		Self {
-			secret: secret.to_string(),
+			secret: secret.into(),
 		}
 	}
 }

@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use std::ops;
+use std::sync::Arc;
 
 use flex_crypto::EncryptionCtor;
 
@@ -32,7 +33,7 @@ impl<T> ExtensionInterface for SecurityEncryptionService<T>
 where
 	T: EncryptionCtor + Clone + Send + Sync + 'static,
 {
-	type Payload = String;
+	type Payload = Arc<str>;
 
 	fn new(payload: Self::Payload) -> Self
 	{

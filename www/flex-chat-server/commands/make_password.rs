@@ -74,7 +74,7 @@ impl MakePassword
 
 				let app_secret_key = self.app_secret.as_ref().unwrap();
 
-				let argon2 = flex_crypto::Argon2Encryption::new(app_secret_key.expose());
+				let argon2 = flex_crypto::Argon2Encryption::new(app_secret_key.expose().as_str());
 				let encoded = argon2
 					.encrypt(self.password.expose())
 					.expect("Impossible d'encoder le mot de passe avec l'algorithme Argon2.");

@@ -16,7 +16,7 @@ use std::collections::HashSet;
 use std::net;
 
 use flex_chat_user::{Flag, Mode, User, UserFlagInterface, UserInterface};
-use flex_crypto::SHA2;
+use flex_crypto::SHA256;
 
 pub use self::interface::*;
 pub use self::origin::*;
@@ -62,7 +62,7 @@ impl Client
 	pub fn new(ip: net::IpAddr, socket_id: socketioxide::socket::Sid) -> Self
 	{
 		let client_id = uuid::Uuid::new_v4();
-		let token = format!("{}:{}:{}", client_id, socket_id, ip).sha2();
+		let token = format!("{}:{}:{}", client_id, socket_id, ip).sha256();
 		Self {
 			socket_id: Some(socket_id),
 			connected: Default::default(),

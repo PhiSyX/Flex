@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
 use flex_web_framework::types::secret;
 use lexa_kernel::settings::KernelSettings;
 use lexa_kernel::{process, ApplicationEnvInterface};
@@ -23,7 +25,7 @@ use lexa_kernel::{process, ApplicationEnvInterface};
 pub struct flex_env
 {
 	/// Clé secrete d'application.
-	pub app_secret: secret::Secret<String>,
+	pub app_secret: secret::Secret<Arc<str>>,
 }
 
 // -------------- //
