@@ -15,29 +15,28 @@ use crate::AxumState;
 // Structure //
 // --------- //
 
-#[derive(Default)]
-pub struct RouterCollection
+pub struct RouterCollection<S>
 {
 	pub(crate) global: axum::Router<()>,
-	routers: Vec<Router<AxumState>>,
+	routers: Vec<Router<AxumState<S>>>,
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl RouterCollection
+impl<S> RouterCollection<S>
 {
 	/// Ajoute un router à la liste des routeurs.
 	#[allow(clippy::should_implement_trait)]
-	pub fn add(mut self, builder: impl RouterBuilder) -> Self
+	pub fn add(mut self, builder: impl RouterBuilder<State = S>) -> Self
 	{
 		self.routers.push(builder.build());
 		self
 	}
 
 	/// Liste les routeurs.
-	pub fn all(&self) -> impl Iterator<Item = &Router<AxumState>>
+	pub fn all(&self) -> impl Iterator<Item = &Router<AxumState<S>>>
 	{
 		self.routers.iter()
 	}
@@ -58,5 +57,20 @@ impl RouterCollection
 	pub fn merge(&mut self, axum_router: axum::Router<()>)
 	{
 		self.global = self.global.clone().merge(axum_router);
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<S> Default for RouterCollection<S>
+{
+	fn default() -> Self
+	{
+		RouterCollection {
+			global: Default::default(),
+			routers: Default::default(),
+		}
 	}
 }

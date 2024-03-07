@@ -24,7 +24,7 @@ use crate::server;
 // Type //
 // ---- //
 
-pub type Adapter<E, C> = server::Server<E, C>;
+pub type Adapter<S, E, C> = server::Server<S, E, C>;
 
 // -------------- //
 // Implémentation // -> Interface
@@ -35,7 +35,7 @@ impl ApplicationAdapterSettingsInterface for server::Settings
 	const FILENAME: &'static str = Self::FILENAME;
 }
 
-impl<E, C> ApplicationAdapterInterface for Adapter<E, C>
+impl<S, E, C> ApplicationAdapterInterface for Adapter<S, E, C>
 {
 	type Settings = server::Settings;
 
@@ -51,7 +51,7 @@ impl<E, C> ApplicationAdapterInterface for Adapter<E, C>
 	}
 }
 
-impl<E, C> AsyncApplicationStartupExtension for Adapter<E, C>
+impl<S, E, C> AsyncApplicationStartupExtension for Adapter<S, E, C>
 {
 	async fn run(mut self)
 	{
@@ -61,7 +61,7 @@ impl<E, C> AsyncApplicationStartupExtension for Adapter<E, C>
 	}
 }
 
-impl<E, C> ApplicationAdapterEnvInterface for Adapter<E, C>
+impl<S, E, C> ApplicationAdapterEnvInterface for Adapter<S, E, C>
 where
 	E: ApplicationEnvInterface,
 {
@@ -81,7 +81,7 @@ where
 	}
 }
 
-impl<E, C> ApplicationAdapterCLIInterface for Adapter<E, C>
+impl<S, E, C> ApplicationAdapterCLIInterface for Adapter<S, E, C>
 where
 	C: ApplicationCLIInterface,
 {

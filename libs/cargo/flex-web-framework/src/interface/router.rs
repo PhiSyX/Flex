@@ -14,14 +14,14 @@ use crate::routing::RouterCollection;
 // Interface //
 // --------- //
 
-pub trait RouterInterface
+pub trait RouterInterface<S>
 {
 	/// Collection de routeurs.
-	fn collection() -> RouterCollection
+	fn collection() -> RouterCollection<S>
 	{
-		RouterCollection::default()
+		RouterCollection::<S>::default()
 	}
 
 	/// Alias vers la collection.
-	fn routes() -> RouterCollection;
+	fn routes() -> RouterCollection<S>;
 }

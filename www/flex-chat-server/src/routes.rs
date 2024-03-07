@@ -14,6 +14,7 @@ use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
 use flex_web_framework::RouterInterface;
 
 use super::features::TokenController;
+use crate::FlexState;
 
 // --------- //
 // Structure //
@@ -36,9 +37,9 @@ pub enum ChatRouteID
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterInterface for ChatRouter
+impl RouterInterface<FlexState> for ChatRouter
 {
-	fn routes() -> RouterCollection
+	fn routes() -> RouterCollection<FlexState>
 	{
 		Self::collection()
 			.add(Router::path(ChatRouteID::Home).get(|| async { "Chat Home View" }))

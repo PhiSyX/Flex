@@ -49,7 +49,7 @@ pub trait AsyncApplicationExtExtension: Sized
 // Implémentation //
 // -------------- //
 
-impl<E, C> ApplicationExtExtension for AxumApplication<E, C>
+impl<S, E, C> ApplicationExtExtension for AxumApplication<S, E, C>
 {
 	fn extension<Ext>(self) -> Self
 	where
@@ -76,7 +76,7 @@ impl<E, C> ApplicationExtExtension for AxumApplication<E, C>
 	}
 }
 
-impl<E, C> AsyncApplicationExtExtension for AxumApplication<E, C>
+impl<S, E, C> AsyncApplicationExtExtension for AxumApplication<S, E, C>
 {
 	async fn extension<Ext>(self) -> Self
 	where

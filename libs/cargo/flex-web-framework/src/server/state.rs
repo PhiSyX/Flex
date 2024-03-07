@@ -12,18 +12,18 @@
 // Structure //
 // --------- //
 
-#[derive(Default)]
 #[derive(Clone)]
-pub struct ServerState
+pub struct ServerState<UserState>
 {
 	cookie_key: Option<tower_cookies::Key>,
+	user: Option<UserState>,
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl ServerState
+impl<S> ServerState<S>
 {
 	pub fn cookie_key(&self) -> Option<&tower_cookies::Key>
 	{
@@ -42,14 +42,41 @@ impl ServerState
 	}
 }
 
+impl<S> ServerState<S>
+{
+	pub fn state(&self) -> &S
+	{
+		self.user.as_ref().expect(
+			"Le state n'est pas définit. Vérifier que `ServerState#set_state` est bien appelée \
+			 avant.",
+		)
+	}
+
+	pub fn set_state(&mut self, state: S)
+	{
+		self.user.replace(state);
+	}
+}
+
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl axum::extract::FromRef<ServerState> for tower_cookies::Key
+impl<S> axum::extract::FromRef<ServerState<S>> for tower_cookies::Key
 {
-	fn from_ref(state: &ServerState) -> Self
+	fn from_ref(state: &ServerState<S>) -> Self
 	{
 		state.cookie_key.clone().expect("Clé de cookie.")
+	}
+}
+
+impl<S> Default for ServerState<S>
+{
+	fn default() -> Self
+	{
+		Self {
+			cookie_key: Default::default(),
+			user: Default::default(),
+		}
 	}
 }

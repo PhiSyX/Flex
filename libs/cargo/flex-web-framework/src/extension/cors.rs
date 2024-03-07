@@ -28,7 +28,7 @@ pub trait ApplicationCorsLayerExtension: Sized
 // Implémentation //
 // -------------- //
 
-impl<E, C> ApplicationCorsLayerExtension for AxumApplication<E, C>
+impl<S, E, C> ApplicationCorsLayerExtension for AxumApplication<S, E, C>
 {
 	fn use_cors_layer(mut self) -> Self
 	{

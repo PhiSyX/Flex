@@ -8,16 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::{ClientInterface, ClientSocketInterface};
 use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use flex_chat_client::{ClientInterface, ClientSocketInterface};
 use crate::src::features::connect::{
 	ConnectClientSocketErrorRepliesInterface,
 	UserCommandFormData,
 };
 use crate::src::features::ConnectionRegistrationHandler;
 use crate::src::ChatApplication;
+use crate::FlexApplicationState;
 
 // --------- //
 // Structure //
@@ -39,7 +40,7 @@ impl UserHandler
 	/// utilisateur.
 	pub fn handle(
 		socket: SocketRef,
-		State(server_state): State<flex_web_framework::AxumState>,
+		State(server_state): State<FlexApplicationState>,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UserCommandFormData>,
 	)

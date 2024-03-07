@@ -30,5 +30,6 @@ pub use self::settings::Config;
 // Type //
 // ---- //
 
-pub type AxumApplication<E = (), C = ()> = lexa_kernel::Kernel<adapter::Adapter<E, C>, E, C>;
-pub type AxumRouter = axum::Router<AxumState>;
+pub type AxumApplication<S = (), E = (), C = ()> =
+	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
+pub type AxumRouter<S> = axum::Router<AxumState<S>>;

@@ -46,9 +46,11 @@ impl<S> Router<S>
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterBuilder for Router<AxumState>
+impl<S> RouterBuilder for Router<AxumState<S>>
+where
+	S: Clone + Send + Sync + 'static,
 {
-	type State = AxumState;
+	type State = S;
 
 	fn path(url_path: impl ToString + fmt::Debug) -> Self
 	{
@@ -62,7 +64,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn any<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = axum::routing::any(action);
@@ -81,7 +83,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn delete<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.delete(action);
@@ -91,7 +93,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn get<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.get(action);
@@ -101,7 +103,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn head<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.head(action);
@@ -111,7 +113,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn options<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.options(action);
@@ -121,7 +123,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn patch<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.patch(action);
@@ -131,7 +133,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn post<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.post(action);
@@ -141,7 +143,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn put<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.put(action);
@@ -151,7 +153,7 @@ impl RouterBuilder for Router<AxumState>
 
 	fn trace<Action, ActionType>(mut self, action: Action) -> Self
 	where
-		Action: axum::handler::Handler<ActionType, Self::State>,
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static,
 	{
 		self.action = self.action.trace(action);
@@ -159,15 +161,17 @@ impl RouterBuilder for Router<AxumState>
 		self
 	}
 
-	fn build(self) -> Router<Self::State>
+	fn build(self) -> Router<AxumState<Self::State>>
 	{
 		self
 	}
 }
 
-impl From<&Router<AxumState>> for axum::Router<AxumState>
+impl<S> From<&Router<AxumState<S>>> for axum::Router<AxumState<S>>
+where
+	S: Clone + Send + Sync + 'static,
 {
-	fn from(router: &Router<AxumState>) -> Self
+	fn from(router: &Router<AxumState<S>>) -> Self
 	{
 		Self::new().route(&router.fullpath, router.action.to_owned())
 	}

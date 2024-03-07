@@ -19,6 +19,7 @@ use crate::src::features::{
 	NickCommandFormData,
 };
 use crate::src::ChatApplication;
+use crate::FlexApplicationState;
 
 // --------- //
 // Structure //
@@ -36,7 +37,7 @@ impl UNickHandler
 
 	pub fn handle(
 		socket: SocketRef,
-		State(server_state): State<flex_web_framework::AxumState>,
+		State(server_state): State<FlexApplicationState>,
 		State(app): State<ChatApplication>,
 		Data(data): Data<NickCommandFormData>,
 	)

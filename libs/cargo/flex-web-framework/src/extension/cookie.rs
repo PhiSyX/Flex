@@ -28,7 +28,7 @@ pub trait ApplicationCookieLayerExtension: Sized
 // Implémentation //
 // -------------- //
 
-impl<E, C> ApplicationCookieLayerExtension for AxumApplication<E, C>
+impl<S, E, C> ApplicationCookieLayerExtension for AxumApplication<S, E, C>
 {
 	fn define_cookie_key(mut self, key: impl TryInto<tower_cookies::Key>) -> Self
 	{

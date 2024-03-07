@@ -8,12 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::{AxumState, Feature};
+use flex_web_framework::Feature;
 use socketioxide::extract::{SocketRef, State, TryData};
 
 use super::features::*;
 use super::{routes, sessions};
-use crate::config;
+use crate::{config, FlexApplicationState, FlexState};
 
 // ----- //
 // Macro //
@@ -70,14 +70,15 @@ impl Feature for ChatApplication
 {
 	type Config = config::flex::flex_config;
 	type Router = routes::ChatRouter;
+	type State = FlexState;
 
 	const NAME: &'static str = "ChatApplication";
 
 	fn register_services(
 		_config: &flex_web_framework::Config<Self::Config>,
-		axum_state: &flex_web_framework::AxumState,
-		router: flex_web_framework::AxumRouter,
-	) -> flex_web_framework::AxumRouter
+		axum_state: &mut FlexApplicationState,
+		router: flex_web_framework::AxumRouter<Self::State>,
+	) -> flex_web_framework::AxumRouter<Self::State>
 	{
 		let (layer, io) = socketioxide::SocketIo::builder()
 			.max_buffer_size(1024)
@@ -88,7 +89,7 @@ impl Feature for ChatApplication
 		io.ns(
 			"/",
 			|socket: SocketRef,
-			 server_state: State<AxumState>,
+			 server_state: State<FlexApplicationState>,
 			 state: State<ChatApplication>,
 			 data: TryData<RememberUserFormData>| {
 				ConnectionRegistrationHandler::handle_connect(&socket, server_state, state, data);
@@ -132,6 +133,8 @@ impl Feature for ChatApplication
 				);
 			},
 		);
+
+		axum_state.set_state(FlexState { socket_io: io });
 
 		router.layer(layer)
 	}

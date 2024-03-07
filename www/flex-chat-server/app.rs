@@ -28,4 +28,40 @@ pub use self::src::ChatApplication;
 // Type //
 // ---- //
 
-pub type Flex = flex_web_framework::AxumApplication<config::env::flex_env, commands::flex_clix>;
+pub type Flex =
+	flex_web_framework::AxumApplication<FlexState, config::env::flex_env, commands::flex_clix>;
+pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
+
+// --------- //
+// Structure //
+// --------- //
+
+#[derive(Clone)]
+pub struct FlexState
+{
+	socket_io: socketioxide::SocketIo,
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl FlexState
+{
+	pub fn socket_io(&self) -> &socketioxide::SocketIo
+	{
+		&self.socket_io
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl flex_web_framework::http::request::FromRef<FlexApplicationState> for FlexState
+{
+	fn from_ref(axum_state: &FlexApplicationState) -> Self
+	{
+		axum_state.state().clone()
+	}
+}

@@ -19,22 +19,22 @@ use crate::{AsyncFeature, AxumApplication, AxumState, Feature, FeatureConfig, Ro
 // --------- //
 
 /// Extension d'application Feature
-pub trait ApplicationFeatureExtension: Sized
+pub trait ApplicationFeatureExtension<UserState>: Sized
 {
 	/// Applique une feature au serveur.
 	fn feature<F>(self) -> Self
 	where
-		F: Feature;
+		F: Feature<State = UserState>;
 }
 
 /// Extension d'application Feature dans un contexte asynchrone.
-pub trait AsyncApplicationFeatureExtension: Sized
+pub trait AsyncApplicationFeatureExtension<UserState>: Sized
 {
 	/// Applique une feature asynchrone au serveur.
 	#[allow(async_fn_in_trait)]
 	async fn feature<F>(self) -> Self
 	where
-		F: AsyncFeature;
+		F: AsyncFeature<State = UserState>;
 }
 
 // -------------- //
@@ -48,17 +48,19 @@ where
 	const FILENAME: &'static str = U::FILENAME;
 }
 
-impl<E, C> ApplicationFeatureExtension for AxumApplication<E, C>
+impl<S, E, C> ApplicationFeatureExtension<S> for AxumApplication<S, E, C>
+where
+	S: Clone + Send + Sync + 'static,
 {
 	fn feature<F>(mut self) -> Self
 	where
-		F: Feature,
+		F: Feature<State = S>,
 	{
 		let config_filename = <F::Config as FeatureConfig>::FILENAME;
 
-		let router_collection = <F::Router as RouterInterface>::routes();
+		let router_collection = <F::Router as RouterInterface<F::State>>::routes();
 
-		let mut scoped_router = axum::Router::<AxumState>::new();
+		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 
 		for router in router_collection.all() {
 			scoped_router = scoped_router.merge(router);
@@ -89,11 +91,14 @@ impl<E, C> ApplicationFeatureExtension for AxumApplication<E, C>
 			}
 		};
 
-		let state = &self.application_adapter.state;
-		scoped_router = F::register_services(&config, state, scoped_router);
-		scoped_router = F::register_extensions(&config, state, scoped_router);
-		scoped_router = F::register_layers(&config, state, scoped_router);
-		scoped_router = F::register_middlewares(&config, state, scoped_router);
+		scoped_router =
+			F::register_services(&config, &mut self.application_adapter.state, scoped_router);
+		scoped_router =
+			F::register_extensions(&config, &mut self.application_adapter.state, scoped_router);
+		scoped_router =
+			F::register_layers(&config, &mut self.application_adapter.state, scoped_router);
+		scoped_router =
+			F::register_middlewares(&config, &mut self.application_adapter.state, scoped_router);
 
 		if let Some(cors) = config.cors.as_ref() {
 			let cors_layer: CorsLayer = cors.into();
@@ -114,24 +119,26 @@ impl<E, C> ApplicationFeatureExtension for AxumApplication<E, C>
 
 		self.application_adapter
 			.router
-			.merge(scoped_router.with_state(state.clone()));
+			.merge(scoped_router.with_state(self.application_adapter.state.clone()));
 		self.application_adapter.router.extends(router_collection);
 
 		self
 	}
 }
 
-impl<E, C> AsyncApplicationFeatureExtension for AxumApplication<E, C>
+impl<S, E, C> AsyncApplicationFeatureExtension<S> for AxumApplication<S, E, C>
+where
+	S: Clone + Send + Sync + 'static,
 {
 	async fn feature<F>(mut self) -> Self
 	where
-		F: AsyncFeature,
+		F: AsyncFeature<State = S>,
 	{
 		let config_filename = <F::Config as FeatureConfig>::FILENAME;
 
-		let router_collection = <F::Router as RouterInterface>::routes();
+		let router_collection = <F::Router as RouterInterface<F::State>>::routes();
 
-		let mut scoped_router = axum::Router::<AxumState>::new();
+		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 
 		for router in router_collection.all() {
 			scoped_router = scoped_router.merge(router);
@@ -162,11 +169,16 @@ impl<E, C> AsyncApplicationFeatureExtension for AxumApplication<E, C>
 			}
 		};
 
-		let state = &self.application_adapter.state;
-		scoped_router = F::register_services(&config, state, scoped_router).await;
-		scoped_router = F::register_extensions(&config, state, scoped_router).await;
-		scoped_router = F::register_layers(&config, state, scoped_router).await;
-		scoped_router = F::register_middlewares(&config, state, scoped_router).await;
+		scoped_router =
+			F::register_services(&config, &mut self.application_adapter.state, scoped_router).await;
+		scoped_router =
+			F::register_extensions(&config, &mut self.application_adapter.state, scoped_router)
+				.await;
+		scoped_router =
+			F::register_layers(&config, &mut self.application_adapter.state, scoped_router).await;
+		scoped_router =
+			F::register_middlewares(&config, &mut self.application_adapter.state, scoped_router)
+				.await;
 
 		if let Some(cors) = config.cors.as_ref() {
 			let cors_layer: CorsLayer = cors.into();
@@ -187,7 +199,7 @@ impl<E, C> AsyncApplicationFeatureExtension for AxumApplication<E, C>
 
 		self.application_adapter
 			.router
-			.merge(scoped_router.with_state(state.clone()));
+			.merge(scoped_router.with_state(self.application_adapter.state.clone()));
 		self.application_adapter.router.extends(router_collection);
 
 		self

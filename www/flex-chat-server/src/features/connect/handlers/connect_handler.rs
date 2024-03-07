@@ -34,6 +34,7 @@ use crate::src::features::{
 	TokenController,
 };
 use crate::src::ChatApplication;
+use crate::FlexApplicationState;
 
 // --------- //
 // Structure //
@@ -50,7 +51,7 @@ impl ConnectionRegistrationHandler
 	/// Événement CONNECT
 	pub fn handle_connect(
 		socket: &SocketRef,
-		State(server_state): State<flex_web_framework::AxumState>,
+		State(server_state): State<FlexApplicationState>,
 		State(app): State<ChatApplication>,
 		TryData(data): TryData<RememberUserFormData>,
 	)
@@ -105,7 +106,7 @@ impl ConnectionRegistrationHandler
 
 	/// Compléter l'enregistrement d'un client.
 	pub fn complete_registration(
-		_server_state: &flex_web_framework::AxumState,
+		_server_state: &FlexApplicationState,
 		app: &ChatApplication,
 		mut client_socket: Socket,
 	) -> Option<()>

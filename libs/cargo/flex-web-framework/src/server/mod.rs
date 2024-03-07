@@ -31,7 +31,7 @@ use crate::AxumState;
 // --------- //
 
 #[non_exhaustive]
-pub struct Server<UserEnv, UserCLI>
+pub struct Server<UserState, UserEnv, UserCLI>
 {
 	/// Les variables d'environnement.
 	pub env_vars: Option<UserEnv>,
@@ -40,16 +40,16 @@ pub struct Server<UserEnv, UserCLI>
 	/// Paramètres du serveur HTTP.
 	pub settings: Settings,
 	/// Routeur du serveur HTTP.
-	pub router: RouterCollection,
+	pub router: RouterCollection<UserState>,
 	/// État global du serveur.
-	pub state: AxumState,
+	pub state: AxumState<UserState>,
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl<E, C> Server<E, C>
+impl<S, E, C> Server<S, E, C>
 {
 	pub(super) fn define_static_resources(mut self) -> Self
 	{
@@ -64,7 +64,7 @@ impl<E, C> Server<E, C>
 	}
 }
 
-impl<E, C> Server<E, C>
+impl<S, E, C> Server<S, E, C>
 {
 	/// Affiche les routes enregistrées du serveur.
 	pub(super) fn display_all_routes(&self)
@@ -101,7 +101,7 @@ impl<E, C> Server<E, C>
 	}
 }
 
-impl<E, C> Server<E, C>
+impl<S, E, C> Server<S, E, C>
 {
 	/// Démarre un serveur HTTP se basant sur des paramètres serveur.
 	pub(super) async fn launch(self) -> Result<(), ServerError>
