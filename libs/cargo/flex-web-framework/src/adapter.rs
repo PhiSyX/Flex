@@ -18,7 +18,7 @@ use lexa_kernel::{
 	AsyncApplicationStartupExtension,
 };
 
-use crate::server;
+use crate::{server, settings};
 
 // ---- //
 // Type //
@@ -30,14 +30,14 @@ pub type Adapter<S, E, C> = server::Server<S, E, C>;
 // Implémentation // -> Interface
 // -------------- //
 
-impl ApplicationAdapterSettingsInterface for server::Settings
+impl ApplicationAdapterSettingsInterface for settings::ServerSettings
 {
 	const FILENAME: &'static str = Self::FILENAME;
 }
 
 impl<S, E, C> ApplicationAdapterInterface for Adapter<S, E, C>
 {
-	type Settings = server::Settings;
+	type Settings = settings::ServerSettings;
 
 	fn new(settings: Self::Settings) -> Self
 	{

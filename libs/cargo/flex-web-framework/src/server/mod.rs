@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 mod error;
-mod settings;
 mod state;
 mod net
 {
@@ -21,9 +20,9 @@ mod net
 use console::style;
 
 pub use self::error::Error as ServerError;
-pub use self::settings::Settings;
 pub use self::state::ServerState;
 use crate::routing::RouterCollection;
+use crate::settings::ServerSettings;
 use crate::AxumState;
 
 // --------- //
@@ -38,7 +37,7 @@ pub struct Server<UserState, UserEnv, UserCLI>
 	/// Les arguments de la CLI.
 	pub cli_args: Option<UserCLI>,
 	/// Paramètres du serveur HTTP.
-	pub settings: Settings,
+	pub settings: ServerSettings,
 	/// Routeur du serveur HTTP.
 	pub router: RouterCollection<UserState>,
 	/// État global du serveur.

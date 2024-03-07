@@ -9,8 +9,10 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 mod cors;
+mod server;
 
 pub use self::cors::Settings as CORSSettings;
+pub use self::server::Settings as ServerSettings;
 
 // --------- //
 // Structure //
