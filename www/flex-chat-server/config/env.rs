@@ -40,9 +40,9 @@ impl ApplicationEnvInterface for flex_env
 	{
 		match settings.process_mode {
 			| process::ProcessMode::LOCAL => "",
-			| process::ProcessMode::DEVELOPMENT => "dev",
-			| process::ProcessMode::PRODUCTION => "prod",
-			| process::ProcessMode::TEST => "test",
+			| process::ProcessMode::DEVELOPMENT => ".dev",
+			| process::ProcessMode::PRODUCTION => ".prod",
+			| process::ProcessMode::TEST => ".test",
 		}
 	}
 }
