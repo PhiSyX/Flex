@@ -16,12 +16,8 @@ document.documentElement.dataset["scheme"] = "ice";
 
 defineOptions({
 	components: {
-		LoginView: defineAsyncComponent(
-			() => import("./views/login/LoginView.vue")
-		),
-		ChatView: defineAsyncComponent(
-			() => import("./views/chat/ChatView.vue")
-		),
+		LoginView: defineAsyncComponent(() => import("./views/login/LoginView.vue")),
+		ChatView: defineAsyncComponent(() => import("./views/chat/ChatView.vue")),
 	},
 });
 

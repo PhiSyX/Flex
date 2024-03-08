@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onActivated, ref } from "vue";
 
-import { RoomMessage } from "~/room/RoomMessage";
+import type { RoomMessage } from "~/room/RoomMessage";
 
 import RoomMessageComponent from "#/sys/room-message/RoomMessage.vue";
 
@@ -13,6 +13,8 @@ interface Props {
 	messages: Array<RoomMessage>;
 }
 interface Emits {
+	// NOTE: cette règle n'est pas concevable pour le cas présent.
+	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(evtName: "open-room", roomName: RoomID): void;
 }
 
@@ -53,8 +55,7 @@ function scrollHandler() {
 	}
 
 	containerNeedsScroll.value =
-		$root.value.clientHeight + $root.value.scrollTop + 150 >=
-		$root.value.scrollHeight;
+		$root.value.clientHeight + $root.value.scrollTop + 150 >= $root.value.scrollHeight;
 
 	scrollToBottom();
 }

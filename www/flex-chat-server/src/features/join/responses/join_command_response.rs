@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::ChannelInterface;
+use flex_chat_channel::{Channel, ChannelInterface};
 use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 use flex_chat_macro::command_response;
 
@@ -31,8 +31,10 @@ command_response! {
 
 pub trait JoinCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client la réponse liée à la commande /JOIN.
-	fn emit_join(&self, channel: &flex_chat_channel::Channel, forced: bool);
+	fn emit_join(&self, channel: &Self::Channel, forced: bool);
 }
 
 // -------------- //
@@ -41,7 +43,9 @@ pub trait JoinCommandResponseInterface: ClientSocketInterface
 
 impl<'s> JoinCommandResponseInterface for Socket<'s>
 {
-	fn emit_join(&self, channel: &flex_chat_channel::Channel, forced: bool)
+	type Channel = Channel;
+
+	fn emit_join(&self, channel: &Self::Channel, forced: bool)
 	{
 		let origin = Origin::from(self.client());
 

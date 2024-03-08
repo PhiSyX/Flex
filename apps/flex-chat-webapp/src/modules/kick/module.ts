@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+import type { Module } from "~/modules/interface";
+import type { ChatStore } from "~/store/ChatStore";
 
-import { Module } from "../interface";
 import { KickCommand } from "./command";
 import { KickHandler } from "./handler";
 

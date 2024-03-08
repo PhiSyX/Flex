@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-uikit";
 import { fuzzy_search } from "@phisyx/flex-search";
-import { ref, computed } from "vue";
+import { UiButton } from "@phisyx/flex-uikit";
+import { computed, ref } from "vue";
 
-import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
+import type { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 
 // ---- //
 // Type //
@@ -33,7 +33,7 @@ const filteredChannels = computed(() => {
 		return props.room.channels;
 	}
 	return Array.from(props.room.channels).filter((channel) =>
-		fuzzy_search(filteredChannelInput.value, channel[0]).is_some()
+		fuzzy_search(filteredChannelInput.value, channel[0]).is_some(),
 	);
 });
 

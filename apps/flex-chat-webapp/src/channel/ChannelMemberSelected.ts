@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option } from "@phisyx/flex-safety";
-import { ChannelMember } from "./ChannelMember";
+import { None, type Option } from "@phisyx/flex-safety";
+import type { ChannelMember } from "./ChannelMember";
 
 // -------------- //
 // Implémentation //

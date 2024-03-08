@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option, Some } from "@phisyx/flex-safety";
+import { None, type Option, Some } from "@phisyx/flex-safety";
 
-import { ChannelAccessLevelGroup } from "./ChannelAccessLevel";
-import { ChannelMember } from "./ChannelMember";
+import type { ChannelAccessLevelGroup } from "./ChannelAccessLevel";
+import type { ChannelMember } from "./ChannelMember";
 
 // -------------- //
 // Implémentation //

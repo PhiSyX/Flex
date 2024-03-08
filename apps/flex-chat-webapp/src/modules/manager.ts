@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Option } from "@phisyx/flex-safety";
-import { CommandInterface, ModuleInterface } from "./interface";
+import type { CommandInterface, ModuleInterface } from "./interface";
 
 export class ModuleManager {
 	private _sets: Set<() => Promise<unknown>> = new Set();

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
+import type { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 
 import Room from "#/sys/room/Room.vue";
 

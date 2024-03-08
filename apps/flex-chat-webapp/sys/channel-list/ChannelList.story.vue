@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
+
 import ChannelList from "./ChannelList.vue";
 
 const emptyRoom = new ChannelListCustomRoom();
@@ -11,7 +12,6 @@ room.insert({
 	topic: "Mon super topic",
 	total_members: 42,
 });
-
 </script>
 
 <template>

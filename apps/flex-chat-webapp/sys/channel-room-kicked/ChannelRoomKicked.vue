@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, toRaw, computed } from "vue";
+import { computed, ref, toRaw } from "vue";
 
-import { RoomMessage } from "~/room/RoomMessage";
+import type { RoomMessage } from "~/room/RoomMessage";
 
 // ---- //
 // Type //
@@ -12,6 +12,8 @@ interface Props {
 }
 
 interface Emits {
+	// NOTE: cette règle n'est pas concevable pour le cas présent.
+	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(evtName: "join-channel", channelName: string): void;
 }
 
@@ -31,9 +33,7 @@ const displayJoinButton = ref(true);
 //       KICK mais actif. Exemple, Lorsqu'un utilisateur entre en contact avec
 //       l'utilisateur qui a été KICK, l'événement "QUERY" est ajouté à la
 //       chambre active.
-const toRawLastMessage = toRaw(
-	props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> }
-);
+const toRawLastMessage = toRaw(props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> });
 
 const nickname = computed(() => toRawLastMessage.data.origin.nickname);
 const channel = computed(() => toRawLastMessage.data.channel);

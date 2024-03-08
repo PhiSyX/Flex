@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
-import { CommandInterface } from "../interface";
+import type { CommandInterface } from "~/modules/interface";
+import type { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
 // Implémentation //

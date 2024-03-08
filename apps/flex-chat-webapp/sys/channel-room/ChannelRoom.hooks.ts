@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { type Emits, type Props } from "./ChannelRoom.vue";
+import { type ComputedRef, type Ref, computed, nextTick, ref, watchEffect } from "vue";
 
-import { ComputedRef, Ref, computed, nextTick, ref, watchEffect } from "vue";
+import type { Emits, Props } from "./ChannelRoom.vue";
 
 function submitTopic(
 	emit: Emits,

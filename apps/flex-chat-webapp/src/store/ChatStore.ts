@@ -8,27 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option } from "@phisyx/flex-safety";
+import { None, type Option } from "@phisyx/flex-safety";
 import { defineStore } from "pinia";
-import { Socket, io } from "socket.io-client";
+import { type Socket, io } from "socket.io-client";
 import { reactive } from "vue";
+
+import type { ChannelMember } from "~/channel/ChannelMember";
+import type { ChannelRoom } from "~/channel/ChannelRoom";
+import type { CommandInterface, Module } from "~/modules/interface";
+import type { User } from "~/user/User";
 
 import { assertChannelRoom, isChannel } from "~/asserts/room";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
-import { ChannelRoom } from "~/channel/ChannelRoom";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
-
 import { HandlerManager } from "~/handlers/manager";
-import { CommandInterface, Module } from "~/modules/interface";
 import { ModuleManager } from "~/modules/manager";
 import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
 import { RoomManager } from "~/room/RoomManager";
 import { ClientIDStorage } from "~/store/local-storage/ClientIDStorage";
-import { User } from "~/user/User";
 import { UserManager } from "~/user/UserManager";
 import { useOverlayerStore } from "./OverlayerStore";
 

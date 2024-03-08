@@ -74,7 +74,7 @@ const nameTitleAttr = computed(() => {
 
 // Attribute title: fermeture
 const btnCloseAttrTitle = computed(() => {
-	let title = props.name + ":\n";
+	let title = `${props.name}:\n`;
 	title += props.name.startsWith("#")
 		? "· Partir du salon (Commande /part)"
 		: "· Fermer la fenêtre de discussion";

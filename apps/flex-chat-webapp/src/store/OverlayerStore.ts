@@ -10,7 +10,7 @@
 
 import { to_px } from "@phisyx/flex-css";
 import { defineStore } from "pinia";
-import { CSSProperties, computed, nextTick, reactive } from "vue";
+import { type CSSProperties, computed, nextTick, reactive } from "vue";
 
 // ---- //
 // Type //

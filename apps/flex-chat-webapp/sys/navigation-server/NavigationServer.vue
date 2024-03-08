@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Room } from "~/room/Room";
+import type { Room } from "~/room/Room";
 
 import Match from "#/sys/match/Match.vue";
 import NavigationRoom from "#/sys/navigation-room/NavigationRoom.vue";
@@ -35,10 +35,8 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 const folded = defineModel<boolean>("folded");
 
-const openRoomHandler = (origin: Origin | RoomID) =>
-	emit("change-room", origin);
-const closeRoomHandler = (origin: Origin | RoomID) =>
-	emit("close-room", origin);
+const openRoomHandler = (origin: Origin | RoomID) => emit("change-room", origin);
+const closeRoomHandler = (origin: Origin | RoomID) => emit("close-room", origin);
 
 function shouldBeListedInNav(room: Room) {
 	return ["channel", "private", "notice-custom-room"].includes(room.type);

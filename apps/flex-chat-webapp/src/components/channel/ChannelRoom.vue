@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelMember } from "~/channel/ChannelMember";
-import { ChannelRoom } from "~/channel/ChannelRoom";
+import type { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import type { ChannelMember } from "~/channel/ChannelMember";
+import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
+import type { ChannelRoom } from "~/channel/ChannelRoom";
+
 import { ChannelSettingsDialog } from "~/channel/ChannelSettings";
 import { ChannelTopicLayer } from "~/channel/ChannelTopic";
-import { UserChangeNicknameDialog } from "~/user/User";
-
 import { useChatStore } from "~/store/ChatStore";
 import { useOverlayerStore } from "~/store/OverlayerStore";
+import { UserChangeNicknameDialog } from "~/user/User";
 
-import ChannelRoomComponent from "#/sys/channel-room/ChannelRoom.vue";
 import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
-import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
+import ChannelRoomComponent from "#/sys/channel-room/ChannelRoom.vue";
 
 interface Props {
 	// Le salon actif.
@@ -39,14 +39,10 @@ const currentClientNickname = computed(() => currentClient.value.nickname);
 //
 // NOTE: l'utilisateur courant PEUT être sanctionné à tout moment, c'est
 //       pourquoi l'on évitera de .unwrap() le retour de la fonction `getUser`.
-const currentClientMember = computed(() =>
-	props.room.getMember(currentClient.value.id)
-);
+const currentClientMember = computed(() => props.room.getMember(currentClient.value.id));
 
 // Membre du salon actuellement sélectionné par le client courant.
-const selectedMember = computed(() =>
-	chatStore.getCurrentSelectedChannelMember(props.room)
-);
+const selectedMember = computed(() => chatStore.getCurrentSelectedChannelMember(props.room));
 
 // Liste de la complétion pour la boite de saisie, il y contient:
 //
@@ -89,8 +85,7 @@ function createTopicLayer(payload: {
  * Envoie les commandes liées aux niveaux d'accès.
  */
 const sendAccessLevel =
-	(applyState: "+" | "-") =>
-	(member: ChannelMember, accessLevel: ChannelAccessLevel) => {
+	(applyState: "+" | "-") => (member: ChannelMember, accessLevel: ChannelAccessLevel) => {
 		if (applyState === "+") {
 			chatStore.sendSetAccessLevel(props.room, member, accessLevel);
 		} else {
@@ -145,10 +140,7 @@ function openPrivate(origin: Origin) {
  * de sanction BAN à un autre membre du salon.
  */
 function sendBanMemberCommand(member: ChannelMember) {
-	chatStore.banChannelMemberMask(
-		props.room,
-		member.address("*!ident@hostname")
-	);
+	chatStore.banChannelMemberMask(props.room, member.address("*!ident@hostname"));
 }
 
 /**

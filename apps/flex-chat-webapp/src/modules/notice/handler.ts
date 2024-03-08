@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
-import { ChatStore } from "~/store/ChatStore";
+import type { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
 // Implémentation //

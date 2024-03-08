@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { type Props } from "./RoomEvent.state";
+import type { Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //
@@ -23,9 +23,7 @@ const updatedBy = computed(() => {
 });
 
 const settingsWord = computed(() =>
-	props.data.target.startsWith("#")
-		? "Paramètres du salon"
-		: "Modes utilisateur"
+	props.data.target.startsWith("#") ? "Paramètres du salon" : "Modes utilisateur",
 );
 </script>
 

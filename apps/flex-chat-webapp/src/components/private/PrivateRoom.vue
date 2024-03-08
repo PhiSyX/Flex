@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { PrivateRoom } from "~/private/PrivateRoom";
+import type { PrivateRoom } from "~/private/PrivateRoom";
 import { useChatStore } from "~/store/ChatStore";
 import { useOverlayerStore } from "~/store/OverlayerStore";
 import { UserChangeNicknameDialog } from "~/user/User";
@@ -33,18 +33,14 @@ const currentClientNickname = computed(() => currentClient.value.nickname);
 
 // Client courant, qui est un participant de la chambre privée.
 const currentClientUser = computed(() =>
-	props.room.getParticipant(currentClient.value.id).unwrap()
+	props.room.getParticipant(currentClient.value.id).unwrap(),
 );
 
 // Participant de la chambre.
-const recipient = computed(() =>
-	props.room.getParticipant(props.room.id()).unwrap()
-);
+const recipient = computed(() => props.room.getParticipant(props.room.id()).unwrap());
 
 // Est-ce que le participant est bloqué?
-const isRecipientBlocked = computed(() =>
-	chatStore.checkUserIsBlocked(recipient.value)
-);
+const isRecipientBlocked = computed(() => chatStore.checkUserIsBlocked(recipient.value));
 
 // La liste de la complétion de la boite de saisie, il y contient:
 //
@@ -88,14 +84,13 @@ function sendMessage(message: string) {
 /**
  * Envoie de la commande /SILENCE.
  */
-const sendSilenceUserCommand =
-	(applyState: "+" | "-") => (nickname: string) => {
-		if (applyState === "+") {
-			chatStore.ignoreUser(nickname);
-		} else {
-			chatStore.unignoreUser(nickname);
-		}
-	};
+const sendSilenceUserCommand = (applyState: "+" | "-") => (nickname: string) => {
+	if (applyState === "+") {
+		chatStore.ignoreUser(nickname);
+	} else {
+		chatStore.unignoreUser(nickname);
+	}
+};
 </script>
 
 <template>

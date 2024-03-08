@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { ref, watchEffect } from "vue";
-import { $input, Props, inputModel } from "./RoomEditbox.state";
+import { $input, type Props, inputModel } from "./RoomEditbox.state";
 
 // ----- //
 // Hooks //

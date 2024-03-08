@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { UiButton, Dialog, InputSwitchV2 } from "@phisyx/flex-uikit";
+import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-uikit";
 import { computed, ref, watch } from "vue";
 
-import { ChannelMember } from "~/channel/ChannelMember";
-import { ChannelRoom } from "~/channel/ChannelRoom";
+import type { ChannelMember } from "~/channel/ChannelMember";
+import type { ChannelRoom } from "~/channel/ChannelRoom";
 
 // ---- //
 // Type //
@@ -30,17 +30,17 @@ const emit = defineEmits<Emits>();
 
 // Est-ce que le client courant a les droits d'édition du sujet?
 const isCurrentClientChannelMemberCanEditTopic = computed(() =>
-	props.room.canEditTopic(props.currentClientChannelMember)
+	props.room.canEditTopic(props.currentClientChannelMember),
 );
 
 // Est-ce que le client courant est opérateur global?
 const isCurrentClientGlobalOperator = computed(() =>
-	props.currentClientChannelMember.isOperator()
+	props.currentClientChannelMember.isGlobalOperator(),
 );
 
 // Est-ce que le client courant opérateur du salon?
 const isCurrentClientChannelMemberChannelOperator = computed(() =>
-	props.currentClientChannelMember.isChanOperator()
+	props.currentClientChannelMember.isChanOperator(),
 );
 
 // Les paramètres du salon.
@@ -60,8 +60,8 @@ const keySettings = props.room.settings.has("k") ? ref("") : ref();
 const topicModel = ref(Array.from(props.room.topic.history).at(-1));
 
 enum AccessControl {
-	BanList,
-	BanListException,
+	BanList = 0,
+	BanListException = 1,
 }
 
 const selectedAccessControlList = ref<Array<string>>([]);

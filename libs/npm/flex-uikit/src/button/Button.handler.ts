@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ModelRef } from "vue";
+import type { ModelRef } from "vue";
 import { type Props, computeIsSelected, computeValue$ } from "./Button.state";
 
 export function handleClick(props: Props, selectedModel: ModelRef<unknown, string>) {

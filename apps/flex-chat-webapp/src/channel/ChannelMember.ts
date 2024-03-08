@@ -11,7 +11,7 @@
 import { User } from "~/user/User";
 import {
 	ChannelAccessLevel,
-	HighestAccessLevelOutput,
+	type HighestAccessLevelOutput,
 	highestAccessLevel,
 	parseAccessLevels,
 } from "./ChannelAccessLevel";

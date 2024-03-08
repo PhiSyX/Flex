@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ButtonIcon } from "@phisyx/flex-uikit";
 
-import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
+import type { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
 
 import Room from "#/sys/room/Room.vue";
 
@@ -14,6 +14,8 @@ interface Props {
 }
 
 interface Emits {
+	// NOTE: cette règle n'est pas concevable pour le cas présent.
+	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(evtName: "close"): void;
 }
 

@@ -11,8 +11,8 @@
 import { Option } from "@phisyx/flex-safety";
 
 import { Room } from "~/room/Room";
-import { Layer, OverlayerStore } from "~/store/OverlayerStore";
-import { User } from "~/user/User";
+import type { Layer, OverlayerStore } from "~/store/OverlayerStore";
+import type { User } from "~/user/User";
 
 import { ChannelAccessControl } from "./ChannelAccessControl";
 import { ChannelAccessLevel } from "./ChannelAccessLevel";

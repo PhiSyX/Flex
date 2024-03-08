@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ChannelMember } from "~/channel/ChannelMember";
 
-import ChannelUserlistMenu from "./ChannelUserlistMenu.vue";
 import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 import { User } from "~/user/User";
+
+import ChannelUserlistMenu from "./ChannelUserlistMenu.vue";
 
 const origin: User = new User({
 	id: "a-b-c-d-e" as UserID,

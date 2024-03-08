@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { type Props, computeIsSelected } from "./Button.state";
 import { handleClick } from "./Button.handler";
+import { type Props, computeIsSelected } from "./Button.state";
+
+// --------- //
+// Composant //
+// --------- //
 
 const props = withDefaults(defineProps<Props>(), {
 	position: "left",

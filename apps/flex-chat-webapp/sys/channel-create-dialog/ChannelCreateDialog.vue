@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiButton, Dialog } from "@phisyx/flex-uikit";
+import { Dialog, UiButton } from "@phisyx/flex-uikit";
 
 import { ref } from "vue";
 

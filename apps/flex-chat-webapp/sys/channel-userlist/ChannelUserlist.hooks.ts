@@ -8,14 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { FuzzySearchRecord, fuzzy_search } from "@phisyx/flex-search";
-import { Ref, ref, shallowRef, watchEffect } from "vue";
+import { type FuzzySearchRecord, fuzzy_search } from "@phisyx/flex-search";
+import { type Ref, ref, shallowRef, watchEffect } from "vue";
 
-import { ChannelMember } from "~/channel/ChannelMember";
+import type { ChannelMember } from "~/channel/ChannelMember";
+import type { Props } from "./ChannelUserlist.vue";
+
 import { ChannelMemberFiltered, ChannelMemberUnfiltered } from "~/channel/ChannelMemberFiltered";
 
 import ChannelNicklist from "#/sys/channel-nicklist/ChannelNicklist.vue";
-import { type Props } from "./ChannelUserlist.vue";
 
 // ----------- //
 // Énumération //

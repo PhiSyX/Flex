@@ -9,7 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Some } from "@phisyx/flex-safety";
-import { ChatStore } from "~/store/ChatStore";
+
+import type { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
 // Implémentation //

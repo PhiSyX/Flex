@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
-
 import { onActivated } from "vue";
 
-import { useAutocompletion, useInputHistory } from "./RoomEditbox.hooks";
 import { type Emits, changeNick, onSubmit } from "./RoomEditbox.handlers";
-import {
-	type Props,
-	$input,
-	computeFormAction,
-	inputModel,
-} from "./RoomEditbox.state";
+import { useAutocompletion, useInputHistory } from "./RoomEditbox.hooks";
+import { $input, type Props, computeFormAction, inputModel } from "./RoomEditbox.state";
 
 // --------- //
 // Composant //

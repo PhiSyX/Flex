@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Props } from "./RoomEvent.state";
+import type { Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //

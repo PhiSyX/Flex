@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ChannelMember } from "~/channel/ChannelMember";
-import ChannelUserlist from "./ChannelUserlist.vue";
-import { ChannelMembers } from "~/channel/ChannelMembers";
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelMember } from "~/channel/ChannelMember";
+import { ChannelMembers } from "~/channel/ChannelMembers";
 import { User } from "~/user/User";
+
+import ChannelUserlist from "./ChannelUserlist.vue";
 
 const channelName = "#channel";
 const users = new ChannelMembers();

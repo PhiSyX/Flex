@@ -10,7 +10,8 @@
 
 import { Option } from "@phisyx/flex-safety";
 
-import { PrivateParticipant } from "~/private/PrivateParticipant";
+import type { PrivateParticipant } from "~/private/PrivateParticipant";
+
 import { Room } from "~/room/Room";
 
 // -------------- //

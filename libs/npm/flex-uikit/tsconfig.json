@@ -24,12 +24,9 @@
 
 		/* Alias */
 		"paths": {
-			"~/*": ["./src/*"],
+			"~/*": ["./src/*"]
 		}
 	},
-	"include": [
-		"./index.ts",
-		"src/**/*.ts", "src/**/*.tsx", "src/**/*.vue",
-	],
+	"include": ["./index.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

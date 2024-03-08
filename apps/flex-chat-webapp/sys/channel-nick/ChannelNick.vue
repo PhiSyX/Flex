@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChannelMemberSearchHits } from "~/channel/ChannelMemberFiltered";
+import type { ChannelMemberSearchHits } from "~/channel/ChannelMemberFiltered";
 
 // ---- //
 // Type //

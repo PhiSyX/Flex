@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { ChatStore } from "~/store/ChatStore";
+
 import { assertChannelRoom } from "~/asserts/room";
 import { ChannelMember } from "~/channel/ChannelMember";
-import { ChatStore } from "~/store/ChatStore";
 
 // -------------- //
 // Implémentation //

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { type Props } from "./RoomEvent.state";
+
+import type { Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //
@@ -9,9 +10,7 @@ import { type Props } from "./RoomEvent.state";
 defineOptions({ inheritAttrs: false });
 const props = defineProps<Props<"RPL_AWAY">>();
 
-const message = computed(() =>
-	props.data.message.slice(props.data.nick.length + 2)
-);
+const message = computed(() => props.data.message.slice(props.data.nick.length + " :".length));
 </script>
 
 <template>

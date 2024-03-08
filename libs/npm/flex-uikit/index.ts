@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { App, defineAsyncComponent } from "vue";
+import { type App, defineAsyncComponent } from "vue";
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
 const iconsImports = import.meta.glob<{ default: any }>("./src/icons/Icon*.vue");

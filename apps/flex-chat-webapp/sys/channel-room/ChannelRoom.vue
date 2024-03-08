@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import type { Option } from "@phisyx/flex-safety";
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
-import { Option } from "@phisyx/flex-safety";
 import { computed, ref } from "vue";
 
-import { ChannelRoom } from "~/channel/ChannelRoom";
-import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
-import { ChannelMember } from "~/channel/ChannelMember";
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import type { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import type { ChannelMember } from "~/channel/ChannelMember";
+import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
+import type { ChannelRoom } from "~/channel/ChannelRoom";
 
 import { useChannelTopic } from "./ChannelRoom.hooks";
 
@@ -32,6 +32,10 @@ export interface Emits {
 	(evtName: "ban-nick", member: ChannelMember): void;
 	(evtName: "change-nickname", event: MouseEvent): void;
 	(evtName: "close"): void;
+	(
+		evtName: "create-topic-layer",
+		payload: { event: Event; linkedElement: HTMLInputElement | undefined; mode: boolean },
+	): void;
 	(evtName: "ignore-user", origin: Origin): void;
 	(evtName: "kick-member", member: ChannelMember): void;
 	(evtName: "open-channel-settings", event: Event): void;
@@ -39,27 +43,11 @@ export interface Emits {
 	(evtName: "open-room", roomName: RoomID): void;
 	(evtName: "select-member", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
-	(
-		evtName: "set-access-level",
-		member: ChannelMember,
-		accessLevel: ChannelAccessLevel
-	): void;
-	(
-		evtName: "create-topic-layer",
-		payload: {
-			event: Event;
-			linkedElement: HTMLInputElement | undefined;
-			mode: boolean;
-		}
-	): void;
+	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
 	(evtName: "unban-member", member: ChannelMemberSelected): void;
 	(evtName: "unban-nick", member: ChannelMemberSelected): void;
 	(evtName: "unignore-user", origin: Origin): void;
-	(
-		evtName: "unset-access-level",
-		member: ChannelMember,
-		accessLevel: ChannelAccessLevel
-	): void;
+	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
 	(evtName: "update-topic", topic: string): void;
 }
 
@@ -97,8 +85,7 @@ const toggleNicklistTitleAttr = computed(() => {
 
 const banMember = (member: ChannelMember) => emit("ban-member", member);
 const banNick = (member: ChannelMember) => emit("ban-nick", member);
-const unbanMember = (member: ChannelMemberSelected) =>
-	emit("unban-member", member);
+const unbanMember = (member: ChannelMemberSelected) => emit("unban-member", member);
 const unbanNick = (member: ChannelMemberSelected) => emit("unban-nick", member);
 const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
 const openRoom = (roomName: RoomID) => emit("open-room", roomName);
@@ -106,19 +93,14 @@ const closeRoom = () => emit("close");
 const ignoreUser = (origin: Origin) => emit("ignore-user", origin);
 const kickMember = (member: ChannelMember) => emit("kick-member", member);
 const unignoreUser = (origin: Origin) => emit("unignore-user", origin);
-const openChannelSettings = (event: Event) =>
-	emit("open-channel-settings", event);
+const openChannelSettings = (event: Event) => emit("open-channel-settings", event);
 const openPrivate = (origin: Origin) => emit("open-private", origin);
 const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 const sendMessage = (message: string) => emit("send-message", message);
-const setAccessLevel = (
-	member: ChannelMember,
-	accessLevel: ChannelAccessLevel
-) => emit("set-access-level", member, accessLevel);
-const unsetAccessLevel = (
-	member: ChannelMember,
-	accessLevel: ChannelAccessLevel
-) => emit("unset-access-level", member, accessLevel);
+const setAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevel) =>
+	emit("set-access-level", member, accessLevel);
+const unsetAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevel) =>
+	emit("unset-access-level", member, accessLevel);
 </script>
 
 <template>

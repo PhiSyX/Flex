@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ChannelRoom } from "~/channel/ChannelRoom";
-import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
 import { ChannelMember } from "~/channel/ChannelMember";
+import { ChannelRoom } from "~/channel/ChannelRoom";
 import { User } from "~/user/User";
+
+import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
 
 const channel1 = new ChannelRoom("#chan1" as ChannelID);
 channel1.setSettingMode("s");
@@ -13,7 +14,7 @@ const currentClientChannelMember = new ChannelMember(
 		id: "uuid" as UserID,
 		ident: "ident",
 		nickname: "nickname",
-	})
+	}),
 );
 
 const channel2 = new ChannelRoom("#chan2" as ChannelID);

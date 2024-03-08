@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { User } from "~/user/User";
 import { PrivateParticipant } from "~/private/PrivateParticipant";
 import { PrivateRoom } from "~/private/PrivateRoom";
+import { User } from "~/user/User";
 
 import PrivateRoomComponent from "./PrivateRoom.vue";
 

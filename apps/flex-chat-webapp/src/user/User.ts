@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option, Some } from "@phisyx/flex-safety";
+import { None, type Option, Some } from "@phisyx/flex-safety";
 
-import { Layer, OverlayerStore } from "~/store/OverlayerStore";
+import type { Layer, OverlayerStore } from "~/store/OverlayerStore";
 
 // ---- //
 // Type //

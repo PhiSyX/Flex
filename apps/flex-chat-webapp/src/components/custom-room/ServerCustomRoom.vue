@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
-import { UserChangeNicknameDialog } from "~/user/User";
+import type { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 
-import { useOverlayerStore } from "~/store/OverlayerStore";
 import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
+import { UserChangeNicknameDialog } from "~/user/User";
 
 import CustomRoomServer from "#/sys/custom-room-server/CustomRoomServer.vue";
 

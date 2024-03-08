@@ -2,27 +2,25 @@
 import { Alert } from "@phisyx/flex-uikit";
 import { computed } from "vue";
 
-import type { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import type { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
-
-import { ChannelJoinDialog, type ChannelRoom } from "~/channel/ChannelRoom";
+import type { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 import type { PrivateRoom } from "~/private/PrivateRoom";
 
+import { ChannelJoinDialog, type ChannelRoom } from "~/channel/ChannelRoom";
+import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
 import { useChatStore } from "~/store/ChatStore";
 import { useOverlayerStore } from "~/store/OverlayerStore";
 
-import Navigation from "~/components/navigation/Navigation.vue";
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import ServerCustomRoomComponent from "~/components/custom-room/ServerCustomRoom.vue";
-import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
+import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
-import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
-
+import Navigation from "~/components/navigation/Navigation.vue";
+import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
-import Match from "#/sys/match/Match.vue";
 import CustomRoomNotice from "#/sys/custom-room-notice/CustomRoomNotice.vue";
-import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
+import Match from "#/sys/match/Match.vue";
 
 const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();

@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Layer, OverlayerStore } from "~/store/OverlayerStore";
+import type { Layer, OverlayerStore } from "~/store/OverlayerStore";
 
-import { ChannelMember } from "./ChannelMember";
-import { ChannelRoom } from "./ChannelRoom";
+import type { ChannelMember } from "./ChannelMember";
+import type { ChannelRoom } from "./ChannelRoom";
 
 // ---- //
 // Type //

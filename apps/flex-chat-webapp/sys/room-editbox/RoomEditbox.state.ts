@@ -10,7 +10,7 @@
 
 import { computed, ref } from "vue";
 
-import { Room } from "~/room/Room";
+import type { Room } from "~/room/Room";
 
 // ---- //
 // Type //

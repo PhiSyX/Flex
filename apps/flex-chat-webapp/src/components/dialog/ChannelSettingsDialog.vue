@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useOverlayerStore } from "~/store/OverlayerStore";
-import { useChatStore } from "~/store/ChatStore";
-
 import { ChannelSettingsDialog } from "~/channel/ChannelSettings";
+import { useChatStore } from "~/store/ChatStore";
+import { useOverlayerStore } from "~/store/OverlayerStore";
 
 import ChannelSettingsDialogComponent from "#/sys/channel-settings-dialog/ChannelSettingsDialog.vue";
 
@@ -21,9 +20,11 @@ const layer = computed(() => dialog.value.getUnchecked());
  * Soumission du formulaire.
  */
 function submitFormData(modesSettings: Partial<Command<"MODE">["modes"]>) {
+	if (!layer.value.data) return;
+
 	chatStore.applyChannelSettings(
-		layer.value.data!.room.name,
-		modesSettings as Command<"MODE">["modes"]
+		layer.value.data.room.name,
+		modesSettings as Command<"MODE">["modes"],
 	);
 }
 
@@ -31,8 +32,8 @@ function submitFormData(modesSettings: Partial<Command<"MODE">["modes"]>) {
  * Mise à jour du sujet.
  */
 function updateTopicHandler(topic?: string) {
-	if (layer.value.data!.room.topic.get() === topic) return;
-	chatStore.updateTopic(layer.value.data!.room.name, topic);
+	if (!layer.value.data || layer.value.data.room.topic.get() === topic) return;
+	chatStore.updateTopic(layer.value.data.room.name, topic);
 }
 </script>
 

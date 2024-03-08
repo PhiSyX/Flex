@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_channel::{Channel, ChannelInterface};
 use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 
 use crate::src::features::join::ErrBadchannelkeyError;
@@ -18,8 +19,10 @@ use crate::src::features::join::ErrBadchannelkeyError;
 
 pub trait JoinErrorResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client l'erreur [crate::ERR_BADCHANNELKEY].
-	fn send_err_badchannelkey(&self, channel_name: &str);
+	fn send_err_badchannelkey(&self, channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>);
 
 	// TODO: ERR_CHANNELISFULL
 	#[allow(dead_code)]
@@ -36,7 +39,9 @@ pub trait JoinErrorResponseInterface: ClientSocketInterface
 
 impl<'s> JoinErrorResponseInterface for Socket<'s>
 {
-	fn send_err_badchannelkey(&self, channel_name: &str)
+	type Channel = Channel;
+
+	fn send_err_badchannelkey(&self, channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>)
 	{
 		let origin = Origin::from(self.client());
 		let err_badchannelkey = ErrBadchannelkeyError {

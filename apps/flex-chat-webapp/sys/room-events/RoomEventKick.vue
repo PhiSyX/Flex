@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { type Props } from "./RoomEvent.state";
+import type { Props } from "./RoomEvent.state";
+
+// ---- //
+// Type //
+// ---- //
 
 interface Emits {
+	// NOTE: cette règle n'est pas concevable pour le cas présent.
+	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(evtName: "open-room", roomName: string): void;
 }
 

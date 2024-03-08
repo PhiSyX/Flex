@@ -175,6 +175,7 @@ class Option<T> {
 		return this as unknown as Option<U>;
 	}
 
+	// biome-ignore lint/suspicious/noThenProperty: ?
 	then(f: (value: T) => void) {
 		if (this.is_some()) {
 			f(this.unwrap());

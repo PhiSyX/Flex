@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { type Props } from "./RoomEvent.state";
+import type { Props } from "./RoomEvent.state";
 
 // ---- //
 // Type //
 // ---- //
 
-type PropsQuery = Props<any> & {
+type PropsQuery = Props<RepliesNames> & {
 	data: { origin: Origin; text: string };
 };
 

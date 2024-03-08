@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 
-import { Room } from "~/room/Room";
+import type { Room } from "~/room/Room";
 
 import NavigationServer from "#/sys/navigation-server/NavigationServer.vue";
 

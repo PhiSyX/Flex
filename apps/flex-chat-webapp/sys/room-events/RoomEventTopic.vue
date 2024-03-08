@@ -2,7 +2,7 @@
 import { format_date } from "@phisyx/flex-date";
 import { computed } from "vue";
 
-import { type Props } from "./RoomEvent.state";
+import type { Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //

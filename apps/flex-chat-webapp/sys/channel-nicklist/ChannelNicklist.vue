@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ChannelMember } from "~/channel/ChannelMember";
+import { computed } from "vue";
+
+import type { ChannelMember } from "~/channel/ChannelMember";
 import {
 	ChannelMemberFiltered,
-	ChannelMemberUnfiltered,
+	type ChannelMemberUnfiltered,
 } from "~/channel/ChannelMemberFiltered";
 
 import ChannelNickComponent from "#/sys/channel-nick/ChannelNick.vue";
-import { computed } from "vue";
 
 // ---- //
 // Type //
@@ -55,40 +56,30 @@ const moderatorsList = computed<
 		: props.moderators.original;
 });
 
-const vipsList = computed<
-	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
->(() => {
-	return props.vips.filtered.length > 0
-		? props.vips.filtered
-		: props.vips.original;
-});
+const vipsList = computed<Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>>(
+	() => {
+		return props.vips.filtered.length > 0 ? props.vips.filtered : props.vips.original;
+	},
+);
 
-const usersList = computed<
-	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
->(() => {
-	return props.users.filtered.length > 0
-		? props.users.filtered
-		: props.users.original;
-});
+const usersList = computed<Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>>(
+	() => {
+		return props.users.filtered.length > 0 ? props.users.filtered : props.users.original;
+	},
+);
 
 const hasFilteredModerators = computed(() => {
-	return props.moderators.filtered.some(
-		(m) => m instanceof ChannelMemberFiltered
-	);
+	return props.moderators.filtered.some((member) => member instanceof ChannelMemberFiltered);
 });
 const hasFilteredVips = computed(() => {
-	return props.vips.filtered.some((m) => m instanceof ChannelMemberFiltered);
+	return props.vips.filtered.some((member) => member instanceof ChannelMemberFiltered);
 });
 const hasFilteredUsers = computed(() => {
-	return props.users.filtered.some((m) => m instanceof ChannelMemberFiltered);
+	return props.users.filtered.some((member) => member instanceof ChannelMemberFiltered);
 });
 
 const hasFilters = computed(() => {
-	return (
-		hasFilteredModerators.value ||
-		hasFilteredVips.value ||
-		hasFilteredUsers.value
-	);
+	return hasFilteredModerators.value || hasFilteredVips.value || hasFilteredUsers.value;
 });
 
 // -------- //

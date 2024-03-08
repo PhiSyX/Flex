@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { Layer, useOverlayerStore } from "~/store/OverlayerStore";
+import { type Layer, useOverlayerStore } from "~/store/OverlayerStore";
 
 const overlayerStore = useOverlayerStore();
 
-const hasLoadAllModulesLayer = computed(() =>
-	overlayerStore.layers.has("load-all-modules")
-);
+const hasLoadAllModulesLayer = computed(() => overlayerStore.layers.has("load-all-modules"));
 
 const loadAllModulesLayer = computed(() => {
 	return overlayerStore.layers.get("load-all-modules") as Layer<{

@@ -19,14 +19,27 @@ use super::{RplNotopicReply, RplTopicReply};
 
 pub trait TopicClientSocketInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client le sujet du salon.
-	fn send_rpl_topic(&self, channel: &Channel, updated: bool)
+	fn send_rpl_topic(&self, channel: &Self::Channel, updated: bool);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> TopicClientSocketInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn send_rpl_topic(&self, channel: &Self::Channel, updated: bool)
 	{
 		let origin = Origin::from(self.client());
 		if channel.topic_text().is_empty() {
 			let rpl_notopic = RplNotopicReply {
 				origin: &origin,
-				channel: &channel.name,
+				channel: channel.name(),
 				tags: RplNotopicReply::default_tags(),
 			};
 			self.emit(rpl_notopic.name(), &rpl_notopic);
@@ -37,7 +50,7 @@ pub trait TopicClientSocketInterface: ClientSocketInterface
 		} else {
 			let rpl_topic = RplTopicReply {
 				origin: &origin,
-				channel: channel.name.as_ref(),
+				channel: channel.name(),
 				topic: channel.topic_text(),
 				updated: &updated,
 				updated_by: channel.topic().updated_by(),
@@ -52,9 +65,3 @@ pub trait TopicClientSocketInterface: ClientSocketInterface
 		};
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> TopicClientSocketInterface for Socket<'s> {}

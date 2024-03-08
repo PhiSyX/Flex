@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { Room } from "~/room/Room";
+import type { Room } from "~/room/Room";
 
-import RoomTopic from "#/sys/room-topic/RoomTopic.vue";
-import RoomHistoryLogs from "#/sys/room-history-logs/RoomHistoryLogs.vue";
 import RoomEditbox from "#/sys/room-editbox/RoomEditbox.vue";
+import RoomHistoryLogs from "#/sys/room-history-logs/RoomHistoryLogs.vue";
+import RoomTopic from "#/sys/room-topic/RoomTopic.vue";
 
 // ---- //
 // Type //

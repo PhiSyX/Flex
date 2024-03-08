@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import {
-	ButtonIcon,
-	InputSwitch,
-	TextInput,
-	UiButton,
-} from "@phisyx/flex-uikit";
-import { reactive, ref, type ModelRef } from "vue";
+import { ButtonIcon, InputSwitch, TextInput, UiButton } from "@phisyx/flex-uikit";
+import { type ModelRef, reactive, ref } from "vue";
 
 import { useChatStore } from "~/store/ChatStore";
 import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
@@ -64,7 +59,7 @@ const loginFormData = reactive({
 	alternativeNickname: import.meta.env.VITE_APP_NICKNAME
 		? `${import.meta.env.VITE_APP_NICKNAME}_`
 		: "",
-	channels: import.meta.env.VITE_APP_CHANNELS || "" as ChannelID,
+	channels: import.meta.env.VITE_APP_CHANNELS || ("" as ChannelID),
 	nickname: import.meta.env.VITE_APP_NICKNAME || "",
 	realname: import.meta.env.VITE_APP_REALNAME || "Flex Web App",
 	rememberMe: new RememberMeStorage(),
@@ -91,9 +86,7 @@ function displayAdvancedInfoHandler() {
 /**
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
-function connectSubmit(
-	isConnectedModel: ModelRef<boolean | undefined, string>
-) {
+function connectSubmit(isConnectedModel: ModelRef<boolean | undefined, string>) {
 	async function connectSubmitHandler(evt: Event) {
 		evt.preventDefault();
 
@@ -103,17 +96,11 @@ function connectSubmit(
 
 		chatStore.connect(loginFormData);
 
-		chatStore.listen(
-			"RPL_WELCOME",
-			() => replyWelcomeHandler(isConnectedModel),
-			{
-				once: true,
-			}
-		);
+		chatStore.listen("RPL_WELCOME", () => replyWelcomeHandler(isConnectedModel), {
+			once: true,
+		});
 
-		chatStore.listen("ERR_NICKNAMEINUSE", (data) =>
-			errorNicknameinuseHandler(data)
-		);
+		chatStore.listen("ERR_NICKNAMEINUSE", (data) => errorNicknameinuseHandler(data));
 	}
 
 	return connectSubmitHandler;
@@ -122,9 +109,7 @@ function connectSubmit(
 /**
  * Écoute de l'événement `RPL_WELCOME`.
  */
-function replyWelcomeHandler(
-	isConnectedModel: ModelRef<boolean | undefined, string>
-) {
+function replyWelcomeHandler(isConnectedModel: ModelRef<boolean | undefined, string>) {
 	loader.value = false;
 	isConnectedModel.value = true;
 }
@@ -135,7 +120,7 @@ function replyWelcomeHandler(
 function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 	if (data.nickname === loginFormData.alternativeNickname) {
 		errors.alternativeNickname = data.reason.slice(
-			loginFormData.alternativeNickname.length + 2
+			loginFormData.alternativeNickname.length + 2,
 		);
 	} else {
 		errors.nickname = data.reason.slice(loginFormData.nickname.length + 2);

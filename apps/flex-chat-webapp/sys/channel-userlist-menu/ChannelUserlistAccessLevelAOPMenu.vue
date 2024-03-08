@@ -2,9 +2,10 @@
 import { UiButton } from "@phisyx/flex-uikit";
 import { computed } from "vue";
 
+import type { ChannelMember } from "~/channel/ChannelMember";
+import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
+
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelMember } from "~/channel/ChannelMember";
-import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 
 // ---- //
 // Type //
@@ -18,16 +19,8 @@ interface Props {
 }
 
 interface Emits {
-	(
-		evtName: "set-access-level",
-		member: ChannelMember,
-		accessLevel: ChannelAccessLevel
-	): void;
-	(
-		evtName: "unset-access-level",
-		member: ChannelMember,
-		accessLevel: ChannelAccessLevel
-	): void;
+	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
 }
 
 // --------- //
@@ -38,19 +31,17 @@ const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
 const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember.isGlobalOperator()
+	props.currentClientMember.isGlobalOperator(),
 );
 const isCurrentClientMemberOwner = computed(() =>
-	props.currentClientMember.accessLevel.has(ChannelAccessLevel.Owner)
+	props.currentClientMember.accessLevel.has(ChannelAccessLevel.Owner),
 );
 const isCurrentClientMemberAdmin = computed(() =>
-	props.currentClientMember.accessLevel.has(ChannelAccessLevel.AdminOperator)
+	props.currentClientMember.accessLevel.has(ChannelAccessLevel.AdminOperator),
 );
 
 const isSelectedMemberAdmin = computed(() =>
-	props.selectedMember.member.accessLevel.has(
-		ChannelAccessLevel.AdminOperator
-	)
+	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.AdminOperator),
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>

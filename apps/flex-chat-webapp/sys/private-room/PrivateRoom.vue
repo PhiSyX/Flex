@@ -2,8 +2,8 @@
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 import { computed } from "vue";
 
-import { PrivateParticipant } from "~/private/PrivateParticipant";
-import { PrivateRoom } from "~/private/PrivateRoom";
+import type { PrivateParticipant } from "~/private/PrivateParticipant";
+import type { PrivateRoom } from "~/private/PrivateRoom";
 
 import Room from "#/sys/room/Room.vue";
 
@@ -38,7 +38,7 @@ const emit = defineEmits<Emits>();
 
 // Est-ce que le client courant est le participant lui-même?
 const isCurrentClientParticipantHimself = computed(() =>
-	props.currentClientUser.partialEq(props.recipient)
+	props.currentClientUser.partialEq(props.recipient),
 );
 
 const titleIgnoreBtn = computed(() => {

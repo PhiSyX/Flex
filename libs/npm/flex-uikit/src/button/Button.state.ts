@@ -10,7 +10,7 @@
 
 import { computed } from "vue";
 
-import { Icons } from "../icons";
+import type { Icons } from "../icons";
 
 export interface Props {
 	icon?: Icons;

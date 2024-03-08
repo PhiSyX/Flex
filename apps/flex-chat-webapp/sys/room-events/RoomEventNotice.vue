@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { type Props } from "./RoomEvent.state";
+
+import type { Props } from "./RoomEvent.state";
 
 // --------- //
 // Composant //
@@ -14,7 +15,7 @@ const target = computed(() =>
 		? props.isCurrentClient
 			? props.data.target
 			: props.data.origin.nickname
-		: `${props.data.origin.nickname}:${props.data.target}`
+		: `${props.data.origin.nickname}:${props.data.target}`,
 );
 </script>
 

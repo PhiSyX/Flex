@@ -2,9 +2,10 @@
 import { UiButton } from "@phisyx/flex-uikit";
 import { computed } from "vue";
 
+import type { ChannelMember } from "~/channel/ChannelMember";
+import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
+
 import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
-import { ChannelMember } from "~/channel/ChannelMember";
-import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 
 // ---- //
 // Type //
@@ -18,16 +19,8 @@ interface Props {
 }
 
 interface Emits {
-	(
-		evtName: "set-access-level",
-		member: ChannelMember,
-		accessLevel: ChannelAccessLevel
-	): void;
-	(
-		evtName: "unset-access-level",
-		member: ChannelMember,
-		accessLevel: ChannelAccessLevel
-	): void;
+	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
 }
 
 // --------- //
@@ -38,29 +31,25 @@ const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
 const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember.isGlobalOperator()
+	props.currentClientMember.isGlobalOperator(),
 );
 
 const isCurrentClientMemberHalfOperator = computed(() =>
-	props.currentClientMember.accessLevel.has(ChannelAccessLevel.HalfOperator)
+	props.currentClientMember.accessLevel.has(ChannelAccessLevel.HalfOperator),
 );
 
 const isCurrentClientMemberHaveOperatorRights = computed(
-	() =>
-		props.currentClientMember.highestAccessLevel.level >=
-		ChannelAccessLevel.Operator
+	() => props.currentClientMember.highestAccessLevel.level >= ChannelAccessLevel.Operator,
 );
 const isCurrentClientMemberHaveHalfOperatorRights = computed(
-	() =>
-		props.currentClientMember.highestAccessLevel.level >=
-		ChannelAccessLevel.HalfOperator
+	() => props.currentClientMember.highestAccessLevel.level >= ChannelAccessLevel.HalfOperator,
 );
 
 const isSelectedMemberHalfOperator = computed(() =>
-	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.HalfOperator)
+	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.HalfOperator),
 );
 const isSelectedMemberVipRights = computed(() =>
-	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.Vip)
+	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.Vip),
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>

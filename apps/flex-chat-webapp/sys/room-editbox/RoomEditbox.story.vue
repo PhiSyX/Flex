@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { PrivateRoom } from "~/private/PrivateRoom";
+
 import RoomEditbox from "./RoomEditbox.vue";
 
 const room = new PrivateRoom("PhiSyX");

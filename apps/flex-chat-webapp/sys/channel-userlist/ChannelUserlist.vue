@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { UiButton } from "@phisyx/flex-uikit";
 
-import { ChannelMembers } from "~/channel/ChannelMembers";
-import {
-	useFilterView,
-	useInputFilterUserlist,
-	UserlistModeView,
-} from "./ChannelUserlist.hooks";
+import type { ChannelMembers } from "~/channel/ChannelMembers";
+
+import { UserlistModeView, useFilterView, useInputFilterUserlist } from "./ChannelUserlist.hooks";
 
 // ---- //
 // Type //

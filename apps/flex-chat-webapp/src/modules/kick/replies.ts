@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChatStore } from "~/store/ChatStore";
+import type { ChatStore } from "~/store/ChatStore";
 
 export class ErrorCannotkickglobopsHandler
 	implements SocketEventInterface<"ERR_CANNOTKICKGLOBOPS">
