@@ -12,7 +12,7 @@ import { None, Option, Some } from "@phisyx/flex-safety";
 
 import type { Room } from "./Room";
 
-import { assertChannelRoom } from "~/asserts/room";
+import { assertChannelRoom, roomID } from "~/asserts/room";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
 
 // -------------- //
@@ -56,8 +56,8 @@ export class RoomManager {
 	 * Définit les rooms de la classe à partir d'un itérable.
 	 */
 	extends(rooms: Iterable<[RoomID, Room]>) {
-		for (const [roomID, room] of rooms) {
-			this._rooms.set(roomID.toLowerCase() as RoomID, room);
+		for (const [currentRoomID, r00m] of rooms) {
+			this._rooms.set(roomID(currentRoomID.toLowerCase()), r00m);
 		}
 	}
 
@@ -74,12 +74,12 @@ export class RoomManager {
 	 * Récupère un chambre ouverte à partir de son ID.
 	 */
 	get(
-		roomID: RoomID,
+		currentRoomID: RoomID,
 		options: {
 			state: "opened" | "closed" | "opened:not-kicked";
 		} = { state: "opened" },
 	): Option<Room> {
-		const maybeRoom = Option.from(this._rooms.get(roomID.toLowerCase() as RoomID));
+		const maybeRoom = Option.from(this._rooms.get(roomID(currentRoomID.toLowerCase())));
 
 		if (options) {
 			switch (options.state) {
@@ -128,9 +128,9 @@ export class RoomManager {
 	/**
 	 * Ajoute une nouvelle chambre.
 	 */
-	insert(roomID: RoomID, room: Room): Room {
-		this._rooms.set(roomID.toLowerCase() as RoomID, room);
-		return room;
+	insert(newRoomID: RoomID, newRoom: Room): Room {
+		this._rooms.set(roomID(newRoomID.toLowerCase()), newRoom);
+		return newRoom;
 	}
 
 	/**
@@ -162,7 +162,7 @@ export class RoomManager {
 	/**
 	 * Définit une chambre courante.
 	 */
-	setCurrent(roomID: RoomID) {
+	setCurrent(currentRoomID: RoomID) {
 		if (this._currentRoom.is_some()) {
 			this.current().setActive(false);
 			this.current().setHighlighted(false);
@@ -170,7 +170,7 @@ export class RoomManager {
 			this.current().unsetTotalUnreadMessages();
 		}
 
-		this._currentRoom.replace(roomID.toLowerCase() as RoomID);
+		this._currentRoom.replace(roomID(currentRoomID.toLowerCase()));
 
 		this.current().setActive(true);
 		this.current().setHighlighted(false);

@@ -5,7 +5,7 @@ import { computed } from "vue";
 import type { ChannelMember } from "~/channel/ChannelMember";
 import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 
 // ---- //
 // Type //
@@ -19,8 +19,8 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
 }
 
 // --------- //
@@ -34,16 +34,16 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 const isCurrentClientMemberOwner = computed(() =>
-	props.currentClientMember.accessLevel.has(ChannelAccessLevel.Owner),
+	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Owner),
 );
 
 const isSelectedMemberOwner = computed(() =>
-	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.Owner),
+	props.selectedMember.member.accessLevel.ge(ChannelAccessLevelFlag.Owner),
 );
 
-const setAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
+const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
+const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", props.selectedMember.member, accessLevel);
 </script>
 
@@ -53,7 +53,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deqop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevel.Owner)"
+			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Owner)"
 		>
 			-q
 		</UiButton>
@@ -69,7 +69,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
 			variant="secondary"
 			class="is-owner"
 			title="Commande /qop"
-			@click="setAccessLevelHandler(ChannelAccessLevel.Owner)"
+			@click="setAccessLevelHandler(ChannelAccessLevelFlag.Owner)"
 		>
 			+q
 		</UiButton>
@@ -78,7 +78,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deqop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevel.Owner)"
+			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Owner)"
 		>
 			-q
 		</UiButton>

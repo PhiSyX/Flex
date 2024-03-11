@@ -25,6 +25,15 @@ export function assertChannelRoom(room: { type: string }): asserts room is Chann
 }
 
 /**
+ * Certifie que l'argument donné est une chambre de type [PrivateRoom].
+ */
+export function assertPrivateRoom(room: { type: string }): asserts room is PrivateRoom {
+	if (room.type !== "private") {
+		throw new Error(`« ${room} » n'est pas une chambre de type « private »`);
+	}
+}
+
+/**
  * Certifie que la chambre passée en argument est un salon.
  */
 export function isChannel(room?: string): room is ChannelID {
@@ -32,10 +41,22 @@ export function isChannel(room?: string): room is ChannelID {
 }
 
 /**
- * Certifie que l'argument donné est une chambre de type [PrivateRoom].
+ * @type ChannelID
  */
-export function assertPrivateRoom(room: { type: string }): asserts room is PrivateRoom {
-	if (room.type !== "private") {
-		throw new Error(`« ${room} » n'est pas une chambre de type « private »`);
-	}
+export function channelID(channelRaw?: string): ChannelID {
+	return channelRaw as ChannelID;
+}
+
+/**
+ * @type Array<ChannelID>
+ */
+export function channelsID(channelRaw?: Array<string>): Array<ChannelID> {
+	return channelRaw as Array<ChannelID>;
+}
+
+/**
+ * @type RoomID
+ */
+export function roomID(roomID?: string): RoomID {
+	return roomID as RoomID;
 }

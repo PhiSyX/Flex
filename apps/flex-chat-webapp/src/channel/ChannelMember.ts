@@ -9,28 +9,17 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { User } from "~/user/User";
-import {
-	ChannelAccessLevel,
-	type HighestAccessLevelOutput,
-	highestAccessLevel,
-	parseAccessLevels,
-} from "./ChannelAccessLevel";
+import { ChannelAccessLevel, ChannelAccessLevelFlag } from "./ChannelAccessLevel";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class ChannelMember extends User {
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	private declare _highestAccessLevel: HighestAccessLevelOutput;
-
 	/**
 	 * Les niveaux d'accès du pseudo.
 	 */
-	accessLevel: Set<ChannelAccessLevel> = new Set();
+	accessLevel: ChannelAccessLevel = new ChannelAccessLevel();
 
 	// --------------- //
 	// Getter | Setter //
@@ -40,17 +29,7 @@ export class ChannelMember extends User {
 	 * Les classes CSS qu'il faut appliquer aux éléments de pseudo de salon.
 	 */
 	get className(): string {
-		return `${super.className} ${this.highestAccessLevel.className}`;
-	}
-
-	/**
-	 * Niveau d'accès du pseudo le plus haut gradé.
-	 */
-	get highestAccessLevel() {
-		if (!this._highestAccessLevel) {
-			this._highestAccessLevel = highestAccessLevel(this.accessLevel);
-		}
-		return this._highestAccessLevel;
+		return `${super.className} ${this.accessLevel.highest.className}`;
 	}
 
 	// ------- //
@@ -61,8 +40,8 @@ export class ChannelMember extends User {
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * minimal donné.
 	 */
-	hasAccessLevel(level: ChannelAccessLevel): boolean {
-		return this.highestAccessLevel.level >= level;
+	geAccessLevel(level: ChannelAccessLevelFlag): boolean {
+		return this.accessLevel.ge(level);
 	}
 
 	/**
@@ -70,13 +49,13 @@ export class ChannelMember extends User {
 	 * minimal à demi-opérateur.
 	 */
 	isChanOperator(): boolean {
-		return this.hasAccessLevel(ChannelAccessLevel.HalfOperator);
+		return this.geAccessLevel(ChannelAccessLevelFlag.HalfOperator);
 	}
 
 	/**
 	 * Définit le niveau d'accès du pseudo.
 	 */
-	withAccessLevel(level: ChannelAccessLevel): this {
+	withAccessLevel(level: ChannelAccessLevelFlag): this {
 		this.accessLevel.add(level);
 		return this;
 	}
@@ -85,7 +64,7 @@ export class ChannelMember extends User {
 	 * Définit les niveaux d'accès du pseudo (raw).
 	 */
 	withRawAccessLevel(raw: Array<string>): this {
-		const levels = parseAccessLevels(raw);
+		const levels = this.accessLevel.parse(raw);
 		for (const level of levels) {
 			this.withAccessLevel(level);
 		}

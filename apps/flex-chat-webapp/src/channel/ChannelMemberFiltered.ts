@@ -34,7 +34,7 @@ export class ChannelMemberFiltered extends ChannelMember {
 	/**
 	 * Résultat du filtre de recherche.
 	 */
-	declare searchHits: Array<ChannelMemberSearchHits>;
+	searchHits: Array<ChannelMemberSearchHits> = [];
 
 	// ----------- //
 	// Constructor //

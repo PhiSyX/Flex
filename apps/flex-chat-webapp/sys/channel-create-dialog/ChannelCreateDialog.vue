@@ -2,6 +2,7 @@
 import { Dialog, UiButton } from "@phisyx/flex-uikit";
 
 import { ref } from "vue";
+import { channelID } from "~/asserts/room";
 
 // ---- //
 // Type //
@@ -23,7 +24,7 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const channelsRequest = ref<ChannelID>("" as ChannelID);
+const channelsRequest = ref<ChannelID>(channelID(""));
 const keysRequest = ref("");
 
 function submitHandler() {

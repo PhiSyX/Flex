@@ -19,7 +19,7 @@ import type { CommandInterface, Module } from "~/modules/interface";
 import type { User } from "~/user/User";
 
 import { assertChannelRoom, isChannel } from "~/asserts/room";
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 import { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 import { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
@@ -759,26 +759,26 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function sendSetAccessLevel(
 		channel: ChannelRoom,
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevel,
+		accessLevel: ChannelAccessLevelFlag,
 	) {
 		const payload = { channel: channel.name, nicknames: [member.nickname] };
 
 		let maybeModule: Option<CommandInterface<"OP">> = None();
 
 		switch (accessLevel) {
-			case ChannelAccessLevel.Owner:
+			case ChannelAccessLevelFlag.Owner:
 				maybeModule = store.moduleManager().get("QOP");
 				break;
-			case ChannelAccessLevel.AdminOperator:
+			case ChannelAccessLevelFlag.AdminOperator:
 				maybeModule = store.moduleManager().get("AOP");
 				break;
-			case ChannelAccessLevel.Operator:
+			case ChannelAccessLevelFlag.Operator:
 				maybeModule = store.moduleManager().get("OP");
 				break;
-			case ChannelAccessLevel.HalfOperator:
+			case ChannelAccessLevelFlag.HalfOperator:
 				maybeModule = store.moduleManager().get("HOP");
 				break;
-			case ChannelAccessLevel.Vip:
+			case ChannelAccessLevelFlag.Vip:
 				maybeModule = store.moduleManager().get("VIP");
 				break;
 		}
@@ -796,26 +796,26 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function sendUnsetAccessLevel(
 		channel: ChannelRoom,
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevel,
+		accessLevel: ChannelAccessLevelFlag,
 	) {
 		const payload = { channel: channel.name, nicknames: [member.nickname] };
 
 		let maybeModule: Option<CommandInterface<"OP">> = None();
 
 		switch (accessLevel) {
-			case ChannelAccessLevel.Owner:
+			case ChannelAccessLevelFlag.Owner:
 				maybeModule = store.moduleManager().get("DEQOP");
 				break;
-			case ChannelAccessLevel.AdminOperator:
+			case ChannelAccessLevelFlag.AdminOperator:
 				maybeModule = store.moduleManager().get("DEAOP");
 				break;
-			case ChannelAccessLevel.Operator:
+			case ChannelAccessLevelFlag.Operator:
 				maybeModule = store.moduleManager().get("DEOP");
 				break;
-			case ChannelAccessLevel.HalfOperator:
+			case ChannelAccessLevelFlag.HalfOperator:
 				maybeModule = store.moduleManager().get("DEHOP");
 				break;
-			case ChannelAccessLevel.Vip:
+			case ChannelAccessLevelFlag.Vip:
 				maybeModule = store.moduleManager().get("DEVIP");
 				break;
 		}

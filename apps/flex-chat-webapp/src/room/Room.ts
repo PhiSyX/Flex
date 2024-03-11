@@ -25,7 +25,7 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * ID de la chambre.
 	 */
-	declare _id: R;
+	private _id!: R;
 
 	/**
 	 * Définit l'état de la chambre, active ou non.

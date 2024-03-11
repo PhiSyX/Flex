@@ -60,22 +60,22 @@ export class User {
 	/**
 	 * ID de l'utilisateur.
 	 */
-	declare id: Origin["id"];
+	id: Origin["id"];
 
 	/**
 	 * Pseudonyme de l'utilisateur.
 	 */
-	declare nickname: Origin["nickname"];
+	nickname: Origin["nickname"];
 
 	/**
 	 * Identifiant de l'utilisateur.
 	 */
-	declare ident: Origin["ident"];
+	ident: Origin["ident"];
 
 	/**
 	 * Hôte de l'utilisateur.
 	 */
-	declare host: Origin["host"];
+	host: Origin["host"];
 
 	/**
 	 * Est-ce le pseudonyme est le pseudonyme courant connecté.

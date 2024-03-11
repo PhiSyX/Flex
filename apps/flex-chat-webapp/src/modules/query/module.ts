@@ -11,6 +11,7 @@
 import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/store/ChatStore";
 
+import { roomID } from "~/asserts/room";
 import { QueryCommand } from "./command";
 
 // -------------- //
@@ -39,7 +40,7 @@ export class QueryModule implements Module<QueryModule> {
 
 	input(__: string, nicknamesRaw?: RoomID) {
 		for (const nickname of nicknamesRaw?.split(",") || []) {
-			this.command.handle(nickname as RoomID);
+			this.command.handle(roomID(nickname));
 		}
 	}
 

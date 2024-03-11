@@ -69,7 +69,7 @@ export function useInputFilterUserlist(props: Props) {
 			const test = fuzzy_search(filterNick.value, member.nickname)
 				.map(mapSearchRecord(false))
 				.or_else(() =>
-					fuzzy_search(filterNick.value, member.highestAccessLevel.symbol).map(
+					fuzzy_search(filterNick.value, member.accessLevel.highest.symbol).map(
 						mapSearchRecord(true),
 					),
 				)
@@ -82,7 +82,7 @@ export function useInputFilterUserlist(props: Props) {
 			const test = fuzzy_search(filterNick.value, member.nickname)
 				.map(mapSearchRecord(false))
 				.or_else(() =>
-					fuzzy_search(filterNick.value, member.highestAccessLevel.symbol).map(
+					fuzzy_search(filterNick.value, member.accessLevel.highest.symbol).map(
 						mapSearchRecord(true),
 					),
 				)
@@ -95,7 +95,7 @@ export function useInputFilterUserlist(props: Props) {
 			const test = fuzzy_search(filterNick.value, member.nickname)
 				.map(mapSearchRecord(false))
 				.or_else(() =>
-					fuzzy_search(filterNick.value, member.highestAccessLevel.symbol).map(
+					fuzzy_search(filterNick.value, member.accessLevel.highest.symbol).map(
 						mapSearchRecord(true),
 					),
 				)

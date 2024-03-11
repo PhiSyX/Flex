@@ -5,7 +5,7 @@ import { computed } from "vue";
 import type { ChannelMember } from "~/channel/ChannelMember";
 import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 
 import ChannelUserlistAdminOperatorMenu from "./ChannelUserlistAccessLevelAOPMenu.vue";
 import ChannelUserlistHalfOperatorMenu from "./ChannelUserlistAccessLevelHOPMenu.vue";
@@ -28,11 +28,11 @@ export interface Emits {
 	(evtName: "ignore-user", user: Origin): void;
 	(evtName: "kick-member", member: ChannelMember): void;
 	(evtName: "open-private", user: Origin): void;
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
 	(evtName: "unban-member", member: ChannelMemberSelected): void;
 	(evtName: "unban-nick", member: ChannelMemberSelected): void;
 	(evtName: "unignore-user", user: Origin): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
 }
 
 // --------- //
@@ -51,7 +51,7 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 );
 
 const isCurrentClientMemberHaveAccessLevel = computed(
-	() => props.currentClientMember.highestAccessLevel.level > ChannelAccessLevel.Vip,
+	() => props.currentClientMember.accessLevel.highest.level > ChannelAccessLevelFlag.Vip,
 );
 
 const banMemberHandler = () => emit("ban-member", props.selectedMember.member);
@@ -63,9 +63,9 @@ const openPrivateHandler = () => emit("open-private", props.selectedMember.membe
 const ignoreUserHandler = () => emit("ignore-user", props.selectedMember.member);
 const kickMemberHandler = () => emit("kick-member", props.selectedMember.member);
 const unignoreUserHandler = () => emit("unignore-user", props.selectedMember.member);
-const setAccessLevelHandler = (member: ChannelMember, accessLevel: ChannelAccessLevel) =>
+const setAccessLevelHandler = (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) =>
 	emit("set-access-level", member, accessLevel);
-const unsetAccessLevelHandler = (member: ChannelMember, accessLevel: ChannelAccessLevel) =>
+const unsetAccessLevelHandler = (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", member, accessLevel);
 </script>
 

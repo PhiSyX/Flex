@@ -99,7 +99,7 @@ export class ChannelMembers {
 	 * Ajoute un pseudo de salon dans la liste des membres du salon.
 	 */
 	add(member: ChannelMember) {
-		const group = this.members[member.highestAccessLevel.group];
+		const group = this.members[member.accessLevel.highest.group];
 		group.set(member.id, member);
 	}
 

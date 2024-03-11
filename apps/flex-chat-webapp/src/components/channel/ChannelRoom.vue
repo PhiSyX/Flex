@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import type { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 import type { ChannelMember } from "~/channel/ChannelMember";
 import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 import type { ChannelRoom } from "~/channel/ChannelRoom";
@@ -85,7 +85,7 @@ function createTopicLayer(payload: {
  * Envoie les commandes liées aux niveaux d'accès.
  */
 const sendAccessLevel =
-	(applyState: "+" | "-") => (member: ChannelMember, accessLevel: ChannelAccessLevel) => {
+	(applyState: "+" | "-") => (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) => {
 		if (applyState === "+") {
 			chatStore.sendSetAccessLevel(props.room, member, accessLevel);
 		} else {

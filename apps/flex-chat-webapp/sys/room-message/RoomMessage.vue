@@ -124,13 +124,13 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 			</Match>
 			<template v-else>
 				<Match :maybe="maybeChannelMember">
-					<template #some="{ data: ChannelMember }">
+					<template #some="{ data: channelMember }">
 						<ChannelNickComponent
 							tag="span"
-							:nickname="ChannelMember.nickname"
-							:symbol="ChannelMember.highestAccessLevel.symbol"
-							:classes="ChannelMember.className"
-							:is-current-client="ChannelMember.isCurrentClient"
+							:nickname="channelMember.nickname"
+							:symbol="channelMember.accessLevel.highest.symbol"
+							:classes="channelMember.className"
+							:is-current-client="channelMember.isCurrentClient"
 							prefix="<"
 							suffix=">"
 						/>

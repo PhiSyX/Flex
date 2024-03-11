@@ -11,7 +11,7 @@
 import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/store/ChatStore";
 
-import { isChannel } from "~/asserts/room";
+import { channelID, channelsID, isChannel } from "~/asserts/room";
 import { PartCommand, SapartCommand } from "./command";
 import { PartHandler } from "./handler";
 
@@ -48,17 +48,17 @@ export class PartModule implements Module<PartModule> {
 		if (channelsR) {
 			if (!channelsR.startsWith("#") && roomName.startsWith("#")) {
 				words.unshift(channelsR);
-				channelsR = roomName as ChannelID;
+				channelsR = channelID(roomName);
 			}
 		} else if (roomName.startsWith("#")) {
-			channelsR = roomName as ChannelID;
+			channelsR = channelID(roomName);
 		}
 
 		if (!isChannel(channelsR)) return;
 
-		const channels = channelsR.split(",") as Array<ChannelID>;
+		const chans = channelsID(channelsR.split(","));
 		const message = words.join(" ");
-		this.send({ channels, message });
+		this.send({ channels: chans, message });
 	}
 
 	send(payload: Command<"PART">) {
@@ -92,10 +92,10 @@ export class SapartModule implements Module<SapartModule> {
 
 	input(_: string, nicknamesRaw?: string, channelsRaw?: ChannelID, ...messages: Array<string>) {
 		const nicknames = nicknamesRaw?.split(",");
-		const channels = channelsRaw?.split(",") as Array<ChannelID>;
-		if (!nicknames || !channels) return;
+		const chans = channelsID(channelsRaw?.split(","));
+		if (!nicknames || !chans) return;
 		const message = messages.join(" ");
-		this.send({ nicknames, channels, message });
+		this.send({ nicknames, channels: chans, message });
 	}
 
 	send(payload: Command<"SAPART">) {

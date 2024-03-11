@@ -40,16 +40,17 @@ export const MESSAGES_LIMIT: number = 250;
 // Implémentation //
 // -------------- //
 
-export class RoomMessage {
+// biome-ignore lint/suspicious/noExplicitAny: à corriger.
+export class RoomMessage<T = any> {
 	archived = false;
-	declare data: MessageProperties["data"];
-	declare id: MessageProperties["id"];
-	declare message: MessageProperties["message"];
+	data!: MessageProperties["data"];
+	id!: MessageProperties["id"];
+	message!: MessageProperties["message"];
 	isCurrentClient: MessageProperties["isCurrentClient"] = false;
-	declare nickname: MessageProperties["nickname"];
-	declare target: MessageProperties["target"];
-	declare time: MessageProperties["time"];
-	declare type: MessageProperties["type"];
+	nickname!: MessageProperties["nickname"];
+	target!: MessageProperties<T>["target"];
+	time!: MessageProperties["time"];
+	type!: MessageProperties["type"];
 
 	get isEventType(): boolean {
 		return this.type.startsWith("event");

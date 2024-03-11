@@ -15,7 +15,7 @@ import type { Layer, OverlayerStore } from "~/store/OverlayerStore";
 import type { User } from "~/user/User";
 
 import { ChannelAccessControl } from "./ChannelAccessControl";
-import { ChannelAccessLevel } from "./ChannelAccessLevel";
+import { ChannelAccessLevelFlag } from "./ChannelAccessLevel";
 import { ChannelMember } from "./ChannelMember";
 import { ChannelMembers } from "./ChannelMembers";
 import { ChannelTopic } from "./ChannelTopic";
@@ -209,7 +209,7 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	 */
 	upgradeMember(oldNick: ChannelMember, newNick: ChannelMember) {
 		this.members.remove(oldNick.id);
-		newNick.highestAccessLevel;
+		newNick.accessLevel.highest;
 		this.members.add(newNick);
 	}
 
@@ -224,7 +224,7 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
 	withOwner(user: User): this {
-		this.addMember(new ChannelMember(user).withAccessLevel(ChannelAccessLevel.Owner));
+		this.addMember(new ChannelMember(user).withAccessLevel(ChannelAccessLevelFlag.Owner));
 		return this;
 	}
 }

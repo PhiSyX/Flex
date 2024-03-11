@@ -23,7 +23,7 @@ export class ChannelMemberSelected {
 	/**
 	 * Pseudo de salon sélectionné.
 	 */
-	declare member: ChannelMember;
+	member: ChannelMember;
 
 	/**
 	 * Mask contenant le ban du membre.
@@ -33,7 +33,7 @@ export class ChannelMemberSelected {
 	/**
 	 * Est-ce que le membre sélectionné est bloqué?
 	 */
-	declare isBlocked: boolean;
+	isBlocked: boolean;
 
 	// ----------- //
 	// Constructor //

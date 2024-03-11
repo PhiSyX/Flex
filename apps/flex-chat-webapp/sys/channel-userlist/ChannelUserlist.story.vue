@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelMembers } from "~/channel/ChannelMembers";
 import { User } from "~/user/User";
@@ -28,9 +28,9 @@ const origin3: User = new User({
 	nickname: "User",
 });
 
-users.add(new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner));
-users.add(new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip));
-users.add(new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User));
+users.add(new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner));
+users.add(new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip));
+users.add(new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User));
 </script>
 
 <template>

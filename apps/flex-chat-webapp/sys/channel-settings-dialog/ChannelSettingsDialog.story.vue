@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { channelID } from "~/asserts/room";
 import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelRoom } from "~/channel/ChannelRoom";
 import { User } from "~/user/User";
 
 import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
 
-const channel1 = new ChannelRoom("#chan1" as ChannelID);
+const channel1 = new ChannelRoom(channelID("#chan1"));
 channel1.setSettingMode("s");
 channel1.setSettingMode("m");
 const currentClientChannelMember = new ChannelMember(
@@ -17,7 +18,7 @@ const currentClientChannelMember = new ChannelMember(
 	}),
 );
 
-const channel2 = new ChannelRoom("#chan2" as ChannelID);
+const channel2 = new ChannelRoom(channelID("#chan2"));
 channel2.setSettingMode("n");
 channel2.setSettingMode("t");
 </script>

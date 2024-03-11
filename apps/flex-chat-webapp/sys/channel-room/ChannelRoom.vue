@@ -3,7 +3,7 @@ import type { Option } from "@phisyx/flex-safety";
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
 import { computed, ref } from "vue";
 
-import type { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import type { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 import type { ChannelMember } from "~/channel/ChannelMember";
 import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 import type { ChannelRoom } from "~/channel/ChannelRoom";
@@ -43,11 +43,11 @@ export interface Emits {
 	(evtName: "open-room", roomName: RoomID): void;
 	(evtName: "select-member", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
 	(evtName: "unban-member", member: ChannelMemberSelected): void;
 	(evtName: "unban-nick", member: ChannelMemberSelected): void;
 	(evtName: "unignore-user", origin: Origin): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
 	(evtName: "update-topic", topic: string): void;
 }
 
@@ -97,9 +97,9 @@ const openChannelSettings = (event: Event) => emit("open-channel-settings", even
 const openPrivate = (origin: Origin) => emit("open-private", origin);
 const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 const sendMessage = (message: string) => emit("send-message", message);
-const setAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevel) =>
+const setAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) =>
 	emit("set-access-level", member, accessLevel);
-const unsetAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevel) =>
+const unsetAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", member, accessLevel);
 </script>
 

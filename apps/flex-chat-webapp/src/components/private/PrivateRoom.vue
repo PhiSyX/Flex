@@ -2,6 +2,8 @@
 import { computed } from "vue";
 
 import type { PrivateRoom } from "~/private/PrivateRoom";
+
+import { roomID } from "~/asserts/room";
 import { useChatStore } from "~/store/ChatStore";
 import { useOverlayerStore } from "~/store/OverlayerStore";
 import { UserChangeNicknameDialog } from "~/user/User";
@@ -77,8 +79,7 @@ function openRoom(roomName: RoomID) {
  * Envoie du message au destinataire.
  */
 function sendMessage(message: string) {
-	// FIXME: type à corriger
-	chatStore.sendMessage(recipient.value.nickname as UserID, message);
+	chatStore.sendMessage(roomID(recipient.value.nickname), message);
 }
 
 /**

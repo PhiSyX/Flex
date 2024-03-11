@@ -5,6 +5,7 @@ import { type ModelRef, reactive, ref } from "vue";
 import { useChatStore } from "~/store/ChatStore";
 import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
 
+import { channelID } from "~/asserts/room";
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 
 // ---- //
@@ -59,7 +60,7 @@ const loginFormData = reactive({
 	alternativeNickname: import.meta.env.VITE_APP_NICKNAME
 		? `${import.meta.env.VITE_APP_NICKNAME}_`
 		: "",
-	channels: import.meta.env.VITE_APP_CHANNELS || ("" as ChannelID),
+	channels: import.meta.env.VITE_APP_CHANNELS || channelID(""),
 	nickname: import.meta.env.VITE_APP_NICKNAME || "",
 	realname: import.meta.env.VITE_APP_REALNAME || "Flex Web App",
 	rememberMe: new RememberMeStorage(),

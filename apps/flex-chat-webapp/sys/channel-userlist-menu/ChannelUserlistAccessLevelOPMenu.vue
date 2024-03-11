@@ -5,7 +5,7 @@ import { computed } from "vue";
 import type { ChannelMember } from "~/channel/ChannelMember";
 import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
 
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 
 // ---- //
 // Type //
@@ -19,8 +19,12 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevel): void;
+	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "unset-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 }
 
 // --------- //
@@ -34,19 +38,19 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 const isCurrentClientMemberOperator = computed(() =>
-	props.currentClientMember.accessLevel.has(ChannelAccessLevel.Operator),
+	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Operator),
 );
 const isCurrentClientMemberHaveOperatorRights = computed(
-	() => props.currentClientMember.highestAccessLevel.level >= ChannelAccessLevel.Operator,
+	() => props.currentClientMember.accessLevel.highest.level >= ChannelAccessLevelFlag.Operator,
 );
 
 const isSelectedMemberOperator = computed(() =>
-	props.selectedMember.member.accessLevel.has(ChannelAccessLevel.Operator),
+	props.selectedMember.member.accessLevel.ge(ChannelAccessLevelFlag.Operator),
 );
 
-const setAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
+const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
+const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", props.selectedMember.member, accessLevel);
 </script>
 
@@ -56,7 +60,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevel.Operator)"
+			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Operator)"
 		>
 			-o
 		</UiButton>
@@ -73,7 +77,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
 			variant="secondary"
 			class="is-operator"
 			title="Commande /op"
-			@click="setAccessLevelHandler(ChannelAccessLevel.Operator)"
+			@click="setAccessLevelHandler(ChannelAccessLevelFlag.Operator)"
 		>
 			+o
 		</UiButton>
@@ -82,7 +86,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevel) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevel.Operator)"
+			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Operator)"
 		>
 			-o
 		</UiButton>

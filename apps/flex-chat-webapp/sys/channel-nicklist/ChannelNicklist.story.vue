@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChannelAccessLevel } from "~/channel/ChannelAccessLevel";
+import { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
 import { ChannelMember } from "~/channel/ChannelMember";
 import { ChannelMemberFiltered } from "~/channel/ChannelMemberFiltered";
 import { User } from "~/user/User";
@@ -26,22 +26,22 @@ const origin3: User = new User({
 });
 
 const moderatorsOriginal = [
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Owner),
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.AdminOperator),
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.Operator),
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevel.HalfOperator),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.AdminOperator),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Operator),
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.HalfOperator),
 ];
 const moderators = {
 	original: moderatorsOriginal,
 	filtered: moderatorsOriginal.map((member) => new ChannelMemberFiltered(member, [])),
 };
 
-const vipsOriginal = [new ChannelMember(origin2).withAccessLevel(ChannelAccessLevel.Vip)];
+const vipsOriginal = [new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip)];
 const vips = {
 	original: vipsOriginal,
 	filtered: vipsOriginal.map((member) => new ChannelMemberFiltered(member, [])),
 };
-const usersOriginal = [new ChannelMember(origin3).withAccessLevel(ChannelAccessLevel.User)];
+const usersOriginal = [new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User)];
 const users = {
 	original: usersOriginal,
 	filtered: usersOriginal.map((member) => new ChannelMemberFiltered(member, [])),

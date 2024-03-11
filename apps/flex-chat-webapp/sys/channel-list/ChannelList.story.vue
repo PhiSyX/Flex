@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { channelID } from "~/asserts/room";
 import { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
 
 import ChannelList from "./ChannelList.vue";
@@ -7,7 +8,7 @@ const emptyRoom = new ChannelListCustomRoom();
 
 const room = new ChannelListCustomRoom();
 room.insert({
-	channel: "#chan" as ChannelID,
+	channel: channelID("#chan"),
 	modes_settings: "nt",
 	topic: "Mon super topic",
 	total_members: 42,

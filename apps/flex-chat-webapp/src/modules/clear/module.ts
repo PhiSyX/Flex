@@ -11,6 +11,7 @@
 import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/store/ChatStore";
 
+import { roomID } from "~/asserts/room";
 import { ClearCommand, ClearallCommand } from "./command";
 
 // -------------- //
@@ -37,9 +38,9 @@ export class ClearModule implements Module<ClearModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName: RoomID, roomsRaw?: RoomID) {
-		for (const room of roomsRaw?.split(",") || [roomName]) {
-			this.command.handle(room as RoomID);
+	input(activeRoomName: RoomID, roomsRaw?: RoomID) {
+		for (const roomName of roomsRaw?.split(",") || [activeRoomName]) {
+			this.command.handle(roomID(roomName));
 		}
 	}
 
