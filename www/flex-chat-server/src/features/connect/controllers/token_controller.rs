@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::extract::Form;
-use flex_web_framework::http::request::State;
 use flex_web_framework::http::{IntoResponse, StatusCode};
 use flex_web_framework::types::time;
 
@@ -30,26 +29,18 @@ impl TokenController
 	pub const COOKIE_TOKEN_KEY: &'static str = "flex.token";
 
 	pub async fn token(
-		cm: flex_web_framework::http::TowerCookies,
-		State(cookie_key): State<flex_web_framework::http::Key>,
+		cookie_manager: flex_web_framework::http::Cookies,
 		Form(token_form_data): Form<TokenFormData>,
 	) -> impl IntoResponse
 	{
 		tracing::debug!(?token_form_data, "Données du formulaire");
 
-		let cookie_manager = flex_web_framework::http::Cookies::new(&cm, &cookie_key);
 		let signed_cookies = cookie_manager.signed();
-
-		let session_token = token_form_data.token.to_string();
-		let new_token_cookie =
-			flex_web_framework::http::Cookie::build((Self::COOKIE_TOKEN_KEY, session_token))
-				.path("/")
-				.expires(time::OffsetDateTime::now_utc().checked_add(time::Duration::days(3)))
-				.secure(true)
-				.http_only(true)
-				.same_site(flex_web_framework::http::SameSite::Lax);
-
-		signed_cookies.add(new_token_cookie.build());
+		signed_cookies.add((
+			Self::COOKIE_TOKEN_KEY,
+			token_form_data.token.to_string(),
+			time::Duration::days(3),
+		));
 
 		StatusCode::OK
 	}

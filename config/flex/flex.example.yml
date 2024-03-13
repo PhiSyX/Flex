@@ -8,6 +8,14 @@ cors:
   allow_headers:
     - "Content-Type"
 
+#cookie:
+#  domain: ""
+#  path: "/"
+#  max_age: 7200
+#  http_only: true
+#  secure: true
+#  same_site: Lax
+
 network:
   name: Nom d'example
 

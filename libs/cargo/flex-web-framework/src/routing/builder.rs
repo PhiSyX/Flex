@@ -19,7 +19,7 @@ use crate::AxumState;
 
 pub trait RouterBuilder
 {
-	type State;
+	type State: Clone + Send + Sync + 'static;
 
 	/// Initialisation d'une route.
 	fn path(url_path: impl ToString + fmt::Debug) -> Self;
@@ -78,5 +78,5 @@ pub trait RouterBuilder
 		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static;
 
-	fn build(self) -> Router<AxumState<Self::State>>;
+	fn build(self) -> Router<Self::State>;
 }

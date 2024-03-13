@@ -24,7 +24,7 @@ pub use axum::Extension;
 pub use self::extension::*;
 pub use self::interface::*;
 pub use self::server::ServerState as AxumState;
-pub use self::settings::Config;
+pub use self::settings::*;
 
 // ---- //
 // Type //

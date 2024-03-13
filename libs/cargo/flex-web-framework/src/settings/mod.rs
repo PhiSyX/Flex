@@ -8,9 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod cookie;
 mod cors;
 mod server;
 
+pub use self::cookie::{Settings as CookieSettings, SettingsSameSite as CookieSettingsSameSite};
 pub use self::cors::Settings as CORSSettings;
 pub use self::server::Settings as ServerSettings;
 
@@ -27,6 +29,7 @@ where
 	UserConfig: crate::FeatureConfig,
 {
 	pub cors: Option<CORSSettings>,
+	pub cookie: Option<CookieSettings>,
 	// pub database: Option<DatabaseSettings>,
 	#[serde(bound(deserialize = ""))]
 	#[serde(flatten)]

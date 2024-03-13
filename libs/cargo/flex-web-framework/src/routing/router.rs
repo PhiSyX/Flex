@@ -27,7 +27,7 @@ pub struct Router<S>
 	/// Méthode HTTP de la route.
 	pub methods: HashSet<http::Method>,
 	/// Action associé à un chemin d'URL.
-	pub action: axum::routing::MethodRouter<S>,
+	pub action: axum::routing::MethodRouter<AxumState<S>>,
 }
 
 // -------------- //
@@ -46,11 +46,11 @@ impl<S> Router<S>
 // Implémentation // -> Interface
 // -------------- //
 
-impl<S> RouterBuilder for Router<AxumState<S>>
+impl<UserState> RouterBuilder for Router<UserState>
 where
-	S: Clone + Send + Sync + 'static,
+	UserState: Clone + Send + Sync + 'static,
 {
-	type State = S;
+	type State = UserState;
 
 	fn path(url_path: impl ToString + fmt::Debug) -> Self
 	{
@@ -161,17 +161,17 @@ where
 		self
 	}
 
-	fn build(self) -> Router<AxumState<Self::State>>
+	fn build(self) -> Router<Self::State>
 	{
 		self
 	}
 }
 
-impl<S> From<&Router<AxumState<S>>> for axum::Router<AxumState<S>>
+impl<S> From<&Router<S>> for axum::Router<AxumState<S>>
 where
 	S: Clone + Send + Sync + 'static,
 {
-	fn from(router: &Router<AxumState<S>>) -> Self
+	fn from(router: &Router<S>) -> Self
 	{
 		Self::new().route(&router.fullpath, router.action.to_owned())
 	}

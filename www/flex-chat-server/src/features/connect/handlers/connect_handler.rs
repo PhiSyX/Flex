@@ -79,7 +79,13 @@ impl ConnectionRegistrationHandler
 			.req_parts()
 			.extensions
 			.get::<flex_web_framework::http::TowerCookies>()
-			.map(|cm| flex_web_framework::http::Cookies::new(cm, server_state.get_cookie_key()))
+			.map(|cm| {
+				flex_web_framework::http::Cookies::new(
+					cm.clone(),
+					server_state.get_cookie_key().clone(),
+				)
+				.with_cookie_settings(server_state.get_cookie_settings().clone())
+			})
 			.expect("Cookie manager");
 
 		let token = cookie_manager

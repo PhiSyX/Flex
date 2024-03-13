@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::settings::CookieSettings;
+
 // --------- //
 // Structure //
 // --------- //
@@ -15,6 +17,7 @@
 #[derive(Clone)]
 pub struct ServerState<UserState>
 {
+	cookie_settings: CookieSettings,
 	cookie_key: Option<tower_cookies::Key>,
 	user: Option<UserState>,
 }
@@ -30,6 +33,17 @@ impl<S> ServerState<S>
 		self.cookie_key.as_ref()
 	}
 
+
+	pub fn cookie_settings(self) -> CookieSettings
+	{
+		self.cookie_settings
+	}
+
+	pub fn get_cookie_settings(&self) -> &CookieSettings
+	{
+		&self.cookie_settings
+	}
+
 	pub fn get_cookie_key(&self) -> &tower_cookies::Key
 	{
 		assert!(self.cookie_key.is_some());
@@ -39,6 +53,11 @@ impl<S> ServerState<S>
 	pub fn set_cookie_key(&mut self, cookie_key: tower_cookies::Key)
 	{
 		self.cookie_key.replace(cookie_key);
+	}
+
+	pub fn set_cookie_settings(&mut self, cookie_settings: CookieSettings)
+	{
+		self.cookie_settings = cookie_settings;
 	}
 }
 
@@ -62,6 +81,14 @@ impl<S> ServerState<S>
 // Implémentation // -> Interface
 // -------------- //
 
+impl<S> axum::extract::FromRef<ServerState<S>> for CookieSettings
+{
+	fn from_ref(state: &ServerState<S>) -> Self
+	{
+		state.cookie_settings.clone()
+	}
+}
+
 impl<S> axum::extract::FromRef<ServerState<S>> for tower_cookies::Key
 {
 	fn from_ref(state: &ServerState<S>) -> Self
@@ -75,6 +102,7 @@ impl<S> Default for ServerState<S>
 	fn default() -> Self
 	{
 		Self {
+			cookie_settings: Default::default(),
 			cookie_key: Default::default(),
 			user: Default::default(),
 		}

@@ -66,7 +66,7 @@ where
 			scoped_router = scoped_router.merge(router);
 		}
 
-		let config = match self.fetch_config(config_filename) {
+		let config: Config<<F as Feature>::Config> = match self.fetch_config(config_filename) {
 			| Ok(c) => c,
 			| Err(err) => {
 				let err_s = if config_filename == "empty" {
@@ -90,6 +90,12 @@ where
 				self.signal().send_critical(err_s);
 			}
 		};
+
+		if let Some(cookie) = config.cookie.as_ref() {
+			self.application_adapter
+				.state
+				.set_cookie_settings(cookie.clone());
+		}
 
 		scoped_router =
 			F::register_services(&config, &mut self.application_adapter.state, scoped_router);
@@ -144,7 +150,7 @@ where
 			scoped_router = scoped_router.merge(router);
 		}
 
-		let config = match self.fetch_config(config_filename) {
+		let config: Config<<F as AsyncFeature>::Config> = match self.fetch_config(config_filename) {
 			| Ok(c) => c,
 			| Err(err) => {
 				let err_s = if config_filename == "empty" {
@@ -168,6 +174,12 @@ where
 				self.signal().send_critical(err_s);
 			}
 		};
+
+		if let Some(cookie) = config.cookie.as_ref() {
+			self.application_adapter
+				.state
+				.set_cookie_settings(cookie.clone());
+		}
 
 		scoped_router =
 			F::register_services(&config, &mut self.application_adapter.state, scoped_router).await;
