@@ -8,16 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{self, ClientSocketInterface, Socket};
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
 use flex_chat_macro::command_response;
 
 command_response! {
-	struct PUBMSG
+	struct PUBMSG<'channel, 'text>
 	{
 		/// Le salon.
-		channel: &'a str,
+		channel: &'channel str,
 		/// Le texte.
-		text: &'a str,
+		text: &'text str,
 		/// Message venant de l'extérieur?
 		external: bool,
 	}
@@ -29,17 +30,76 @@ command_response! {
 
 pub trait PubmsgClientSocketCommandResponseInterface: ClientSocketInterface
 {
-	/// Émet au client les réponses liées à la commande /PUBMSG <channel>
-	fn emit_pubmsg<User>(&self, channel_name: &str, text: &str, by: User, external: bool)
-	where
-		User: serde::Serialize,
+	type Channel: ChannelInterface;
+
+	/// Émet au client courant les réponses liées à la commande /PUBMSG
+	/// <channel>
+	fn emit_pubmsg<MemberDTO>(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		text: &str,
+		by: &MemberDTO,
+	) where
+		MemberDTO: serde::Serialize;
+
+	/// Émet au client courant les réponses liées à la commande /PUBMSG
+	/// <channel>
+	fn emit_external_pubmsg(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		text: &str,
+		by: &<Self::Client as ClientInterface>::User,
+	);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_pubmsg<MemberDTO>(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		text: &str,
+		by: &MemberDTO,
+	) where
+		MemberDTO: serde::Serialize,
 	{
 		let pubmsg_command = PubmsgCommandResponse {
 			origin: &by,
 			tags: PubmsgCommandResponse::default_tags(),
 			channel: channel_name,
 			text,
-			external,
+			external: false,
+		};
+
+		_ = self.socket().emit(pubmsg_command.name(), &pubmsg_command);
+
+		let target_room = format!("channel:{}", channel_name.to_lowercase());
+
+		_ = self
+			.socket()
+			.except(self.useless_people_room())
+			.to(target_room)
+			.emit(pubmsg_command.name(), pubmsg_command);
+	}
+
+	fn emit_external_pubmsg(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		text: &str,
+		by: &<Self::Client as ClientInterface>::User,
+	)
+	{
+		let pubmsg_command = PubmsgCommandResponse {
+			origin: &by,
+			tags: PubmsgCommandResponse::default_tags(),
+			channel: channel_name,
+			text,
+			external: true,
 		};
 
 		_ = self.socket().emit(pubmsg_command.name(), &pubmsg_command);
@@ -53,9 +113,3 @@ pub trait PubmsgClientSocketCommandResponseInterface: ClientSocketInterface
 			.emit(pubmsg_command.name(), pubmsg_command);
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s> {}

@@ -119,10 +119,10 @@ impl NoticeHandler
 					| ChannelWritePermission::Yes(member) => {
 						let channel_member =
 							ChannelMemberDTO::from((client_socket.client(), member));
-						client_socket.emit_notice_on_channel(target, &data.text, channel_member);
+						client_socket.emit_notice_on_channel(target, &data.text, &channel_member);
 					}
 					| ChannelWritePermission::Bypass => {
-						client_socket.emit_notice_on_channel(
+						client_socket.emit_external_notice_on_channel(
 							target,
 							&data.text,
 							client_socket.user(),

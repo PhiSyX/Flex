@@ -8,16 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientSocketInterface, Socket};
+use flex_chat_channel::{Channel, ChannelInterface};
+use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
 use flex_chat_macro::command_response;
 
 command_response! {
-	struct NOTICE
+	struct NOTICE<'target, 'text>
 	{
 		/// La cible du message.
-		target: &'a str,
+		target: &'target str,
 		/// Le texte.
-		text: &'a str,
+		text: &'text str,
 	}
 }
 
@@ -27,6 +28,8 @@ command_response! {
 
 pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 {
+	type Channel: ChannelInterface;
+
 	/// Émet au client les réponses liées à la commande /NOTICE <nickname>
 	fn emit_notice_on_nick<User>(&self, target: &str, text: &str, by: User)
 	where
@@ -43,9 +46,35 @@ pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 	}
 
 	/// Émet au client les réponses liées à la commande /NOTICE <channel>
-	fn emit_notice_on_channel<User>(&self, target: &str, text: &str, by: User)
+	fn emit_external_notice_on_channel(
+		&self,
+		target: &str,
+		text: &str,
+		by: &<Self::Client as ClientInterface>::User,
+	)
+	{
+		let notice_command = NoticeCommandResponse {
+			origin: &by,
+			tags: NoticeCommandResponse::default_tags(),
+			target,
+			text,
+		};
+
+		_ = self.socket().emit(notice_command.name(), &notice_command);
+
+		let target_room = format!("channel:{}", target.to_lowercase());
+
+		_ = self
+			.socket()
+			.except(self.useless_people_room())
+			.to(target_room)
+			.emit(notice_command.name(), notice_command);
+	}
+
+	/// Émet au client les réponses liées à la commande /NOTICE <channel>
+	fn emit_notice_on_channel<MemberDTO>(&self, target: &str, text: &str, by: &MemberDTO)
 	where
-		User: serde::Serialize,
+		MemberDTO: serde::Serialize,
 	{
 		let notice_command = NoticeCommandResponse {
 			origin: &by,
@@ -99,4 +128,7 @@ pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s> {}
+impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+}
