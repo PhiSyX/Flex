@@ -38,14 +38,14 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 const isCurrentClientMemberOperator = computed(() =>
-	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Operator),
+	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Operator),
 );
 const isCurrentClientMemberHaveOperatorRights = computed(
 	() => props.currentClientMember.accessLevel.highest.level >= ChannelAccessLevelFlag.Operator,
 );
 
 const isSelectedMemberOperator = computed(() =>
-	props.selectedMember.member.accessLevel.ge(ChannelAccessLevelFlag.Operator),
+	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Operator),
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>

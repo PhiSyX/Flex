@@ -166,10 +166,26 @@ export class ChannelAccessLevel {
 
 	/**
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
+	 * donné.
+	 */
+	eq(level: ChannelAccessLevelFlag): boolean {
+		return this.highest.level === level;
+	}
+
+	/**
+	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * minimal donné.
 	 */
 	ge(level: ChannelAccessLevelFlag): boolean {
 		return this.highest.level >= level;
+	}
+
+	/**
+	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
+	 * minimal donné.
+	 */
+	gt(level: ChannelAccessLevelFlag): boolean {
+		return this.highest.level > level;
 	}
 
 	/**

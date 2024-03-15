@@ -32,7 +32,11 @@ export interface Emits {
 	(evtName: "unban-member", member: ChannelMemberSelected): void;
 	(evtName: "unban-nick", member: ChannelMemberSelected): void;
 	(evtName: "unignore-user", user: Origin): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "unset-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 }
 
 // --------- //
@@ -50,8 +54,8 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 
-const isCurrentClientMemberHaveAccessLevel = computed(
-	() => props.currentClientMember.accessLevel.highest.level > ChannelAccessLevelFlag.Vip,
+const isCurrentClientMemberHaveAccessLevel = computed(() =>
+	props.currentClientMember.accessLevel.gt(ChannelAccessLevelFlag.Vip),
 );
 
 const banMemberHandler = () => emit("ban-member", props.selectedMember.member);

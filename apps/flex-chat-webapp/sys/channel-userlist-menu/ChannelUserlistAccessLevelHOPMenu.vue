@@ -39,22 +39,21 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 );
 
 const isCurrentClientMemberHalfOperator = computed(() =>
+	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.HalfOperator),
+);
+
+const isCurrentClientMemberHaveOperatorRights = computed(() =>
+	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Operator),
+);
+const isCurrentClientMemberHaveHalfOperatorRights = computed(() =>
 	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.HalfOperator),
 );
 
-const isCurrentClientMemberHaveOperatorRights = computed(
-	() => props.currentClientMember.accessLevel.highest.level >= ChannelAccessLevelFlag.Operator,
-);
-const isCurrentClientMemberHaveHalfOperatorRights = computed(
-	() =>
-		props.currentClientMember.accessLevel.highest.level >= ChannelAccessLevelFlag.HalfOperator,
-);
-
 const isSelectedMemberHalfOperator = computed(() =>
-	props.selectedMember.member.accessLevel.ge(ChannelAccessLevelFlag.HalfOperator),
+	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.HalfOperator),
 );
 const isSelectedMemberVipRights = computed(() =>
-	props.selectedMember.member.accessLevel.ge(ChannelAccessLevelFlag.Vip),
+	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Vip),
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>

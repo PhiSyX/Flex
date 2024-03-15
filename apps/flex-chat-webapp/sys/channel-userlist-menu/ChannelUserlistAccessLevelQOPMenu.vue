@@ -20,7 +20,11 @@ interface Props {
 
 interface Emits {
 	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "unset-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 }
 
 // --------- //
@@ -34,11 +38,10 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 const isCurrentClientMemberOwner = computed(() =>
-	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Owner),
+	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Owner),
 );
-
 const isSelectedMemberOwner = computed(() =>
-	props.selectedMember.member.accessLevel.ge(ChannelAccessLevelFlag.Owner),
+	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Owner),
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>

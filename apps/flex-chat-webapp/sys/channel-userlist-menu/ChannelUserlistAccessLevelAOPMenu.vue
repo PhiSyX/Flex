@@ -34,14 +34,13 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 const isCurrentClientMemberOwner = computed(() =>
-	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Owner),
+	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Owner),
 );
 const isCurrentClientMemberAdmin = computed(() =>
-	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.AdminOperator),
+	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.AdminOperator),
 );
-
 const isSelectedMemberAdmin = computed(() =>
-	props.selectedMember.member.accessLevel.ge(ChannelAccessLevelFlag.AdminOperator),
+	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.AdminOperator),
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
