@@ -12,7 +12,7 @@
 macro_rules! command_response {
 	($(
 		$(#[$doc_struct:meta])*
-		struct $command:ident $(<$generic:ident>)? $({
+		struct $command:ident $(<$($generic:tt),*>)? $({
 			$(
 				$(#[$doc_field:meta])*
 				$field:ident : $ty:ty,
@@ -29,9 +29,9 @@ $crate::paste::paste! { $(
 	#[derive(Clone)]
 	#[derive(serde::Serialize)]
 	$(#[$doc_struct])*
-	pub struct [ < $command:camel CommandResponse > ] <'a $(, $generic)?, O = ()>
+	pub struct [ < $command:camel CommandResponse > ] <'o, $($($generic,)*)? O = ()>
 	{
-		pub origin: &'a O,
+		pub origin: &'o O,
 		pub tags: std::collections::HashMap<String, String>,
 		$($(
 			$(#[$doc_field])*
@@ -47,7 +47,7 @@ $crate::paste::paste! { $(
 
 $crate::paste::paste! { $(
 
-	impl<'a $(, $generic)?> [ < $command:camel CommandResponse > ] <'a $(, $generic)?>
+	impl<'o, $($($generic,)*)?> [ < $command:camel CommandResponse > ] <'o, $($($generic,)*)?>
 	{
 		pub fn default_tags() -> std::collections::HashMap<String, String>
 		{
@@ -58,7 +58,7 @@ $crate::paste::paste! { $(
 		}
 	}
 
-	impl<'a $(, $generic)?, O> [ < $command:camel CommandResponse > ] <'a $(, $generic)?, O>
+	impl<'o, $($($generic,)*)? O> [ < $command:camel CommandResponse > ] <'o, $($($generic,)*)? O>
 	{
 		#[allow(dead_code)]
 		pub fn with_tags<K, V>(
@@ -77,7 +77,7 @@ $crate::paste::paste! { $(
 		}
 	}
 
-	impl<'a $(, $generic)?, O> [ < $command:camel CommandResponse > ] <'a $(, $generic)?, O>
+	impl<'o, $($($generic,)*)? O> [ < $command:camel CommandResponse > ] <'o, $($($generic,)*)? O>
 	{
 		pub const fn name(&self) -> &'static str { stringify!($command) }
 	}

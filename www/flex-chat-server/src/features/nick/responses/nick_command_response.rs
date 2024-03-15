@@ -13,12 +13,12 @@ use flex_chat_macro::command_response;
 use flex_chat_user::UserInterface;
 
 command_response! {
-	struct NICK
+	struct NICK<'old, 'new>
 	{
 		/// Ancien pseudonyme.
-		old_nickname: &'a str,
+		old_nickname: &'old str,
 		/// Nouveau pseudonyme.
-		new_nickname: &'a str,
+		new_nickname: &'new str,
 	}
 }
 

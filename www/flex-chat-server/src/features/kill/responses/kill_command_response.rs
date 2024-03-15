@@ -12,12 +12,12 @@ use flex_chat_client::{Client, ClientSocketInterface, Origin, Socket};
 use flex_chat_macro::command_response;
 
 command_response! {
-	struct KILL
+	struct KILL<'victim, 'reason>
 	{
 		/// La victime.
-		knick: &'a Origin<Client>,
+		knick: &'victim Origin<Client>,
 		/// Raison du kill.
-		reason: &'a str,
+		reason: &'reason str,
 	}
 }
 

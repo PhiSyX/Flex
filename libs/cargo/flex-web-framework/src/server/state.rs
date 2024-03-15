@@ -33,7 +33,6 @@ impl<S> ServerState<S>
 		self.cookie_key.as_ref()
 	}
 
-
 	pub fn cookie_settings(self) -> CookieSettings
 	{
 		self.cookie_settings

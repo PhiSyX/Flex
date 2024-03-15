@@ -13,10 +13,10 @@ use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 use flex_chat_macro::command_response;
 
 command_response! {
-	struct JOIN
+	struct JOIN<'channel>
 	{
 		/// Les salons que le client DOIT rejoindre.
-		channel: &'a str,
+		channel: &'channel str,
 		/// Est-ce que le client a été forcé de rejoindre ces salons?
 		///
 		/// NOTE: Seuls les admins peuvent forcer un client de rejoindre un

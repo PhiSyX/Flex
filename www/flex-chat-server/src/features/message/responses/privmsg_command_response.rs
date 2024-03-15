@@ -13,12 +13,12 @@ use flex_chat_client::{ClientSocketInterface, Socket};
 use flex_chat_macro::command_response;
 
 command_response! {
-	struct PRIVMSG
+	struct PRIVMSG<'target, 'text>
 	{
 		/// La cible du message.
-		target: &'a str,
+		target: &'target str,
 		/// Le texte.
-		text: &'a str,
+		text: &'text str,
 	}
 }
 

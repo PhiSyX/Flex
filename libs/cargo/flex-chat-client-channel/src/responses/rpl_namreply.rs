@@ -26,15 +26,15 @@ reserved_numerics! {
 }
 
 command_response! {
-	struct RPL_NAMREPLY<Member>
+	struct RPL_NAMREPLY<'c, Member>
 	{
 		code: u16,
-		channel: &'a str,
+		channel: &'c str,
 		users: Vec<Member>,
 	}
 }
 
-impl<'c, Member> RplNamreplyCommandResponse<'c, Member>
+impl<'o, 'c, Member> RplNamreplyCommandResponse<'o, 'c, Member>
 {
 	pub fn code() -> u16
 	{

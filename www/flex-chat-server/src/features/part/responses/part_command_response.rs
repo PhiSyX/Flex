@@ -13,14 +13,14 @@ use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 use flex_chat_macro::command_response;
 
 command_response! {
-	struct PART
+	struct PART<'channel, 'message, 'forced_by>
 	{
 		/// Les salons que le client DOIT quitter.
-		channel: &'a str,
+		channel: &'channel str,
 		/// Raison du message.
-		message: Option<&'a str>,
+		message: Option<&'message str>,
 		/// Par qui l'utilisateur a été forcé de quitter le salon.
-		forced_by: Option<&'a str>,
+		forced_by: Option<&'forced_by str>,
 	}
 }
 

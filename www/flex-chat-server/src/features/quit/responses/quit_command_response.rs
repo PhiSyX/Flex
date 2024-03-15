@@ -14,10 +14,10 @@ use flex_chat_macro::command_response;
 command_response! {
 	/// Une session client se termine par un message de déconnexion. Le serveur
 	/// en prend acte en envoyant un message ERROR au client.
-	struct QUIT
+	struct QUIT<'message>
 	{
 		/// Message de déconnexion.
-		message: &'a str,
+		message: &'message str,
 	}
 }
 

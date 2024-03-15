@@ -17,11 +17,11 @@ use flex_chat_mode::ApplyMode;
 use flex_chat_user::User;
 
 command_response! {
-	struct MODE<F>
+	struct MODE<'target, Mode>
 	{
-		target: &'a str,
-		added: Vec<(char, ApplyMode<F>)>,
-		removed: Vec<(char, ApplyMode<F>)>,
+		target: &'target str,
+		added: Vec<(char, ApplyMode<Mode>)>,
+		removed: Vec<(char, ApplyMode<Mode>)>,
 		updated: bool,
 	}
 }

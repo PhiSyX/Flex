@@ -16,12 +16,12 @@ use flex_chat_user::UserInterface;
 use super::RplInvitingReply;
 
 command_response! {
-	struct INVITE
+	struct INVITE<'channel, 'nick>
 	{
 		/// Le salon que le client a reçu comme invitation.
-		channel: &'a str,
+		channel: &'channel str,
 		/// Le pseudo qui a été invité.
-		nick: &'a str,
+		nick: &'nick str,
 	}
 }
 

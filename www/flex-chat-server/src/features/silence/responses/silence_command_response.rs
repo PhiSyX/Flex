@@ -12,11 +12,11 @@ use flex_chat_client::{Client, ClientSocketInterface, Origin, Socket};
 use flex_chat_macro::command_response;
 
 command_response! {
-	struct SILENCE
+	struct SILENCE<'u>
 	{
 		added: bool,
 		removed: bool,
-		users: &'a [&'a Origin<Client>],
+		users: &'u [&'u Origin<Client>],
 		updated: bool,
 	}
 }
