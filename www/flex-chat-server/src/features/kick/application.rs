@@ -168,19 +168,6 @@ impl KickApplicationInterface for ChatApplication
 				continue;
 			}
 
-			// NOTE: on est assuré par les conditions ci-hautes que l'opérateur
-			//       de salon (4) est un membre du salon (3). Ce qui signifie
-			//       que le salon NE PEUT PAS être supprimé après un KICK d'un
-			//       membre de salon (3). Cependant, nous ne sommes pas assurer
-			//       que l'opérateur de salon (4) se sanctionne lui-même. ;-)
-			let channel_not_removed =
-				self.remove_member_from_channel(channel_name, &knick_client_socket);
-
-			if channel_not_removed.is_none() {
-				client_socket.emit_self_kick(channel_name, &knick_client_socket, comment);
-				return;
-			}
-
 			// NOTE: cela ne devrait jamais arriver à ce stade, mais sait-on
 			// 		 jamais.
 			let Some(channel) = self.channels.get(channel_name) else {
@@ -189,6 +176,14 @@ impl KickApplicationInterface for ChatApplication
 			};
 
 			client_socket.emit_kick(&channel, &knick_client_socket, comment);
+			drop(channel);
+
+			// NOTE: on est assuré par les conditions ci-hautes que l'opérateur
+			//       de salon (4) est un membre du salon (3). Ce qui signifie
+			//       que le salon NE PEUT PAS être supprimé après un KICK d'un
+			//       membre de salon (3). Cependant, nous ne sommes pas assurer
+			//       que l'opérateur de salon (4) se sanctionne lui-même. ;-)
+			self.remove_member_from_channel(channel_name, &knick_client_socket);
 		}
 	}
 }

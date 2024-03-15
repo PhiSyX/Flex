@@ -30,7 +30,7 @@ impl KickHandler
 
 	/// La commande KICK peut être utilisée pour demander le retrait forcé d'un
 	/// utilisateur d'un salon. Elle entraîne le retrait forcé de l'<user> du
-	/// <salon>. Pour que le message soit syntaxiquement correct, il DOIT y
+	/// <channel>. Pour que le message soit syntaxiquement correct, il DOIT y
 	/// avoir soit un paramètre de salon et plusieurs paramètres d'utilisateur,
 	/// soit autant de paramètres de salon qu'il y a de paramètres
 	/// d'utilisateur.
