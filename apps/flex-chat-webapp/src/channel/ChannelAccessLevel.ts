@@ -169,7 +169,7 @@ export class ChannelAccessLevel {
 	 * donné.
 	 */
 	eq(level: ChannelAccessLevelFlag): boolean {
-		return this.highest.level === level;
+		return this.modes.has(level);
 	}
 
 	/**
