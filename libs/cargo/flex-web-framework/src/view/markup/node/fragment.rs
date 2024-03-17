@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,39 +8,52 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+use core::fmt;
 
-mod features
+use super::{with_children, Node};
+
+// --------- //
+// Structure //
+// --------- //
+
+pub struct FragmentNode
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
+	pub children: Vec<Node>,
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl fmt::Display for FragmentNode
+{
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+	{
+		with_children(f, &self.children, true)
 	}
 }
 
-mod routes;
-
-mod sessions
+impl<FN> FromIterator<FN> for FragmentNode
+where
+	FN: Into<Node>,
 {
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
+	fn from_iter<I>(iter: I) -> Self
+	where
+		I: IntoIterator<Item = FN>,
+	{
+		Self {
+			children: iter.into_iter().map(Into::into).collect(),
+		}
 	}
 }
 
-pub use self::feature::*;
+impl<It, FN> From<It> for FragmentNode
+where
+	It: IntoIterator<Item = FN>,
+	FN: Into<Node>,
+{
+	fn from(iter: It) -> Self
+	{
+		Self::from_iter(iter)
+	}
+}

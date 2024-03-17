@@ -8,39 +8,41 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+use flex_web_framework::http::response::Html;
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextError, HttpContextInterface};
 
-mod features
+use crate::src::features::home::HomeView;
+use crate::FlexState;
+
+// --------- //
+// Structure //
+// --------- //
+
+pub struct HomeController;
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl HomeController
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
+	pub async fn view(http: HttpContext<Self>) -> Html<HomeView>
+	{
+		http.response.html(HomeView::default())
 	}
 }
 
-mod routes;
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
 
-mod sessions
+#[flex_web_framework::async_trait]
+impl HttpContextInterface for HomeController
 {
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
+	type State = FlexState;
+
+	fn constructor(_: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	{
+		Ok(Self {})
 	}
 }
-
-pub use self::feature::*;

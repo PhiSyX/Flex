@@ -11,7 +11,9 @@
 mod ext;
 mod feature;
 mod router;
+mod view;
 
 pub use self::ext::*;
 pub use self::feature::*;
 pub use self::router::*;
+pub use self::view::*;

@@ -18,13 +18,16 @@ pub mod security;
 mod server;
 pub mod settings;
 pub mod types;
+pub mod view;
 
-pub use axum::Extension;
+pub use axum::{async_trait, Extension};
+pub use flex_web_framework_macro::{html, vite, View};
 
 pub use self::extension::*;
 pub use self::interface::*;
 pub use self::server::ServerState as AxumState;
 pub use self::settings::*;
+pub use self::view::*;
 
 // ---- //
 // Type //

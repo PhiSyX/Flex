@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,39 +8,61 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+use std::fmt;
 
-mod features
+use super::{with_children, Node};
+
+// --------- //
+// Structure //
+// --------- //
+
+pub struct ElementNode
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
+	pub tag_name: String,
+	pub attributes: Vec<(String, Option<String>)>,
+	pub children: Option<Vec<Node>>,
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl fmt::Display for ElementNode
+{
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+	{
+		write!(f, "<{}", self.tag_name)?;
+
+		for (key, value) in &self.attributes {
+			write!(f, " {key}")?;
+
+			if let Some(value) = value.as_deref() {
+				let html_special_chars = html_escape::encode_double_quoted_attribute(value);
+				write!(f, r#"="{html_special_chars}""#)?;
+			}
+		}
+
+		write!(f, ">")?;
+
+		if let Some(children) = self.children.as_deref() {
+			with_children(f, children, false)?;
+			write!(f, "</{}>", self.tag_name)?;
+		}
+
+		Ok(())
 	}
 }
 
-mod routes;
-
-mod sessions
+impl<N> From<N> for ElementNode
+where
+	N: Into<String>,
 {
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
+	fn from(tag_name: N) -> Self
+	{
+		Self {
+			tag_name: tag_name.into(),
+			attributes: Vec::new(),
+			children: None,
+		}
 	}
 }
-
-pub use self::feature::*;

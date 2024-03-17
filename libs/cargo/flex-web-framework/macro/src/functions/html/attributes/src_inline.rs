@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,55 +8,58 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use std::fmt;
+use syn::__private::quote::quote;
+use syn::__private::TokenStream2;
+use syn::spanned::Spanned;
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::RouterInterface;
-
-use super::features::home::controllers::home_controller::HomeController;
-use super::features::TokenController;
-use crate::FlexState;
-
-// --------- //
-// Structure //
-// --------- //
-
-pub struct ChatRouter;
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-#[derive(Debug)]
-pub enum ChatRouteID
-{
-	Home,
-	ConnectToken,
-}
+use crate::functions::html::{
+	tmp,
+	HTMLMacro,
+	HTMLMacroParserError,
+	HTMLMacroParserErrorKind,
+	Result,
+};
 
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-impl RouterInterface<FlexState> for ChatRouter
+impl HTMLMacro
 {
-	fn routes() -> RouterCollection<FlexState>
+	pub fn handle_src_inline_attribute(
+		&self,
+		element: &rstml::node::NodeElement,
+		tag_name: &str,
+		tag_attrs: &[TokenStream2],
+		attr: &rstml::node::KeyedAttribute,
+	) -> Result<TokenStream2>
 	{
-		Self::collection()
-			.add(Router::path(ChatRouteID::Home).get(HomeController::view))
-			.add(Router::path(ChatRouteID::ConnectToken).post(TokenController::token))
-	}
-}
+		if tag_name != "script" {
+			return Err(HTMLMacroParserError {
+				span: element.span(),
+				kind: HTMLMacroParserErrorKind::InvalidTag {
+					expected: "script",
+					found: tag_name.to_owned(),
+				},
+			});
+		}
 
-impl fmt::Display for ChatRouteID
-{
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
-	{
-		let url_path = match self {
-			| Self::Home => "/chat",
-			| Self::ConnectToken => "/chat/connect/token",
-		};
+		let src_value = attr.value().ok_or_else(|| {
+			HTMLMacroParserError {
+				span: attr.span(),
+				kind: HTMLMacroParserErrorKind::AttributeValueIsRequired,
+			}
+		})?;
 
-		write!(f, "{}", url_path)
+		Ok(tmp::create_element(
+			"script",
+			tag_attrs,
+			&[quote! {
+				Node::create_unsafe_html_from_file(
+					std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+						.join(#src_value)
+				)
+			}],
+		))
 	}
 }

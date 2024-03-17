@@ -11,11 +11,11 @@ network:
 
 admin:
   name: "John Doe"
-  email: johndoe@test.org
+  email: johndoe@example.com
   nick: JohnDoe
 
 server:
-  name: chat.test.org
+  name: chat.example.com
   created_at: 1635185135
 
 operator:
