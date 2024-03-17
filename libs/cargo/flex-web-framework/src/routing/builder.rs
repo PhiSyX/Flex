@@ -11,7 +11,7 @@
 use std::fmt;
 
 use super::Router;
-use crate::AxumState;
+use crate::{AxumState, RouteIDInterface};
 
 // --------- //
 // Interface //
@@ -22,7 +22,7 @@ pub trait RouterBuilder
 	type State: Clone + Send + Sync + 'static;
 
 	/// Initialisation d'une route.
-	fn path(url_path: impl ToString + fmt::Debug) -> Self;
+	fn path(url_path: impl RouteIDInterface + fmt::Debug) -> Self;
 
 	/// Applique une route de n'importe quel type.
 	fn any<Action, ActionType>(self, action: Action) -> Self

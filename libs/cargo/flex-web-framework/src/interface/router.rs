@@ -59,8 +59,30 @@ pub trait RouterInterface<S>
 		RouterCollection::<S>::default()
 	}
 
+	/// Collection de routeurs groupés.
+	fn group() -> RouterCollection<S>
+	where
+		Self: RouterGroupInterface,
+	{
+		RouterCollection::<S>::default().with_group(Self::GROUP)
+	}
+
 	/// Alias vers la collection.
 	fn routes() -> RouterCollection<S>;
+}
+
+pub trait RouterGroupInterface
+{
+	const GROUP: &'static str;
+}
+
+pub trait RouteIDInterface
+{
+	/// Chemin d'une route préfixé du groupe.
+	fn fullpath(&self) -> impl ToString;
+
+	/// Chemin d'une route.
+	fn path(&self) -> impl ToString;
 }
 
 // -------------- //
