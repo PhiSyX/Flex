@@ -174,7 +174,7 @@ impl UserInterface for User
 			}
 		}
 
-		self.nickname = new_nick.to_owned();
+		new_nick.clone_into(&mut self.nickname);
 		Ok(self.nickname.to_owned())
 	}
 

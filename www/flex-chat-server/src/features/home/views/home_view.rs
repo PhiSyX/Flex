@@ -10,7 +10,9 @@
 
 use std::collections::HashMap;
 
-use flex_web_framework::{vite, EmptyHTMLLayout, Node, ViewInterface, ViteLayout};
+#[cfg(not(debug_assertions))]
+use flex_web_framework::EmptyHTMLLayout;
+use flex_web_framework::{vite, Node, ViewInterface, ViteLayout};
 
 // --------- //
 // Structure //
