@@ -1,5 +1,5 @@
 [workspace]
-members = ["libs/cargo/*", "www/flex-chat-server"]
+members = ["libs/cargo/*", "www/flex"]
 resolver = "2"
 
 [workspace.package]

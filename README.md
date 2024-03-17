@@ -24,14 +24,15 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 -   [x] [**Chat**](docs/chat/README.md)
 
-    -   [x] Client Web (`pnpm webapp`)
+    -   [x] Client Web (`pnpm chat:webapp`)
 
 		1. Un fichier `apps/flex-chat-webapp/.env` DOIT être crée.
 
-    -   [x] Serveur (`cargo run --bin flex-ws-server`)
+    -   [ ] Services (robots, automates, IA)
+
+-   [x] Serveur (`cargo run --bin flex`)
 
 		1. Un fichier `config/flex/.env` DOIT être crée.
 
 		2. Un fichier `config/flex/flex.yml` DOIT être crée.
 
-    -   [ ] Services (robots, automates, IA)
