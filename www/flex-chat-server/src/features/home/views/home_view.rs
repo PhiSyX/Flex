@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,39 +8,53 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+use std::collections::HashMap;
 
-mod features
+use flex_web_framework::{vite, EmptyHTMLLayout, Node, ViewInterface, ViteLayout};
+
+// --------- //
+// Structure //
+// --------- //
+
+#[derive(Default)]
+#[derive(flex_web_framework::View)]
+pub struct HomeView {}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl ViewInterface for HomeView
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
+	#[cfg(not(debug_assertions))]
+	type Layout = EmptyHTMLLayout;
+	#[cfg(debug_assertions)]
+	type Layout = ViteLayout;
+	type Metadata = Node;
+	type Scripts = Node;
+	type Styles = Node;
+	type View = Node;
+
+	#[cfg(debug_assertions)]
+	fn data(&self) -> std::collections::HashMap<String, String>
+	{
+		HashMap::from([
+			("vite_url".into(), "http://localhost:5173".into()),
+			("vite_root".into(), "🆔".into()),
+		])
+	}
+
+	fn title(&self) -> impl ToString
+	{
+		"Flex"
+	}
+
+	fn view(&self) -> Self::View
+	{
+		if cfg!(debug_assertions) {
+			vite!("http://localhost:5173#🆔")
+		} else {
+			vite!("apps/flex-chat-webapp")
+		}
 	}
 }
-
-mod routes;
-
-mod sessions
-{
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
-	}
-}
-
-pub use self::feature::*;

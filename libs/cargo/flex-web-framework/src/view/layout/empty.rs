@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,39 +8,59 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+use flex_web_framework_macro::html;
 
-mod features
+use crate::{Node, ViewLayoutInterface};
+
+// --------- //
+// Structure //
+// --------- //
+
+/// Mise en page HTML vide.
+pub struct EmptyHTMLLayout
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
-	}
+	body: Node,
 }
 
-mod routes;
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
 
-mod sessions
+impl ViewLayoutInterface for EmptyHTMLLayout
 {
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
+	type Metadata = Node;
+	type Scripts = Node;
+	type Styles = Node;
+	type View = Node;
+
+	fn new() -> Self
+	where
+		Self: Sized,
+	{
+		Self {
+			body: Default::default(),
+		}
+	}
+
+	fn set_title(&mut self, _: impl ToString) {}
+
+	fn set_body(&mut self, body: Self::View)
+	{
+		self.body = body;
+	}
+
+	fn set_data(&mut self, _: std::collections::HashMap<String, String>) {}
+
+	fn add_meta(&mut self, _: Self::Metadata) {}
+
+	fn add_script(&mut self, _: Self::Scripts) {}
+
+	fn add_style(&mut self, _: Self::Styles) {}
+
+	fn view(&self) -> Self::View
+	{
+		html! {
+			{ unsafe &self.body }
+		}
 	}
 }
-
-pub use self::feature::*;

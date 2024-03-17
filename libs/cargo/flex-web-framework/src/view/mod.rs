@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,39 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
-
-mod features
+mod layout
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
-	}
+	mod empty;
+	mod vite;
+
+	pub use self::empty::*;
+	pub use self::vite::*;
 }
+mod markup;
 
-mod routes;
-
-mod sessions
-{
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
-	}
-}
-
-pub use self::feature::*;
+pub use self::layout::*;
+pub use self::markup::*;

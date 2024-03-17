@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,39 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+use lexa_syn::parse;
+use proc_macro::TokenStream;
 
-mod features
+mod derives
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
-	}
+	pub mod view;
 }
 
-mod routes;
-
-mod sessions
+mod functions
 {
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
-	}
+	pub mod html;
+	pub mod vite;
 }
 
-pub use self::feature::*;
+/// Macro `html!`.
+#[proc_macro]
+pub fn html(input: TokenStream) -> TokenStream
+{
+	parse::<functions::html::HTMLMacro>(input)
+}
+
+/// Macro `vite!`.
+#[proc_macro]
+pub fn vite(input: TokenStream) -> TokenStream
+{
+	parse::<functions::vite::ViteMacro>(input)
+}
+
+/// Macro derivable `View`.
+#[proc_macro_derive(View)]
+pub fn derive_view(input: TokenStream) -> TokenStream
+{
+	parse::<derives::view::ViewDerive>(input)
+}

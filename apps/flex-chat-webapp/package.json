@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "vite --config config/vite.config.ts",
 		"story:dev": "histoire dev -c config/histoire.config.ts",
-		"build": "pnpm lint && vite build --config config/vite.config.ts",
+		"build": "vite build --config config/vite.config.ts",
 		"lint": "vue-tsc -p config/tsconfig.app.json",
 		"preview": "vite preview -c config/vite.config.ts",
 		"test:e2e": "playwright test -x -c config/playwright.config.ts",

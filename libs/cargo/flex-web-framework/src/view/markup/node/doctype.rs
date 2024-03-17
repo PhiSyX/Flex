@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,39 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+use core::fmt;
 
-mod features
+// --------- //
+// Structure //
+// --------- //
+
+pub struct DoctypeNode
 {
-	lexa_kernel::public_using! {
-		connect,
-		home,
-		invite,
-		join,
-		kick,
-		kill,
-		list,
-		message,
-		mode,
-		nick,
-		notice,
-		oper,
-		part,
-		quit,
-		silence,
-		topic,
-		user_status,
+	pub public_identifier: String,
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl fmt::Display for DoctypeNode
+{
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+	{
+		write!(f, "<!DOCTYPE {}>", self.public_identifier)
 	}
 }
 
-mod routes;
-
-mod sessions
+impl<P> From<P> for DoctypeNode
+where
+	P: Into<String>,
 {
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
+	fn from(public_identifier: P) -> Self
+	{
+		Self {
+			public_identifier: public_identifier.into(),
+		}
 	}
 }
-
-pub use self::feature::*;
