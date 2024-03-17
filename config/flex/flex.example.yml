@@ -21,11 +21,11 @@ network:
 
 admin:
   name: "John Doe"
-  email: johndoe@example.org
+  email: johndoe@example.com
   nick: JohnDoe
 
 server:
-  name: chat.example.org
+  name: chat.example.com
 
   #
   # Mot de passe
