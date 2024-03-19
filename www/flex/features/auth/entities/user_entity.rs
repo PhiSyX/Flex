@@ -8,31 +8,67 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use std::sync::Arc;
-
-pub use axum::extract::{
-	ConnectInfo,
-	Extension,
-	FromRef,
-	FromRequest,
-	FromRequestParts,
-	Host,
-	Path,
-	Query,
-	Request,
-	State,
-};
+use flex_web_framework::types::{time, uuid};
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct HttpRequest<T>
+#[derive(Debug)]
+#[derive(serde::Deserialize)]
+#[derive(sqlx::FromRow)]
+pub struct UserEntity
 {
-	pub(crate) context: Arc<T>,
-	pub ip: std::net::IpAddr,
-	pub method: hyper::Method,
-	pub uri: hyper::Uri,
-	pub raw_query: Option<String>,
-	pub referer: Option<axum_extra::headers::Referer>,
+	/// ID de l'utilisateur.
+	pub id: uuid::Uuid,
+	/// Nom d'utilisateur.
+	pub name: String,
+	/// Mot de passe chiffré.
+	pub password: String,
+	/// Adresse e-mail de l'utilisateur.
+	pub email: String,
+	/// Rôle de l'utilisateur.
+	pub role: UserRole,
+	/// Date de création de l'utilisateur.
+	pub created_at: time::DateTime<time::Utc>,
+	/// Date de mise à jour des informations de l'utilisateur.
+	pub updated_at: time::DateTime<time::Utc>,
+}
+
+/// Les différents role utilisateur.
+#[derive(Debug)]
+#[derive(Copy, Clone)]
+#[derive(Default)]
+#[derive(PartialEq, Eq)]
+#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(sqlx::Type)]
+#[sqlx(type_name = "users_role", rename_all = "lowercase")]
+pub enum UserRole
+{
+	#[default]
+	User,
+	Moderator,
+	Admin,
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl UserRole
+{
+	pub fn is_admin(&self) -> bool
+	{
+		matches!(self, Self::Admin)
+	}
+
+	pub fn is_moderator(&self) -> bool
+	{
+		matches!(self, Self::Moderator)
+	}
+
+	pub fn is_user(&self) -> bool
+	{
+		matches!(self, Self::User)
+	}
 }

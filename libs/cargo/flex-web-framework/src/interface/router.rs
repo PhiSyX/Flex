@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::routing::RouterCollection;
+use crate::AxumState;
 
 // ----- //
 // Macro //
@@ -36,10 +37,10 @@ macro_rules! impl_router_interface {
 		where
 			   $( $generic : RouterInterface<UserState> ),*
 		{
-			   fn routes() -> $crate::routing::RouterCollection<UserState>
+			   fn routes(s: &$crate::AxumState<UserState>) -> $crate::routing::RouterCollection<UserState>
 			   {
 					   let mut router_collection = Self::collection();
-					   $( router_collection.extends( $generic::routes() ); )*
+					   $( router_collection.extends( $generic::routes(s) ); )*
 					   router_collection
 			   }
 		}
@@ -68,7 +69,7 @@ pub trait RouterInterface<S>
 	}
 
 	/// Alias vers la collection.
-	fn routes() -> RouterCollection<S>;
+	fn routes(state: &AxumState<S>) -> RouterCollection<S>;
 }
 
 pub trait RouterGroupInterface

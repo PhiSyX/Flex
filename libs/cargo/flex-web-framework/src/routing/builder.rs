@@ -10,6 +10,8 @@
 
 use std::fmt;
 
+use axum::response::IntoResponse;
+
 use super::Router;
 use crate::{AxumState, RouteIDInterface};
 
@@ -77,6 +79,20 @@ pub trait RouterBuilder
 	where
 		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
 		ActionType: 'static;
+
+	fn middleware<L>(self, layer: L) -> Self
+	where
+		L: tower_layer::Layer<axum::routing::Route<core::convert::Infallible>>
+			+ Clone
+			+ Send
+			+ 'static,
+		L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
+			+ Clone
+			+ Send
+			+ 'static,
+		<L::Service as tower_service::Service<axum::extract::Request>>::Response:
+			IntoResponse + 'static,
+		<L::Service as tower_service::Service<axum::extract::Request>>::Future: Send + 'static;
 
 	fn build(self) -> Router<Self::State>;
 }

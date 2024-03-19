@@ -9,65 +9,68 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{RouteIDInterface, RouterGroupInterface, RouterInterface};
+use flex_web_framework::sessions::{Expiry, MemoryStore, SessionManagerLayer};
+use flex_web_framework::types::time::Duration;
+use flex_web_framework::{middleware, RouteIDInterface, RouterGroupInterface, RouterInterface};
 
-use crate::features::chat::connect::controllers::TokenController;
-use crate::features::chat::home::controllers::HomeController;
+use super::middleware::guest_middleware::GuestMiddleware;
+use crate::features::auth::controllers::login_controller::LoginController;
 use crate::{FlexApplicationState, FlexState};
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct ChatRouter;
+pub struct AuthRouter;
 
 // ----------- //
 // Énumération //
 // ----------- //
 
 #[derive(Debug)]
-pub enum ChatRouteID
+pub enum AuthRouteID
 {
-	Home,
-	ConnectToken,
+	Login,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for ChatRouter
+impl RouterGroupInterface for AuthRouter
 {
-	const GROUP: &'static str = "/chat";
+	const GROUP: &'static str = "/auth";
 }
 
-impl RouterInterface<FlexState> for ChatRouter
+impl RouterInterface<FlexState> for AuthRouter
 {
 	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
-		Self::group()
-			.add(Router::path(ChatRouteID::Home).get(HomeController::view))
-			.add(Router::path(ChatRouteID::ConnectToken).post(TokenController::token))
+		Self::group().add(
+			Router::path(AuthRouteID::Login)
+				.get(LoginController::view)
+				.post(LoginController::handle)
+				.middleware(middleware::from_fn(GuestMiddleware::handle)),
+		)
 	}
 }
 
-impl RouteIDInterface for ChatRouteID
+impl RouteIDInterface for AuthRouteID
 {
 	fn fullpath(&self) -> impl ToString
 	{
-		format!("{}{}", ChatRouter::GROUP, self.path().to_string())
+		format!("{}{}", AuthRouter::GROUP, self.path().to_string())
 	}
 
 	fn path(&self) -> impl ToString
 	{
 		match self {
-			| Self::Home => "/",
-			| Self::ConnectToken => "/connect/token",
+			| Self::Login => "/",
 		}
 	}
 }
 
-impl std::fmt::Display for ChatRouteID
+impl std::fmt::Display for AuthRouteID
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{

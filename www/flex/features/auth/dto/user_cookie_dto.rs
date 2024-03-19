@@ -8,34 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod routing;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+use flex_web_framework::types::uuid;
 
-pub use axum::{async_trait, middleware, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+use crate::features::auth::entities::user_entity::{UserEntity, UserRole};
 
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+// --------- //
+// Structure //
+// --------- //
 
-// ---- //
-// Type //
-// ---- //
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct UserCookieDTO
+{
+	pub id: uuid::Uuid,
+	pub name: String,
+	pub email: String,
+	pub role: UserRole,
+}
 
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
-pub type AxumRouter<S> = axum::Router<AxumState<S>>;
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl From<UserEntity> for UserCookieDTO
+{
+	fn from(user_entity: UserEntity) -> Self
+	{
+		Self {
+			id: user_entity.id,
+			name: user_entity.name,
+			email: user_entity.email,
+			role: user_entity.role,
+		}
+	}
+}

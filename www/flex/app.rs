@@ -20,9 +20,21 @@ pub mod constant;
 
 mod features
 {
+	mod auth;
 	mod chat;
 
+	pub use self::auth::AuthApplication;
 	pub use self::chat::ChatApplication;
+}
+
+mod templates
+{
+	pub mod layouts
+	{
+		mod base_layout;
+
+		pub use self::base_layout::*;
+	}
 }
 
 pub use self::features::*;
@@ -42,6 +54,8 @@ pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
 #[derive(Clone)]
 pub enum FlexState
 {
+	Auth,
+
 	Chat
 	{
 		socket_io: socketioxide::SocketIo,

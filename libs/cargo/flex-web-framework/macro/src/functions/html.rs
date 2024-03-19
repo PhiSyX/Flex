@@ -92,9 +92,9 @@ pub enum HTMLCustomAttribute
 	/// Permet de ne pas crée **l'attribut** de l'élément si le booléen est
 	/// faux.
 	MaybeIf,
-	/// Syntaxe de l'attribute : `<attr>:option=<optional-expr>`
+	/// Syntaxe de l'attribute : `let-<attr>:option=<optional-expr>`
 	MaybeOption,
-	/// Syntaxe de l'attribute : `<attr>:result=<result-expr>`
+	/// Syntaxe de l'attribute : `let-<attr>:result=<result-expr>`
 	MaybeResult,
 
 	/// Syntaxe de l'attribut : `for-let:<identifier>="<iterable>"`
@@ -287,20 +287,10 @@ impl HTMLMacro
 						self.handle_maybe_if_attribute(&tag_name, &mut tag_attrs, &children, attr)
 					}
 					| HTMLCustomAttribute::MaybeOption => {
-						self.handle_maybe_option_attribute(
-							&tag_name,
-							&mut tag_attrs,
-							&children,
-							attr,
-						)
+						self.handle_maybe_option_attribute(&tag_name, &tag_attrs, &children, attr)
 					}
 					| HTMLCustomAttribute::MaybeResult => {
-						self.handle_maybe_result_attribute(
-							&tag_name,
-							&mut tag_attrs,
-							&children,
-							attr,
-						)
+						self.handle_maybe_result_attribute(&tag_name, &tag_attrs, &children, attr)
 					}
 
 					| HTMLCustomAttribute::ForLet => {
@@ -562,8 +552,8 @@ impl std::str::FromStr for HTMLCustomAttribute
 	{
 		Ok(match s.to_ascii_lowercase().as_str() {
 			| s if s.contains(":if") => Self::MaybeIf,
-			| s if s.contains(":option") => Self::MaybeOption,
-			| s if s.contains(":result") => Self::MaybeResult,
+			| s if s.starts_with("let-") && s.contains(":option") => Self::MaybeOption,
+			| s if s.starts_with("let-") && s.contains(":result") => Self::MaybeResult,
 			| s if s.contains("for-let:") => Self::ForLet,
 
 			| "if" => Self::If,
@@ -634,6 +624,8 @@ mod kw
 
 mod tmp
 {
+	use syn::spanned::Spanned;
+
 	use super::*;
 
 	#[inline(always)]
@@ -657,6 +649,56 @@ mod tmp
 				vec![#(#tag_attrs),*],
 				vec![#(#children),*],
 			)
+		}
+	}
+
+	#[inline(always)]
+	pub fn create_element_option(
+		tag_name: impl syn::__private::ToTokens,
+		tag_attrs: &[impl syn::__private::ToTokens],
+		children: &[impl syn::__private::ToTokens],
+		attr_name: &str,
+		attr_maybe: Option<&syn::Expr>,
+	) -> TokenStream2
+	{
+		let ident = syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
+		quote! {
+			{
+				if let Some(#ident) = #attr_maybe {
+					Node::create_element(
+						#tag_name,
+						vec![#(#tag_attrs),*],
+						vec![#(#children),*],
+					)
+				} else {
+					Node::create_fragment(Default::default())
+				}
+			}
+		}
+	}
+
+	#[inline(always)]
+	pub fn create_element_result(
+		tag_name: impl syn::__private::ToTokens,
+		tag_attrs: &[impl syn::__private::ToTokens],
+		children: &[impl syn::__private::ToTokens],
+		attr_name: &str,
+		attr_maybe: Option<&syn::Expr>,
+	) -> TokenStream2
+	{
+		let ident = syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
+		quote! {
+			{
+				if let Ok(#ident) = #attr_maybe {
+					Node::create_element(
+						#tag_name,
+						vec![#(#tag_attrs),*],
+						vec![#(#children),*],
+					)
+				} else {
+					Node::create_fragment(Default::default())
+				}
+			}
 		}
 	}
 
@@ -700,48 +742,6 @@ mod tmp
 				(
 					#key .to_string(),
 					Some( #key .to_string() )
-				)
-			} else {
-				(
-					Default::default(),
-					Default::default()
-				)
-			}
-		}
-	}
-
-	#[inline(always)]
-	pub fn create_attribute_option(
-		key: impl syn::__private::ToTokens,
-		value: impl syn::__private::ToTokens,
-	) -> TokenStream2
-	{
-		quote! {
-			if let Some(user_value) = #value {
-				(
-					#key .to_string(),
-					Some( user_value.to_string() )
-				)
-			} else {
-				(
-					Default::default(),
-					Default::default()
-				)
-			}
-		}
-	}
-
-	#[inline(always)]
-	pub fn create_attribute_result(
-		key: impl syn::__private::ToTokens,
-		value: impl syn::__private::ToTokens,
-	) -> TokenStream2
-	{
-		quote! {
-			if let Ok(user_value) = #value {
-				(
-					#key .to_string(),
-					Some( user_value.to_string() )
 				)
 			} else {
 				(

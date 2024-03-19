@@ -26,7 +26,7 @@ use lib_flex::constant::{
 	FLEX_VERSION,
 	PROJECT_DIR,
 };
-use lib_flex::{ChatApplication, Flex};
+use lib_flex::{AuthApplication, ChatApplication, Flex};
 
 // ---- //
 // Main //
@@ -63,7 +63,9 @@ async fn main() -> impl process::Termination
 	// 2. Features / Async Features
 	let application = {
 		use flex_web_framework::ApplicationFeatureExtension;
-		application.feature::<ChatApplication>()
+		application
+			.feature::<AuthApplication>()
+			.feature::<ChatApplication>()
 	};
 
 	// 3. Layers, extensions, services

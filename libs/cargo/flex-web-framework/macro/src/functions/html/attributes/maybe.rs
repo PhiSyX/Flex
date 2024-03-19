@@ -10,8 +10,15 @@
 
 use syn::__private::quote::quote;
 use syn::__private::TokenStream2;
+use syn::spanned::Spanned;
 
-use crate::functions::html::{tmp, HTMLMacro, Result};
+use crate::functions::html::{
+	tmp,
+	HTMLMacro,
+	HTMLMacroParserError,
+	HTMLMacroParserErrorKind,
+	Result,
+};
 
 // -------------- //
 // Implémentation //
@@ -35,35 +42,35 @@ impl HTMLMacro
 		Ok(quote! { #element })
 	}
 
-	/// Syntaxe de l'attribut : `<attribute-name>:option=<optional-expr>`
+	/// Syntaxe de l'attribut : `let-<attribute-name>:option=<optional-expr>`
 	pub fn handle_maybe_option_attribute(
 		&self,
 		tag_name: &str,
-		tag_attrs: &mut Vec<TokenStream2>,
+		tag_attrs: &[TokenStream2],
 		children: &[TokenStream2],
 		attr: &rstml::node::KeyedAttribute,
 	) -> Result<TokenStream2>
 	{
 		let attr_name_s = attr.key.to_string();
-		let attr_name = &attr_name_s[..attr_name_s.len() - 7];
-		tag_attrs.push(tmp::create_attribute_option(attr_name, attr.value()));
-		let element = tmp::create_element(tag_name, tag_attrs, children);
+		let attr_name = &attr_name_s["let-".len()..attr_name_s.len() - ":option".len()];
+		let element =
+			tmp::create_element_option(tag_name, tag_attrs, children, attr_name, attr.value());
 		Ok(quote! { #element })
 	}
 
-	/// Syntaxe de l'attribut : `<attribute-name>:result=<result-expr>`
+	/// Syntaxe de l'attribut : `let-<attribute-name>:result=<result-expr>`
 	pub fn handle_maybe_result_attribute(
 		&self,
 		tag_name: &str,
-		tag_attrs: &mut Vec<TokenStream2>,
+		tag_attrs: &[TokenStream2],
 		children: &[TokenStream2],
 		attr: &rstml::node::KeyedAttribute,
 	) -> Result<TokenStream2>
 	{
 		let attr_name_s = attr.key.to_string();
-		let attr_name = &attr_name_s[..attr_name_s.len() - 7];
-		tag_attrs.push(tmp::create_attribute_result(attr_name, attr.value()));
-		let element = tmp::create_element(tag_name, tag_attrs, children);
+		let attr_name = &attr_name_s["let-".len()..attr_name_s.len() - ":result".len()];
+		let element =
+			tmp::create_element_result(tag_name, tag_attrs, children, attr_name, attr.value());
 		Ok(quote! { #element })
 	}
 }

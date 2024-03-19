@@ -161,6 +161,24 @@ where
 		self
 	}
 
+	fn middleware<L>(mut self, layer: L) -> Self
+	where
+		L: tower_layer::Layer<axum::routing::Route<core::convert::Infallible>>
+			+ Clone
+			+ Send
+			+ 'static,
+		L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
+			+ Clone
+			+ Send
+			+ 'static,
+		<L::Service as tower_service::Service<axum::extract::Request>>::Response:
+			axum::response::IntoResponse + 'static,
+		<L::Service as tower_service::Service<axum::extract::Request>>::Future: Send + 'static,
+	{
+		self.action = self.action.route_layer(layer);
+		self
+	}
+
 	fn build(self) -> Router<Self::State>
 	{
 		self

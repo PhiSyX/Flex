@@ -8,34 +8,51 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod routing;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+use flex_web_framework::types::email;
 
-pub use axum::{async_trait, middleware, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+// --------- //
+// Structure //
+// --------- //
 
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+/// Données du formulaire de connexion au site.
+#[derive(Debug)]
+#[derive(serde::Deserialize)]
+pub struct LoginFormData
+{
+	/// Identifiant de connexion.
+	pub(crate) identifier: Identifier,
+	/// Mot de passe de connexion.
+	pub(crate) password: String,
+	/// Se souvenir du client lors des prochains accès au site.
+	pub(crate) remember_me: bool,
+}
 
-// ---- //
-// Type //
-// ---- //
+// ----------- //
+// Énumération //
+// ----------- //
 
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
-pub type AxumRouter<S> = axum::Router<AxumState<S>>;
+/// Un identifiant est soit un pseudonyme, soit une adresse mail.
+#[derive(Debug)]
+#[derive(serde::Deserialize)]
+#[serde(untagged)]
+pub enum Identifier
+{
+	Email(email::EmailAddress),
+	Username(String),
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl std::fmt::Display for Identifier
+{
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+	{
+		let data = match self {
+			| Self::Email(data) => data.as_ref(),
+			| Self::Username(data) => data.as_ref(),
+		};
+		write!(f, "{}", data)
+	}
+}

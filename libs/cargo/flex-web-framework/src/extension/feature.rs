@@ -58,7 +58,8 @@ where
 	{
 		let config_filename = <F::Config as FeatureConfig>::FILENAME;
 
-		let router_collection = <F::Router as RouterInterface<F::State>>::routes();
+		let router_collection =
+			<F::Router as RouterInterface<F::State>>::routes(&self.application_adapter.state);
 
 		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 
@@ -142,7 +143,8 @@ where
 	{
 		let config_filename = <F::Config as FeatureConfig>::FILENAME;
 
-		let router_collection = <F::Router as RouterInterface<F::State>>::routes();
+		let router_collection =
+			<F::Router as RouterInterface<F::State>>::routes(&self.application_adapter.state);
 
 		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 

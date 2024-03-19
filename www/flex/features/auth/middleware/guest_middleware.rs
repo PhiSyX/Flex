@@ -8,34 +8,35 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod routing;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+use flex_web_framework::http::request::Request;
+use flex_web_framework::http::response::Redirect;
+use flex_web_framework::http::{IntoResponse, Response};
+use flex_web_framework::middleware::Next;
+use flex_web_framework::sessions::Session;
 
-pub use axum::{async_trait, middleware, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+use crate::features::auth::dto::user_cookie_dto::UserCookieDTO;
+use crate::features::auth::sessions::constants::USER_SESSION;
 
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+// --------- //
+// Structure //
+// --------- //
 
-// ---- //
-// Type //
-// ---- //
+pub struct GuestMiddleware;
 
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
-pub type AxumRouter<S> = axum::Router<AxumState<S>>;
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl GuestMiddleware
+{
+	// TODO: remplacer vers une enum route id
+	const REDIRECT_TO: &'static str = "/chat";
+
+	pub async fn handle(session: Session, req: Request, next: Next) -> Response
+	{
+		match session.get::<UserCookieDTO>(USER_SESSION).await {
+			| Ok(Some(_)) => Redirect::to(Self::REDIRECT_TO).into_response(),
+			| _ => next.run(req).await,
+		}
+	}
+}
