@@ -11,12 +11,14 @@
 use std::ops;
 use std::sync::Arc;
 
-use axum::http::Extensions;
+use axum::http::{self, Extensions};
 use axum_client_ip::InsecureClientIp;
 use axum_extra::headers::Referer;
+use tower_sessions::Session;
 
 use super::request::HttpRequest;
 use super::response::HttpResponse;
+use super::Cookies;
 use crate::AxumState;
 
 // --------- //
@@ -49,8 +51,8 @@ pub struct HttpContext<T>
 	pub(crate) context: Arc<T>,
 	pub request: HttpRequest<T>,
 	pub response: HttpResponse<T>,
-	// pub cookies: super::cookies::Cookies,
-	// pub session: super::session::Session,
+	pub cookies: Cookies,
+	pub session: Session,
 }
 
 // ----------- //
@@ -64,6 +66,11 @@ pub enum HttpContextError
 {
 	Extension(#[from] axum::extract::rejection::ExtensionRejection),
 	Infaillible(#[from] std::convert::Infallible),
+	#[error("\n\t{}: {}", std::any::type_name::<Self>(), err.1)]
+	StaticErr
+	{
+		err: (http::StatusCode, &'static str),
+	},
 	MissingExtension,
 }
 
@@ -152,10 +159,20 @@ where
 			context: context.clone(),
 		};
 
+		// Cookie / Session
+		let cookies = Cookies::from_request_parts(parts, state)
+			.await
+			.map_err(|err| HttpContextError::StaticErr { err })?;
+		let session = Session::from_request_parts(parts, state)
+			.await
+			.map_err(|err| HttpContextError::StaticErr { err })?;
+
 		Ok(Self {
 			context,
 			request,
 			response,
+			cookies,
+			session,
 		})
 	}
 }

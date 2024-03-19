@@ -8,14 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod cookie;
-mod cors;
-mod ext;
-mod feature;
-mod session;
+use tower_sessions::Session;
 
-pub use self::cookie::*;
-pub use self::cors::*;
-pub use self::ext::*;
-pub use self::feature::*;
-pub use self::session::*;
+// --------- //
+// Interface //
+// --------- //
+
+/// Extension Session flash
+#[allow(async_fn_in_trait)]
+pub trait SessionFlashExtension: Sized
+{
+	async fn flash(&self, key: impl AsRef<str>, value: impl serde::Serialize);
+
+	async fn take<T>(&self, key: impl AsRef<str>) -> Option<T>
+	where
+		T: serde::de::DeserializeOwned + std::fmt::Debug;
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl SessionFlashExtension for Session
+{
+	async fn flash(&self, key: impl AsRef<str>, value: impl serde::Serialize)
+	{
+		_ = self.insert(key.as_ref(), value).await;
+	}
+
+	async fn take<T>(&self, key: impl AsRef<str>) -> Option<T>
+	where
+		T: serde::de::DeserializeOwned + std::fmt::Debug,
+	{
+		self.remove::<T>(key.as_ref()).await.ok().and_then(|v| v)
+	}
+}
