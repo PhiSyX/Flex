@@ -133,7 +133,7 @@ impl Feature for ChatApplication
 			},
 		);
 
-		axum_state.set_state(FlexState { socket_io: io });
+		axum_state.set_state(FlexState::Chat { socket_io: io });
 
 		router.layer(layer)
 	}

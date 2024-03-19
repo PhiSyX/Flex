@@ -9,10 +9,18 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::extract::Form;
-use flex_web_framework::http::{IntoResponse, StatusCode};
+use flex_web_framework::http::{
+	Extensions,
+	HttpContext,
+	HttpContextError,
+	HttpContextInterface,
+	IntoResponse,
+	StatusCode,
+};
 use flex_web_framework::types::time;
 
 use crate::features::chat::connect::TokenFormData;
+use crate::FlexState;
 
 // --------- //
 // Structure //
@@ -29,19 +37,33 @@ impl TokenController
 	pub const COOKIE_TOKEN_KEY: &'static str = "flex.token";
 
 	pub async fn token(
-		cookie_manager: flex_web_framework::http::Cookies,
+		http: HttpContext<Self>,
 		Form(token_form_data): Form<TokenFormData>,
 	) -> impl IntoResponse
 	{
 		tracing::debug!(?token_form_data, "Données du formulaire");
 
-		let signed_cookies = cookie_manager.signed();
-		signed_cookies.add((
+		http.cookies.signed().add((
 			Self::COOKIE_TOKEN_KEY,
 			token_form_data.token.to_string(),
 			time::Duration::days(3),
 		));
 
 		StatusCode::OK
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+#[flex_web_framework::async_trait]
+impl HttpContextInterface for TokenController
+{
+	type State = FlexState;
+
+	fn constructor(_: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	{
+		Ok(Self)
 	}
 }

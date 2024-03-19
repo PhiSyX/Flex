@@ -40,9 +40,12 @@ pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
 // --------- //
 
 #[derive(Clone)]
-pub struct FlexState
+pub enum FlexState
 {
-	socket_io: socketioxide::SocketIo,
+	Chat
+	{
+		socket_io: socketioxide::SocketIo,
+	},
 }
 
 // -------------- //
@@ -53,7 +56,10 @@ impl FlexState
 {
 	pub fn socket_io(&self) -> &socketioxide::SocketIo
 	{
-		&self.socket_io
+		let Self::Chat { socket_io } = self else {
+			panic!("N'est pas une application Socket.IO")
+		};
+		socket_io
 	}
 }
 

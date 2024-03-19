@@ -2,7 +2,7 @@ ip: 127.0.0.1
 port: 8888
 static_resources:
   - url_path: /public
-    dir_path: apps/flex-chat-webapp/public/
+    dir_path: www/flex/public/
 
   - url_path: /assets
     dir_path: apps/flex-chat-webapp/assets/
