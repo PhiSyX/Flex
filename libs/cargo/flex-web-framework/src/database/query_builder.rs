@@ -8,34 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod routing;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+mod postgresql;
 
-pub use axum::{async_trait, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+// --------- //
+// Structure //
+// --------- //
 
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+pub struct SQLQueryBuilder<Database>
+{
+	database: Database,
+}
 
-// ---- //
-// Type //
-// ---- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
-pub type AxumRouter<S> = axum::Router<AxumState<S>>;
+impl<D> SQLQueryBuilder<D>
+{
+	pub fn new(database: D) -> Self
+	{
+		Self { database }
+	}
+}

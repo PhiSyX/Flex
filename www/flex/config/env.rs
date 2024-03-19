@@ -10,7 +10,7 @@
 
 use std::sync::Arc;
 
-use flex_web_framework::types::secret;
+use flex_web_framework::types::{secret, url};
 use lexa_kernel::settings::KernelSettings;
 use lexa_kernel::{process, ApplicationEnvInterface};
 
@@ -26,6 +26,8 @@ pub struct FlexEnv
 {
 	/// Clé secrete d'application.
 	pub app_secret: secret::Secret<Arc<str>>,
+	/// URL de connexion à une base de données.
+	pub database_url: secret::Secret<url::Url>,
 }
 
 // -------------- //

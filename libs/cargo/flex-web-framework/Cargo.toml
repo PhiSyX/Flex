@@ -21,10 +21,12 @@ flex-web-framework-macro = { path = "macro" }
 html-escape = "0.2.13"
 hyper = { version = "1.2.0" }
 lazy_static = "1.4.0"
+lexa-database = { version = "0.1.4", features = ["postgres-sgbd"] }
 lexa-kernel = { workspace = true }
 log = { workspace = true }
 mime = "0.3.17"
 serde = { workspace = true }
+sqlx = { workspace = true }
 thiserror = { workspace = true }
 time = { version = "0.3.34", features = ["serde"] }
 tokio = { workspace = true }

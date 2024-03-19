@@ -8,34 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod routing;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+use lexa_database::sgbd::postgres::PostgresSGBD;
+use lexa_database::SGBD;
 
-pub use axum::{async_trait, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+use crate::database::DatabaseInterface;
 
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+// --------- //
+// Structure //
+// --------- //
 
-// ---- //
-// Type //
-// ---- //
+#[derive(Clone)]
+pub struct PostgreSQLDatabase
+{
+	pub connection: PostgresSGBD,
+}
 
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
-pub type AxumRouter<S> = axum::Router<AxumState<S>>;
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl DatabaseInterface for PostgreSQLDatabase
+{
+	async fn new(database_url: impl Into<url::Url>) -> Self
+	{
+		let connection = PostgresSGBD::new(database_url.into())
+			.await
+			.expect("Une connexion à la base de données PostgreSQL");
+		Self { connection }
+	}
+}

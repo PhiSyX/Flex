@@ -11,7 +11,7 @@
 use std::process;
 
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::ApplicationCookieLayerExtension;
+use flex_web_framework::{ApplicationCookieLayerExtension, DatabaseService, PostgreSQLDatabase};
 use lexa_kernel::{
 	ApplicationCLIExtension,
 	ApplicationEnvExtension,
@@ -72,6 +72,16 @@ async fn main() -> impl process::Termination
 		application
 			.use_cookie_layer()
 			.extension_with::<Argon2Password>(app_secret_key)
+	};
+	// 3.1. Layers, extensions, services (Async)
+	let application = {
+		use flex_web_framework::AsyncApplicationExtExtension;
+
+		let database_url = application.env().database_url.expose().to_owned();
+
+		application
+			.extension_with::<DatabaseService<PostgreSQLDatabase>>(database_url)
+			.await
 	};
 
 	// 4. Run

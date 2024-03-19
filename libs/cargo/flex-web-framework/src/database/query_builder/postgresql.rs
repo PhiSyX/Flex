@@ -8,34 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod routing;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+use lexa_database::SGBD;
+use sqlx::postgres::PgRow;
 
-pub use axum::{async_trait, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+use super::SQLQueryBuilder;
+use crate::{DatabaseService, PostgreSQLDatabase};
 
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// ---- //
-// Type //
-// ---- //
-
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
-pub type AxumRouter<S> = axum::Router<AxumState<S>>;
+// FIXME: utiliser de vraies méthodes de query builder
+impl SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>
+{
+	pub async fn fetch_one<'a, T>(
+		&'a self,
+		raw_query: &'a str,
+		bindings: &'a [&'a str],
+	) -> Result<T, sqlx::Error>
+	where
+		T: for<'r> sqlx::FromRow<'r, PgRow>,
+		T: Send + Unpin,
+		T: std::fmt::Debug,
+	{
+		let mut q = sqlx::query_as(raw_query);
+		for binding in bindings {
+			q = q.bind(binding);
+		}
+		q.fetch_one(self.database.connection.pool()).await
+	}
+}
