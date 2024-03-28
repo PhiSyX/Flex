@@ -16,7 +16,6 @@ use crate::AsyncExtensionInterface;
 // Interface //
 // --------- //
 
-#[allow(async_fn_in_trait)]
 pub trait DatabaseInterface
 {
 	async fn new(database_url: impl Into<url::Url>) -> Self;

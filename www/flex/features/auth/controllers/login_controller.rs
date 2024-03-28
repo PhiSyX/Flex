@@ -30,7 +30,6 @@ use crate::features::auth::repositories::user_repository::{
 	UserRepository,
 	UserRepositoryPostgreSQL,
 };
-use crate::features::auth::responses::rpl_created_account::CreatedAccountReply;
 use crate::features::auth::services::auth_service::{AuthService, AuthenticationService};
 use crate::features::auth::sessions::constants::USER_SESSION;
 use crate::features::auth::views::login_view::LoginView;

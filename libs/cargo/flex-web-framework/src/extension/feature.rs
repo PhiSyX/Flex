@@ -31,7 +31,6 @@ pub trait ApplicationFeatureExtension<UserState>: Sized
 pub trait AsyncApplicationFeatureExtension<UserState>: Sized
 {
 	/// Applique une feature asynchrone au serveur.
-	#[allow(async_fn_in_trait)]
 	async fn feature<F>(self) -> Self
 	where
 		F: AsyncFeature<State = UserState>;

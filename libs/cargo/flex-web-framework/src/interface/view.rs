@@ -94,7 +94,6 @@ pub trait ViewInterface
 	}
 
 	/// Passe la session dans la vue.
-	#[allow(async_fn_in_trait)]
 	async fn with_session(self, _: &Session) -> Self
 	where
 		Self: Sized,

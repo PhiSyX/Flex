@@ -19,7 +19,6 @@ pub trait ExtensionInterface: Sized + Clone + Send + Sync + 'static
 	fn new(payload: Self::Payload) -> Self;
 }
 
-#[allow(async_fn_in_trait)]
 pub trait AsyncExtensionInterface: Sized + Clone + Send + Sync + 'static
 {
 	type Payload;

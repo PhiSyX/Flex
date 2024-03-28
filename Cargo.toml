@@ -9,6 +9,7 @@ edition = "2021"
 
 [workspace.lints.rust]
 non_camel_case_types = "allow"
+async_fn_in_trait = "allow"
 # unsafe_code = "forbid"
 
 [workspace.dependencies]

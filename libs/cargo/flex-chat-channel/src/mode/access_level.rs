@@ -12,7 +12,6 @@
 // Type //
 // ---- //
 
-#[allow(non_camel_case_types)]
 type CHANNEL_ACCESS_LEVEL_FLAG = u32;
 
 // -------- //

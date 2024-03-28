@@ -30,7 +30,6 @@ pub trait ApplicationExtExtension: Sized
 }
 
 /// Extension d'application "Extension" asynchrone.
-#[allow(async_fn_in_trait)]
 pub trait AsyncApplicationExtExtension: Sized
 {
 	/// Applique une extension au serveur.

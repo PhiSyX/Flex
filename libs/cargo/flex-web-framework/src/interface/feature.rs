@@ -65,7 +65,6 @@ pub trait Feature
 	}
 }
 
-#[allow(async_fn_in_trait)]
 pub trait AsyncFeature
 {
 	/// La configuration de la feature.

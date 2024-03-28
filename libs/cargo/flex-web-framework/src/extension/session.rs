@@ -15,7 +15,6 @@ use tower_sessions::Session;
 // --------- //
 
 /// Extension Session flash
-#[allow(async_fn_in_trait)]
 pub trait SessionFlashExtension: Sized
 {
 	async fn flash(&self, key: impl AsRef<str>, value: impl serde::Serialize);
