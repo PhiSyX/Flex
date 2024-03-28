@@ -8,65 +8,55 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	feature,
+use flex_web_framework::http::{
+	Extensions,
+	HttpContext,
+	HttpContextError,
+	HttpContextInterface,
+	IntoResponse,
+};
+
+use crate::features::auth::sessions::constants::USER_SESSION;
+use crate::features::auth::AuthRouteID;
+use crate::FlexState;
+
+// --------- //
+// Structure //
+// --------- //
+
+pub struct LogoutController {}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl LogoutController
+{
+	pub const COOKIE_NAME: &'static str = "flex.auth_user";
+
+	/// Déconnexion de l'utilisateur en session.
+	pub async fn handle(ctx: HttpContext<Self>) -> impl IntoResponse
+	{
+		ctx.cookies.signed().remove(Self::COOKIE_NAME);
+		_ = ctx.session.remove::<()>(USER_SESSION).await;
+		ctx.response.redirect_to(AuthRouteID::Login)
+	}
 }
 
-lexa_kernel::public_import! {
-	controllers / {
-		login_controller,
-		logout_controller,
-		signup_controller,
-	};
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
 
-	dto / {
-		user_cookie_dto,
-	};
+#[flex_web_framework::async_trait]
+impl HttpContextInterface for LogoutController
+{
+	type State = FlexState;
 
-	forms / {
-		login_form,
-		signup_form,
-	};
-
-	errors / {
-		login_error,
-	};
-
-	entities / {
-		user_entity,
-	};
-
-	middleware / {
-		auth_middleware,
-		guest_middleware,
-	};
-
-	repositories / {
-		user_repository,
-	};
-
-	responses / {
-		rpl_created_account,
-	};
-
-	services / {
-		auth_service,
-	};
-
-	sessions / {
-		constants,
-	};
-
-	specs / {
-		owasp,
-	};
-
-	views / {
-		login_view,
-		signup_view,
-	};
+	fn constructor(_: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	{
+		Ok(Self {})
+	}
 }
 
-lexa_kernel::using! {
-	routes,
-}
+unsafe impl Send for LogoutController {}
+unsafe impl Sync for LogoutController {}

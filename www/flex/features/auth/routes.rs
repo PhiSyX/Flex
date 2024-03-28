@@ -11,7 +11,9 @@
 use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
 use flex_web_framework::{middleware, RouteIDInterface, RouterGroupInterface, RouterInterface};
 
+use super::controllers::logout_controller::LogoutController;
 use super::controllers::signup_controller::SignupController;
+use super::middleware::auth_middleware::AuthMiddleware;
 use super::middleware::guest_middleware::GuestMiddleware;
 use crate::features::auth::controllers::login_controller::LoginController;
 use crate::{FlexApplicationState, FlexState};
@@ -30,6 +32,7 @@ pub struct AuthRouter;
 pub enum AuthRouteID
 {
 	Login,
+	Logout,
 	Signup,
 }
 
@@ -54,6 +57,11 @@ impl RouterInterface<FlexState> for AuthRouter
 					.middleware(middleware::from_fn(GuestMiddleware::handle)),
 			)
 			.add(
+				Router::path(AuthRouteID::Logout)
+					.delete(LogoutController::handle)
+					.middleware(middleware::from_fn(AuthMiddleware::required)),
+			)
+			.add(
 				Router::path(AuthRouteID::Signup)
 					.get(SignupController::view)
 					.post(SignupController::handle)
@@ -73,6 +81,7 @@ impl RouteIDInterface for AuthRouteID
 	{
 		match self {
 			| Self::Login => "/",
+			| Self::Logout => "/logout",
 			| Self::Signup => "/signup",
 		}
 	}
