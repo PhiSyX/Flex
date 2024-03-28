@@ -13,6 +13,7 @@ use flex_web_framework::sessions::{Expiry, MemoryStore, SessionManagerLayer};
 use flex_web_framework::types::time::Duration;
 use flex_web_framework::{middleware, RouteIDInterface, RouterGroupInterface, RouterInterface};
 
+use super::controllers::signup_controller::SignupController;
 use super::middleware::guest_middleware::GuestMiddleware;
 use crate::features::auth::controllers::login_controller::LoginController;
 use crate::{FlexApplicationState, FlexState};
@@ -31,6 +32,7 @@ pub struct AuthRouter;
 pub enum AuthRouteID
 {
 	Login,
+	Signup,
 }
 
 // -------------- //
@@ -46,12 +48,19 @@ impl RouterInterface<FlexState> for AuthRouter
 {
 	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
-		Self::group().add(
-			Router::path(AuthRouteID::Login)
-				.get(LoginController::view)
-				.post(LoginController::handle)
-				.middleware(middleware::from_fn(GuestMiddleware::handle)),
-		)
+		Self::group()
+			.add(
+				Router::path(AuthRouteID::Login)
+					.get(LoginController::view)
+					.post(LoginController::handle)
+					.middleware(middleware::from_fn(GuestMiddleware::handle)),
+			)
+			.add(
+				Router::path(AuthRouteID::Signup)
+					.get(SignupController::view)
+					.post(SignupController::handle)
+					.middleware(middleware::from_fn(GuestMiddleware::handle)),
+			)
 	}
 }
 
@@ -66,6 +75,7 @@ impl RouteIDInterface for AuthRouteID
 	{
 		match self {
 			| Self::Login => "/",
+			| Self::Signup => "/signup",
 		}
 	}
 }

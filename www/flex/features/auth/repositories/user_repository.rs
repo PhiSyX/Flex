@@ -15,6 +15,7 @@ use flex_web_framework::types::email;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
 use crate::features::auth::entities::user_entity::UserEntity;
+use crate::features::auth::services::auth_service::NewUser;
 
 // --------- //
 // Interface //
@@ -23,12 +24,17 @@ use crate::features::auth::entities::user_entity::UserEntity;
 #[flex_web_framework::async_trait]
 pub trait UserRepository
 {
-	async fn find_by_email(
+	async fn create(&self, new_user: NewUser) -> Result<UserEntity, sqlx::Error>;
+
+	async fn find_by_email(&self, email: &email::EmailAddress) -> Result<UserEntity, sqlx::Error>;
+
+	async fn find_by_name(&self, name: &str) -> Result<UserEntity, sqlx::Error>;
+
+	async fn find_by_email_or_name(
 		&self,
 		email: &email::EmailAddress,
-	) -> Result<UserEntity, UserModelError>;
-
-	async fn find_by_name(&self, name: &str) -> Result<UserEntity, UserModelError>;
+		name: &str,
+	) -> Result<UserEntity, sqlx::Error>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -45,18 +51,6 @@ pub trait UserRepository
 pub struct UserRepositoryPostgreSQL
 {
 	pub query_builder: SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>,
-}
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-#[derive(Debug)]
-#[derive(thiserror::Error)]
-#[error("\n\t{}: {0}", std::any::type_name::<Self>())]
-pub enum UserModelError
-{
-	SQLx(#[from] sqlx::Error),
 }
 
 // -------------- //
@@ -76,8 +70,31 @@ impl UserRepositoryPostgreSQL
 #[flex_web_framework::async_trait]
 impl UserRepository for UserRepositoryPostgreSQL
 {
-	async fn find_by_email(&self, email: &email::EmailAddress)
-		-> Result<UserEntity, UserModelError>
+	async fn create(&self, new_user: NewUser) -> Result<UserEntity, sqlx::Error>
+	{
+		let raw_query = format!(
+			"INSERT INTO {} (id,name,email,password,role) VALUES \
+			 (gen_random_uuid(),$1,$2,$3,$4::users_role)",
+			Self::TABLE_NAME
+		);
+
+		let record = self
+			.query_builder
+			.insert(
+				&raw_query,
+				&[
+					&new_user.username,
+					new_user.email_address.as_ref(),
+					new_user.password.expose(),
+					new_user.role.as_str(),
+				],
+			)
+			.await?;
+
+		Ok(record)
+	}
+
+	async fn find_by_email(&self, email: &email::EmailAddress) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!("SELECT * FROM {} WHERE email=$1", Self::TABLE_NAME);
 		let record = self
@@ -87,7 +104,24 @@ impl UserRepository for UserRepositoryPostgreSQL
 		Ok(record)
 	}
 
-	async fn find_by_name(&self, name: &str) -> Result<UserEntity, UserModelError>
+	async fn find_by_email_or_name(
+		&self,
+		email: &email::EmailAddress,
+		name: &str,
+	) -> Result<UserEntity, sqlx::Error>
+	{
+		let raw_query = format!(
+			"SELECT * FROM {} WHERE email=$1 OR name=$2",
+			Self::TABLE_NAME
+		);
+		let record = self
+			.query_builder
+			.fetch_one(&raw_query, &[email.as_ref(), name])
+			.await?;
+		Ok(record)
+	}
+
+	async fn find_by_name(&self, name: &str) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!("SELECT * FROM {} WHERE name=$1", Self::TABLE_NAME);
 		let record = self.query_builder.fetch_one(&raw_query, &[name]).await?;

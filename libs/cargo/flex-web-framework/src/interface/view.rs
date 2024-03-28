@@ -10,6 +10,8 @@
 
 use std::collections::HashMap;
 
+use tower_sessions::Session;
+
 // --------- //
 // Interface //
 // --------- //
@@ -33,12 +35,6 @@ pub trait ViewInterface
 	fn data(&self) -> HashMap<String, String>
 	{
 		Default::default()
-	}
-
-	/// Définit des variables d'environnement pour la mise en page?
-	fn with_env(&self, key: impl ToString, value: impl ToString)
-	{
-		std::env::set_var(key.to_string(), value.to_string());
 	}
 
 	/// Les méta-données de la vue.
@@ -89,6 +85,21 @@ pub trait ViewInterface
 		layout.set_data(self.data());
 
 		layout.view()
+	}
+
+	/// Définit des variables d'environnement pour la mise en page?
+	fn with_env(&self, key: impl ToString, value: impl ToString)
+	{
+		std::env::set_var(key.to_string(), value.to_string());
+	}
+
+	/// Passe la session dans la vue.
+	#[allow(async_fn_in_trait)]
+	async fn with_session(self, _: &Session) -> Self
+	where
+		Self: Sized,
+	{
+		self
 	}
 }
 

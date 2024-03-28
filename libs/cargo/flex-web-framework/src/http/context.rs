@@ -133,6 +133,14 @@ where
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)?.shared();
 
+		// Cookie / Session
+		let cookies = Cookies::from_request_parts(parts, state)
+			.await
+			.map_err(|err| HttpContextError::StaticErr { err })?;
+		let session = Session::from_request_parts(parts, state)
+			.await
+			.map_err(|err| HttpContextError::StaticErr { err })?;
+
 		// Request
 		let InsecureClientIp(ip) =
 			InsecureClientIp::from(&parts.headers, &parts.extensions).expect("Adresse IP");
@@ -157,15 +165,8 @@ where
 		// Response
 		let response = HttpResponse {
 			context: context.clone(),
+			session: session.clone(),
 		};
-
-		// Cookie / Session
-		let cookies = Cookies::from_request_parts(parts, state)
-			.await
-			.map_err(|err| HttpContextError::StaticErr { err })?;
-		let session = Session::from_request_parts(parts, state)
-			.await
-			.map_err(|err| HttpContextError::StaticErr { err })?;
 
 		Ok(Self {
 			context,

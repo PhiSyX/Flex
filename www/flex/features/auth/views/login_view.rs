@@ -8,9 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::{html, Node, ViewInterface};
+use flex_web_framework::{html, Node, SessionFlashExtension, ViewInterface};
 
+use crate::features::auth::errors::login_error::LoginError;
 use crate::features::auth::forms::login_form::LoginFormData;
+use crate::features::auth::responses::rpl_created_account::CreatedAccountReply;
 use crate::features::auth::AuthRouteID;
 use crate::templates::layouts::BaseHTMLLayout;
 
@@ -25,20 +27,8 @@ pub struct LoginView
 	pub identifier: String,
 	pub password: String,
 	pub remember_me: bool,
-	pub error_message: Option<String>,
-}
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl LoginView
-{
-	pub fn with_error(mut self, error: impl ToString) -> Self
-	{
-		self.error_message.replace(error.to_string());
-		self
-	}
+	pub success_message: Option<CreatedAccountReply>,
+	pub error_message: Option<LoginError>,
 }
 
 // -------------- //
@@ -52,6 +42,13 @@ impl ViewInterface for LoginView
 	type Scripts = Node;
 	type Styles = Node;
 	type View = Node;
+
+	async fn with_session(mut self, session: &flex_web_framework::sessions::Session) -> Self
+	{
+		self.success_message = session.take(CreatedAccountReply::KEY).await;
+		self.error_message = session.take(LoginError::KEY).await;
+		self
+	}
 
 	fn title(&self) -> impl ToString
 	{
@@ -71,6 +68,13 @@ impl ViewInterface for LoginView
 			<div id="no-auth-intro">
 				<div class="auth-container">
 					<h1 class="auth-heading">Connexion</h1>
+
+					<div
+						let-success:option={&self.success_message}
+						class="alert alert/success [ gap=1 ]"
+					>
+						<div class="[ flex:full ]">{success}</div>
+					</div>
 
 					<div
 						let-error:option={&self.error_message}
@@ -125,7 +129,7 @@ impl ViewInterface for LoginView
 										id="yes"
 										type="radio"
 										name="remember_me"
-										checked:if=self.remember_me
+										checked:if=(self.remember_me)
 										value="true"
 										tabindex="3"
 									>
@@ -155,8 +159,7 @@ impl ViewInterface for LoginView
 					<hr text="OU">
 
 					<a
-						href="#"
-						// href={AuthRouteID::Signup}
+						href={AuthRouteID::Signup}
 						class="d-block btn-submit t-center"
 					>
 						"Aller à la page d'inscription"
@@ -176,6 +179,7 @@ impl From<LoginFormData> for LoginView
 			identifier: form.identifier.to_string(),
 			password: form.password,
 			remember_me: form.remember_me,
+			success_message: Default::default(),
 			error_message: Default::default(),
 		}
 	}

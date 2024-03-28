@@ -11,36 +11,28 @@
 use std::sync::Arc;
 
 use flex_web_framework::extract::Form;
-use flex_web_framework::http::response::Html;
-use flex_web_framework::http::{
-	Extensions,
-	HttpContext,
-	HttpContextError,
-	HttpContextInterface,
-	IntoResponse,
-};
+use flex_web_framework::http::response::{Html, Redirect};
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextError, HttpContextInterface};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
 
-use crate::features::auth::dto::user_cookie_dto::UserCookieDTO;
-use crate::features::auth::errors::login_error::LoginError;
-use crate::features::auth::forms::login_form::LoginFormData;
+use crate::features::auth::forms::signup_form::RegistrationFormData;
 use crate::features::auth::repositories::user_repository::{
 	UserRepository,
 	UserRepositoryPostgreSQL,
 };
 use crate::features::auth::responses::rpl_created_account::CreatedAccountReply;
-use crate::features::auth::services::auth_service::{AuthService, AuthenticationService};
-use crate::features::auth::sessions::constants::USER_SESSION;
-use crate::features::auth::views::login_view::LoginView;
+use crate::features::auth::services::auth_service::{AuthService, AuthenticationService, NewUser};
+use crate::features::auth::views::signup_view::SignupView;
+use crate::features::auth::AuthRouteID;
 use crate::FlexState;
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct LoginController
+pub struct SignupController
 {
 	auth_service: Arc<dyn AuthenticationService>,
 }
@@ -49,43 +41,22 @@ pub struct LoginController
 // Implémentation //
 // -------------- //
 
-impl LoginController
+impl SignupController
 {
-	pub const COOKIE_NAME: &'static str = "flex.auth_user";
-
-	/// Page de connexion au site.
-	pub async fn view(http: HttpContext<Self>) -> Html<LoginView>
+	/// Page d'inscription au site.
+	pub async fn view(this: HttpContext<Self>) -> Html<SignupView>
 	{
-		http.response.render(LoginView::default()).await
+		this.response.render(SignupView::default()).await
 	}
 
-	/// Traitement du formulaire de connexion.
-	pub async fn handle(
-		ctx: HttpContext<Self>,
-		Form(formdata): Form<LoginFormData>,
-	) -> impl IntoResponse
+	/// Gestion du formulaire d'inscription au site.
+	pub async fn handle(ctx: HttpContext<Self>, Form(form): Form<RegistrationFormData>) -> Redirect
 	{
-		let Ok(user) = ctx
-			.auth_service
-			.attempt(&formdata.identifier, &formdata.password)
-			.await
-		else {
-			ctx.session
-				.flash(LoginError::KEY, LoginError::InvalidCredentials)
-				.await;
-			return ctx.redirect_back();
-		};
-
-		ctx.cookies
-			.signed()
-			.add((Self::COOKIE_NAME, user.id.to_string()));
-
-		_ = ctx
-			.session
-			.insert(USER_SESSION, UserCookieDTO::from(user))
-			.await;
-
-		ctx.response.redirect_to("/chat")
+		if let Err(err) = ctx.auth_service.signup(NewUser::from(form)).await {
+			tracing::error!(?err, "Erreur lors de l'inscription");
+		}
+		ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
+		ctx.response.redirect_to(AuthRouteID::Login)
 	}
 }
 
@@ -94,7 +65,7 @@ impl LoginController
 // -------------- //
 
 #[flex_web_framework::async_trait]
-impl HttpContextInterface for LoginController
+impl HttpContextInterface for SignupController
 {
 	type State = FlexState;
 
@@ -119,5 +90,5 @@ impl HttpContextInterface for LoginController
 	}
 }
 
-unsafe impl Send for LoginController {}
-unsafe impl Sync for LoginController {}
+unsafe impl Send for SignupController {}
+unsafe impl Sync for SignupController {}

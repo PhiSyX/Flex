@@ -28,6 +28,7 @@ use crate::security::SecurityPasswordHasherService;
 // ---- //
 
 pub type Argon2Password = SecurityPasswordHasherService<Argon2PasswordHasher>;
+pub type Argon2PasswordError = argon2::password_hash::Error;
 
 // --------- //
 // Structure //
@@ -55,7 +56,7 @@ impl HasherCtor for Argon2PasswordHasher
 
 impl Hasher for Argon2PasswordHasher
 {
-	type Err = argon2::password_hash::Error;
+	type Err = Argon2PasswordError;
 
 	fn encrypt(&self, input: impl AsRef<str>) -> Result<String, Self::Err>
 	{

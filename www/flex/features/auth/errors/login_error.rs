@@ -21,3 +21,12 @@ pub enum LoginError
 	#[error("Identifiants invalides")]
 	InvalidCredentials,
 }
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl LoginError
+{
+	pub const KEY: &'static str = "error";
+}

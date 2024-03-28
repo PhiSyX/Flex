@@ -23,7 +23,7 @@ flex-chat-macro = { path = "../../libs/cargo/flex-chat-macro" }
 flex-chat-mode = { path = "../../libs/cargo/flex-chat-mode" }
 flex-chat-user = { path = "../../libs/cargo/flex-chat-user" }
 
-clap = { version = "4.5.2", features = ["derive", "env"] }
+clap = { version = "4.5.4", features = ["derive", "env"] }
 dashmap = { workspace = true }
 flex-cli = { workspace = true }
 flex-crypto = { workspace = true }

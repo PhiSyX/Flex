@@ -15,6 +15,7 @@ lexa_kernel::public_using! {
 lexa_kernel::public_import! {
 	controllers / {
 		login_controller,
+		signup_controller,
 	};
 
 	dto / {
@@ -23,6 +24,7 @@ lexa_kernel::public_import! {
 
 	forms / {
 		login_form,
+		signup_form,
 	};
 
 	errors / {
@@ -42,6 +44,10 @@ lexa_kernel::public_import! {
 		user_repository,
 	};
 
+	responses / {
+		rpl_created_account,
+	};
+
 	services / {
 		auth_service,
 	};
@@ -50,8 +56,13 @@ lexa_kernel::public_import! {
 		constants,
 	};
 
+	specs / {
+		owasp,
+	};
+
 	views / {
 		login_view,
+		signup_view,
 	};
 }
 
