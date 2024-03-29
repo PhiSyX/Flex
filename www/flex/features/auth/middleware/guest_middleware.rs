@@ -14,7 +14,7 @@ use flex_web_framework::http::{IntoResponse, Response};
 use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
 
-use crate::features::auth::dto::user_cookie_dto::UserCookieDTO;
+use crate::features::auth::dto::UserCookieDTO;
 use crate::features::auth::sessions::constants::USER_SESSION;
 
 // --------- //

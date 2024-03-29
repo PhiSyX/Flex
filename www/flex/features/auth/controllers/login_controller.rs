@@ -17,16 +17,13 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
 
-use crate::features::auth::dto::user_cookie_dto::UserCookieDTO;
-use crate::features::auth::errors::login_error::LoginError;
-use crate::features::auth::forms::login_form::LoginFormData;
-use crate::features::auth::repositories::user_repository::{
-	UserRepository,
-	UserRepositoryPostgreSQL,
-};
-use crate::features::auth::services::auth_service::{AuthService, AuthenticationService};
+use crate::features::auth::dto::UserCookieDTO;
+use crate::features::auth::errors::LoginError;
+use crate::features::auth::forms::LoginFormData;
+use crate::features::auth::repositories::{UserRepository, UserRepositoryPostgreSQL};
+use crate::features::auth::services::{AuthService, AuthenticationService};
 use crate::features::auth::sessions::constants::USER_SESSION;
-use crate::features::auth::views::login_view::LoginView;
+use crate::features::auth::views::LoginView;
 use crate::FlexState;
 
 // --------- //

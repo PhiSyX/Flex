@@ -10,7 +10,7 @@
 
 use flex_web_framework::http::{Extensions, HttpAuthContext, HttpContextInterface, IntoResponse};
 
-use crate::features::auth::dto::user_cookie_dto::UserCookieDTO;
+use crate::features::auth::dto::UserCookieDTO;
 use crate::FlexState;
 
 // --------- //

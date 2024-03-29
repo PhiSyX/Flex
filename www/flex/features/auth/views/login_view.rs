@@ -10,9 +10,9 @@
 
 use flex_web_framework::{html, Node, SessionFlashExtension, ViewInterface};
 
-use crate::features::auth::errors::login_error::LoginError;
-use crate::features::auth::forms::login_form::LoginFormData;
-use crate::features::auth::responses::rpl_created_account::CreatedAccountReply;
+use crate::features::auth::errors::LoginError;
+use crate::features::auth::forms::LoginFormData;
+use crate::features::auth::responses::CreatedAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
 use crate::templates::layouts::BaseHTMLLayout;
 

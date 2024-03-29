@@ -10,7 +10,7 @@
 
 use flex_web_framework::types::uuid;
 
-use crate::features::auth::entities::user_entity::{UserEntity, UserRole};
+use crate::features::auth::entities::{UserEntity, UserRole};
 
 // --------- //
 // Structure //

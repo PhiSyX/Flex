@@ -12,63 +12,109 @@ lexa_kernel::public_using! {
 	feature,
 }
 
-lexa_kernel::public_import! {
-	controllers / {
+mod controllers
+{
+	lexa_kernel::public_using! {
 		login_controller,
 		logout_controller,
 		signup_controller,
-		users_controller,
-	};
+	}
 
-	dto / {
+	pub mod api
+	{
+		pub mod v1
+		{
+			lexa_kernel::public_using! {
+				users_controller,
+			}
+		}
+	}
+}
+
+mod dto
+{
+	lexa_kernel::public_using! {
 		user_cookie_dto,
-	};
+	}
+}
 
-	forms / {
+mod forms
+{
+	lexa_kernel::public_using! {
 		login_form,
 		signup_form,
-	};
+	}
+}
 
-	errors / {
+mod errors
+{
+	lexa_kernel::public_using! {
 		login_error,
-	};
+	}
+}
 
-	entities / {
+mod entities
+{
+	lexa_kernel::public_using! {
 		user_entity,
-	};
+	}
+}
 
-	middleware / {
+mod middleware
+{
+	lexa_kernel::public_using! {
 		auth_middleware,
 		guest_middleware,
-	};
+	}
+}
 
-	repositories / {
+mod repositories
+{
+	lexa_kernel::public_using! {
 		user_repository,
-	};
+	}
+}
 
-	responses / {
+mod responses
+{
+	lexa_kernel::public_using! {
 		rpl_created_account,
-	};
+	}
+}
 
-	routes / {
+mod routes
+{
+	lexa_kernel::public_using! {
 		api,
 		web,
-	};
+	}
+}
 
-	services / {
+mod services
+{
+	lexa_kernel::public_using! {
 		auth_service,
-	};
+	}
+}
 
-	sessions / {
+mod sessions
+{
+	lexa_kernel::public_import! {
 		constants,
-	};
+	}
+}
 
-	specs / {
+mod specs
+{
+	lexa_kernel::public_import! {
 		owasp,
-	};
+	}
+}
 
-	views / {
+mod views
+{
+	lexa_kernel::public_using! {
 		login_view,
 		signup_view,
-	};
+	}
 }

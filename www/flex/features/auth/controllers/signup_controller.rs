@@ -18,14 +18,11 @@ use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
 
 use crate::features::auth::forms::signup_form::RegistrationFormData;
-use crate::features::auth::repositories::user_repository::{
-	UserRepository,
-	UserRepositoryPostgreSQL,
-};
-use crate::features::auth::responses::rpl_created_account::CreatedAccountReply;
+use crate::features::auth::repositories::{UserRepository, UserRepositoryPostgreSQL};
+use crate::features::auth::responses::CreatedAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::services::auth_service::{AuthService, AuthenticationService, NewUser};
-use crate::features::auth::views::signup_view::SignupView;
+use crate::features::auth::services::{AuthService, AuthenticationService, NewUser};
+use crate::features::auth::views::SignupView;
 use crate::FlexState;
 
 // --------- //

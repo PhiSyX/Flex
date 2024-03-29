@@ -14,8 +14,8 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::types::email;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
-use crate::features::auth::entities::user_entity::UserEntity;
-use crate::features::auth::services::auth_service::NewUser;
+use crate::features::auth::entities::UserEntity;
+use crate::features::auth::services::NewUser;
 
 // --------- //
 // Interface //
