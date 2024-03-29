@@ -35,8 +35,8 @@ pub trait ConnectApplicationInterface
 	/// Crée une nouvelle session d'un client à partir d'une socket.
 	fn create_client_with_id(
 		&self,
-		id: flex_web_framework::types::uuid::Uuid,
 		socket: &<Self::ClientSocket<'_> as ClientSocketInterface>::Socket,
+		cid: flex_web_framework::types::uuid::Uuid,
 	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client;
 
 	/// Peut-on localiser un client de session non enregistré?
@@ -47,6 +47,13 @@ pub trait ConnectApplicationInterface
 
 	/// Récupère un client à partir de son ID et son jeton.
 	fn get_client_by_id_and_token(
+		&self,
+		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+		token: impl AsRef<str>,
+	) -> Option<<Self::ClientSocket<'_> as ClientSocketInterface>::Client>;
+
+	/// Récupère un client à partir de l'ID utilisateur et son jeton.
+	fn get_client_by_user_id_and_token(
 		&self,
 		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
 		token: impl AsRef<str>,
@@ -80,8 +87,8 @@ impl ConnectApplicationInterface for ChatApplication
 
 	fn create_client_with_id(
 		&self,
-		id: flex_web_framework::types::uuid::Uuid,
 		socket: &<Self::ClientSocket<'_> as ClientSocketInterface>::Socket,
+		cid: flex_web_framework::types::uuid::Uuid,
 	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client
 	{
 		// TODO: SecureClientIp ?
@@ -89,7 +96,7 @@ impl ConnectApplicationInterface for ChatApplication
 			InsecureClientIp::from(&socket.req_parts().headers, &socket.req_parts().extensions)
 				.expect("Adresse IP de la Socket");
 		let sid = socket.id;
-		self.clients.create_with_uuid(id, ip, sid)
+		self.clients.create_with_id(ip, sid, cid)
 	}
 
 	fn can_locate_unregistered_client(
@@ -109,6 +116,15 @@ impl ConnectApplicationInterface for ChatApplication
 		self.clients
 			.get(client_id)
 			.filter(|client| client.token().eq(token.as_ref()))
+	}
+
+	fn get_client_by_user_id_and_token(
+		&self,
+		user_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+		token: impl AsRef<str>,
+	) -> Option<<Self::ClientSocket<'_> as ClientSocketInterface>::Client>
+	{
+		self.get_client_by_id_and_token(user_id, token)
 	}
 
 	fn register_client(&self, client: &<Self::ClientSocket<'_> as ClientSocketInterface>::Client)

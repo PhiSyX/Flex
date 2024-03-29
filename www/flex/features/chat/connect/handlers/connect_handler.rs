@@ -56,11 +56,12 @@ impl ConnectionRegistrationHandler
 		TryData(data): TryData<RememberUserFormData>,
 	)
 	{
-		let maybe_data = data.as_ref().cloned().ok();
+		let maybe_user_id = data.as_ref().cloned().ok().and_then(|d| d.user_id);
+		let maybe_client_id = data.as_ref().cloned().ok().and_then(|d| d.client_id);
 
 		let new_client = || {
-			let client = if let Some(user_id) = maybe_data.and_then(|d| d.user_id) {
-				app.create_client_with_id(user_id, socket)
+			let client = if let Some(user_id) = maybe_user_id {
+				app.create_client_with_id(socket, user_id)
 			} else {
 				app.create_client(socket)
 			};
@@ -98,22 +99,23 @@ impl ConnectionRegistrationHandler
 			.signed()
 			.get(TokenController::COOKIE_TOKEN_KEY);
 
-		if let Some((remember_client_id, token)) =
-			data.ok().and_then(|data| data.client_id.zip(token))
-		{
-			if let Some(client) = app.get_client_by_id_and_token(&remember_client_id, token.value())
-			{
-				socket.extensions.insert(client.clone());
-				let client_socket = app.current_client_mut(socket);
-				already_existing_client(client_socket);
-			} else {
-				new_client();
-			}
+		socket.on_disconnect(QuitHandler::handle_disconnect);
+
+		let Some(client) = (if let Some((user_id, token)) = maybe_user_id.zip(token.clone()) {
+			app.get_client_by_user_id_and_token(&user_id, token.value())
+		} else if let Some((remember_client_id, token)) = maybe_client_id.zip(token) {
+			app.get_client_by_id_and_token(&remember_client_id, token.value())
 		} else {
 			new_client();
-		}
+			return;
+		}) else {
+			new_client();
+			return;
+		};
 
-		socket.on_disconnect(QuitHandler::handle_disconnect);
+		socket.extensions.insert(client.clone());
+		let client_socket = app.current_client_mut(socket);
+		already_existing_client(client_socket);
 	}
 
 	/// Compléter l'enregistrement d'un client.

@@ -59,9 +59,9 @@ pub struct Client
 impl Client
 {
 	/// Crée une nouvelle structure d'un [client](Self).
-	pub fn new(ip: net::IpAddr, socket_id: socketioxide::socket::Sid) -> Self
+	pub fn new(ip: net::IpAddr, client_id: uuid::Uuid, socket_id: socketioxide::socket::Sid)
+		-> Self
 	{
-		let client_id = uuid::Uuid::new_v4();
 		let token = format!("{}:{}:{}", client_id, socket_id, ip).sha256();
 		Self {
 			socket_id: Some(socket_id),
@@ -72,13 +72,6 @@ impl Client
 			user: User::new(ip),
 			channels: Default::default(),
 		}
-	}
-
-	/// Applique un ID au client.
-	pub fn with_id(mut self, id: uuid::Uuid) -> Self
-	{
-		self.id = id;
-		self
 	}
 }
 

@@ -25,14 +25,21 @@ pub trait ConnectClientsSessionInterface: ClientsSessionInterface
 		&self,
 		ip: net::IpAddr,
 		socket_id: <Self::Client as ClientInterface>::SocketID,
-	) -> Self::Client;
+	) -> Self::Client
+	{
+		self.create_with_id(
+			ip,
+			socket_id,
+			flex_web_framework::types::uuid::Uuid::new_v4(),
+		)
+	}
 
 	/// Crée une nouvelle session d'un client.
-	fn create_with_uuid(
+	fn create_with_id(
 		&self,
-		uuid: flex_web_framework::types::uuid::Uuid,
 		ip: net::IpAddr,
 		socket_id: <Self::Client as ClientInterface>::SocketID,
+		client_id: flex_web_framework::types::uuid::Uuid,
 	) -> Self::Client;
 
 	/// Peut-on localiser un client non enregistré par son ID.
@@ -48,26 +55,15 @@ pub trait ConnectClientsSessionInterface: ClientsSessionInterface
 
 impl ConnectClientsSessionInterface for ClientsSession
 {
-	fn create(
-		&self,
-		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-	) -> Self::Client
-	{
-		let client = Client::new(ip, socket_id);
-		self.clients.insert(*client.cid(), client.clone());
-		client
-	}
-
 	/// Crée une nouvelle session d'un client.
-	fn create_with_uuid(
+	fn create_with_id(
 		&self,
-		id: flex_web_framework::types::uuid::Uuid,
 		ip: net::IpAddr,
 		socket_id: <Self::Client as ClientInterface>::SocketID,
+		client_id: flex_web_framework::types::uuid::Uuid,
 	) -> Self::Client
 	{
-		let client = Client::new(ip, socket_id).with_id(id);
+		let client = Client::new(ip, client_id, socket_id);
 		self.clients.insert(*client.cid(), client.clone());
 		client
 	}
