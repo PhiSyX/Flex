@@ -9,16 +9,21 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat_client::ClientID;
+use flex_chat_macro::Uuid;
 
 // --------- //
 // Structure //
 // --------- //
 
 /// Envoyée lors de la (re)connexion au WebSocket.
+#[derive(Clone)]
 #[derive(Debug)]
 #[derive(serde::Deserialize)]
 pub struct RememberUserFormData
 {
+	/// ID utilisateur enregistré au site.
+	pub user_id: Option<Uuid>,
+
 	/// ID d'un client.
 	pub client_id: Option<ClientID>,
 }

@@ -32,6 +32,13 @@ pub trait ConnectApplicationInterface
 		socket: &<Self::ClientSocket<'_> as ClientSocketInterface>::Socket,
 	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client;
 
+	/// Crée une nouvelle session d'un client à partir d'une socket.
+	fn create_client_with_id(
+		&self,
+		id: flex_web_framework::types::uuid::Uuid,
+		socket: &<Self::ClientSocket<'_> as ClientSocketInterface>::Socket,
+	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client;
+
 	/// Peut-on localiser un client de session non enregistré?
 	fn can_locate_unregistered_client(
 		&self,
@@ -69,6 +76,20 @@ impl ConnectApplicationInterface for ChatApplication
 				.expect("Adresse IP de la Socket");
 		let sid = socket.id;
 		self.clients.create(ip, sid)
+	}
+
+	fn create_client_with_id(
+		&self,
+		id: flex_web_framework::types::uuid::Uuid,
+		socket: &<Self::ClientSocket<'_> as ClientSocketInterface>::Socket,
+	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client
+	{
+		// TODO: SecureClientIp ?
+		let InsecureClientIp(ip) =
+			InsecureClientIp::from(&socket.req_parts().headers, &socket.req_parts().extensions)
+				.expect("Adresse IP de la Socket");
+		let sid = socket.id;
+		self.clients.create_with_uuid(id, ip, sid)
 	}
 
 	fn can_locate_unregistered_client(

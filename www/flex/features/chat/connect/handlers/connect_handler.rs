@@ -56,8 +56,14 @@ impl ConnectionRegistrationHandler
 		TryData(data): TryData<RememberUserFormData>,
 	)
 	{
+		let maybe_data = data.as_ref().cloned().ok();
+
 		let new_client = || {
-			let client = app.create_client(socket);
+			let client = if let Some(user_id) = maybe_data.and_then(|d| d.user_id) {
+				app.create_client_with_id(user_id, socket)
+			} else {
+				app.create_client(socket)
+			};
 
 			socket.extensions.insert(client);
 

@@ -73,6 +73,13 @@ impl Client
 			channels: Default::default(),
 		}
 	}
+
+	/// Applique un ID au client.
+	pub fn with_id(mut self, id: uuid::Uuid) -> Self
+	{
+		self.id = id;
+		self
+	}
 }
 
 // -------------- //

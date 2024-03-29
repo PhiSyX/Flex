@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ButtonIcon, InputSwitch, TextInput, UiButton } from "@phisyx/flex-uikit";
-import { type ModelRef, reactive, ref } from "vue";
+import { type ModelRef, onMounted, reactive, ref } from "vue";
 
 import { useChatStore } from "~/store/ChatStore";
 import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
@@ -130,16 +130,21 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 	loader.value = false;
 }
 
-/**
- * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
- */
-function useRememberMe() {
-	if (loginFormData.rememberMe.value) {
-		chatStore.connect(loginFormData);
-	}
-}
+onMounted(async () => {
+	const fetchOpts: RequestInit = { credentials: "same-origin" };
 
-useRememberMe();
+	const currentUser = await fetch("/api/v1/auth/@me", fetchOpts).then(async (r) => {
+		if (r.ok) return r.json();
+		if (r.status >= 400 && r.status < 600) return Promise.reject(await r.json());
+		return Promise.reject(r);
+	});
+
+	loginFormData.nickname = currentUser.name;
+	loginFormData.alternativeNickname = `${currentUser.name}_`;
+	loginFormData.realname = `${currentUser.name} - ${currentUser.role}`;
+
+	chatStore.store.setUserID(currentUser.id);
+});
 </script>
 
 <template>

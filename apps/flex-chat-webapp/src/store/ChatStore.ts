@@ -88,6 +88,7 @@ export class ChatStore {
 	private _client: Option<Origin> = None();
 	public clientError: Option<{ id: string; data: unknown }> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
+	private _userID: Option<UUID> = None();
 	private _network: Option<CustomRoomID> = None();
 	private _roomManager: RoomManager = new RoomManager();
 	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
@@ -130,14 +131,19 @@ export class ChatStore {
 		console.info("Connexion au serveur de WebSocket « %s »", websocketServerURL);
 
 		let clientID = this._clientIDStorage.maybe().unwrap_or("") as string | null;
+		let userID = this._userID.unwrap_or("") as string | null;
 
 		if (clientID?.length === 0) {
 			clientID = null;
 		}
 
+		if (userID?.length === 0) {
+			userID = null;
+		}
+
 		this._ws.replace(
 			io(websocketServerURL, {
-				auth: { client_id: clientID },
+				auth: { user_id: userID, client_id: clientID },
 				transports: ["websocket"],
 				reconnection: true,
 				reconnectionDelay: 10_000,
@@ -404,6 +410,13 @@ export class ChatStore {
 	setClient(origin: Origin) {
 		this._clientIDStorage.set(origin.id);
 		this._client.replace(origin);
+	}
+
+	/**
+	 * Définit l'ID de l'utilisateur.
+	 */
+	setUserID(userID: UUID) {
+		this._userID.replace(userID);
 	}
 
 	/**
