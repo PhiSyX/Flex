@@ -15,8 +15,8 @@ use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
 
 use crate::features::auth::dto::user_cookie_dto::UserCookieDTO;
+use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::auth::sessions::constants::USER_SESSION;
-use crate::features::auth::AuthRouteID;
 
 // --------- //
 // Structure //

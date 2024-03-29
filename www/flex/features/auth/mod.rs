@@ -17,6 +17,7 @@ lexa_kernel::public_import! {
 		login_controller,
 		logout_controller,
 		signup_controller,
+		users_controller,
 	};
 
 	dto / {
@@ -49,6 +50,11 @@ lexa_kernel::public_import! {
 		rpl_created_account,
 	};
 
+	routes / {
+		api,
+		web,
+	};
+
 	services / {
 		auth_service,
 	};
@@ -65,8 +71,4 @@ lexa_kernel::public_import! {
 		login_view,
 		signup_view,
 	};
-}
-
-lexa_kernel::using! {
-	routes,
 }

@@ -8,37 +8,69 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::Feature;
+use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
+use flex_web_framework::{middleware, RouteIDInterface, RouterGroupInterface, RouterInterface};
 
-use super::routes::api::AuthApi_V1_Router;
-use super::routes::web::AuthRouter;
-use crate::FlexState;
+use crate::features::auth::controllers::users_controller::UsersController;
+use crate::features::auth::middleware::auth_middleware::AuthMiddleware;
+use crate::{FlexApplicationState, FlexState};
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct AuthApplication;
+pub struct AuthApi_V1_Router;
+
+// ----------- //
+// Énumération //
+// ----------- //
+
+#[derive(Debug)]
+pub enum AuthApi_V1_RouteID
+{
+	CurrentUser,
+}
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl Feature for AuthApplication
+impl RouterGroupInterface for AuthApi_V1_Router
 {
-	type Config = ();
-	type Router = (AuthRouter, AuthApi_V1_Router);
-	type State = FlexState;
+	const GROUP: &'static str = "/api/v1/auth";
+}
 
-	const NAME: &'static str = "AuthApplication";
-
-	fn register_services(
-		_config: &flex_web_framework::settings::Config<Self::Config>,
-		axum_state: &mut flex_web_framework::AxumState<Self::State>,
-		router: flex_web_framework::AxumRouter<Self::State>,
-	) -> flex_web_framework::AxumRouter<Self::State>
+impl RouterInterface<FlexState> for AuthApi_V1_Router
+{
+	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
-		axum_state.set_state(FlexState::Auth);
-		router
+		Self::group().add(
+			Router::path(AuthApi_V1_RouteID::CurrentUser)
+				.get(UsersController::current_user)
+				// .middleware(middleware::from_fn(AuthMiddleware::required)),
+		)
+	}
+}
+
+impl RouteIDInterface for AuthApi_V1_RouteID
+{
+	fn fullpath(&self) -> impl ToString
+	{
+		format!("{}{}", AuthApi_V1_Router::GROUP, self.path().to_string())
+	}
+
+	fn path(&self) -> impl ToString
+	{
+		match self {
+			| Self::CurrentUser => "/@me",
+		}
+	}
+}
+
+impl std::fmt::Display for AuthApi_V1_RouteID
+{
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+	{
+		write!(f, "{}", self.fullpath().to_string())
 	}
 }

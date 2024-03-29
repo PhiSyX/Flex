@@ -23,9 +23,9 @@ use crate::features::auth::repositories::user_repository::{
 	UserRepositoryPostgreSQL,
 };
 use crate::features::auth::responses::rpl_created_account::CreatedAccountReply;
+use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::auth::services::auth_service::{AuthService, AuthenticationService, NewUser};
 use crate::features::auth::views::signup_view::SignupView;
-use crate::features::auth::AuthRouteID;
 use crate::FlexState;
 
 // --------- //
@@ -50,12 +50,15 @@ impl SignupController
 	}
 
 	/// Gestion du formulaire d'inscription au site.
-	pub async fn handle(ctx: HttpContext<Self>, Form(form): Form<RegistrationFormData>) -> Redirect
+	pub async fn handle(ctx: HttpContext<Self>, Form(form): Form<RegistrationFormData>)
+		-> Redirect
 	{
 		if let Err(err) = ctx.auth_service.signup(NewUser::from(form)).await {
 			tracing::error!(?err, "Erreur lors de l'inscription");
 		}
-		ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
+		ctx.session
+			.flash(CreatedAccountReply::KEY, CreatedAccountReply)
+			.await;
 		ctx.response.redirect_to(AuthRouteID::Login)
 	}
 }

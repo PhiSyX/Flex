@@ -160,6 +160,7 @@ where
 			uri,
 			raw_query,
 			referer,
+			headers: parts.headers.clone(),
 		};
 
 		// Response
