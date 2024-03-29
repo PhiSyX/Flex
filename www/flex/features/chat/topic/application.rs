@@ -92,8 +92,7 @@ impl TopicApplicationInterface for ChatApplication
 		topic: impl AsRef<str>,
 	)
 	{
-		self.channels
-			.update_topic(channel_name, topic, client_socket.user().nickname());
+		self.channels.update_topic(channel_name, topic, client_socket.user().nickname());
 
 		let Some(channel) = self.get_channel(channel_name) else {
 			return;

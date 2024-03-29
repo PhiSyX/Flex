@@ -45,9 +45,7 @@ impl AuthMiddleware
 	pub async fn moderator_only(session: Session, req: Request, next: Next) -> Response
 	{
 		match session.get::<UserCookieDTO>(USER_SESSION).await {
-			| Ok(Some(user)) if user.role.is_moderator() || user.role.is_admin() => {
-				next.run(req).await
-			}
+			| Ok(Some(user)) if user.role.is_moderator() || user.role.is_admin() => next.run(req).await,
 			| _ => Redirect::to(&Self::REDIRECT_TO.to_string()).into_response(),
 		}
 	}

@@ -80,9 +80,7 @@ impl OperApplicationInterface for ChatApplication
 
 	fn is_client_global_operator(&self, client_socket: &Self::ClientSocket<'_>) -> bool
 	{
-		let Some(client) = self.get_client_by_id(client_socket.cid()) else {
-			return false;
-		};
+		let Some(client) = self.get_client_by_id(client_socket.cid()) else { return false; };
 		client.user().is_global_operator()
 	}
 
@@ -101,9 +99,7 @@ impl OperApplicationInterface for ChatApplication
 					ApplyMode::new(SettingsFlag::Secret),
 				],
 			);
-			let mut channel = self
-				.channels
-				.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 		}
@@ -112,9 +108,7 @@ impl OperApplicationInterface for ChatApplication
 		let can_join = self.channels.can_join(&client_session, channel_name, None);
 
 		if can_join.is_ok() {
-			let mut channel = self
-				.channels
-				.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 			return;

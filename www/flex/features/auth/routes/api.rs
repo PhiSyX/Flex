@@ -43,11 +43,8 @@ impl RouterInterface<FlexState> for AuthApi_V1_Router
 {
 	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
-		Self::group().add(
-			Router::path(AuthApi_V1_RouteID::CurrentUser)
-				.get(UsersController::current_user)
-				// .middleware(middleware::from_fn(AuthMiddleware::required)),
-		)
+		Self::group()
+			.add(Router::path(AuthApi_V1_RouteID::CurrentUser).get(UsersController::current_user))
 	}
 }
 

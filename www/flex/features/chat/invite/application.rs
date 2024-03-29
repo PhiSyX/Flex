@@ -50,9 +50,7 @@ impl<'a> InviteApplicationInterface<'a> for ChatApplication
 	)
 	{
 		let chid: &<Self::Channel as ChannelInterface>::RefID<'a> = &channel_id.into();
-		let Some(mut channel) = self.channels.get_mut(chid) else {
-			return;
-		};
+		let Some(mut channel) = self.channels.get_mut(chid) else { return; };
 		channel.add_invite(user_invite_id);
 	}
 }

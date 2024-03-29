@@ -43,8 +43,7 @@ pub use self::features::*;
 // Type //
 // ---- //
 
-pub type Flex =
-	flex_web_framework::AxumApplication<FlexState, config::env::FlexEnv, commands::FlexCLI>;
+pub type Flex = flex_web_framework::AxumApplication<FlexState, config::env::FlexEnv, commands::FlexCLI>;
 pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
 
 // --------- //

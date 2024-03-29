@@ -58,8 +58,7 @@ impl InviteHandler
 	{
 		let client_socket = app.current_client(&socket);
 
-		let Some(target_client_socket) = app.find_socket_by_nickname(&socket, &data.nickname)
-		else {
+		let Some(target_client_socket) = app.find_socket_by_nickname(&socket, &data.nickname) else {
 			client_socket.send_err_nosuchnick(&data.nickname);
 			return;
 		};
@@ -69,8 +68,7 @@ impl InviteHandler
 		};
 
 		if channel.member(target_client_socket.cid()).is_some() {
-			client_socket
-				.send_err_useronchannel(target_client_socket.user().nickname(), channel.name());
+			client_socket.send_err_useronchannel(target_client_socket.user().nickname(), channel.name());
 			return;
 		}
 

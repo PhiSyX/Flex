@@ -139,8 +139,7 @@ impl ChannelsSessionInterface for ChannelsSession
 		>,
 	) -> bool
 	{
-		let channel_name: Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>> =
-			channel_name.into();
+		let channel_name: Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>> = channel_name.into();
 		let chid = channel_name.to_lowercase();
 		let mut channel_entity = Channel::new(channel_name).with_creation_flags(flags);
 		if let Some(channel_key) = channel_key {

@@ -58,9 +58,7 @@ impl SilenceHandler
 		// 				 ignorés.
 
 		if data.nickname.starts_with('+') {
-			_ = client_socket
-				.socket()
-				.join(to_silence_client_socket.useless_people_room());
+			_ = client_socket.socket().join(to_silence_client_socket.useless_people_room());
 
 			if app.add_client_to_blocklist(&client_socket, &to_silence_client_socket) {
 				let users = [&Origin::from(to_silence_client_socket.client())];
@@ -73,9 +71,7 @@ impl SilenceHandler
 		// NOTE(phisyx): utilisateur à retirer de la liste des utilisateurs
 		// 				 ignorés.
 
-		_ = client_socket
-			.socket()
-			.leave(to_silence_client_socket.useless_people_room());
+		_ = client_socket.socket().leave(to_silence_client_socket.useless_people_room());
 
 		if app.remove_client_to_blocklist(&client_socket, &to_silence_client_socket) {
 			let users = [&Origin::from(to_silence_client_socket.client())];

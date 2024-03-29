@@ -50,31 +50,15 @@ impl LoginController
 	}
 
 	/// Traitement du formulaire de connexion.
-	pub async fn handle(
-		ctx: HttpContext<Self>,
-		Form(formdata): Form<LoginFormData>,
-	) -> impl IntoResponse
+	pub async fn handle(ctx: HttpContext<Self>, Form(formdata): Form<LoginFormData>) -> impl IntoResponse
 	{
-		let Ok(user) = ctx
-			.auth_service
-			.attempt(&formdata.identifier, &formdata.password)
-			.await
-		else {
-			ctx.session
-				.flash(LoginError::KEY, LoginError::InvalidCredentials)
-				.await;
+		let Ok(user) = ctx.auth_service.attempt(&formdata.identifier, &formdata.password).await else {
+			ctx.session.flash(LoginError::KEY, LoginError::InvalidCredentials).await;
 			return ctx.redirect_back();
 		};
 
-		ctx.cookies
-			.signed()
-			.add((Self::COOKIE_NAME, user.id.to_string()));
-
-		_ = ctx
-			.session
-			.insert(USER_SESSION, UserCookieDTO::from(user))
-			.await;
-
+		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
+		_ = ctx.session.insert(USER_SESSION, UserCookieDTO::from(user)).await;
 		ctx.response.redirect_to("/chat")
 	}
 }

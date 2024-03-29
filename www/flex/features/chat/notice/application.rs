@@ -86,8 +86,9 @@ impl NoticeApplicationInterface for ChatApplication
 			return ChannelWritePermission::No(ChannelNoPermissionCause::ERR_BANNEDFROMCHAN);
 		}
 
-		if moderate_flag
-			&& member_hal
+		if
+			moderate_flag &&
+			member_hal
 				.filter(|level| level.flag() >= ChannelAccessLevel::Vip.flag())
 				.is_none()
 		{

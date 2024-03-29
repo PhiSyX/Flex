@@ -77,8 +77,7 @@ impl SilenceClientsSessionInterface for ClientsSession
 		client_id: &<Self::Client as ClientInterface>::ClientID,
 	) -> Vec<Self::Client>
 	{
-		self.blocklist
-			.get(client_id)
+		self.blocklist.get(client_id)
 			.map(|l| l.value().iter().filter_map(|bid| self.get(&bid)).collect())
 			.unwrap_or_default()
 	}
@@ -89,9 +88,7 @@ impl SilenceClientsSessionInterface for ClientsSession
 		other_client_id: &<Self::Client as ClientInterface>::ClientID,
 	) -> bool
 	{
-		let Some(blocklist) = self.blocklist.get(client_id) else {
-			return false;
-		};
+		let Some(blocklist) = self.blocklist.get(client_id) else { return false; };
 		blocklist.contains(other_client_id)
 	}
 
@@ -101,9 +98,7 @@ impl SilenceClientsSessionInterface for ClientsSession
 		to_ignore_client_id: &<Self::Client as ClientInterface>::ClientID,
 	) -> bool
 	{
-		let Some(blocklist) = self.blocklist.get_mut(client_id) else {
-			return false;
-		};
+		let Some(blocklist) = self.blocklist.get_mut(client_id) else { return false; };
 		blocklist.remove(to_ignore_client_id).is_some()
 	}
 }

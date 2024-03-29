@@ -42,7 +42,8 @@ async fn main() -> impl process::Termination
 		.define_project_directory(PROJECT_DIR)
 		.define_config_directory(FLEX_CONFIGURATION_DIR)
 		.define_env_directory(FLEX_ENV_VARS_DIR)
-		.initialize_logger();
+		.initialize_logger()
+	;
 
 	let application = application.include_env_vars().include_cli_args();
 
@@ -75,15 +76,13 @@ async fn main() -> impl process::Termination
 			.use_cookie_layer()
 			.extension_with::<Argon2Password>(app_secret_key)
 	};
+
 	// 3.1. Layers, extensions, services (Async)
 	let application = {
 		use flex_web_framework::AsyncApplicationExtExtension;
 
 		let database_url = application.env().database_url.expose().to_owned();
-
-		application
-			.extension_with::<DatabaseService<PostgreSQLDatabase>>(database_url)
-			.await
+		application.extension_with::<DatabaseService<PostgreSQLDatabase>>(database_url).await
 	};
 
 	// 4. Run

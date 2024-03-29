@@ -11,6 +11,7 @@
 use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
 use flex_chat_user::{UserInterface, UserOperatorInterface};
 use flex_crypto::Hasher;
+use flex_web_framework::http::Cookies;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::types::time;
 use flex_web_framework::types::time::TimeZone;
@@ -82,22 +83,16 @@ impl ConnectionRegistrationHandler
 			Self::complete_registration(server_state, app, client_socket);
 		};
 
-		let cookie_manager = socket
-			.req_parts()
-			.extensions
+		let cookie_manager = socket.req_parts().extensions
 			.get::<flex_web_framework::http::TowerCookies>()
 			.map(|cm| {
-				flex_web_framework::http::Cookies::new(
-					cm.clone(),
-					server_state.get_cookie_key().clone(),
-				)
-				.with_cookie_settings(server_state.get_cookie_settings().clone())
+				Cookies::new(cm.clone(), server_state.get_cookie_key().clone())
+					.with_cookie_settings(server_state.get_cookie_settings().clone())
 			})
-			.expect("Cookie manager");
+			.expect("Cookie manager")
+		;
 
-		let token = cookie_manager
-			.signed()
-			.get(TokenController::COOKIE_TOKEN_KEY);
+		let token = cookie_manager.signed().get(TokenController::COOKIE_TOKEN_KEY);
 
 		socket.on_disconnect(QuitHandler::handle_disconnect);
 
@@ -129,12 +124,10 @@ impl ConnectionRegistrationHandler
 			return Some(());
 		}
 
-		let config = client_socket
-			.socket()
-			.req_parts()
-			.extensions
+		let config = client_socket.socket().req_parts().extensions
 			.get::<FlexChatConfig>()?
-			.clone();
+			.clone()
+		;
 
 		if config.server.password.is_some() && client_socket.user().server_password().is_none() {
 			// FIXME(phisyx): à déplacer
@@ -146,18 +139,16 @@ impl ConnectionRegistrationHandler
 			return None;
 		}
 
-		if let Some((server_password, client_password)) = config
-			.server
-			.password
-			.as_deref()
+		let passwords = config.server.password.as_deref()
 			.zip(client_socket.user().server_password_exposed())
+		;
+
+		if let Some((server_password, client_password)) = passwords
 		{
-			let password_hasher = client_socket
-				.socket()
-				.req_parts()
-				.extensions
+			let password_hasher = client_socket.socket().req_parts().extensions
 				.get::<Argon2Password>()
-				.expect("Le service de chiffrement Argon2.");
+				.expect("Le service de d'encodage Argon2.")
+			;
 
 			if !password_hasher.cmp(server_password, client_password) {
 				// FIXME(phisyx): à déplacer
@@ -187,9 +178,7 @@ impl ConnectionRegistrationHandler
 			app.register_client(client_socket.client());
 		}
 
-		_ = client_socket
-			.socket()
-			.join(client_socket.client().private_room());
+		_ = client_socket.socket().join(client_socket.client().private_room());
 
 		//
 		// NOTE(phisyx): Émettre au client les messages de connexions.
@@ -219,12 +208,11 @@ impl ConnectionRegistrationHandler
 
 		// NOTE(phisyx): transmet les utilisateurs bloqués/ignorés du client (au
 		// client lui-même ;-))
-		let users: Vec<_> = app
-			.clients
-			.blocklist(client_socket.cid())
+		let users: Vec<_> = app.clients.blocklist(client_socket.cid())
 			.iter()
 			.map(Origin::from)
-			.collect();
+			.collect()
+		;
 		if !users.is_empty() {
 			for user in users.iter() {
 				_ = client_socket.socket().join(format!("{}/ignore", &user.id));

@@ -82,8 +82,7 @@ impl ChatApplication
 		socket: &'a socketioxide::extract::SocketRef,
 	) -> Socket<'a>
 	{
-		let client: socketioxide::extensions::RefMut<'a, Client> =
-			socket.extensions.get_mut().unwrap();
+		let client: socketioxide::extensions::RefMut<'a, Client> = socket.extensions.get_mut().unwrap();
 		Socket::BorrowedMut { socket, client }
 	}
 
@@ -163,9 +162,7 @@ impl ClientsSessionInterface for ClientsSession
 		client_id: &<Self::Client as ClientInterface>::ClientID,
 	) -> Option<RefMutMulti<'_, <Self::Client as ClientInterface>::ClientID, Self::Client>>
 	{
-		self.clients
-			.iter_mut()
-			.find(|rm| rm.key() == client_id && rm.value().is_registered())
+		self.clients.iter_mut().find(|rm| rm.key() == client_id && rm.value().is_registered())
 	}
 
 	/// Enregistre un client.

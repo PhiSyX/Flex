@@ -25,12 +25,10 @@ use crate::features::auth::repositories::UserRepository;
 #[flex_web_framework::async_trait]
 pub trait AuthenticationService
 {
-	async fn attempt(
-		&self,
-		identifier: &Identifier,
-		password: &str,
-	) -> Result<UserEntity, AuthErrorService>;
+	/// Tentative de connexion d'un utilisateur.
+	async fn attempt(&self, identifier: &Identifier, password: &str) -> Result<UserEntity, AuthErrorService>;
 
+	/// Tentative d'inscription d'un nouvel utilisateur.
 	async fn signup(&self, new_user: NewUser) -> Result<UserEntity, AuthErrorService>;
 
 	fn shared(self) -> Arc<Self>
@@ -79,23 +77,13 @@ pub enum AuthErrorService
 }
 
 // -------------- //
-// Implémentation //
-// -------------- //
-
-impl AuthService {}
-
-// -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
 #[flex_web_framework::async_trait]
 impl AuthenticationService for AuthService
 {
-	async fn attempt(
-		&self,
-		identifier: &Identifier,
-		password: &str,
-	) -> Result<UserEntity, AuthErrorService>
+	async fn attempt(&self, identifier: &Identifier, password: &str) -> Result<UserEntity, AuthErrorService>
 	{
 		// FIXME: passer un DTO en paramètre générique plutôt que de retourner
 		//        directement l'entité `UserEntity`. Actuellement, le système de
@@ -122,21 +110,21 @@ impl AuthenticationService for AuthService
 
 	async fn signup(&self, mut new_user: NewUser) -> Result<UserEntity, AuthErrorService>
 	{
-		let user_exists = self
-			.user_repository
-			.find_by_email_or_name(&new_user.email_address, &new_user.username)
-			.await
-			.is_ok();
+		let user_exists = self.user_repository
+			.find_by_email_or_name(&new_user.email_address, &new_user.username).await
+			.is_ok()
+		;
+
 		if user_exists {
 			// SECURITY: timing attacks.
 			_ = self.password_service.encrypt("1234567890");
 			return Err(AuthErrorService::EmailOrNameAlreadyTaken);
 		}
 
-		let encoded_password = self
-			.password_service
+		let encoded_password = self.password_service
 			.encrypt(new_user.password.expose())
-			.map_err(|_| AuthErrorService::Hasher)?;
+			.map_err(|_| AuthErrorService::Hasher)?
+		;
 		new_user.password = secret::Secret::from(encoded_password);
 		let user = self.user_repository.create(new_user).await?;
 

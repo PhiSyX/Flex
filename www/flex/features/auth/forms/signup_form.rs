@@ -45,24 +45,23 @@ impl<'de> serde::Deserialize<'de> for RegistrationFormData
 		let this = Self::deserialize(deserializer)?;
 
 		if this.username.trim().is_empty() {
-			return Err(serde::de::Error::custom(
-				"[username]: le nom NE DOIT PAS être vide.",
-			));
+			let reason = "[username]: le nom NE DOIT PAS être vide.";
+			return Err(serde::de::Error::custom(reason));
 		}
 
 		if this.password != this.password_confirmation {
-			return Err(serde::de::Error::custom(
-				"[password]: les mots de passes ne sont pas identiques",
-			));
+			let reason = "[password]: les mots de passes ne sont pas identiques";
+			return Err(serde::de::Error::custom(reason));
 		}
 
 		let password_size = this.password.len();
 		if !(PASSWORD_LENGTH_MIN..=PASSWORD_LENGTH_MAX).contains(&password_size) {
-			return Err(serde::de::Error::custom(format!(
+			let reason = format!(
 				"[password]: un mot de passe valide DOIT être compris entre « {} » et « {} » \
 				 caractères. La taille du mot de passe que vous avez envoyé est de « {} ».",
 				PASSWORD_LENGTH_MIN, PASSWORD_LENGTH_MAX, password_size,
-			)));
+			);
+			return Err(serde::de::Error::custom(reason));
 		}
 
 		Ok(this)

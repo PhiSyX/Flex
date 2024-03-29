@@ -95,8 +95,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		forced: bool,
 	)
 	{
-		self.clients
-			.add_channel_on_client(client_socket.cid(), &channel.id());
+		self.clients.add_channel_on_client(client_socket.cid(), &channel.id());
 
 		client_socket.emit_join(channel, forced);
 
@@ -129,24 +128,17 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, channel_key.cloned());
-			let mut channel = self
-				.channels
-				.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
 			return Ok(());
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
-
-		let can_join = self
-			.channels
-			.can_join(&client_session, channel_name, channel_key);
+		let can_join = self.channels.can_join(&client_session, channel_name, channel_key);
 
 		if can_join.is_ok() {
-			let mut channel = self
-				.channels
-				.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
 			return Ok(());
@@ -164,25 +156,20 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		let channel_name: &<Self::Channel as ChannelInterface>::RefID<'a> = &channel_name.into();
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, None);
-			let mut channel = self
-				.channels
-				.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 			return Ok(());
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
-
 		let can_join = self.channels.can_join(&client_session, channel_name, None);
 
 		if let Err(JoinChannelPermissionError::ERR_USERONCHANNEL) = &can_join {
 			return can_join;
 		}
 
-		let mut channel = self
-			.channels
-			.add_member(channel_name, client_socket.cid())
+		let mut channel = self.channels.add_member(channel_name, client_socket.cid())
 			.expect("Le salon que le client a rejoint");
 		self.join_channel(client_socket, &mut channel, true);
 

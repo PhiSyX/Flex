@@ -36,7 +36,7 @@ pub trait ConnectApplicationInterface
 	fn create_client_with_id(
 		&self,
 		socket: &<Self::ClientSocket<'_> as ClientSocketInterface>::Socket,
-		cid: flex_web_framework::types::uuid::Uuid,
+		cid: <<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
 	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client;
 
 	/// Peut-on localiser un client de session non enregistré?
@@ -78,9 +78,11 @@ impl ConnectApplicationInterface for ChatApplication
 	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client
 	{
 		// TODO: SecureClientIp ?
-		let InsecureClientIp(ip) =
-			InsecureClientIp::from(&socket.req_parts().headers, &socket.req_parts().extensions)
-				.expect("Adresse IP de la Socket");
+		let InsecureClientIp(ip) = InsecureClientIp::from(
+			&socket.req_parts().headers,
+			&socket.req_parts().extensions,
+		)
+			.expect("Adresse IP de la Socket");
 		let sid = socket.id;
 		self.clients.create(ip, sid)
 	}
@@ -88,13 +90,15 @@ impl ConnectApplicationInterface for ChatApplication
 	fn create_client_with_id(
 		&self,
 		socket: &<Self::ClientSocket<'_> as ClientSocketInterface>::Socket,
-		cid: flex_web_framework::types::uuid::Uuid,
+		cid: <<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
 	) -> <Self::ClientSocket<'_> as ClientSocketInterface>::Client
 	{
 		// TODO: SecureClientIp ?
-		let InsecureClientIp(ip) =
-			InsecureClientIp::from(&socket.req_parts().headers, &socket.req_parts().extensions)
-				.expect("Adresse IP de la Socket");
+		let InsecureClientIp(ip) = InsecureClientIp::from(
+			&socket.req_parts().headers,
+			&socket.req_parts().extensions,
+		)
+			.expect("Adresse IP de la Socket");
 		let sid = socket.id;
 		self.clients.create_with_id(ip, sid, cid)
 	}
@@ -113,9 +117,7 @@ impl ConnectApplicationInterface for ChatApplication
 		token: impl AsRef<str>,
 	) -> Option<<Self::ClientSocket<'_> as ClientSocketInterface>::Client>
 	{
-		self.clients
-			.get(client_id)
-			.filter(|client| client.token().eq(token.as_ref()))
+		self.clients.get(client_id).filter(|client| client.token().eq(token.as_ref()))
 	}
 
 	fn get_client_by_user_id_and_token(

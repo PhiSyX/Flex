@@ -11,6 +11,7 @@
 use std::net;
 
 use flex_chat_client::{Client, ClientInterface, ClientsSessionInterface};
+use flex_web_framework::types::uuid;
 
 use crate::features::chat::sessions::ClientsSession;
 
@@ -21,25 +22,14 @@ use crate::features::chat::sessions::ClientsSession;
 pub trait ConnectClientsSessionInterface: ClientsSessionInterface
 {
 	/// Crée une nouvelle session d'un client.
-	fn create(
-		&self,
-		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-	) -> Self::Client
-	{
-		self.create_with_id(
-			ip,
-			socket_id,
-			flex_web_framework::types::uuid::Uuid::new_v4(),
-		)
-	}
+	fn create(&self, ip: net::IpAddr, sid: <Self::Client as ClientInterface>::SocketID) -> Self::Client;
 
 	/// Crée une nouvelle session d'un client.
 	fn create_with_id(
 		&self,
 		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-		client_id: flex_web_framework::types::uuid::Uuid,
+		sid: <Self::Client as ClientInterface>::SocketID,
+		cid: <Self::Client as ClientInterface>::ClientID,
 	) -> Self::Client;
 
 	/// Peut-on localiser un client non enregistré par son ID.
@@ -55,26 +45,25 @@ pub trait ConnectClientsSessionInterface: ClientsSessionInterface
 
 impl ConnectClientsSessionInterface for ClientsSession
 {
-	/// Crée une nouvelle session d'un client.
+	fn create(&self, ip: net::IpAddr, sid: <Self::Client as ClientInterface>::SocketID) -> Self::Client
+	{
+		self.create_with_id(ip, sid, uuid::Uuid::new_v4())
+	}
+
 	fn create_with_id(
 		&self,
 		ip: net::IpAddr,
-		socket_id: <Self::Client as ClientInterface>::SocketID,
-		client_id: flex_web_framework::types::uuid::Uuid,
+		sid: <Self::Client as ClientInterface>::SocketID,
+		cid: <Self::Client as ClientInterface>::ClientID,
 	) -> Self::Client
 	{
-		let client = Client::new(ip, client_id, socket_id);
+		let client = Client::new(ip, cid, sid);
 		self.clients.insert(*client.cid(), client.clone());
 		client
 	}
 
-	fn can_locate_unregistered_client(
-		&self,
-		client_id: &<Self::Client as ClientInterface>::ClientID,
-	) -> bool
+	fn can_locate_unregistered_client(&self, cid: &<Self::Client as ClientInterface>::ClientID) -> bool
 	{
-		self.clients
-			.iter_mut()
-			.any(|client| client_id.eq(client.cid()) && !client.is_registered())
+		self.clients.iter_mut().any(|client| cid.eq(client.cid()) && !client.is_registered())
 	}
 }

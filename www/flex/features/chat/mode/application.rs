@@ -265,8 +265,7 @@ impl ModeChannelAccessLevelApplicationInterface for ChatApplication
 		set_access_level: ChannelAccessLevel,
 	) -> Option<ChannelMember>
 	{
-		self.channels
-			.update_client_access_level(channel, client_socket.cid(), set_access_level)
+		self.channels.update_client_access_level(channel, client_socket.cid(), set_access_level)
 	}
 
 	fn remove_member_access_level_on_channel(
@@ -302,9 +301,7 @@ impl ModeChannelSettingsApplicationInterface for ChatApplication
 			return None;
 		};
 
-		channel
-			.modes_settings
-			.set(ApplyMode::new(flag).with_update_by(client_socket.user().nickname()))
+		channel.modes_settings.set(ApplyMode::new(flag).with_update_by(client_socket.user().nickname()))
 	}
 
 	/// Retire un mode de salon existant.
@@ -319,8 +316,6 @@ impl ModeChannelSettingsApplicationInterface for ChatApplication
 			client_socket.send_err_nosuchchannel(channel);
 			return None;
 		};
-		channel
-			.modes_settings
-			.unset(ApplyMode::new(flag).with_update_by(client_socket.user().nickname()))
+		channel.modes_settings.unset(ApplyMode::new(flag).with_update_by(client_socket.user().nickname()))
 	}
 }

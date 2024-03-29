@@ -45,12 +45,10 @@ impl UserStatusAwayApplicationInterface for ChatApplication
 	fn marks_client_as_no_longer_away(&self, client_socket: &Self::ClientSocket<'_>)
 	{
 		if self.clients.is_client_away(client_socket.cid()) {
-			self.clients
-				.marks_client_as_no_longer_away(client_socket.cid());
+			self.clients.marks_client_as_no_longer_away(client_socket.cid());
 			client_socket.send_rpl_unaway();
 		} else {
-			self.clients
-				.marks_client_as_away(client_socket.cid(), "Je suis absent.");
+			self.clients.marks_client_as_away(client_socket.cid(), "Je suis absent.");
 			client_socket.send_rpl_nowaway();
 		}
 	}

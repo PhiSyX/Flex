@@ -51,9 +51,7 @@ impl JoinChannelsSessionInterface for ChannelsSession
 		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
 	) -> Result<(), JoinChannelPermissionError>
 	{
-		let channel = self
-			.get(channel_id)
-			.ok_or(JoinChannelPermissionError::ERR_NOSUCHCHANNEL)?;
+		let channel = self.get(channel_id).ok_or(JoinChannelPermissionError::ERR_NOSUCHCHANNEL)?;
 
 		if self.has_member(channel_id, client.cid()) {
 			return Err(JoinChannelPermissionError::ERR_USERONCHANNEL);

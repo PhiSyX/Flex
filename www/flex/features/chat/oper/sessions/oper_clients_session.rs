@@ -39,9 +39,7 @@ impl OperClientSessionInterface for ClientsSession
 		oper: &FlexChatConfigOperatorAuth,
 	)
 	{
-		let Some(mut client) = self.get_mut(client_id) else {
-			return;
-		};
+		let Some(mut client) = self.get_mut(client_id) else { return; };
 
 		client.marks_client_as_operator(oper.oper_type, &oper.flags);
 		if let Some(vhost) = oper.virtual_host.as_deref() {

@@ -61,21 +61,21 @@ impl ModeChannelAccessLevelHandler
 	{
 		let client_socket = app.current_client(socket);
 
-		if !app.is_client_global_operator(&client_socket)
-			&& !app.does_client_have_rights_on_channel(
+		if
+			!app.is_client_global_operator(&client_socket) &&
+			!app.does_client_have_rights_on_channel(
 				&client_socket,
 				channel_name,
 				min_access_level,
-			) {
+			)
+		{
 			return;
 		}
 
 		let updated: Vec<_> = nicknames
 			.iter()
 			.filter_map(|nickname| {
-				let Some(target_client_socket) =
-					app.find_socket_by_nickname(client_socket.socket(), nickname)
-				else {
+				let Some(target_client_socket) = app.find_socket_by_nickname(client_socket.socket(), nickname) else {
 					client_socket.send_err_nosuchnick(nickname);
 					return None;
 				};
@@ -149,8 +149,7 @@ impl ModeChannelAccessLevelHandler
 		let added_flags: Vec<_> = updated
 			.iter()
 			.map(|target_member| {
-				let member =
-					ChannelMemberDTO::from((target_member.client.client(), &target_member.member));
+				let member = ChannelMemberDTO::from((target_member.client.client(), &target_member.member));
 				(
 					set_access_level.letter(),
 					ApplyMode {
@@ -166,9 +165,7 @@ impl ModeChannelAccessLevelHandler
 		client_socket.emit_mode_access_level(&channel, &added_flags, &[], true);
 
 		client_socket.send_rpl_namreply(&channel, move |member| {
-			let found = updated
-				.iter()
-				.find(|target_member| target_member.member.id() == member.id())?;
+			let found = updated.iter().find(|target_member| target_member.member.id() == member.id())?;
 			let found_client = app.get_client_by_id(found.member.id())?;
 			Some(ChannelMemberDTO::from((found_client, &found.member)))
 		});
@@ -190,20 +187,21 @@ impl ModeChannelAccessLevelHandler
 		let updated: Vec<_> = nicknames
 			.iter()
 			.filter_map(|nickname| {
-				let Some(target_client_socket) =
-					app.find_socket_by_nickname(client_socket.socket(), nickname)
-				else {
+				let Some(target_client_socket) = app.find_socket_by_nickname(client_socket.socket(), nickname) else {
 					client_socket.send_err_nosuchnick(nickname);
 					return None;
 				};
 
 				let same_client = client_socket.cid() == target_client_socket.cid();
-				if !is_client_operator
-					&& !same_client && !app.does_client_have_rights_on_channel(
-					&client_socket,
-					channel_name,
-					min_access_level,
-				) {
+				if
+					!is_client_operator &&
+					!same_client &&
+					!app.does_client_have_rights_on_channel(
+						&client_socket,
+						channel_name,
+						min_access_level,
+					)
+				{
 					return None;
 				}
 
@@ -287,8 +285,7 @@ impl ModeChannelAccessLevelHandler
 		let removed_flags: Vec<_> = updated
 			.iter()
 			.map(|target_member| {
-				let member =
-					ChannelMemberDTO::from((target_member.client.client(), &target_member.member));
+				let member = ChannelMemberDTO::from((target_member.client.client(), &target_member.member));
 				(
 					unset_access_level.letter(),
 					ApplyMode {
@@ -304,9 +301,7 @@ impl ModeChannelAccessLevelHandler
 		client_socket.emit_mode_access_level(&channel, &[], &removed_flags, true);
 
 		client_socket.send_rpl_namreply(&channel, move |member| {
-			let found = updated
-				.iter()
-				.find(|target_member| target_member.member.id() == member.id())?;
+			let found = updated.iter().find(|target_member| target_member.member.id() == member.id())?;
 			let found_client = app.get_client_by_id(found.member.id())?;
 			Some(ChannelMemberDTO::from((found_client, &found.member)))
 		});

@@ -36,9 +36,7 @@ impl SapartHandler
 		Data(data): Data<SapartCommandFormData>,
 	)
 	{
-		let Some(client_socket) = app.current_client_operator(&socket) else {
-			return;
-		};
+		let Some(client_socket) = app.current_client_operator(&socket) else { return; };
 
 		for nickname in data.nicknames.iter() {
 			let Some(nickname_socket) = app.find_socket_by_nickname(&socket, nickname) else {

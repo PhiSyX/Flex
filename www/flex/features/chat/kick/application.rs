@@ -70,18 +70,13 @@ impl KickApplicationInterface for ChatApplication
 
 		if is_client_globop {
 			for nickname in knicks.iter() {
-				let Some(knick_client_socket) =
-					self.find_socket_by_nickname(client_socket.socket(), nickname)
-				else {
+				let Some(knick_client_socket) = self.find_socket_by_nickname(client_socket.socket(), nickname) else {
 					client_socket.send_err_nosuchnick(nickname);
 					continue;
 				};
 
 				// NOTE: la victime (1/5) n'est pas membre du salon (3).
-				if !self
-					.channels
-					.has_member(channel_name, knick_client_socket.cid())
-				{
+				if !self.channels.has_member(channel_name, knick_client_socket.cid()) {
 					client_socket.send_err_usernotinchannel(channel_name, nickname);
 					continue;
 				}
@@ -90,8 +85,7 @@ impl KickApplicationInterface for ChatApplication
 				//       n'est pas présent dans le salon en question. Ce qui a
 				//       pour conséquence que si le membre du salon (3) était
 				//       seul dans le salon, le salon est supprimé.
-				let channel_not_removed =
-					self.remove_member_from_channel(channel_name, &knick_client_socket);
+				let channel_not_removed = self.remove_member_from_channel(channel_name, &knick_client_socket);
 
 				if channel_not_removed.is_some() {
 					let Some(channel) = self.channels.get(channel_name) else {
@@ -120,10 +114,11 @@ impl KickApplicationInterface for ChatApplication
 		// NOTE: le membre du salon (3) n'a pas les droits minimales de
 		// 		 sanctionner dans le salon.
 		if !self.channels.does_member_have_rights(
-			channel_name,
-			client_socket.cid(),
-			ChannelAccessLevel::HalfOperator,
-		) {
+				channel_name,
+				client_socket.cid(),
+				ChannelAccessLevel::HalfOperator,
+			)
+		{
 			client_socket.send_err_chanoprivsneeded(channel_name);
 			return;
 		}
@@ -131,18 +126,13 @@ impl KickApplicationInterface for ChatApplication
 		// NOTE: opérateur de salon (4) avec les bonnes permissions.
 
 		for nickname in knicks.iter() {
-			let Some(knick_client_socket) =
-				self.find_socket_by_nickname(client_socket.socket(), nickname)
-			else {
+			let Some(knick_client_socket) = self.find_socket_by_nickname(client_socket.socket(), nickname) else {
 				client_socket.send_err_nosuchnick(nickname);
 				continue;
 			};
 
 			// NOTE: la victime (1/5) n'est pas membre du salon (3).
-			if !self
-				.channels
-				.has_member(channel_name, knick_client_socket.cid())
-			{
+			if !self.channels.has_member(channel_name, knick_client_socket.cid()) {
 				client_socket.send_err_usernotinchannel(channel_name, nickname);
 				continue;
 			}
@@ -157,13 +147,12 @@ impl KickApplicationInterface for ChatApplication
 			// NOTE: l'opérateur de salon (4) n'a pas les droits d'opérer sur la
 			//       victime (5) qui se trouve être un opérateur de salon plus
 			//       haut gradé (4).
-			if !self
-				.channels
-				.does_member_have_rights_to_operate_on_another_member(
+			if !self.channels.does_member_have_rights_to_operate_on_another_member(
 					channel_name,
 					client_socket.cid(),
 					knick_client_socket.cid(),
-				) {
+				)
+			{
 				client_socket.send_err_chanoprivsneeded(channel_name);
 				continue;
 			}

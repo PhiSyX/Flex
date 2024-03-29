@@ -36,9 +36,7 @@ impl SajoinHandler
 		Data(data): Data<SajoinCommandFormData>,
 	)
 	{
-		let Some(client_socket) = app.current_client_operator(&socket) else {
-			return;
-		};
+		let Some(client_socket) = app.current_client_operator(&socket) else { return; };
 
 		for nickname in data.nicknames.iter() {
 			let Some(nickname_socket) = app.find_socket_by_nickname(&socket, nickname) else {
@@ -47,10 +45,7 @@ impl SajoinHandler
 			};
 
 			for channel_name in data.channels.iter() {
-				_ = app.join_or_create_channel_bypass_permission(
-					&nickname_socket,
-					channel_name.as_ref(),
-				);
+				_ = app.join_or_create_channel_bypass_permission(&nickname_socket, channel_name.as_ref());
 			}
 		}
 	}

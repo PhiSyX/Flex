@@ -38,17 +38,18 @@ impl ModeChannelAccessControlBanHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket)
-				&& !app.does_client_have_rights_on_channel(
+			if
+				!app.is_client_global_operator(&client_socket) &&
+				!app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				) {
+				)
+			{
 				continue;
 			}
 
-			let updated: Vec<_> = data
-				.masks
+			let updated: Vec<_> = data.masks
 				.iter()
 				.filter_map(|mask| app.apply_ban_on_channel(&client_socket, &channel_name, mask))
 				.collect();
@@ -85,17 +86,18 @@ impl ModeChannelAccessControlBanHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket)
-				&& !app.does_client_have_rights_on_channel(
+			if
+				!app.is_client_global_operator(&client_socket) &&
+				!app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				) {
+				)
+			{
 				continue;
 			}
 
-			let updated: Vec<_> = data
-				.masks
+			let updated: Vec<_> = data.masks
 				.iter()
 				.filter_map(|mask| app.apply_unban_on_channel(&client_socket, &channel_name, mask))
 				.collect();
@@ -132,17 +134,18 @@ impl ModeChannelAccessControlBanExceptionHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket)
-				&& !app.does_client_have_rights_on_channel(
+			if
+				!app.is_client_global_operator(&client_socket) &&
+				!app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				) {
+				)
+			{
 				continue;
 			}
 
-			let updated: Vec<_> = data
-				.masks
+			let updated: Vec<_> = data.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_ban_except_on_channel(&client_socket, &channel_name, mask)
@@ -181,17 +184,18 @@ impl ModeChannelAccessControlBanExceptionHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket)
-				&& !app.does_client_have_rights_on_channel(
+			if
+				!app.is_client_global_operator(&client_socket) &&
+				!app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				) {
+				)
+			{
 				continue;
 			}
 
-			let updated: Vec<_> = data
-				.masks
+			let updated: Vec<_> = data.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_unban_except_on_channel(&client_socket, &channel_name, mask)

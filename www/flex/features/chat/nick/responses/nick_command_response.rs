@@ -31,8 +31,7 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 	/// Émet au client les réponses liées à la commande /NICK.
 	fn emit_nick(&self)
 	{
-		let (old_nickname, new_nickname): (&str, &str) =
-			(self.user().old_nickname(), self.user().nickname());
+		let (old_nickname, new_nickname): (&str, &str) = (self.user().old_nickname(), self.user().nickname());
 
 		let origin = Origin::from(self.client());
 
@@ -44,9 +43,7 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 		}
 		.with_tags([("userid", self.client().cid())]);
 
-		_ = self
-			.socket()
-			.join(format!("private:{}", new_nickname.to_lowercase()));
+		_ = self.socket().join(format!("private:{}", new_nickname.to_lowercase()));
 
 		// NOTE: notifier toutes les rooms dont fait partie le client que le
 		// pseudonyme du client a été changé.
@@ -56,9 +53,7 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 		// tous les client en communs.
 		self.broadcast(nick_command.name(), &nick_command);
 
-		_ = self
-			.socket()
-			.leave(format!("private:{}", old_nickname.to_lowercase()));
+		_ = self.socket().leave(format!("private:{}", old_nickname.to_lowercase()));
 	}
 }
 

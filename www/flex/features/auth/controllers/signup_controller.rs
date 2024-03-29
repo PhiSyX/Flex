@@ -53,9 +53,7 @@ impl SignupController
 		if let Err(err) = ctx.auth_service.signup(NewUser::from(form)).await {
 			tracing::error!(?err, "Erreur lors de l'inscription");
 		}
-		ctx.session
-			.flash(CreatedAccountReply::KEY, CreatedAccountReply)
-			.await;
+		ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
 		ctx.response.redirect_to(AuthRouteID::Login)
 	}
 }
