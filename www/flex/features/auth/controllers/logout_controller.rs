@@ -8,13 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::{
-	Extensions,
-	HttpContext,
-	HttpContextError,
-	HttpContextInterface,
-	IntoResponse,
-};
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface, IntoResponse};
 
 use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::auth::sessions::constants::USER_SESSION;
@@ -52,9 +46,9 @@ impl HttpContextInterface for LogoutController
 {
 	type State = FlexState;
 
-	fn constructor(_: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
 	{
-		Ok(Self {})
+		Some(Self {})
 	}
 }
 

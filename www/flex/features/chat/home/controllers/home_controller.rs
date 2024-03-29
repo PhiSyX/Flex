@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::http::response::Html;
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextError, HttpContextInterface};
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
 
 use crate::features::chat::home::HomeView;
 use crate::FlexState;
@@ -41,8 +41,8 @@ impl HttpContextInterface for HomeController
 {
 	type State = FlexState;
 
-	fn constructor(_: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
 	{
-		Ok(Self {})
+		Some(Self {})
 	}
 }

@@ -12,7 +12,6 @@ use flex_web_framework::extract::Form;
 use flex_web_framework::http::{
 	Extensions,
 	HttpContext,
-	HttpContextError,
 	HttpContextInterface,
 	IntoResponse,
 	StatusCode,
@@ -62,8 +61,8 @@ impl HttpContextInterface for TokenController
 {
 	type State = FlexState;
 
-	fn constructor(_: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
 	{
-		Ok(Self)
+		Some(Self)
 	}
 }

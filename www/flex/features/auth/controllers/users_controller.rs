@@ -8,23 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::{
-	header,
-	Extensions,
-	HeaderMap,
-	HeaderValue,
-	HttpContext,
-	HttpContextError,
-	HttpContextInterface,
-	IntoResponse,
-	StatusCode,
-};
-use flex_web_framework::RouteIDInterface;
-use serde_json::json;
+use flex_web_framework::http::{Extensions, HttpAuthContext, HttpContextInterface, IntoResponse};
 
 use crate::features::auth::dto::user_cookie_dto::UserCookieDTO;
-use crate::features::auth::routes::api::AuthApi_V1_RouteID;
-use crate::features::auth::sessions::constants::USER_SESSION;
 use crate::FlexState;
 
 // --------- //
@@ -40,30 +26,9 @@ pub struct UsersController {}
 impl UsersController
 {
 	/// Utilisateur connecté en session.
-	pub async fn current_user(http: HttpContext<Self>) -> impl IntoResponse
+	pub async fn current_user(http: HttpAuthContext<Self, UserCookieDTO>) -> impl IntoResponse
 	{
-		let Ok(Some(current_user)) = http.session.get::<UserCookieDTO>(USER_SESSION).await else {
-			let mut headers = HeaderMap::new();
-
-			headers.insert(
-				header::CONTENT_TYPE,
-				HeaderValue::from_str("application/problem+json").unwrap(),
-			);
-
-			return (
-				StatusCode::UNAUTHORIZED,
-				headers,
-				// FIXME: ajouter plus de détails?
-				http.response.json(json!({
-					"title": "Non autorisé à consulter cette ressource",
-					"status": StatusCode::UNAUTHORIZED.as_u16(),
-					"detail": "Pour des raisons de confidentialité, vous n'êtes pas autorisé à consulter les détails de cette ressource. Seuls les utilisateurs connectés sont autorisés à le faire.",
-					"instance": http.request.uri.path(),
-				}))
-			).into_response();
-		};
-
-		http.response.json(current_user).into_response()
+		http.response.json(http.user)
 	}
 }
 
@@ -76,9 +41,9 @@ impl HttpContextInterface for UsersController
 {
 	type State = FlexState;
 
-	fn constructor(_: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
 	{
-		Ok(Self {})
+		Some(Self {})
 	}
 }
 

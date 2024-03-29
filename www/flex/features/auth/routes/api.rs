@@ -9,10 +9,9 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{middleware, RouteIDInterface, RouterGroupInterface, RouterInterface};
+use flex_web_framework::{RouteIDInterface, RouterGroupInterface, RouterInterface};
 
 use crate::features::auth::controllers::users_controller::UsersController;
-use crate::features::auth::middleware::auth_middleware::AuthMiddleware;
 use crate::{FlexApplicationState, FlexState};
 
 // --------- //

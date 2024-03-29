@@ -26,6 +26,7 @@ lexa-kernel = { workspace = true }
 log = { workspace = true }
 mime = "0.3.17"
 serde = { workspace = true }
+serde_json = { workspace = true }
 sqlx = { workspace = true }
 thiserror = { workspace = true }
 time = { version = "0.3.34", features = ["serde"] }

@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 use flex_crypto::Hasher;
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::types::{email, secret, uuid};
+use flex_web_framework::types::{email, secret};
 
 use crate::features::auth::entities::user_entity::{UserEntity, UserRole};
 use crate::features::auth::forms::login_form::Identifier;

@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 use flex_web_framework::extract::Form;
 use flex_web_framework::http::response::{Html, Redirect};
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextError, HttpContextInterface};
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
@@ -72,14 +72,10 @@ impl HttpContextInterface for SignupController
 {
 	type State = FlexState;
 
-	fn constructor(extensions: &Extensions, _: Self::State) -> Result<Self, HttpContextError>
+	fn constructor(ext: &Extensions, _: Self::State) -> Option<Self>
 	{
-		let db_service = extensions
-			.get::<DatabaseService<PostgreSQLDatabase>>()
-			.ok_or(HttpContextError::MissingExtension)?;
-		let password_service = extensions
-			.get::<Argon2Password>()
-			.ok_or(HttpContextError::MissingExtension)?;
+		let db_service = ext.get::<DatabaseService<PostgreSQLDatabase>>()?;
+		let password_service = ext.get::<Argon2Password>()?;
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
@@ -89,7 +85,7 @@ impl HttpContextInterface for SignupController
 		}
 		.shared();
 
-		Ok(Self { auth_service })
+		Some(Self { auth_service })
 	}
 }
 
