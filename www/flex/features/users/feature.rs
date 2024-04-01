@@ -12,7 +12,7 @@ use flex_web_framework::Feature;
 
 use crate::FlexState;
 
-use super::routes::AuthApi_V1_Router;
+use super::routes::UsersApi_V1_Router;
 
 // --------- //
 // Structure //
@@ -28,7 +28,7 @@ impl Feature for UsersApplication
 {
 	type Config = ();
 	type Router = (
-		AuthApi_V1_Router
+		UsersApi_V1_Router
 	);
 	type State = FlexState;
 

@@ -36,6 +36,5 @@ pub use self::view::*;
 // Type //
 // ---- //
 
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
+pub type AxumApplication<S = (), E = (), C = ()> = lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
 pub type AxumRouter<S> = axum::Router<AxumState<S>>;

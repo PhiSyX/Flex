@@ -133,7 +133,7 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 onMounted(async () => {
 	const fetchOpts: RequestInit = { credentials: "same-origin" };
 
-	const currentUser = await fetch("/api/v1/auth/@me", fetchOpts).then(async (r) => {
+	const currentUser = await fetch("/api/v1/users/@me", fetchOpts).then(async (r) => {
 		if (r.ok) return r.json();
 		if (r.status >= 400 && r.status < 600) return Promise.reject(await r.json());
 		return Promise.reject(r);

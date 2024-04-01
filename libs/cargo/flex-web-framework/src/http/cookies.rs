@@ -100,7 +100,8 @@ impl<'s> PrivateCookies<'s>
 		if !has_max_age {
 			if let Some(expires) = self.settings.expires {
 				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc().checked_add(time::Duration::seconds(expires)),
+					time::OffsetDateTime::now_utc()
+						.checked_add(time::Duration::seconds(expires)),
 				);
 			}
 		}
@@ -157,7 +158,8 @@ impl<'s> SignedCookies<'s>
 		if !has_max_age {
 			if let Some(expires) = self.settings.expires {
 				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc().checked_add(time::Duration::seconds(expires)),
+					time::OffsetDateTime::now_utc()
+						.checked_add(time::Duration::seconds(expires)),
 				);
 			}
 		}
@@ -207,7 +209,8 @@ impl<'s> SignedCookies<'s>
 		if !has_max_age {
 			if let Some(expires) = self.settings.expires {
 				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc().checked_add(time::Duration::seconds(expires)),
+					time::OffsetDateTime::now_utc()
+						.checked_add(time::Duration::seconds(expires)),
 				);
 			}
 		}
@@ -288,7 +291,8 @@ where
 
 		if let Some(expires) = settings.expires {
 			cookie_builder = cookie_builder.expires(
-				time::OffsetDateTime::now_utc().checked_add(time::Duration::seconds(expires)),
+				time::OffsetDateTime::now_utc()
+					.checked_add(time::Duration::seconds(expires)),
 			);
 		}
 
@@ -326,25 +330,18 @@ where
 		state: &AxumState<S>,
 	) -> Result<Self, Self::Rejection>
 	{
-		let cm = parts
-			.extensions
-			.get::<tower_cookies::Cookies>()
+		let cm = parts.extensions.get::<tower_cookies::Cookies>()
 			.cloned()
 			.ok_or((
 				StatusCode::INTERNAL_SERVER_ERROR,
 				"Impossible d'extraire les cookies",
 			))?;
-
 		let cookie_key = state.cookie_key().cloned().ok_or((
 			StatusCode::INTERNAL_SERVER_ERROR,
 			"Impossible de récupérer la clé de cookie",
 		))?;
-
 		let cookie_settings = state.get_cookie_settings();
-
-		let cookie_manager =
-			Self::new(cm, cookie_key).with_cookie_settings(cookie_settings.clone());
-
+		let cookie_manager = Self::new(cm, cookie_key).with_cookie_settings(cookie_settings.clone());
 		Ok(cookie_manager)
 	}
 }

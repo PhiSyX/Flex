@@ -84,8 +84,7 @@ impl<S, E, C> Server<S, E, C>
 
 		println!("Toutes les routes du serveur:");
 		for router in self.router.all() {
-			let methods = router
-				.methods()
+			let methods = router.methods()
 				.map(|method| style(format!("{method:?}")).yellow().to_string())
 				.collect::<Vec<_>>()
 				.join(" | ");

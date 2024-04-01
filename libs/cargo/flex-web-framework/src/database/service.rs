@@ -49,7 +49,10 @@ impl<T> DatabaseService<T>
 
 impl<T> AsyncExtensionInterface for DatabaseService<T>
 where
-	T: DatabaseInterface + Clone + Send + Sync + 'static,
+	T: 'static,
+	T: DatabaseInterface,
+	T: Clone,
+	T: Send + Sync,
 {
 	type Payload = url::Url;
 

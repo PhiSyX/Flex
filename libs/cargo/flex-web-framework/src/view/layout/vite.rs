@@ -84,11 +84,7 @@ impl ViewLayoutInterface for ViteLayout
 	fn view(&self) -> Self::View
 	{
 		let vite_url = self.data.get("vite_url").cloned().unwrap_or_default();
-		let vite_root = self
-			.data
-			.get("vite_root")
-			.cloned()
-			.unwrap_or(String::from("app"));
+		let vite_root = self.data.get("vite_root").cloned().unwrap_or(String::from("app"));
 
 		let vite_script = format!(
 			"<script type='module' src='{}/@vite/client'></script>",

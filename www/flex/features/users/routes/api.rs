@@ -18,7 +18,7 @@ use crate::{FlexApplicationState, FlexState};
 // Structure //
 // --------- //
 
-pub struct AuthApi_V1_Router;
+pub struct UsersApi_V1_Router;
 
 // ----------- //
 // Énumération //
@@ -34,12 +34,12 @@ pub enum AuthApi_V1_RouteID
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for AuthApi_V1_Router
+impl RouterGroupInterface for UsersApi_V1_Router
 {
-	const GROUP: &'static str = "/api/v1/auth";
+	const GROUP: &'static str = "/api/v1/users";
 }
 
-impl RouterInterface<FlexState> for AuthApi_V1_Router
+impl RouterInterface<FlexState> for UsersApi_V1_Router
 {
 	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
@@ -52,7 +52,7 @@ impl RouteIDInterface for AuthApi_V1_RouteID
 {
 	fn fullpath(&self) -> impl ToString
 	{
-		format!("{}{}", AuthApi_V1_Router::GROUP, self.path().to_string())
+		format!("{}{}", UsersApi_V1_Router::GROUP, self.path().to_string())
 	}
 
 	fn path(&self) -> impl ToString

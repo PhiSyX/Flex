@@ -33,12 +33,10 @@ pub trait HttpContextInterface: Send + Sync
 	type State;
 
 	fn constructor(extensions: &Extensions, state: Self::State) -> Option<Self>
-	where
-		Self: Sized;
+		where
+			Self: Sized;
 
-	fn shared(self) -> Arc<Self>
-	where
-		Self: Sized,
+	fn shared(self) -> Arc<Self> where Self: Sized,
 	{
 		Arc::new(self)
 	}
@@ -78,8 +76,7 @@ pub enum HttpContextError<T>
 	Extension(#[from] axum::extract::rejection::ExtensionRejection),
 	Infaillible(#[from] std::convert::Infallible),
 	#[error("{}", err.1)]
-	StaticErr
-	{
+	StaticErr {
 		err: (http::StatusCode, &'static str),
 	},
 	MissingExtension,
@@ -169,7 +166,10 @@ where
 		use axum_extra::TypedHeader;
 
 		// Context
-		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(parts, state).await?;
+		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(
+			parts,
+			state
+		).await?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
 			.ok_or(HttpContextError::MissingExtension)?
@@ -184,8 +184,8 @@ where
 			.map_err(|err| HttpContextError::StaticErr { err })?;
 
 		// Request
-		let InsecureClientIp(ip) =
-			InsecureClientIp::from(&parts.headers, &parts.extensions).expect("Adresse IP");
+		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)
+			.expect("Adresse IP");
 		let method = parts.method.clone();
 		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state).await?;
 		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state).await?;
@@ -312,7 +312,10 @@ where
 		use axum_extra::TypedHeader;
 
 		// Context
-		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(parts, state).await?;
+		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(
+			parts,
+			state
+		).await?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
 			.ok_or(HttpContextError::MissingExtension)?
@@ -327,8 +330,8 @@ where
 			.map_err(|err| HttpContextError::StaticErr { err })?;
 
 		// Request
-		let InsecureClientIp(ip) =
-			InsecureClientIp::from(&parts.headers, &parts.extensions).expect("Adresse IP");
+		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)
+			.expect("Adresse IP");
 		let method = parts.method.clone();
 		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state).await?;
 		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state).await?;

@@ -160,9 +160,7 @@ where
 {
 	let value = <_ as serde::Deserialize>::deserialize(deserializer)?;
 	if value != '*' {
-		return Err(serde::de::Error::custom(
-			"Seul le caractère '*' est autorisé.",
-		));
+		return Err(serde::de::Error::custom("Seul le caractère '*' est autorisé."));
 	}
 	Ok(value)
 }
@@ -362,9 +360,9 @@ impl From<&SettingsAllowOrigin> for tower_http::cors::AllowOrigin
 	{
 		match this {
 			| SettingsAllowOrigin::Any(_) => Self::any(),
-			| SettingsAllowOrigin::Exact(url) => {
-				to_header_value(url).map(Self::exact).unwrap_or_default()
-			}
+			| SettingsAllowOrigin::Exact(url) => to_header_value(url)
+				.map(Self::exact)
+				.unwrap_or_default(),
 			| SettingsAllowOrigin::List(list) => Self::list(list.iter().flat_map(to_header_value)),
 		}
 	}

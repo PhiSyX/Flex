@@ -15,13 +15,15 @@ use tower_sessions::Session;
 // --------- //
 
 /// Extension Session flash
-pub trait SessionFlashExtension: Sized
+pub trait SessionFlashExtension
+	: Sized
 {
 	async fn flash(&self, key: impl AsRef<str>, value: impl serde::Serialize);
 
 	async fn take<T>(&self, key: impl AsRef<str>) -> Option<T>
-	where
-		T: serde::de::DeserializeOwned + std::fmt::Debug;
+		where
+			T: std::fmt::Debug,
+			T: serde::de::DeserializeOwned;
 }
 
 // -------------- //
@@ -36,8 +38,9 @@ impl SessionFlashExtension for Session
 	}
 
 	async fn take<T>(&self, key: impl AsRef<str>) -> Option<T>
-	where
-		T: serde::de::DeserializeOwned + std::fmt::Debug,
+		where
+			T: std::fmt::Debug,
+			T: serde::de::DeserializeOwned,
 	{
 		self.remove::<T>(key.as_ref()).await.ok().and_then(|v| v)
 	}

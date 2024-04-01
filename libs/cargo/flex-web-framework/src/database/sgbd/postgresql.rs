@@ -31,9 +31,8 @@ impl DatabaseInterface for PostgreSQLDatabase
 {
 	async fn new(database_url: impl Into<url::Url>) -> Self
 	{
-		let connection = PostgresSGBD::new(database_url.into())
-			.await
-			.expect("Une connexion à la base de données PostgreSQL");
+		let reason = "Une connexion à la base de données PostgreSQL";
+		let connection = PostgresSGBD::new(database_url.into()).await.expect(reason);
 		Self { connection }
 	}
 }

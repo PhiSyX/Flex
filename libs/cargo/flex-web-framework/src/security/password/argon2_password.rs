@@ -63,8 +63,7 @@ impl Hasher for Argon2PasswordHasher
 		let algorithm = Algorithm::Argon2id;
 		let version = Version::V0x13;
 		let params = ParamsBuilder::new().build()?;
-		let argon2_hasher =
-			Argon2::new_with_secret(self.secret.as_bytes(), algorithm, version, params)?;
+		let argon2_hasher = Argon2::new_with_secret(self.secret.as_bytes(), algorithm, version, params)?;
 		let salt = SaltString::generate(&mut OsRng);
 		let encoded = argon2_hasher.hash_password(input.as_ref().as_bytes(), &salt)?;
 		Ok(encoded.to_string())
@@ -79,19 +78,18 @@ impl Hasher for Argon2PasswordHasher
 	{
 		let algorithm = Algorithm::Argon2id;
 		let version = Version::V0x13;
-		let Ok(params) = ParamsBuilder::new().build() else {
-			return false;
-		};
-		let Ok(argon2_hasher) =
-			Argon2::new_with_secret(self.secret.as_bytes(), algorithm, version, params)
-		else {
-			return false;
-		};
-		let Ok(password_hasher) = PasswordHash::new(secret.as_ref()) else {
-			return false;
-		};
-		argon2_hasher
-			.verify_password(input.as_ref().as_bytes(), &password_hasher)
-			.is_ok()
+
+		let Ok(params) = ParamsBuilder::new().build() else { return false; };
+
+		let Ok(argon2_hasher) = Argon2::new_with_secret(
+			self.secret.as_bytes(),
+			algorithm,
+			version,
+			params
+		) else { return false; };
+
+		let Ok(password_hasher) = PasswordHash::new(secret.as_ref()) else { return false; };
+
+		argon2_hasher.verify_password(input.as_ref().as_bytes(), &password_hasher).is_ok()
 	}
 }

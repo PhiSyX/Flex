@@ -26,7 +26,7 @@ use lib_flex::constant::{
 	FLEX_VERSION,
 	PROJECT_DIR,
 };
-use lib_flex::{AuthApplication, ChatApplication, Flex};
+use lib_flex::{AuthApplication, ChatApplication, Flex, UsersApplication};
 
 // ---- //
 // Main //
@@ -66,6 +66,7 @@ async fn main() -> impl process::Termination
 		use flex_web_framework::ApplicationFeatureExtension;
 		application
 			.feature::<AuthApplication>()
+			.feature::<UsersApplication>()
 			.feature::<ChatApplication>()
 	};
 
@@ -80,7 +81,6 @@ async fn main() -> impl process::Termination
 	// 3.1. Layers, extensions, services (Async)
 	let application = {
 		use flex_web_framework::AsyncApplicationExtExtension;
-
 		let database_url = application.env().database_url.expose().to_owned();
 		application.extension_with::<DatabaseService<PostgreSQLDatabase>>(database_url).await
 	};

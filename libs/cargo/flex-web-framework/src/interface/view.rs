@@ -24,9 +24,9 @@ pub trait ViewInterface
 
 	type Layout: ViewLayoutInterface<
 		Metadata = Self::Metadata,
-		Scripts = Self::Scripts,
-		Styles = Self::Styles,
-		View = Self::View,
+		Scripts  = Self::Scripts,
+		Styles   = Self::Styles,
+		View     = Self::View,
 	>;
 
 	type View;
@@ -110,9 +110,7 @@ pub trait ViewLayoutInterface
 	type View;
 
 	/// Crée une nouvelle instance de la [mise en page](Self).
-	fn new() -> Self
-	where
-		Self: Sized;
+	fn new() -> Self where Self: Sized;
 
 	/// Applique un titre au document de la mise en page.
 	fn set_title(&mut self, title: impl ToString);

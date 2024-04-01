@@ -11,6 +11,8 @@
 use std::collections::HashSet;
 use std::fmt;
 
+use axum::response::IntoResponse;
+
 use super::RouterBuilder;
 use crate::{http, AxumState, RouteIDInterface};
 
@@ -163,17 +165,24 @@ where
 
 	fn middleware<L>(mut self, layer: L) -> Self
 	where
-		L: tower_layer::Layer<axum::routing::Route<core::convert::Infallible>>
-			+ Clone
-			+ Send
-			+ 'static,
-		L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
-			+ Clone
-			+ Send
-			+ 'static,
-		<L::Service as tower_service::Service<axum::extract::Request>>::Response:
-			axum::response::IntoResponse + 'static,
-		<L::Service as tower_service::Service<axum::extract::Request>>::Future: Send + 'static,
+			L: tower_layer::Layer<axum::routing::Route>
+				+ 'static
+				+ Clone
+				+ Send
+			,
+			L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
+				+ 'static
+				+ Clone
+				+ Send
+			,
+			<L::Service as tower_service::Service<axum::extract::Request>>::Response:
+				'static
+				+ IntoResponse
+			,
+			<L::Service as tower_service::Service<axum::extract::Request>>::Future:
+				'static
+				+ Send
+			,
 	{
 		self.action = self.action.route_layer(layer);
 		self
