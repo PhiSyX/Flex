@@ -14,9 +14,9 @@ use flex_web_framework::http::{IntoResponse, Response};
 use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
 
-use crate::features::auth::dto::UserCookieDTO;
 use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::sessions::constants::USER_SESSION;
+use crate::features::users::dto::UserSessionDTO;
+use crate::features::users::sessions::constant::USER_SESSION;
 
 // --------- //
 // Structure //
@@ -35,7 +35,7 @@ impl AuthMiddleware
 	/// Route accessible pour les admins uniquement.
 	pub async fn admin_only(session: Session, req: Request, next: Next) -> Response
 	{
-		match session.get::<UserCookieDTO>(USER_SESSION).await {
+		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(user)) if user.role.is_admin() => next.run(req).await,
 			| _ => Redirect::to(&Self::REDIRECT_TO.to_string()).into_response(),
 		}
@@ -44,7 +44,7 @@ impl AuthMiddleware
 	/// Route accessible pour les modérateurs (+ admins) uniquement.
 	pub async fn moderator_only(session: Session, req: Request, next: Next) -> Response
 	{
-		match session.get::<UserCookieDTO>(USER_SESSION).await {
+		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(user)) if user.role.is_moderator() || user.role.is_admin() => next.run(req).await,
 			| _ => Redirect::to(&Self::REDIRECT_TO.to_string()).into_response(),
 		}
@@ -53,7 +53,7 @@ impl AuthMiddleware
 	/// Route nécessitant l'authentification de l'utilisateur.
 	pub async fn required(session: Session, req: Request, next: Next) -> Response
 	{
-		match session.get::<UserCookieDTO>(USER_SESSION).await {
+		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(_)) => next.run(req).await,
 			| _ => Redirect::to(&Self::REDIRECT_TO.to_string()).into_response(),
 		}

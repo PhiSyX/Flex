@@ -11,8 +11,8 @@
 use std::ops;
 use std::sync::Arc;
 
+use axum::extract::*;
 use axum::http::{self, Extensions, HeaderValue};
-use axum::Json;
 use axum_client_ip::InsecureClientIp;
 use axum_extra::headers::Referer;
 use hyper::{header, HeaderMap, StatusCode};
@@ -28,7 +28,6 @@ use crate::AxumState;
 // Interface //
 // --------- //
 
-#[axum::async_trait]
 pub trait HttpContextInterface: Send + Sync
 {
 	type State;
@@ -151,14 +150,14 @@ impl<T, U> HttpAuthContext<T, U>
 // -------------- //
 
 #[axum::async_trait]
-impl<T, S> axum::extract::FromRequestParts<AxumState<S>> for HttpContext<T>
+impl<T, S> FromRequestParts<AxumState<S>> for HttpContext<T>
 where
 	T: 'static,
 	T: HttpContextInterface,
 	S: 'static,
 	S: Send + Sync,
 	<T as HttpContextInterface>::State: Send + Sync,
-	<T as HttpContextInterface>::State: axum::extract::FromRef<AxumState<S>>,
+	<T as HttpContextInterface>::State: FromRef<AxumState<S>>,
 {
 	type Rejection = HttpContextError<T>;
 
@@ -167,11 +166,10 @@ where
 		state: &AxumState<S>,
 	) -> Result<Self, Self::Rejection>
 	{
+		use axum_extra::TypedHeader;
+
 		// Context
-		let axum::extract::State(extracts) = axum::extract::State::<
-			<T as HttpContextInterface>::State,
-		>::from_request_parts(parts, state)
-		.await?;
+		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(parts, state).await?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
 			.ok_or(HttpContextError::MissingExtension)?
@@ -189,14 +187,12 @@ where
 		let InsecureClientIp(ip) =
 			InsecureClientIp::from(&parts.headers, &parts.extensions).expect("Adresse IP");
 		let method = parts.method.clone();
-		let axum::extract::OriginalUri(uri) =
-			axum::extract::OriginalUri::from_request_parts(parts, state).await?;
-		let axum::extract::RawQuery(raw_query) =
-			axum::extract::RawQuery::from_request_parts(parts, state).await?;
-		let referer = axum_extra::TypedHeader::<Referer>::from_request_parts(parts, state)
-			.await
+		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state).await?;
+		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state).await?;
+		let referer = TypedHeader::<Referer>::from_request_parts(parts, state).await
 			.map(|ext| ext.0)
 			.ok();
+
 		let request = HttpRequest {
 			context: context.clone(),
 			ip,
@@ -296,7 +292,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 }
 
 #[axum::async_trait]
-impl<T, U, S> axum::extract::FromRequestParts<AxumState<S>> for HttpAuthContext<T, U>
+impl<T, U, S> FromRequestParts<AxumState<S>> for HttpAuthContext<T, U>
 where
 	T: 'static,
 	T: HttpContextInterface,
@@ -304,7 +300,7 @@ where
 	S: 'static,
 	S: Send + Sync,
 	<T as HttpContextInterface>::State: Send + Sync,
-	<T as HttpContextInterface>::State: axum::extract::FromRef<AxumState<S>>,
+	<T as HttpContextInterface>::State: FromRef<AxumState<S>>,
 {
 	type Rejection = HttpContextError<T>;
 
@@ -313,11 +309,10 @@ where
 		state: &AxumState<S>,
 	) -> Result<Self, Self::Rejection>
 	{
+		use axum_extra::TypedHeader;
+
 		// Context
-		let axum::extract::State(extracts) = axum::extract::State::<
-			<T as HttpContextInterface>::State,
-		>::from_request_parts(parts, state)
-		.await?;
+		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(parts, state).await?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
 			.ok_or(HttpContextError::MissingExtension)?
@@ -335,14 +330,12 @@ where
 		let InsecureClientIp(ip) =
 			InsecureClientIp::from(&parts.headers, &parts.extensions).expect("Adresse IP");
 		let method = parts.method.clone();
-		let axum::extract::OriginalUri(uri) =
-			axum::extract::OriginalUri::from_request_parts(parts, state).await?;
-		let axum::extract::RawQuery(raw_query) =
-			axum::extract::RawQuery::from_request_parts(parts, state).await?;
-		let referer = axum_extra::TypedHeader::<Referer>::from_request_parts(parts, state)
-			.await
+		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state).await?;
+		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state).await?;
+		let referer = TypedHeader::<Referer>::from_request_parts(parts, state).await
 			.map(|ext| ext.0)
 			.ok();
+
 		let request = HttpRequest {
 			context: context.clone(),
 			ip,

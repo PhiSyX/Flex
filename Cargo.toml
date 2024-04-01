@@ -13,6 +13,7 @@ async_fn_in_trait = "allow"
 # unsafe_code = "forbid"
 
 [workspace.dependencies]
+async-trait = "0.1.79"
 chrono = { version = "0.4.37", features = ["clock", "serde"] }
 dashmap = { version = "5.5.3", features = ["serde"] }
 lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "76a319c600921e3cef7085d0fd3300a4dee78948", features = [

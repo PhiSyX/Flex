@@ -11,7 +11,7 @@
 use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface, IntoResponse};
 
 use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::sessions::constants::USER_SESSION;
+use crate::features::users::sessions::constant::USER_SESSION;
 use crate::FlexState;
 
 // --------- //
@@ -41,7 +41,6 @@ impl LogoutController
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
 impl HttpContextInterface for LogoutController
 {
 	type State = FlexState;

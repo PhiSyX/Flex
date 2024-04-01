@@ -14,8 +14,8 @@ use flex_web_framework::http::{IntoResponse, Response};
 use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
 
-use crate::features::auth::dto::UserCookieDTO;
-use crate::features::auth::sessions::constants::USER_SESSION;
+use crate::features::users::dto::UserSessionDTO;
+use crate::features::users::sessions::constant::USER_SESSION;
 
 // --------- //
 // Structure //
@@ -34,7 +34,7 @@ impl GuestMiddleware
 
 	pub async fn handle(session: Session, req: Request, next: Next) -> Response
 	{
-		match session.get::<UserCookieDTO>(USER_SESSION).await {
+		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(_)) => Redirect::to(Self::REDIRECT_TO).into_response(),
 			| _ => next.run(req).await,
 		}

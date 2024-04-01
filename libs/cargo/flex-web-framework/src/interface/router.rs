@@ -90,6 +90,14 @@ pub trait RouteIDInterface
 // Implémentation // -> Interface
 // -------------- //
 
+impl<S> RouterInterface<S> for ()
+{
+	fn routes(_: &AxumState<S>) -> RouterCollection<S>
+	{
+		Self::collection()
+	}
+}
+
 impl_router_interface! {
 	impl RouterInterface for
 		| (A, B)

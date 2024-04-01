@@ -12,11 +12,13 @@ use std::sync::Arc;
 
 use flex_crypto::Hasher;
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::types::{email, secret};
+use flex_web_framework::types::secret;
 
-use crate::features::auth::entities::{UserEntity, UserRole};
 use crate::features::auth::forms::{Identifier, RegistrationFormData};
-use crate::features::auth::repositories::UserRepository;
+use crate::features::users::dto::UserNewActionDTO;
+use crate::features::users::entities::UserEntity;
+use crate::features::users::repositories::UserRepository;
+
 
 // --------- //
 // Interface //
@@ -29,7 +31,7 @@ pub trait AuthenticationService
 	async fn attempt(&self, identifier: &Identifier, password: &str) -> Result<UserEntity, AuthErrorService>;
 
 	/// Tentative d'inscription d'un nouvel utilisateur.
-	async fn signup(&self, new_user: NewUser) -> Result<UserEntity, AuthErrorService>;
+	async fn signup(&self, new_user: UserNewActionDTO) -> Result<UserEntity, AuthErrorService>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -47,18 +49,6 @@ pub struct AuthService
 {
 	pub user_repository: Arc<dyn UserRepository>,
 	pub password_service: Argon2Password,
-}
-
-pub struct NewUser
-{
-	/// Nouveau nom d'utilisateur.
-	pub username: String,
-	/// Adresse e-mail de l'utilisateur associé à l'identifiant.
-	pub email_address: email::EmailAddress,
-	/// Mot de passe du compte.
-	pub password: secret::Secret<String>,
-	/// Rôle du nouvel utilisateur.
-	pub role: UserRole,
 }
 
 // ----------- //
@@ -108,7 +98,7 @@ impl AuthenticationService for AuthService
 		Ok(user)
 	}
 
-	async fn signup(&self, mut new_user: NewUser) -> Result<UserEntity, AuthErrorService>
+	async fn signup(&self, mut new_user: UserNewActionDTO) -> Result<UserEntity, AuthErrorService>
 	{
 		let user_exists = self.user_repository
 			.find_by_email_or_name(&new_user.email_address, &new_user.username).await
@@ -137,7 +127,7 @@ impl AuthenticationService for AuthService
 
 unsafe impl Sync for AuthService {}
 
-impl From<RegistrationFormData> for NewUser
+impl From<RegistrationFormData> for UserNewActionDTO
 {
 	fn from(form: RegistrationFormData) -> Self
 	{

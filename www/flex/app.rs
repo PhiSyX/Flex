@@ -22,9 +22,11 @@ mod features
 {
 	mod auth;
 	mod chat;
+	mod users;
 
 	pub use self::auth::AuthApplication;
 	pub use self::chat::ChatApplication;
+	pub use self::users::UsersApplication;
 }
 
 mod templates

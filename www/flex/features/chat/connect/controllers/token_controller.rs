@@ -56,7 +56,6 @@ impl TokenController
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
 impl HttpContextInterface for TokenController
 {
 	type State = FlexState;

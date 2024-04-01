@@ -8,40 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::response::Html;
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
+use flex_web_framework::types::uuid;
 
-use crate::features::chat::home::HomeView;
-use crate::FlexState;
+use crate::features::users::entities::{UserEntity, UserRole};
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct HomeController;
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl HomeController
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct UserSessionDTO
 {
-	pub async fn view(http: HttpContext<Self>) -> Html<HomeView>
-	{
-		http.response.html(HomeView::default())
-	}
+	pub id: uuid::Uuid,
+	pub name: String,
+	pub email: String,
+	pub role: UserRole,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for HomeController
+impl From<UserEntity> for UserSessionDTO
 {
-	type State = FlexState;
-
-	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
+	fn from(user_entity: UserEntity) -> Self
 	{
-		Some(Self {})
+		Self {
+			id: user_entity.id,
+			name: user_entity.name,
+			email: user_entity.email,
+			role: user_entity.role,
+		}
 	}
 }

@@ -8,40 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::response::Html;
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
+use flex_web_framework::Feature;
 
-use crate::features::chat::home::HomeView;
 use crate::FlexState;
+
+use super::routes::AuthApi_V1_Router;
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct HomeController;
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl HomeController
-{
-	pub async fn view(http: HttpContext<Self>) -> Html<HomeView>
-	{
-		http.response.html(HomeView::default())
-	}
-}
+pub struct UsersApplication;
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for HomeController
+impl Feature for UsersApplication
 {
+	type Config = ();
+	type Router = (
+		AuthApi_V1_Router
+	);
 	type State = FlexState;
 
-	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
-	{
-		Some(Self {})
-	}
+	const NAME: &'static str = "UsersApplication";
 }

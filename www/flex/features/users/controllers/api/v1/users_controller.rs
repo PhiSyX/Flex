@@ -10,7 +10,7 @@
 
 use flex_web_framework::http::{Extensions, HttpAuthContext, HttpContextInterface, IntoResponse};
 
-use crate::features::auth::dto::UserCookieDTO;
+use crate::features::users::dto::UserSessionDTO;
 use crate::FlexState;
 
 // --------- //
@@ -26,7 +26,7 @@ pub struct UsersController {}
 impl UsersController
 {
 	/// Utilisateur connecté en session.
-	pub async fn current_user(http: HttpAuthContext<Self, UserCookieDTO>) -> impl IntoResponse
+	pub async fn current_user(http: HttpAuthContext<Self, UserSessionDTO>) -> impl IntoResponse
 	{
 		http.response.json(http.user)
 	}
@@ -36,7 +36,6 @@ impl UsersController
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
 impl HttpContextInterface for UsersController
 {
 	type State = FlexState;

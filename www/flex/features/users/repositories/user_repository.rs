@@ -14,8 +14,8 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::types::email;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
-use crate::features::auth::entities::UserEntity;
-use crate::features::auth::services::NewUser;
+use crate::features::users::dto::UserNewActionDTO;
+use crate::features::users::entities::UserEntity;
 
 // --------- //
 // Interface //
@@ -25,7 +25,7 @@ use crate::features::auth::services::NewUser;
 pub trait UserRepository
 {
 	/// Crée un nouvel utilisateur.
-	async fn create(&self, new_user: NewUser) -> Result<UserEntity, sqlx::Error>;
+	async fn create(&self, new_user: UserNewActionDTO) -> Result<UserEntity, sqlx::Error>;
 
 	/// Cherche un utilisateur par son adresse e-mail.
 	async fn find_by_email(&self, email: &email::EmailAddress) -> Result<UserEntity, sqlx::Error>;
@@ -70,7 +70,7 @@ impl UserRepositoryPostgreSQL
 #[flex_web_framework::async_trait]
 impl UserRepository for UserRepositoryPostgreSQL
 {
-	async fn create(&self, new_user: NewUser) -> Result<UserEntity, sqlx::Error>
+	async fn create(&self, new_user: UserNewActionDTO) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!(
 			"INSERT INTO {} (id,name,email,password,role) VALUES \

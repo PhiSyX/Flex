@@ -17,13 +17,13 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
 
-use crate::features::auth::dto::UserCookieDTO;
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
-use crate::features::auth::repositories::{UserRepository, UserRepositoryPostgreSQL};
 use crate::features::auth::services::{AuthService, AuthenticationService};
-use crate::features::auth::sessions::constants::USER_SESSION;
 use crate::features::auth::views::LoginView;
+use crate::features::users::sessions::constant::USER_SESSION;
+use crate::features::users::dto::UserSessionDTO;
+use crate::features::users::repositories::{UserRepository, UserRepositoryPostgreSQL};
 use crate::FlexState;
 
 // --------- //
@@ -58,7 +58,7 @@ impl LoginController
 		};
 
 		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
-		_ = ctx.session.insert(USER_SESSION, UserCookieDTO::from(user)).await;
+		_ = ctx.session.insert(USER_SESSION, UserSessionDTO::from(user)).await;
 		ctx.response.redirect_to("/chat")
 	}
 }
@@ -67,7 +67,6 @@ impl LoginController
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
 impl HttpContextInterface for LoginController
 {
 	type State = FlexState;

@@ -8,40 +8,65 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::response::Html;
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
+use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
+use flex_web_framework::{RouteIDInterface, RouterGroupInterface, RouterInterface};
 
-use crate::features::chat::home::HomeView;
-use crate::FlexState;
+use crate::features::users::controllers::api::v1::UsersController;
+use crate::{FlexApplicationState, FlexState};
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct HomeController;
+pub struct AuthApi_V1_Router;
 
-// -------------- //
-// Implémentation //
-// -------------- //
+// ----------- //
+// Énumération //
+// ----------- //
 
-impl HomeController
+#[derive(Debug)]
+pub enum AuthApi_V1_RouteID
 {
-	pub async fn view(http: HttpContext<Self>) -> Html<HomeView>
-	{
-		http.response.html(HomeView::default())
-	}
+	CurrentUser,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for HomeController
+impl RouterGroupInterface for AuthApi_V1_Router
 {
-	type State = FlexState;
+	const GROUP: &'static str = "/api/v1/auth";
+}
 
-	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
+impl RouterInterface<FlexState> for AuthApi_V1_Router
+{
+	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
-		Some(Self {})
+		Self::group()
+			.add(Router::path(AuthApi_V1_RouteID::CurrentUser).get(UsersController::current_user))
+	}
+}
+
+impl RouteIDInterface for AuthApi_V1_RouteID
+{
+	fn fullpath(&self) -> impl ToString
+	{
+		format!("{}{}", AuthApi_V1_Router::GROUP, self.path().to_string())
+	}
+
+	fn path(&self) -> impl ToString
+	{
+		match self {
+			| Self::CurrentUser => "/@me",
+		}
+	}
+}
+
+impl std::fmt::Display for AuthApi_V1_RouteID
+{
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+	{
+		write!(f, "{}", self.fullpath().to_string())
 	}
 }

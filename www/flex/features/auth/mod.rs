@@ -19,23 +19,6 @@ mod controllers
 		logout_controller,
 		signup_controller,
 	}
-
-	pub mod api
-	{
-		pub mod v1
-		{
-			lexa_kernel::public_using! {
-				users_controller,
-			}
-		}
-	}
-}
-
-mod dto
-{
-	lexa_kernel::public_using! {
-		user_cookie_dto,
-	}
 }
 
 mod forms
@@ -53,25 +36,11 @@ mod errors
 	}
 }
 
-mod entities
-{
-	lexa_kernel::public_using! {
-		user_entity,
-	}
-}
-
 mod middleware
 {
 	lexa_kernel::public_using! {
 		auth_middleware,
 		guest_middleware,
-	}
-}
-
-mod repositories
-{
-	lexa_kernel::public_using! {
-		user_repository,
 	}
 }
 
@@ -85,7 +54,6 @@ mod responses
 mod routes
 {
 	lexa_kernel::public_using! {
-		api,
 		web,
 	}
 }
@@ -94,13 +62,6 @@ mod services
 {
 	lexa_kernel::public_using! {
 		auth_service,
-	}
-}
-
-mod sessions
-{
-	lexa_kernel::public_import! {
-		constants,
 	}
 }
 

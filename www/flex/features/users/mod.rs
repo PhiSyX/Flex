@@ -8,36 +8,55 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::uuid;
-
-use crate::features::auth::entities::{UserEntity, UserRole};
-
-// --------- //
-// Structure //
-// --------- //
-
-#[derive(serde::Deserialize, serde::Serialize)]
-pub struct UserCookieDTO
-{
-	pub id: uuid::Uuid,
-	pub name: String,
-	pub email: String,
-	pub role: UserRole,
+lexa_kernel::public_using! {
+	feature,
 }
 
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl From<UserEntity> for UserCookieDTO
+mod controllers
 {
-	fn from(user_entity: UserEntity) -> Self
+	pub mod api
 	{
-		Self {
-			id: user_entity.id,
-			name: user_entity.name,
-			email: user_entity.email,
-			role: user_entity.role,
+		pub mod v1
+		{
+			lexa_kernel::public_using! {
+				users_controller,
+			}
 		}
+	}
+}
+
+pub(crate) mod dto
+{
+	lexa_kernel::public_using! {
+		user_new_action_dto,
+		user_session_dto,
+	}
+}
+
+pub(crate) mod entities
+{
+	lexa_kernel::public_using! {
+		user_entity,
+	}
+}
+
+pub(crate) mod repositories
+{
+	lexa_kernel::public_using! {
+		user_repository,
+	}
+}
+
+mod routes
+{
+	lexa_kernel::public_using! {
+		api,
+	}
+}
+
+pub(crate) mod sessions
+{
+	lexa_kernel::public_import! {
+		constant,
 	}
 }

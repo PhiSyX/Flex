@@ -18,11 +18,12 @@ use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
 
 use crate::features::auth::forms::signup_form::RegistrationFormData;
-use crate::features::auth::repositories::{UserRepository, UserRepositoryPostgreSQL};
 use crate::features::auth::responses::CreatedAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::services::{AuthService, AuthenticationService, NewUser};
+use crate::features::auth::services::{AuthService, AuthenticationService};
 use crate::features::auth::views::SignupView;
+use crate::features::users::dto::UserNewActionDTO;
+use crate::features::users::repositories::{UserRepository, UserRepositoryPostgreSQL};
 use crate::FlexState;
 
 // --------- //
@@ -50,7 +51,7 @@ impl SignupController
 	pub async fn handle(ctx: HttpContext<Self>, Form(form): Form<RegistrationFormData>)
 		-> Redirect
 	{
-		if let Err(err) = ctx.auth_service.signup(NewUser::from(form)).await {
+		if let Err(err) = ctx.auth_service.signup(UserNewActionDTO::from(form)).await {
 			tracing::error!(?err, "Erreur lors de l'inscription");
 		}
 		ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
@@ -62,7 +63,6 @@ impl SignupController
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
 impl HttpContextInterface for SignupController
 {
 	type State = FlexState;
