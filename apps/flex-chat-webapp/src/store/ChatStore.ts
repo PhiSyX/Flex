@@ -10,7 +10,7 @@
 
 import { None, type Option } from "@phisyx/flex-safety";
 import { defineStore } from "pinia";
-import { type Socket, io } from "socket.io-client";
+import { io } from "socket.io-client";
 import { reactive } from "vue";
 
 import type { ChannelMember } from "~/channel/ChannelMember";
@@ -91,7 +91,7 @@ export class ChatStore {
 	private _userID: Option<UUID> = None();
 	private _network: Option<CustomRoomID> = None();
 	private _roomManager: RoomManager = new RoomManager();
-	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
+	private _ws: Option<TypeSafeSocket> = None();
 	private _userManager: UserManager = new UserManager();
 
 	private _handlerManager = new HandlerManager();
@@ -142,7 +142,7 @@ export class ChatStore {
 		}
 
 		this._ws.replace(
-			io(websocketServerURL, {
+			<TypeSafeSocket> io(websocketServerURL, {
 				auth: { user_id: userID, client_id: clientID },
 				transports: ["websocket"],
 				reconnection: true,
@@ -364,22 +364,14 @@ export class ChatStore {
 	 * Active/écoute un événement.
 	 */
 	on<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
-		this._ws.expect("Instance WebSocket connecté au serveur").on(
-			eventName,
-			// @ts-expect-error : listener
-			listener,
-		);
+		this._ws.expect("Instance WebSocket connecté au serveur").on(eventName, listener);
 	}
 
 	/**
 	 * Active/écoute un événement une seule et unique fois.
 	 */
 	once<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
-		this._ws.expect("Instance WebSocket connecté au serveur").once(
-			eventName,
-			// @ts-expect-error : listener
-			listener,
-		);
+		this._ws.expect("Instance WebSocket connecté au serveur").once(eventName, listener);
 	}
 
 	/**
@@ -464,7 +456,7 @@ export class ChatStore {
 	/**
 	 * Instance de la WebSocket.
 	 */
-	websocket(): Socket<ServerToClientEvent, ClientToServerEvent> {
+	websocket(): TypeSafeSocket {
 		return this._ws.expect("Instance WebSocket connecté au serveur");
 	}
 }
@@ -723,13 +715,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet les commandes au serveur.
 	 */
 	function sendMessage(name: RoomID, message: string) {
-		const room = store
-			.roomManager()
-			.get(name)
+		const room = store.roomManager().get(name)
 			.or_else(() =>
-				store
-					.userManager()
-					.findByNickname(name)
+				store.userManager().findByNickname(name)
 					.and_then((user) => store.roomManager().get(user.id)),
 			)
 			.unwrap_unchecked();
@@ -739,15 +727,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			const words = message.split(" ");
 
 			if (name.startsWith("#")) {
-				const module = store
-					.moduleManager()
-					.get("PUBMSG")
+				const module = store.moduleManager().get("PUBMSG")
 					.expect("Récupération du module `PUBMSG`");
 				module.input(name, ...words);
 			} else {
-				const module = store
-					.moduleManager()
-					.get("PRIVMSG")
+				const module = store.moduleManager().get("PRIVMSG")
 					.expect("Récupération du module `PRIVMSG`");
 				module.input(name, ...words);
 			}
