@@ -10,14 +10,9 @@
 
 use dashmap::mapref::multiple::RefMutMulti;
 use dashmap::{DashMap, DashSet};
+use flex_chat_channel::ChannelsSessionInterface;
 use flex_chat_client::{
-	Client,
-	ClientID,
-	ClientInterface,
-	ClientServerApplicationInterface,
-	ClientSocketInterface,
-	ClientsSessionInterface,
-	Socket,
+	Client, ClientID, ClientInterface, ClientServerApplicationInterface, ClientSocketInterface, ClientsChannelSessionInterface, ClientsSessionInterface, Socket
 };
 use flex_chat_user::{UserInterface, UserOperatorInterface};
 
@@ -51,8 +46,8 @@ pub struct ClientsSession
 impl ChatApplication
 {
 	/// Récupère le client courant (immuable) à partir d'une socket.
-	pub fn current_client<'a>(&'a self, socket: &'a socketioxide::extract::SocketRef)
-		-> Socket<'a>
+	#[inline]
+	pub fn current_client<'a>(&'a self, socket: &'a socketioxide::extract::SocketRef) -> Socket<'a>
 	{
 		let client: socketioxide::extensions::Ref<'a, Client> = socket.extensions.get().unwrap();
 		Socket::Borrowed { socket, client }

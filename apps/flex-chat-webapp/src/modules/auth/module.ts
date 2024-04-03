@@ -8,62 +8,65 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/store/ChatStore";
 
-import { assertChannelRoom, assertPrivateRoom } from "~/asserts/room";
+import { AuthCommand } from "./command";
+import { AuthSubCommand } from "./subcommand";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class NickHandler implements SocketEventInterface<"NICK"> {
+export class AuthModule implements Module<AuthModule>
+{
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "AUTH";
+
+	static create(store: ChatStore): AuthModule
+	{
+		return new AuthModule(new AuthCommand(store));
+	}
+
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStore) {}
+	constructor(private command: AuthCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
-		this.store.on("NICK", (data) => this.handle(data));
-	}
+	input(_roomName: RoomID, ...args: Array<string>)
+	{
+		const size = args.length;
+		if (size < 1) return;
 
-	handle(data: GenericReply<"NICK">) {
-		this.store.userManager().changeNickname(data.old_nickname, data.new_nickname);
+		// SAFETY(type): le type ne peut pas être `undefined`, grâce à la
+		//               condition ci-haut.
+		const subCommandStr = args.shift() as string;
 
-		const isCurrentClient = this.store.isCurrentClient(data.origin);
-		if (isCurrentClient) {
-			if (data.tags.user_id) this.store.setClientID(data.tags.user_id);
-			this.store.setClientNickname(data.new_nickname);
-		}
+		const maybeSubCommand = AuthCommand.from_str(subCommandStr);
+		if (maybeSubCommand.is_err()) return;
+		const subCommand = maybeSubCommand.unwrap();
 
-		for (const room of this.store.roomManager().rooms()) {
-			room.addEvent("event:nick", { ...data, isCurrentClient: isCurrentClient });
-
-			if (room.type === "channel") {
-				assertChannelRoom(room);
-
-				const user = this.store
-					.userManager()
-					.findByNickname(data.new_nickname)
-					.expect(`L'utilisateur ${data.new_nickname}.`);
-
-				if (!room.members.has(user.id)) {
-					continue;
-				}
-
-				room.members.changeNickname(data.origin.id, data.old_nickname, data.new_nickname);
-			} else if (room.type === "private") {
-				if (!room.eq(data.old_nickname)) {
-					continue;
-				}
-
-				assertPrivateRoom(room);
-
-				room.changeName(data.new_nickname);
-			}
+		switch (subCommand) {
+			case AuthSubCommand.IDENTIFY:
+			{
+				if (size < 3) return;
+				const [identifier, password] = args;
+				this.sendIdentify({ identifier, password });
+			} break;
 		}
 	}
+
+	sendIdentify(payload: Command<"AUTH IDENTIFY">)
+	{
+		this.command.sendIdentify(payload);
+	}
+
+	listen() {}
 }

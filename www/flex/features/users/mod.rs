@@ -8,55 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	feature,
-}
+lexa_kernel::import! {
+	pub mod feature use *;
 
-mod controllers
-{
-	pub mod api
-	{
-		pub mod v1
-		{
-			lexa_kernel::public_using! {
-				users_controller,
+	mod controllers {
+		pub mod api {
+			pub mod v1 {
+				pub mod users_controller use *;
 			}
 		}
-	}
-}
+	};
 
-pub(crate) mod dto
-{
-	lexa_kernel::public_using! {
-		user_new_action_dto,
-		user_session_dto,
-	}
-}
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod dto {
+		pub mod user_new_action_dto use *;
+		pub mod user_session_dto use *;
+	};
 
-pub(crate) mod entities
-{
-	lexa_kernel::public_using! {
-		user_entity,
-	}
-}
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod entities {
+		pub mod user_entity use *;
+	};
 
-pub(crate) mod repositories
-{
-	lexa_kernel::public_using! {
-		user_repository,
-	}
-}
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod repositories {
+		pub mod user_repository use *;
+	};
 
-mod routes
-{
-	lexa_kernel::public_using! {
-		api,
-	}
-}
+	mod routes {
+		pub mod api;
+	};
 
-pub(crate) mod sessions
-{
-	lexa_kernel::public_import! {
-		constant,
-	}
+	pub(crate) mod sessions {
+		pub mod constant;
+	};
 }

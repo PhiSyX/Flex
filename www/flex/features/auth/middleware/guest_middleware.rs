@@ -9,10 +9,13 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::http::request::Request;
-use flex_web_framework::http::response::Redirect;
+use flex_web_framework::http::response::{Json, Redirect};
 use flex_web_framework::http::{IntoResponse, Response};
 use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
+use reqwest::header::{self, HeaderMap, HeaderValue};
+use reqwest::StatusCode;
+use serde_json::json;
 
 use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::sessions::constant::USER_SESSION;
@@ -32,7 +35,15 @@ impl GuestMiddleware
 	// TODO: remplacer vers une enum route id
 	const REDIRECT_TO: &'static str = "/chat";
 
-	pub async fn handle(session: Session, req: Request, next: Next) -> Response
+	pub async fn api(session: Session, req: Request, next: Next) -> impl IntoResponse
+	{
+		match session.get::<UserSessionDTO>(USER_SESSION).await {
+			| Ok(Some(us)) => Json(us).into_response(),
+			| _ => next.run(req).await,
+		}
+	}
+
+	pub async fn redirect(session: Session, req: Request, next: Next) -> Response
 	{
 		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(_)) => Redirect::to(Self::REDIRECT_TO).into_response(),

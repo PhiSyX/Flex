@@ -10,7 +10,7 @@
 
 use flex_web_framework::Feature;
 
-use super::routes::web::AuthRouter;
+use super::routes::{web::AuthRouter, api::AuthApi_V1_Router};
 use crate::FlexState;
 
 // --------- //
@@ -27,7 +27,8 @@ impl Feature for AuthApplication
 {
 	type Config = ();
 	type Router = (
-		AuthRouter
+		AuthRouter,
+		AuthApi_V1_Router,
 	);
 	type State = FlexState;
 

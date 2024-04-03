@@ -49,9 +49,17 @@ export class UserManager {
 			user = userOrigin;
 		}
 
-		const foundUser = this._users.get(user.id);
+		const maybeFoundUser = this.find(user.id).or_else(() => this.findByNickname(user.nickname));
 
-		if (foundUser) {
+		maybeFoundUser.then((foundUser) => {
+			if (foundUser.id !== user.id) {
+				foundUser.id = user.id;
+				this._nicks.set(user.nickname, foundUser.id);
+			}
+		});
+
+		if (maybeFoundUser.is_some()) {
+			let foundUser = maybeFoundUser.unwrap();
 			for (const channel of user.channels) {
 				foundUser.channels.add(channel);
 			}

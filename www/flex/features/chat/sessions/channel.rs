@@ -22,7 +22,7 @@ use flex_chat_channel::{
 	ChannelsSessionInterface,
 	MemberInterface,
 };
-use flex_chat_client::{Client, ClientsChannelSessionInterface};
+use flex_chat_client::{Client, ClientInterface, ClientsChannelSessionInterface};
 use flex_chat_mode::ApplyMode;
 use flex_web_framework::types::secret;
 
@@ -60,8 +60,8 @@ impl ClientsChannelSessionInterface for ClientsSession
 	)
 	{
 		let chid = channel_id.to_lowercase();
-		let mut member = self.clients.get_mut(client_id).unwrap();
-		member.channels.insert(chid);
+		let mut client = self.clients.get_mut(client_id).unwrap();
+		client.channels.insert(chid);
 	}
 
 	fn remove_channel_on_client(
@@ -71,8 +71,8 @@ impl ClientsChannelSessionInterface for ClientsSession
 	)
 	{
 		let chid = channel_id.to_lowercase();
-		let mut member = self.clients.get_mut(client_id).unwrap();
-		member.channels.remove(&chid);
+		let mut client = self.clients.get_mut(client_id).unwrap();
+		client.channels.remove(&chid);
 	}
 }
 
@@ -209,7 +209,7 @@ impl ChannelsSessionInterface for ChannelsSession
 		self.0.remove(&chid)
 	}
 
-	fn remove_member(
+	fn remove_member_and_channel_if_empty(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
@@ -222,6 +222,17 @@ impl ChannelsSessionInterface for ChannelsSession
 			self.remove(channel_id);
 			return None;
 		}
+		Some(())
+	}
+
+	fn remove_member(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+	) -> Option<()>
+	{
+		let mut channel_entity = self.get_mut(channel_id)?;
+		channel_entity.members_mut().remove(member_id);
 		Some(())
 	}
 }

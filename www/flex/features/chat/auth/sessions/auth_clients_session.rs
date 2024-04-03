@@ -8,51 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::email;
+use flex_chat_client::{ClientInterface, ClientsSessionInterface};
+
+use crate::features::chat::sessions::ClientsSession;
 
 // --------- //
-// Structure //
+// Interface //
 // --------- //
 
-/// Données du formulaire de connexion au site.
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-pub struct LoginFormData
+pub trait AuthClientSessionInterface: ClientsSessionInterface
 {
-	/// Identifiant de connexion.
-	pub(crate) identifier: Identifier,
-	/// Mot de passe de connexion.
-	pub(crate) password: String,
-	/// Se souvenir du client lors des prochains accès au site.
-	pub(crate) remember_me: bool,
-}
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-/// Un identifiant est soit un pseudonyme, soit une adresse mail.
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum Identifier
-{
-	Email(email::EmailAddress),
-	Username(String),
+	/// Change l'ID d'un client par un nouveau.
+	fn change_client_id(
+		&self,
+		old_client_id: &<Self::Client as ClientInterface>::ClientID,
+		new_client_id: <Self::Client as ClientInterface>::ClientID,
+	);
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl std::fmt::Display for Identifier
+impl AuthClientSessionInterface for ClientsSession
 {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+	fn change_client_id(
+		&self,
+		old_client_id: &<Self::Client as ClientInterface>::ClientID,
+		new_client_id: <Self::Client as ClientInterface>::ClientID,
+	)
 	{
-		let data = match self {
-			| Self::Email(data) => data.as_ref(),
-			| Self::Username(data) => data.as_ref(),
-		};
-		write!(f, "{}", data)
+		let (_, mut client) = self.clients.remove(old_client_id).unwrap();
+		client.set_cid(new_client_id);
+		client.new_token();
+		self.clients.insert(new_client_id, client);
 	}
 }

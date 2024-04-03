@@ -41,7 +41,7 @@ pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
 			old_nickname,
 			new_nickname,
 		}
-		.with_tags([("userid", self.client().cid())]);
+		.with_tags([("user_id", self.client().cid())]);
 
 		_ = self.socket().join(format!("private:{}", new_nickname.to_lowercase()));
 

@@ -156,6 +156,11 @@ impl ClientInterface for Client
 		self.socket_id.replace(sid);
 	}
 
+	fn set_cid(&mut self, cid: ClientID)
+	{
+		self.id = cid;
+	}
+
 	fn set_sid(&mut self, sid: socketioxide::socket::Sid)
 	{
 		self.socket_id.replace(sid);
@@ -184,6 +189,13 @@ impl ClientInterface for Client
 	fn token(&self) -> &str
 	{
 		&self.token
+	}
+
+	fn new_token(&mut self)
+	{
+		let ip = self.user().host().ip_addr.expose();
+		let token = format!("{}:{}:{}", self.cid(), self.sid(), ip).sha256();
+		self.token = token;
 	}
 
 	fn user(&self) -> &Self::User

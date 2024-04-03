@@ -427,6 +427,13 @@ export class ChatStore {
 	}
 
 	/**
+	 * Définit un nouvel ID au client connecté au serveur.
+	 */
+	setClientID(id: UserID) {
+		this.client().id = id;
+	}
+
+	/**
 	 * Définit le nom du client connecté au serveur.
 	 */
 	setClientNickname(nickname: string) {
@@ -488,7 +495,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function changeNick(newNick: string) {
 		const module = store.moduleManager().get("NICK").expect("Récupération du module `NICK`");
-		module?.send({ nickname: newNick });
+		module.send({ nickname: newNick });
 	}
 
 	/**

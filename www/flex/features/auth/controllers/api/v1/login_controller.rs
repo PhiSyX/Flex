@@ -11,18 +11,18 @@
 use std::sync::Arc;
 
 use flex_web_framework::extract::Form;
-use flex_web_framework::http::response::{Html, Redirect};
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
+use flex_web_framework::http::response::Json;
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextError, HttpContextInterface, IntoResponse};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
+use serde_json::json;
 
-use crate::features::auth::forms::RegistrationFormData;
-use crate::features::auth::responses::CreatedAccountReply;
-use crate::features::auth::routes::web::AuthRouteID;
+use crate::features::auth::errors::LoginError;
+use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::{AuthService, AuthenticationService};
-use crate::features::auth::views::SignupView;
-use crate::features::users::dto::UserNewActionDTO;
+use crate::features::users::sessions::constant::USER_SESSION;
+use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::repositories::{UserRepository, UserRepositoryPostgreSQL};
 use crate::FlexState;
 
@@ -30,7 +30,7 @@ use crate::FlexState;
 // Structure //
 // --------- //
 
-pub struct SignupController
+pub struct LoginController
 {
 	auth_service: Arc<dyn AuthenticationService>,
 }
@@ -39,23 +39,21 @@ pub struct SignupController
 // Implémentation //
 // -------------- //
 
-impl SignupController
+impl LoginController
 {
-	/// Page d'inscription au site.
-	pub async fn view(this: HttpContext<Self>) -> Html<SignupView>
-	{
-		this.response.render(SignupView::default()).await
-	}
+	pub const COOKIE_NAME: &'static str = "flex.auth_user";
 
-	/// Gestion du formulaire d'inscription au site.
-	pub async fn handle(ctx: HttpContext<Self>, Form(form): Form<RegistrationFormData>)
-		-> Redirect
+	/// Traitement du formulaire de connexion.
+	pub async fn handle(ctx: HttpContext<Self>, Form(formdata): Form<LoginFormData>)
+		-> Result<impl IntoResponse, HttpContextError<Self>>
 	{
-		if let Err(err) = ctx.auth_service.signup(UserNewActionDTO::from(form)).await {
-			tracing::error!(?err, "Erreur lors de l'inscription");
-		}
-		ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
-		ctx.response.redirect_to(AuthRouteID::Login)
+		let Ok(user) = ctx.auth_service.attempt(&formdata.identifier, &formdata.password).await else {
+			return Err(HttpContextError::Unauthorized { request: ctx.request });
+		};
+		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
+		_ = ctx.session.insert(USER_SESSION, UserSessionDTO::from(user)).await;
+		let user_session: UserSessionDTO = ctx.session.get(USER_SESSION).await?.unwrap();
+		Ok(ctx.response.json(user_session))
 	}
 }
 
@@ -63,7 +61,7 @@ impl SignupController
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for SignupController
+impl HttpContextInterface for LoginController
 {
 	type State = FlexState;
 
@@ -84,5 +82,5 @@ impl HttpContextInterface for SignupController
 	}
 }
 
-unsafe impl Send for SignupController {}
-unsafe impl Sync for SignupController {}
+unsafe impl Send for LoginController {}
+unsafe impl Sync for LoginController {}

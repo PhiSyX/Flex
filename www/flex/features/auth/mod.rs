@@ -8,74 +8,54 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	feature,
-}
+lexa_kernel::import! {
+	pub mod feature use *;
 
-mod controllers
-{
-	lexa_kernel::public_using! {
-		login_controller,
-		logout_controller,
-		signup_controller,
-	}
-}
+	mod controllers {
+		pub mod login_controller use *;
+		pub mod logout_controller use *;
+		pub mod signup_controller use *;
 
-mod forms
-{
-	lexa_kernel::public_using! {
-		login_form,
-		signup_form,
-	}
-}
+		pub mod api {
+			pub mod v1 {
+				pub mod login_controller use *;
+			};
+		};
+	};
 
-mod errors
-{
-	lexa_kernel::public_using! {
-		login_error,
-	}
-}
+	mod forms {
+		pub mod login_form use *;
+		pub mod signup_form use *;
+	};
 
-mod middleware
-{
-	lexa_kernel::public_using! {
-		auth_middleware,
-		guest_middleware,
-	}
-}
+	mod errors {
+		pub mod login_error use *;
+	};
 
-mod responses
-{
-	lexa_kernel::public_using! {
-		rpl_created_account,
-	}
-}
+	mod middleware {
+		pub mod auth_middleware use *;
+		pub mod guest_middleware use *;
+	};
 
-mod routes
-{
-	lexa_kernel::public_using! {
-		web,
-	}
-}
+	mod responses {
+		pub mod rpl_created_account use *;
+	};
 
-mod services
-{
-	lexa_kernel::public_using! {
-		auth_service,
-	}
-}
+	mod routes {
+		pub mod api;
+		pub mod web;
+	};
 
-mod specs
-{
-	lexa_kernel::public_import! {
-		owasp,
-	}
-}
+	mod services {
+		pub mod auth_service use *;
+	};
 
-mod views
-{
-	lexa_kernel::public_using! {
-		login_view,
-		signup_view,
-	}
+	mod specs {
+		pub mod owasp;
+	};
+
+	mod views {
+		pub mod login_view use *;
+		pub mod signup_view use *;
+	};
 }

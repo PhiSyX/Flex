@@ -8,62 +8,52 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { Err, Ok, type Result } from "@phisyx/flex-safety";
 import type { ChatStore } from "~/store/ChatStore";
-
-import { assertChannelRoom, assertPrivateRoom } from "~/asserts/room";
+import { AuthSubCommand } from "./subcommand";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class NickHandler implements SocketEventInterface<"NICK"> {
+export class AuthCommand
+{
+	static from_str(value: string): Result<AuthSubCommand, Error>
+	{
+		switch(value) {
+			case "id":
+			case "ident":
+			case "identify":
+				return Ok(AuthSubCommand.IDENTIFY);
+
+			default:
+				return Err(new Error(`La commande "${value}" n'est pas valide pour le module AUTH`));
+		}
+	}
+
 	// ----------- //
 	// Constructor //
 	// ----------- //
 	constructor(private store: ChatStore) {}
 
-	// ------- //
-	// Méthode //
-	// ------- //
+	sendIdentify(payload: Command<"AUTH IDENTIFY">)
+	{
+		payload.remember_me ??= false;
 
-	listen() {
-		this.store.on("NICK", (data) => this.handle(data));
-	}
+		const fetchOpts: RequestInit = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "same-origin",
+			body: JSON.stringify(payload),
+		};
 
-	handle(data: GenericReply<"NICK">) {
-		this.store.userManager().changeNickname(data.old_nickname, data.new_nickname);
-
-		const isCurrentClient = this.store.isCurrentClient(data.origin);
-		if (isCurrentClient) {
-			if (data.tags.user_id) this.store.setClientID(data.tags.user_id);
-			this.store.setClientNickname(data.new_nickname);
-		}
-
-		for (const room of this.store.roomManager().rooms()) {
-			room.addEvent("event:nick", { ...data, isCurrentClient: isCurrentClient });
-
-			if (room.type === "channel") {
-				assertChannelRoom(room);
-
-				const user = this.store
-					.userManager()
-					.findByNickname(data.new_nickname)
-					.expect(`L'utilisateur ${data.new_nickname}.`);
-
-				if (!room.members.has(user.id)) {
-					continue;
-				}
-
-				room.members.changeNickname(data.origin.id, data.old_nickname, data.new_nickname);
-			} else if (room.type === "private") {
-				if (!room.eq(data.old_nickname)) {
-					continue;
-				}
-
-				assertPrivateRoom(room);
-
-				room.changeName(data.new_nickname);
-			}
-		}
+		fetch("/api/v1/auth", fetchOpts)
+			.then((response) => {
+				if (response.ok) return response.json();
+				return Promise.reject(response);
+			})
+			.then((payload) => this.store.emit("AUTH IDENTIFY", payload));
 	}
 }

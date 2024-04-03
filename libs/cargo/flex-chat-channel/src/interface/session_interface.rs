@@ -99,6 +99,13 @@ pub trait ChannelsSessionInterface
 
 	/// Supprime un membre d'un salon. Supprime le salon s'il n'y a plus aucun
 	/// membres dedans.
+	fn remove_member_and_channel_if_empty(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+	) -> Option<()>;
+
+	/// Supprime un membre d'un salon.
 	fn remove_member(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,

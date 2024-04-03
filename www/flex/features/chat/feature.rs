@@ -130,6 +130,11 @@ impl Feature for ChatApplication
 					-/+ use ModeChannelAccessLevelHOPHandler;
 					-/+ use ModeChannelAccessLevelVIPHandler;
 				);
+
+				/* Auth */
+				handlers!( socket,
+					+ use AuthIdentifyHandler;
+				);
 			},
 		);
 

@@ -8,51 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::email;
+use std::sync::Arc;
 
-// --------- //
-// Structure //
-// --------- //
+use flex_chat_channel::validate_channel;
+use flex_chat_macro::command_formdata;
+use flex_chat_user::validate_nickname;
 
-/// Données du formulaire de connexion au site.
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-pub struct LoginFormData
-{
-	/// Identifiant de connexion.
-	pub(crate) identifier: Identifier,
-	/// Mot de passe de connexion.
-	pub(crate) password: String,
-	/// Se souvenir du client lors des prochains accès au site.
-	pub(crate) remember_me: bool,
-}
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-/// Un identifiant est soit un pseudonyme, soit une adresse mail.
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum Identifier
-{
-	Email(email::EmailAddress),
-	Username(String),
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl std::fmt::Display for Identifier
-{
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-	{
-		let data = match self {
-			| Self::Email(data) => data.as_ref(),
-			| Self::Username(data) => data.as_ref(),
-		};
-		write!(f, "{}", data)
-	}
-}
+// command_formdata! {
+// 	struct AUTH_IDENTIFY
+// 	{
+// 		/// Le pseudo à inviter sur le salon
+// 		#[serde(deserialize_with = "validate_nickname")]
+// 		username: String,
+// 		/// Le salon à inviter.
+// 		#[serde(deserialize_with = "validate_channel")]
+// 		channel: Arc<str>,
+// 	}
+// }

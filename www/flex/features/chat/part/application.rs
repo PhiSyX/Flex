@@ -129,7 +129,7 @@ impl PartChannelApplicationInterface for ChatApplication
 	) -> Option<()>
 	{
 		self.clients.remove_channel_on_client(member_client_socket.cid(), channel_name);
-		self.channels.remove_member(channel_name, member_client_socket.cid())
+		self.channels.remove_member_and_channel_if_empty(channel_name, member_client_socket.cid())
 	}
 
 	fn remove_client_from_all_his_channels<S>(

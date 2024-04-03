@@ -8,51 +8,70 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::email;
+use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
+use flex_web_framework::{middleware, RouteIDInterface, RouterGroupInterface, RouterInterface};
+
+use crate::features::auth::controllers::api::v1::LoginController;
+use crate::features::auth::middleware::GuestMiddleware;
+use crate::{FlexApplicationState, FlexState};
 
 // --------- //
 // Structure //
 // --------- //
 
-/// Données du formulaire de connexion au site.
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-pub struct LoginFormData
-{
-	/// Identifiant de connexion.
-	pub(crate) identifier: Identifier,
-	/// Mot de passe de connexion.
-	pub(crate) password: String,
-	/// Se souvenir du client lors des prochains accès au site.
-	pub(crate) remember_me: bool,
-}
+pub struct AuthApi_V1_Router;
 
 // ----------- //
 // Énumération //
 // ----------- //
 
-/// Un identifiant est soit un pseudonyme, soit une adresse mail.
 #[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum Identifier
+pub enum AuthApi_V1_RouteID
 {
-	Email(email::EmailAddress),
-	Username(String),
+	Identify,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl std::fmt::Display for Identifier
+impl RouterGroupInterface for AuthApi_V1_Router
+{
+	const GROUP: &'static str = "/api/v1/auth";
+}
+
+impl RouterInterface<FlexState> for AuthApi_V1_Router
+{
+	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	{
+		Self::group()
+			.add(
+				Router::path(AuthApi_V1_RouteID::Identify)
+					.post(LoginController::handle)
+					.middleware(middleware::from_fn(GuestMiddleware::api)),
+			)
+	}
+}
+
+impl RouteIDInterface for AuthApi_V1_RouteID
+{
+	fn fullpath(&self) -> impl ToString
+	{
+		format!("{}{}", AuthApi_V1_Router::GROUP, self.path().to_string())
+	}
+
+	fn path(&self) -> impl ToString
+	{
+		match self {
+			| Self::Identify => "/",
+		}
+	}
+}
+
+impl std::fmt::Display for AuthApi_V1_RouteID
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{
-		let data = match self {
-			| Self::Email(data) => data.as_ref(),
-			| Self::Username(data) => data.as_ref(),
-		};
-		write!(f, "{}", data)
+		write!(f, "{}", self.fullpath().to_string())
 	}
 }

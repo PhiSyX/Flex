@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::using! {
-	pub application,
+lexa_kernel::public_using! {
+	application,
 }
 
 lexa_kernel::public_using! {
@@ -42,7 +42,7 @@ lexa_kernel::using! {
 	};
 
 	pub(crate) responses / {
-		pub(super) connect_command_response,
+		pub(crate) connect_command_response,
 		pub(super) connect_error_response,
 		rpl_created,
 		rpl_welcome,

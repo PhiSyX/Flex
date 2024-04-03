@@ -12,7 +12,7 @@ use flex_web_framework::Feature;
 
 use crate::FlexState;
 
-use super::routes::UsersApi_V1_Router;
+use super::routes::api::UsersApi_V1_Router;
 
 // --------- //
 // Structure //

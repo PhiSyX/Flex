@@ -11,6 +11,7 @@
 mod feature;
 
 lexa_kernel::public_using! {
+	auth,
 	connect,
 	home,
 	invite,

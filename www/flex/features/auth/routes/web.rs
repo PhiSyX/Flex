@@ -51,7 +51,7 @@ impl RouterInterface<FlexState> for AuthRouter
 				Router::path(AuthRouteID::Login)
 					.get(LoginController::view)
 					.post(LoginController::handle)
-					.middleware(middleware::from_fn(GuestMiddleware::handle)),
+					.middleware(middleware::from_fn(GuestMiddleware::redirect)),
 			)
 			.add(
 				Router::path(AuthRouteID::Logout)
@@ -62,7 +62,7 @@ impl RouterInterface<FlexState> for AuthRouter
 				Router::path(AuthRouteID::Signup)
 					.get(SignupController::view)
 					.post(SignupController::handle)
-					.middleware(middleware::from_fn(GuestMiddleware::handle)),
+					.middleware(middleware::from_fn(GuestMiddleware::redirect)),
 			)
 	}
 }

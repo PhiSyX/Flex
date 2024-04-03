@@ -8,51 +8,40 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::email;
+use socketioxide::extract::{Data, SocketRef, State};
+
+use crate::features::chat::{
+	AuthChatApplicationInterface,
+	ChatApplication,
+	ConnectClientSocketCommandResponseInterface,
+};
+use crate::features::users::dto::UserSessionDTO;
 
 // --------- //
 // Structure //
 // --------- //
 
-/// Données du formulaire de connexion au site.
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-pub struct LoginFormData
-{
-	/// Identifiant de connexion.
-	pub(crate) identifier: Identifier,
-	/// Mot de passe de connexion.
-	pub(crate) password: String,
-	/// Se souvenir du client lors des prochains accès au site.
-	pub(crate) remember_me: bool,
-}
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-/// Un identifiant est soit un pseudonyme, soit une adresse mail.
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum Identifier
-{
-	Email(email::EmailAddress),
-	Username(String),
-}
+pub struct AuthIdentifyHandler;
 
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-impl std::fmt::Display for Identifier
+impl AuthIdentifyHandler
 {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+	pub const COMMAND_NAME: &'static str = "AUTH IDENTIFY";
+
+	pub fn handle(
+		socket: SocketRef,
+		State(app): State<ChatApplication>,
+		Data(user_session): Data<UserSessionDTO>
+	)
 	{
-		let data = match self {
-			| Self::Email(data) => data.as_ref(),
-			| Self::Username(data) => data.as_ref(),
-		};
-		write!(f, "{}", data)
+		let mut client_socket = app.current_client_mut(&socket);
+
+		app.change_id_of_client(&mut client_socket, user_session.id);
+		app.change_nickname_of_client(&mut client_socket, &user_session.name);
+
+		client_socket.send_rpl_welcome();
 	}
 }

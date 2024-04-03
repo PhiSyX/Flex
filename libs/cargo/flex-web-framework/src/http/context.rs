@@ -80,6 +80,7 @@ pub enum HttpContextError<T>
 		err: (http::StatusCode, &'static str),
 	},
 	MissingExtension,
+	Session(#[from] tower_sessions::session::Error),
 	Unauthorized
 	{
 		request: HttpRequest<T>,

@@ -14,27 +14,38 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> {
+export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME">
+{
 	constructor(private store: ChatStore) {}
 
-	listen() {
-		this.store.once("RPL_WELCOME", (data) => {
+	listen()
+	{
+		this.store.on("RPL_WELCOME", (data) => {
 			this.handle(data, {
 				channels: this.store.getAutoJoinChannels(),
 			});
 		});
 	}
 
-	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<ChannelID> }) {
+	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<ChannelID> })
+	{
 		const { channels } = payload;
 
-		this.store.setConnected(true);
 		this.store.setClient({
 			id: data.tags.client_id,
 			nickname: data.nickname,
 			host: { cloaked: data.host },
 			ident: data.ident,
 		});
+
+		// NOTE(auth): cet événement est rappelé lorsque le pseudo s'authentifie
+		// sur le site.
+		if (this.store.isConnected()) {
+			this.store.userManager().changeNickname(this.store.nickname(), data.nickname);
+			return;
+		}
+
+		this.store.setConnected(true);
 
 		const tokenData = {
 			nick: data.nickname,

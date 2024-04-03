@@ -33,7 +33,7 @@ lexa_kernel::using! {
 	};
 
 	pub(crate) responses / {
-		pub(super) nick_command_response,
+		pub(crate) nick_command_response,
 		pub(crate) nick_error_response,
 	};
 }

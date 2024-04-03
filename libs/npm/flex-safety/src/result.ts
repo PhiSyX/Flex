@@ -156,5 +156,4 @@ const { Err, Ok } = Result;
 // Export //
 // ------ //
 
-export { Err, Ok };
-export default Result;
+export { Err, Ok, Result };

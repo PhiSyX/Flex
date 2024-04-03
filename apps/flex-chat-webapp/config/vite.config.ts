@@ -22,6 +22,7 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
+			"/api": "http://localhost:8888",
 			"/chat": "http://localhost:8888",
 		},
 	},
