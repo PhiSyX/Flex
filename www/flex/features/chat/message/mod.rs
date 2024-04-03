@@ -8,30 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::using! {
-	application,
-}
+lexa_kernel::import! {
+	mod application use *;
 
-lexa_kernel::public_using! {
-	handlers / {
-		privmsg_handler,
-		pubmsg_handler,
-	};
-}
-
-lexa_kernel::using! {
-	errors / {
-		pub(super) err_cannotsendtochan,
+	pub mod handlers use {
+		pub mod privmsg_handler use *;
+		pub mod pubmsg_handler use *;
 	};
 
-	forms / {
-		pub(super) privmsg_form,
-		pub(super) pubmsg_form,
+	mod errors use {
+		pub(super) mod err_cannotsendtochan use *;
 	};
 
-	responses / {
-		pub(super) privmsg_command_response,
-		pub(super) pubmsg_command_response,
-		pub(super) pubmsg_error_response,
+	mod forms use {
+		pub(super) mod privmsg_form use *;
+		pub(super) mod  pubmsg_form use *;
+	};
+
+	mod responses use {
+		pub(super) mod privmsg_command_response use *;
+		pub(super) mod pubmsg_command_response use *;
+		pub(super) mod pubmsg_error_response use *;
 	};
 }

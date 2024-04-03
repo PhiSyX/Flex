@@ -18,7 +18,7 @@ use crate::features::chat::message::{
 	PubmsgClientSocketErrorRepliesInterface,
 	PubmsgCommandFormData,
 };
-use crate::features::chat::ChannelMemberDTO;
+use crate::features::chat::mode::ChannelMemberDTO;
 use crate::features::ChatApplication;
 
 // --------- //

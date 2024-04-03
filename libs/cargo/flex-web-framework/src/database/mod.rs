@@ -8,14 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod service;
+lexa_kernel::import! {
+	pub mod query_builder;
+	pub mod service use *;
 
-pub use self::service::*;
-
-lexa_kernel::public_using! {
-	sgbd / {
-		postgresql,
+	pub mod sgbd use {
+		pub mod postgresql use *;
 	};
 }
-
-pub mod query_builder;

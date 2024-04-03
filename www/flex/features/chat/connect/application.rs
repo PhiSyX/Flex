@@ -12,7 +12,7 @@ use flex_chat_channel::{Channel, ChannelInterface};
 use flex_chat_client::{ClientInterface, ClientSocketInterface, ClientsSessionInterface, Socket};
 use flex_web_framework::extract::InsecureClientIp;
 
-use super::ConnectClientsSessionInterface;
+use super::sessions::ConnectClientsSessionInterface;
 use crate::features::ChatApplication;
 
 // --------- //

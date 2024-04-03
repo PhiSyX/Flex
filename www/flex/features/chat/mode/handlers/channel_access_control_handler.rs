@@ -7,11 +7,11 @@ use crate::features::chat::mode::{
 	ModeAccessControlClientSocketCommandResponseInterface,
 	UnbanCommandFormData,
 };
-use crate::features::chat::{
+use crate::features::chat::mode::{
 	ModeChannelAccessControlApplicationInterface,
 	ModeChannelAccessLevelApplicationInterface,
-	OperApplicationInterface,
 };
+use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
 
 // --------- //

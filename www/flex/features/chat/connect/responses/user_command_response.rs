@@ -12,7 +12,7 @@ use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
 use flex_chat_mode::ApplyMode;
 use flex_chat_user::{Flag, UserFlagInterface, UserInterface};
 
-use crate::features::chat::ModeCommandResponse;
+use crate::features::chat::mode::ModeCommandResponse;
 
 // --------- //
 // Interface //

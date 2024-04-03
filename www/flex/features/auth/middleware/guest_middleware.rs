@@ -13,9 +13,6 @@ use flex_web_framework::http::response::{Json, Redirect};
 use flex_web_framework::http::{IntoResponse, Response};
 use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
-use reqwest::header::{self, HeaderMap, HeaderValue};
-use reqwest::StatusCode;
-use serde_json::json;
 
 use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::sessions::constant::USER_SESSION;

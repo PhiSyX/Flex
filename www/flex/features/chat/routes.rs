@@ -11,7 +11,7 @@
 use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
 use flex_web_framework::{RouteIDInterface, RouterGroupInterface, RouterInterface};
 
-use crate::features::chat::connect::controllers::TokenController;
+use crate::features::chat::connect::TokenController;
 use crate::features::chat::home::controllers::HomeController;
 use crate::{FlexApplicationState, FlexState};
 

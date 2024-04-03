@@ -13,11 +13,7 @@ use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use super::ConnectionRegistrationHandler;
-use crate::features::chat::{
-	NickApplicationInterface,
-	NickClientSocketErrorRepliesInterface,
-	NickCommandFormData,
-};
+use crate::features::chat::nick::*;
 use crate::features::ChatApplication;
 use crate::FlexApplicationState;
 

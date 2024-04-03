@@ -29,17 +29,15 @@ use crate::config::chat::{
 	FlexChatConfigOperatorFlags,
 	FlexChatConfigOperatorType,
 };
+use crate::features::chat::connect::UserClientSocketInterface;
 use crate::features::chat::join::{
 	JoinApplicationInterface,
 	JoinChannelPermissionError,
 	JoinChannelsSessionInterface,
 	JoinErrorResponseInterface,
 };
-use crate::features::chat::{
-	InviteChannelClientSocketErrorReplies,
-	ModeAccessControlClientSocketErrorRepliesInterface,
-	UserClientSocketInterface,
-};
+use crate::features::chat::invite::InviteChannelClientSocketErrorReplies;
+use crate::features::chat::mode::ModeAccessControlClientSocketErrorRepliesInterface;
 use crate::ChatApplication;
 
 // --------- //

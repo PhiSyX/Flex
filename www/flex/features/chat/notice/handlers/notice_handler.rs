@@ -12,15 +12,13 @@ use flex_chat_channel::{ChannelAccessLevel, ChannelWritePermission, MemberInterf
 use flex_chat_client::{ClientSocketInterface, Origin};
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::chat::mode::ChannelMemberDTO;
 use crate::features::chat::notice::{
 	NoticeClientSocketCommandResponseInterface,
 	NoticeCommandFormData,
-};
-use crate::features::chat::{
-	ChannelMemberDTO,
 	NoticeApplicationInterface,
-	SilenceApplicationInterface,
 };
+use crate::features::chat::silence::SilenceApplicationInterface;
 use crate::features::ChatApplication;
 
 // --------- //

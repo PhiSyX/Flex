@@ -11,7 +11,7 @@
 use flex_chat_channel::{Channel, ChannelInterface};
 use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 
-use crate::features::chat::ErrCannotkickglobopsError;
+use crate::features::chat::kick::ErrCannotkickglobopsError;
 
 // --------- //
 // Interface //

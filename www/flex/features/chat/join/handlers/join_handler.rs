@@ -11,17 +11,15 @@
 use flex_web_framework::types::secret;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::chat::invite::InviteChannelClientSocketErrorReplies;
 use crate::features::chat::join::{
 	JoinApplicationInterface,
 	JoinChannelPermissionError,
 	JoinCommandFormData,
 	JoinErrorResponseInterface,
 };
-use crate::features::chat::{
-	InviteChannelClientSocketErrorReplies,
-	ModeAccessControlClientSocketErrorRepliesInterface,
-	OperClientSocketErrorRepliesInterface,
-};
+use crate::features::chat::mode::ModeAccessControlClientSocketErrorRepliesInterface;
+use crate::features::chat::oper::OperClientSocketErrorRepliesInterface;
 use crate::features::ChatApplication;
 
 // --------- //

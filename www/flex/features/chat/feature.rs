@@ -11,7 +11,25 @@
 use flex_web_framework::Feature;
 use socketioxide::extract::{SocketRef, State, TryData};
 
-use crate::features::chat::*;
+use crate::features::chat::auth::*;
+use crate::features::chat::connect::*;
+use crate::features::chat::invite::*;
+use crate::features::chat::join::*;
+use crate::features::chat::kick::*;
+use crate::features::chat::kill::*;
+use crate::features::chat::list::*;
+use crate::features::chat::message::*;
+use crate::features::chat::mode::*;
+use crate::features::chat::nick::*;
+use crate::features::chat::notice::*;
+use crate::features::chat::oper::*;
+use crate::features::chat::part::*;
+use crate::features::chat::quit::*;
+use crate::features::chat::silence::*;
+use crate::features::chat::topic::*;
+use crate::features::chat::user_status::*;
+use crate::features::chat::routes;
+use crate::features::chat::sessions;
 use crate::{config, FlexApplicationState, FlexState};
 
 // ----- //

@@ -14,7 +14,7 @@ use flex_chat_client_channel::ChannelClientSocketErrorReplies;
 use flex_chat_user::UserInterface;
 
 use super::{ChannelTopicError, TopicChannelsSessionInterface, TopicClientSocketInterface};
-use crate::features::chat::OperApplicationInterface;
+use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
 
 // --------- //

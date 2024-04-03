@@ -10,12 +10,10 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::features::chat::{
-	AuthChatApplicationInterface,
-	ChatApplication,
-	ConnectClientSocketCommandResponseInterface,
-};
+use crate::features::chat::auth::AuthChatApplicationInterface;
+use crate::features::chat::connect::ConnectClientSocketCommandResponseInterface;
 use crate::features::users::dto::UserSessionDTO;
+use crate::ChatApplication;
 
 // --------- //
 // Structure //

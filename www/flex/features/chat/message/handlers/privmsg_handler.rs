@@ -14,7 +14,8 @@ use flex_chat_user::UserAwayInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::message::{PrivmsgClientSocketCommandResponseInterface, PrivmsgCommandFormData};
-use crate::features::chat::{SilenceApplicationInterface, UserStatusClientSocketInterface};
+use crate::features::chat::silence::SilenceApplicationInterface;
+use crate::features::chat::user_status::UserStatusClientSocketInterface;
 use crate::features::ChatApplication;
 
 // --------- //

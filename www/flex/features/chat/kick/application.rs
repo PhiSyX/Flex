@@ -18,11 +18,9 @@ use super::{
 	KickChannelClientSocketCommandResponseInterface,
 	KickChannelClientSocketErrorRepliesInterface,
 };
-use crate::features::chat::{
-	ModeChannelAccessLevelChannelsSessionInterface,
-	OperApplicationInterface,
-	PartChannelApplicationInterface,
-};
+use crate::features::chat::mode::ModeChannelAccessLevelChannelsSessionInterface;
+use crate::features::chat::oper::OperApplicationInterface;
+use crate::features::chat::part::PartChannelApplicationInterface;
 use crate::features::ChatApplication;
 
 // --------- //

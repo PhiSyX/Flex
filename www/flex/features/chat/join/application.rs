@@ -33,13 +33,13 @@ use super::{
 	JoinCommandResponseInterface,
 	JoinErrorResponseInterface,
 };
-use crate::features::chat::{
+use crate::features::chat::mode::{
 	ChannelMemberDTO,
 	ModeAccessControlClientSocketCommandResponseInterface,
-	ModeChannelSettingsClientSocketCommandResponseInterface,
-	TopicClientSocketInterface,
+	ModeChannelSettingsClientSocketCommandResponseInterface
 };
-use crate::features::ChatApplication;
+use crate::features::chat::topic::TopicClientSocketInterface;
+use crate::ChatApplication;
 
 // --------- //
 // Interface //

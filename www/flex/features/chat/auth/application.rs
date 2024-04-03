@@ -9,12 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat_channel::ChannelsSessionInterface;
-use flex_chat_client::{self, ClientInterface, ClientSocketInterface, ClientsChannelSessionInterface, Socket};
+use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
 use flex_chat_user::UserInterface;
 
-use crate::features::chat::{ChatApplication, NickClientSessionInterface};
+use crate::{features::chat::nick::NickClientSessionInterface, ChatApplication};
 
-use super::AuthClientSessionInterface;
+use super::sessions::AuthClientSessionInterface;
 
 // --------- //
 // Interface //

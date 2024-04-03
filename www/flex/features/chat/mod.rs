@@ -8,37 +8,30 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod feature;
+lexa_kernel::import! {
+	pub mod feature use *;
+	mod routes;
+	mod sessions {
+		pub(crate) mod channel use *;
+		pub(crate) mod client use *;
+	};
 
-lexa_kernel::public_using! {
-	auth,
-	connect,
-	home,
-	invite,
-	join,
-	kick,
-	kill,
-	list,
-	message,
-	mode,
-	nick,
-	notice,
-	oper,
-	part,
-	quit,
-	silence,
-	topic,
-	user_status,
+	pub mod auth;
+	pub mod connect;
+	pub mod home;
+	pub mod invite;
+	pub mod join;
+	pub mod kick;
+	pub mod kill;
+	pub mod list;
+	pub mod message;
+	pub mod mode;
+	pub mod nick;
+	pub mod notice;
+	pub mod oper;
+	pub mod part;
+	pub mod quit;
+	pub mod silence;
+	pub mod topic;
+	pub mod user_status;
 }
-
-mod routes;
-
-mod sessions
-{
-	lexa_kernel::using! {
-		pub(crate) channel,
-		pub(crate) client,
-	}
-}
-
-pub use self::feature::*;

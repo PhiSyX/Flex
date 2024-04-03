@@ -8,32 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	handlers / {
-		nick_handler,
+
+	pub mod handlers use {
+		pub mod nick_handler use *;
 	};
 
-	sessions / {
-		nick_clients_session,
-	};
-}
-
-lexa_kernel::using! {
-	errors / {
-		pub(super) err_erroneusnickname,
-		pub(super) err_nicknameinuse,
+	pub mod sessions use {
+		pub mod nick_clients_session use *;
 	};
 
-	pub(crate) forms / {
-		pub(crate) nick_form,
+	mod errors use {
+		pub(super) mod err_erroneusnickname use *;
+		pub(super) mod err_nicknameinuse use *;
 	};
 
-	pub(crate) responses / {
-		pub(crate) nick_command_response,
-		pub(crate) nick_error_response,
+	pub(crate) mod forms use {
+		pub(crate) mod nick_form use *;
+	};
+
+	pub(crate) mod responses use {
+		pub(crate) mod nick_command_response use *;
+		pub(crate) mod nick_error_response use *;
 	};
 }

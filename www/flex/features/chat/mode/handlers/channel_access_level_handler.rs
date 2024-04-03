@@ -29,7 +29,8 @@ use crate::features::chat::mode::{
 	ChannelMemberDTO,
 	ModeAccessLevelClientSocketInterface,
 };
-use crate::features::chat::{ModeChannelAccessLevelApplicationInterface, OperApplicationInterface};
+use crate::features::chat::mode::ModeChannelAccessLevelApplicationInterface;
+use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
 
 // --------- //

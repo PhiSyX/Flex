@@ -10,13 +10,18 @@
 
 use dashmap::mapref::multiple::RefMutMulti;
 use dashmap::{DashMap, DashSet};
-use flex_chat_channel::ChannelsSessionInterface;
 use flex_chat_client::{
-	Client, ClientID, ClientInterface, ClientServerApplicationInterface, ClientSocketInterface, ClientsChannelSessionInterface, ClientsSessionInterface, Socket
+	Client,
+	ClientID,
+	ClientInterface,
+	ClientServerApplicationInterface,
+	ClientSocketInterface,
+	ClientsSessionInterface,
+	Socket,
 };
 use flex_chat_user::{UserInterface, UserOperatorInterface};
 
-use crate::features::chat::OperClientSocketErrorRepliesInterface;
+use crate::features::chat::oper::OperClientSocketErrorRepliesInterface;
 use crate::features::ChatApplication;
 
 // ---- //

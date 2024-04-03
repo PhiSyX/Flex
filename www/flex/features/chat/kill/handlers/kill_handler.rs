@@ -13,8 +13,11 @@ use flex_chat_client_nick::NickClientSocketErrorReplies;
 use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::features::chat::kill::KillCommandFormData;
-use crate::features::chat::{KillApplicationInterface, KillClientSocketCommandResponseInterface};
+use crate::features::chat::kill::{
+	KillCommandFormData,
+	KillApplicationInterface,
+	KillClientSocketCommandResponseInterface,
+};
 use crate::features::ChatApplication;
 
 // --------- //

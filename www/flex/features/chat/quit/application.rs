@@ -11,7 +11,7 @@
 use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
 
 use super::QuitClientSocketInterface;
-use crate::features::chat::PartChannelsSessionInterface;
+use crate::features::chat::part::PartChannelsSessionInterface;
 use crate::features::ChatApplication;
 
 // --------- //

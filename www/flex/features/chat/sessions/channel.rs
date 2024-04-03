@@ -22,7 +22,7 @@ use flex_chat_channel::{
 	ChannelsSessionInterface,
 	MemberInterface,
 };
-use flex_chat_client::{Client, ClientInterface, ClientsChannelSessionInterface};
+use flex_chat_client::{Client, ClientsChannelSessionInterface};
 use flex_chat_mode::ApplyMode;
 use flex_web_framework::types::secret;
 

@@ -8,35 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	handlers / {
-		oper_handler,
+	pub mod handlers use {
+		pub mod oper_handler use *;
 	};
 
-	sessions / {
-		oper_clients_session,
-	};
-}
-
-lexa_kernel::using! {
-	errors / {
-		pub(super) err_nooperhost,
-		pub(super) err_noprivileges,
-		pub(super) err_operonly,
-		pub(super) err_passwdmismatch,
+	pub mod sessions use {
+		pub mod oper_clients_session use *;
 	};
 
-	forms / {
-		pub(super) oper_form,
+	mod errors use {
+		pub(super) mod err_nooperhost use *;
+		pub(super) mod err_noprivileges use *;
+		pub(super) mod err_operonly use *;
+		pub(super) mod err_passwdmismatch use *;
 	};
 
-	pub(crate) responses / {
-		pub(crate) oper_command_response,
-		pub(crate) oper_error_response,
-		pub(super) rpl_youreoper,
+	mod forms use {
+		pub(super) mod oper_form use *;
+	};
+
+	pub(crate) mod responses use {
+		pub(crate) mod oper_command_response use *;
+		pub(crate) mod oper_error_response use *;
+		pub(super) mod rpl_youreoper use *;
 	};
 }

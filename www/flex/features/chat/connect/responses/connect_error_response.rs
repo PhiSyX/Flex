@@ -10,7 +10,7 @@
 
 use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 
-use crate::features::chat::connect::ErrAlreadyregisteredError;
+use crate::features::chat::connect::errors::ErrAlreadyregisteredError;
 
 // --------- //
 // Interface //

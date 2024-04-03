@@ -19,14 +19,12 @@ use socketioxide::extract::{Data, SocketRef, State};
 use crate::features::chat::mode::{
 	ChannelModeCommandFormData,
 	ModeAccessControlClientSocketCommandResponseInterface,
-	ModeChannelSettingsClientSocketCommandResponseInterface,
-};
-use crate::features::chat::{
 	ModeChannelAccessControlApplicationInterface,
 	ModeChannelAccessLevelApplicationInterface,
 	ModeChannelSettingsApplicationInterface,
-	OperApplicationInterface,
+	ModeChannelSettingsClientSocketCommandResponseInterface,
 };
+use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
 
 // --------- //

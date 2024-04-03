@@ -8,28 +8,24 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	handlers / {
-		invite_handler,
-	};
-}
-
-lexa_kernel::using! {
-	errors / {
-		pub(crate) err_inviteonlychan,
+	pub mod handlers use {
+		pub mod invite_handler use *;
 	};
 
-	forms / {
-		pub(crate) invite_form,
+	mod errors use {
+		pub mod err_inviteonlychan use *;
 	};
 
-	pub(crate) responses / {
-		pub(super) invite_command_response,
-		pub(crate) invite_error_response,
-		pub(super) rpl_inviting,
+	mod forms use {
+		pub mod invite_form use *;
+	};
+
+	pub(crate) mod responses use {
+		pub(super) mod invite_command_response use *;
+		pub(crate) mod invite_error_response use *;
+		pub(super) mod rpl_inviting use *;
 	};
 }

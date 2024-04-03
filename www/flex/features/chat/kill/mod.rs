@@ -8,22 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	handlers / {
-		kill_handler,
-	};
-}
-
-lexa_kernel::using! {
-	forms / {
-		pub(super) kill_form,
+	pub mod handlers use {
+		pub mod kill_handler use *;
 	};
 
-	pub(crate) responses / {
-		pub(crate) kill_command_response,
+	mod forms use {
+		pub(super) mod kill_form use *;
+	};
+
+	pub(crate) mod responses use {
+		pub(crate) mod kill_command_response use *;
 	};
 }

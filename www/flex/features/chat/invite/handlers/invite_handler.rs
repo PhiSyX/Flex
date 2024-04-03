@@ -16,13 +16,11 @@ use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::invite::{
+	InviteApplicationInterface,
 	InviteClientSocketCommandResponseInterface,
 	InviteCommandFormData,
 };
-use crate::features::chat::{
-	InviteApplicationInterface,
-	ModeChannelAccessLevelApplicationInterface,
-};
+use crate::features::chat::mode::ModeChannelAccessLevelApplicationInterface;
 use crate::features::ChatApplication;
 
 // --------- //

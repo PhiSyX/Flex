@@ -11,8 +11,7 @@
 use flex_chat_client_nick::NickClientSocketErrorReplies;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::features::chat::part::SapartCommandFormData;
-use crate::features::chat::PartChannelApplicationInterface;
+use crate::features::chat::part::{SapartCommandFormData, PartChannelApplicationInterface};
 use crate::features::ChatApplication;
 
 // --------- //

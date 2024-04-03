@@ -8,25 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	handlers / {
-		list_handler,
-	};
-}
-
-lexa_kernel::using! {
-	forms / {
-		pub(super) list_form,
+	pub mod handlers use {
+		pub mod list_handler use *;
 	};
 
-	pub(super) responses / {
-		pub(super) list_command_response,
-		pub(super) rpl_list,
-		pub(super) rpl_liststart,
-		pub(super) rpl_listend,
+	mod forms use {
+		pub(super) mod list_form use *;
+	};
+
+	pub(super) mod responses use {
+		pub(super) mod list_command_response use *;
+		pub(super) mod rpl_list use *;
+		pub(super) mod rpl_liststart use *;
+		pub(super) mod rpl_listend use *;
 	};
 }

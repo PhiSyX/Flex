@@ -8,27 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	errors / {
-		err_cannotkickglobops,
+	pub mod errors use {
+		pub mod err_cannotkickglobops use *;
 	};
 
-	handlers / {
-		kick_handler,
-	};
-}
-
-lexa_kernel::using! {
-	forms / {
-		pub(super) kick_form,
+	pub mod handlers use {
+		pub mod kick_handler use *;
 	};
 
-	pub(crate) responses / {
-		pub(super) kick_command_response,
-		pub(super) kick_error_response,
+	mod forms use {
+		pub(super) mod kick_form use *;
+	};
+
+	pub(crate) mod responses use {
+		pub(super) mod kick_command_response use *;
+		pub(super) mod kick_error_response use *;
 	};
 }

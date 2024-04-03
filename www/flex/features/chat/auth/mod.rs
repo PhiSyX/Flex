@@ -8,20 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	forms / {
-		identify_form,
+	pub mod handlers use {
+		pub mod identify_handler use *;
 	};
 
-	handlers / {
-		identify_handler,
-	};
-
-	sessions / {
-		auth_clients_session,
+	mod sessions use {
+		pub mod auth_clients_session use *;
 	};
 }

@@ -8,38 +8,34 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::public_using! {
-	application,
-}
+lexa_kernel::import! {
+	pub mod application use *;
 
-lexa_kernel::public_using! {
-	handlers / {
-		channel_access_control_handler,
-		channel_access_level_handler,
-		channel_mode_handler,
+	pub mod handlers use {
+		pub mod channel_access_control_handler use *;
+		pub mod channel_access_level_handler use *;
+		pub mod channel_mode_handler use *;
 	};
 
-	responses / {
-		channel_access_control_command_response,
-		channel_access_control_error_response,
-		channel_access_level_command_response,
-		channel_settings_command_response,
-		mode_response,
+	pub mod responses use {
+		pub mod channel_access_control_command_response use *;
+		pub mod channel_access_control_error_response use *;
+		pub mod channel_access_level_command_response use *;
+		pub mod channel_settings_command_response use *;
+		pub mod mode_response use *;
 	};
 
-	sessions / {
-		channel_access_level_channels_session,
-	};
-}
-
-lexa_kernel::using! {
-	errors / {
-		pub(super) err_bannedfromchan,
+	pub mod sessions use {
+		pub mod channel_access_level_channels_session use *;
 	};
 
-	forms / {
-		pub(super) channel_access_control_form,
-		pub(super) channel_access_level_form,
-		pub(super) channel_mode_form,
+	mod errors use {
+		pub(super) mod err_bannedfromchan use *;
+	};
+
+	mod forms use {
+		pub(super) mod channel_access_control_form use *;
+		pub(super) mod channel_access_level_form use *;
+		pub(super) mod channel_mode_form use *;
 	};
 }

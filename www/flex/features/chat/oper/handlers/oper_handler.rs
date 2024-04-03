@@ -14,8 +14,11 @@ use flex_web_framework::security::Argon2Password;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::config::chat::FlexChatConfig;
-use crate::features::chat::oper::{OperClientSocketErrorRepliesInterface, OperCommandFormData};
-use crate::features::chat::OperApplicationInterface;
+use crate::features::chat::oper::{
+	OperApplicationInterface,
+	OperClientSocketErrorRepliesInterface,
+	OperCommandFormData,
+};
 use crate::features::ChatApplication;
 
 // --------- //
