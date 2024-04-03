@@ -8,15 +8,16 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace.lints.rust]
-non_camel_case_types = "allow"
 async_fn_in_trait = "allow"
+# dead_code = "allow"
+non_camel_case_types = "allow"
 # unsafe_code = "forbid"
 
 [workspace.dependencies]
 async-trait = "0.1.79"
 chrono = { version = "0.4.37", features = ["clock", "serde"] }
 dashmap = { version = "5.5.3", features = ["serde"] }
-lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "76a319c600921e3cef7085d0fd3300a4dee78948", features = [
+lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "6e99941560bd7356f54acbf1f8923c7a043b8255", features = [
 	"tracing",
 ] }
 log = { version = "0.4.21" }
