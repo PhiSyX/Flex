@@ -18,12 +18,13 @@ lexa_kernel::import! {
 
 		pub mod api {
 			pub mod v1 {
-				pub mod login_controller use *;
+				pub mod identify_controller use *;
+				pub mod register_controller use *;
 			};
 		};
 	};
 
-	mod forms {
+	pub(crate) mod forms {
 		pub mod login_form use *;
 		pub mod signup_form use *;
 	};

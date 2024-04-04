@@ -15,4 +15,5 @@
 export enum AuthSubCommand
 {
 	IDENTIFY = "IDENTIFY",
+	REGISTER = "REGISTER",
 }

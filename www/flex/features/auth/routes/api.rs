@@ -11,7 +11,7 @@
 use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
 use flex_web_framework::{middleware, RouteIDInterface, RouterGroupInterface, RouterInterface};
 
-use crate::features::auth::controllers::api::v1::LoginController;
+use crate::features::auth::controllers::api::v1::{IdentifyController, RegisterController};
 use crate::features::auth::middleware::GuestMiddleware;
 use crate::{FlexApplicationState, FlexState};
 
@@ -29,6 +29,7 @@ pub struct AuthApi_V1_Router;
 pub enum AuthApi_V1_RouteID
 {
 	Identify,
+	Register,
 }
 
 // -------------- //
@@ -47,7 +48,12 @@ impl RouterInterface<FlexState> for AuthApi_V1_Router
 		Self::group()
 			.add(
 				Router::path(AuthApi_V1_RouteID::Identify)
-					.post(LoginController::handle)
+					.post(IdentifyController::handle)
+					.middleware(middleware::from_fn(GuestMiddleware::api)),
+			)
+			.add(
+				Router::path(AuthApi_V1_RouteID::Register)
+					.post(RegisterController::handle)
 					.middleware(middleware::from_fn(GuestMiddleware::api)),
 			)
 	}
@@ -63,7 +69,8 @@ impl RouteIDInterface for AuthApi_V1_RouteID
 	fn path(&self) -> impl ToString
 	{
 		match self {
-			| Self::Identify => "/",
+			| Self::Identify => "/identify",
+			| Self::Register => "/register",
 		}
 	}
 }

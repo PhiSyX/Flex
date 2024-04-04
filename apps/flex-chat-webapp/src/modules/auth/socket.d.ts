@@ -15,6 +15,14 @@ declare interface AuthIdentifyFormData
 	remember_me?: boolean;
 }
 
+declare interface AuthRegisterFormData
+{
+	username: string;
+	email_address: string;
+	password: string;
+	password_confirmation: string;
+}
+
 declare interface Commands
 {
 	"AUTH IDENTIFY": AuthIdentifyFormData;

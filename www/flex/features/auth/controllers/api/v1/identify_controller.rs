@@ -27,7 +27,7 @@ use crate::FlexState;
 // Structure //
 // --------- //
 
-pub struct LoginController
+pub struct IdentifyController
 {
 	auth_service: Arc<dyn AuthenticationService>,
 }
@@ -36,7 +36,7 @@ pub struct LoginController
 // Implémentation //
 // -------------- //
 
-impl LoginController
+impl IdentifyController
 {
 	pub const COOKIE_NAME: &'static str = "flex.auth_user";
 
@@ -58,7 +58,7 @@ impl LoginController
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for LoginController
+impl HttpContextInterface for IdentifyController
 {
 	type State = FlexState;
 
@@ -79,5 +79,5 @@ impl HttpContextInterface for LoginController
 	}
 }
 
-unsafe impl Send for LoginController {}
-unsafe impl Sync for LoginController {}
+unsafe impl Send for IdentifyController {}
+unsafe impl Sync for IdentifyController {}

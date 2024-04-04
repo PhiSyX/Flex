@@ -151,6 +151,7 @@ impl Feature for ChatApplication
 				/* Auth */
 				handlers!( socket,
 					+ use AuthIdentifyHandler;
+					+ use AuthRegisterHandler;
 				);
 			},
 		);

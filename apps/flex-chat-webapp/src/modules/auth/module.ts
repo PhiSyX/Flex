@@ -12,6 +12,7 @@ import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/store/ChatStore";
 
 import { AuthCommand } from "./command";
+import { AuthApiHTTPClient } from "./feign/api";
 import { AuthSubCommand } from "./subcommand";
 
 // -------------- //
@@ -28,7 +29,7 @@ export class AuthModule implements Module<AuthModule>
 
 	static create(store: ChatStore): AuthModule
 	{
-		return new AuthModule(new AuthCommand(store));
+		return new AuthModule(new AuthCommand(store, new AuthApiHTTPClient()));
 	}
 
 	// ----------- //
@@ -58,14 +59,21 @@ export class AuthModule implements Module<AuthModule>
 			{
 				if (size < 3) return;
 				const [identifier, password] = args;
-				this.sendIdentify({ identifier, password });
+				this.command.sendIdentify({ identifier, password });
+			} break;
+
+			case AuthSubCommand.REGISTER:
+			{
+				if (size < 4) return;
+				const [username, password, email_address] = args;
+				this.command.sendRegister({
+					username,
+					email_address,
+					password,
+					password_confirmation: password
+				});
 			} break;
 		}
-	}
-
-	sendIdentify(payload: Command<"AUTH IDENTIFY">)
-	{
-		this.command.sendIdentify(payload);
 	}
 
 	listen() {}

@@ -8,61 +8,64 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Err, Ok, type Result } from "@phisyx/flex-safety";
-import type { ChatStore } from "~/store/ChatStore";
+// -------- //
+// Constant //
+// -------- //
 
-import type { AuthApiHTTPClient } from "./feign/api";
-import { AuthSubCommand } from "./subcommand";
+const DEFAULT_FETCH_OPTIONS: RequestInit = {
+	headers: {
+		"Content-Type": "application/json",
+	},
+	credentials: "same-origin",
+};
 
-// -------------- //
-// Implémentation //
-// -------------- //
+// --------- //
+// Interface //
+// --------- //
 
-export class AuthCommand
+interface AuthRegisterResponse
 {
-	static from_str(value: string): Result<AuthSubCommand, Error>
+	code: string;
+	message: string;
+	id: UUID;
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+export class AuthApiHTTPClient
+{
+	static AUTH_IDENTIFY_ENDPOINT = "/api/v1/auth/identify";
+	static AUTH_REGISTER_ENDPOINT = "/api/v1/auth/register";
+
+	identify(payload: AuthIdentifyFormData)
 	{
-		switch(value) {
-			case "id":
-			case "ident":
-			case "identify":
-				return Ok(AuthSubCommand.IDENTIFY);
+		const fetchOpts: RequestInit = {
+			...DEFAULT_FETCH_OPTIONS,
+			method: "POST",
+			body: JSON.stringify(payload),
+		};
 
-			case "reg":
-			case "register":
-				return Ok(AuthSubCommand.REGISTER);
-
-			default:
-				return Err(new Error(`La commande "${value}" n'est pas valide pour le module AUTH`));
-		}
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStore, private authApiHttpClient: AuthApiHTTPClient) {}
-
-	sendIdentify(payload: AuthIdentifyFormData)
-	{
-		payload.remember_me ??= false;
-
-		this.authApiHttpClient.identify(payload)
-			.then((response) => this.store.emit("AUTH IDENTIFY", response));
-	}
-
-	sendRegister(payload: AuthRegisterFormData)
-	{
-		this.authApiHttpClient.register(payload)
+		return fetch(AuthApiHTTPClient.AUTH_IDENTIFY_ENDPOINT, fetchOpts)
 			.then((response) => {
-				this.store.roomManager().active()
-					// FIXME: addEvent(response.code, ...)
-					.addConnectEvent(
-						{
-							origin: this.store.client(),
-							tags: { msgid: response.id }
-						},
-						`-AuthServ- ${response.message}`
-					)
-			})
+				if (response.ok) return response.json();
+				return Promise.reject(response);
+			});
+	}
+
+	register(payload : AuthRegisterFormData): Promise<AuthRegisterResponse>
+	{
+		const fetchOpts: RequestInit = {
+			...DEFAULT_FETCH_OPTIONS,
+			method: "POST",
+			body: JSON.stringify(payload),
+		};
+
+		return fetch(AuthApiHTTPClient.AUTH_REGISTER_ENDPOINT, fetchOpts)
+			.then((response) => {
+				if (response.ok) return response.json();
+				return Promise.reject(response);
+			});
 	}
 }
