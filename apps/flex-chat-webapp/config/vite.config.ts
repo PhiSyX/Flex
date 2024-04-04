@@ -18,12 +18,15 @@ import yaml from "yaml";
 
 import type { ServerSettings } from "./server.config";
 
+/**
+ * Récupère les paramètres du serveur backend.
+ */
 async function getFlexServerSettings(): Promise<ServerSettings>
 {
 	const filepath = path.resolve("..", "..", "config", "flex", "server.yml");
-	const content = await fs.readFile(filepath);
-	const serverSettingsObject = yaml.parse(content.toString("utf8"));
-	return serverSettingsObject satisfies ServerSettings;
+	const rawContent = await fs.readFile(filepath);
+	const settings = yaml.parse(rawContent.toString("utf8"));
+	return settings satisfies ServerSettings;
 }
 
 const flexServerSettings = await getFlexServerSettings();
@@ -32,17 +35,27 @@ const viteServerHttpsConfig: CommonServerOptions["https"] = flexServerSettings.t
 	cert: path.resolve("..", "..", flexServerSettings.tls.cert),
 	key: path.resolve("..", "..", flexServerSettings.tls.key),
 };
-const viteServerProxyProtocol = flexServerSettings.tls ? "https" : "http";
+
+// ISSUE(vitejs): Activer l'HTTPS + Proxy rétrograde vers le protocole HTTP/1.
+//                Complètement débile.
+//
+// QUOTE: https://vitejs.dev/config/server-options.html#server-https
+//
+// > Enable TLS + HTTP/2. Note this downgrades to TLS only when the server.proxy
+// > option is also used.
+const viteServerUrlProtocol = flexServerSettings.tls ? "https" : "http";
+/*
 const viteServerProxyConfig: CommonServerOptions["proxy"] = {
 	"/api": {
 		secure: false,
-		target: `${viteServerProxyProtocol}://${flexServerSettings.ip}:${flexServerSettings.port}`,
+		target: `${viteServerUrlProtocol}://${flexServerSettings.ip}:${flexServerSettings.port}`,
 	},
 	"/chat": {
 		secure: false,
-		target: `${viteServerProxyProtocol}://${flexServerSettings.ip}:${flexServerSettings.port}`
+		target: `${viteServerUrlProtocol}://${flexServerSettings.ip}:${flexServerSettings.port}`
 	},
 };
+*/
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -51,8 +64,17 @@ export default defineConfig({
 		outDir: path.resolve("dist"),
 	},
 	server: {
+		// NOTE: Activer l'HTTPS, active automatiquement le protocole HTTP/2,
+		// 		 sauf + proxy, voir le commentaire `ISSUE` ci-haut.
 		https: viteServerHttpsConfig,
-		proxy: viteServerProxyConfig,
+
+		// NOTE: Voir le commentaire `ISSUE` ci-haut.
+		//proxy: viteServerProxyConfig,
+
+		// NOTE: Voir le commentaire `ISSUE` ci-haut. Ouvre l'URL vers le
+		//       serveur backend pour le moment, afin d'éviter de se manger des
+		//       erreurs à l'exécution lors des appels XHR (fetch).
+		open: `${viteServerUrlProtocol}://localhost:${flexServerSettings.port}/chat`,
 	},
 	resolve: {
 		alias: [
