@@ -23,8 +23,19 @@ pub struct Settings
 	pub ip: net::IpAddr,
 	/// Le port de connexion du serveur associé à l'IP
 	pub port: port::Port,
+	/// Paramètre TLS du serveur.
+	pub tls: Option<TlsSettings>,
 	/// Ressources statiques du serveur.
 	pub static_resources: Vec<StaticResourceSettings>,
+}
+
+#[derive(serde::Deserialize)]
+pub struct TlsSettings
+{
+	#[serde(rename = "cert")]
+	pub cert_file: path::PathBuf,
+	#[serde(rename = "key")]
+	pub key_file: path::PathBuf,
 }
 
 #[derive(serde::Deserialize)]
@@ -61,6 +72,7 @@ impl Default for Settings
 		Self {
 			ip: net::IpAddr::V4(net::Ipv4Addr::new(127, 0, 0, 1)),
 			port: port::Port::from(80),
+			tls: Default::default(),
 			static_resources: Default::default(),
 		}
 	}

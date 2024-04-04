@@ -8,11 +8,41 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { defineConfig } from "vite";
+import { type CommonServerOptions, defineConfig } from "vite";
 
 import vue from "@vitejs/plugin-vue";
+import yaml from "yaml";
+
+import type { ServerSettings } from "./server.config";
+
+async function getFlexServerSettings(): Promise<ServerSettings>
+{
+	const filepath = path.resolve("..", "..", "config", "flex", "server.yml");
+	const content = await fs.readFile(filepath);
+	const serverSettingsObject = yaml.parse(content.toString("utf8"));
+	return serverSettingsObject satisfies ServerSettings;
+}
+
+const flexServerSettings = await getFlexServerSettings();
+
+const viteServerHttpsConfig: CommonServerOptions["https"] = flexServerSettings.tls && {
+	cert: path.resolve("..", "..", flexServerSettings.tls.cert),
+	key: path.resolve("..", "..", flexServerSettings.tls.key),
+};
+const viteServerProxyProtocol = flexServerSettings.tls ? "https" : "http";
+const viteServerProxyConfig: CommonServerOptions["proxy"] = {
+	"/api": {
+		secure: false,
+		target: `${viteServerProxyProtocol}://${flexServerSettings.ip}:${flexServerSettings.port}`,
+	},
+	"/chat": {
+		secure: false,
+		target: `${viteServerProxyProtocol}://${flexServerSettings.ip}:${flexServerSettings.port}`
+	},
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -21,10 +51,8 @@ export default defineConfig({
 		outDir: path.resolve("dist"),
 	},
 	server: {
-		proxy: {
-			"/api": "http://localhost:8888",
-			"/chat": "http://localhost:8888",
-		},
+		https: viteServerHttpsConfig,
+		proxy: viteServerProxyConfig,
 	},
 	resolve: {
 		alias: [

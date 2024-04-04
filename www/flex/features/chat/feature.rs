@@ -98,7 +98,6 @@ impl Feature for ChatApplication
 	) -> flex_web_framework::AxumRouter<Self::State>
 	{
 		let (layer, io) = socketioxide::SocketIo::builder()
-			.max_buffer_size(1024)
 			.with_state(axum_state.clone())
 			.with_state(Self::default())
 			.build_layer();

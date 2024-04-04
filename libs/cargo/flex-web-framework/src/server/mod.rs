@@ -17,6 +17,7 @@ mod net
 	pub use tokio::net::*;
 }
 
+use axum_server::tls_rustls::RustlsConfig;
 use console::style;
 
 pub use self::error::Error as ServerError;
@@ -106,13 +107,21 @@ impl<S, E, C> Server<S, E, C>
 	{
 		let router = self.router.global();
 
-		let listener = net::TcpListener::bind(self.settings.socket_addr()).await?;
-
-		println!("URL: http://{}", listener.local_addr()?);
+		let addr = self.settings.socket_addr();
 
 		type S = net::SocketAddr;
 
-		axum::serve(listener, router.into_make_service_with_connect_info::<S>()).await?;
+		if let Some(tls_settings) = self.settings.tls.as_ref() {
+			let tls_config = RustlsConfig::from_pem_file(&tls_settings.cert_file, &tls_settings.key_file).await?;
+			println!("URL: https://{}", addr);
+			let mut server = axum_server::bind_rustls(addr, tls_config);
+			server.http_builder().http2();
+			server.serve(router.into_make_service_with_connect_info::<S>()).await?;
+		} else {
+			let listener = net::TcpListener::bind(addr).await?;
+			println!("URL: http://{}", listener.local_addr()?);
+			axum::serve(listener, router.into_make_service_with_connect_info::<S>()).await?;
+		}
 
 		Ok(())
 	}

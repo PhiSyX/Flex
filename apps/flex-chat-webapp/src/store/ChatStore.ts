@@ -141,16 +141,19 @@ export class ChatStore {
 			userID = null;
 		}
 
-		this._ws.replace(
-			<TypeSafeSocket> io(websocketServerURL, {
-				auth: { user_id: userID, client_id: clientID },
-				transports: ["websocket"],
-				reconnection: true,
-				reconnectionDelay: 10_000,
-				rememberUpgrade: true,
-				withCredentials: true,
-			}),
-		);
+		let wsio = <TypeSafeSocket> io(websocketServerURL, {
+			auth: { user_id: userID, client_id: clientID },
+			transports: ["websocket"],
+			reconnection: true,
+			reconnectionDelay: 10_000,
+			rememberUpgrade: true,
+			secure: true,
+			withCredentials: true,
+		});
+
+		wsio.io.engine.binaryType = "arraybuffer";
+
+		this._ws.replace(wsio);
 	}
 
 	/**

@@ -17,7 +17,7 @@ non_camel_case_types = "allow"
 async-trait = "0.1.79"
 chrono = { version = "0.4.37", features = ["clock", "serde"] }
 dashmap = { version = "5.5.3", features = ["serde"] }
-lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "6e99941560bd7356f54acbf1f8923c7a043b8255", features = [
+lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "adba09e5c867ba979422c7db689250e634f5b3e2", features = [
 	"tracing",
 ] }
 log = { version = "0.4.21" }
