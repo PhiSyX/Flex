@@ -1,14 +1,14 @@
-<script setup lang="ts">
-import { ButtonIcon, InputSwitch, TextInput, UiButton } from "@phisyx/flex-uikit";
-import { type ModelRef, reactive, ref } from "vue";
 
+<script setup lang="ts">
+import type { Option } from "@phisyx/flex-safety";
+import { ButtonIcon, InputSwitch, TextInput, UiButton } from "@phisyx/flex-uikit";
+import { type ModelRef, computed, onMounted, reactive, ref } from "vue";
 
 import { channelID } from "~/asserts/room";
 import { useChatStore } from "~/store/ChatStore";
 import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
+import type { UserSession } from "~/user/UserSession";
 import { View } from "~/views";
-
-import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 
 // ---- //
 // Type //
@@ -16,14 +16,17 @@ import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 
 interface Props {
 	changeView: View;
+	user: Option<UserSession>;
 }
 
 // --------- //
 // Composant //
 // --------- //
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const changeView = defineModel<View>("changeView");
+
+const user = computed(() => props.user.unwrap());
 
 /**
  * Attribut `title` de l'élément `<input name="nickname">`.
@@ -59,12 +62,10 @@ const chatStore = useChatStore();
 
 const advancedInfo = ref(false);
 const loginFormData = reactive({
-	alternativeNickname: import.meta.env.VITE_APP_NICKNAME
-		? `${import.meta.env.VITE_APP_NICKNAME}_`
-		: "",
+	alternativeNickname: `${user.value.name}_`,
 	channels: import.meta.env.VITE_APP_CHANNELS || channelID(""),
-	nickname: import.meta.env.VITE_APP_NICKNAME || "",
-	realname: import.meta.env.VITE_APP_REALNAME || "Flex Web App",
+	nickname: user.value.name,
+	realname: `${user.value.role} - ${user.value.id}`,
 	rememberMe: new RememberMeStorage(),
 	passwordServer: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
 	websocketServerURL: import.meta.env.VITE_APP_WEBSOCKET_URL,
@@ -90,8 +91,8 @@ function displayAdvancedInfoHandler() {
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
 function connectSubmit(changeViewModel: ModelRef<View | undefined, string>) {
-	async function connectSubmitHandler(evt: Event) {
-		evt.preventDefault();
+	async function connectSubmitHandler(evt?: Event) {
+		evt?.preventDefault();
 
 		loader.value = true;
 
@@ -131,6 +132,13 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 
 	loader.value = false;
 }
+
+onMounted(() => {
+	chatStore.store.setUserID(user.value.id);
+	if (loginFormData.rememberMe.get()) {
+		submitHandler()
+	}
+})
 </script>
 
 <template>
@@ -230,8 +238,6 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 				<span class="[ flex:full ]">Accéder au Chat</span>
 			</UiButton>
 		</section>
-
-		<ModulesProgress />
 	</main>
 </template>
 
