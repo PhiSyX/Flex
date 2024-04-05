@@ -12,15 +12,17 @@ use std::collections::HashMap;
 
 #[cfg(not(debug_assertions))]
 use flex_web_framework::EmptyHTMLLayout;
-use flex_web_framework::{vite, Node, ViewInterface, ViteLayout};
+use flex_web_framework::{types::url, vite, Node, ViewInterface, ViteLayout};
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Default)]
 #[derive(flex_web_framework::View)]
-pub struct HomeView {}
+pub struct HomeView
+{
+	pub vite_url: url::Url,
+}
 
 // -------------- //
 // Implémentation // -> Interface
@@ -40,8 +42,9 @@ impl ViewInterface for HomeView
 	#[cfg(debug_assertions)]
 	fn data(&self) -> std::collections::HashMap<String, String>
 	{
+		let vite_url = self.vite_url.to_string();
 		HashMap::from([
-			("vite_url".into(), "http://localhost:5173".into()),
+			("vite_url".into(), vite_url.trim_end_matches('/').to_owned()),
 			("vite_root".into(), "🆔".into()),
 		])
 	}
@@ -54,7 +57,12 @@ impl ViewInterface for HomeView
 	fn view(&self) -> Self::View
 	{
 		if cfg!(debug_assertions) {
-			vite!("http://localhost:5173#🆔")
+			// TODO: À améliorer
+			if self.vite_url.scheme().starts_with("https") {
+				vite!("https://localhost:5173#🆔")
+			} else {
+				vite!("http://localhost:5173#🆔")
+			}
 		} else {
 			vite!("apps/flex-chat-webapp")
 		}

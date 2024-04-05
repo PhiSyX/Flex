@@ -53,6 +53,8 @@ where
 {
 	fn feature<F>(mut self) -> Self where F: Feature<State = S>,
 	{
+		self.application_adapter.state.set_server_settings(self.application_adapter.settings.clone());
+
 		let config_filename = <F::Config as FeatureConfig>::FILENAME;
 
 		let router_collection = <F::Router as RouterInterface<F::State>>::routes(
@@ -131,6 +133,8 @@ where
 {
 	async fn feature<F>(mut self) -> Self where F: AsyncFeature<State = S>,
 	{
+		self.application_adapter.state.set_server_settings(self.application_adapter.settings.clone());
+
 		let config_filename = <F::Config as FeatureConfig>::FILENAME;
 
 		let router_collection = <F::Router as RouterInterface<F::State>>::routes(&self.application_adapter.state);

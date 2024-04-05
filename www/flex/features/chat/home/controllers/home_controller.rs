@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::http::request::State;
 use flex_web_framework::http::response::Html;
 use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
+use flex_web_framework::ServerSettings;
 
 use crate::features::chat::home::HomeView;
 use crate::FlexState;
@@ -26,9 +28,14 @@ pub struct HomeController;
 
 impl HomeController
 {
-	pub async fn view(http: HttpContext<Self>) -> Html<HomeView>
+	pub async fn view(
+		http: HttpContext<Self>,
+		State(server_settings): State<ServerSettings>,
+	) -> Html<HomeView>
 	{
-		http.response.html(HomeView::default())
+		let mut vite_url = server_settings.http_url();
+		_ = vite_url.set_port(Some(5173));
+		http.response.html(HomeView { vite_url })
 	}
 }
 

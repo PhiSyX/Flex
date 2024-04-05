@@ -18,6 +18,7 @@ async-trait = "0.1.79"
 chrono = { version = "0.4.37", features = ["clock", "serde"] }
 dashmap = { version = "5.5.3", features = ["serde"] }
 lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "adba09e5c867ba979422c7db689250e634f5b3e2", features = [
+dns-lookup = "2.0.4"
 	"tracing",
 ] }
 log = { version = "0.4.21" }

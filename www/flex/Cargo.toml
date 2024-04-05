@@ -25,6 +25,7 @@ flex-chat-user = { path = "../../libs/cargo/flex-chat-user" }
 
 clap = { version = "4.5.4", features = ["derive", "env"] }
 dashmap = { workspace = true }
+dns-lookup = { workspace = true }
 flex-cli = { workspace = true }
 flex-crypto = { workspace = true }
 flex-serde-validation = { workspace = true }

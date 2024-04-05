@@ -16,6 +16,7 @@ use crate::types::port;
 // Structure //
 // --------- //
 
+#[derive(Clone)]
 #[derive(serde::Deserialize)]
 pub struct Settings
 {
@@ -29,6 +30,7 @@ pub struct Settings
 	pub static_resources: Vec<StaticResourceSettings>,
 }
 
+#[derive(Clone)]
 #[derive(serde::Deserialize)]
 pub struct TlsSettings
 {
@@ -38,6 +40,7 @@ pub struct TlsSettings
 	pub key_file: path::PathBuf,
 }
 
+#[derive(Clone)]
 #[derive(serde::Deserialize)]
 pub struct StaticResourceSettings
 {
@@ -58,6 +61,28 @@ impl Settings
 	pub fn socket_addr(&self) -> net::SocketAddr
 	{
 		net::SocketAddr::from((self.ip, u16::from(self.port)))
+	}
+
+	/// Résolution du nom d'hôte à partir de l'adresse IP
+	pub fn hostname(&self) -> String
+	{
+		if self.ip == std::net::Ipv4Addr::LOCALHOST {
+			String::from("localhost")
+		} else {
+			dns_lookup::lookup_addr(&self.ip).unwrap()
+		}
+	}
+
+	pub fn protocol(&self) -> &str
+	{
+		if self.tls.is_some() { "https" } else { "http" }
+	}
+
+	pub fn http_url(&self) -> url::Url
+	{
+		format!("{}://{}:{}", self.protocol(), self.hostname(), self.port)
+			.parse()
+			.unwrap()
 	}
 }
 
