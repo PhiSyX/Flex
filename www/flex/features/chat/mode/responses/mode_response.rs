@@ -10,7 +10,12 @@
 
 use std::collections::HashSet;
 
-use flex_chat_channel::{ChannelAccessLevel, ChannelMember, MemberID, MemberInterface};
+use flex_chat_channel::{
+	ChannelAccessLevel,
+	ChannelMember,
+	MemberID,
+	MemberInterface,
+};
 use flex_chat_client::{Client, ClientInterface};
 use flex_chat_macro::command_response;
 use flex_chat_mode::ApplyMode;

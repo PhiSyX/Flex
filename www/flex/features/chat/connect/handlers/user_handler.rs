@@ -13,8 +13,8 @@ use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::connect::forms::UserCommandFormData;
-use crate::features::chat::connect::responses::ConnectClientSocketErrorRepliesInterface;
 use crate::features::chat::connect::handlers::ConnectionRegistrationHandler;
+use crate::features::chat::connect::responses::ConnectClientSocketErrorRepliesInterface;
 use crate::features::ChatApplication;
 use crate::FlexApplicationState;
 

@@ -8,7 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{Channel, ChannelInterface, ChannelsSessionInterface, SettingsFlag};
+use flex_chat_channel::{
+	Channel,
+	ChannelInterface,
+	ChannelsSessionInterface,
+	SettingsFlag,
+};
 use flex_chat_client::{
 	self,
 	ClientInterface,
@@ -30,13 +35,13 @@ use crate::config::chat::{
 	FlexChatConfigOperatorType,
 };
 use crate::features::chat::connect::UserClientSocketInterface;
+use crate::features::chat::invite::InviteChannelClientSocketErrorReplies;
 use crate::features::chat::join::{
 	JoinApplicationInterface,
 	JoinChannelPermissionError,
 	JoinChannelsSessionInterface,
 	JoinErrorResponseInterface,
 };
-use crate::features::chat::invite::InviteChannelClientSocketErrorReplies;
 use crate::features::chat::mode::ModeAccessControlClientSocketErrorRepliesInterface;
 use crate::ChatApplication;
 
@@ -50,7 +55,10 @@ pub trait OperApplicationInterface
 	type ClientSocket<'cs>: ClientSocketInterface;
 
 	/// Est-ce que le client est un opérateur global?
-	fn is_client_global_operator(&self, client_socket: &Self::ClientSocket<'_>) -> bool;
+	fn is_client_global_operator(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+	) -> bool;
 
 	/// Rejoint un salon opérateur ou le crée.
 	fn join_or_create_oper_channel(
@@ -76,9 +84,14 @@ impl OperApplicationInterface for ChatApplication
 	type Channel = Channel;
 	type ClientSocket<'cs> = Socket<'cs>;
 
-	fn is_client_global_operator(&self, client_socket: &Self::ClientSocket<'_>) -> bool
+	fn is_client_global_operator(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+	) -> bool
 	{
-		let Some(client) = self.get_client_by_id(client_socket.cid()) else { return false; };
+		let Some(client) = self.get_client_by_id(client_socket.cid()) else {
+			return false;
+		};
 		client.user().is_global_operator()
 	}
 
@@ -97,7 +110,10 @@ impl OperApplicationInterface for ChatApplication
 					ApplyMode::new(SettingsFlag::Secret),
 				],
 			);
-			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(
+				channel_name,
+				client_socket.cid(),
+			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 		}
@@ -106,7 +122,10 @@ impl OperApplicationInterface for ChatApplication
 		let can_join = self.channels.can_join(&client_session, channel_name, None);
 
 		if can_join.is_ok() {
-			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(
+				channel_name,
+				client_socket.cid(),
+			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 			return;

@@ -12,9 +12,9 @@ use flex_chat_channel::ChannelsSessionInterface;
 use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
 use flex_chat_user::UserInterface;
 
-use crate::{features::chat::nick::NickClientSessionInterface, ChatApplication};
-
 use super::sessions::AuthClientSessionInterface;
+use crate::features::chat::nick::NickClientSessionInterface;
+use crate::ChatApplication;
 
 // --------- //
 // Interface //
@@ -28,14 +28,17 @@ pub trait AuthChatApplicationInterface
 	fn change_id_of_client(
 		&self,
 		client_socket: &mut Self::ClientSocket<'_>,
-		id: <<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID
+		id: <
+				<Self::ClientSocket<'_> as ClientSocketInterface>
+					 ::Client as ClientInterface
+			>::ClientID,
 	);
 
 	/// Change le pseudonyme d'un client
 	fn change_nickname_of_client(
 		&self,
 		client_socket: &mut Self::ClientSocket<'_>,
-		nickname: &str
+		nickname: &str,
 	);
 }
 
@@ -50,7 +53,10 @@ impl AuthChatApplicationInterface for ChatApplication
 	fn change_id_of_client(
 		&self,
 		client_socket: &mut Self::ClientSocket<'_>,
-		id: <<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID
+		id: <
+				<Self::ClientSocket<'_> as ClientSocketInterface>
+					 ::Client as ClientInterface
+			>::ClientID,
 	)
 	{
 		for channel_room in client_socket.channels_rooms() {
@@ -67,7 +73,7 @@ impl AuthChatApplicationInterface for ChatApplication
 	fn change_nickname_of_client(
 		&self,
 		client_socket: &mut Self::ClientSocket<'_>,
-		nickname: &str
+		nickname: &str,
 	)
 	{
 		if client_socket.user_mut().set_nickname(nickname).is_err() {

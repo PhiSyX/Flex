@@ -17,12 +17,16 @@ use crate::features::chat::sessions::ChannelsSession;
 // Interface //
 // --------- //
 
-pub trait PartChannelsSessionInterface: ChannelsSessionInterface
+pub trait PartChannelsSessionInterface
+	: ChannelsSessionInterface
 {
 	type Client: ClientInterface;
 
 	/// Supprime un client de tous ses salons.
-	fn remove_client_from_all_his_channels(&self, client: &Self::Client) -> Option<()>;
+	fn remove_client_from_all_his_channels(
+		&self,
+		client: &Self::Client,
+	) -> Option<()>;
 }
 
 // -------------- //
@@ -33,7 +37,10 @@ impl PartChannelsSessionInterface for ChannelsSession
 {
 	type Client = Client;
 
-	fn remove_client_from_all_his_channels(&self, client: &Self::Client) -> Option<()>
+	fn remove_client_from_all_his_channels(
+		&self,
+		client: &Self::Client,
+	) -> Option<()>
 	{
 		for channel_id in client.channels() {
 			let mut channel = self.get_mut(channel_id)?;

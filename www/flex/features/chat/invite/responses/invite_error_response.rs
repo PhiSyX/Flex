@@ -17,11 +17,15 @@ use crate::features::chat::invite::ErrInviteonlychanError;
 // Interface //
 // --------- //
 
-pub trait InviteChannelClientSocketErrorReplies: ClientSocketInterface
+pub trait InviteChannelClientSocketErrorReplies
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 
-	fn send_err_inviteonlychan(&self, channel: &<Self::Channel as ChannelInterface>::RefID<'_>);
+	fn send_err_inviteonlychan(
+		&self,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	);
 }
 
 // -------------- //
@@ -32,7 +36,10 @@ impl<'s> InviteChannelClientSocketErrorReplies for Socket<'s>
 {
 	type Channel = Channel;
 
-	fn send_err_inviteonlychan(&self, channel: &<Self::Channel as ChannelInterface>::RefID<'_>)
+	fn send_err_inviteonlychan(
+		&self,
+		channel: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	)
 	{
 		let origin = Origin::from(self.client());
 		let err_inviteonlychan = ErrInviteonlychanError {

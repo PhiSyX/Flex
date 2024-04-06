@@ -19,10 +19,15 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
-pub trait ConnectClientsSessionInterface: ClientsSessionInterface
+pub trait ConnectClientsSessionInterface
+	: ClientsSessionInterface
 {
 	/// Crée une nouvelle session d'un client.
-	fn create(&self, ip: net::IpAddr, sid: <Self::Client as ClientInterface>::SocketID) -> Self::Client;
+	fn create(
+		&self,
+		ip: net::IpAddr,
+		sid: <Self::Client as ClientInterface>::SocketID,
+	) -> Self::Client;
 
 	/// Crée une nouvelle session d'un client.
 	fn create_with_id(
@@ -45,7 +50,11 @@ pub trait ConnectClientsSessionInterface: ClientsSessionInterface
 
 impl ConnectClientsSessionInterface for ClientsSession
 {
-	fn create(&self, ip: net::IpAddr, sid: <Self::Client as ClientInterface>::SocketID) -> Self::Client
+	fn create(
+		&self,
+		ip: net::IpAddr,
+		sid: <Self::Client as ClientInterface>::SocketID,
+	) -> Self::Client
 	{
 		self.create_with_id(ip, sid, uuid::Uuid::new_v4())
 	}
@@ -62,8 +71,13 @@ impl ConnectClientsSessionInterface for ClientsSession
 		client
 	}
 
-	fn can_locate_unregistered_client(&self, cid: &<Self::Client as ClientInterface>::ClientID) -> bool
+	fn can_locate_unregistered_client(
+		&self,
+		cid: &<Self::Client as ClientInterface>::ClientID,
+	) -> bool
 	{
-		self.clients.iter_mut().any(|client| cid.eq(client.cid()) && !client.is_registered())
+		self.clients
+			.iter_mut()
+			.any(|client| cid.eq(client.cid()) && !client.is_registered())
 	}
 }

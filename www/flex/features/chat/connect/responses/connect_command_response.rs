@@ -8,7 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
+use flex_chat_client::{
+	ClientInterface,
+	ClientSocketInterface,
+	Origin,
+	Socket,
+};
 use flex_chat_user::UserInterface;
 use flex_web_framework::types::time;
 
@@ -18,7 +23,8 @@ use super::{RplCreatedReply, RplWelcomeReply, RplYourhostReply};
 // Interface //
 // --------- //
 
-pub trait ConnectClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait ConnectClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses de connexion. 3) RPL_CREATED
 	fn send_rpl_created(&self, created_at: time::DateTime<time::Utc>)

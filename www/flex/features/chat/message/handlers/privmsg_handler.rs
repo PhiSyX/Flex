@@ -13,7 +13,10 @@ use flex_chat_client_nick::NickClientSocketErrorReplies;
 use flex_chat_user::UserAwayInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::features::chat::message::{PrivmsgClientSocketCommandResponseInterface, PrivmsgCommandFormData};
+use crate::features::chat::message::{
+	PrivmsgClientSocketCommandResponseInterface,
+	PrivmsgCommandFormData,
+};
 use crate::features::chat::silence::SilenceApplicationInterface;
 use crate::features::chat::user_status::UserStatusClientSocketInterface;
 use crate::features::ChatApplication;
@@ -49,7 +52,10 @@ impl PrivmsgHandler
 				continue;
 			}
 
-			let Some(target_client_socket) = app.find_socket_by_nickname(&socket, target) else {
+			let Some(target_client_socket) = app.find_socket_by_nickname(
+				&socket,
+				target,
+			) else {
 				client_socket.send_err_nosuchnick(target);
 				continue;
 			};

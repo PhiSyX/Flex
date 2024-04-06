@@ -17,7 +17,8 @@ use crate::features::chat::kick::ErrCannotkickglobopsError;
 // Interface //
 // --------- //
 
-pub trait KickChannelClientSocketErrorRepliesInterface: ClientSocketInterface
+pub trait KickChannelClientSocketErrorRepliesInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

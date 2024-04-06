@@ -47,7 +47,11 @@ impl UNickHandler
 		let check = {
 			let mut client_socket = app.current_client_mut(&socket);
 			client_socket.user_mut().set_nickname(&data.nickname).ok();
-			ConnectionRegistrationHandler::complete_registration(server_state, app, client_socket)
+			ConnectionRegistrationHandler::complete_registration(
+				server_state,
+				app,
+				client_socket,
+			)
 		};
 
 		if check.is_none() {

@@ -17,7 +17,8 @@ use super::RplYoureoperReply;
 // Interface //
 // --------- //
 
-pub trait OperClientSocketCommandResponse: ClientSocketInterface
+pub trait OperClientSocketCommandResponse
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /OPER.
 	fn send_rpl_youreoper(&self, oper_type: &Flag)

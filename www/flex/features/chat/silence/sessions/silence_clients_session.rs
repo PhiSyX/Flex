@@ -17,7 +17,8 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
-pub trait SilenceClientsSessionInterface: ClientsSessionInterface
+pub trait SilenceClientsSessionInterface
+	: ClientsSessionInterface
 {
 	/// Ajoute un client dans la liste des bloqués/ignorés pour les deux
 	/// clients.
@@ -78,7 +79,9 @@ impl SilenceClientsSessionInterface for ClientsSession
 	) -> Vec<Self::Client>
 	{
 		self.blocklist.get(client_id)
-			.map(|l| l.value().iter().filter_map(|bid| self.get(&bid)).collect())
+			.map(|l| {
+				l.value().iter().filter_map(|bid| self.get(&bid)).collect()
+			})
 			.unwrap_or_default()
 	}
 
@@ -88,7 +91,7 @@ impl SilenceClientsSessionInterface for ClientsSession
 		other_client_id: &<Self::Client as ClientInterface>::ClientID,
 	) -> bool
 	{
-		let Some(blocklist) = self.blocklist.get(client_id) else { return false; };
+		let Some(blocklist) = self.blocklist.get(client_id) else { return false };
 		blocklist.contains(other_client_id)
 	}
 
@@ -98,7 +101,7 @@ impl SilenceClientsSessionInterface for ClientsSession
 		to_ignore_client_id: &<Self::Client as ClientInterface>::ClientID,
 	) -> bool
 	{
-		let Some(blocklist) = self.blocklist.get_mut(client_id) else { return false; };
+		let Some(blocklist) = self.blocklist.get_mut(client_id) else { return false };
 		blocklist.remove(to_ignore_client_id).is_some()
 	}
 }

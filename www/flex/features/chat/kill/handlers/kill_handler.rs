@@ -14,9 +14,9 @@ use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::kill::{
-	KillCommandFormData,
 	KillApplicationInterface,
 	KillClientSocketCommandResponseInterface,
+	KillCommandFormData,
 };
 use crate::features::ChatApplication;
 
@@ -75,9 +75,14 @@ impl KillHandler
 		Data(data): Data<KillCommandFormData>,
 	)
 	{
-		let Some(client_socket) = app.current_client_operator(&socket) else { return; };
+		let Some(client_socket) = app.current_client_operator(&socket) else {
+			return;
+		};
 
-		let Some(knick_socket) = app.find_socket_by_nickname(&socket, &data.nickname) else {
+		let Some(knick_socket) = app.find_socket_by_nickname(
+			&socket,
+			&data.nickname,
+		) else {
 			client_socket.send_err_nosuchnick(&data.nickname);
 			return;
 		};

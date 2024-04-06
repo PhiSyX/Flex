@@ -8,11 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_chat_client::{ClientInterface, ClientSocketInterface};
 use flex_chat_user::UserInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::config::chat::FlexChatConfig;
-use flex_chat_client::{ClientInterface, ClientSocketInterface};
 use crate::features::chat::connect::forms::PassCommandFormData;
 use crate::features::chat::connect::responses::ConnectClientSocketErrorRepliesInterface;
 use crate::features::ChatApplication;

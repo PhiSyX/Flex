@@ -21,7 +21,8 @@ use crate::features::chat::oper::{
 // Interface //
 // --------- //
 
-pub trait OperClientSocketErrorRepliesInterface: ClientSocketInterface
+pub trait OperClientSocketErrorRepliesInterface
+	: ClientSocketInterface
 {
 	/// Émet au client l'erreur [ErrPasswdmismatchError].
 	fn send_err_passwdmismatch(&self)

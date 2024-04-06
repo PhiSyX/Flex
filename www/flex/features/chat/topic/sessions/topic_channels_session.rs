@@ -20,14 +20,15 @@ use flex_chat_channel::{
 };
 use flex_chat_client::{Client, ClientInterface};
 
-use crate::features::chat::topic::ChannelTopicError;
 use crate::features::chat::sessions::ChannelsSession;
+use crate::features::chat::topic::ChannelTopicError;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait TopicChannelsSessionInterface: ChannelsSessionInterface
+pub trait TopicChannelsSessionInterface
+	: ChannelsSessionInterface
 {
 	type Client: ClientInterface;
 

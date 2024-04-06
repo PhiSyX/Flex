@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat_client::{ClientSocketInterface, Socket};
-
 use flex_chat_macro::command_response;
 
 command_response! {
@@ -26,7 +25,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait PrivmsgClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait PrivmsgClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
 	fn emit_privmsg<User>(&self, target: &str, text: &str, by: User)

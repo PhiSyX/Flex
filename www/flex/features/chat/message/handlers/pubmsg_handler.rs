@@ -47,18 +47,35 @@ impl PubmsgHandler
 		for channel in data.channels.iter() {
 			match app.is_client_able_to_write_on_channel(&client_socket, channel) {
 				| ChannelWritePermission::Yes(member) => {
-					let channel_member = ChannelMemberDTO::from((client_socket.client(), member));
-					client_socket.emit_pubmsg(channel, &data.text, &channel_member);
+					let channel_member = ChannelMemberDTO::from((
+						client_socket.client(),
+						member,
+					));
+					client_socket.emit_pubmsg(
+						channel,
+						&data.text,
+						&channel_member,
+					);
 				}
 				| ChannelWritePermission::Bypass => {
-					client_socket.emit_external_pubmsg(channel, &data.text, client_socket.user());
+					client_socket.emit_external_pubmsg(
+						channel,
+						&data.text,
+						client_socket.user(),
+					);
 				}
 				| ChannelWritePermission::No(cause) => {
 					let why = match cause {
 						| ChannelNoPermissionCause::ERR_NOSUCHCHANNEL => "",
-						| ChannelNoPermissionCause::ERR_BANNEDFROMCHAN => "(+b)",
-						| ChannelNoPermissionCause::ERR_CHANISINMODERATED => "(+m)",
-						| ChannelNoPermissionCause::ERR_NOTMEMBEROFCHAN => "(+n)",
+						| ChannelNoPermissionCause::ERR_BANNEDFROMCHAN => {
+							"(+b)"
+						}
+						| ChannelNoPermissionCause::ERR_CHANISINMODERATED => {
+							"(+m)"
+						}
+						| ChannelNoPermissionCause::ERR_NOTMEMBEROFCHAN => {
+							"(+n)"
+						}
 					};
 					client_socket.send_err_cannotsendtochan(channel, why);
 				}

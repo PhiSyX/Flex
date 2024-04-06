@@ -26,7 +26,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait NoticeClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 
@@ -72,8 +73,12 @@ pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 	}
 
 	/// Émet au client les réponses liées à la commande /NOTICE <channel>
-	fn emit_notice_on_channel<MemberDTO>(&self, target: &str, text: &str, by: &MemberDTO)
-	where
+	fn emit_notice_on_channel<MemberDTO>(
+		&self,
+		target: &str,
+		text: &str,
+		by: &MemberDTO,
+	) where
 		MemberDTO: serde::Serialize,
 	{
 		let notice_command = NoticeCommandResponse {
@@ -116,8 +121,7 @@ pub trait NoticeClientSocketCommandResponseInterface: ClientSocketInterface
 
 		let target_room = format!("channel:{}{}", prefix, target.to_lowercase());
 
-		_ = self
-			.socket()
+		_ = self.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);

@@ -11,9 +11,9 @@
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::topic::{
-	TopicCommandFormData,
 	TopicApplicationInterface,
 	TopicClientSocketInterface,
+	TopicCommandFormData,
 };
 use crate::features::ChatApplication;
 
@@ -52,7 +52,7 @@ impl TopicHandler
 		if let Some(topic) = data.topic.as_deref() {
 			app.update_topic(&client_socket, &data.channel, topic);
 		} else {
-			let Some(channel) = app.get_channel(&data.channel) else { return; };
+			let Some(channel) = app.get_channel(&data.channel) else { return };
 			client_socket.send_rpl_topic(&channel, false);
 		}
 	}

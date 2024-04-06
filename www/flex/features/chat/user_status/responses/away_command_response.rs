@@ -17,7 +17,8 @@ use super::{RplAwayReply, RplNowawayReply, RplUnawayReply};
 // Interface //
 // --------- //
 
-pub trait UserStatusClientSocketInterface: ClientSocketInterface
+pub trait UserStatusClientSocketInterface
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /AWAY + /PRIVMSG
 	fn send_rpl_away(&self, target_client_socket: &Self)

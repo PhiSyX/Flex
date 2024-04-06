@@ -32,7 +32,7 @@ impl AuthIdentifyHandler
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
-		Data(user_session): Data<UserSessionDTO>
+		Data(user_session): Data<UserSessionDTO>,
 	)
 	{
 		let mut client_socket = app.current_client_mut(&socket);

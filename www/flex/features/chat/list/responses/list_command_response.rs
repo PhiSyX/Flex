@@ -8,7 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{Channel, ChannelInterface, ChannelMemberInterface, ChannelTopicInterface};
+use flex_chat_channel::{
+	Channel,
+	ChannelInterface,
+	ChannelMemberInterface,
+	ChannelTopicInterface,
+};
 use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 
 use super::{RplListReply, RplListendReply, RplListstartReply};
@@ -17,7 +22,8 @@ use super::{RplListReply, RplListendReply, RplListstartReply};
 // Interface //
 // --------- //
 
-pub trait ListChannelClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait ListChannelClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

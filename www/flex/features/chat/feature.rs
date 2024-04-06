@@ -28,8 +28,7 @@ use crate::features::chat::quit::*;
 use crate::features::chat::silence::*;
 use crate::features::chat::topic::*;
 use crate::features::chat::user_status::*;
-use crate::features::chat::routes;
-use crate::features::chat::sessions;
+use crate::features::chat::{routes, sessions};
 use crate::{config, FlexApplicationState, FlexState};
 
 // ----- //
@@ -108,7 +107,12 @@ impl Feature for ChatApplication
 			 server_state: State<FlexApplicationState>,
 			 state: State<ChatApplication>,
 			 data: TryData<RememberUserFormData>| {
-				ConnectionRegistrationHandler::handle_connect(&socket, server_state, state, data);
+				ConnectionRegistrationHandler::handle_connect(
+					&socket,
+					server_state,
+					state,
+					data,
+				);
 
 				handlers!( socket,
 					+ use AwayHandler;

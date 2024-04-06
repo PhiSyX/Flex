@@ -8,7 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
+use flex_chat_client::{
+	ClientInterface,
+	ClientSocketInterface,
+	Origin,
+	Socket,
+};
 use flex_chat_mode::ApplyMode;
 use flex_chat_user::{Flag, UserFlagInterface, UserInterface};
 
@@ -18,17 +23,18 @@ use crate::features::chat::mode::ModeCommandResponse;
 // Interface //
 // --------- //
 
-pub trait UserClientSocketInterface: ClientSocketInterface
-	where
-		Vec<(char, ApplyMode<Flag>)>: FromIterator<(
-			char,
-			ApplyMode<<<<
-				Self as ClientSocketInterface>
-					 ::Client as ClientInterface>
-					 ::User as UserFlagInterface
-					>::Flag
-			>
-		)>
+pub trait UserClientSocketInterface
+	: ClientSocketInterface
+where
+	Vec<(char, ApplyMode<Flag>)>: FromIterator<(
+		char,
+		ApplyMode<<<<
+			Self as ClientSocketInterface>
+					::Client as ClientInterface>
+					::User as UserFlagInterface
+				>::Flag
+		>
+	)>
 {
 	/// Émet au client les réponses liées à la commande /MODE.
 	fn emit_user_modes(&self, user_modes: &[ApplyMode<Flag>])

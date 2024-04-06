@@ -12,7 +12,10 @@ use flex_chat_client::Client;
 use socketioxide::extract::{Data, SocketRef, State};
 use socketioxide::socket;
 
-use crate::features::chat::quit::{QuitApplicationInterface, QuitCommandFormData};
+use crate::features::chat::quit::{
+	QuitApplicationInterface,
+	QuitCommandFormData,
+};
 use crate::features::ChatApplication;
 
 // --------- //

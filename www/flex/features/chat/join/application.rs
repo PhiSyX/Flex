@@ -36,7 +36,7 @@ use super::{
 use crate::features::chat::mode::{
 	ChannelMemberDTO,
 	ModeAccessControlClientSocketCommandResponseInterface,
-	ModeChannelSettingsClientSocketCommandResponseInterface
+	ModeChannelSettingsClientSocketCommandResponseInterface,
 };
 use crate::features::chat::topic::TopicClientSocketInterface;
 use crate::ChatApplication;
@@ -47,7 +47,9 @@ use crate::ChatApplication;
 
 pub trait JoinApplicationInterface<'a>
 {
-	type ClientSocket<'cs>: JoinCommandResponseInterface + JoinErrorResponseInterface;
+	type ClientSocket<'cs>: JoinCommandResponseInterface
+						  + JoinErrorResponseInterface
+						  ;
 	type Channel: ChannelInterface + 'a;
 
 	/// Rejoint un salon du serveur.
@@ -62,7 +64,9 @@ pub trait JoinApplicationInterface<'a>
 	fn join_or_create_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
-		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_name: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
 	) -> Result<(), JoinChannelPermissionError>;
 
@@ -75,7 +79,9 @@ pub trait JoinApplicationInterface<'a>
 	fn join_or_create_channel_bypass_permission(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
-		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_name: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 	) -> Result<(), JoinChannelPermissionError>;
 }
 
@@ -120,25 +126,37 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 	fn join_or_create_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
-		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_name: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
 	) -> Result<(), JoinChannelPermissionError>
 	{
-		let channel_name: &<Self::Channel as ChannelInterface>::RefID<'a> = &channel_name.into();
+		type C<'a, Chan> = <Chan as ChannelInterface>::RefID<'a>;
+		let channel_name:& C<'a, Self::Channel> = &channel_name.into();
 
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, channel_key.cloned());
-			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(
+				channel_name,
+				client_socket.cid(),
+			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
 			return Ok(());
 		}
 
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
-		let can_join = self.channels.can_join(&client_session, channel_name, channel_key);
+		let can_join = self.channels.can_join(
+			&client_session,
+			channel_name, channel_key,
+		);
 
 		if can_join.is_ok() {
-			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(
+				channel_name,
+				client_socket.cid(),
+			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
 			return Ok(());
@@ -150,13 +168,20 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 	fn join_or_create_channel_bypass_permission(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
-		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_name: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 	) -> Result<(), JoinChannelPermissionError>
 	{
-		let channel_name: &<Self::Channel as ChannelInterface>::RefID<'a> = &channel_name.into();
+		type C<'a, Chan> = <Chan as ChannelInterface>::RefID<'a>;
+		let channel_name:& C<'a, Self::Channel> = &channel_name.into();
+
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, None);
-			let mut channel = self.channels.add_member(channel_name, client_socket.cid())
+			let mut channel = self.channels.add_member(
+				channel_name,
+				client_socket.cid(),
+			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 			return Ok(());

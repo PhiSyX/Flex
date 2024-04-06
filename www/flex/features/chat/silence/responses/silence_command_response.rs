@@ -25,10 +25,15 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait SilenceClientSocketInterface: ClientSocketInterface
+pub trait SilenceClientSocketInterface
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /SILENCE.
-	fn emit_silence(&self, users: &[&Origin<Self::Client>], updated: Option<bool>);
+	fn emit_silence(
+		&self,
+		users: &[&Origin<Self::Client>],
+		updated: Option<bool>,
+	);
 }
 
 // -------------- //
@@ -37,7 +42,11 @@ pub trait SilenceClientSocketInterface: ClientSocketInterface
 
 impl<'s> SilenceClientSocketInterface for Socket<'s>
 {
-	fn emit_silence(&self, users: &[&Origin<Self::Client>], updated: Option<bool>)
+	fn emit_silence(
+		&self,
+		users: &[&Origin<Self::Client>],
+		updated: Option<bool>,
+	)
 	{
 		let origin = Origin::from(self.client());
 		let silence_command = SilenceCommandResponse {

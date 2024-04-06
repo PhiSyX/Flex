@@ -23,7 +23,8 @@ use super::ModeCommandResponse;
 // Interface //
 // --------- //
 
-pub trait ModeAccessControlClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait ModeAccessControlClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 
@@ -65,7 +66,12 @@ impl<'s> ModeAccessControlClientSocketCommandResponseInterface for Socket<'s>
 		updated: bool,
 	)
 	{
-		self.emit_target_access_control(channel.name(), &added_flags, &removed_flags, updated);
+		self.emit_target_access_control(
+			channel.name(),
+			&added_flags,
+			&removed_flags,
+			updated,
+		);
 	}
 
 	fn emit_target_access_control(

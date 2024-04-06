@@ -8,7 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
+use flex_chat_client::{
+	ClientInterface,
+	ClientSocketInterface,
+	Origin,
+	Socket,
+};
 use flex_chat_user::{UserInterface, UserOperatorInterface};
 use flex_crypto::Hasher;
 use flex_web_framework::http::Cookies;
@@ -75,16 +80,18 @@ impl ConnectionRegistrationHandler
 			.get::<flex_web_framework::http::TowerCookies>()
 			.map(|cm| {
 				Cookies::new(cm.clone(), server_state.get_cookie_key().clone())
-					.with_cookie_settings(server_state.get_cookie_settings().clone())
+					.with_cookie_settings(
+						server_state.get_cookie_settings().clone(),
+					)
 			})
-			.expect("Cookie manager")
-		;
+			.expect("Cookie manager");
 
 		let token = cookie_manager.signed().get(TokenController::COOKIE_TOKEN_KEY);
 
 		socket.on_disconnect(QuitHandler::handle_disconnect);
 
-		let Some(client) = (if let Some((user_id, token)) = maybe_user_id.zip(token.clone()) {
+		let Some(client) = (if let Some((user_id, token)) = maybe_user_id.zip(token.clone())
+		{
 			app.get_client_by_user_id_and_token(&user_id, token.value())
 		} else if let Some((remember_client_id, token)) = maybe_client_id.zip(token) {
 			app.get_client_by_id_and_token(&remember_client_id, token.value())
@@ -108,41 +115,43 @@ impl ConnectionRegistrationHandler
 		mut client_socket: Socket,
 	) -> Option<()>
 	{
-		if client_socket.user().nickname().is_empty() || client_socket.user().ident().is_empty() {
+		if client_socket.user().nickname().is_empty() ||
+		   client_socket.user().ident().is_empty()
+		{
 			return Some(());
 		}
 
 		let config = client_socket.socket().req_parts().extensions
 			.get::<FlexChatConfig>()?
-			.clone()
-		;
+			.clone();
 
-		if config.server.password.is_some() && client_socket.user().server_password().is_none() {
+		if config.server.password.is_some() &&
+		   client_socket.user().server_password().is_none()
+		{
 			// FIXME(phisyx): à déplacer
 			_ = client_socket.socket().emit(
 				"ERROR",
-				"La commande `PASS <password>` DOIT être envoyée avant toutes les autres \
-				 commandes.",
+				"La commande `PASS <password>` DOIT être envoyée avant toutes \
+				 les autres commandes.",
 			);
 			return None;
 		}
 
-		let passwords = config.server.password.as_deref()
-			.zip(client_socket.user().server_password_exposed())
-		;
+		let passwords = config.server.password
+			.as_deref()
+			.zip(client_socket.user().server_password_exposed());
 
-		if let Some((server_password, client_password)) = passwords
-		{
+		if let Some((server_password, client_password)) = passwords {
 			let password_hasher = client_socket.socket().req_parts().extensions
 				.get::<Argon2Password>()
-				.expect("Le service de d'encodage Argon2.")
-			;
+				.expect("Le service de d'encodage Argon2.");
 
 			if !password_hasher.cmp(server_password, client_password) {
 				// FIXME(phisyx): à déplacer
 				_ = client_socket.socket().emit(
 					"ERROR",
-					"Le mot de passe entrée ne correspond pas avec le mot de passe serveur.",
+					"Le mot de passe entrée ne correspond pas avec le mot de \
+					 passe serveur.",
 				);
 				return None;
 			}
@@ -152,7 +161,9 @@ impl ConnectionRegistrationHandler
 		// NOTE(phisyx): Enregistrer le client dans la session.
 		//
 
-		if !client_socket.client().is_registered() && client_socket.client().is_disconnected() {
+		if !client_socket.client().is_registered() &&
+			client_socket.client().is_disconnected()
+		{
 			if !app.can_locate_unregistered_client(client_socket.client()) {
 				return None;
 			}
@@ -160,7 +171,8 @@ impl ConnectionRegistrationHandler
 			client_socket.client_mut().set_connected();
 			client_socket.client_mut().set_registered();
 			app.register_client(client_socket.client());
-		} else if client_socket.client().is_registered() && client_socket.client().is_disconnected()
+		} else if client_socket.client().is_registered() &&
+				  client_socket.client().is_disconnected()
 		{
 			client_socket.client_mut().set_connected();
 			app.register_client(client_socket.client());
@@ -177,18 +189,23 @@ impl ConnectionRegistrationHandler
 		// Version
 		client_socket.send_rpl_yourhost(&config.server.name);
 		// Server creation info
-		client_socket.send_rpl_created(if let Some(server_created_at) = config.server.created_at {
-			time::Utc.timestamp_opt(server_created_at, 0).unwrap()
-		} else {
-			time::Utc::now()
-		});
+		client_socket.send_rpl_created(
+			if let Some(server_created_at) = config.server.created_at {
+				time::Utc.timestamp_opt(server_created_at, 0).unwrap()
+			} else {
+				time::Utc::now()
+			},
+		);
 
 		// NOTE(phisyx): transmet à l'utilisateur ses modes utilisateurs.
 		client_socket.emit_all_user_modes();
 
 		// NOTE(phisyx): transmet à l'utilisateur son rôle d'opérateur global.
 		if client_socket.user().is_operator() {
-			client_socket.send_rpl_youreoper(client_socket.user().operator_type().unwrap());
+			client_socket.send_rpl_youreoper(
+				client_socket.user().operator_type()
+					.unwrap(),
+			);
 			for channel_name in config.operator.auto_join.iter() {
 				app.join_or_create_oper_channel(&client_socket, channel_name);
 			}
@@ -199,8 +216,7 @@ impl ConnectionRegistrationHandler
 		let users: Vec<_> = app.clients.blocklist(client_socket.cid())
 			.iter()
 			.map(Origin::from)
-			.collect()
-		;
+			.collect();
 		if !users.is_empty() {
 			for user in users.iter() {
 				_ = client_socket.socket().join(format!("{}/ignore", &user.id));

@@ -23,19 +23,28 @@ use super::ModeCommandResponse;
 // Interface //
 // --------- //
 
-pub trait ModeChannelSettingsClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait ModeChannelSettingsClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface + ChannelSettingsInterface;
 
 	/// Émet au client courant les paramètres un salon.
-	fn emit_all_channels_settings(&self, channel: &Self::Channel, updated: bool);
+	fn emit_all_channels_settings(
+		&self,
+		channel: &Self::Channel,
+		updated: bool,
+	);
 
 	/// Émet au client courant les paramètres un salon.
 	fn emit_channel_settings(
 		&self,
 		target: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		added: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
-		removed: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
+		added: &[ApplyMode<
+			<Self::Channel as ChannelSettingsInterface>::SettingsFlag,
+		>],
+		removed: &[ApplyMode<
+			<Self::Channel as ChannelSettingsInterface>::SettingsFlag,
+		>],
 	);
 }
 
@@ -65,8 +74,12 @@ impl<'s> ModeChannelSettingsClientSocketCommandResponseInterface for Socket<'s>
 	fn emit_channel_settings(
 		&self,
 		target: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		added: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
-		removed: &[ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>],
+		added: &[ApplyMode<
+			<Self::Channel as ChannelSettingsInterface>::SettingsFlag,
+		>],
+		removed: &[ApplyMode<
+			<Self::Channel as ChannelSettingsInterface>::SettingsFlag,
+		>],
 	)
 	{
 		if added.is_empty() && removed.is_empty() {
@@ -91,6 +104,10 @@ impl<'s> ModeChannelSettingsClientSocketCommandResponseInterface for Socket<'s>
 		};
 
 		let channel_room = format!("channel:{}", target.to_lowercase());
-		self.emit_within(channel_room, channel_settings.name(), channel_settings);
+		self.emit_within(
+			channel_room,
+			channel_settings.name(),
+			channel_settings,
+		);
 	}
 }

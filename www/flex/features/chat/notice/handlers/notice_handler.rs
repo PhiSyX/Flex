@@ -8,15 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{ChannelAccessLevel, ChannelWritePermission, MemberInterface};
+use flex_chat_channel::{
+	ChannelAccessLevel,
+	ChannelWritePermission,
+	MemberInterface,
+};
 use flex_chat_client::{ClientSocketInterface, Origin};
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::mode::ChannelMemberDTO;
 use crate::features::chat::notice::{
+	NoticeApplicationInterface,
 	NoticeClientSocketCommandResponseInterface,
 	NoticeCommandFormData,
-	NoticeApplicationInterface,
 };
 use crate::features::chat::silence::SilenceApplicationInterface;
 use crate::features::ChatApplication;
@@ -70,20 +74,31 @@ impl NoticeHandler
 				// SAFETY(unwrap): on est sûr qu'il existe au moins un préfixe.
 				// De plus, le parsing sur l'un de ces prefixes ne peut pas
 				// échouer.
-				let last_prefix: ChannelAccessLevel = prefixes.next_back().unwrap().parse().unwrap();
-				let target_without_prefixes = String::from(target.trim_start_matches(CHANNEL_PREFIXES));
+				let last_prefix: ChannelAccessLevel = prefixes.next_back()
+					.unwrap()
+					.parse()
+					.unwrap();
 
-				match app.is_client_able_to_notice_on_channel(&client_socket, &target_without_prefixes) {
+				let target_without_prefixes = String::from(
+					target.trim_start_matches(CHANNEL_PREFIXES)
+				);
+
+				match app.is_client_able_to_notice_on_channel(
+					&client_socket,
+					&target_without_prefixes,
+				) {
 					| ChannelWritePermission::Yes(member) => {
-						if
-							member.highest_access_level()
-								.filter(|hal| hal.flag() >= last_prefix.flag())
-								.is_none()
+						if member.highest_access_level()
+							.filter(|hal| hal.flag() >= last_prefix.flag())
+							.is_none()
 						{
 							continue;
 						}
 
-						let channel_member = ChannelMemberDTO::from((client_socket.client(), member));
+						let channel_member = ChannelMemberDTO::from((
+							client_socket.client(),
+							member,
+						));
 						client_socket.emit_notice_on_prefixed_channel(
 							last_prefix.symbol(),
 							&target_without_prefixes,
@@ -108,10 +123,20 @@ impl NoticeHandler
 			}
 
 			if target.starts_with('#') {
-				match app.is_client_able_to_notice_on_channel(&client_socket, target) {
+				match app.is_client_able_to_notice_on_channel(
+					&client_socket,
+					target,
+				) {
 					| ChannelWritePermission::Yes(member) => {
-						let channel_member = ChannelMemberDTO::from((client_socket.client(), member));
-						client_socket.emit_notice_on_channel(target, &data.text, &channel_member);
+						let channel_member = ChannelMemberDTO::from((
+							client_socket.client(),
+							member,
+						));
+						client_socket.emit_notice_on_channel(
+							target,
+							&data.text,
+							&channel_member,
+						);
 					}
 					| ChannelWritePermission::Bypass => {
 						client_socket.emit_external_notice_on_channel(
@@ -135,9 +160,10 @@ impl NoticeHandler
 				continue;
 			}
 
-			let Some(target_client_socket) = app.find_socket_by_nickname(&socket, target) else {
-				continue;
-			};
+			let Some(target_client_socket) = app.find_socket_by_nickname(
+				&socket,
+				target,
+			) else { continue };
 
 			if app.client_isin_blocklist(&target_client_socket, &client_socket) {
 				continue;

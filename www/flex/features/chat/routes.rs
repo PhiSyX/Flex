@@ -9,7 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{RouteIDInterface, RouterGroupInterface, RouterInterface};
+use flex_web_framework::{
+	RouteIDInterface,
+	RouterGroupInterface,
+	RouterInterface,
+};
 
 use crate::features::chat::connect::TokenController;
 use crate::features::chat::home::controllers::HomeController;
@@ -47,7 +51,10 @@ impl RouterInterface<FlexState> for ChatRouter
 	{
 		Self::group()
 			.add(Router::path(ChatRouteID::Home).get(HomeController::view))
-			.add(Router::path(ChatRouteID::ConnectToken).post(TokenController::token))
+			.add(
+				Router::path(ChatRouteID::ConnectToken)
+					.post(TokenController::token),
+			)
 	}
 }
 

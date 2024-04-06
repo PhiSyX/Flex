@@ -46,24 +46,25 @@ impl OperHandler
 		let config = client_socket.socket().req_parts().extensions
 			.get::<FlexChatConfig>()
 			.cloned()
-			.expect("Configuration de notre application serveur")
-		;
+			.expect("Configuration de notre application serveur");
 
 		let Some(operator) = config.operators
 			.iter()
 			.find(|operator| operator.identifier.eq(&data.name))
-			.cloned() else
-		{
+			.cloned()
+		else {
 			client_socket.send_err_nooperhost();
 			return;
 		};
 
 		let password_hasher = socket.req_parts().extensions
 			.get::<Argon2Password>()
-			.expect("Le service d'encodage Argon2.")
-		;
+			.expect("Le service d'encodage Argon2.");
 
-		if !password_hasher.cmp(operator.password.expose(), data.password.expose()) {
+		if !password_hasher.cmp(
+			operator.password.expose(),
+			data.password.expose(),
+		) {
 			client_socket.send_err_passwdmismatch();
 			return;
 		}

@@ -13,7 +13,11 @@ use flex_chat_client::{ClientSocketInterface, Socket};
 use flex_chat_client_channel::ChannelClientSocketErrorReplies;
 use flex_chat_user::UserInterface;
 
-use super::{ChannelTopicError, TopicChannelsSessionInterface, TopicClientSocketInterface};
+use super::{
+	ChannelTopicError,
+	TopicChannelsSessionInterface,
+	TopicClientSocketInterface,
+};
 use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
 
@@ -92,11 +96,13 @@ impl TopicApplicationInterface for ChatApplication
 		topic: impl AsRef<str>,
 	)
 	{
-		self.channels.update_topic(channel_name, topic, client_socket.user().nickname());
+		self.channels.update_topic(
+			channel_name,
+			topic,
+			client_socket.user().nickname(),
+		);
 
-		let Some(channel) = self.get_channel(channel_name) else {
-			return;
-		};
+		let Some(channel) = self.get_channel(channel_name) else { return };
 
 		client_socket.send_rpl_topic(&channel, true);
 	}

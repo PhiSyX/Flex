@@ -68,8 +68,9 @@ impl JoinHandler
 
 		// NOTE: étapes à suivre pour rejoindre le salon.
 		//
-		// 1. Si le salon existe déjà, ignorer la demande JOIN du client. Cependant, si
-		//    le client n'existe pas dans le salon, l'ajouter à ce dernier.
+		// 1. Si le salon existe déjà, ignorer la demande JOIN du client.
+		//    Cependant, si le client n'existe pas dans le salon, l'ajouter à ce
+		//    dernier.
 		//
 		// 2. Créer le salon.
 
@@ -77,25 +78,30 @@ impl JoinHandler
 		for (idx, channel_name) in data.channels.iter().enumerate() {
 			let channel_key = channel_keys.get(idx)
 				.filter(|key| !key.is_empty())
-				.map(|s| secret::Secret::new(s.expose().to_string()))
-			;
+				.map(|s| secret::Secret::new(s.expose().to_string()));
 
-			match app.join_or_create_channel(&client_socket, channel_name.as_ref(),channel_key.as_ref()) {
+			match app.join_or_create_channel(
+				&client_socket,
+				channel_name.as_ref(),
+				channel_key.as_ref(),
+			) {
 				| Ok(_) => continue,
-				| Err(err) => match err {
-					| JoinChannelPermissionError::ERR_NOSUCHCHANNEL => {}
-					| JoinChannelPermissionError::ERR_BANNEDFROMCHAN => {
-						client_socket.send_err_bannedfromchan(channel_name);
-					}
-					| JoinChannelPermissionError::ERR_BADCHANNELKEY => {
-						client_socket.send_err_badchannelkey(channel_name);
-					}
-					| JoinChannelPermissionError::ERR_INVITEONLYCHAN => {
-						client_socket.send_err_inviteonlychan(channel_name);
-					}
-					| JoinChannelPermissionError::ERR_USERONCHANNEL => {}
-					| JoinChannelPermissionError::ERR_OPERONLY => {
-						client_socket.send_err_operonly(channel_name);
+				| Err(err) => {
+					match err {
+						| JoinChannelPermissionError::ERR_NOSUCHCHANNEL => {}
+						| JoinChannelPermissionError::ERR_BANNEDFROMCHAN => {
+							client_socket.send_err_bannedfromchan(channel_name);
+						}
+						| JoinChannelPermissionError::ERR_BADCHANNELKEY => {
+							client_socket.send_err_badchannelkey(channel_name);
+						}
+						| JoinChannelPermissionError::ERR_INVITEONLYCHAN => {
+							client_socket.send_err_inviteonlychan(channel_name);
+						}
+						| JoinChannelPermissionError::ERR_USERONCHANNEL => {}
+						| JoinChannelPermissionError::ERR_OPERONLY => {
+							client_socket.send_err_operonly(channel_name);
+						}
 					}
 				}
 			}

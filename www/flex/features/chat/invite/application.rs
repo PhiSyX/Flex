@@ -10,7 +10,12 @@
 
 use std::borrow::Cow;
 
-use flex_chat_channel::{Channel, ChannelAccessControlInterface, ChannelInterface, ChannelsSessionInterface};
+use flex_chat_channel::{
+	Channel,
+	ChannelAccessControlInterface,
+	ChannelInterface,
+	ChannelsSessionInterface,
+};
 use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
 
 use crate::ChatApplication;
@@ -29,7 +34,9 @@ where
 	/// Ajoute un utilisateur dans la liste des invitations d'un salon.
 	fn add_user_to_invite_channel(
 		&self,
-		channel_id: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_id: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 		user_invite_id: <<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
 	);
 }
@@ -45,12 +52,17 @@ impl<'a> InviteApplicationInterface<'a> for ChatApplication
 
 	fn add_user_to_invite_channel(
 		&self,
-		channel_id: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_id: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 		user_invite_id: <<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
 	)
 	{
-		let chid: &<Self::Channel as ChannelInterface>::RefID<'a> = &channel_id.into();
-		let Some(mut channel) = self.channels.get_mut(chid) else { return; };
+		let chid: &<Self::Channel as ChannelInterface>::RefID<'a> =
+			&channel_id.into();
+		let Some(mut channel) = self.channels.get_mut(chid) else {
+			return;
+		};
 		channel.add_invite(user_invite_id);
 	}
 }

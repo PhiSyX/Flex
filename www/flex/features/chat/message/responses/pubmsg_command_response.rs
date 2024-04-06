@@ -28,7 +28,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait PubmsgClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait PubmsgClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 
@@ -80,8 +81,7 @@ impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s>
 
 		let target_room = format!("channel:{}", channel_name.to_lowercase());
 
-		_ = self
-			.socket()
+		_ = self.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(pubmsg_command.name(), pubmsg_command);

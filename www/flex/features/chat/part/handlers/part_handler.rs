@@ -10,7 +10,10 @@
 
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::features::chat::part::{PartCommandFormData, PartChannelApplicationInterface};
+use crate::features::chat::part::{
+	PartChannelApplicationInterface,
+	PartCommandFormData,
+};
 use crate::features::ChatApplication;
 
 // --------- //
@@ -45,7 +48,11 @@ impl PartHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels.iter() {
-			app.part_channel::<&str>(&client_socket, channel_name, data.message.as_deref());
+			app.part_channel::<&str>(
+				&client_socket,
+				channel_name,
+				data.message.as_deref(),
+			);
 		}
 	}
 }

@@ -43,7 +43,10 @@ pub struct ChannelsSession(DashMap<String, Channel>);
 impl ChatApplication
 {
 	/// Récupère un salon à partir de son nom.
-	pub fn get_channel(&self, channel_name: &str) -> Option<Ref<'_, String, Channel>>
+	pub fn get_channel(
+		&self,
+		channel_name: &str,
+	) -> Option<Ref<'_, String, Channel>>
 	{
 		self.channels.get(channel_name)
 	}
@@ -104,7 +107,8 @@ impl ChannelsSessionInterface for ChannelsSession
 		if channel_entity.members().is_empty() {
 			channel_entity.add_member(
 				member_id.to_owned(),
-				ChannelMember::new(member_id.to_owned()).with_modes([ChannelAccessLevel::Owner]),
+				ChannelMember::new(member_id.to_owned())
+					.with_modes([ChannelAccessLevel::Owner]),
 			);
 		} else {
 			channel_entity.add_member(
@@ -132,16 +136,24 @@ impl ChannelsSessionInterface for ChannelsSession
 
 	fn create_with_flags<'a>(
 		&self,
-		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_name: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 		channel_key: Option<secret::Secret<String>>,
 		flags: impl IntoIterator<
-			Item = ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>,
+			Item = ApplyMode<
+				<Self::Channel as ChannelSettingsInterface>::SettingsFlag,
+			>,
 		>,
 	) -> bool
 	{
-		let channel_name: Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>> = channel_name.into();
+		let channel_name: Cow<
+			'a,
+			<Self::Channel as ChannelInterface>::RefID<'a>,
+		> = channel_name.into();
 		let chid = channel_name.to_lowercase();
-		let mut channel_entity = Channel::new(channel_name).with_creation_flags(flags);
+		let mut channel_entity = Channel::new(channel_name)
+			.with_creation_flags(flags);
 		if let Some(channel_key) = channel_key {
 			channel_entity.set_key("*", channel_key);
 		}
@@ -151,7 +163,9 @@ impl ChannelsSessionInterface for ChannelsSession
 	fn get(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-	) -> Option<Ref<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>>
+	) -> Option<
+		Ref<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>,
+	>
 	{
 		let chid = channel_id.to_lowercase();
 		self.0.get(&chid)
@@ -160,7 +174,9 @@ impl ChannelsSessionInterface for ChannelsSession
 	fn get_mut(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-	) -> Option<RefMut<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>>
+	) -> Option<
+		RefMut<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>,
+	>
 	{
 		let chid = channel_id.to_lowercase();
 		self.0.get_mut(&chid)
@@ -176,7 +192,10 @@ impl ChannelsSessionInterface for ChannelsSession
 		channel_entity.members().get(member_id).cloned()
 	}
 
-	fn has(&self, channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>) -> bool
+	fn has(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	) -> bool
 	{
 		let chid = channel_id.to_lowercase();
 		self.0.contains_key(&chid)
@@ -195,7 +214,11 @@ impl ChannelsSessionInterface for ChannelsSession
 
 	fn list(
 		&self,
-	) -> dashmap::iter::Iter<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>
+	) -> dashmap::iter::Iter<
+		'_,
+		<Self::Channel as ChannelInterface>::OwnedID,
+		Self::Channel,
+	>
 	{
 		self.0.iter()
 	}

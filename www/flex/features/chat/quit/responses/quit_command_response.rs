@@ -25,7 +25,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait QuitClientSocketInterface: ClientSocketInterface
+pub trait QuitClientSocketInterface
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /QUIT.
 	fn emit_quit(&self, room: &str, reason: impl ToString)

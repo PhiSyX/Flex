@@ -8,7 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin, Socket};
+use flex_chat_client::{
+	ClientInterface,
+	ClientSocketInterface,
+	Origin,
+	Socket,
+};
 use flex_chat_macro::command_response;
 use flex_chat_user::UserInterface;
 
@@ -26,12 +31,19 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait NickClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait NickClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /NICK.
 	fn emit_nick(&self)
 	{
-		let (old_nickname, new_nickname): (&str, &str) = (self.user().old_nickname(), self.user().nickname());
+		let (
+			old_nickname,
+			new_nickname
+		): (&str, &str) = (
+			self.user().old_nickname(),
+			self.user().nickname()
+		);
 
 		let origin = Origin::from(self.client());
 

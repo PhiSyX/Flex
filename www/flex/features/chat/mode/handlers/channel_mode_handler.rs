@@ -257,7 +257,11 @@ impl ModeChannelSettingsHandler
 		}
 
 		if !added_settings.is_empty() || !removed_settings.is_empty() {
-			client_socket.emit_channel_settings(&data.target, &added_settings, &removed_settings);
+			client_socket.emit_channel_settings(
+				&data.target,
+				&added_settings,
+				&removed_settings,
+			);
 		}
 	}
 }
@@ -276,8 +280,12 @@ fn apply_bans(
 	for banmask in bans {
 		if app.has_banmask_on_channel(client_socket, channel_name, banmask) {
 			rlist.extend(
-				app.apply_unban_on_channel(client_socket, channel_name, banmask)
-					.map(|mode| ('b', mode)),
+				app.apply_unban_on_channel(
+					client_socket,
+					channel_name,
+					banmask,
+				)
+				.map(|mode| ('b', mode)),
 			);
 		} else {
 			alist.extend(
@@ -300,15 +308,27 @@ fn apply_bans_except(
 	let bans_except = bans_except.unwrap_or_default();
 
 	for banmask in bans_except {
-		if app.has_banmask_except_on_channel(client_socket, channel_name, banmask) {
+		if app.has_banmask_except_on_channel(
+			client_socket,
+			channel_name,
+			banmask,
+		) {
 			rlist.extend(
-				app.apply_unban_except_on_channel(client_socket, channel_name, banmask)
-					.map(|mode| ('e', mode)),
+				app.apply_unban_except_on_channel(
+					client_socket,
+					channel_name,
+					banmask,
+				)
+				.map(|mode| ('e', mode)),
 			);
 		} else {
 			alist.extend(
-				app.apply_ban_except_on_channel(client_socket, channel_name, banmask)
-					.map(|mode| ('e', mode)),
+				app.apply_ban_except_on_channel(
+					client_socket,
+					channel_name,
+					banmask,
+				)
+				.map(|mode| ('e', mode)),
 			);
 		}
 	}
@@ -326,9 +346,17 @@ fn apply_mode_settings_bool(
 {
 	if let Some(b) = maybe_bool {
 		if b {
-			alist.extend(app.set_settings_on_channel(client_socket, channel_name, flag));
+			alist.extend(app.set_settings_on_channel(
+				client_socket,
+				channel_name,
+				flag,
+			));
 		} else {
-			rlist.extend(app.unset_settings_on_channel(client_socket, channel_name, flag));
+			rlist.extend(app.unset_settings_on_channel(
+				client_socket,
+				channel_name,
+				flag,
+			));
 		}
 	}
 }
@@ -344,8 +372,16 @@ fn apply_mode_settings_str(
 )
 {
 	if !s.is_empty() {
-		alist.extend(app.set_settings_on_channel(client_socket, channel_name, flag));
+		alist.extend(app.set_settings_on_channel(
+			client_socket,
+			channel_name,
+			flag,
+		));
 	} else {
-		rlist.extend(app.unset_settings_on_channel(client_socket, channel_name, flag));
+		rlist.extend(app.unset_settings_on_channel(
+			client_socket,
+			channel_name,
+			flag,
+		));
 	}
 }

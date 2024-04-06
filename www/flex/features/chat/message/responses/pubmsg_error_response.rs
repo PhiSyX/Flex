@@ -16,7 +16,8 @@ use crate::features::chat::message::ErrCannotsendtochanError;
 // Interface //
 // --------- //
 
-pub trait PubmsgClientSocketErrorRepliesInterface: ClientSocketInterface
+pub trait PubmsgClientSocketErrorRepliesInterface
+	: ClientSocketInterface
 {
 	/// Émet au client l'erreur [ErrCannotsendtochanError].
 	fn send_err_cannotsendtochan(&self, channel_name: &str, why: &str)

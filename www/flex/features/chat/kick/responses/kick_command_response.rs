@@ -28,12 +28,18 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait KickChannelClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait KickChannelClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 
 	/// Émet au client courant les réponses liées à la commande /KICK.
-	fn emit_kick(&self, channel: &Self::Channel, member_kicked: &Self, comment: Option<&str>);
+	fn emit_kick(
+		&self,
+		channel: &Self::Channel,
+		member_kicked: &Self,
+		comment: Option<&str>,
+	);
 }
 
 // -------------- //
@@ -44,7 +50,12 @@ impl<'s> KickChannelClientSocketCommandResponseInterface for Socket<'s>
 {
 	type Channel = Channel;
 
-	fn emit_kick(&self, channel: &Self::Channel, member_kicked: &Self, comment: Option<&str>)
+	fn emit_kick(
+		&self,
+		channel: &Self::Channel,
+		member_kicked: &Self,
+		comment: Option<&str>,
+	)
 	{
 		let origin = Origin::from(self.client());
 		let knick_origin = Origin::from(member_kicked.client());

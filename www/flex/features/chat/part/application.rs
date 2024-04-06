@@ -9,11 +9,18 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat_channel::{Channel, ChannelInterface, ChannelsSessionInterface};
-use flex_chat_client::{ClientSocketInterface, ClientsChannelSessionInterface, Socket};
+use flex_chat_client::{
+	ClientSocketInterface,
+	ClientsChannelSessionInterface,
+	Socket,
+};
 use flex_chat_client_channel::ChannelClientSocketErrorReplies;
 use flex_chat_user::UserInterface;
 
-use super::{PartChannelsSessionInterface, PartClientSocketCommandResponseInterface};
+use super::{
+	PartChannelsSessionInterface,
+	PartClientSocketCommandResponseInterface,
+};
 use crate::features::ChatApplication;
 
 // --------- //
@@ -67,7 +74,10 @@ pub trait PartChannelApplicationInterface
 	/// Part de tous les salons.
 	fn part_all_channels(&self, client_socket: &Self::ClientSocket<'_>)
 	{
-		self.remove_client_from_all_his_channels(client_socket, Some("/PARTALL"))
+		self.remove_client_from_all_his_channels(
+			client_socket,
+			Some("/PARTALL"),
+		)
 	}
 
 	/// Supprime un membre d'un salon. Si le salon n'a plus de membres, il sera
@@ -128,8 +138,14 @@ impl PartChannelApplicationInterface for ChatApplication
 		member_client_socket: &Self::ClientSocket<'_>,
 	) -> Option<()>
 	{
-		self.clients.remove_channel_on_client(member_client_socket.cid(), channel_name);
-		self.channels.remove_member_and_channel_if_empty(channel_name, member_client_socket.cid())
+		self.clients.remove_channel_on_client(
+			member_client_socket.cid(),
+			channel_name,
+		);
+		self.channels.remove_member_and_channel_if_empty(
+			channel_name,
+			member_client_socket.cid(),
+		)
 	}
 
 	fn remove_client_from_all_his_channels<S>(

@@ -22,7 +22,10 @@ pub trait JoinErrorResponseInterface: ClientSocketInterface
 	type Channel: ChannelInterface;
 
 	/// Émet au client l'erreur [crate::ERR_BADCHANNELKEY].
-	fn send_err_badchannelkey(&self, channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>);
+	fn send_err_badchannelkey(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	);
 
 	// TODO: ERR_CHANNELISFULL
 	#[allow(dead_code)]
@@ -41,7 +44,10 @@ impl<'s> JoinErrorResponseInterface for Socket<'s>
 {
 	type Channel = Channel;
 
-	fn send_err_badchannelkey(&self, channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>)
+	fn send_err_badchannelkey(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	)
 	{
 		let origin = Origin::from(self.client());
 		let err_badchannelkey = ErrBadchannelkeyError {

@@ -22,7 +22,8 @@ use crate::features::chat::sessions::ChannelsSession;
 // Interface //
 // --------- //
 
-pub trait ModeChannelAccessLevelChannelsSessionInterface: ChannelsSessionInterface
+pub trait ModeChannelAccessLevelChannelsSessionInterface
+	: ChannelsSessionInterface
 {
 	/// Est-ce qu'un membre à des droits minimal.
 	fn does_member_have_rights(
@@ -70,8 +71,12 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 		min_access_level: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::AccessLevel,
 	) -> bool
 	{
-		let Some(member) = self.get_member(channel_id, member_id) else { return false; };
-		member.access_level().iter().any(|access_level| access_level.flag() >= min_access_level.flag())
+		let Some(member) = self.get_member(channel_id, member_id) else {
+			return false;
+		};
+		member.access_level()
+			.iter()
+			.any(|access_level| access_level.flag() >= min_access_level.flag())
 	}
 
 	fn does_member_have_rights_to_operate_on_another_member(
@@ -82,25 +87,38 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	) -> bool
 	{
 		let Some((member, other_member)) = self.get_member(channel_id, member_id)
-			.zip(self.get_member(channel_id, other_member_id))	else { return false; };
-		let Some(m_hal) = member.highest_access_level() 		else { return false; };
-		let Some(om_hal) = other_member.highest_access_level() 	else { return m_hal.flag() >= ChannelAccessLevel::HalfOperator.flag(); };
+			.zip(self.get_member(channel_id, other_member_id))
+		else {
+			return false;
+		};
+		let Some(m_hal) = member.highest_access_level() else {
+			return false;
+		};
+		let Some(om_hal) = other_member.highest_access_level() else {
+			return m_hal.flag() >= ChannelAccessLevel::HalfOperator.flag();
+		};
 
 		match m_hal {
 			| ChannelAccessLevel::Owner => true,
-			| ChannelAccessLevel::AdminOperator => match om_hal {
-				| ChannelAccessLevel::Owner
-				| ChannelAccessLevel::AdminOperator => false,
-				| _ => true,
+			| ChannelAccessLevel::AdminOperator => {
+				match om_hal {
+					| ChannelAccessLevel::Owner
+					| ChannelAccessLevel::AdminOperator => false,
+					| _ => true,
+				}
 			}
-			| ChannelAccessLevel::Operator => match om_hal {
-				| ChannelAccessLevel::Owner
-				| ChannelAccessLevel::AdminOperator => false,
-				| _ => true,
+			| ChannelAccessLevel::Operator => {
+				match om_hal {
+					| ChannelAccessLevel::Owner
+					| ChannelAccessLevel::AdminOperator => false,
+					| _ => true,
+				}
 			}
-			| ChannelAccessLevel::HalfOperator => match om_hal {
-				| ChannelAccessLevel::Vip => true,
-				| _ => false,
+			| ChannelAccessLevel::HalfOperator => {
+				match om_hal {
+					| ChannelAccessLevel::Vip => true,
+					| _ => false,
+				}
 			}
 			| ChannelAccessLevel::Vip => false,
 		}
@@ -116,7 +134,8 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	{
 		let mut channel = self.get_mut(channel_id)?;
 		let channel_member = channel.member_mut(member_id)?;
-		channel_member.remove_access_level(access_level).then_some(channel_member.clone())
+		channel_member.remove_access_level(access_level)
+			.then_some(channel_member.clone())
 	}
 
 	/// Met à jour le niveau d'accès d'un pseudo.
@@ -129,6 +148,7 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	{
 		let mut channel = self.get_mut(channel_id)?;
 		let channel_member = channel.member_mut(member_id)?;
-		channel_member.update_access_level(access_level).then_some(channel_member.clone())
+		channel_member.update_access_level(access_level)
+			.then_some(channel_member.clone())
 	}
 }

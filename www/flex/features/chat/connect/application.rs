@@ -9,7 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat_channel::{Channel, ChannelInterface};
-use flex_chat_client::{ClientInterface, ClientSocketInterface, ClientsSessionInterface, Socket};
+use flex_chat_client::{
+	ClientInterface,
+	ClientSocketInterface,
+	ClientsSessionInterface,
+	Socket,
+};
 use flex_web_framework::extract::InsecureClientIp;
 
 use super::sessions::ConnectClientsSessionInterface;
@@ -60,7 +65,10 @@ pub trait ConnectApplicationInterface
 	) -> Option<<Self::ClientSocket<'_> as ClientSocketInterface>::Client>;
 
 	/// Enregistre le client en session.
-	fn register_client(&self, client: &<Self::ClientSocket<'_> as ClientSocketInterface>::Client);
+	fn register_client(
+		&self,
+		client: &<Self::ClientSocket<'_> as ClientSocketInterface>::Client,
+	);
 }
 
 // -------------- //
@@ -82,7 +90,7 @@ impl ConnectApplicationInterface for ChatApplication
 			&socket.req_parts().headers,
 			&socket.req_parts().extensions,
 		)
-			.expect("Adresse IP de la Socket");
+		.expect("Adresse IP de la Socket");
 		let sid = socket.id;
 		self.clients.create(ip, sid)
 	}
@@ -98,7 +106,7 @@ impl ConnectApplicationInterface for ChatApplication
 			&socket.req_parts().headers,
 			&socket.req_parts().extensions,
 		)
-			.expect("Adresse IP de la Socket");
+		.expect("Adresse IP de la Socket");
 		let sid = socket.id;
 		self.clients.create_with_id(ip, sid, cid)
 	}
@@ -117,7 +125,8 @@ impl ConnectApplicationInterface for ChatApplication
 		token: impl AsRef<str>,
 	) -> Option<<Self::ClientSocket<'_> as ClientSocketInterface>::Client>
 	{
-		self.clients.get(client_id).filter(|client| client.token().eq(token.as_ref()))
+		self.clients.get(client_id)
+			.filter(|client| client.token().eq(token.as_ref()))
 	}
 
 	fn get_client_by_user_id_and_token(
@@ -129,7 +138,10 @@ impl ConnectApplicationInterface for ChatApplication
 		self.get_client_by_id_and_token(user_id, token)
 	}
 
-	fn register_client(&self, client: &<Self::ClientSocket<'_> as ClientSocketInterface>::Client)
+	fn register_client(
+		&self,
+		client: &<Self::ClientSocket<'_> as ClientSocketInterface>::Client,
+	)
 	{
 		self.clients.upgrade(client);
 		self.clients.register(client);

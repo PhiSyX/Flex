@@ -11,7 +11,10 @@
 use flex_chat_client_nick::NickClientSocketErrorReplies;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::features::chat::part::{SapartCommandFormData, PartChannelApplicationInterface};
+use crate::features::chat::part::{
+	PartChannelApplicationInterface,
+	SapartCommandFormData,
+};
 use crate::features::ChatApplication;
 
 // --------- //
@@ -35,10 +38,15 @@ impl SapartHandler
 		Data(data): Data<SapartCommandFormData>,
 	)
 	{
-		let Some(client_socket) = app.current_client_operator(&socket) else { return; };
+		let Some(client_socket) = app.current_client_operator(&socket) else {
+			return;
+		};
 
 		for nickname in data.nicknames.iter() {
-			let Some(nickname_socket) = app.find_socket_by_nickname(&socket, nickname) else {
+			let Some(nickname_socket) = app.find_socket_by_nickname(
+				&socket,
+				nickname,
+			) else {
 				client_socket.send_err_nosuchnick(nickname);
 				continue;
 			};

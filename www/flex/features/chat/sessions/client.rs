@@ -52,9 +52,13 @@ impl ChatApplication
 {
 	/// Récupère le client courant (immuable) à partir d'une socket.
 	#[inline]
-	pub fn current_client<'a>(&'a self, socket: &'a socketioxide::extract::SocketRef) -> Socket<'a>
+	pub fn current_client<'a>(
+		&'a self,
+		socket: &'a socketioxide::extract::SocketRef,
+	) -> Socket<'a>
 	{
-		let client: socketioxide::extensions::Ref<'a, Client> = socket.extensions.get().unwrap();
+		let client: socketioxide::extensions::Ref<'a, Client> =
+			socket.extensions.get().unwrap();
 		Socket::Borrowed { socket, client }
 	}
 
@@ -65,7 +69,8 @@ impl ChatApplication
 		socket: &'a socketioxide::extract::SocketRef,
 	) -> Option<Socket<'a>>
 	{
-		let client: socketioxide::extensions::Ref<'a, Client> = socket.extensions.get().unwrap();
+		let client: socketioxide::extensions::Ref<'a, Client> =
+			socket.extensions.get().unwrap();
 		let client_socket = Socket::Borrowed { socket, client };
 
 		if !client_socket.user().is_operator() {
@@ -82,7 +87,9 @@ impl ChatApplication
 		socket: &'a socketioxide::extract::SocketRef,
 	) -> Socket<'a>
 	{
-		let client: socketioxide::extensions::RefMut<'a, Client> = socket.extensions.get_mut().unwrap();
+		let client: socketioxide::extensions::RefMut<'a, Client> = {
+			socket.extensions.get_mut()
+		}.unwrap();
 		Socket::BorrowedMut { socket, client }
 	}
 
@@ -123,7 +130,8 @@ impl ClientsSession
 		let nickname = nickname.to_lowercase();
 		self.clients.iter().find_map(|rm| {
 			let client = rm.value();
-			(client.user().nickname().to_lowercase().eq(&nickname)).then_some(client.clone())
+			(client.user().nickname().to_lowercase().eq(&nickname))
+				.then_some(client.clone())
 		})
 	}
 }
@@ -149,20 +157,32 @@ impl ClientsSessionInterface for ClientsSession
 {
 	type Client = Client;
 
-	fn get(&self, client_id: &<Self::Client as ClientInterface>::ClientID) -> Option<Self::Client>
+	fn get(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> Option<Self::Client>
 	{
 		self.clients.iter().find_map(|rm| {
 			let (cid, client) = (rm.key(), rm.value());
-			(cid == client_id && client.is_registered()).then_some(client.clone())
+			(cid == client_id && client.is_registered())
+				.then_some(client.clone())
 		})
 	}
 
 	fn get_mut(
 		&self,
 		client_id: &<Self::Client as ClientInterface>::ClientID,
-	) -> Option<RefMutMulti<'_, <Self::Client as ClientInterface>::ClientID, Self::Client>>
+	) -> Option<
+		RefMutMulti<
+			'_,
+			<Self::Client as ClientInterface>::ClientID,
+			Self::Client,
+		>,
+	>
 	{
-		self.clients.iter_mut().find(|rm| rm.key() == client_id && rm.value().is_registered())
+		self.clients
+			.iter_mut()
+			.find(|rm| rm.key() == client_id && rm.value().is_registered())
 	}
 
 	/// Enregistre un client.

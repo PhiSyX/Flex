@@ -25,7 +25,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait KillClientSocketCommandResponseInterface: ClientSocketInterface
+pub trait KillClientSocketCommandResponseInterface
+	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /KILL.
 	fn emit_kill(&self, knick_client_socket: &Self, reason: &str);

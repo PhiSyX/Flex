@@ -17,7 +17,8 @@ use crate::features::chat::mode::ErrBannedfromchanError;
 // Interface //
 // --------- //
 
-pub trait ModeAccessControlClientSocketErrorRepliesInterface: ClientSocketInterface
+pub trait ModeAccessControlClientSocketErrorRepliesInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 
@@ -35,7 +36,10 @@ impl<'s> ModeAccessControlClientSocketErrorRepliesInterface for Socket<'s>
 {
 	type Channel = Channel;
 
-	fn send_err_bannedfromchan(&self, channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>)
+	fn send_err_bannedfromchan(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	)
 	{
 		let origin = Origin::from(self.client());
 
