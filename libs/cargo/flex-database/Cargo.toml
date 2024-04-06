@@ -1,0 +1,25 @@
+[package]
+name = "flex-database"
+version = "0.1.0"
+edition = "2021"
+description = "Accès aux bases de données via SQLx"
+
+[lints]
+workspace = true
+
+[features]
+# default = ["postgres-sgbd"]
+postgres-sgbd = ["sqlx/postgres"]
+
+[dependencies]
+async-trait = { workspace = true }
+sqlx = { workspace = true, features = ["runtime-tokio"] }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["macros", "test-util"] }
+
+[[test]]
+name = "test_connection_postgres"
+path = "tests/connection_postgres.rs"
+required-features = ["postgres-sgbd"]
