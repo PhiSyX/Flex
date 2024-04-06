@@ -32,12 +32,13 @@ export class UpgradeUserHandler
 	}
 
 	handle(data: GenericReply<"UPGRADE_USER">) {
-		if (this.store.isCurrentClient(data.origin)) {
+		if (this.store.isCurrentClient(data.old_client_id)) {
 			let client = this.store.client();
 			this.store.setClient({
-				...client,
 				id: data.new_client_id,
 				nickname: data.new_nickname,
+				host: client.host,
+				ident: client.ident,
 			});
 		}
 
@@ -60,9 +61,10 @@ export class UpgradeUserHandler
 			} else if (room.type === "private") {
 				assertPrivateRoom(room);
 				const participant = room.participants.get(data.old_client_id);
-				if (participant && room.participants.delete(data.old_client_id)) {
+				if (participant) {
+					room.participants.delete(data.old_client_id);
 					participant.id = data.new_client_id;
-					room.participants.set(data.old_client_id, participant);
+					room.participants.set(data.new_client_id, participant);
 				}
 			}
 		}
