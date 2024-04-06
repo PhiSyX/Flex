@@ -13,7 +13,7 @@ mod make_password;
 use std::ops;
 
 use flex_cli::{EmptyArguments, EmptyFlags, EmptyOptions};
-use lexa_kernel::ApplicationCLIInterface;
+use flex_kernel::ApplicationCLIInterface;
 
 // ---- //
 // Type //

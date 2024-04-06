@@ -28,10 +28,10 @@ dashmap = { workspace = true }
 dns-lookup = { workspace = true }
 flex-cli = { workspace = true }
 flex-crypto = { workspace = true }
+flex-logger = { path = "../../libs/cargo/flex-logger" }
 flex-serde-validation = { workspace = true }
 flex-web-framework = { workspace = true }
-lexa-kernel = { workspace = true }
-lexa-logger = { version = "0.3.2" }
+flex-kernel = { workspace = true }
 reqwest = { version = "0.12.2", features = ["json"] }
 serde = { workspace = true }
 serde_json = { workspace = true }

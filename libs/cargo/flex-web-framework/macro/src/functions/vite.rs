@@ -49,7 +49,7 @@ pub enum ViteMacroParserErrorKind {}
 // Implémentation // -> Interface
 // -------------- //
 
-impl lexa_syn::Parser for ViteMacro
+impl flex_syn::Parser for ViteMacro
 {
 	type Err<'err> = ViteMacroParserError;
 	type Input = ViteMacroParserInput;
@@ -87,7 +87,7 @@ impl lexa_syn::Parser for ViteMacro
 // Implémentation // -> Error
 // -------------- //
 
-impl<'err> lexa_syn::ParserError<'err> for ViteMacroParserError
+impl<'err> flex_syn::ParserError<'err> for ViteMacroParserError
 {
 	fn compile_error(self) -> TokenStream
 	{

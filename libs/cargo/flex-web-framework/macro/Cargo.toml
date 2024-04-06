@@ -7,8 +7,8 @@ edition = { workspace = true }
 proc-macro = true
 
 [dependencies]
-lexa-syn = { version = "0.1.0" }
-syn = { version = "2.0.52", features = ["full"] }
+flex-syn = { path = "../../flex-syn" }
 diagnostics = { package = "proc-macro2-diagnostics", version = "0.10.1", default-features = false }
 rstml = { version = "0.11.2" }
+syn = { workspace = true }
 uuid = { workspace = true }

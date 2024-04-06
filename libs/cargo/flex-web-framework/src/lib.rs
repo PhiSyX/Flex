@@ -40,7 +40,7 @@ pub type AxumApplication<
 	S = (),
 	E = (),
 	C = ()
-> = lexa_kernel::Kernel<
+> = flex_kernel::Kernel<
 	adapter::Adapter<
 		S,
 		E,

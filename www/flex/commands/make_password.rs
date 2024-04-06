@@ -12,10 +12,10 @@ use std::fmt;
 
 use flex_cli::style;
 use flex_crypto::Hasher;
+use flex_logger::layout;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::types::secret;
 use flex_web_framework::ExtensionInterface;
-use lexa_logger::layout;
 
 // --------- //
 // Structure //

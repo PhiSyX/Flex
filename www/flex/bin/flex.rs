@@ -16,7 +16,7 @@ use flex_web_framework::{
 	DatabaseService,
 	PostgreSQLDatabase,
 };
-use lexa_kernel::{
+use flex_kernel::{
 	ApplicationCLIExtension,
 	ApplicationEnvExtension,
 	ApplicationLoggerExtension,

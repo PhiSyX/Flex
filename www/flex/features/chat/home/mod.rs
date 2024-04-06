@@ -8,13 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-lexa_kernel::import! {
+flex_kernel::import! {
 	pub(crate) mod controllers use {
 		pub mod home_controller use *;
 	};
 }
 
-lexa_kernel::using! {
+flex_kernel::using! {
 	views / {
 		pub(crate) home_view,
 	};

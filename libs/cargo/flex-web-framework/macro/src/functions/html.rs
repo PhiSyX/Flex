@@ -497,7 +497,7 @@ impl HTMLMacro
 // Implémentation // -> Interface
 // -------------- //
 
-impl lexa_syn::Parser for HTMLMacro
+impl flex_syn::Parser for HTMLMacro
 {
 	type Err<'err> = HTMLMacroParserError;
 	type Input = HTMLMacroParserInput;
@@ -594,7 +594,7 @@ impl Parse for HTMLBlock
 // Implémentation // -> Error
 // -------------- //
 
-impl<'err> lexa_syn::ParserError<'err> for HTMLMacroParserError
+impl<'err> flex_syn::ParserError<'err> for HTMLMacroParserError
 {
 	fn compile_error(self) -> TokenStream
 	{

@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use lexa_database::sgbd::postgres::PostgresSGBD;
-use lexa_database::SGBD;
+use flex_database::sgbd::postgres::PostgresSGBD;
+use flex_database::SGBD;
 
 use crate::database::DatabaseInterface;
 

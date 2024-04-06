@@ -20,7 +20,7 @@ use std::collections::HashMap;
 use flex_chat_mode::ApplyMode;
 use flex_chat_user::{User, UserAddressInterface, UserInterface};
 use flex_secret::Secret;
-use lexa_wildcard_matching::WildcardMatching;
+use flex_wildcard_matching::WildcardMatching;
 
 pub use self::interface::*;
 pub use self::member::*;

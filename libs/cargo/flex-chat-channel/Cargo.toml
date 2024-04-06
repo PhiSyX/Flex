@@ -10,8 +10,7 @@ workspace = true
 flex-chat-mode = { path = "../flex-chat-mode" }
 flex-chat-user = { path = "../flex-chat-user" }
 flex-secret = { path = "../flex-secret" }
-
-lexa-wildcard-matching = "0.1.0"
+flex-wildcard-matching = { path = "../flex-wildcard-matching" }
 
 chrono = { workspace = true }
 dashmap = { workspace = true }
