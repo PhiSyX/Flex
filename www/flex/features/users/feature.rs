@@ -10,9 +10,8 @@
 
 use flex_web_framework::Feature;
 
-use crate::FlexState;
-
 use super::routes::api::UsersApi_V1_Router;
+use crate::FlexState;
 
 // --------- //
 // Structure //
@@ -27,9 +26,7 @@ pub struct UsersApplication;
 impl Feature for UsersApplication
 {
 	type Config = ();
-	type Router = (
-		UsersApi_V1_Router
-	);
+	type Router = UsersApi_V1_Router;
 	type State = FlexState;
 
 	const NAME: &'static str = "UsersApplication";

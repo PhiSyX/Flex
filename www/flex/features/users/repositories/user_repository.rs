@@ -25,16 +25,27 @@ use crate::features::users::entities::UserEntity;
 pub trait UserRepository
 {
 	/// Crée un nouvel utilisateur.
-	async fn create(&self, new_user: UserNewActionDTO) -> Result<UserEntity, sqlx::Error>;
+	async fn create(
+		&self,
+		new_user: UserNewActionDTO,
+	) -> Result<UserEntity, sqlx::Error>;
 
 	/// Cherche un utilisateur par son adresse e-mail.
-	async fn find_by_email(&self, email: &email::EmailAddress) -> Result<UserEntity, sqlx::Error>;
+	async fn find_by_email(
+		&self,
+		email: &email::EmailAddress,
+	) -> Result<UserEntity, sqlx::Error>;
 
 	/// Cherche un utilisateur par son nom d'utilisateur.
-	async fn find_by_name(&self, name: &str) -> Result<UserEntity, sqlx::Error>;
+	async fn find_by_name(&self, name: &str)
+		-> Result<UserEntity, sqlx::Error>;
 
 	/// Cherche un utilisateur par son adresse e-mail ou nom d'utilisateur.
-	async fn find_by_email_or_name(&self, email: &email::EmailAddress, name: &str) -> Result<UserEntity, sqlx::Error>;
+	async fn find_by_email_or_name(
+		&self,
+		email: &email::EmailAddress,
+		name: &str,
+	) -> Result<UserEntity, sqlx::Error>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -70,7 +81,10 @@ impl UserRepositoryPostgreSQL
 #[flex_web_framework::async_trait]
 impl UserRepository for UserRepositoryPostgreSQL
 {
-	async fn create(&self, new_user: UserNewActionDTO) -> Result<UserEntity, sqlx::Error>
+	async fn create(
+		&self,
+		new_user: UserNewActionDTO,
+	) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!(
 			"INSERT INTO {} (id,name,email,password,role) VALUES \
@@ -87,24 +101,38 @@ impl UserRepository for UserRepositoryPostgreSQL
 		Ok(record)
 	}
 
-	async fn find_by_email(&self, email: &email::EmailAddress) -> Result<UserEntity, sqlx::Error>
+	async fn find_by_email(
+		&self,
+		email: &email::EmailAddress,
+	) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!("SELECT * FROM {} WHERE email=$1", Self::TABLE_NAME);
-		let record = self.query_builder.fetch_one(&raw_query, &[email.as_ref()]).await?;
+		let record = self.query_builder.fetch_one(
+			&raw_query,
+			&[email.as_ref()]
+		).await?;
 		Ok(record)
 	}
 
-	async fn find_by_email_or_name(&self, email: &email::EmailAddress, name: &str) -> Result<UserEntity, sqlx::Error>
+	async fn find_by_email_or_name(
+		&self,
+		email: &email::EmailAddress,
+		name: &str,
+	) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!(
 			"SELECT * FROM {} WHERE email=$1 OR name=$2",
 			Self::TABLE_NAME
 		);
-		let record = self.query_builder.fetch_one(&raw_query, &[email.as_ref(), name]).await?;
+		let record = self.query_builder.fetch_one(
+			&raw_query,
+			&[email.as_ref(), name]
+		).await?;
 		Ok(record)
 	}
 
-	async fn find_by_name(&self, name: &str) -> Result<UserEntity, sqlx::Error>
+	async fn find_by_name(&self, name: &str)
+		-> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!("SELECT * FROM {} WHERE name=$1", Self::TABLE_NAME);
 		let record = self.query_builder.fetch_one(&raw_query, &[name]).await?;

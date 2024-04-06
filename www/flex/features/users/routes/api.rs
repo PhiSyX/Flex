@@ -9,7 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{RouteIDInterface, RouterGroupInterface, RouterInterface};
+use flex_web_framework::{
+	RouteIDInterface,
+	RouterGroupInterface,
+	RouterInterface,
+};
 
 use crate::features::users::controllers::api::v1::UsersController;
 use crate::{FlexApplicationState, FlexState};
@@ -43,8 +47,10 @@ impl RouterInterface<FlexState> for UsersApi_V1_Router
 {
 	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
-		Self::group()
-			.add(Router::path(AuthApi_V1_RouteID::CurrentUser).get(UsersController::current_user))
+		Self::group().add(
+			Router::path(AuthApi_V1_RouteID::CurrentUser)
+				.get(UsersController::current_user),
+		)
 	}
 }
 
