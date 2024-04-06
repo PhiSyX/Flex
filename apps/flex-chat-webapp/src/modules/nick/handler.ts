@@ -35,6 +35,7 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 
 		const isCurrentClient = this.store.isCurrentClient(data.origin);
 		if (isCurrentClient) {
+			if (data.tags.user_id) this.store.setClientID(data.tags.user_id);
 			this.store.setClientNickname(data.new_nickname);
 		}
 

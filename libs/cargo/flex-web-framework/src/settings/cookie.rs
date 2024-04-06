@@ -80,8 +80,9 @@ impl<'de> serde::Deserialize<'de> for Settings
 		if let Some(SettingsSameSite::None) = this.same_site {
 			if this.secure.filter(|b| *b).is_none() {
 				return Err(serde::de::Error::custom(
-					"[SettingsSameSite::None]: le paramètre `secure` DOIT être à `true` lorsque \
-					 le paramètre `same_site` équivaut à la valeur `None`.",
+					"[SettingsSameSite::None]: le paramètre `secure` DOIT \
+					 être à `true` lorsque le paramètre `same_site` équivaut \
+					 à la valeur `None`.",
 				));
 			}
 		}

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::settings::CookieSettings;
+use crate::settings::{CookieSettings, ServerSettings};
 
 // --------- //
 // Structure //
@@ -19,6 +19,7 @@ pub struct ServerState<UserState>
 {
 	cookie_settings: CookieSettings,
 	cookie_key: Option<tower_cookies::Key>,
+	server_settings: ServerSettings,
 	user: Option<UserState>,
 }
 
@@ -49,6 +50,11 @@ impl<S> ServerState<S>
 		self.cookie_key.as_ref().unwrap()
 	}
 
+	pub fn get_server_settings(&self) -> &ServerSettings
+	{
+		&self.server_settings
+	}
+
 	pub fn set_cookie_key(&mut self, cookie_key: tower_cookies::Key)
 	{
 		self.cookie_key.replace(cookie_key);
@@ -58,6 +64,11 @@ impl<S> ServerState<S>
 	{
 		self.cookie_settings = cookie_settings;
 	}
+
+	pub fn set_server_settings(&mut self, server_settings: ServerSettings)
+	{
+		self.server_settings = server_settings;
+	}
 }
 
 impl<S> ServerState<S>
@@ -65,8 +76,8 @@ impl<S> ServerState<S>
 	pub fn state(&self) -> &S
 	{
 		self.user.as_ref().expect(
-			"Le state n'est pas définit. Vérifier que `ServerState#set_state` est bien appelée \
-			 avant.",
+			"Le state n'est pas définit. Vérifier que `ServerState#set_state` \
+			 est bien appelée avant.",
 		)
 	}
 
@@ -88,6 +99,14 @@ impl<S> axum::extract::FromRef<ServerState<S>> for CookieSettings
 	}
 }
 
+impl<S> axum::extract::FromRef<ServerState<S>> for ServerSettings
+{
+	fn from_ref(state: &ServerState<S>) -> Self
+	{
+		state.server_settings.clone()
+	}
+}
+
 impl<S> axum::extract::FromRef<ServerState<S>> for tower_cookies::Key
 {
 	fn from_ref(state: &ServerState<S>) -> Self
@@ -103,6 +122,7 @@ impl<S> Default for ServerState<S>
 		Self {
 			cookie_settings: Default::default(),
 			cookie_key: Default::default(),
+			server_settings: Default::default(),
 			user: Default::default(),
 		}
 	}

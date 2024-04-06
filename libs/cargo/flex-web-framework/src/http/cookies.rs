@@ -100,7 +100,8 @@ impl<'s> PrivateCookies<'s>
 		if !has_max_age {
 			if let Some(expires) = self.settings.expires {
 				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc().checked_add(time::Duration::seconds(expires)),
+					time::OffsetDateTime::now_utc()
+						.checked_add(time::Duration::seconds(expires)),
 				);
 			}
 		}
@@ -111,7 +112,9 @@ impl<'s> PrivateCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(time::Duration::seconds(max_age));
+				cookie_builder = cookie_builder.max_age(
+					time::Duration::seconds(max_age)
+				);
 			}
 		}
 
@@ -157,7 +160,8 @@ impl<'s> SignedCookies<'s>
 		if !has_max_age {
 			if let Some(expires) = self.settings.expires {
 				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc().checked_add(time::Duration::seconds(expires)),
+					time::OffsetDateTime::now_utc()
+						.checked_add(time::Duration::seconds(expires)),
 				);
 			}
 		}
@@ -168,7 +172,9 @@ impl<'s> SignedCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(time::Duration::seconds(max_age));
+				cookie_builder = cookie_builder.max_age(
+					time::Duration::seconds(max_age)
+				);
 			}
 		}
 
@@ -194,7 +200,48 @@ impl<'s> SignedCookies<'s>
 	where
 		K: Into<std::borrow::Cow<'static, str>>,
 	{
-		self.inner.remove(TowerCookie::from(name.into()))
+		let cookie: Cookie<'_> = (name, "").into();
+		let user_cookie: TowerCookie = cookie.0.build();
+		let has_max_age = user_cookie.max_age().is_some();
+
+		let mut cookie_builder = CookieBuilder::from(user_cookie);
+
+		if let Some(domain) = self.settings.domain.as_ref() {
+			cookie_builder = cookie_builder.domain(domain.clone());
+		}
+
+		if !has_max_age {
+			if let Some(expires) = self.settings.expires {
+				cookie_builder = cookie_builder.expires(
+					time::OffsetDateTime::now_utc()
+						.checked_add(time::Duration::seconds(expires)),
+				);
+			}
+		}
+
+		if let Some(http_only) = self.settings.http_only {
+			cookie_builder = cookie_builder.http_only(http_only);
+		}
+
+		if !has_max_age {
+			if let Some(max_age) = self.settings.max_age {
+				cookie_builder = cookie_builder.max_age(
+					time::Duration::seconds(max_age)
+				);
+			}
+		}
+
+		if let Some(same_site) = self.settings.same_site {
+			cookie_builder = cookie_builder.same_site(same_site.into());
+		}
+
+		if let Some(secure) = self.settings.secure {
+			cookie_builder = cookie_builder.secure(secure);
+		}
+
+		cookie_builder = cookie_builder.path(self.settings.path.clone());
+
+		self.inner.remove(cookie_builder.build())
 	}
 }
 
@@ -250,7 +297,8 @@ where
 
 		if let Some(expires) = settings.expires {
 			cookie_builder = cookie_builder.expires(
-				time::OffsetDateTime::now_utc().checked_add(time::Duration::seconds(expires)),
+				time::OffsetDateTime::now_utc()
+					.checked_add(time::Duration::seconds(expires)),
 			);
 		}
 
@@ -259,7 +307,9 @@ where
 		}
 
 		if let Some(max_age) = settings.max_age {
-			cookie_builder = cookie_builder.max_age(time::Duration::seconds(max_age));
+			cookie_builder = cookie_builder.max_age(
+				time::Duration::seconds(max_age)
+			);
 		}
 
 		if let Some(same_site) = settings.same_site {
@@ -288,25 +338,19 @@ where
 		state: &AxumState<S>,
 	) -> Result<Self, Self::Rejection>
 	{
-		let cm = parts
-			.extensions
-			.get::<tower_cookies::Cookies>()
+		let cm = parts.extensions.get::<tower_cookies::Cookies>()
 			.cloned()
 			.ok_or((
 				StatusCode::INTERNAL_SERVER_ERROR,
 				"Impossible d'extraire les cookies",
 			))?;
-
 		let cookie_key = state.cookie_key().cloned().ok_or((
 			StatusCode::INTERNAL_SERVER_ERROR,
 			"Impossible de récupérer la clé de cookie",
 		))?;
-
 		let cookie_settings = state.get_cookie_settings();
-
-		let cookie_manager =
-			Self::new(cm, cookie_key).with_cookie_settings(cookie_settings.clone());
-
+		let cookie_manager = Self::new(cm, cookie_key)
+			.with_cookie_settings(cookie_settings.clone());
 		Ok(cookie_manager)
 	}
 }

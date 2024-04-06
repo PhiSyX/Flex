@@ -109,7 +109,10 @@ impl AccessControl
 		Some(mode)
 	}
 
-	pub fn remove_ban(&mut self, mask: impl Into<Mask>) -> Option<ApplyMode<AccessControlMask>>
+	pub fn remove_ban(
+		&mut self,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>>
 	{
 		let mask = mask.into();
 		let mask_key = mask.to_string();
@@ -155,10 +158,12 @@ impl Mask
 
 		// NOTE: 2 / 3
 		// NOTE: après le split, l'ident et l'hôte PEUVENT être vide.
-		let (mut maybe_ident, mut maybe_host) = maybe_ident_maybe_host.split_once('@').unwrap_or(
-			// NOTE: cela veut dire que nous dans le cas 4, l'hôte n'est pas définit.
-			(maybe_ident_maybe_host, "*"),
-		);
+		let (mut maybe_ident, mut maybe_host) =
+			maybe_ident_maybe_host.split_once('@').unwrap_or(
+				// NOTE: cela veut dire que nous dans le cas 4, l'hôte n'est
+				// pas définit.
+				(maybe_ident_maybe_host, "*"),
+			);
 
 		if maybe_ident.is_empty() {
 			maybe_ident = "*";
@@ -338,7 +343,12 @@ where
 	{
 		let mask = s.as_ref();
 
-		if mask.eq("*") || mask.eq("!") || mask.eq("@") || mask.eq("!@") || mask.eq("@!") {
+		if mask.eq("*")  ||
+		   mask.eq("!")  ||
+		   mask.eq("@")  ||
+		   mask.eq("!@") ||
+		   mask.eq("@!")
+		{
 			return Self::generic();
 		}
 

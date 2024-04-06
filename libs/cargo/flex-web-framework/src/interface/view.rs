@@ -10,6 +10,8 @@
 
 use std::collections::HashMap;
 
+use tower_sessions::Session;
+
 // --------- //
 // Interface //
 // --------- //
@@ -22,9 +24,9 @@ pub trait ViewInterface
 
 	type Layout: ViewLayoutInterface<
 		Metadata = Self::Metadata,
-		Scripts = Self::Scripts,
-		Styles = Self::Styles,
-		View = Self::View,
+		Scripts  = Self::Scripts,
+		Styles   = Self::Styles,
+		View     = Self::View,
 	>;
 
 	type View;
@@ -33,12 +35,6 @@ pub trait ViewInterface
 	fn data(&self) -> HashMap<String, String>
 	{
 		Default::default()
-	}
-
-	/// Définit des variables d'environnement pour la mise en page?
-	fn with_env(&self, key: impl ToString, value: impl ToString)
-	{
-		std::env::set_var(key.to_string(), value.to_string());
 	}
 
 	/// Les méta-données de la vue.
@@ -90,6 +86,20 @@ pub trait ViewInterface
 
 		layout.view()
 	}
+
+	/// Définit des variables d'environnement pour la mise en page?
+	fn with_env(&self, key: impl ToString, value: impl ToString)
+	{
+		std::env::set_var(key.to_string(), value.to_string());
+	}
+
+	/// Passe la session dans la vue.
+	async fn with_session(self, _: &Session) -> Self
+	where
+		Self: Sized,
+	{
+		self
+	}
 }
 
 pub trait ViewLayoutInterface
@@ -108,10 +118,8 @@ pub trait ViewLayoutInterface
 	fn set_title(&mut self, title: impl ToString);
 	/// Applique un corps à la mise en page.
 	fn set_body(&mut self, body: Self::View);
-
 	/// Applique des données pour la mise en page.
-	fn set_data(&mut self, data: HashMap<String, String>);
-
+	fn set_data(&mut self, _: HashMap<String, String>) {}
 	/// Ajoute une méta-données au document de la mise en page.
 	fn add_meta(&mut self, meta: Self::Metadata);
 	/// Ajoute un script au document de la mise en page.

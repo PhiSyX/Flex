@@ -11,6 +11,7 @@
 use std::sync::Arc;
 
 pub use axum::response::*;
+use tower_sessions::Session;
 
 // --------- //
 // Structure //
@@ -19,6 +20,7 @@ pub use axum::response::*;
 pub struct HttpResponse<T>
 {
 	pub(crate) context: Arc<T>,
+	pub(crate) session: Session,
 }
 
 // -------------- //
@@ -27,13 +29,23 @@ pub struct HttpResponse<T>
 
 impl<T> HttpResponse<T>
 {
-	/// Rend l'HTML d'une vue.
+	/// Rend l'HTML.
 	#[inline]
-	pub fn html<R>(&self, html: impl Into<axum::response::Html<R>>) -> axum::response::Html<R>
+	pub fn html<R>(&self, html: impl Into<Html<R>>) -> Html<R>
 	where
 		R: Into<Html<R>>,
 	{
 		html.into()
+	}
+
+	/// Rend l'html d'une vue (ViewInterface).
+	///
+	/// La session est incluse dans la vue via la méthode `with_session`.
+	pub async fn render<V>(&self, view: V) -> Html<V>
+	where
+		V: crate::ViewInterface,
+	{
+		Html(view.with_session(&self.session).await)
 	}
 
 	/// Retourne un JSON en réponse.
@@ -65,7 +77,10 @@ impl<T> HttpResponse<T>
 
 	/// Redirige le client vers une URL de manière permanente (Code HTTP 308).
 	#[inline]
-	pub fn redirect_permanent(&self, uri: impl ToString) -> axum::response::Redirect
+	pub fn redirect_permanent(
+		&self,
+		uri: impl ToString,
+	) -> axum::response::Redirect
 	where
 		Self: Sized,
 	{
@@ -74,7 +89,10 @@ impl<T> HttpResponse<T>
 
 	/// Redirige le client vers une URL de manière temporaire (Code HTTP 307).
 	#[inline]
-	pub fn redirect_temporary(&self, uri: impl ToString) -> axum::response::Redirect
+	pub fn redirect_temporary(
+		&self,
+		uri: impl ToString,
+	) -> axum::response::Redirect
 	where
 		Self: Sized,
 	{

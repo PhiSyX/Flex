@@ -14,12 +14,12 @@ use std::sync::Arc;
 // Fonction //
 // -------- //
 
-pub fn validate_channel<'de, D>(deserializer: D) -> Result<Arc<str>, D::Error>
+pub fn validate_channel<'de, D>(de: D) -> Result<Arc<str>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let s: Arc<str> = Arc::<str>::deserialize(deserializer)?;
+	let s: Arc<str> = Arc::<str>::deserialize(de)?;
 
 	if s.is_empty() || s.len() > 30 || !s.starts_with('#') {
 		return Err(serde::de::Error::custom(format!(
@@ -30,12 +30,12 @@ where
 	Ok(s)
 }
 
-pub fn validate_channels<'de, D>(deserializer: D) -> Result<Vec<Arc<str>>, D::Error>
+pub fn validate_channels<'de, D>(de: D) -> Result<Vec<Arc<str>>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let v = Vec::<Arc<str>>::deserialize(deserializer)?;
+	let v = Vec::<Arc<str>>::deserialize(de)?;
 
 	let chans = v
 		.into_iter()

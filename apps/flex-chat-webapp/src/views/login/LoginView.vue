@@ -2,10 +2,12 @@
 import { ButtonIcon, InputSwitch, TextInput, UiButton } from "@phisyx/flex-uikit";
 import { type ModelRef, reactive, ref } from "vue";
 
-import { useChatStore } from "~/store/ChatStore";
-import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
 
 import { channelID } from "~/asserts/room";
+import { useChatStore } from "~/store/ChatStore";
+import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
+import { View } from "~/views";
+
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 
 // ---- //
@@ -13,7 +15,7 @@ import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 // ---- //
 
 interface Props {
-	isConnected: boolean;
+	changeView: View;
 }
 
 // --------- //
@@ -21,7 +23,7 @@ interface Props {
 // --------- //
 
 defineProps<Props>();
-const isConnected = defineModel<boolean>("isConnected");
+const changeView = defineModel<View>("changeView");
 
 /**
  * Attribut `title` de l'élément `<input name="nickname">`.
@@ -51,7 +53,7 @@ const MAXLENGTH_NICKNAME: number = 30;
  */
 const PLACEHOLDER_NICKNAME: string = `Pseudonyme (max. ${MAXLENGTH_NICKNAME} caractères)`;
 
-const submitHandler = connectSubmit(isConnected);
+const submitHandler = connectSubmit(changeView);
 
 const chatStore = useChatStore();
 
@@ -87,7 +89,7 @@ function displayAdvancedInfoHandler() {
 /**
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
-function connectSubmit(isConnectedModel: ModelRef<boolean | undefined, string>) {
+function connectSubmit(changeViewModel: ModelRef<View | undefined, string>) {
 	async function connectSubmitHandler(evt: Event) {
 		evt.preventDefault();
 
@@ -97,7 +99,7 @@ function connectSubmit(isConnectedModel: ModelRef<boolean | undefined, string>) 
 
 		chatStore.connect(loginFormData);
 
-		chatStore.listen("RPL_WELCOME", () => replyWelcomeHandler(isConnectedModel), {
+		chatStore.listen("RPL_WELCOME", () => replyWelcomeHandler(changeViewModel), {
 			once: true,
 		});
 
@@ -110,9 +112,9 @@ function connectSubmit(isConnectedModel: ModelRef<boolean | undefined, string>) 
 /**
  * Écoute de l'événement `RPL_WELCOME`.
  */
-function replyWelcomeHandler(isConnectedModel: ModelRef<boolean | undefined, string>) {
+function replyWelcomeHandler(changeViewModel: ModelRef<View | undefined, string>) {
 	loader.value = false;
-	isConnectedModel.value = true;
+	changeViewModel.value = View.Chat;
 }
 
 /**
@@ -129,17 +131,6 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 
 	loader.value = false;
 }
-
-/**
- * Sauvegarde l'information de se souvenir de moi dans le `localStorage`.
- */
-function useRememberMe() {
-	if (loginFormData.rememberMe.value) {
-		chatStore.connect(loginFormData);
-	}
-}
-
-useRememberMe();
 </script>
 
 <template>
@@ -167,7 +158,7 @@ useRememberMe();
 					v-show="advancedInfo"
 					v-model="loginFormData.passwordServer"
 					label="password"
-					name="password"
+					name="password_server"
 					placeholder="Mot de passe du serveur de Chat"
 					type="password"
 				/>

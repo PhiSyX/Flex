@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use lexa_kernel::{
+use flex_kernel::{
 	ApplicationAdapterCLIInterface,
 	ApplicationAdapterEnvInterface,
 	ApplicationAdapterInterface,
@@ -70,8 +70,9 @@ where
 	fn env(&self) -> &Self::Env
 	{
 		self.env_vars.as_ref().expect(
-			"Il ne faut pas oublier d'appeler « application.include_env_vars() » à \
-			 l'initialisation de l'application.",
+			"Il ne faut pas oublier d'appeler « \
+			 application.include_env_vars() » à l'initialisation de \
+			 l'application.",
 		)
 	}
 

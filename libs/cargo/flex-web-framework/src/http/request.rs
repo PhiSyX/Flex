@@ -19,9 +19,11 @@ pub use axum::extract::{
 	Host,
 	Path,
 	Query,
+	Request,
 	State,
 };
-pub use axum::http::request::*;
+use axum::http::HeaderValue;
+use hyper::HeaderMap;
 
 // --------- //
 // Structure //
@@ -35,4 +37,5 @@ pub struct HttpRequest<T>
 	pub uri: hyper::Uri,
 	pub raw_query: Option<String>,
 	pub referer: Option<axum_extra::headers::Referer>,
+	pub headers: HeaderMap<HeaderValue>,
 }

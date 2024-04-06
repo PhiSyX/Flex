@@ -21,7 +21,6 @@ pub enum ChannelWritePermission
 	No(ChannelNoPermissionCause),
 }
 
-#[allow(non_camel_case_types)]
 pub enum ChannelNoPermissionCause
 {
 	ERR_NOSUCHCHANNEL,

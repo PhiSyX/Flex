@@ -49,7 +49,7 @@ pub enum ViteMacroParserErrorKind {}
 // Implémentation // -> Interface
 // -------------- //
 
-impl lexa_syn::Parser for ViteMacro
+impl flex_syn::Parser for ViteMacro
 {
 	type Err<'err> = ViteMacroParserError;
 	type Input = ViteMacroParserInput;
@@ -62,9 +62,10 @@ impl lexa_syn::Parser for ViteMacro
 	fn analyze(&self) -> Result<'_, TokenStream>
 	{
 		let vite_path = self.tokens.value();
-		let output = if vite_path.starts_with("http://") || vite_path.starts_with("https://") {
-			let (vite_url, vite_root) = vite_path
-				.split_once('#')
+		let output = if vite_path.starts_with("http://") ||
+						vite_path.starts_with("https://")
+		{
+			let (vite_url, vite_root) = vite_path.split_once('#')
 				.unwrap_or_else(|| (&vite_path, "root"));
 			quote! {
 				{
@@ -86,7 +87,7 @@ impl lexa_syn::Parser for ViteMacro
 // Implémentation // -> Error
 // -------------- //
 
-impl<'err> lexa_syn::ParserError<'err> for ViteMacroParserError
+impl<'err> flex_syn::ParserError<'err> for ViteMacroParserError
 {
 	fn compile_error(self) -> TokenStream
 	{

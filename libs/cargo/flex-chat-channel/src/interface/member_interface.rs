@@ -27,7 +27,10 @@ pub trait ChannelMemberInterface
 	);
 
 	/// Récupère un membre du salon.
-	fn member(&self, member_id: &<Self::Member as MemberInterface>::ID) -> Option<&Self::Member>;
+	fn member(
+		&self,
+		member_id: &<Self::Member as MemberInterface>::ID,
+	) -> Option<&Self::Member>;
 
 	/// Récupère un membre du salon.
 	fn member_mut(
@@ -36,10 +39,14 @@ pub trait ChannelMemberInterface
 	) -> Option<&mut Self::Member>;
 
 	/// Tous les membres du salon.
-	fn members(&self) -> &HashMap<<Self::Member as MemberInterface>::ID, Self::Member>;
+	fn members(
+		&self,
+	) -> &HashMap<<Self::Member as MemberInterface>::ID, Self::Member>;
 
 	/// Tous les membres du salon (version mutable).
-	fn members_mut(&mut self) -> &mut HashMap<<Self::Member as MemberInterface>::ID, Self::Member>;
+	fn members_mut(
+		&mut self,
+	) -> &mut HashMap<<Self::Member as MemberInterface>::ID, Self::Member>;
 }
 
 pub trait MemberInterface

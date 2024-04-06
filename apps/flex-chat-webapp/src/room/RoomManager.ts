@@ -53,6 +53,49 @@ export class RoomManager {
 	}
 
 	/**
+	 * Change un ID par un nouveau.
+	 */
+	changeId(oldRoomID: RoomID, newRoomID: RoomID): void {
+		const isCurrentRoom = this.current().id() === oldRoomID;
+		const maybeRoom = this.remove(oldRoomID);
+		if (maybeRoom.is_none()) return;
+		const room = maybeRoom.unwrap();
+		room.withID(newRoomID);
+		this.insert(newRoomID, room);
+		if (isCurrentRoom) {
+			this.setCurrent(newRoomID);
+		}
+	}
+
+	/**
+	 * Ferme une chambre à partir de son ID.
+	 */
+	close(
+		roomID: RoomID,
+		options?: { state: "opened" | "closed" }
+	): Option<Room> {
+		if (this._currentRoom.is_some()) {
+			if (this.current().eq(roomID)) {
+				this.unsetCurrent();
+			}
+		}
+		const maybeRoom = this.get(roomID, options);
+		if (maybeRoom.is_some()) {
+			const room = maybeRoom.unwrap();
+			room.marksAsClosed();
+		}
+		if (this._currentRoom.is_none()) {
+			this.setCurrentToLast();
+		}
+
+		if (maybeRoom.is_some()) {
+			return Some(maybeRoom.unwrap());
+		}
+
+		return None();
+	}
+
+	/**
 	 * Définit les rooms de la classe à partir d'un itérable.
 	 */
 	extends(rooms: Iterable<[RoomID, Room]>) {
@@ -136,20 +179,13 @@ export class RoomManager {
 	/**
 	 * Supprime une chambre à partir de son ID.
 	 */
-	remove(roomID: RoomID, options?: { state: "opened" | "closed" }) {
-		if (this._currentRoom.is_some()) {
-			if (this.current().eq(roomID)) {
-				this.unsetCurrent();
-			}
-		}
-		const maybeRoom = this.get(roomID, options);
-		if (maybeRoom.is_some()) {
-			const room = maybeRoom.unwrap();
-			room.marksAsClosed();
-		}
-		if (this._currentRoom.is_none()) {
-			this.setCurrentToLast();
-		}
+	remove(
+		roomId: RoomID,
+		options?: { state: "opened" | "closed" }
+	): Option<Room> {
+		const maybeRoom = this.get(roomId, options);
+		maybeRoom.then(() => this._rooms.delete(roomID(roomId.toLowerCase())));
+		return maybeRoom;
 	}
 
 	/**

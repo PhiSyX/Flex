@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 mod adapter;
+mod database;
 mod extension;
 pub mod extract;
 pub mod http;
@@ -20,9 +21,11 @@ pub mod settings;
 pub mod types;
 pub mod view;
 
-pub use axum::{async_trait, Extension};
+pub use axum::{async_trait, middleware, Extension};
 pub use flex_web_framework_macro::{html, vite, View};
+pub use tower_sessions as sessions;
 
+pub use self::database::*;
 pub use self::extension::*;
 pub use self::interface::*;
 pub use self::server::ServerState as AxumState;
@@ -33,6 +36,17 @@ pub use self::view::*;
 // Type //
 // ---- //
 
-pub type AxumApplication<S = (), E = (), C = ()> =
-	lexa_kernel::Kernel<adapter::Adapter<S, E, C>, E, C>;
+pub type AxumApplication<
+	S = (),
+	E = (),
+	C = ()
+> = flex_kernel::Kernel<
+	adapter::Adapter<
+		S,
+		E,
+		C
+	>,
+	E,
+	C
+>;
 pub type AxumRouter<S> = axum::Router<AxumState<S>>;

@@ -24,14 +24,16 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 -   [x] [**Chat**](docs/chat/README.md)
 
-    -   [x] Client Web (`pnpm webapp`)
+    -   [x] Client Web (`pnpm chat:webapp`)
 
-		1. Un fichier `apps/flex-chat-webapp/.env` DOIT être crée.
-
-    -   [x] Serveur (`cargo run --bin flex-ws-server`)
-
-		1. Un fichier `config/flex/.env` DOIT être crée.
-
-		2. Un fichier `config/flex/flex.yml` DOIT être crée.
+        1. Un fichier `apps/flex-chat-webapp/.env` DOIT être crée.
 
     -   [ ] Services (robots, automates, IA)
+
+-   [x] Serveur (`cargo run --bin flex`)
+
+    1.  Un fichier `config/flex/.env` DOIT être crée. Se referer au fichier
+        `config/flex/.env.example`.
+
+    2.  Les fichiers de configuration finissant par `.example.yml` DOIVENT être
+        renommés, sans `.example`. Exemple: `chat.example.yml` -> `chat.yml`.

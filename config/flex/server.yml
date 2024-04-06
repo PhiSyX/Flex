@@ -1,8 +1,12 @@
 ip: 127.0.0.1
 port: 8888
+# À dé-commenter si pas de certificats
+tls:
+  cert: config/flex/certs/flex.cer
+  key: config/flex/certs/flex.pvk
 static_resources:
   - url_path: /public
-    dir_path: apps/flex-chat-webapp/public/
+    dir_path: www/flex/public/
 
   - url_path: /assets
     dir_path: apps/flex-chat-webapp/assets/

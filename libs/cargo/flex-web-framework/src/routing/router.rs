@@ -11,8 +11,10 @@
 use std::collections::HashSet;
 use std::fmt;
 
+use axum::response::IntoResponse;
+
 use super::RouterBuilder;
-use crate::{http, AxumState};
+use crate::{http, AxumState, RouteIDInterface};
 
 // --------- //
 // Structure //
@@ -52,11 +54,11 @@ where
 {
 	type State = UserState;
 
-	fn path(url_path: impl ToString + fmt::Debug) -> Self
+	fn path(url_path: impl RouteIDInterface + fmt::Debug) -> Self
 	{
 		Self {
 			name: format!("{url_path:?}"),
-			fullpath: url_path.to_string(),
+			fullpath: url_path.path().to_string(),
 			methods: Default::default(),
 			action: Default::default(),
 		}
@@ -161,6 +163,31 @@ where
 		self
 	}
 
+	fn middleware<L>(mut self, layer: L) -> Self
+	where
+			L: tower_layer::Layer<axum::routing::Route>
+				+ 'static
+				+ Clone
+				+ Send
+			,
+			L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
+				+ 'static
+				+ Clone
+				+ Send
+			,
+			<L::Service as tower_service::Service<axum::extract::Request>>::Response:
+				'static
+				+ IntoResponse
+			,
+			<L::Service as tower_service::Service<axum::extract::Request>>::Future:
+				'static
+				+ Send
+			,
+	{
+		self.action = self.action.route_layer(layer);
+		self
+	}
+
 	fn build(self) -> Router<Self::State>
 	{
 		self
@@ -173,6 +200,15 @@ where
 {
 	fn from(router: &Router<S>) -> Self
 	{
-		Self::new().route(&router.fullpath, router.action.to_owned())
+		let mut r = Self::new();
+
+		let full_path = &router.fullpath;
+		let full_path_trimmed = router.fullpath.trim_end_matches('/');
+
+		if full_path.len() != full_path_trimmed.len() {
+			r = r.route(full_path_trimmed, router.action.to_owned())
+		}
+
+		r.route(full_path, router.action.to_owned())
 	}
 }

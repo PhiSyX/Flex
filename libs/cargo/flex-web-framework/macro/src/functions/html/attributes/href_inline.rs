@@ -50,7 +50,8 @@ impl HTMLMacro
 				| rstml::node::NodeAttribute::Block(_) => false,
 				| rstml::node::NodeAttribute::Attribute(attr) => {
 					attr.key.to_string() == "rel"
-						&& attr.value_literal_string().unwrap_or_default() == "stylesheet"
+						&& attr.value_literal_string().unwrap_or_default()
+							== "stylesheet"
 				}
 			}
 		}) {

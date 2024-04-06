@@ -1,0 +1,23 @@
+[package]
+name = "flex-logger"
+version = "0.1.0"
+edition = "2021"
+description = "Un logger parmi tant d'autres."
+
+[lints]
+workspace = true
+
+[features]
+tracing = ["dep:tracing", "tracing-subscriber"]
+serde = ["dep:serde"]
+
+[dependencies]
+chrono = { workspace = true }
+console = { workspace = true }
+lazy_static = { version = "1.4.0" }
+log = { workspace = true, features = ["std"] }
+tracing = { workspace = true, optional = true }
+tracing-subscriber = { version = "0.3.18", optional = true }
+serde = { workspace = true, optional = true }
+regex = { workspace = true }
+unicode-width = { version = "0.1.11" }

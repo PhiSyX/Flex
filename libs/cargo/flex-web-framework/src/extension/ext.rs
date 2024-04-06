@@ -15,7 +15,8 @@ use crate::{AsyncExtensionInterface, AxumApplication, ExtensionInterface};
 // --------- //
 
 /// Extension d'application "Extension"
-pub trait ApplicationExtExtension: Sized
+pub trait ApplicationExtExtension
+	: Sized
 {
 	/// Applique une extension au serveur.
 	fn extension<Ext>(self) -> Self
@@ -30,8 +31,8 @@ pub trait ApplicationExtExtension: Sized
 }
 
 /// Extension d'application "Extension" asynchrone.
-#[allow(async_fn_in_trait)]
-pub trait AsyncApplicationExtExtension: Sized
+pub trait AsyncApplicationExtExtension
+	: Sized
 {
 	/// Applique une extension au serveur.
 	async fn extension<Ext>(self) -> Self
@@ -40,7 +41,10 @@ pub trait AsyncApplicationExtExtension: Sized
 
 	/// Applique une extension au serveur, en passant des arguments à
 	/// l'extension.
-	async fn extension_with<Ext>(self, payload: impl Into<Ext::Payload>) -> Self
+	async fn extension_with<Ext>(
+		self,
+		payload: impl Into<Ext::Payload>,
+	) -> Self
 	where
 		Ext: AsyncExtensionInterface;
 }
@@ -63,15 +67,9 @@ impl<S, E, C> ApplicationExtExtension for AxumApplication<S, E, C>
 		Ext: ExtensionInterface,
 	{
 		let payload = payload.into();
-
 		let instance = Ext::new(payload);
-
-		self.application_adapter.router.global = self
-			.application_adapter
-			.router
-			.global
+		self.application_adapter.router.global = self.application_adapter.router.global
 			.layer(axum::Extension(instance));
-
 		self
 	}
 }
@@ -85,20 +83,18 @@ impl<S, E, C> AsyncApplicationExtExtension for AxumApplication<S, E, C>
 		AsyncApplicationExtExtension::extension_with::<Ext>(self, ()).await
 	}
 
-	async fn extension_with<Ext>(mut self, payload: impl Into<Ext::Payload>) -> Self
+	async fn extension_with<Ext>(
+		mut self,
+		payload: impl Into<Ext::Payload>,
+	) -> Self
 	where
 		Ext: AsyncExtensionInterface,
 	{
 		let payload = payload.into();
-
 		let instance = Ext::new(payload).await;
-
-		self.application_adapter.router.global = self
-			.application_adapter
-			.router
-			.global
-			.layer(axum::Extension(instance));
-
+		self.application_adapter.router.global = self.application_adapter.router.global
+			.layer(axum::Extension(instance))
+		;
 		self
 	}
 }

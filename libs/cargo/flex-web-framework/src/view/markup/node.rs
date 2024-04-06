@@ -146,6 +146,22 @@ impl Node
 		})
 	}
 
+	pub fn create_unsafe_html_cached(
+		named: impl AsRef<path::Path>,
+		fallback: impl FnOnce() -> String,
+	) -> Self
+	{
+		if let Some(content) = MEMOIZE_FILE.get(named.as_ref()) {
+			return Self::UnsafeHtml(text::DangerousTextNode {
+				raw_text: content.to_owned(),
+			});
+		}
+
+		let content = fallback();
+		MEMOIZE_FILE.insert(named.as_ref().to_owned(), content.to_owned());
+		Self::UnsafeHtml(text::DangerousTextNode { raw_text: content })
+	}
+
 	pub fn create_unsafe_html_from_file(file: impl AsRef<path::Path>) -> Self
 	{
 		if let Some(content_of_file) = MEMOIZE_FILE.get(file.as_ref()) {
@@ -154,8 +170,9 @@ impl Node
 			});
 		}
 
-		let raw_text = std::fs::read_to_string(&file)
-			.unwrap_or_else(|_| panic!("le fichier « {} » n'existe pas.", file.as_ref().display()));
+		let raw_text = std::fs::read_to_string(&file).unwrap_or_else(|_| {
+			panic!("le fichier « {} » n'existe pas.", file.as_ref().display())
+		});
 		MEMOIZE_FILE.insert(file.as_ref().to_owned(), raw_text.clone());
 		Self::UnsafeHtml(text::DangerousTextNode { raw_text })
 	}
@@ -165,7 +182,11 @@ impl Node
 // Fonction //
 // -------- //
 
-fn with_children(f: &mut fmt::Formatter<'_>, children: &[Node], is_fragment: bool) -> fmt::Result
+fn with_children(
+	f: &mut fmt::Formatter<'_>,
+	children: &[Node],
+	is_fragment: bool,
+) -> fmt::Result
 {
 	if f.alternate() {
 		let mut children = children.iter();

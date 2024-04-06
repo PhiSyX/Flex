@@ -29,7 +29,9 @@ pub trait ChannelAccessControlInterface
 	type User: UserInterface;
 
 	/// Les contrôles d'accès.
-	fn access_controls(&self) -> Vec<(char, ApplyMode<Self::AccessControlMask>)>;
+	fn access_controls(
+		&self,
+	) -> Vec<(char, ApplyMode<Self::AccessControlMask>)>;
 
 	/// Ajoute un ban au salon.
 	fn add_ban(

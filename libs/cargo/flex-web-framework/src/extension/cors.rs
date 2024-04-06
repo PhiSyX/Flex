@@ -18,7 +18,8 @@ use crate::AxumApplication;
 // --------- //
 
 /// Extension d'application "CORS Layer"
-pub trait ApplicationCorsLayerExtension: Sized
+pub trait ApplicationCorsLayerExtension
+	: Sized
 {
 	/// Applique un layer CORS au serveur.
 	fn use_cors_layer(self) -> Self;
@@ -32,19 +33,21 @@ impl<S, E, C> ApplicationCorsLayerExtension for AxumApplication<S, E, C>
 {
 	fn use_cors_layer(mut self) -> Self
 	{
-		let cors_settings = match self.fetch_config::<CORSSettings>(CORSSettings::FILENAME) {
+		let cors_settings = match self.fetch_config::<CORSSettings>(
+			CORSSettings::FILENAME
+		)
+		{
 			| Ok(s) => s,
-			| Err(err) => {
-				self.signal()
-					.send_critical(format!("Erreur liée au CORS : {}", err));
-			}
+			| Err(err) => self.signal().send_critical(
+				format!("Erreur liée au CORS : {err}")
+			)
 		};
 
 		log::debug!("Paramètres CORS: {:#?}", &cors_settings);
 
 		let cors_layer: CorsLayer = cors_settings.into();
-		self.application_adapter.router.global =
-			self.application_adapter.router.global.layer(cors_layer);
+		self.application_adapter.router.global = self.application_adapter.router.global
+			.layer(cors_layer);
 
 		self
 	}

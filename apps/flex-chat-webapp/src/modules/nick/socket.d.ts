@@ -15,6 +15,7 @@ declare interface NickFormData {
 declare interface NickDataResponse {
 	new_nickname: string;
 	old_nickname: string;
+	tags: { user_id: UserID };
 }
 
 declare interface Commands {

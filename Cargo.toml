@@ -1,30 +1,39 @@
 [workspace]
-members = ["libs/cargo/*", "www/flex-chat-server"]
+members = ["libs/cargo/*", "www/flex"]
 resolver = "2"
 
 [workspace.package]
 # name = "flex"
 version = "0.1.0"
 edition = "2021"
+license = "MPL-2.0"
 
 [workspace.lints.rust]
+async_fn_in_trait = "allow"
+# dead_code = "allow"
 non_camel_case_types = "allow"
-unsafe_code = "forbid"
+# unsafe_code = "forbid"
 
 [workspace.dependencies]
-chrono = { version = "0.4.35", features = ["clock", "serde"] }
+async-trait = "0.1.79"
+chrono = { version = "0.4.37", features = ["clock", "serde"] }
+clap = { version = "4.5.4", features = ["derive"] }
+console = { version = "0.15.8" }
 dashmap = { version = "5.5.3", features = ["serde"] }
-lexa-kernel = { git = "https://github.com/PhiSyX/lexa-kernel.git", rev = "76efd03faec3de953761b6cd5c07ec78c9d73947", features = [
-	"tracing",
-] }
-log = { version = "0.4.21" }
+dns-lookup = "2.0.4"
 flex-cli = { path = "libs/cargo/flex-cli" }
 flex-crypto = { path = "libs/cargo/flex-crypto" }
+flex-kernel = { path = "libs/cargo/flex-kernel", features = ["tracing"] }
 flex-serde-validation = { path = "libs/cargo/flex-serde-validation" }
 flex-web-framework = { path = "libs/cargo/flex-web-framework" }
+log = { version = "0.4.21" }
+regex = { version = "1.10.4" }
 serde = { version = "1.0.197", features = ["derive"] }
-socketioxide = { version = "0.11.0", features = ["extensions", "state"] }
-thiserror = { version = "1.0.57" }
-tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread"] }
+serde_json = { version = "1.0.115" }
+socketioxide = { version = "0.12.0", features = ["extensions", "state"] }
+sqlx = { version = "0.7.4", features = ["chrono", "postgres", "uuid"] }
+syn = { version = "2.0.58", features = ["full"] }
+thiserror = { version = "1.0.58" }
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 tracing = { version = "0.1.40" }
-uuid = { version = "1.7.0", features = ["v4", "serde"] }
+uuid = { version = "1.8.0", features = ["v4", "serde"] }

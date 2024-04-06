@@ -48,7 +48,7 @@ export class PartHandler implements SocketEventInterface<"PART"> {
 	}
 
 	handleClientItself(_: GenericReply<"PART">, channel: ChannelRoom) {
-		this.store.roomManager().remove(channel.name);
+		this.store.roomManager().close(channel.name);
 		// FIXME(phisyx): Définir la chambre courante à la chambre juste au
 		// dessus ou en au dessous de la chambre venant d'être fermée.
 		this.store.roomManager().setCurrentToLast();

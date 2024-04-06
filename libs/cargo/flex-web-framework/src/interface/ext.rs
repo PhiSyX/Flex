@@ -12,15 +12,22 @@
 // Interface //
 // --------- //
 
-pub trait ExtensionInterface: Sized + Clone + Send + Sync + 'static
+pub trait ExtensionInterface
+	: 'static
+	+ Clone
+	+ Send + Sync
+	+ Sized
 {
 	type Payload;
 
 	fn new(payload: Self::Payload) -> Self;
 }
 
-#[allow(async_fn_in_trait)]
-pub trait AsyncExtensionInterface: Sized + Clone + Send + Sync + 'static
+pub trait AsyncExtensionInterface
+	: 'static
+	+ Clone
+	+ Send + Sync
+	+ Sized
 {
 	type Payload;
 

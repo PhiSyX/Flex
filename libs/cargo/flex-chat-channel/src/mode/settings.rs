@@ -20,7 +20,10 @@ use super::ChannelModes;
 // Interface //
 // --------- //
 
-pub trait SettingsFlagInterface: Clone + serde::Serialize + fmt::Debug
+pub trait SettingsFlagInterface
+	: Clone
+	+ fmt::Debug
+	+ serde::Serialize
 {
 	/// Lettre associée au paramètre.
 	fn letter(&self) -> char;
@@ -238,7 +241,9 @@ impl std::fmt::Display for ChannelModes<SettingsFlag>
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{
-		let mode_settings: String = self.modes.keys().map(|letter| letter.to_string()).collect();
+		let mode_settings: String = self.modes.keys()
+			.map(|letter| letter.to_string())
+			.collect();
 		write!(f, "{}", mode_settings)
 	}
 }

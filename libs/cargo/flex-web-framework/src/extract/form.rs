@@ -41,15 +41,18 @@ where
 {
 	type Rejection = MissingFormError;
 
-	async fn from_request(req: axum::extract::Request, state: &S) -> Result<Self, Self::Rejection>
+	async fn from_request(
+		req: axum::extract::Request,
+		state: &S,
+	) -> Result<Self, Self::Rejection>
 	{
+		use axum::extract::{Form, Json};
+
 		let f = if json_content_type(req.headers()) {
-			let axum::extract::Json(form) =
-				axum::extract::Json::<F>::from_request(req, state).await?;
+			let Json(form) = Json::<F>::from_request(req, state).await?;
 			form
 		} else {
-			let axum::extract::Form(form) =
-				axum::extract::Form::<F>::from_request(req, state).await?;
+			let Form(form) = Form::<F>::from_request(req, state).await?;
 			form
 		};
 		Ok(Self(f))
@@ -78,8 +81,10 @@ fn json_content_type(headers: &hyper::HeaderMap) -> bool
 		return false;
 	};
 
-	let is_json_content_type = mime.type_() == "application"
-		&& (mime.subtype() == "json" || mime.suffix().map_or(false, |name| name == "json"));
+	let is_json_content_type = mime.type_() == "application" && (
+		mime.subtype() == "json" ||
+		mime.suffix().map_or(false, |name| name == "json")
+	);
 
 	is_json_content_type
 }

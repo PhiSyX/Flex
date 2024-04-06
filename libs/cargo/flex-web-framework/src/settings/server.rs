@@ -16,6 +16,7 @@ use crate::types::port;
 // Structure //
 // --------- //
 
+#[derive(Clone)]
 #[derive(serde::Deserialize)]
 pub struct Settings
 {
@@ -23,10 +24,23 @@ pub struct Settings
 	pub ip: net::IpAddr,
 	/// Le port de connexion du serveur associé à l'IP
 	pub port: port::Port,
+	/// Paramètre TLS du serveur.
+	pub tls: Option<TlsSettings>,
 	/// Ressources statiques du serveur.
 	pub static_resources: Vec<StaticResourceSettings>,
 }
 
+#[derive(Clone)]
+#[derive(serde::Deserialize)]
+pub struct TlsSettings
+{
+	#[serde(rename = "cert")]
+	pub cert_file: path::PathBuf,
+	#[serde(rename = "key")]
+	pub key_file: path::PathBuf,
+}
+
+#[derive(Clone)]
 #[derive(serde::Deserialize)]
 pub struct StaticResourceSettings
 {
@@ -48,6 +62,32 @@ impl Settings
 	{
 		net::SocketAddr::from((self.ip, u16::from(self.port)))
 	}
+
+	/// Résolution du nom d'hôte à partir de l'adresse IP
+	pub fn hostname(&self) -> String
+	{
+		if self.ip == std::net::Ipv4Addr::LOCALHOST {
+			String::from("localhost")
+		} else {
+			dns_lookup::lookup_addr(&self.ip).unwrap()
+		}
+	}
+
+	pub fn protocol(&self) -> &str
+	{
+		if self.tls.is_some() {
+			"https"
+		} else {
+			"http"
+		}
+	}
+
+	pub fn http_url(&self) -> url::Url
+	{
+		format!("{}://{}:{}", self.protocol(), self.hostname(), self.port)
+			.parse()
+			.unwrap()
+	}
 }
 
 // -------------- //
@@ -61,6 +101,7 @@ impl Default for Settings
 		Self {
 			ip: net::IpAddr::V4(net::Ipv4Addr::new(127, 0, 0, 1)),
 			port: port::Port::from(80),
+			tls: Default::default(),
 			static_resources: Default::default(),
 		}
 	}

@@ -1,0 +1,29 @@
+[package]
+name = "flex-kernel"
+version = "0.1.0"
+edition = "2021"
+description = "Flex Kernel Core Application"
+
+[lints]
+workspace = true
+
+[features]
+tracing = ["flex-logger/tracing", "dep:tracing"]
+
+[dependencies]
+flex-kernel-macro = { path = "macro" }
+flex-env = { path = "../flex-env" }
+flex-fs = { path = "../flex-fs" }
+flex-logger = { path = "../flex-logger", features = ["serde"] }
+flex-prompt = { path = "../flex-prompt", features = ["serde"] }
+flex-wildcard-matching = { path = "../flex-wildcard-matching" }
+
+console = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true, optional = true }
+
+[dev-dependencies]
+clap = { workspace = true }
+tokio = { workspace = true }

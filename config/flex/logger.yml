@@ -1,5 +1,4 @@
 preset: "default"
 
 target_filters:
-  - "*lexa_*"
   - "*flex*"

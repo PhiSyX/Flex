@@ -12,7 +12,6 @@
 // Type //
 // ---- //
 
-#[allow(non_camel_case_types)]
 type CHANNEL_ACCESS_LEVEL_FLAG = u32;
 
 // -------- //
@@ -43,6 +42,10 @@ pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_SYMBOL: char = '%';
 pub const CHANNEL_ACCESS_LEVEL_VIP_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 3;
 pub const CHANNEL_ACCESS_LEVEL_VIP_LETTER: char = 'v';
 pub const CHANNEL_ACCESS_LEVEL_VIP_SYMBOL: char = '+';
+
+/// Message d'erreur lors de l'analyse de symbole incorrect.
+const PARSE_SYMBOL_ERROR_MSG: &str = "Seuls l'un des symboles suivants sont attendus: ~&@%+";
+
 
 // ----------- //
 // Énumération //
@@ -127,7 +130,7 @@ impl std::str::FromStr for ChannelAccessLevel
 			| "@" => Self::Operator,
 			| "%" => Self::HalfOperator,
 			| "+" => Self::Vip,
-			| _ => return Err("Seuls l'un des symboles suivants sont attendus: ~&@%+"),
+			| _ => return Err(PARSE_SYMBOL_ERROR_MSG)
 		})
 	}
 }

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::RouterInterface;
+use crate::{AxumRouter, AxumState, Config, RouterInterface};
 
 // --------- //
 // Interface //
@@ -29,43 +29,42 @@ pub trait Feature
 	const NAME: &'static str;
 
 	fn register_services(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}
 
 	fn register_extensions(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}
 
 	fn register_layers(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}
 
 	fn register_middlewares(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}
 }
 
-#[allow(async_fn_in_trait)]
 pub trait AsyncFeature
 {
 	/// La configuration de la feature.
@@ -81,37 +80,37 @@ pub trait AsyncFeature
 	const NAME: &'static str;
 
 	async fn register_services(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}
 
 	async fn register_extensions(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}
 
 	async fn register_layers(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}
 
 	async fn register_middlewares(
-		_config: &crate::settings::Config<Self::Config>,
-		_state: &mut crate::AxumState<Self::State>,
-		router: crate::AxumRouter<Self::State>,
-	) -> crate::AxumRouter<Self::State>
+		_config: &Config<Self::Config>,
+		_state: &mut AxumState<Self::State>,
+		router: AxumRouter<Self::State>,
+	) -> AxumRouter<Self::State>
 	{
 		router
 	}

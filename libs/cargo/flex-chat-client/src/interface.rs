@@ -28,7 +28,12 @@ pub use self::socket::*;
 pub trait ClientInterface: fmt::Debug
 {
 	/// Type représentant l'ID d'un client.
-	type ClientID: serde::Serialize + fmt::Debug + fmt::Display + ToString + Clone;
+	type ClientID: serde::Serialize
+				 + fmt::Debug
+				 + fmt::Display
+				 + ToString
+				 + Clone
+				 ;
 
 	/// Type représentant l'ID de la socket du client.
 	type SocketID: fmt::Debug;
@@ -84,6 +89,9 @@ pub trait ClientInterface: fmt::Debug
 	/// Attribution d'un nouvel ID de Socket.
 	fn reconnect_with_new_sid(&mut self, sid: socketioxide::socket::Sid);
 
+	/// Attribution d'un nouvel ID au client.
+	fn set_cid(&mut self, cid: Self::ClientID);
+
 	/// Attribution d'un nouvel ID de Socket.
 	fn set_sid(&mut self, sid: socketioxide::socket::Sid);
 
@@ -104,6 +112,9 @@ pub trait ClientInterface: fmt::Debug
 
 	/// Jeton de connexion.
 	fn token(&self) -> &str;
+
+	/// Définit un nouveau jeton de connexion.
+	fn new_token(&mut self);
 
 	/// Utilisateur du client.
 	fn user(&self) -> &Self::User;

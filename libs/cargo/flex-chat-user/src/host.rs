@@ -49,8 +49,8 @@ impl Host
 	/// (`127.0.0.1`).
 	pub fn new(ip_addr: net::IpAddr) -> Self
 	{
-		let resolve_addr =
-			dns_lookup::lookup_addr(&ip_addr).unwrap_or_else(|_| String::from("localhost"));
+		let resolve_addr = dns_lookup::lookup_addr(&ip_addr)
+			.unwrap_or_else(|_| String::from("localhost"));
 
 		let cloaked = Self::get_cloaked_ip(&resolve_addr);
 
@@ -79,7 +79,9 @@ impl Host
 		hostname
 			.split('.')
 			.map(|part: &str| -> Cow<str> {
-				if part.contains(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) {
+				if part.contains([
+					'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+				]) {
 					let parsed: Result<u8, _> = part.parse();
 					if parsed.is_err() {
 						return Cow::Owned(part.sha256_sliced(0..part.len()));

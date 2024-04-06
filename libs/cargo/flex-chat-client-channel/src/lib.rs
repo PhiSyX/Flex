@@ -12,11 +12,20 @@ mod errors;
 mod responses;
 
 use errors::{ErrNotonchannelError, ErrUsernotinchannelError};
-use flex_chat_channel::{Channel, ChannelInterface, ChannelMember, ChannelMemberInterface};
+use flex_chat_channel::{
+	Channel,
+	ChannelInterface,
+	ChannelMember,
+	ChannelMemberInterface,
+};
 use flex_chat_client::{ClientSocketInterface, Origin, Socket};
 use responses::{RplEndofnamesReply, RplNamreplyCommandResponse};
 
-use self::errors::{ErrChanoprivsneededError, ErrNosuchchannelError, ErrUseronchannelError};
+use self::errors::{
+	ErrChanoprivsneededError,
+	ErrNosuchchannelError,
+	ErrUseronchannelError,
+};
 
 // --------- //
 // Interface //

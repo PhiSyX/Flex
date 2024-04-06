@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+// import type {} from "socket.io-client";
+
 // --------- //
 // Interface //
 // --------- //
@@ -23,9 +25,25 @@ declare interface SocketEventInterface<R extends RepliesNames> extends SocketEve
 // Socket Event
 
 declare type ServerToClientEvent = {
+	// NOTE: mes types
 	[K in RepliesNames]: (_: GenericReply<K>) => void;
+} & {
+	// NOTE: types par socket.io
+	connect: () => void;
+	disconnect: (_: string) => void;
 };
 
 declare type ClientToServerEvent = {
 	[C in CommandsNames]: (data: Command<C>) => void;
 };
+
+type SocketIOClientSocket<S,C> = import("socket.io-client").Socket;
+
+declare interface TypeSafeSocket extends SocketIOClientSocket<ServerToClientEvent, ClientToServerEvent>
+{
+	emit<E extends keyof ClientToServerEvent>(eventName: E, ...payload: Parameters<ClientToServerEvent[E]>);
+
+	on<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]): void;
+
+	once<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]): void;
+}

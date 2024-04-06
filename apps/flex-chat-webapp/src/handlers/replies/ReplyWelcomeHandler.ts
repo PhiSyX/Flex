@@ -14,10 +14,12 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> {
+export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME">
+{
 	constructor(private store: ChatStore) {}
 
-	listen() {
+	listen()
+	{
 		this.store.once("RPL_WELCOME", (data) => {
 			this.handle(data, {
 				channels: this.store.getAutoJoinChannels(),
@@ -25,16 +27,18 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME"> 
 		});
 	}
 
-	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<ChannelID> }) {
+	handle(data: GenericReply<"RPL_WELCOME">, payload: { channels: Array<ChannelID> })
+	{
 		const { channels } = payload;
 
-		this.store.setConnected(true);
 		this.store.setClient({
 			id: data.tags.client_id,
 			nickname: data.nickname,
 			host: { cloaked: data.host },
 			ident: data.ident,
 		});
+
+		this.store.setConnected(true);
 
 		const tokenData = {
 			nick: data.nickname,

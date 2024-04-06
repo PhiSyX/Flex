@@ -10,7 +10,7 @@
 
 use std::{error, fmt};
 
-use lexa_syn::field;
+use flex_syn::field;
 use syn::__private::quote::{quote, quote_spanned};
 use syn::__private::{Span, TokenStream, TokenStream2};
 use syn::spanned::Spanned;
@@ -52,7 +52,7 @@ pub enum ErrorDeriveParserErrorKind
 // Implémentation // -> Interface
 // -------------- //
 
-impl lexa_syn::Parser for ViewDerive
+impl flex_syn::Parser for ViewDerive
 {
 	type Err<'err> = ViewDeriveParserError;
 	type Input = ViewDeriveParserInput;
@@ -100,7 +100,7 @@ impl lexa_syn::Parser for ViewDerive
 	}
 }
 
-impl<'err> lexa_syn::ParserError<'err> for ViewDeriveParserError
+impl<'err> flex_syn::ParserError<'err> for ViewDeriveParserError
 {
 	fn compile_error(self) -> TokenStream
 	{
@@ -126,7 +126,8 @@ impl fmt::Display for ViewDeriveParserError
 		let err_s = match self.kind {
 			| ErrorDeriveParserErrorKind::IsNotNamedOrUnitStruct => {
 				String::from(
-					"ne supporte que les structures de champs nommés ou les structures unitaires.",
+					"ne supporte que les structures de champs nommés ou les \
+					 structures unitaires.",
 				)
 			}
 		};

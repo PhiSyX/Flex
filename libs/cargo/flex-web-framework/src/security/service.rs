@@ -31,7 +31,10 @@ pub struct SecurityPasswordHasherService<T>
 
 impl<T> ExtensionInterface for SecurityPasswordHasherService<T>
 where
-	T: HasherCtor + Clone + Send + Sync + 'static,
+	T: 'static,
+	T: HasherCtor,
+	T: Clone,
+	T: Send + Sync,
 {
 	type Payload = Arc<str>;
 

@@ -12,8 +12,10 @@ mod cookie;
 mod cors;
 mod ext;
 mod feature;
+mod session;
 
 pub use self::cookie::*;
 pub use self::cors::*;
 pub use self::ext::*;
 pub use self::feature::*;
+pub use self::session::*;

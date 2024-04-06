@@ -8,28 +8,35 @@ workspace = true
 
 [dependencies]
 argon2 = { version = "0.5.3", features = ["rand"] }
-axum = { version = "0.7.4" }
-axum-extra = { version = "0.9.2", features = ["typed-header"] }
+axum = { version = "0.7.5" }
+axum-server = { version = "0.6.0", features = ["tls-rustls"] }
+axum-extra = { version = "0.9.3", features = ["typed-header"] }
 axum-client-ip = { version = "0.5.1" }
-axum-sessions = { version = "0.6.1" }
 chrono = { workspace = true }
-console = { version = "0.15.8" }
+console = { workspace = true }
 dashmap = { workspace = true }
+dns-lookup = { workspace = true }
 email_address = { version = "0.2.4", features = ["serde"] }
 flex-crypto = { workspace = true }
+flex-database = { path = "../flex-database", features = ["postgres-sgbd"] }
+flex-kernel = { workspace = true }
 flex-secret = { path = "../flex-secret" }
 flex-web-framework-macro = { path = "macro" }
 html-escape = "0.2.13"
 hyper = { version = "1.2.0" }
 lazy_static = "1.4.0"
-lexa-kernel = { workspace = true }
 log = { workspace = true }
 mime = "0.3.17"
 serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
 thiserror = { workspace = true }
 time = { version = "0.3.34", features = ["serde"] }
 tokio = { workspace = true }
 tower-cookies = { version = "0.10.0", features = ["private", "signed"] }
 tower-http = { version = "0.5.2", features = ["cors", "fs"] }
+tower-layer = { version = "0.3.2" }
+tower-service = { version = "0.3.2" }
+tower-sessions = { version = "0.12.0" }
 url = { version = "2.5.0", features = ["serde"] }
 uuid = { workspace = true }

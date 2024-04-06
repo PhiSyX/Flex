@@ -1,5 +1,4 @@
 .env
 .env.*
 !.env.example
-flex.yml
-!test/flex.yml
+chat.yml

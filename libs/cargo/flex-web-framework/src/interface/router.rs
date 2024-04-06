@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::routing::RouterCollection;
+use crate::AxumState;
 
 // ----- //
 // Macro //
@@ -36,10 +37,10 @@ macro_rules! impl_router_interface {
 		where
 			   $( $generic : RouterInterface<UserState> ),*
 		{
-			   fn routes() -> $crate::routing::RouterCollection<UserState>
+			   fn routes(s: &$crate::AxumState<UserState>) -> $crate::routing::RouterCollection<UserState>
 			   {
 					   let mut router_collection = Self::collection();
-					   $( router_collection.extends( $generic::routes() ); )*
+					   $( router_collection.extends( $generic::routes(s) ); )*
 					   router_collection
 			   }
 		}
@@ -59,13 +60,43 @@ pub trait RouterInterface<S>
 		RouterCollection::<S>::default()
 	}
 
+	/// Collection de routeurs groupés.
+	fn group() -> RouterCollection<S>
+	where
+		Self: RouterGroupInterface,
+	{
+		RouterCollection::<S>::default().with_group(Self::GROUP)
+	}
+
 	/// Alias vers la collection.
-	fn routes() -> RouterCollection<S>;
+	fn routes(state: &AxumState<S>) -> RouterCollection<S>;
+}
+
+pub trait RouterGroupInterface
+{
+	const GROUP: &'static str;
+}
+
+pub trait RouteIDInterface
+{
+	/// Chemin d'une route préfixé du groupe.
+	fn fullpath(&self) -> impl ToString;
+
+	/// Chemin d'une route.
+	fn path(&self) -> impl ToString;
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
+
+impl<S> RouterInterface<S> for ()
+{
+	fn routes(_: &AxumState<S>) -> RouterCollection<S>
+	{
+		Self::collection()
+	}
+}
 
 impl_router_interface! {
 	impl RouterInterface for

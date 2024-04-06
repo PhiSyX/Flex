@@ -98,6 +98,12 @@ pub trait ClientSocketInterface
 		self.client().cid()
 	}
 
+	/// Définit un nouvel ID au client courant.
+	fn set_cid(&mut self, cid: <Self::Client as ClientInterface>::ClientID)
+	{
+		self.client_mut().set_cid(cid)
+	}
+
 	/// ID du socket courant.
 	fn sid(&self) -> &<Self::Client as ClientInterface>::SocketID
 	{

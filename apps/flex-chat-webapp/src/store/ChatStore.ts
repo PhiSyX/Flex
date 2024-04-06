@@ -10,7 +10,7 @@
 
 import { None, type Option } from "@phisyx/flex-safety";
 import { defineStore } from "pinia";
-import { type Socket, io } from "socket.io-client";
+import { io } from "socket.io-client";
 import { reactive } from "vue";
 
 import type { ChannelMember } from "~/channel/ChannelMember";
@@ -88,9 +88,10 @@ export class ChatStore {
 	private _client: Option<Origin> = None();
 	public clientError: Option<{ id: string; data: unknown }> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
+	private _userID: Option<UUID> = None();
 	private _network: Option<CustomRoomID> = None();
 	private _roomManager: RoomManager = new RoomManager();
-	private _ws: Option<Socket<ServerToClientEvent, ClientToServerEvent>> = None();
+	private _ws: Option<TypeSafeSocket> = None();
 	private _userManager: UserManager = new UserManager();
 
 	private _handlerManager = new HandlerManager();
@@ -130,21 +131,29 @@ export class ChatStore {
 		console.info("Connexion au serveur de WebSocket « %s »", websocketServerURL);
 
 		let clientID = this._clientIDStorage.maybe().unwrap_or("") as string | null;
+		let userID = this._userID.unwrap_or("") as string | null;
 
 		if (clientID?.length === 0) {
 			clientID = null;
 		}
 
-		this._ws.replace(
-			io(websocketServerURL, {
-				auth: { client_id: clientID },
-				transports: ["websocket"],
-				reconnection: true,
-				reconnectionDelay: 10_000,
-				rememberUpgrade: true,
-				withCredentials: true,
-			}),
-		);
+		if (userID?.length === 0) {
+			userID = null;
+		}
+
+		let wsio = <TypeSafeSocket> io(websocketServerURL, {
+			auth: { user_id: userID, client_id: clientID },
+			transports: ["websocket"],
+			reconnection: true,
+			reconnectionDelay: 10_000,
+			rememberUpgrade: true,
+			secure: true,
+			withCredentials: true,
+		});
+
+		wsio.io.engine.binaryType = "arraybuffer";
+
+		this._ws.replace(wsio);
 	}
 
 	/**
@@ -358,22 +367,14 @@ export class ChatStore {
 	 * Active/écoute un événement.
 	 */
 	on<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
-		this._ws.expect("Instance WebSocket connecté au serveur").on(
-			eventName,
-			// @ts-expect-error : listener
-			listener,
-		);
+		this._ws.expect("Instance WebSocket connecté au serveur").on(eventName, listener);
 	}
 
 	/**
 	 * Active/écoute un événement une seule et unique fois.
 	 */
 	once<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
-		this._ws.expect("Instance WebSocket connecté au serveur").once(
-			eventName,
-			// @ts-expect-error : listener
-			listener,
-		);
+		this._ws.expect("Instance WebSocket connecté au serveur").once(eventName, listener);
 	}
 
 	/**
@@ -407,10 +408,24 @@ export class ChatStore {
 	}
 
 	/**
+	 * Définit l'ID de l'utilisateur.
+	 */
+	setUserID(userID: UUID) {
+		this._userID.replace(userID);
+	}
+
+	/**
 	 * Définit le nom du serveur.
 	 */
 	setNetworkName(networkName: CustomRoomID) {
 		this._network.replace(networkName);
+	}
+
+	/**
+	 * Définit un nouvel ID au client connecté au serveur.
+	 */
+	setClientID(id: UserID) {
+		this.client().id = id;
 	}
 
 	/**
@@ -444,7 +459,7 @@ export class ChatStore {
 	/**
 	 * Instance de la WebSocket.
 	 */
-	websocket(): Socket<ServerToClientEvent, ClientToServerEvent> {
+	websocket(): TypeSafeSocket {
 		return this._ws.expect("Instance WebSocket connecté au serveur");
 	}
 }
@@ -475,7 +490,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function changeNick(newNick: string) {
 		const module = store.moduleManager().get("NICK").expect("Récupération du module `NICK`");
-		module?.send({ nickname: newNick });
+		module.send({ nickname: newNick });
 	}
 
 	/**
@@ -526,7 +541,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 
 		if (!isChannel(roomID)) {
-			store.roomManager().remove(roomID);
+			store.roomManager().close(roomID);
 			return;
 		}
 
@@ -703,13 +718,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet les commandes au serveur.
 	 */
 	function sendMessage(name: RoomID, message: string) {
-		const room = store
-			.roomManager()
-			.get(name)
+		const room = store.roomManager().get(name)
 			.or_else(() =>
-				store
-					.userManager()
-					.findByNickname(name)
+				store.userManager().findByNickname(name)
 					.and_then((user) => store.roomManager().get(user.id)),
 			)
 			.unwrap_unchecked();
@@ -719,15 +730,11 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			const words = message.split(" ");
 
 			if (name.startsWith("#")) {
-				const module = store
-					.moduleManager()
-					.get("PUBMSG")
+				const module = store.moduleManager().get("PUBMSG")
 					.expect("Récupération du module `PUBMSG`");
 				module.input(name, ...words);
 			} else {
-				const module = store
-					.moduleManager()
-					.get("PRIVMSG")
+				const module = store.moduleManager().get("PRIVMSG")
 					.expect("Récupération du module `PRIVMSG`");
 				module.input(name, ...words);
 			}

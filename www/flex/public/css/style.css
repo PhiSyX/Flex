@@ -1,0 +1,214 @@
+@import url(./normalizer.css);
+
+/** my style */
+
+:root {
+	--space1: calc(0.5rem * 1);
+	--space2: calc(0.5rem * 2);
+	--space3: calc(0.5rem * 3);
+	--space4: calc(0.5rem * 4);
+	--space5: calc(0.5rem * 5);
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--body-bg: #fafafa;
+		--body-color: #212121;
+		--form-button-bg: #212121;
+		--form-button-color: #fafafa;
+		--form-button-hover-border: #ffcf60;
+		--form-button-focus-outline: #ffc131;
+		--input-placeholder-color: #999999;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--body-bg: #1c1b1e;
+		--body-color: #ffffff;
+		--form-button-bg: #ffffff;
+		--form-button-color: #212121;
+		--form-button-hover-border: #ffcf60;
+		--form-button-focus-outline: #ffc131;
+		--input-placeholder-color: #777777;
+	}
+}
+
+html {
+	font-family: Ebrima, sans-serif;
+	font-size: 16px;
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	background-color: var(--body-bg);
+	color: var(--body-color);
+	height: 100%;
+	width: 100%;
+}
+
+a {
+	color: #2d94df;
+	text-decoration: underline;
+}
+
+.d-block {
+	display: block;
+}
+.di-block {
+	display: inline-block;
+}
+
+.flex {
+	display: flex;
+}
+.i-flex {
+	display: inline-flex;
+}
+.flex\:full {
+	flex-grow: 1;
+}
+
+@media screen and (max-width: 425px) {
+	.\*md\:flex\! {
+		display: flex;
+		flex-direction: column;
+	}
+	.\*md\:gap\=1 {
+		gap: var(--space1);
+	}
+}
+@media screen and (min-width: 425px) {
+	.md\*\:flex {
+		display: flex;
+	}
+	.md\*\:gap\=2 {
+		gap: var(--space2);
+	}
+}
+
+.gap\=1 {
+	gap: var(--space1);
+}
+
+.gap\=2 {
+	gap: var(--space2);
+}
+
+.space-between {
+	justify-content: space-between;
+}
+
+.items-end {
+	place-items: end;
+}
+
+.btn-submit {
+	background-color: var(--form-button-bg);
+	border-radius: 6px;
+	border: 3px solid transparent;
+	color: var(--form-button-color);
+	cursor: pointer;
+	font-size: 20px;
+	padding: 12px;
+	text-align: center;
+	text-decoration: none;
+	transition-property: border, outline;
+	transition: 100ms ease;
+}
+
+.btn-submit:hover {
+	border-color: var(--form-button-hover-border);
+}
+
+.btn-submit:focus {
+	outline: 3px solid var(--form-button-focus-outline);
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space1);
+	width: 100%;
+}
+
+.form-group label {
+	cursor: pointer;
+}
+.form-group label[disabled] {
+	color: #aaaaaa;
+	cursor: default;
+	user-select: none;
+}
+
+.form-group input:not([type="radio"]) {
+	border-radius: 4px;
+	border: 1px solid #d9d9d9;
+	height: var(--space5);
+	padding-inline: 12px;
+}
+
+.form-group input::placeholder {
+	color: var(--input-placeholder-color);
+}
+
+.form-group .help {
+	color: #888888;
+	line-height: 1.4;
+	margin: 0;
+	padding: 0;
+}
+
+hr {
+	border: 0;
+	height: 1.5em;
+	opacity: 0.5;
+	position: relative;
+	text-align: center;
+}
+
+hr::before {
+	background: linear-gradient(to right, transparent, #cccccc, transparent);
+	content: "";
+	height: 1px;
+	left: 0;
+	position: absolute;
+	top: 50%;
+	width: 100%;
+}
+
+hr::after {
+	background-color: var(--body-bg);
+	color: var(--body-color);
+	content: attr(text);
+	display: inline-block;
+	padding-inline: var(--space1);
+	position: relative;
+	vertical-align: middle;
+}
+
+.alert {
+	overflow: clip;
+	display: flex;
+	justify-items: center;
+	gap: 8px;
+	padding: 16px;
+	user-select: none;
+
+	font-size: 13px;
+	border: 1px solid transparent;
+	color: currentColor;
+}
+
+.alert\/error {
+	border-color: #e53935;
+	color: #d32f2f;
+	background-color: #ef9a9a;
+}
+
+.alert\/success {
+	border-color: #49e535;
+	color: #0e5617;
+	background-color: #a1ef9a;
+}
