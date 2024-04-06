@@ -1,0 +1,12 @@
+[package]
+name = "flex-kernel-macro"
+version = "0.1.0"
+edition = "2021"
+description = "Flex Kernel Proc Macro"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+flex-syn = { path = "../../flex-syn" }
+syn = { workspace = true }
