@@ -11,7 +11,11 @@
 use std::process;
 
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::{ApplicationCookieLayerExtension, DatabaseService, PostgreSQLDatabase};
+use flex_web_framework::{
+	ApplicationCookieLayerExtension,
+	DatabaseService,
+	PostgreSQLDatabase,
+};
 use lexa_kernel::{
 	ApplicationCLIExtension,
 	ApplicationEnvExtension,
@@ -47,7 +51,8 @@ async fn main() -> impl process::Termination
 
 	let application = application.include_env_vars().include_cli_args();
 
-	if application.cli_args().has_command() {
+	if application.cli_args().has_command()
+	{
 		application.cli_args().handle_command();
 		return process::ExitCode::SUCCESS;
 	}
@@ -82,7 +87,9 @@ async fn main() -> impl process::Termination
 	let application = {
 		use flex_web_framework::AsyncApplicationExtExtension;
 		let database_url = application.env().database_url.expose().to_owned();
-		application.extension_with::<DatabaseService<PostgreSQLDatabase>>(database_url).await
+		application.extension_with::<DatabaseService<PostgreSQLDatabase>>(
+			database_url,
+		).await
 	};
 
 	// 4. Run

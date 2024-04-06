@@ -39,13 +39,19 @@ mod templates
 	}
 }
 
+use flex_web_framework::http::request::FromRef;
+
 pub use self::features::*;
 
 // ---- //
 // Type //
 // ---- //
 
-pub type Flex = flex_web_framework::AxumApplication<FlexState, config::env::FlexEnv, commands::FlexCLI>;
+pub type Flex = flex_web_framework::AxumApplication<
+	FlexState,
+	config::env::FlexEnv,
+	commands::FlexCLI,
+>;
 pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
 
 // --------- //
@@ -82,7 +88,7 @@ impl FlexState
 // Implémentation // -> Interface
 // -------------- //
 
-impl flex_web_framework::http::request::FromRef<FlexApplicationState> for FlexState
+impl FromRef<FlexApplicationState> for FlexState
 {
 	fn from_ref(axum_state: &FlexApplicationState) -> Self
 	{

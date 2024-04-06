@@ -70,7 +70,8 @@ impl FlexCLIMakePassword
 		match self.algorithm {
 			| FlexCLIMakePasswordAlgorithm::Argon2 => {
 				if self.app_secret.is_none() {
-					eprintln!("La clé secrète d'application DOIT être définie.");
+					let err = "La clé secrète d'application DOIT être définie.";
+					eprintln!("{err}");
 					return;
 				}
 
@@ -78,9 +79,10 @@ impl FlexCLIMakePassword
 
 				let exposed_secret = app_secret_key.expose();
 				let argon2 = Argon2Password::new(exposed_secret.as_str().into());
-				let encoded = argon2
-					.encrypt(self.password.expose())
-					.expect("Impossible d'encoder le mot de passe avec l'algorithme Argon2.");
+				let encoded = argon2.encrypt(self.password.expose()).expect(
+					"Impossible d'encoder le mot de passe avec l'algorithme \
+					 Argon2.",
+				);
 
 				display_output::<Argon2Password>(encoded);
 			}

@@ -19,7 +19,12 @@ use lexa_kernel::ApplicationCLIInterface;
 // Type //
 // ---- //
 
-type cli_lib = flex_cli::CLI<EmptyArguments, EmptyFlags, EmptyOptions, flex_cli_command>;
+type cli_lib = flex_cli::CLI<
+	EmptyArguments,
+	EmptyFlags,
+	EmptyOptions,
+	flex_cli_command
+>;
 
 // --------- //
 // Structure //
@@ -52,8 +57,9 @@ impl FlexCLI
 	pub fn handle_command(&self)
 	{
 		assert!(self.has_command());
+
 		match self.command.as_ref().unwrap() {
-			| flex_cli_command::MakePassword(make_password_cmd) => make_password_cmd.handle(),
+			| flex_cli_command::MakePassword(cmd) => cmd.handle(),
 		}
 	}
 }
