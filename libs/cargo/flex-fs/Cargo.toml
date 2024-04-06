@@ -14,7 +14,7 @@ explorer = ["dep:open"]
 flex-env = { path = "../flex-env" }
 flex-prompt = { path = "../flex-prompt" }
 
-console = { version = "0.15.8" }
+console = { workspace = true }
 log = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

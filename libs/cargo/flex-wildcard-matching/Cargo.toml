@@ -8,4 +8,4 @@ description = "Correspondance de caractères génériques sur les chaînes de ca
 workspace = true
 
 [dependencies]
-regex = { version = "1.10.4" }
+regex = { workspace = true }

@@ -13,11 +13,11 @@ serde = ["dep:serde"]
 
 [dependencies]
 chrono = { workspace = true }
-console = { version = "0.15.8" }
+console = { workspace = true }
 lazy_static = { version = "1.4.0" }
 log = { workspace = true, features = ["std"] }
 tracing = { workspace = true, optional = true }
 tracing-subscriber = { version = "0.3.18", optional = true }
 serde = { workspace = true, optional = true }
-regex = { version = "1.10.4" }
+regex = { workspace = true }
 unicode-width = { version = "0.1.11" }

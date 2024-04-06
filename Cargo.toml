@@ -17,18 +17,21 @@ non_camel_case_types = "allow"
 [workspace.dependencies]
 async-trait = "0.1.79"
 chrono = { version = "0.4.37", features = ["clock", "serde"] }
+clap = { version = "4.5.4", features = ["derive"] }
+console = { version = "0.15.8" }
 dashmap = { version = "5.5.3", features = ["serde"] }
 dns-lookup = "2.0.4"
-log = { version = "0.4.21" }
 flex-cli = { path = "libs/cargo/flex-cli" }
-flex-kernel = { path = "libs/cargo/flex-kernel", features = ["tracing"] }
 flex-crypto = { path = "libs/cargo/flex-crypto" }
+flex-kernel = { path = "libs/cargo/flex-kernel", features = ["tracing"] }
 flex-serde-validation = { path = "libs/cargo/flex-serde-validation" }
 flex-web-framework = { path = "libs/cargo/flex-web-framework" }
+log = { version = "0.4.21" }
+regex = { version = "1.10.4" }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = { version = "1.0.115" }
-sqlx = { version = "0.7.4", features = ["chrono", "postgres", "uuid"] }
 socketioxide = { version = "0.12.0", features = ["extensions", "state"] }
+sqlx = { version = "0.7.4", features = ["chrono", "postgres", "uuid"] }
 syn = { version = "2.0.58", features = ["full"] }
 thiserror = { version = "1.0.58" }
 tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }

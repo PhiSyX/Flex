@@ -7,5 +7,5 @@ edition = "2021"
 workspace = true
 
 [dependencies]
-console = { version = "0.15.8" }
+console = { workspace = true }
 serde = { workspace = true }
