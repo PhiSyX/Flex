@@ -22,13 +22,22 @@ pub trait ClientsSessionInterface
 	type Client: ClientInterface;
 
 	/// Cherche un client en fonction de son ID.
-	fn get(&self, client_id: &<Self::Client as ClientInterface>::ClientID) -> Option<Self::Client>;
+	fn get(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> Option<Self::Client>;
 
 	/// Cherche un client en fonction de son ID.
 	fn get_mut(
 		&self,
 		client_id: &<Self::Client as ClientInterface>::ClientID,
-	) -> Option<RefMutMulti<'_, <Self::Client as ClientInterface>::ClientID, Self::Client>>;
+	) -> Option<
+		RefMutMulti<
+			'_,
+			<Self::Client as ClientInterface>::ClientID,
+			Self::Client,
+		>,
+	>;
 
 	/// Enregistre un client.
 	fn register(&self, client: &Self::Client);

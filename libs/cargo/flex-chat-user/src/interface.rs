@@ -15,14 +15,14 @@ use std::sync::Arc;
 use flex_chat_mode::ApplyMode;
 use flex_secret::Secret;
 
-use crate::nick;
+use crate::nick::Error;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait UserInterface:
-	Clone
+pub trait UserInterface
+	: Clone
 	+ fmt::Debug
 	+ serde::Serialize
 	+ UserAddressInterface
@@ -55,13 +55,13 @@ pub trait UserInterface:
 	fn server_password_exposed(&self) -> Option<&Arc<str>>;
 
 	/// Définit l'ident de l'[utilisateur](Self).
-	fn set_ident(&mut self, ident: impl ToString) -> Result<String, nick::Error>;
+	fn set_ident(&mut self, ident: impl ToString) -> Result<String, Error>;
 
 	/// Définit un hôte virtual pour l'[utilisateur](Self).
 	fn set_vhost(&mut self, vhost: impl ToString);
 
 	/// Définit le pseudonyme de l'[utilisateur](Self).
-	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, nick::Error>;
+	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, Error>;
 
 	/// Définit le mot de passe entré par l'[utilisateur](Self) lors de la
 	/// commande PASS.

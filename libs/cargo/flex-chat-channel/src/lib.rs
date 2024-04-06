@@ -110,16 +110,10 @@ impl ChannelAccessControlInterface for Channel
 	{
 		let mut list = Vec::default();
 
-		let banlist = self
-			.access_control
-			.banlist
-			.values()
+		let banlist = self.access_control.banlist.values()
 			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN, mode.clone()));
 
-		let banlist_exception = self
-			.access_control
-			.banlist_exceptions
-			.values()
+		let banlist_exception = self.access_control.banlist_exceptions.values()
 			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN_EXCEPT, mode.clone()));
 
 		list.extend(banlist);
@@ -213,9 +207,7 @@ impl ChannelAccessControlInterface for Channel
 		let check = |addr| self.access_control.banlist_exceptions.contains_key(&addr);
 
 		let check2 = || {
-			self.access_control
-				.banlist_exceptions
-				.keys()
+			self.access_control.banlist_exceptions.keys()
 				.any(|mask| user.full_address().iswm(mask))
 		};
 
@@ -318,8 +310,9 @@ impl ChannelSettingsInterface for Channel
 		flags: impl IntoIterator<Item = ApplyMode<Self::SettingsFlag>>,
 	) -> Self
 	{
-		self.modes_settings
-			.extend(flags.into_iter().map(|mode| (mode.flag.to_string(), mode)));
+		self.modes_settings.extend(
+			flags.into_iter().map(|mode| (mode.flag.to_string(), mode)),
+		);
 		self
 	}
 

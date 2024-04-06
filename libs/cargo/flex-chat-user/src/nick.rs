@@ -23,7 +23,17 @@ type NickSizeType = usize;
 // --------- //
 
 /// Les caractères spéciaux qu'un pseudonyme puisse avoir.
-pub const NICK_SPECIAL_CHARS: [char; 9] = ['[', ']', '\\', '`', '_', '^', '{', '|', '}'];
+pub const NICK_SPECIAL_CHARS: [char; 9] = [
+	'[',
+	']',
+	'\\',
+	'`',
+	'_',
+	'^',
+	'{',
+	'|',
+	'}',
+];
 
 /// La taille maximale d'un pseudonyme est de '`30`' caractères.
 pub const NICK_MAX_SIZE: NickSizeType = 30;
@@ -83,8 +93,10 @@ pub struct DoNicknameFnOptions
 ///     '0..9'. Les caractères alphabétiques des langues étrangères sont
 ///     considérés comme valides. Par exemple: le russe, le japonais, etc.
 ///   - Il peut contenir les caractères spéciaux suivants: []\`_^{|}
-pub fn do_nickname_with_config(nickname: &str, options: DoNicknameFnOptions)
-	-> Result<&str, Error>
+pub fn do_nickname_with_config(
+	nickname: &str,
+	options: DoNicknameFnOptions,
+) -> Result<&str, Error>
 {
 	if nickname.trim().is_empty() {
 		return Err(Error::Empty);
@@ -217,7 +229,9 @@ mod tests
 		let maybe_nickname = do_nickname("αγάπη");
 		assert_eq!(maybe_nickname, Ok("αγάπη"));
 
-		let maybe_nickname = do_nickname("ПриветПриветПриветПривериветПриветПриветПриветПривет");
+		let maybe_nickname = do_nickname(
+			"ПриветПриветПриветПривериветПриветПриветПриветПривет"
+		);
 		assert_eq!(maybe_nickname, Ok("ПриветПриветПриветПривериветПр"));
 	}
 

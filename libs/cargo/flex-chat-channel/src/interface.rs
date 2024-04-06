@@ -24,8 +24,8 @@ pub use self::topic_interface::*;
 // Interface //
 // --------- //
 
-pub trait ChannelInterface:
-	ChannelAccessControlInterface
+pub trait ChannelInterface
+	: ChannelAccessControlInterface
 	+ ChannelMemberInterface
 	+ ChannelSettingsInterface
 	+ ChannelTopicInterface

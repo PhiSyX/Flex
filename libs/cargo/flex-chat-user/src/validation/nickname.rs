@@ -12,13 +12,13 @@
 // Fonction //
 // -------- //
 
-pub fn validate_nickname<'de, D>(deserializer: D) -> Result<String, D::Error>
+pub fn validate_nickname<'de, D>(de: D) -> Result<String, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
 
-	let s = String::deserialize(deserializer)?;
+	let s = String::deserialize(de)?;
 
 	match crate::do_nickname_with_config(
 		&s,
@@ -36,13 +36,13 @@ where
 	}
 }
 
-pub fn validate_nicknames<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
+pub fn validate_nicknames<'de, D>(de: D) -> Result<Vec<String>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
 
-	let v = Vec::<String>::deserialize(deserializer)?;
+	let v = Vec::<String>::deserialize(de)?;
 
 	let nicks = v
 		.iter()

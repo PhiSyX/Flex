@@ -10,7 +10,7 @@
 
 use flex_chat_user::UserInterface;
 
-use crate::ClientSocketInterface;
+use crate::{ClientInterface, ClientSocketInterface};
 
 // ----------- //
 // Énumération //
@@ -44,11 +44,12 @@ impl<'a> Socket<'a>
 	/// Les salons de la socket.
 	pub fn channels_rooms(&self) -> Vec<String>
 	{
-		self.socket()
-			.rooms()
+		self.socket().rooms()
 			.iter()
 			.flatten()
-			.filter_map(|room| room.starts_with("channel:").then_some(room.to_string()))
+			.filter_map(|room| {
+				room.starts_with("channel:").then_some(room.to_string())
+			})
 			.collect()
 	}
 
@@ -115,15 +116,13 @@ impl<'s> ClientSocketInterface for Socket<'s>
 		}
 	}
 
-	fn user(&self) -> &<Self::Client as crate::interface::ClientInterface>::User
+	fn user(&self) -> &<Self::Client as ClientInterface>::User
 	{
-		use crate::interface::ClientInterface;
 		self.client().user()
 	}
 
-	fn user_mut(&mut self) -> &mut <Self::Client as crate::interface::ClientInterface>::User
+	fn user_mut(&mut self) -> &mut <Self::Client as ClientInterface>::User
 	{
-		use crate::interface::ClientInterface;
 		self.client_mut().user_mut()
 	}
 }

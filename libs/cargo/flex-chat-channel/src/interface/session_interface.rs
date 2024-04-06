@@ -14,7 +14,12 @@ use dashmap::mapref::one::{Ref, RefMut};
 use flex_chat_mode::ApplyMode;
 use flex_secret::Secret;
 
-use crate::{ChannelInterface, ChannelMemberInterface, ChannelSettingsInterface, MemberInterface};
+use crate::{
+	ChannelInterface,
+	ChannelMemberInterface,
+	ChannelSettingsInterface,
+	MemberInterface,
+};
 
 // --------- //
 // Interface //
@@ -48,10 +53,14 @@ pub trait ChannelsSessionInterface
 	/// Crée un salon avec des drapeaux.
 	fn create_with_flags<'a>(
 		&self,
-		channel_name: impl Into<Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>>,
+		channel_name: impl Into<
+			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
+		>,
 		channel_key: Option<Secret<String>>,
 		flags: impl IntoIterator<
-			Item = ApplyMode<<Self::Channel as ChannelSettingsInterface>::SettingsFlag>,
+			Item = ApplyMode<
+				<Self::Channel as ChannelSettingsInterface>::SettingsFlag,
+			>,
 		>,
 	) -> bool
 	where
@@ -61,13 +70,17 @@ pub trait ChannelsSessionInterface
 	fn get(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-	) -> Option<Ref<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>>;
+	) -> Option<
+		Ref<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>,
+	>;
 
 	/// Récupère un salon enregistré en session (version mutable).
 	fn get_mut(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-	) -> Option<RefMut<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>>;
+	) -> Option<
+		RefMut<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>,
+	>;
 
 	/// Récupère un client d'un salon.
 	fn get_member(
@@ -77,7 +90,10 @@ pub trait ChannelsSessionInterface
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>;
 
 	/// Vérifie qu'un salon est existant ou non.
-	fn has(&self, channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>) -> bool;
+	fn has(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	) -> bool;
 
 	/// Vérifie qu'un membre est présent dans un salon.
 	fn has_member(
@@ -89,7 +105,11 @@ pub trait ChannelsSessionInterface
 	/// Liste des salons crées depuis le début de la session.
 	fn list(
 		&self,
-	) -> dashmap::iter::Iter<'_, <Self::Channel as ChannelInterface>::OwnedID, Self::Channel>;
+	) -> dashmap::iter::Iter<
+		'_,
+		<Self::Channel as ChannelInterface>::OwnedID,
+		Self::Channel,
+	>;
 
 	/// Supprime un salon.
 	fn remove(

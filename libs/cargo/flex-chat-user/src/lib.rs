@@ -145,7 +145,7 @@ impl UserInterface for User
 	}
 
 	/// Définit l'ident de l'[utilisateur](Self).
-	fn set_ident(&mut self, ident: impl ToString) -> Result<String, nick::Error>
+	fn set_ident(&mut self, ident: impl ToString) -> Result<String, Error>
 	{
 		let ident = ident.to_string();
 		self.ident = do_nickname(&ident)?.to_string();
@@ -159,7 +159,7 @@ impl UserInterface for User
 	}
 
 	/// Définit le pseudonyme de l'[utilisateur](Self).
-	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, nick::Error>
+	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, Error>
 	{
 		let new_nick = nickname.to_string();
 		self.old_nickname.replace(self.nickname.to_owned());

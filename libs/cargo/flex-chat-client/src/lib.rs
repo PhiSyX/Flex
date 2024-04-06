@@ -59,8 +59,11 @@ pub struct Client
 impl Client
 {
 	/// Crée une nouvelle structure d'un [client](Self).
-	pub fn new(ip: net::IpAddr, client_id: uuid::Uuid, socket_id: socketioxide::socket::Sid)
-		-> Self
+	pub fn new(
+		ip: net::IpAddr,
+		client_id: uuid::Uuid,
+		socket_id: socketioxide::socket::Sid,
+	) -> Self
 	{
 		let token = format!("{}:{}:{}", client_id, socket_id, ip).sha256();
 		Self {
@@ -123,8 +126,10 @@ impl ClientInterface for Client
 	) where
 		F: Into<<Self::User as UserFlagInterface>::Flag>,
 	{
-		self.user
-			.set_flag(Mode::new(oper_type.into()).with_update_by(self.user.nickname()));
+		self.user.set_flag(
+			Mode::new(oper_type.into())
+				.with_update_by(self.user.nickname()),
+		);
 		for flag in oper_flags {
 			self.user.set_flag(Mode::new(flag.into()));
 		}
@@ -132,8 +137,10 @@ impl ClientInterface for Client
 
 	fn marks_user_as_away(&mut self, text: impl ToString)
 	{
-		self.user
-			.set_flag(Mode::new(Flag::Away(text.to_string())).with_update_by(self.user.nickname()));
+		self.user.set_flag(
+			Mode::new(Flag::Away(text.to_string()))
+				.with_update_by(self.user.nickname()),
+		);
 	}
 
 	fn marks_user_as_no_longer_away(&mut self)

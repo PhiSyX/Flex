@@ -50,7 +50,10 @@ impl ChannelMember
 	}
 
 	/// Crée la structure [ChannelMember] avec ses modes.
-	pub fn with_modes(mut self, it: impl IntoIterator<Item = ChannelAccessLevel>) -> Self
+	pub fn with_modes(
+		mut self,
+		it: impl IntoIterator<Item = ChannelAccessLevel>,
+	) -> Self
 	{
 		self.access_level = HashSet::from_iter(it);
 		self
