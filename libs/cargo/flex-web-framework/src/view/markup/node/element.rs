@@ -37,8 +37,8 @@ impl fmt::Display for ElementNode
 			write!(f, " {key}")?;
 
 			if let Some(value) = value.as_deref() {
-				let html_special_chars = html_escape::encode_double_quoted_attribute(value);
-				write!(f, r#"="{html_special_chars}""#)?;
+				let escaped = html_escape::encode_double_quoted_attribute(value);
+				write!(f, r#"="{escaped}""#)?;
 			}
 		}
 

@@ -76,8 +76,8 @@ impl<S> ServerState<S>
 	pub fn state(&self) -> &S
 	{
 		self.user.as_ref().expect(
-			"Le state n'est pas définit. Vérifier que `ServerState#set_state` est bien appelée \
-			 avant.",
+			"Le state n'est pas définit. Vérifier que `ServerState#set_state` \
+			 est bien appelée avant.",
 		)
 	}
 

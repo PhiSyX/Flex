@@ -160,7 +160,9 @@ where
 {
 	let value = <_ as serde::Deserialize>::deserialize(deserializer)?;
 	if value != '*' {
-		return Err(serde::de::Error::custom("Seul le caractère '*' est autorisé."));
+		return Err(serde::de::Error::custom(
+			"Seul le caractère '*' est autorisé.",
+		));
 	}
 	Ok(value)
 }
@@ -299,7 +301,9 @@ impl TryFrom<&CorsSettingsHeadersSafeList> for axum::http::HeaderName
 {
 	type Error = hyper::header::InvalidHeaderName;
 
-	fn try_from(settings: &CorsSettingsHeadersSafeList) -> Result<Self, Self::Error>
+	fn try_from(
+		settings: &CorsSettingsHeadersSafeList,
+	) -> Result<Self, Self::Error>
 	{
 		settings.to_string().parse()
 	}
@@ -311,7 +315,9 @@ impl From<&SettingsAllowHeaders> for tower_http::cors::AllowHeaders
 	{
 		match this {
 			| SettingsAllowHeaders::Any(_) => Self::any(),
-			| SettingsAllowHeaders::List(list) => Self::list(list.iter().flat_map(to_header_name)),
+			| SettingsAllowHeaders::List(list) => {
+				Self::list(list.iter().flat_map(to_header_name))
+			}
 		}
 	}
 }
@@ -360,10 +366,12 @@ impl From<&SettingsAllowOrigin> for tower_http::cors::AllowOrigin
 	{
 		match this {
 			| SettingsAllowOrigin::Any(_) => Self::any(),
-			| SettingsAllowOrigin::Exact(url) => to_header_value(url)
-				.map(Self::exact)
-				.unwrap_or_default(),
-			| SettingsAllowOrigin::List(list) => Self::list(list.iter().flat_map(to_header_value)),
+			| SettingsAllowOrigin::Exact(url) => {
+				to_header_value(url).map(Self::exact).unwrap_or_default()
+			}
+			| SettingsAllowOrigin::List(list) => {
+				Self::list(list.iter().flat_map(to_header_value))
+			}
 		}
 	}
 }
@@ -374,7 +382,9 @@ impl From<&SettingsExposeHeaders> for tower_http::cors::ExposeHeaders
 	{
 		match this {
 			| SettingsExposeHeaders::Any(_) => Self::any(),
-			| SettingsExposeHeaders::List(list) => Self::list(list.iter().flat_map(to_header_name)),
+			| SettingsExposeHeaders::List(list) => {
+				Self::list(list.iter().flat_map(to_header_name))
+			}
 		}
 	}
 }
@@ -386,7 +396,9 @@ impl From<&SettingsMaxAge> for tower_http::cors::MaxAge
 		use std::time::Duration;
 
 		match this {
-			| SettingsMaxAge::Exact(secs) => Self::exact(Duration::from_secs(*secs)),
+			| SettingsMaxAge::Exact(secs) => {
+				Self::exact(Duration::from_secs(*secs))
+			}
 		}
 	}
 }
@@ -396,7 +408,9 @@ impl From<&SettingsVary> for tower_http::cors::Vary
 	fn from(this: &SettingsVary) -> Self
 	{
 		match this {
-			| SettingsVary::List(list) => Self::list(list.iter().flat_map(to_header_name)),
+			| SettingsVary::List(list) => {
+				Self::list(list.iter().flat_map(to_header_name))
+			}
 		}
 	}
 }
@@ -418,7 +432,10 @@ fn to_header_name<MaybeHeader>(
 	header: MaybeHeader,
 ) -> Result<axum::http::HeaderName, hyper::header::InvalidHeaderName>
 where
-	MaybeHeader: TryInto<axum::http::HeaderName, Error = hyper::header::InvalidHeaderName>,
+	MaybeHeader: TryInto<
+		axum::http::HeaderName,
+		Error = hyper::header::InvalidHeaderName,
+	>,
 {
 	header.try_into()
 }

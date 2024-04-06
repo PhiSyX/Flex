@@ -32,7 +32,18 @@ use syn::Token;
 // -------- //
 
 const VOID_ELEMENTS: [&str; 13] = [
-	"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track",
+	"area",
+	"base",
+	"br",
+	"col",
+	"embed",
+	"hr",
+	"img",
+	"input",
+	"link",
+	"meta",
+	"source",
+	"track",
 	"wbr",
 ];
 
@@ -154,7 +165,10 @@ pub enum HTMLMacroParserErrorKind
 
 impl HTMLMacro
 {
-	pub fn parse(&self, nodes: &[rstml::node::Node]) -> Result<Vec<TokenStream2>>
+	pub fn parse(
+		&self,
+		nodes: &[rstml::node::Node],
+	) -> Result<Vec<TokenStream2>>
 	{
 		let mut tokens = vec![];
 
@@ -162,9 +176,15 @@ impl HTMLMacro
 			use rstml::node::Node;
 
 			let token = match node {
-				| Node::Comment(comment_node) => self.parse_comment(comment_node),
-				| Node::Doctype(doctype_node) => self.parse_doctype(doctype_node),
-				| Node::Fragment(fragment_node) => self.parse_fragment(fragment_node),
+				| Node::Comment(comment_node) => {
+					self.parse_comment(comment_node)
+				}
+				| Node::Doctype(doctype_node) => {
+					self.parse_doctype(doctype_node)
+				}
+				| Node::Fragment(fragment_node) => {
+					self.parse_fragment(fragment_node)
+				}
 				| Node::Element(element_node) => {
 					Ok(self.parse_element(element_node)?.into_iter().collect())
 				}
@@ -179,7 +199,10 @@ impl HTMLMacro
 		Ok(tokens)
 	}
 
-	fn parse_comment(&self, node: &rstml::node::NodeComment) -> Result<TokenStream2>
+	fn parse_comment(
+		&self,
+		node: &rstml::node::NodeComment,
+	) -> Result<TokenStream2>
 	{
 		let comment = &node.value;
 		Ok(quote! {
@@ -187,7 +210,10 @@ impl HTMLMacro
 		})
 	}
 
-	fn parse_doctype(&self, node: &rstml::node::NodeDoctype) -> Result<TokenStream2>
+	fn parse_doctype(
+		&self,
+		node: &rstml::node::NodeDoctype,
+	) -> Result<TokenStream2>
 	{
 		let public_identifier = &node.value.to_string_best();
 		Ok(quote! {
@@ -195,13 +221,19 @@ impl HTMLMacro
 		})
 	}
 
-	fn parse_fragment(&self, node: &rstml::node::NodeFragment) -> Result<TokenStream2>
+	fn parse_fragment(
+		&self,
+		node: &rstml::node::NodeFragment,
+	) -> Result<TokenStream2>
 	{
 		let html_nodes = self.parse(&node.children)?;
 		Ok(tmp::create_fragment(&html_nodes))
 	}
 
-	fn parse_element(&self, node: &rstml::node::NodeElement) -> Result<Vec<TokenStream2>>
+	fn parse_element(
+		&self,
+		node: &rstml::node::NodeElement,
+	) -> Result<Vec<TokenStream2>>
 	{
 		use rstml::node::NodeAttribute;
 
@@ -255,8 +287,10 @@ impl HTMLMacro
 					| NodeAttribute::Attribute(attr) => {
 						let key = attr.key.to_string();
 
-						let value: Option<(&syn::Expr, Option<&Box<syn::Type>>)> =
-							attr.value().map(|value_expr| (value_expr, None));
+						let value: Option<(
+							&syn::Expr,
+							Option<&Box<syn::Type>>,
+						)> = attr.value().map(|value_expr| (value_expr, None));
 
 						value.map_or_else(
 							|| {
@@ -268,7 +302,11 @@ impl HTMLMacro
 							|(value, ty)| {
 								ty.map_or_else(
 									|| tmp::create_attribute(&key, value),
-									|ty| tmp::create_attribute_from(ty, &key, value),
+									|ty| {
+										tmp::create_attribute_from(
+											ty, &key, value,
+										)
+									},
 								)
 							},
 						)
@@ -277,27 +315,39 @@ impl HTMLMacro
 			})
 			.collect();
 
-		let contains_custom_attrs: Vec<_> = node
-			.attributes()
+		let contains_custom_attrs: Vec<_> = node.attributes()
 			.iter()
 			.filter_map(|attr| filter_custom_attribute_m(attr))
 			.map(|(attr, custom_attr)| {
 				match custom_attr {
 					| HTMLCustomAttribute::MaybeIf => {
-						self.handle_maybe_if_attribute(&tag_name, &mut tag_attrs, &children, attr)
+						self.handle_maybe_if_attribute(
+							&tag_name,
+							&mut tag_attrs,
+							&children,
+							attr,
+						)
 					}
 					| HTMLCustomAttribute::MaybeOption => {
-						self.handle_maybe_option_attribute(&tag_name, &tag_attrs, &children, attr)
+						self.handle_maybe_option_attribute(
+							&tag_name, &tag_attrs, &children, attr,
+						)
 					}
 					| HTMLCustomAttribute::MaybeResult => {
-						self.handle_maybe_result_attribute(&tag_name, &tag_attrs, &children, attr)
+						self.handle_maybe_result_attribute(
+							&tag_name, &tag_attrs, &children, attr,
+						)
 					}
 
 					| HTMLCustomAttribute::ForLet => {
-						self.handle_for_let_attribute(&tag_name, &tag_attrs, &children, attr)
+						self.handle_for_let_attribute(
+							&tag_name, &tag_attrs, &children, attr,
+						)
 					}
 					| HTMLCustomAttribute::If => {
-						self.handle_if_attribute(&tag_name, &tag_attrs, &children, attr)
+						self.handle_if_attribute(
+							&tag_name, &tag_attrs, &children, attr,
+						)
 					}
 
 					| HTMLCustomAttribute::HrefPatch
@@ -313,15 +363,24 @@ impl HTMLMacro
 						)
 					}
 					| HTMLCustomAttribute::HrefInline => {
-						self.handle_href_inline_attribute(node, &tag_name, &tag_attrs, attr)
+						self.handle_href_inline_attribute(
+							node, &tag_name, &tag_attrs, attr,
+						)
 					}
 
 					| HTMLCustomAttribute::FormMethod => {
-						self.handle_form_method_attribute(node, &tag_name, tag_attrs.as_mut(), attr)
+						self.handle_form_method_attribute(
+							node,
+							&tag_name,
+							tag_attrs.as_mut(),
+							attr,
+						)
 					}
 
 					| HTMLCustomAttribute::SrcInline => {
-						self.handle_src_inline_attribute(node, &tag_name, &tag_attrs, attr)
+						self.handle_src_inline_attribute(
+							node, &tag_name, &tag_attrs, attr,
+						)
 					}
 				}
 			})
@@ -342,14 +401,20 @@ impl HTMLMacro
 		Ok(vec![element])
 	}
 
-	pub fn parse_block(&self, node: &rstml::node::NodeBlock) -> Result<TokenStream2>
+	pub fn parse_block(
+		&self,
+		node: &rstml::node::NodeBlock,
+	) -> Result<TokenStream2>
 	{
 		Ok(quote! {
 			Node::from(#[allow(unused_braces)] #node)
 		})
 	}
 
-	pub fn parse_text(&self, node: &rstml::node::NodeText) -> Result<TokenStream2>
+	pub fn parse_text(
+		&self,
+		node: &rstml::node::NodeText,
+	) -> Result<TokenStream2>
 	{
 		let text = &node.value;
 
@@ -358,7 +423,10 @@ impl HTMLMacro
 		})
 	}
 
-	pub fn parse_raw_text(&self, raw_text: &rstml::node::RawText) -> Result<TokenStream2>
+	pub fn parse_raw_text(
+		&self,
+		raw_text: &rstml::node::RawText,
+	) -> Result<TokenStream2>
 	{
 		let text = raw_text.to_string_best();
 
@@ -552,8 +620,12 @@ impl std::str::FromStr for HTMLCustomAttribute
 	{
 		Ok(match s.to_ascii_lowercase().as_str() {
 			| s if s.contains(":if") => Self::MaybeIf,
-			| s if s.starts_with("let-") && s.contains(":option") => Self::MaybeOption,
-			| s if s.starts_with("let-") && s.contains(":result") => Self::MaybeResult,
+			| s if s.starts_with("let-") && s.contains(":option") => {
+				Self::MaybeOption
+			}
+			| s if s.starts_with("let-") && s.contains(":result") => {
+				Self::MaybeResult
+			}
 			| s if s.contains("for-let:") => Self::ForLet,
 
 			| "if" => Self::If,
@@ -595,7 +667,10 @@ impl fmt::Display for HTMLMacroParserError
 						}
 					})
 					.collect();
-				format!("Les attributs « `{}` » sont requis.", attrs.join("`, `"))
+				format!(
+					"Les attributs « `{}` » sont requis.",
+					attrs.join("`, `")
+				)
 			}
 			| HTMLMacroParserErrorKind::InvalidTag { expected, found } => {
 				format!(
@@ -629,7 +704,9 @@ mod tmp
 	use super::*;
 
 	#[inline(always)]
-	pub fn create_fragment(elements: &[impl syn::__private::ToTokens]) -> TokenStream2
+	pub fn create_fragment(
+		elements: &[impl syn::__private::ToTokens],
+	) -> TokenStream2
 	{
 		quote! {
 			Node::create_fragment(vec![#(#elements),*])

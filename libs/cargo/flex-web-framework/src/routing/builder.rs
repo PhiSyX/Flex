@@ -31,57 +31,57 @@ pub trait RouterBuilder
 
 	/// Applique une route de n'importe quel type.
 	fn any<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type DELETE.
 	fn delete<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type GET.
 	fn get<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type HEAD.
 	fn head<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type OPTIONS.
 	fn options<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type PATCH.
 	fn patch<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type POST.
 	fn post<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type PUT.
 	fn put<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	/// Applique une route de type TRACE.
 	fn trace<Action, ActionType>(self, action: Action) -> Self
-		where
-			Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
-			ActionType: 'static;
+	where
+		Action: axum::handler::Handler<ActionType, AxumState<Self::State>>,
+		ActionType: 'static;
 
 	fn middleware<L>(self, layer: L) -> Self
 		where

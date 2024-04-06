@@ -41,9 +41,12 @@ where
 {
 	type Rejection = MissingFormError;
 
-	async fn from_request(req: axum::extract::Request, state: &S) -> Result<Self, Self::Rejection>
+	async fn from_request(
+		req: axum::extract::Request,
+		state: &S,
+	) -> Result<Self, Self::Rejection>
 	{
-		use axum::extract::{Json, Form};
+		use axum::extract::{Form, Json};
 
 		let f = if json_content_type(req.headers()) {
 			let Json(form) = Json::<F>::from_request(req, state).await?;
@@ -68,12 +71,19 @@ impl axum::response::IntoResponse for MissingFormError
 
 fn json_content_type(headers: &hyper::HeaderMap) -> bool
 {
-	let Some(content_type) = headers.get(hyper::header::CONTENT_TYPE) else { return false; };
-	let Ok(content_type) = content_type.to_str() else { return false; };
-	let Ok(mime) = content_type.parse::<mime::Mime>() else { return false; };
+	let Some(content_type) = headers.get(hyper::header::CONTENT_TYPE) else {
+		return false;
+	};
+	let Ok(content_type) = content_type.to_str() else {
+		return false;
+	};
+	let Ok(mime) = content_type.parse::<mime::Mime>() else {
+		return false;
+	};
 
 	let is_json_content_type = mime.type_() == "application" && (
-		mime.subtype() == "json" ||mime.suffix().map_or(false, |name| name == "json")
+		mime.subtype() == "json" ||
+		mime.suffix().map_or(false, |name| name == "json")
 	);
 
 	is_json_content_type

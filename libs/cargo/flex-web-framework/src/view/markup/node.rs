@@ -170,8 +170,9 @@ impl Node
 			});
 		}
 
-		let raw_text = std::fs::read_to_string(&file)
-			.unwrap_or_else(|_| panic!("le fichier « {} » n'existe pas.", file.as_ref().display()));
+		let raw_text = std::fs::read_to_string(&file).unwrap_or_else(|_| {
+			panic!("le fichier « {} » n'existe pas.", file.as_ref().display())
+		});
 		MEMOIZE_FILE.insert(file.as_ref().to_owned(), raw_text.clone());
 		Self::UnsafeHtml(text::DangerousTextNode { raw_text })
 	}
@@ -181,7 +182,11 @@ impl Node
 // Fonction //
 // -------- //
 
-fn with_children(f: &mut fmt::Formatter<'_>, children: &[Node], is_fragment: bool) -> fmt::Result
+fn with_children(
+	f: &mut fmt::Formatter<'_>,
+	children: &[Node],
+	is_fragment: bool,
+) -> fmt::Result
 {
 	if f.alternate() {
 		let mut children = children.iter();

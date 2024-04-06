@@ -126,7 +126,8 @@ impl fmt::Display for ViewDeriveParserError
 		let err_s = match self.kind {
 			| ErrorDeriveParserErrorKind::IsNotNamedOrUnitStruct => {
 				String::from(
-					"ne supporte que les structures de champs nommés ou les structures unitaires.",
+					"ne supporte que les structures de champs nommés ou les \
+					 structures unitaires.",
 				)
 			}
 		};

@@ -70,8 +70,9 @@ where
 	fn env(&self) -> &Self::Env
 	{
 		self.env_vars.as_ref().expect(
-			"Il ne faut pas oublier d'appeler « application.include_env_vars() » à \
-			 l'initialisation de l'application.",
+			"Il ne faut pas oublier d'appeler « \
+			 application.include_env_vars() » à l'initialisation de \
+			 l'application.",
 		)
 	}
 

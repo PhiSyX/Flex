@@ -15,24 +15,28 @@ use std::sync::Arc;
 // -------- //
 
 /// Valide la valeur utilisateur: filtre une valeur de type Arc<str>.
-pub fn validate_string_filter<'de, D>(deserializer: D) -> Result<Arc<str>, D::Error>
+pub fn validate_string_filter<'de, D>(de: D) -> Result<Arc<str>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let s: Arc<str> = Arc::<str>::deserialize(deserializer)?;
+	let s: Arc<str> = Arc::<str>::deserialize(de)?;
 	if s.trim().is_empty() || s.len() > 1024 {
-		return Err(serde::de::Error::custom("La taille du buffer est invalide"));
+		return Err(serde::de::Error::custom(
+			"La taille du buffer est invalide",
+		));
 	}
 	Ok(s)
 }
 
 /// Valide la valeur utilisateur: filtre une valeur de type Option<Arc<str>>.
-pub fn validate_opt_string_filter<'de, D>(deserializer: D) -> Result<Option<Arc<str>>, D::Error>
+pub fn validate_opt_string_filter<'de, D>(
+	de: D,
+) -> Result<Option<Arc<str>>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let o = Option::<Arc<str>>::deserialize(deserializer)?;
+	let o = Option::<Arc<str>>::deserialize(de)?;
 	Ok(o.filter(|s| !s.trim().is_empty() && s.len() < 1024))
 }

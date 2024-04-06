@@ -112,7 +112,9 @@ impl<'s> PrivateCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(time::Duration::seconds(max_age));
+				cookie_builder = cookie_builder.max_age(
+					time::Duration::seconds(max_age)
+				);
 			}
 		}
 
@@ -170,7 +172,9 @@ impl<'s> SignedCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(time::Duration::seconds(max_age));
+				cookie_builder = cookie_builder.max_age(
+					time::Duration::seconds(max_age)
+				);
 			}
 		}
 
@@ -221,7 +225,9 @@ impl<'s> SignedCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(time::Duration::seconds(max_age));
+				cookie_builder = cookie_builder.max_age(
+					time::Duration::seconds(max_age)
+				);
 			}
 		}
 
@@ -301,7 +307,9 @@ where
 		}
 
 		if let Some(max_age) = settings.max_age {
-			cookie_builder = cookie_builder.max_age(time::Duration::seconds(max_age));
+			cookie_builder = cookie_builder.max_age(
+				time::Duration::seconds(max_age)
+			);
 		}
 
 		if let Some(same_site) = settings.same_site {
@@ -341,7 +349,8 @@ where
 			"Impossible de récupérer la clé de cookie",
 		))?;
 		let cookie_settings = state.get_cookie_settings();
-		let cookie_manager = Self::new(cm, cookie_key).with_cookie_settings(cookie_settings.clone());
+		let cookie_manager = Self::new(cm, cookie_key)
+			.with_cookie_settings(cookie_settings.clone());
 		Ok(cookie_manager)
 	}
 }

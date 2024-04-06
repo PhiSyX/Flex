@@ -77,7 +77,10 @@ impl<T> HttpResponse<T>
 
 	/// Redirige le client vers une URL de manière permanente (Code HTTP 308).
 	#[inline]
-	pub fn redirect_permanent(&self, uri: impl ToString) -> axum::response::Redirect
+	pub fn redirect_permanent(
+		&self,
+		uri: impl ToString,
+	) -> axum::response::Redirect
 	where
 		Self: Sized,
 	{
@@ -86,7 +89,10 @@ impl<T> HttpResponse<T>
 
 	/// Redirige le client vers une URL de manière temporaire (Code HTTP 307).
 	#[inline]
-	pub fn redirect_temporary(&self, uri: impl ToString) -> axum::response::Redirect
+	pub fn redirect_temporary(
+		&self,
+		uri: impl ToString,
+	) -> axum::response::Redirect
 	where
 		Self: Sized,
 	{

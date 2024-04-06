@@ -110,7 +110,9 @@ pub trait ViewLayoutInterface
 	type View;
 
 	/// Crée une nouvelle instance de la [mise en page](Self).
-	fn new() -> Self where Self: Sized;
+	fn new() -> Self
+	where
+		Self: Sized;
 
 	/// Applique un titre au document de la mise en page.
 	fn set_title(&mut self, title: impl ToString);

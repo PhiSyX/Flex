@@ -21,6 +21,7 @@ impl axum::response::IntoResponse for Node
 {
 	fn into_response(self) -> axum::response::Response
 	{
-		(http::StatusCode::OK, axum::response::Html(self.to_string())).into_response()
+		(http::StatusCode::OK, axum::response::Html(self.to_string()))
+			.into_response()
 	}
 }

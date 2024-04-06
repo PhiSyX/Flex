@@ -36,11 +36,14 @@ impl<S, E, C> ApplicationCookieLayerExtension for AxumApplication<S, E, C>
 where
 	S: Clone,
 {
-	fn define_cookie_key(mut self, key: impl TryInto<tower_cookies::Key>) -> Self
+	fn define_cookie_key(
+		mut self,
+		key: impl TryInto<tower_cookies::Key>,
+	) -> Self
 	{
 		let Ok(cookie_key) = key.try_into() else {
 			let reason = "La clé de cookie reçue lors de l'initialisation de \
-						  l'application est incorrecte.";
+			              l'application est incorrecte.";
 			self.signal().send_critical(reason);
 		};
 		self.application_adapter.state.set_cookie_key(cookie_key);
@@ -51,7 +54,8 @@ where
 	{
 		if self.application_adapter.state.cookie_key().is_none() {
 			let reason = "Vous devez définir une clé de cookie avec \
-						  YourApp#define_cookie_key avant d'utiliser le layer de cookie";
+			              YourApp#define_cookie_key avant d'utiliser le layer \
+			              de cookie";
 			self.signal().send_critical(reason);
 		};
 
@@ -60,8 +64,7 @@ where
 		let session_store = MemoryStore::default();
 		let mut session_layer = SessionManagerLayer::new(session_store)
 			.with_name("flex.session")
-			.with_path(cookie_settings.path)
-		;
+			.with_path(cookie_settings.path);
 
 		if let Some(domain) = cookie_settings.domain {
 			session_layer = session_layer.with_domain(domain);
@@ -70,7 +73,9 @@ where
 			session_layer = session_layer.with_http_only(b);
 		}
 		if let Some(secs) = cookie_settings.max_age {
-			session_layer = session_layer.with_expiry(Expiry::OnInactivity(Duration::seconds(secs)));
+			session_layer = session_layer .with_expiry(
+				Expiry::OnInactivity(Duration::seconds(secs))
+			);
 		}
 		if let Some(b) = cookie_settings.secure {
 			session_layer = session_layer.with_secure(b);
@@ -81,8 +86,7 @@ where
 
 		self.application_adapter.router.global = self.application_adapter.router.global
 			.layer(session_layer)
-			.layer(tower_cookies::CookieManagerLayer::new())
-		;
+			.layer(tower_cookies::CookieManagerLayer::new());
 
 		self
 	}

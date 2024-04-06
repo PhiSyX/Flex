@@ -13,14 +13,18 @@
 // -------- //
 
 /// Valide la valeur utilisateur: filtre une valeur de type Vec<String>.
-pub fn validate_vec_string_filter<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
+pub fn validate_vec_string_filter<'de, D>(
+	de: D,
+) -> Result<Vec<String>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
 	use serde::Deserialize;
-	let v = Vec::<String>::deserialize(deserializer)?;
+	let v = Vec::<String>::deserialize(de)?;
 	if v.iter().any(|s| s.trim().is_empty() || s.len() > 1024) {
-		return Err(serde::de::Error::custom("La taille du buffer est invalide"));
+		return Err(serde::de::Error::custom(
+			"La taille du buffer est invalide",
+		));
 	}
 	Ok(v)
 }

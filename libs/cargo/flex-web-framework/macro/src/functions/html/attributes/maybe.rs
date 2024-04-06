@@ -45,9 +45,15 @@ impl HTMLMacro
 	) -> Result<TokenStream2>
 	{
 		let attr_name_s = attr.key.to_string();
-		let attr_name = &attr_name_s["let-".len()..attr_name_s.len() - ":option".len()];
-		let element =
-			tmp::create_element_option(tag_name, tag_attrs, children, attr_name, attr.value());
+		let attr_name =
+			&attr_name_s["let-".len()..attr_name_s.len() - ":option".len()];
+		let element = tmp::create_element_option(
+			tag_name,
+			tag_attrs,
+			children,
+			attr_name,
+			attr.value(),
+		);
 		Ok(quote! { #element })
 	}
 
@@ -61,9 +67,15 @@ impl HTMLMacro
 	) -> Result<TokenStream2>
 	{
 		let attr_name_s = attr.key.to_string();
-		let attr_name = &attr_name_s["let-".len()..attr_name_s.len() - ":result".len()];
-		let element =
-			tmp::create_element_result(tag_name, tag_attrs, children, attr_name, attr.value());
+		let attr_name =
+			&attr_name_s["let-".len()..attr_name_s.len() - ":result".len()];
+		let element = tmp::create_element_result(
+			tag_name,
+			tag_attrs,
+			children,
+			attr_name,
+			attr.value(),
+		);
 		Ok(quote! { #element })
 	}
 }

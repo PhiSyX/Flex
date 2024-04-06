@@ -112,7 +112,10 @@ impl<S, E, C> Server<S, E, C>
 		type S = net::SocketAddr;
 
 		if let Some(tls_settings) = self.settings.tls.as_ref() {
-			let tls_config = RustlsConfig::from_pem_file(&tls_settings.cert_file, &tls_settings.key_file).await?;
+			let tls_config = RustlsConfig::from_pem_file(
+				&tls_settings.cert_file,
+				&tls_settings.key_file,
+			).await?;
 			println!("URL: https://{}", addr);
 			let mut server = axum_server::bind_rustls(addr, tls_config);
 			server.http_builder().http2();
@@ -120,7 +123,10 @@ impl<S, E, C> Server<S, E, C>
 		} else {
 			let listener = net::TcpListener::bind(addr).await?;
 			println!("URL: http://{}", listener.local_addr()?);
-			axum::serve(listener, router.into_make_service_with_connect_info::<S>()).await?;
+			axum::serve(
+				listener,
+				router.into_make_service_with_connect_info::<S>(),
+			).await?;
 		}
 
 		Ok(())

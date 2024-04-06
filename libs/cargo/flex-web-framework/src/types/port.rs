@@ -51,18 +51,21 @@ impl Port
 	/// Valide la valeur utilisateur: port réseau.
 	/// La valeur DOIT être comprise entre [Self::MIN_USER_PORT] et
 	/// [Self::MAX_USER_PORT].
-	pub fn validate<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error>
+	pub fn validate<'de, D: serde::Deserializer<'de>>(
+		de: D,
+	) -> Result<Self, D::Error>
 	{
 		use serde::Deserialize;
 
-		Option::deserialize(deserializer)
+		Option::deserialize(de)
 			// NOTE(phisyx): le port est invalide en deçà/au delà de `u16::MIN`
 			//               ou `u16::MAX`
 			.unwrap_or_default()
 			.filter(|port: &Self| port.is_valid())
 			.ok_or_else(|| {
 				let message = format!(
-					"Le port d'écoute est invalide. Il DOIT être compris entre « {} » et « {} ».",
+					"Le port d'écoute est invalide. Il DOIT être compris \
+					 entre « {} » et « {} ».",
 					Self::MIN_USER_PORT,
 					Self::MAX_USER_PORT
 				);

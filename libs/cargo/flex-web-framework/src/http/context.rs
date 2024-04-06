@@ -28,15 +28,18 @@ use crate::AxumState;
 // Interface //
 // --------- //
 
-pub trait HttpContextInterface: Send + Sync
+pub trait HttpContextInterface
+	: Send + Sync
 {
 	type State;
 
 	fn constructor(extensions: &Extensions, state: Self::State) -> Option<Self>
-		where
-			Self: Sized;
+	where
+		Self: Sized;
 
-	fn shared(self) -> Arc<Self> where Self: Sized,
+	fn shared(self) -> Arc<Self>
+	where
+		Self: Sized,
 	{
 		Arc::new(self)
 	}
@@ -76,7 +79,8 @@ pub enum HttpContextError<T>
 	Extension(#[from] axum::extract::rejection::ExtensionRejection),
 	Infaillible(#[from] std::convert::Infallible),
 	#[error("{}", err.1)]
-	StaticErr {
+	StaticErr
+	{
 		err: (http::StatusCode, &'static str),
 	},
 	MissingExtension,
@@ -169,7 +173,7 @@ where
 		// Context
 		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(
 			parts,
-			state
+			state,
 		).await?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
@@ -247,15 +251,17 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 		};
 
 		let title = match self {
-			| Self::Unauthorized { .. } => "Non autorisé à consulter cette ressource",
+			| Self::Unauthorized { .. } => {
+				"Non autorisé à consulter cette ressource"
+			}
 			| _ => "Un problème est survenue sur le serveur",
 		};
 
 		let detail = match self {
 			| Self::Unauthorized { .. } => {
-				"Pour des raisons de confidentialité, vous n'êtes pas autorisé à consulter les \
-				 détails de cette ressource. Seuls les utilisateurs connectés sont autorisés à le \
-				 faire."
+				"Pour des raisons de confidentialité, vous n'êtes pas autorisé \
+				 à consulter les détails de cette ressource. Seuls les \
+				 utilisateurs connectés sont autorisés à le faire."
 					.to_owned()
 			}
 			| _ => self.to_string(),
@@ -315,7 +321,7 @@ where
 		// Context
 		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(
 			parts,
-			state
+			state,
 		).await?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
