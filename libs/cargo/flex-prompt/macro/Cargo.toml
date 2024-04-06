@@ -1,0 +1,12 @@
+[package]
+name = "flex-prompt-macro"
+version = { workspace = true }
+edition = { workspace = true }
+license = { workspace = true }
+
+[lib]
+proc-macro = true
+
+[dependencies]
+flex-syn = { path = "../../flex-syn" }
+syn = { workspace = true }
