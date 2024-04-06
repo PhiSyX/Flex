@@ -73,6 +73,13 @@ export class UserManager {
 	}
 
 	/**
+	 * Ajoute un pseudonyme à la liste des utilisateurs connus par pseudonyme.
+	 */
+	addNickname(nickname: string, userID: UserID) {
+		this._nicks.set(nickname.toLowerCase(), userID);
+	}
+
+	/**
 	 * Ajoute un utilisateur à la liste des utilisateurs bloqués.
 	 */
 	addToBlock(userID: UserID) {
@@ -80,12 +87,42 @@ export class UserManager {
 	}
 
 	/**
+	 * Change un ID utilisateur par un nouveau.
+	 */
+	changeId(oldUserID: UserID, newUserID: UserID): void {
+		if (this.removeToBlock(oldUserID)) {
+			this.addToBlock(newUserID);
+		}
+
+		const maybeUser = this.del(oldUserID);
+		if (maybeUser.is_none()) return;
+		const user = maybeUser.unwrap();
+		user.id = newUserID;
+		this.add(user);
+	}
+
+	/**
 	 * Change le pseudonyme d'un utilisateur.
 	 */
 	changeNickname(oldNickname: string, newNickname: string) {
-		const user = this.findByNickname(oldNickname).unwrap();
-		this._nicks.delete(oldNickname.toLowerCase());
+		const maybeUser = this.findByNickname(oldNickname);
+		const nick = this._nicks.get(oldNickname.toLowerCase());
+		if (nick) {
+			this._nicks.delete(oldNickname.toLowerCase());
+			this._nicks.set(newNickname.toLowerCase(), nick);
+		}
+		if (maybeUser.is_none()) return;
+		const user = maybeUser.unwrap();
 		user.nickname = newNickname;
+	}
+
+	/**
+	 * Supprime un utilisateur de la liste des utilisateurs.
+	 */
+	del(userID: UserID): Option<User> {
+		let user = this.find(userID);
+		user.then(() => this._users.delete(userID));
+		return user;
 	}
 
 	/**
@@ -122,6 +159,13 @@ export class UserManager {
 	 */
 	isBlocked(userID: UserID): boolean {
 		return this._blocked.has(userID);
+	}
+
+	/**
+	 * Supprime un pseudonyme de la liste des utilisateurs connus par pseudonyme.
+	 */
+	removeNickname(nickname: string): boolean {
+		return this._nicks.delete(nickname.toLowerCase());
 	}
 
 	/**

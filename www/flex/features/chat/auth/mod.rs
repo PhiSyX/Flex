@@ -15,6 +15,10 @@ lexa_kernel::import! {
 		pub mod identify_handler use *;
 	};
 
+	mod responses use {
+		pub mod identify_command_response use *;
+	};
+
 	mod sessions use {
 		pub mod auth_clients_session use *;
 	};

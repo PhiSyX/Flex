@@ -27,3 +27,13 @@ declare interface Commands
 {
 	"AUTH IDENTIFY": AuthIdentifyFormData;
 }
+
+declare interface CommandResponsesFromServer
+{
+	UPGRADE_USER: {
+		old_client_id: UserID;
+		new_client_id: UserID;
+		old_nickname: string;
+		new_nickname: string;
+	}
+}

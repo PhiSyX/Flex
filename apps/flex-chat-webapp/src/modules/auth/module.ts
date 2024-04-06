@@ -13,6 +13,7 @@ import type { ChatStore } from "~/store/ChatStore";
 
 import { AuthCommand } from "./command";
 import { AuthApiHTTPClient } from "./feign/api";
+import { UpgradeUserHandler } from "./handler";
 import { AuthSubCommand } from "./subcommand";
 
 // -------------- //
@@ -29,13 +30,16 @@ export class AuthModule implements Module<AuthModule>
 
 	static create(store: ChatStore): AuthModule
 	{
-		return new AuthModule(new AuthCommand(store, new AuthApiHTTPClient()));
+		return new AuthModule(
+			new AuthCommand(store, new AuthApiHTTPClient()),
+			new UpgradeUserHandler(store)
+		);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AuthCommand) {}
+	constructor(private command: AuthCommand, private upgradeUserHandler: UpgradeUserHandler) {}
 
 	// ------- //
 	// Méthode //
@@ -76,5 +80,7 @@ export class AuthModule implements Module<AuthModule>
 		}
 	}
 
-	listen() {}
+	listen() {
+		this.upgradeUserHandler.listen();
+	}
 }

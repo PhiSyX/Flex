@@ -20,7 +20,7 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME">
 
 	listen()
 	{
-		this.store.on("RPL_WELCOME", (data) => {
+		this.store.once("RPL_WELCOME", (data) => {
 			this.handle(data, {
 				channels: this.store.getAutoJoinChannels(),
 			});
@@ -37,13 +37,6 @@ export class ReplyWelcomeHandler implements SocketEventInterface<"RPL_WELCOME">
 			host: { cloaked: data.host },
 			ident: data.ident,
 		});
-
-		// NOTE(auth): cet événement est rappelé lorsque le pseudo s'authentifie
-		// sur le site.
-		if (this.store.isConnected()) {
-			this.store.userManager().changeNickname(this.store.nickname(), data.nickname);
-			return;
-		}
 
 		this.store.setConnected(true);
 

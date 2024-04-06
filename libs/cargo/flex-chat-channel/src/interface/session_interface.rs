@@ -40,7 +40,7 @@ pub trait ChannelsSessionInterface
 	fn add_member(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+		member_id: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
 	) -> Option<RefMut<'_, String, Self::Channel>>;
 
 	/// Crée un salon.

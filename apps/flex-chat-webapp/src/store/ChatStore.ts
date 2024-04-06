@@ -541,7 +541,7 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		}
 
 		if (!isChannel(roomID)) {
-			store.roomManager().remove(roomID);
+			store.roomManager().close(roomID);
 			return;
 		}
 

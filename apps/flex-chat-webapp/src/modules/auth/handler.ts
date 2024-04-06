@@ -8,16 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelRoom } from "~/channel/ChannelRoom";
+import { assertChannelRoom, assertPrivateRoom } from "~/asserts/room";
 import type { ChatStore } from "~/store/ChatStore";
-
-import { assertChannelRoom } from "~/asserts/room";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class PartHandler implements SocketEventInterface<"PART"> {
+export class UpgradeUserHandler
+	implements SocketEventInterface<"UPGRADE_USER">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -28,34 +28,47 @@ export class PartHandler implements SocketEventInterface<"PART"> {
 	// ------- //
 
 	listen() {
-		this.store.on("PART", (data) => this.handle(data));
+		this.store.on("UPGRADE_USER", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"PART">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-
-		if (maybeChannel.is_none()) return;
-
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-
+	handle(data: GenericReply<"UPGRADE_USER">) {
 		if (this.store.isCurrentClient(data.origin)) {
-			this.handleClientItself(data, channel);
-			return;
+			let client = this.store.client();
+			this.store.setClient({
+				...client,
+				id: data.new_client_id,
+				nickname: data.new_nickname,
+			});
 		}
 
-		this.handleUser(data, channel);
-	}
+		this.store
+			.userManager()
+			.changeId(data.old_client_id, data.new_client_id);
 
-	handleClientItself(_: GenericReply<"PART">, channel: ChannelRoom) {
-		this.store.roomManager().close(channel.name);
-		// FIXME(phisyx): Définir la chambre courante à la chambre juste au
-		// dessus ou en au dessous de la chambre venant d'être fermée.
-		this.store.roomManager().setCurrentToLast();
-	}
+		this.store
+			.userManager()
+			.changeNickname(data.old_nickname, data.new_nickname);
 
-	handleUser(data: GenericReply<"PART">, channel: ChannelRoom) {
-		channel.addEvent("event:part", { ...data, isCurrentClient: false });
-		channel.removeMember(data.origin.id);
+		for (const room of this.store.roomManager().rooms()) {
+			if (room.type === "channel") {
+				assertChannelRoom(room);
+				const maybeMember = room.members.remove(data.old_client_id);
+				if (maybeMember.is_none()) continue;
+				const member = maybeMember.unwrap();
+				member.id = data.new_client_id;
+				room.members.add(member);
+			} else if (room.type === "private") {
+				assertPrivateRoom(room);
+				const participant = room.participants.get(data.old_client_id);
+				if (participant && room.participants.delete(data.old_client_id)) {
+					participant.id = data.new_client_id;
+					room.participants.set(data.old_client_id, participant);
+				}
+			}
+		}
+
+		this.store
+			.roomManager()
+			.changeId(data.old_client_id, data.new_client_id);
 	}
 }

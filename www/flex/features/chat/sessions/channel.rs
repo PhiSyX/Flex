@@ -99,21 +99,21 @@ impl ChannelsSessionInterface for ChannelsSession
 	fn add_member(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+		member_id: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
 	) -> Option<RefMut<'_, String, Channel>>
 	{
 		let mut channel_entity = self.get_mut(channel_id)?;
 
 		if channel_entity.members().is_empty() {
 			channel_entity.add_member(
-				member_id.to_owned(),
-				ChannelMember::new(member_id.to_owned())
+				member_id,
+				ChannelMember::new(member_id)
 					.with_modes([ChannelAccessLevel::Owner]),
 			);
 		} else {
 			channel_entity.add_member(
-				member_id.to_owned(),
-				ChannelMember::new(member_id.to_owned()),
+				member_id,
+				ChannelMember::new(member_id),
 			);
 		}
 

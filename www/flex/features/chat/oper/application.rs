@@ -112,7 +112,7 @@ impl OperApplicationInterface for ChatApplication
 			);
 			let mut channel = self.channels.add_member(
 				channel_name,
-				client_socket.cid(),
+				*client_socket.cid(),
 			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
@@ -124,7 +124,7 @@ impl OperApplicationInterface for ChatApplication
 		if can_join.is_ok() {
 			let mut channel = self.channels.add_member(
 				channel_name,
-				client_socket.cid(),
+				*client_socket.cid(),
 			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
