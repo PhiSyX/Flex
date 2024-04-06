@@ -1,0 +1,13 @@
+[package]
+name = "flex-env"
+version = "0.1.0"
+edition = "2021"
+description = "Récupère tes variables d'environnement simplement."
+
+[lints]
+workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde-env = { version = "^0.1" }
+thiserror = { workspace = true }
