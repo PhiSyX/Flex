@@ -32,7 +32,11 @@ impl GuestMiddleware
 	// TODO: remplacer vers une enum route id
 	const REDIRECT_TO: &'static str = "/chat";
 
-	pub async fn api(session: Session, req: Request, next: Next) -> impl IntoResponse
+	pub async fn api(
+		session: Session,
+		req: Request,
+		next: Next,
+	) -> impl IntoResponse
 	{
 		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(us)) => Json(us).into_response(),
@@ -40,7 +44,11 @@ impl GuestMiddleware
 		}
 	}
 
-	pub async fn redirect(session: Session, req: Request, next: Next) -> Response
+	pub async fn redirect(
+		session: Session,
+		req: Request,
+		next: Next,
+	) -> Response
 	{
 		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(_)) => Redirect::to(Self::REDIRECT_TO).into_response(),

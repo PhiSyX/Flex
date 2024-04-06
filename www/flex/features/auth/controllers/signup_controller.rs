@@ -15,7 +15,11 @@ use flex_web_framework::http::response::{Html, Redirect};
 use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
+use flex_web_framework::{
+	DatabaseService,
+	PostgreSQLDatabase,
+	SessionFlashExtension,
+};
 
 use crate::features::auth::forms::RegistrationFormData;
 use crate::features::auth::responses::CreatedAccountReply;
@@ -23,7 +27,10 @@ use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::auth::services::{AuthService, AuthenticationService};
 use crate::features::auth::views::SignupView;
 use crate::features::users::dto::UserNewActionDTO;
-use crate::features::users::repositories::{UserRepository, UserRepositoryPostgreSQL};
+use crate::features::users::repositories::{
+	UserRepository,
+	UserRepositoryPostgreSQL,
+};
 use crate::FlexState;
 
 // --------- //
@@ -48,10 +55,13 @@ impl SignupController
 	}
 
 	/// Gestion du formulaire d'inscription au site.
-	pub async fn handle(ctx: HttpContext<Self>, Form(form): Form<RegistrationFormData>)
-		-> Redirect
+	pub async fn handle(
+		ctx: HttpContext<Self>,
+		Form(form): Form<RegistrationFormData>,
+	) -> Redirect
 	{
-		if let Err(err) = ctx.auth_service.signup(UserNewActionDTO::from(form)).await {
+		let user_new = UserNewActionDTO::from(form);
+		if let Err(err) = ctx.auth_service.signup(user_new).await {
 			tracing::error!(?err, "Erreur lors de l'inscription");
 		}
 		ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;

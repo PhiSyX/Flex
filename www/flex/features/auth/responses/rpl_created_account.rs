@@ -33,6 +33,10 @@ impl std::fmt::Display for CreatedAccountReply
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{
-		write!(f, "Un lien d'activation de votre compte a été envoyé par courriel à l'adresse fournie.")
+		write!(
+			f,
+			"Un lien d'activation de votre compte a été envoyé par courriel à \
+			 l'adresse fournie."
+		)
 	}
 }

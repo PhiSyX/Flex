@@ -12,18 +12,30 @@ use std::sync::Arc;
 
 use flex_web_framework::extract::Form;
 use flex_web_framework::http::response::Html;
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface, IntoResponse};
+use flex_web_framework::http::{
+	Extensions,
+	HttpContext,
+	HttpContextInterface,
+	IntoResponse,
+};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::{DatabaseService, PostgreSQLDatabase, SessionFlashExtension};
+use flex_web_framework::{
+	DatabaseService,
+	PostgreSQLDatabase,
+	SessionFlashExtension,
+};
 
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::{AuthService, AuthenticationService};
 use crate::features::auth::views::LoginView;
-use crate::features::users::sessions::constant::USER_SESSION;
 use crate::features::users::dto::UserSessionDTO;
-use crate::features::users::repositories::{UserRepository, UserRepositoryPostgreSQL};
+use crate::features::users::repositories::{
+	UserRepository,
+	UserRepositoryPostgreSQL,
+};
+use crate::features::users::sessions::constant::USER_SESSION;
 use crate::FlexState;
 
 // --------- //
@@ -50,9 +62,16 @@ impl LoginController
 	}
 
 	/// Traitement du formulaire de connexion.
-	pub async fn handle(ctx: HttpContext<Self>, Form(formdata): Form<LoginFormData>) -> impl IntoResponse
+	pub async fn handle(
+		ctx: HttpContext<Self>,
+		Form(formdata): Form<LoginFormData>,
+	) -> impl IntoResponse
 	{
-		let Ok(user) = ctx.auth_service.attempt(&formdata.identifier, &formdata.password).await else {
+		let Ok(user) = ctx.auth_service.attempt(
+			&formdata.identifier,
+			&formdata.password
+		).await else
+		{
 			ctx.session.flash(LoginError::KEY, LoginError::InvalidCredentials).await;
 			return ctx.redirect_back();
 		};

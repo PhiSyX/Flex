@@ -135,7 +135,9 @@ impl From<RegistrationFormData> for SignupView
 			username: form.username,
 			email_address: form.email_address.to_string(),
 			password: String::from(form.password.expose()),
-			password_confirmation: String::from(form.password_confirmation.expose()),
+			password_confirmation: String::from(
+				form.password_confirmation.expose(),
+			),
 		}
 	}
 }

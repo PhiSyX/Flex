@@ -43,7 +43,10 @@ impl ViewInterface for LoginView
 	type Styles = Node;
 	type View = Node;
 
-	async fn with_session(mut self, session: &flex_web_framework::sessions::Session) -> Self
+	async fn with_session(
+		mut self,
+		session: &flex_web_framework::sessions::Session,
+	) -> Self
 	{
 		self.success_message = session.take(CreatedAccountReply::KEY).await;
 		self.error_message = session.take(LoginError::KEY).await;

@@ -11,16 +11,25 @@
 use std::sync::Arc;
 
 use flex_web_framework::extract::Form;
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextError, HttpContextInterface, IntoResponse};
+use flex_web_framework::http::{
+	Extensions,
+	HttpContext,
+	HttpContextError,
+	HttpContextInterface,
+	IntoResponse,
+};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
 use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::{AuthService, AuthenticationService};
-use crate::features::users::sessions::constant::USER_SESSION;
 use crate::features::users::dto::UserSessionDTO;
-use crate::features::users::repositories::{UserRepository, UserRepositoryPostgreSQL};
+use crate::features::users::repositories::{
+	UserRepository,
+	UserRepositoryPostgreSQL,
+};
+use crate::features::users::sessions::constant::USER_SESSION;
 use crate::FlexState;
 
 // --------- //
@@ -41,15 +50,23 @@ impl IdentifyController
 	pub const COOKIE_NAME: &'static str = "flex.auth_user";
 
 	/// Traitement du formulaire de connexion.
-	pub async fn handle(ctx: HttpContext<Self>, Form(formdata): Form<LoginFormData>)
-		-> Result<impl IntoResponse, HttpContextError<Self>>
+	pub async fn handle(
+		ctx: HttpContext<Self>,
+		Form(formdata): Form<LoginFormData>,
+	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
-		let Ok(user) = ctx.auth_service.attempt(&formdata.identifier, &formdata.password).await else {
-			return Err(HttpContextError::Unauthorized { request: ctx.request });
+		let Ok(user) = ctx.auth_service.attempt(
+			&formdata.identifier,
+			&formdata.password,
+		).await else {
+			return Err(HttpContextError::Unauthorized {
+				request: ctx.request,
+			});
 		};
 		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
 		_ = ctx.session.insert(USER_SESSION, UserSessionDTO::from(user)).await;
-		let user_session: UserSessionDTO = ctx.session.get(USER_SESSION).await?.unwrap();
+		let user_session = ctx.session.get::<UserSessionDTO>(USER_SESSION).await
+						 ?.unwrap();
 		Ok(ctx.response.json(user_session))
 	}
 }

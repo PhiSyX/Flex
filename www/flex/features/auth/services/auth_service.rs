@@ -19,7 +19,6 @@ use crate::features::users::dto::UserNewActionDTO;
 use crate::features::users::entities::UserEntity;
 use crate::features::users::repositories::UserRepository;
 
-
 // --------- //
 // Interface //
 // --------- //
@@ -28,10 +27,17 @@ use crate::features::users::repositories::UserRepository;
 pub trait AuthenticationService
 {
 	/// Tentative de connexion d'un utilisateur.
-	async fn attempt(&self, identifier: &Identifier, password: &str) -> Result<UserEntity, AuthErrorService>;
+	async fn attempt(
+		&self,
+		identifier: &Identifier,
+		password: &str,
+	) -> Result<UserEntity, AuthErrorService>;
 
 	/// Tentative d'inscription d'un nouvel utilisateur.
-	async fn signup(&self, new_user: UserNewActionDTO) -> Result<UserEntity, AuthErrorService>;
+	async fn signup(
+		&self,
+		new_user: UserNewActionDTO,
+	) -> Result<UserEntity, AuthErrorService>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -73,15 +79,23 @@ pub enum AuthErrorService
 #[flex_web_framework::async_trait]
 impl AuthenticationService for AuthService
 {
-	async fn attempt(&self, identifier: &Identifier, password: &str) -> Result<UserEntity, AuthErrorService>
+	async fn attempt(
+		&self,
+		identifier: &Identifier,
+		password: &str,
+	) -> Result<UserEntity, AuthErrorService>
 	{
 		// FIXME: passer un DTO en paramètre générique plutôt que de retourner
 		//        directement l'entité `UserEntity`. Actuellement, le système de
 		//        trait async + générique ne fonctionne pas correctement dans
 		//        mon cas.
 		let maybe_user = match identifier {
-			| Identifier::Email(email) => self.user_repository.find_by_email(email).await,
-			| Identifier::Username(username) => self.user_repository.find_by_name(username).await,
+			| Identifier::Email(email) => {
+				self.user_repository.find_by_email(email).await
+			}
+			| Identifier::Username(username) => {
+				self.user_repository.find_by_name(username).await
+			}
 		};
 
 		if let Err(err) = maybe_user {
@@ -98,12 +112,16 @@ impl AuthenticationService for AuthService
 		Ok(user)
 	}
 
-	async fn signup(&self, mut new_user: UserNewActionDTO) -> Result<UserEntity, AuthErrorService>
+	async fn signup(
+		&self,
+		mut new_user: UserNewActionDTO,
+	) -> Result<UserEntity, AuthErrorService>
 	{
-		let user_exists = self.user_repository
-			.find_by_email_or_name(&new_user.email_address, &new_user.username).await
-			.is_ok()
-		;
+		let user_exists = self
+			.user_repository
+			.find_by_email_or_name(&new_user.email_address, &new_user.username)
+			.await
+			.is_ok();
 
 		if user_exists {
 			// SECURITY: timing attacks.
@@ -111,10 +129,9 @@ impl AuthenticationService for AuthService
 			return Err(AuthErrorService::EmailOrNameAlreadyTaken);
 		}
 
-		let encoded_password = self.password_service
-			.encrypt(new_user.password.expose())
-			.map_err(|_| AuthErrorService::Hasher)?
-		;
+		let exposed_password = new_user.password.expose();
+		let encoded_password = self.password_service.encrypt(exposed_password)
+			.map_err(|_| AuthErrorService::Hasher)?;
 		new_user.password = secret::Secret::from(encoded_password);
 		let user = self.user_repository.create(new_user).await?;
 

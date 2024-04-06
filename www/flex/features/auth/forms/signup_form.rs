@@ -10,7 +10,10 @@
 
 use flex_web_framework::types::{email, secret};
 
-use crate::features::auth::specs::owasp::{PASSWORD_LENGTH_MAX, PASSWORD_LENGTH_MIN};
+use crate::features::auth::specs::owasp::{
+	PASSWORD_LENGTH_MAX,
+	PASSWORD_LENGTH_MIN,
+};
 
 // --------- //
 // Structure //
@@ -57,8 +60,9 @@ impl<'de> serde::Deserialize<'de> for RegistrationFormData
 		let password_size = this.password.len();
 		if !(PASSWORD_LENGTH_MIN..=PASSWORD_LENGTH_MAX).contains(&password_size) {
 			let reason = format!(
-				"[password]: un mot de passe valide DOIT être compris entre « {} » et « {} » \
-				 caractères. La taille du mot de passe que vous avez envoyé est de « {} ».",
+				"[password]: un mot de passe valide DOIT être compris entre « \
+				 {} » et « {} » caractères. La taille du mot de passe que \
+				 vous avez envoyé est de « {} ».",
 				PASSWORD_LENGTH_MIN, PASSWORD_LENGTH_MAX, password_size,
 			);
 			return Err(serde::de::Error::custom(reason));

@@ -10,7 +10,8 @@
 
 use flex_web_framework::Feature;
 
-use super::routes::{web::AuthRouter, api::AuthApi_V1_Router};
+use super::routes::api::AuthApi_V1_Router;
+use super::routes::web::AuthRouter;
 use crate::FlexState;
 
 // --------- //
@@ -26,10 +27,7 @@ pub struct AuthApplication;
 impl Feature for AuthApplication
 {
 	type Config = ();
-	type Router = (
-		AuthRouter,
-		AuthApi_V1_Router,
-	);
+	type Router = (AuthRouter, AuthApi_V1_Router);
 	type State = FlexState;
 
 	const NAME: &'static str = "AuthApplication";
