@@ -16,12 +16,11 @@ use flex_chat_channel::{
 	ChannelInterface,
 	ChannelMember,
 	ChannelsSessionInterface,
-	Mask,
 	SettingsFlag,
 };
 use flex_chat_client::{ClientSocketInterface, Socket};
 use flex_chat_client_channel::ChannelClientSocketErrorReplies;
-use flex_chat_mode::ApplyMode;
+use flex_chat_mode::{ApplyMode, Mask};
 use flex_chat_user::UserInterface;
 
 use super::ModeChannelAccessLevelChannelsSessionInterface;

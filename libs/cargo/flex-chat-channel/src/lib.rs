@@ -17,7 +17,7 @@ mod validation;
 
 use std::collections::HashMap;
 
-use flex_chat_mode::ApplyMode;
+use flex_chat_mode::{ApplyMode, Mask};
 use flex_chat_user::{User, UserAddressInterface, UserInterface};
 use flex_secret::Secret;
 use flex_wildcard_matching::WildcardMatching;
@@ -125,7 +125,7 @@ impl ChannelAccessControlInterface for Channel
 	fn add_ban(
 		&mut self,
 		apply_by: &Self::User,
-		mask: impl Into<mode::Mask>,
+		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<mode::AccessControlMask>>
 	{
 		let mask = mask.into();
@@ -139,7 +139,7 @@ impl ChannelAccessControlInterface for Channel
 	fn add_ban_except(
 		&mut self,
 		apply_by: &Self::User,
-		mask: impl Into<mode::Mask>,
+		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<mode::AccessControlMask>>
 	{
 		let mask = mask.into();
@@ -155,13 +155,13 @@ impl ChannelAccessControlInterface for Channel
 		self.access_control.invite_list.insert(client_id)
 	}
 
-	fn has_banmask(&self, mask: &mode::Mask) -> bool
+	fn has_banmask(&self, mask: &Mask) -> bool
 	{
 		let mask_s = mask.to_string();
 		self.access_control.banlist.contains_key(&mask_s)
 	}
 
-	fn has_banmask_except(&self, mask: &mode::Mask) -> bool
+	fn has_banmask_except(&self, mask: &Mask) -> bool
 	{
 		let mask_s = mask.to_string();
 		self.access_control.banlist_exceptions.contains_key(&mask_s)
@@ -232,7 +232,7 @@ impl ChannelAccessControlInterface for Channel
 	fn remove_ban(
 		&mut self,
 		apply_by: &Self::User,
-		mask: impl Into<mode::Mask>,
+		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<Self::AccessControlMask>>
 	{
 		let mask = mask.into();
@@ -248,7 +248,7 @@ impl ChannelAccessControlInterface for Channel
 	fn remove_ban_except(
 		&mut self,
 		apply_by: &Self::User,
-		mask: impl Into<mode::Mask>,
+		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<Self::AccessControlMask>>
 	{
 		let mask = mask.into();
