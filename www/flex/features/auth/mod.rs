@@ -57,6 +57,7 @@ flex_kernel::import! {
 
 	mod views {
 		pub mod login_view use *;
+		pub mod logout_view use *;
 		pub mod signup_view use *;
 	};
 }

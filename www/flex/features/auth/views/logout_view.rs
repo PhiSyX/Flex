@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,65 +8,68 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::{
-	Extensions,
-	HttpAuthContext,
-	HttpContext,
-	HttpContextInterface,
-	IntoResponse,
-};
+use flex_web_framework::{html, Node, ViewInterface};
 
 use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::views::LogoutView;
 use crate::features::users::dto::UserSessionDTO;
-use crate::features::users::sessions::constant::USER_SESSION;
-use crate::FlexState;
+use crate::templates::layouts::BaseHTMLLayout;
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct LogoutController {}
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl LogoutController
+#[derive(flex_web_framework::View)]
+pub struct LogoutView
 {
-	pub const COOKIE_NAME: &'static str = "flex.auth_user";
-
-	pub async fn view(
-		ctx: HttpAuthContext<Self, UserSessionDTO>,
-	) -> impl IntoResponse
-	{
-		ctx.response.render(LogoutView {
-			user_session: ctx.user,
-		}).await
-	}
-
-	/// Déconnexion de l'utilisateur en session.
-	pub async fn handle(ctx: HttpContext<Self>) -> impl IntoResponse
-	{
-		ctx.cookies.signed().remove(Self::COOKIE_NAME);
-		_ = ctx.session.remove::<()>(USER_SESSION).await;
-		ctx.response.redirect_to(AuthRouteID::Login)
-	}
+	pub user_session: UserSessionDTO,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for LogoutController
+impl ViewInterface for LogoutView
 {
-	type State = FlexState;
+	type Layout = BaseHTMLLayout;
+	type Metadata = Node;
+	type Scripts = Node;
+	type Styles = Node;
+	type View = Node;
 
-	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
+	fn title(&self) -> impl ToString
 	{
-		Some(Self {})
+		"Auth - Déconnexion"
+	}
+
+	fn styles(&self) -> Self::Styles
+	{
+		html! {
+			<link href="/public/css/auth.css" rel="stylesheet">
+		}
+	}
+
+	fn view(&self) -> Self::View
+	{
+		html! {
+			<div id="no-auth-intro">
+				<div class="auth-container">
+					<p>
+						Connecté en tant que
+						<strong>{&self.user_session.name}</strong>
+						<em>" (" { &self.user_session.email } ")"</em>
+					</p>
+
+					<form action={AuthRouteID::Logout} method="DELETE">
+						<input type="hidden" value={&self.user_session.name} />
+
+						<div class="form-group">
+							<button class="btn-submit" type="submit">
+								Se déconnecter maintenant
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		}
 	}
 }
-
-unsafe impl Send for LogoutController {}
-unsafe impl Sync for LogoutController {}

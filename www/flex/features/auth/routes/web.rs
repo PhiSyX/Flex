@@ -64,6 +64,8 @@ impl RouterInterface<FlexState> for AuthRouter
 			)
 			.add(
 				Router::path(AuthRouteID::Logout)
+					.get(LogoutController::view)
+					.post(LogoutController::handle) // FIXME: method spoofing
 					.delete(LogoutController::handle)
 					.middleware(middleware::from_fn(AuthMiddleware::required)),
 			)
