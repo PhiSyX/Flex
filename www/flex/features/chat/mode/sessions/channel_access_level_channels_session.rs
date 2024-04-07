@@ -22,39 +22,55 @@ use crate::features::chat::sessions::ChannelsSession;
 // Interface //
 // --------- //
 
-pub trait ModeChannelAccessLevelChannelsSessionInterface
-	: ChannelsSessionInterface
+pub trait ModeChannelAccessLevelChannelsSessionInterface:
+	ChannelsSessionInterface
 {
 	/// Est-ce qu'un membre à des droits minimal.
 	fn does_member_have_rights(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		min_access_level: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::AccessLevel,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		min_access_level: <
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::AccessLevel,
 	) -> bool;
 
 	/// Un membre PEUT-il effectuer des tâches sur un autre membre?
 	fn does_member_have_rights_to_operate_on_another_member(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		other_member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		other_member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
 	) -> bool;
 
 	/// Supprime le niveau d'accès d'un pseudo.
 	fn remove_client_access_level(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		access_level: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::AccessLevel,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		access_level: <
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::AccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>;
 
 	/// Met à jour le niveau d'accès d'un pseudo.
 	fn update_client_access_level(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		access_level: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::AccessLevel,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		access_level: <
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::AccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>;
 }
 
@@ -64,11 +80,16 @@ pub trait ModeChannelAccessLevelChannelsSessionInterface
 
 impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 {
+	#[rustfmt::skip]
 	fn does_member_have_rights(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		min_access_level: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::AccessLevel,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		min_access_level: <
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::AccessLevel,
 	) -> bool
 	{
 		let Some(member) = self.get_member(channel_id, member_id) else {
@@ -82,10 +103,15 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	fn does_member_have_rights_to_operate_on_another_member(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		other_member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		other_member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
 	) -> bool
 	{
+		#[rustfmt::skip]
 		let Some((member, other_member)) = self.get_member(channel_id, member_id)
 			.zip(self.get_member(channel_id, other_member_id))
 		else {
@@ -125,11 +151,16 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	}
 
 	/// Supprime le niveau d'accès d'un pseudo.
+	#[rustfmt::skip]
 	fn remove_client_access_level(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		access_level: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::AccessLevel,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		access_level: <
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::AccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>
 	{
 		let mut channel = self.get_mut(channel_id)?;
@@ -139,11 +170,16 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	}
 
 	/// Met à jour le niveau d'accès d'un pseudo.
+	#[rustfmt::skip]
 	fn update_client_access_level(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
-		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-		access_level: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::AccessLevel,
+		member_id: &<
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::ID,
+		access_level: <
+			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
+		>::AccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>
 	{
 		let mut channel = self.get_mut(channel_id)?;

@@ -37,6 +37,7 @@ pub struct ModeChannelAccessControlBanExceptionHandler;
 // Implémentation //
 // -------------- //
 
+#[rustfmt::skip]
 impl ModeChannelAccessControlBanHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "BAN";
@@ -95,6 +96,7 @@ impl ModeChannelAccessControlBanHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessControlBanHandler
 {
 	pub const UNSET_COMMAND_NAME: &'static str = "UNBAN";
@@ -153,6 +155,7 @@ impl ModeChannelAccessControlBanHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessControlBanExceptionHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "BANEX";
@@ -211,6 +214,7 @@ impl ModeChannelAccessControlBanExceptionHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessControlBanExceptionHandler
 {
 	pub const UNSET_COMMAND_NAME: &'static str = "UNBANEX";

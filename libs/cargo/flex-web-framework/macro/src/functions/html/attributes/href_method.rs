@@ -54,6 +54,7 @@ impl HTMLMacro
 			});
 		}
 
+		#[rustfmt::skip]
 		let link_id = element.attributes()
 			.iter()
 			.find_map(|attribute| {
@@ -71,6 +72,7 @@ impl HTMLMacro
 			.unwrap();
 		let href_value = attr.value();
 
+		#[rustfmt::skip]
 		let mut tag_attrs: Vec<_> = element.attributes()
 			.iter()
 			.filter_map(|attr| {
@@ -105,6 +107,8 @@ impl HTMLMacro
 			.replace("{method}", method);
 
 		let link_children = self.parse(&element.children)?;
+
+		#[rustfmt::skip]
 		let mut form_children = element.attributes()
 			.iter()
 			.filter_map(|attr| {

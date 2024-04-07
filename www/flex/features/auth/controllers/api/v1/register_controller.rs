@@ -54,8 +54,8 @@ impl RegisterController
 		Form(form): Form<RegistrationFormData>,
 	) -> impl IntoResponse
 	{
-		if let Err(err) = ctx.auth_service.signup(UserNewActionDTO::from(form)).await
-		{
+		let user_new = UserNewActionDTO::from(form);
+		if let Err(err) = ctx.auth_service.signup(user_new).await {
 			tracing::error!(?err, "Erreur lors de l'inscription");
 		}
 
@@ -82,13 +82,15 @@ impl HttpContextInterface for RegisterController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
+		let user_repository = UserRepositoryPostgreSQL { query_builder };
 		let auth_service = AuthService {
-			user_repository: UserRepositoryPostgreSQL { query_builder }.shared(),
+			user_repository: user_repository.shared(),
 			password_service: password_service.clone(),
-		}
-		.shared();
+		};
 
-		Some(Self { auth_service })
+		Some(Self {
+			auth_service: auth_service.shared(),
+		})
 	}
 }
 

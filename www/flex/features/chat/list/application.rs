@@ -30,7 +30,10 @@ pub trait ListApplicationInterface
 	/// Est-ce qu'un client a un salon donné dans sa liste de salons rejoint.
 	fn is_client_has_channel(
 		&self,
-		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+		client_id: &<
+			<Self::ClientSocket<'_> as ClientSocketInterface>
+				 ::Client as ClientInterface
+			>::ClientID,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> bool;
 }
@@ -46,10 +49,14 @@ impl ListApplicationInterface for ChatApplication
 
 	fn is_client_has_channel(
 		&self,
-		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+		client_id: &<
+			<Self::ClientSocket<'_> as ClientSocketInterface>
+				::Client as ClientInterface
+			>::ClientID,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> bool
 	{
+		#[rustfmt::skip]
 		let Some(client) = self.get_client_by_id(client_id) else { return false };
 		client.has_channel(channel_name)
 	}

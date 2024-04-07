@@ -56,6 +56,7 @@ impl KickApplicationInterface for ChatApplication
 	type Channel = Channel;
 	type ClientSocket<'cs> = Socket<'cs>;
 
+	#[rustfmt::skip]
 	fn kick_clients_on_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,

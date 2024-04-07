@@ -81,6 +81,7 @@ fn json_content_type(headers: &hyper::HeaderMap) -> bool
 		return false;
 	};
 
+	#[rustfmt::skip]
 	let is_json_content_type = mime.type_() == "application" && (
 		mime.subtype() == "json" ||
 		mime.suffix().map_or(false, |name| name == "json")

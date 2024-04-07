@@ -43,6 +43,7 @@ pub struct ConnectionRegistrationHandler;
 impl ConnectionRegistrationHandler
 {
 	/// Événement CONNECT
+	#[rustfmt::skip]
 	pub fn handle_connect(
 		socket: &SocketRef,
 		State(server_state): State<FlexApplicationState>,
@@ -109,6 +110,7 @@ impl ConnectionRegistrationHandler
 	}
 
 	/// Compléter l'enregistrement d'un client.
+	#[rustfmt::skip]
 	pub fn complete_registration(
 		_server_state: &FlexApplicationState,
 		app: &ChatApplication,

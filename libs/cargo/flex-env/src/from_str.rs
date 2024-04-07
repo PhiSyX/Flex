@@ -38,6 +38,7 @@ fn parse(
 	source_env: &str,
 ) -> impl Iterator<Item = declaration::Declaration> + '_
 {
+	#[rustfmt::skip]
 	let parse_decl = |declaration_raw| {
 		declaration::Declaration::parse(declaration_raw).ok()
 	};

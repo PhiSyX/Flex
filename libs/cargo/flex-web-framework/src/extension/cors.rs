@@ -31,6 +31,7 @@ pub trait ApplicationCorsLayerExtension
 
 impl<S, E, C> ApplicationCorsLayerExtension for AxumApplication<S, E, C>
 {
+	#[rustfmt::skip]
 	fn use_cors_layer(mut self) -> Self
 	{
 		let cors_settings = match self.fetch_config::<CORSSettings>(

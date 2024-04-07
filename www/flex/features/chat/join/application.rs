@@ -47,10 +47,17 @@ use crate::ChatApplication;
 
 pub trait JoinApplicationInterface<'a>
 {
-	type ClientSocket<'cs>: JoinCommandResponseInterface
-						  + JoinErrorResponseInterface
-						  ;
-	type Channel: ChannelInterface + 'a;
+	#[rustfmt::skip]
+	type ClientSocket<'cs>
+		: JoinCommandResponseInterface
+		+ JoinErrorResponseInterface
+		;
+
+	#[rustfmt::skip]
+	type Channel
+		: 'a
+		+ ChannelInterface
+		;
 
 	/// Rejoint un salon du serveur.
 	fn join_channel(
@@ -101,6 +108,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		forced: bool,
 	)
 	{
+		#[rustfmt::skip]
 		self.clients.add_channel_on_client(client_socket.cid(), &channel.id());
 
 		client_socket.emit_join(channel, forced);
@@ -123,6 +131,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		client_socket.emit_all_channel_access_control(channel);
 	}
 
+	#[rustfmt::skip]
 	fn join_or_create_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -133,7 +142,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 	) -> Result<(), JoinChannelPermissionError>
 	{
 		type C<'a, Chan> = <Chan as ChannelInterface>::RefID<'a>;
-		let channel_name:& C<'a, Self::Channel> = &channel_name.into();
+		let channel_name: &C<'a, Self::Channel> = &channel_name.into();
 
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, channel_key.cloned());
@@ -149,7 +158,8 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
 		let can_join = self.channels.can_join(
 			&client_session,
-			channel_name, channel_key,
+			channel_name,
+			channel_key,
 		);
 
 		if can_join.is_ok() {
@@ -165,6 +175,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		can_join
 	}
 
+	#[rustfmt::skip]
 	fn join_or_create_channel_bypass_permission(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -174,7 +185,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 	) -> Result<(), JoinChannelPermissionError>
 	{
 		type C<'a, Chan> = <Chan as ChannelInterface>::RefID<'a>;
-		let channel_name:& C<'a, Self::Channel> = &channel_name.into();
+		let channel_name: &C<'a, Self::Channel> = &channel_name.into();
 
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, None);

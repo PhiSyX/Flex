@@ -35,6 +35,12 @@ impl OperHandler
 {
 	pub const COMMAND_NAME: &'static str = "OPER";
 
+	/// Un utilisateur normal utilise la commande OPER pour obtenir des
+	/// privilèges d'opérateur global ou local.  Les combinaisons <name> et
+	/// <password> sont OBLIGATOIRES pour obtenir les privilèges d'opérateur. En
+	/// cas de succès, l'utilisateur reçoit un message MODE indiquant les
+	/// nouveaux modes de l'utilisateur.
+	#[rustfmt::skip]
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,

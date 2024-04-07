@@ -19,6 +19,7 @@ use flex_kernel::ApplicationCLIInterface;
 // Type //
 // ---- //
 
+#[rustfmt::skip]
 type cli_lib = flex_cli::CLI<
 	EmptyArguments,
 	EmptyFlags,

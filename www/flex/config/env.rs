@@ -10,9 +10,9 @@
 
 use std::sync::Arc;
 
-use flex_web_framework::types::{secret, url};
 use flex_kernel::settings::KernelSettings;
 use flex_kernel::{process, ApplicationEnvInterface};
+use flex_web_framework::types::{secret, url};
 
 // --------- //
 // Structure //

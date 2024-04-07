@@ -55,6 +55,7 @@ impl SignupController
 	}
 
 	/// Gestion du formulaire d'inscription au site.
+	#[rustfmt::skip]
 	pub async fn handle(
 		ctx: HttpContext<Self>,
 		Form(form): Form<RegistrationFormData>,
@@ -84,13 +85,15 @@ impl HttpContextInterface for SignupController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
+		let user_repository = UserRepositoryPostgreSQL { query_builder };
 		let auth_service = AuthService {
-			user_repository: UserRepositoryPostgreSQL { query_builder }.shared(),
+			user_repository: user_repository.shared(),
 			password_service: password_service.clone(),
-		}
-		.shared();
+		};
 
-		Some(Self { auth_service })
+		Some(Self {
+			auth_service: auth_service.shared(),
+		})
 	}
 }
 

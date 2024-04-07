@@ -29,11 +29,13 @@ pub const CHANNEL_ACCESS_LEVEL_ADMIN_LETTER: char = 'a';
 pub const CHANNEL_ACCESS_LEVEL_ADMIN_SYMBOL: char = '&';
 
 /// Le drapeau du niveau d'accès des opérateurs de salon.
+#[rustfmt::skip]
 pub const CHANNEL_ACCESS_LEVEL_OPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 5;
 pub const CHANNEL_ACCESS_LEVEL_OPERATOR_LETTER: char = 'o';
 pub const CHANNEL_ACCESS_LEVEL_OPERATOR_SYMBOL: char = '@';
 
 /// Le drapeau du niveau d'accès des (demi) opérateurs de salon.
+#[rustfmt::skip]
 pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_FLAG: CHANNEL_ACCESS_LEVEL_FLAG = 1 << 4;
 pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_LETTER: char = 'h';
 pub const CHANNEL_ACCESS_LEVEL_HALFOPERATOR_SYMBOL: char = '%';
@@ -44,8 +46,8 @@ pub const CHANNEL_ACCESS_LEVEL_VIP_LETTER: char = 'v';
 pub const CHANNEL_ACCESS_LEVEL_VIP_SYMBOL: char = '+';
 
 /// Message d'erreur lors de l'analyse de symbole incorrect.
+#[rustfmt::skip]
 const PARSE_SYMBOL_ERROR_MSG: &str = "Seuls l'un des symboles suivants sont attendus: ~&@%+";
-
 
 // ----------- //
 // Énumération //
@@ -130,7 +132,7 @@ impl std::str::FromStr for ChannelAccessLevel
 			| "@" => Self::Operator,
 			| "%" => Self::HalfOperator,
 			| "+" => Self::Vip,
-			| _ => return Err(PARSE_SYMBOL_ERROR_MSG)
+			| _ => return Err(PARSE_SYMBOL_ERROR_MSG),
 		})
 	}
 }

@@ -111,10 +111,7 @@ impl ChannelsSessionInterface for ChannelsSession
 					.with_modes([ChannelAccessLevel::Owner]),
 			);
 		} else {
-			channel_entity.add_member(
-				member_id,
-				ChannelMember::new(member_id),
-			);
+			channel_entity.add_member(member_id, ChannelMember::new(member_id));
 		}
 
 		Some(channel_entity)
@@ -152,6 +149,7 @@ impl ChannelsSessionInterface for ChannelsSession
 			<Self::Channel as ChannelInterface>::RefID<'a>,
 		> = channel_name.into();
 		let chid = channel_name.to_lowercase();
+		#[rustfmt::skip]
 		let mut channel_entity = Channel::new(channel_name)
 			.with_creation_flags(flags);
 		if let Some(channel_key) = channel_key {

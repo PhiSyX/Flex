@@ -40,6 +40,7 @@ impl OperClientSessionInterface for ClientsSession
 		oper: &FlexChatConfigOperatorAuth,
 	)
 	{
+		#[rustfmt::skip]
 		let Some(mut client) = self.get_mut(client_id) else { return };
 
 		client.marks_client_as_operator(oper.oper_type, &oper.flags);

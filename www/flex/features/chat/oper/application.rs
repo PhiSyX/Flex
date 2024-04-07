@@ -95,6 +95,7 @@ impl OperApplicationInterface for ChatApplication
 		client.user().is_global_operator()
 	}
 
+	#[rustfmt::skip]
 	fn join_or_create_oper_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -152,22 +153,23 @@ impl OperApplicationInterface for ChatApplication
 		}
 	}
 
+	#[rustfmt::skip]
 	fn marks_client_as_operator(
 		&self,
 		client_socket: &mut Self::ClientSocket<'_>,
 		oper: &FlexChatConfigOperatorAuth,
 	)
 	{
-		self.clients
-			.marks_client_as_operator(client_socket.cid(), oper);
+		self.clients.marks_client_as_operator(client_socket.cid(), oper);
 
 		if let Some(vhost) = oper.virtual_host.as_deref() {
 			client_socket.user_mut().set_vhost(vhost);
 		}
 
-		client_socket
-			.client_mut()
-			.marks_client_as_operator(oper.oper_type, &oper.flags);
+		client_socket.client_mut().marks_client_as_operator(
+			oper.oper_type,
+			&oper.flags,
+		);
 
 		let flag_oper = match oper.oper_type {
 			| FlexChatConfigOperatorType::LocalOperator => Flag::LocalOperator,
@@ -182,6 +184,7 @@ impl OperApplicationInterface for ChatApplication
 
 impl From<FlexChatConfigOperatorType> for flex_chat_user::Flag
 {
+	#[rustfmt::skip]
 	fn from(ty: FlexChatConfigOperatorType) -> Self
 	{
 		match ty {

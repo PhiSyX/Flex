@@ -21,10 +21,12 @@ use crate::{AxumState, RouteIDInterface};
 
 pub trait RouterBuilder
 {
-	type State: 'static
-			  + Clone
-			  + Send + Sync
-			  ;
+	#[rustfmt::skip]
+	type State
+		: 'static
+		+ Clone
+		+ Send + Sync
+		;
 
 	/// Initialisation d'une route.
 	fn path(url_path: impl RouteIDInterface + fmt::Debug) -> Self;

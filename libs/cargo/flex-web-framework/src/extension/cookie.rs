@@ -50,6 +50,7 @@ where
 		self
 	}
 
+	#[rustfmt::skip]
 	fn use_cookie_layer(mut self) -> Self
 	{
 		if self.application_adapter.state.cookie_key().is_none() {

@@ -18,8 +18,8 @@ mod macros;
 mod optional;
 mod required;
 
-pub use inquire::validator::Validation;
 pub use flex_prompt_macro::Prompt;
+pub use inquire::validator::Validation;
 
 pub use self::choice::choice;
 pub use self::confirm::{confirm, Bool};

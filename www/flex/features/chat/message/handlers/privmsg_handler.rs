@@ -52,6 +52,7 @@ impl PrivmsgHandler
 				continue;
 			}
 
+			#[rustfmt::skip]
 			let Some(target_client_socket) = app.find_socket_by_nickname(
 				&socket,
 				target,
@@ -60,7 +61,8 @@ impl PrivmsgHandler
 				continue;
 			};
 
-			if app.client_isin_blocklist(&target_client_socket, &client_socket) {
+			if app.client_isin_blocklist(&target_client_socket, &client_socket)
+			{
 				continue;
 			}
 

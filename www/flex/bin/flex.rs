@@ -10,17 +10,17 @@
 
 use std::process;
 
-use flex_web_framework::security::Argon2Password;
-use flex_web_framework::{
-	ApplicationCookieLayerExtension,
-	DatabaseService,
-	PostgreSQLDatabase,
-};
 use flex_kernel::{
 	ApplicationCLIExtension,
 	ApplicationEnvExtension,
 	ApplicationLoggerExtension,
 	AsyncApplicationStartupExtension,
+};
+use flex_web_framework::security::Argon2Password;
+use flex_web_framework::{
+	ApplicationCookieLayerExtension,
+	DatabaseService,
+	PostgreSQLDatabase,
 };
 use lib_flex::constant::{
 	FLEX_CONFIGURATION_DIR,
@@ -51,8 +51,7 @@ async fn main() -> impl process::Termination
 
 	let application = application.include_env_vars().include_cli_args();
 
-	if application.cli_args().has_command()
-	{
+	if application.cli_args().has_command() {
 		application.cli_args().handle_command();
 		return process::ExitCode::SUCCESS;
 	}

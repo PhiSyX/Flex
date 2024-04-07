@@ -14,6 +14,7 @@ use syn::Token;
 // Type //
 // ---- //
 
+#[rustfmt::skip]
 pub type MetaSplittedByCommaToken = syn::punctuated::Punctuated<syn::Meta, Token![,]>;
 
 // -------- //
@@ -21,6 +22,7 @@ pub type MetaSplittedByCommaToken = syn::punctuated::Punctuated<syn::Meta, Token
 // -------- //
 
 /// Retourne une liste de méta à partir d'un attribut.
+#[rustfmt::skip]
 pub fn get_metalist_from_attr(
 	attr: &syn::Attribute,
 ) -> Option<MetaSplittedByCommaToken>
@@ -35,6 +37,7 @@ pub fn get_metalist_from_attr(
 /// Récupère une propriété (name) d'une méta-name=value.
 ///
 /// -> #[attr( name = value, name2 = value2 )]
+#[rustfmt::skip]
 pub fn get_value_in_meta_namevalue(
 	metalist: &MetaSplittedByCommaToken,
 	name: impl AsRef<str>,

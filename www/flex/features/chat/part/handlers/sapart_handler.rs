@@ -43,6 +43,7 @@ impl SapartHandler
 		};
 
 		for nickname in data.nicknames.iter() {
+			#[rustfmt::skip]
 			let Some(nickname_socket) = app.find_socket_by_nickname(
 				&socket,
 				nickname,

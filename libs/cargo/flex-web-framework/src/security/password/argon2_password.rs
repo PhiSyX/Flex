@@ -85,7 +85,8 @@ impl Hasher for Argon2PasswordHasher
 		let algorithm = Algorithm::Argon2id;
 		let version = Version::V0x13;
 
-		let Ok(params) = ParamsBuilder::new().build() else { return false; };
+		#[rustfmt::skip]
+		let Ok(params) = ParamsBuilder::new().build() else { return false };
 
 		let Ok(argon2_hasher) = Argon2::new_with_secret(
 			self.secret.as_bytes(),

@@ -106,6 +106,7 @@ impl MemberInterface for ChannelMember
 	}
 
 	/// Met à jour le niveau d'accès du membre.
+	#[rustfmt::skip]
 	fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
 	{
 		self.access_level.insert(access_level)

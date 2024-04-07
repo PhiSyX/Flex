@@ -60,6 +60,7 @@ impl InviteHandler
 	{
 		let client_socket = app.current_client(&socket);
 
+		#[rustfmt::skip]
 		let Some(target_client_socket) = app.find_socket_by_nickname(
 			&socket,
 			&data.nickname,
@@ -80,6 +81,7 @@ impl InviteHandler
 			return;
 		}
 
+		#[rustfmt::skip]
 		let has_channel_invite_flag = channel.modes_settings.has_invite_only_flag();
 		let is_member_has_rights = app.does_client_have_rights_on_channel(
 			&client_socket,

@@ -86,6 +86,7 @@ impl Cookies
 
 impl<'s> PrivateCookies<'s>
 {
+	#[rustfmt::skip]
 	pub fn add<C: Into<Cookie<'static>>>(&self, cookie: C)
 	{
 		let user_cookie: TowerCookie = cookie.into().0.build();
@@ -146,6 +147,7 @@ impl<'s> PrivateCookies<'s>
 
 impl<'s> SignedCookies<'s>
 {
+	#[rustfmt::skip]
 	pub fn add<C: Into<Cookie<'static>>>(&self, cookie: C)
 	{
 		let user_cookie: TowerCookie = cookie.into().0.build();
@@ -196,6 +198,7 @@ impl<'s> SignedCookies<'s>
 		self.inner.get(name)
 	}
 
+	#[rustfmt::skip]
 	pub fn remove<K>(&self, name: K)
 	where
 		K: Into<std::borrow::Cow<'static, str>>,
@@ -287,6 +290,7 @@ where
 	N: Into<std::borrow::Cow<'static, str>>,
 	V: Into<std::borrow::Cow<'static, str>>,
 {
+	#[rustfmt::skip]
 	fn from((name, value, settings): (N, V, CookieSettings)) -> Self
 	{
 		let mut cookie_builder = TowerCookie::build((name, value));
@@ -338,6 +342,7 @@ where
 		state: &AxumState<S>,
 	) -> Result<Self, Self::Rejection>
 	{
+		#[rustfmt::skip]
 		let cm = parts.extensions.get::<tower_cookies::Cookies>()
 			.cloned()
 			.ok_or((

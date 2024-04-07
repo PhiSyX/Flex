@@ -76,6 +76,7 @@ where
 			.prompt()
 			.and_then(|_| {
 				Output::prompt().map_err(|err| {
+					#[rustfmt::skip]
 					let custom_err = <_ as Into<CustomUserError>>::into(
 						err.to_string()
 					);

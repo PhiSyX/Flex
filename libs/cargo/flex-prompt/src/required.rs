@@ -29,6 +29,7 @@ where
 	let validator = |input: &str| {
 		if input.trim().is_empty() {
 			let msg = "L'entrée NE PEUT PAS être vide.";
+			#[rustfmt::skip]
 			let custom_msg = <_ as Into<inquire::validator::ErrorMessage>>::into(
 				msg
 			);

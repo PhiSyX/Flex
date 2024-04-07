@@ -14,6 +14,7 @@
 
 /// Cherche l'attribut passé en argument parmi la liste des attributs d'un
 /// variant.
+#[rustfmt::skip]
 pub fn find_attr(
 	variant: &syn::Variant,
 	attr_name: impl AsRef<str>,
@@ -25,6 +26,7 @@ pub fn find_attr(
 }
 
 /// Récupère les features d'une variante.
+#[rustfmt::skip]
 pub fn get_features(variant: &syn::Variant) -> Vec<&syn::Attribute>
 {
 	variant.attrs

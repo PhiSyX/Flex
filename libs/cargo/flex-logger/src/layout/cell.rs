@@ -67,6 +67,7 @@ impl<'d> Cell<'d>
 		self.width() as f32 / self.colspan as f32
 	}
 
+	#[rustfmt::skip]
 	pub(crate) fn min_width(&self) -> usize
 	{
 		let max_char_width = self.data.chars()
@@ -79,6 +80,7 @@ impl<'d> Cell<'d>
 		}
 	}
 
+	#[rustfmt::skip]
 	pub(crate) fn wrapped_content(&self, width: usize) -> Vec<String>
 	{
 		let pad_char = if self.padding { ' ' } else { '\0' };

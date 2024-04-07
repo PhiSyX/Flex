@@ -62,6 +62,7 @@ impl<S, E, C> ApplicationExtExtension for AxumApplication<S, E, C>
 		ApplicationExtExtension::extension_with::<Ext>(self, ())
 	}
 
+	#[rustfmt::skip]
 	fn extension_with<Ext>(mut self, payload: impl Into<Ext::Payload>) -> Self
 	where
 		Ext: ExtensionInterface,
@@ -83,6 +84,7 @@ impl<S, E, C> AsyncApplicationExtExtension for AxumApplication<S, E, C>
 		AsyncApplicationExtExtension::extension_with::<Ext>(self, ()).await
 	}
 
+	#[rustfmt::skip]
 	async fn extension_with<Ext>(
 		mut self,
 		payload: impl Into<Ext::Payload>,
@@ -93,8 +95,7 @@ impl<S, E, C> AsyncApplicationExtExtension for AxumApplication<S, E, C>
 		let payload = payload.into();
 		let instance = Ext::new(payload).await;
 		self.application_adapter.router.global = self.application_adapter.router.global
-			.layer(axum::Extension(instance))
-		;
+			.layer(axum::Extension(instance));
 		self
 	}
 }

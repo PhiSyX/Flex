@@ -35,6 +35,7 @@ impl SilenceHandler
 
 	/// La commande `/SILENCE` permet de ne plus être notifié des messages d'un
 	/// client que ces soit dans les messages privés ou publiques.
+	#[rustfmt::skip]
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,

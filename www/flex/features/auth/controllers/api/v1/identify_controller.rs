@@ -50,6 +50,7 @@ impl IdentifyController
 	pub const COOKIE_NAME: &'static str = "flex.auth_user";
 
 	/// Traitement du formulaire de connexion.
+	#[rustfmt::skip]
 	pub async fn handle(
 		ctx: HttpContext<Self>,
 		Form(formdata): Form<LoginFormData>,
@@ -63,10 +64,13 @@ impl IdentifyController
 				request: ctx.request,
 			});
 		};
+
 		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
 		_ = ctx.session.insert(USER_SESSION, UserSessionDTO::from(user)).await;
-		let user_session = ctx.session.get::<UserSessionDTO>(USER_SESSION).await
-						 ?.unwrap();
+
+		let user_session = ctx.session.get::<UserSessionDTO>(USER_SESSION).await?
+			.unwrap();
+
 		Ok(ctx.response.json(user_session))
 	}
 }
@@ -86,13 +90,15 @@ impl HttpContextInterface for IdentifyController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
+		let user_repository = UserRepositoryPostgreSQL { query_builder };
 		let auth_service = AuthService {
-			user_repository: UserRepositoryPostgreSQL { query_builder }.shared(),
+			user_repository: user_repository.shared(),
 			password_service: password_service.clone(),
-		}
-		.shared();
+		};
 
-		Some(Self { auth_service })
+		Some(Self {
+			auth_service: auth_service.shared(),
+		})
 	}
 }
 

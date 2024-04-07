@@ -62,9 +62,10 @@ impl flex_syn::Parser for ViteMacro
 	fn analyze(&self) -> Result<'_, TokenStream>
 	{
 		let vite_path = self.tokens.value();
-		let output = if vite_path.starts_with("http://") ||
-						vite_path.starts_with("https://")
+		let output = if vite_path.starts_with("http://")
+			|| vite_path.starts_with("https://")
 		{
+			#[rustfmt::skip]
 			let (vite_url, vite_root) = vite_path.split_once('#')
 				.unwrap_or_else(|| (&vite_path, "root"));
 			quote! {

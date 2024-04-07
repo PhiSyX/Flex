@@ -117,11 +117,10 @@ impl AuthenticationService for AuthService
 		mut new_user: UserNewActionDTO,
 	) -> Result<UserEntity, AuthErrorService>
 	{
-		let user_exists = self
-			.user_repository
-			.find_by_email_or_name(&new_user.email_address, &new_user.username)
-			.await
-			.is_ok();
+		let user_exists = self.user_repository.find_by_email_or_name(
+			&new_user.email_address,
+			&new_user.username,
+		).await.is_ok();
 
 		if user_exists {
 			// SECURITY: timing attacks.

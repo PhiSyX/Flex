@@ -106,6 +106,7 @@ impl ChannelAccessControlInterface for Channel
 	type ClientID = UserID;
 	type User = User;
 
+	#[rustfmt::skip]
 	fn access_controls(&self) -> Vec<(char, ApplyMode<Self::AccessControlMask>)>
 	{
 		let mut list = Vec::default();
@@ -204,8 +205,12 @@ impl ChannelAccessControlInterface for Channel
 	/// bannissement
 	fn isin_banlist_exception(&self, user: &Self::User) -> bool
 	{
-		let check = |addr| self.access_control.banlist_exceptions.contains_key(&addr);
+		#[rustfmt::skip]
+		let check = |addr| {
+			self.access_control.banlist_exceptions.contains_key(&addr)
+		};
 
+		#[rustfmt::skip]
 		let check2 = || {
 			self.access_control.banlist_exceptions.keys()
 				.any(|mask| user.full_address().iswm(mask))
@@ -283,6 +288,7 @@ impl ChannelMemberInterface for Channel
 	}
 
 	/// Récupère un membre du salon.
+	#[rustfmt::skip]
 	fn member_mut(&mut self, id: &member::MemberID) -> Option<&mut Self::Member>
 	{
 		self.members.get_mut(id)

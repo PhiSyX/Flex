@@ -66,7 +66,8 @@ pub enum SettingsFlag
 	NoTopic,
 	/// Salon réservé aux opérateurs globaux uniquement.
 	OperOnly,
-	/// Salon secret. Ces salons ne seront pas affiché dans la liste des salons.
+	/// Salon secret. Ces salons ne seront pas affiché dans la liste des
+	/// salons.
 	Secret,
 }
 
@@ -241,6 +242,7 @@ impl std::fmt::Display for ChannelModes<SettingsFlag>
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{
+		#[rustfmt::skip]
 		let mode_settings: String = self.modes.keys()
 			.map(|letter| letter.to_string())
 			.collect();
@@ -264,6 +266,7 @@ impl SettingsFlagInterface for SettingsFlag
 			| Self::Key(_) => CHANNEL_MODE_SETTINGS_KEY,
 			| Self::InviteOnly => CHANNEL_MODE_SETTINGS_INVITE_ONLY,
 			| Self::Moderate => CHANNEL_MODE_SETTINGS_MODERATE,
+			#[rustfmt::skip]
 			| Self::NoExternalMessages => CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES,
 			| Self::NoTopic => CHANNEL_MODE_SETTINGS_NOTOPIC,
 			| Self::OperOnly => CHANNEL_MODE_SETTINGS_OPERONLY,

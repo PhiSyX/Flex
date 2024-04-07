@@ -126,6 +126,7 @@ impl ClientInterface for Client
 	) where
 		F: Into<<Self::User as UserFlagInterface>::Flag>,
 	{
+		#[rustfmt::skip]
 		self.user.set_flag(
 			Mode::new(oper_type.into())
 				.with_update_by(self.user.nickname()),

@@ -76,6 +76,7 @@ impl JoinHandler
 
 		let channel_keys = &data.keys;
 		for (idx, channel_name) in data.channels.iter().enumerate() {
+			#[rustfmt::skip]
 			let channel_key = channel_keys.get(idx)
 				.filter(|key| !key.is_empty())
 				.map(|s| secret::Secret::new(s.expose().to_string()));

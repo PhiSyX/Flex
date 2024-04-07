@@ -138,10 +138,8 @@ impl PartChannelApplicationInterface for ChatApplication
 		member_client_socket: &Self::ClientSocket<'_>,
 	) -> Option<()>
 	{
-		self.clients.remove_channel_on_client(
-			member_client_socket.cid(),
-			channel_name,
-		);
+		#[rustfmt::skip]
+		self.clients.remove_channel_on_client(member_client_socket.cid(), channel_name);
 		self.channels.remove_member_and_channel_if_empty(
 			channel_name,
 			member_client_socket.cid(),
@@ -156,6 +154,7 @@ impl PartChannelApplicationInterface for ChatApplication
 		S: std::ops::Deref<Target = str>,
 		S: Copy,
 	{
+		#[rustfmt::skip]
 		self.channels.remove_client_from_all_his_channels(client_socket.client());
 
 		for channel_room in client_socket.channels_rooms() {

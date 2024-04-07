@@ -57,6 +57,7 @@ impl NoticeHandler
 	///
 	/// Voir PRIVMSG/PUBMSG pour plus de détails sur les réponses et des
 	/// exemples.
+	#[rustfmt::skip]
 	pub fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,

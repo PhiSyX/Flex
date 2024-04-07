@@ -101,6 +101,7 @@ pub trait NoticeClientSocketCommandResponseInterface
 
 	/// Émet au client les réponses liées à la commande
 	/// /NOTICE <<prefix>channel>
+	#[rustfmt::skip]
 	fn emit_notice_on_prefixed_channel<User>(
 		&self,
 		prefix: char,

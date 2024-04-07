@@ -84,6 +84,7 @@ impl ViewLayoutInterface for ViteLayout
 	fn view(&self) -> Self::View
 	{
 		let vite_url = self.data.get("vite_url").cloned().unwrap_or_default();
+		#[rustfmt::skip]
 		let vite_root = self.data.get("vite_root").cloned().unwrap_or("app".into());
 
 		let vite_script = format!(

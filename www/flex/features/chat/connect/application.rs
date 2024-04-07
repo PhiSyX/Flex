@@ -119,6 +119,7 @@ impl ConnectApplicationInterface for ChatApplication
 		self.clients.can_locate_unregistered_client(client.cid())
 	}
 
+	#[rustfmt::skip]
 	fn get_client_by_id_and_token(
 		&self,
 		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,

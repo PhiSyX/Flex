@@ -52,6 +52,7 @@ impl TopicHandler
 		if let Some(topic) = data.topic.as_deref() {
 			app.update_topic(&client_socket, &data.channel, topic);
 		} else {
+			#[rustfmt::skip]
 			let Some(channel) = app.get_channel(&data.channel) else { return };
 			client_socket.send_rpl_topic(&channel, false);
 		}

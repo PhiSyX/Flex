@@ -80,9 +80,11 @@ where
 
 	fn make_adapter(settings: &KernelSettings) -> ApplicationAdapter
 	{
-		let application_adapter_settings_filename =
-			<ApplicationAdapter::Settings as ApplicationAdapterSettingsInterface>::FILENAME;
+		let application_adapter_settings_filename = <
+			ApplicationAdapter::Settings as ApplicationAdapterSettingsInterface
+		>::FILENAME;
 
+		#[rustfmt::skip]
 		let application_adapter_settings = fetch_config(
 			application_adapter_settings_filename,
 			settings

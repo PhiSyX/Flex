@@ -159,6 +159,7 @@ impl UserInterface for User
 	}
 
 	/// Définit le pseudonyme de l'[utilisateur](Self).
+	#[rustfmt::skip]
 	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, Error>
 	{
 		let new_nick = nickname.to_string();

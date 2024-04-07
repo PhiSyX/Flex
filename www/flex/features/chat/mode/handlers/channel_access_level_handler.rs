@@ -53,6 +53,7 @@ pub struct ModeChannelAccessLevelVIPHandler;
 // Implémentation //
 // -------------- //
 
+#[rustfmt::skip]
 impl ModeChannelAccessLevelHandler
 {
 	fn update_member_access_level(
@@ -332,6 +333,7 @@ impl ModeChannelAccessLevelHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessLevelQOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "QOP";
@@ -370,6 +372,7 @@ impl ModeChannelAccessLevelQOPHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessLevelAOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "AOP";
@@ -408,6 +411,7 @@ impl ModeChannelAccessLevelAOPHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessLevelOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "OP";
@@ -446,6 +450,7 @@ impl ModeChannelAccessLevelOPHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessLevelHOPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "HOP";
@@ -484,6 +489,7 @@ impl ModeChannelAccessLevelHOPHandler
 	}
 }
 
+#[rustfmt::skip]
 impl ModeChannelAccessLevelVIPHandler
 {
 	pub const SET_COMMAND_NAME: &'static str = "VIP";

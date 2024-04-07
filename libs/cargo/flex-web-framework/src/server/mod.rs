@@ -67,6 +67,7 @@ impl<S, E, C> Server<S, E, C>
 impl<S, E, C> Server<S, E, C>
 {
 	/// Affiche les routes enregistrées du serveur.
+	#[rustfmt::skip]
 	pub(super) fn display_all_routes(&self)
 	{
 		println!();

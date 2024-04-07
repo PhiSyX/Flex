@@ -36,6 +36,7 @@ pub use self::view::*;
 // Type //
 // ---- //
 
+#[rustfmt::skip]
 pub type AxumApplication<
 	S = (),
 	E = (),

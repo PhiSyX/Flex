@@ -61,6 +61,7 @@ impl HTMLMacro
 
 		tag_attrs.push(tmp::create_attribute("method", "POST"));
 
+		#[rustfmt::skip]
 		let form_id = element.attributes()
 			.iter()
 			.find_map(|attribute| {

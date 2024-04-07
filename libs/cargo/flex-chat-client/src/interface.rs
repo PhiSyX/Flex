@@ -27,13 +27,15 @@ pub use self::socket::*;
 /// Interface Client
 pub trait ClientInterface: fmt::Debug
 {
+	#[rustfmt::skip]
 	/// Type représentant l'ID d'un client.
-	type ClientID: serde::Serialize
-				 + fmt::Debug
-				 + fmt::Display
-				 + ToString
-				 + Clone
-				 ;
+	type ClientID
+		: serde::Serialize
+		+ fmt::Debug
+		+ fmt::Display
+		+ ToString
+		+ Clone
+		;
 
 	/// Type représentant l'ID de la socket du client.
 	type SocketID: fmt::Debug;

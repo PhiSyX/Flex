@@ -61,6 +61,7 @@ pub trait UserInterface
 	fn set_vhost(&mut self, vhost: impl ToString);
 
 	/// Définit le pseudonyme de l'[utilisateur](Self).
+	#[rustfmt::skip]
 	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, Error>;
 
 	/// Définit le mot de passe entré par l'[utilisateur](Self) lors de la
@@ -110,6 +111,7 @@ pub trait UserFlagInterface
 	type Flag: serde::Serialize + PartialEq + Eq + Hash + Clone;
 
 	/// Les drapeaux utilisateurs.
+	#[rustfmt::skip]
 	fn flags(&self) -> impl Iterator<Item = (char, ApplyMode<Self::Flag>)> + '_;
 
 	/// Vérifie que l'utilisateur a comme drapeau, le drapeau q (nokick).

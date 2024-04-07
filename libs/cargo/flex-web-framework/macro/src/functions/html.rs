@@ -31,6 +31,7 @@ use syn::Token;
 // Constant //
 // -------- //
 
+#[rustfmt::skip]
 const VOID_ELEMENTS: [&str; 13] = [
 	"area",
 	"base",
@@ -315,6 +316,7 @@ impl HTMLMacro
 			})
 			.collect();
 
+		#[rustfmt::skip]
 		let contains_custom_attrs: Vec<_> = node.attributes()
 			.iter()
 			.filter_map(|attr| filter_custom_attribute_m(attr))
@@ -738,6 +740,7 @@ mod tmp
 		attr_maybe: Option<&syn::Expr>,
 	) -> TokenStream2
 	{
+		#[rustfmt::skip]
 		let ident = syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
 		quote! {
 			{
@@ -763,6 +766,7 @@ mod tmp
 		attr_maybe: Option<&syn::Expr>,
 	) -> TokenStream2
 	{
+		#[rustfmt::skip]
 		let ident = syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
 		quote! {
 			{

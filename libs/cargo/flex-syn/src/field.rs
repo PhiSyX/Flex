@@ -14,6 +14,7 @@
 
 /// Cherche l'attribut passé en argument parmi la liste des attributs d'un
 /// champ.
+#[rustfmt::skip]
 pub fn find_attr(
 	field: &syn::Field,
 	attr_name: impl AsRef<str>,

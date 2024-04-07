@@ -19,8 +19,7 @@ pub trait EnvInterface
 	: Sized
 	+ Debug
 	+ Clone
-	+ Send 
-	+ Sync
+	+ Send + Sync
 	+ serde::de::DeserializeOwned
 {
 	type Settings;

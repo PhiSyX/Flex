@@ -35,6 +35,7 @@ pub trait NickClientSocketCommandResponseInterface
 	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /NICK.
+	#[rustfmt::skip]
 	fn emit_nick(&self)
 	{
 		let (

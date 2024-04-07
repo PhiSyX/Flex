@@ -74,7 +74,11 @@ impl PromptDerive
 			});
 		};
 
-		let has_meta = matches!(attribute.meta, syn::Meta::Path(_) | syn::Meta::List(_));
+		#[rustfmt::skip]
+		let has_meta =matches!(
+			attribute.meta,
+			syn::Meta::Path(_) | syn::Meta::List(_)
+		);
 		if !has_meta {
 			return Err(PromptDeriveParserError {
 				span: attribute.span(),
@@ -128,7 +132,9 @@ impl PromptDerive
 			});
 		}
 
+		#[rustfmt::skip]
 		let ask_value = meta::get_value_lit_in_meta_namevalue(&meta_list, "ask");
+		#[rustfmt::skip]
 		let default_value = meta::get_value_in_meta_namevalue(&meta_list, "default");
 		let list_value = meta::get_value_in_meta_namevalue(&meta_list, "list");
 
@@ -182,6 +188,7 @@ impl Parser for PromptDerive
 			.map(|f| self.parse_field(f))
 			.collect::<Result<_>>()?;
 
+		#[rustfmt::skip]
 		let title = structure::find_attr(&self.item_struct, Self::ATTRIBUTE_NAME)
 				.and_then(|attribute| {
 					if let Some(list) = meta::get_metalist_from_attr(attribute)

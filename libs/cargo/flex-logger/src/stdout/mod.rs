@@ -84,6 +84,7 @@ impl LoggerStdout
 			.map(|local_datetime| local_datetime.format("%Y-%m-%d@%H:%M:%S"));
 
 		if let Some(time) = local_date_format {
+			#[rustfmt::skip]
 			echo.table.add_line([
 				layout::Cell::new(&echo.level).with_alignment(
 					layout::Alignment::Right

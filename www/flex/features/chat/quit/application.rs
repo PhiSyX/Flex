@@ -38,6 +38,7 @@ impl QuitApplicationInterface for ChatApplication
 {
 	type ClientSocket<'cs> = Socket<'cs>;
 
+	#[rustfmt::skip]
 	fn disconnect_client(
 		&self,
 		client_socket: Self::ClientSocket<'_>,

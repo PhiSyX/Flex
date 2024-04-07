@@ -60,6 +60,8 @@ impl NoticeApplicationInterface for ChatApplication
 		};
 
 		let moderate_flag = channel.modes_settings.has_moderate_flag();
+
+		#[rustfmt::skip]
 		let no_external_messages_flag = {
 			channel.modes_settings.has_no_external_messages_flag()
 		};
@@ -96,9 +98,11 @@ impl NoticeApplicationInterface for ChatApplication
 			);
 		}
 
-		if moderate_flag &&
-		   member_hal
-				.filter(|level| level.flag() >= ChannelAccessLevel::Vip.flag())
+		if moderate_flag
+			&& member_hal
+				.filter(|level|
+					level.flag() >= ChannelAccessLevel::Vip.flag()
+				)
 				.is_none()
 		{
 			return ChannelWritePermission::No(

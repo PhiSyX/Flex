@@ -17,7 +17,8 @@ use crate::features::chat::join::ErrBadchannelkeyError;
 // Interface //
 // --------- //
 
-pub trait JoinErrorResponseInterface: ClientSocketInterface
+pub trait JoinErrorResponseInterface
+	: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

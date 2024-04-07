@@ -42,6 +42,7 @@ pub enum Socket<'a>
 impl<'a> Socket<'a>
 {
 	/// Les salons de la socket.
+	#[rustfmt::skip]
 	pub fn channels_rooms(&self) -> Vec<String>
 	{
 		self.socket().rooms()

@@ -23,6 +23,7 @@ type NickSizeType = usize;
 // --------- //
 
 /// Les caractères spéciaux qu'un pseudonyme puisse avoir.
+#[rustfmt::skip]
 pub const NICK_SPECIAL_CHARS: [char; 9] = [
 	'[',
 	']',
@@ -229,6 +230,7 @@ mod tests
 		let maybe_nickname = do_nickname("αγάπη");
 		assert_eq!(maybe_nickname, Ok("αγάπη"));
 
+		#[rustfmt::skip]
 		let maybe_nickname = do_nickname(
 			"ПриветПриветПриветПривериветПриветПриветПриветПривет"
 		);

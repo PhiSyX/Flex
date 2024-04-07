@@ -62,6 +62,7 @@ where
 	S: Clone,
 	S: Send + Sync,
 {
+	#[rustfmt::skip]
 	fn feature<F>(mut self) -> Self
 	where
 		F: Feature<State = S>,
@@ -171,6 +172,7 @@ where
 	S: Clone,
 	S: Send + Sync,
 {
+	#[rustfmt::skip]
 	async fn feature<F>(mut self) -> Self
 	where
 		F: AsyncFeature<State = S>,

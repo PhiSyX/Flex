@@ -56,6 +56,7 @@ impl UserStatusAwayApplicationInterface for ChatApplication
 		client_socket.send_rpl_nowaway();
 	}
 
+	#[rustfmt::skip]
 	fn marks_client_as_no_longer_away(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,

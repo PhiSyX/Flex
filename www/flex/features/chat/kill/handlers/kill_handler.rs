@@ -79,6 +79,7 @@ impl KillHandler
 			return;
 		};
 
+		#[rustfmt::skip]
 		let Some(knick_socket) = app.find_socket_by_nickname(
 			&socket,
 			&data.nickname,

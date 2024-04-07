@@ -51,6 +51,7 @@ impl JoinChannelsSessionInterface for ChannelsSession
 		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
 	) -> Result<(), JoinChannelPermissionError>
 	{
+		#[rustfmt::skip]
 		let channel = self.get(channel_id)
 			.ok_or(JoinChannelPermissionError::ERR_NOSUCHCHANNEL)?;
 
@@ -79,7 +80,9 @@ impl JoinChannelsSessionInterface for ChannelsSession
 			return Err(JoinChannelPermissionError::ERR_INVITEONLYCHAN);
 		}
 
-		if channel.modes_settings.has_operonly_flag() && !client.user().is_operator() {
+		if channel.modes_settings.has_operonly_flag()
+			&& !client.user().is_operator()
+		{
 			return Err(JoinChannelPermissionError::ERR_OPERONLY);
 		}
 

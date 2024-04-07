@@ -45,7 +45,13 @@ impl PubmsgHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel in data.channels.iter() {
-			match app.is_client_able_to_write_on_channel(&client_socket, channel) {
+			#[rustfmt::skip]
+			let channel_permission =app.is_client_able_to_write_on_channel(
+				&client_socket,
+				channel,
+			);
+
+			match channel_permission {
 				| ChannelWritePermission::Yes(member) => {
 					let channel_member = ChannelMemberDTO::from((
 						client_socket.client(),
