@@ -1,0 +1,21 @@
+[package]
+name = "flex-chat"
+version = "0.1.0"
+edition = "2021"
+
+[lints]
+workspace = true
+
+[dependencies]
+flex-chat-macro = { path = "macro" }
+flex-secret = { path = "../flex-secret" }
+flex-wildcard-matching = { path = "../flex-wildcard-matching" }
+
+chrono = { workspace = true }
+dashmap = { workspace = true }
+dns-lookup = { workspace = true }
+flex-crypto = { workspace = true }
+serde = { workspace = true }
+socketioxide = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }

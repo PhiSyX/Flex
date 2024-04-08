@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::ClientSocketInterface;
+use flex_chat::client::ClientSocketInterface;
 use flex_crypto::Hasher;
 use flex_web_framework::security::Argon2Password;
 use socketioxide::extract::{Data, SocketRef, State};

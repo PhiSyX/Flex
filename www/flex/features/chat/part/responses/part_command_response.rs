@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{Channel, ChannelInterface};
-use flex_chat_client::{ClientSocketInterface, Origin, Socket};
-use flex_chat_macro::command_response;
+use flex_chat::channel::{Channel, ChannelInterface};
+use flex_chat::client::{ClientSocketInterface, Origin, Socket};
+use flex_chat::macros::command_response;
 
 command_response! {
 	struct PART<'channel, 'message, 'forced_by>

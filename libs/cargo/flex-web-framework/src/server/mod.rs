@@ -104,6 +104,7 @@ impl<S, E, C> Server<S, E, C>
 impl<S, E, C> Server<S, E, C>
 {
 	/// Démarre un serveur HTTP se basant sur des paramètres serveur.
+	#[rustfmt::skip]
 	pub(super) async fn launch(self) -> Result<(), ServerError>
 	{
 		let router = self.router.global();

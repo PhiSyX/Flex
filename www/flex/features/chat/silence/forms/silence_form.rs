@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::command_formdata;
-use flex_chat_user::{do_nickname_with_config, DoNicknameFnOptions, NICK_MAX_SIZE};
+use flex_chat::macros::command_formdata;
+use flex_chat::user::{do_nickname_with_config, DoNicknameFnOptions, NICK_MAX_SIZE};
 
 command_formdata! {
 	struct SILENCE

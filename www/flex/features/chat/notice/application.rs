@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{
+use flex_chat::channel::{
 	Channel,
-	ChannelAccessControlInterface,
+	ChannelAccessControlBanInterface,
 	ChannelAccessLevel,
 	ChannelInterface,
 	ChannelMemberInterface,
@@ -18,7 +18,7 @@ use flex_chat_channel::{
 	ChannelWritePermission,
 	MemberInterface,
 };
-use flex_chat_client::{ClientSocketInterface, Socket};
+use flex_chat::client::{ClientSocketInterface, Socket};
 
 use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
@@ -51,7 +51,7 @@ impl NoticeApplicationInterface for ChatApplication
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> ChannelWritePermission
 	{
-		use flex_chat_channel::ChannelWritePermission;
+		use flex_chat::channel::ChannelWritePermission;
 
 		let Some(channel) = self.get_channel(channel_name) else {
 			return ChannelWritePermission::No(

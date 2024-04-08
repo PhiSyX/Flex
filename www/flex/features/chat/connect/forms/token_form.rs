@@ -10,7 +10,7 @@
 
 use std::sync::Arc;
 
-use flex_chat_client::ClientID;
+use flex_chat::client::ClientID;
 
 // --------- //
 // Structure //

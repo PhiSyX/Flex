@@ -10,7 +10,7 @@
 
 use std::sync::Arc;
 
-use flex_chat_macro::command_formdata;
+use flex_chat::macros::command_formdata;
 use flex_web_framework::types::secret;
 
 command_formdata! {

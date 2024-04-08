@@ -10,7 +10,7 @@
 
 use std::net;
 
-use flex_chat_client::{Client, ClientInterface, ClientsSessionInterface};
+use flex_chat::client::{Client, ClientInterface, ClientsSessionInterface};
 use flex_web_framework::types::uuid;
 
 use crate::features::chat::sessions::ClientsSession;

@@ -8,12 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{
+use flex_chat::channel::{
 	ChannelAccessLevel,
 	ChannelWritePermission,
 	MemberInterface,
 };
-use flex_chat_client::{ClientSocketInterface, Origin};
+use flex_chat::client::{ClientSocketInterface, Origin};
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::mode::ChannelMemberDTO;

@@ -8,21 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{
+use flex_chat::channel::{
 	Channel,
 	ChannelInterface,
 	ChannelsSessionInterface,
 	SettingsFlag,
 };
-use flex_chat_client::{
-	self,
+use flex_chat::client::{
 	ClientInterface,
 	ClientServerApplicationInterface,
 	ClientSocketInterface,
 	Socket,
 };
-use flex_chat_mode::ApplyMode;
-use flex_chat_user::{Flag, UserInterface, UserOperatorInterface};
+use flex_chat::mode::ApplyMode;
+use flex_chat::user::{Flag, UserInterface, UserOperatorInterface};
 
 use super::{
 	OperClientSessionInterface,
@@ -182,7 +181,7 @@ impl OperApplicationInterface for ChatApplication
 	}
 }
 
-impl From<FlexChatConfigOperatorType> for flex_chat_user::Flag
+impl From<FlexChatConfigOperatorType> for flex_chat::user::Flag
 {
 	#[rustfmt::skip]
 	fn from(ty: FlexChatConfigOperatorType) -> Self
@@ -194,7 +193,7 @@ impl From<FlexChatConfigOperatorType> for flex_chat_user::Flag
 	}
 }
 
-impl From<&FlexChatConfigOperatorFlags> for flex_chat_user::Flag
+impl From<&FlexChatConfigOperatorFlags> for flex_chat::user::Flag
 {
 	fn from(flag: &FlexChatConfigOperatorFlags) -> Self
 	{

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::reserved_numerics;
+use flex_chat::macros::reserved_numerics;
 
 reserved_numerics! {
 	/// Renvoyé par le serveur pour indiquer que la tentative de message INVITE

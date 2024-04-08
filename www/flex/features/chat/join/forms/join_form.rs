@@ -10,8 +10,8 @@
 
 use std::sync::Arc;
 
-use flex_chat_channel::validate_channels;
-use flex_chat_macro::{command_formdata, serde};
+use flex_chat::channel::validate_channels;
+use flex_chat::macros::{command_formdata, serde};
 use flex_web_framework::types::secret::Secret;
 
 command_formdata! {

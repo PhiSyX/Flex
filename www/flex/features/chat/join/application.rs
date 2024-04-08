@@ -10,22 +10,22 @@
 
 use std::borrow::Cow;
 
-use flex_chat_channel::{
+use flex_chat::channel::{
 	Channel,
-	ChannelAccessControlInterface,
+	ChannelAccessControlInviteInterface,
 	ChannelInterface,
 	ChannelMember,
 	ChannelsSessionInterface,
 	MemberInterface,
 };
-use flex_chat_client::{
+use flex_chat::client::channel::responses::ChannelClientSocketCommandResponse;
+use flex_chat::client::{
 	ClientServerApplicationInterface,
 	ClientSocketInterface,
 	ClientsChannelSessionInterface,
 	ClientsSessionInterface,
 	Socket,
 };
-use flex_chat_client_channel::ChannelClientSocketCommandResponse;
 
 use super::{
 	JoinChannelPermissionError,

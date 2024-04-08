@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientInterface, ClientSocketInterface, Origin};
-use flex_chat_client_nick::NickClientSocketErrorReplies;
-use flex_chat_user::UserAwayInterface;
+use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
+use flex_chat::client::{ClientInterface, ClientSocketInterface, Origin};
+use flex_chat::user::UserAwayInterface;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::message::{

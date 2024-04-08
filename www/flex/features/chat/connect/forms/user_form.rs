@@ -10,8 +10,8 @@
 
 use std::sync::Arc;
 
-use flex_chat_macro::command_formdata;
-use flex_chat_user::validate_nickname;
+use flex_chat::macros::command_formdata;
+use flex_chat::user::validate_nickname;
 use flex_serde_validation::string::validate_string_filter;
 
 command_formdata! {

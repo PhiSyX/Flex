@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::command_formdata;
-use flex_chat_user::validate_nickname;
+use flex_chat::macros::command_formdata;
+use flex_chat::user::validate_nickname;
 
 command_formdata! {
 	struct NICK

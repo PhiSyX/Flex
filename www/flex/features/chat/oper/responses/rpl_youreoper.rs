@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::reserved_numerics;
-use flex_chat_user::Flag;
+use flex_chat::macros::reserved_numerics;
+use flex_chat::user::Flag;
 
 reserved_numerics! {
 	/// RPL_YOUREOPER est renvoyé à un client qui vient d'émettre avec succès un

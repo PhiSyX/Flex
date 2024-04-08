@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_macro::error_replies;
+use flex_chat::macros::error_replies;
 
 error_replies! {
 	/// Envoyé à un utilisateur qui n'est pas sur un salon en mode +n ou n'est

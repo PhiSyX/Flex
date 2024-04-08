@@ -12,7 +12,7 @@ use std::borrow::Cow;
 
 use dashmap::mapref::one::{Ref, RefMut};
 use dashmap::DashMap;
-use flex_chat_channel::{
+use flex_chat::channel::{
 	Channel,
 	ChannelAccessLevel,
 	ChannelInterface,
@@ -22,8 +22,8 @@ use flex_chat_channel::{
 	ChannelsSessionInterface,
 	MemberInterface,
 };
-use flex_chat_client::{Client, ClientsChannelSessionInterface};
-use flex_chat_mode::ApplyMode;
+use flex_chat::client::{Client, ClientsChannelSessionInterface};
+use flex_chat::mode::ApplyMode;
 use flex_web_framework::types::secret;
 
 use super::ClientsSession;
@@ -58,7 +58,7 @@ impl ClientsChannelSessionInterface for ClientsSession
 
 	fn add_channel_on_client(
 		&self,
-		client_id: &<Self::Client as flex_chat_client::ClientInterface>::ClientID,
+		client_id: &<Self::Client as flex_chat::client::ClientInterface>::ClientID,
 		channel_id: &str,
 	)
 	{
@@ -69,7 +69,7 @@ impl ClientsChannelSessionInterface for ClientsSession
 
 	fn remove_channel_on_client(
 		&self,
-		client_id: &<Self::Client as flex_chat_client::ClientInterface>::ClientID,
+		client_id: &<Self::Client as flex_chat::client::ClientInterface>::ClientID,
 		channel_id: &str,
 	)
 	{

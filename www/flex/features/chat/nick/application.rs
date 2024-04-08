@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{self, ClientSocketInterface, Socket};
-use flex_chat_user::UserInterface;
+use flex_chat::client::{ClientSocketInterface, Socket};
+use flex_chat::user::UserInterface;
 
 use super::{
 	NickClientSessionInterface,

@@ -8,13 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{
+use flex_chat::client::{
 	ClientInterface,
 	ClientSocketInterface,
 	Origin,
 	Socket,
 };
-use flex_chat_user::{UserInterface, UserOperatorInterface};
+use flex_chat::user::{UserInterface, UserOperatorInterface};
 use flex_crypto::Hasher;
 use flex_web_framework::http::Cookies;
 use flex_web_framework::security::Argon2Password;

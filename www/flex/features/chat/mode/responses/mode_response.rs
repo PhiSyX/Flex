@@ -10,16 +10,16 @@
 
 use std::collections::HashSet;
 
-use flex_chat_channel::{
+use flex_chat::channel::{
 	ChannelAccessLevel,
 	ChannelMember,
 	MemberID,
 	MemberInterface,
 };
-use flex_chat_client::{Client, ClientInterface};
-use flex_chat_macro::command_response;
-use flex_chat_mode::ApplyMode;
-use flex_chat_user::User;
+use flex_chat::client::{Client, ClientInterface};
+use flex_chat::macros::command_response;
+use flex_chat::mode::ApplyMode;
+use flex_chat::user::User;
 
 command_response! {
 	struct MODE<'target, Mode>

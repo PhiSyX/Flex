@@ -15,13 +15,8 @@ name = "flex"
 path = "./bin/flex.rs"
 
 [dependencies]
-flex-chat-channel = { path = "../../libs/cargo/flex-chat-channel" }
-flex-chat-client = { path = "../../libs/cargo/flex-chat-client" }
-flex-chat-client-channel = { path = "../../libs/cargo/flex-chat-client-channel" }
-flex-chat-client-nick = { path = "../../libs/cargo/flex-chat-client-nick" }
-flex-chat-macro = { path = "../../libs/cargo/flex-chat-macro" }
-flex-chat-mode = { path = "../../libs/cargo/flex-chat-mode" }
-flex-chat-user = { path = "../../libs/cargo/flex-chat-user" }
+flex-chat = { path = "../../libs/cargo/flex-chat" }
+# flex-chat-macro = { path = "../../libs/cargo/flex-chat-macro" }
 
 clap = { workspace = true, features = ["derive", "env"] }
 dashmap = { workspace = true }

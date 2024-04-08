@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{
+use flex_chat::channel::{
 	Channel,
-	ChannelAccessControlInterface,
+	ChannelAccessControlBanInterface,
 	ChannelAccessLevel,
 	ChannelInterface,
 	ChannelMemberInterface,
@@ -18,7 +18,7 @@ use flex_chat_channel::{
 	ChannelWritePermission,
 	MemberInterface,
 };
-use flex_chat_client::{ClientSocketInterface, Socket};
+use flex_chat::client::{ClientSocketInterface, Socket};
 
 use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;

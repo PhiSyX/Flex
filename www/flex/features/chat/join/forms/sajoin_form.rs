@@ -10,9 +10,9 @@
 
 use std::sync::Arc;
 
-use flex_chat_channel::validate_channels;
-use flex_chat_macro::{command_formdata, serde};
-use flex_chat_user::validate_nicknames;
+use flex_chat::channel::validate_channels;
+use flex_chat::macros::{command_formdata, serde};
+use flex_chat::user::validate_nicknames;
 
 command_formdata! {
 	struct SAJOIN

@@ -10,8 +10,8 @@
 
 use std::sync::Arc;
 
-use flex_chat_channel::validate_channel;
-use flex_chat_macro::command_formdata;
+use flex_chat::channel::validate_channel;
+use flex_chat::macros::command_formdata;
 
 command_formdata! {
 	struct TOPIC

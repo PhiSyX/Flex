@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{Channel, ChannelInterface, ChannelsSessionInterface};
-use flex_chat_client::{
+use flex_chat::channel::{Channel, ChannelInterface, ChannelsSessionInterface};
+use flex_chat::client::{
 	ClientSocketInterface,
 	ClientsChannelSessionInterface,
 	Socket,
 };
-use flex_chat_client_channel::ChannelClientSocketErrorReplies;
-use flex_chat_user::UserInterface;
+use flex_chat::client::channel::responses::ChannelClientSocketErrorReplies;
+use flex_chat::user::UserInterface;
 
 use super::{
 	PartChannelsSessionInterface,

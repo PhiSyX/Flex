@@ -10,9 +10,9 @@
 
 use std::sync::Arc;
 
-use flex_chat_channel::{AccessControlMask, ChannelAccessLevel, SettingsFlag};
-use flex_chat_client::Socket;
-use flex_chat_mode::ApplyMode;
+use flex_chat::channel::{AccessControlMask, ChannelAccessLevel, SettingsFlag};
+use flex_chat::client::Socket;
+use flex_chat::mode::ApplyMode;
 use flex_web_framework::types::secret;
 use socketioxide::extract::{Data, SocketRef, State};
 

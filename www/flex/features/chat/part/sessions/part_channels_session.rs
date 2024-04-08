@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{ChannelMemberInterface, ChannelsSessionInterface};
-use flex_chat_client::{Client, ClientInterface};
+use flex_chat::channel::{ChannelMemberInterface, ChannelsSessionInterface};
+use flex_chat::client::{Client, ClientInterface};
 
 use crate::features::chat::sessions::ChannelsSession;
 

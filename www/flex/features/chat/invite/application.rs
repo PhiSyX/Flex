@@ -10,13 +10,13 @@
 
 use std::borrow::Cow;
 
-use flex_chat_channel::{
+use flex_chat::channel::{
 	Channel,
-	ChannelAccessControlInterface,
+	ChannelAccessControlInviteInterface,
 	ChannelInterface,
 	ChannelsSessionInterface,
 };
-use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
+use flex_chat::client::{ClientInterface, ClientSocketInterface, Socket};
 
 use crate::ChatApplication;
 

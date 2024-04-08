@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{ClientInterface, ClientSocketInterface, Socket};
+use flex_chat::client::{ClientInterface, ClientSocketInterface, Socket};
 
 use super::QuitClientSocketInterface;
 use crate::features::chat::part::PartChannelsSessionInterface;

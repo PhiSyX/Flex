@@ -10,7 +10,7 @@
 
 use dashmap::mapref::multiple::RefMutMulti;
 use dashmap::{DashMap, DashSet};
-use flex_chat_client::{
+use flex_chat::client::{
 	Client,
 	ClientID,
 	ClientInterface,
@@ -19,7 +19,7 @@ use flex_chat_client::{
 	ClientsSessionInterface,
 	Socket,
 };
-use flex_chat_user::{UserInterface, UserOperatorInterface};
+use flex_chat::user::{UserInterface, UserOperatorInterface};
 
 use crate::features::chat::oper::OperClientSocketErrorRepliesInterface;
 use crate::features::ChatApplication;

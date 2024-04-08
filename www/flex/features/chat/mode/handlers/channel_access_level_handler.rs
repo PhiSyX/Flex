@@ -8,19 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_channel::{ChannelAccessLevel, ChannelMember, MemberInterface};
-use flex_chat_client::{
+use flex_chat::channel::{ChannelAccessLevel, ChannelMember, MemberInterface};
+use flex_chat::client::channel::responses::{
+	ChannelClientSocketCommandResponse,
+	ChannelClientSocketErrorReplies,
+};
+use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
+use flex_chat::client::{
 	ClientServerApplicationInterface,
 	ClientSocketInterface,
 	Socket,
 };
-use flex_chat_client_channel::{
-	ChannelClientSocketCommandResponse,
-	ChannelClientSocketErrorReplies,
-};
-use flex_chat_client_nick::NickClientSocketErrorReplies;
-use flex_chat_mode::ApplyMode;
-use flex_chat_user::UserInterface;
+use flex_chat::mode::ApplyMode;
+use flex_chat::user::UserInterface;
 use flex_web_framework::types::time;
 use socketioxide::extract::{Data, SocketRef, State};
 

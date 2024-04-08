@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat_client::{
+use flex_chat::client::{
 	ClientInterface,
 	ClientSocketInterface,
 	Origin,
 	Socket,
 };
-use flex_chat_macro::command_response;
-use flex_chat_user::UserInterface;
+use flex_chat::macros::command_response;
+use flex_chat::user::UserInterface;
 
 command_response! {
 	struct NICK<'old, 'new>
