@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 /**
- * @example ```
+ * @example
  *
  * using! {
  *    pub name1,
@@ -18,16 +18,14 @@
  *    name4,
  * }
  *
- * ```
- * 
- * @example ```
+ * @example
+ *
  * using! {
  *               dir1 / { file1,  pub file2,  pub(crate) file3,  pub(super) file4  };
  *    pub        dir2 / { file5,  pub file6,  pub(crate) file7,  pub(super) file8  };
  *    pub(crate) dir3 / { file9,  pub file10, pub(crate) file11, pub(super) file12 };
  *    pub(super) dir4 / { file13, pub file14, pub(crate) file15, pub(super) file16 };
  * }
- * ```
  */
 #[macro_export]
 macro_rules! using {
@@ -48,19 +46,17 @@ macro_rules! using {
 }
 
 /**
- * @example ```
+ * @example
  *
  * public_using! {
  *    name,
  * }
  *
- * ```
- * 
- * @example ```
+ * @example
+ *
  * public_using! {
  *    dir / { file };
  * }
- * ```
  */
 #[macro_export]
 macro_rules! public_using {
