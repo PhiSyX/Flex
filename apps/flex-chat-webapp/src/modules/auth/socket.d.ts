@@ -15,6 +15,18 @@ declare interface AuthIdentifyFormData
 	remember_me?: boolean;
 }
 
+declare interface AuthIdentifyHttpResponse
+{
+	id: UUID;
+	name: string;
+	email: string;
+	role: {
+		User: "User",
+		Moderator: "Moderator",
+		Admin: "Admin",
+	};
+}
+
 declare interface AuthRegisterFormData
 {
 	username: string;
@@ -23,9 +35,16 @@ declare interface AuthRegisterFormData
 	password_confirmation: string;
 }
 
+declare interface AuthRegisterHttpResponse
+{
+	code: string;
+	message: string;
+	id: UUID;
+}
+
 declare interface Commands
 {
-	"AUTH IDENTIFY": AuthIdentifyFormData;
+	"AUTH IDENTIFY": AuthIdentifyHttpResponse;
 }
 
 declare interface CommandResponsesFromServer

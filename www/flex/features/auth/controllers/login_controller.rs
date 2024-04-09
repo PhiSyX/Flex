@@ -13,8 +13,10 @@ use std::sync::Arc;
 use flex_web_framework::extract::Form;
 use flex_web_framework::http::response::Html;
 use flex_web_framework::http::{
+	self,
 	Extensions,
 	HttpContext,
+	HttpContextError,
 	HttpContextInterface,
 	IntoResponse,
 };
@@ -30,6 +32,7 @@ use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::{AuthService, AuthenticationService};
 use crate::features::auth::views::LoginView;
+use crate::features::chat::routes::ChatRouteID;
 use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::repositories::{
 	UserRepository,
@@ -66,20 +69,40 @@ impl LoginController
 	pub async fn handle(
 		ctx: HttpContext<Self>,
 		Form(formdata): Form<LoginFormData>,
-	) -> impl IntoResponse
+	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
 		let Ok(user) = ctx.auth_service.attempt(
 			&formdata.identifier,
 			&formdata.password
 		).await else
 		{
-			ctx.session.flash(LoginError::KEY, LoginError::InvalidCredentials).await;
-			return ctx.redirect_back();
+			if ctx.request.accept().json() {
+				return Err(HttpContextError::TupleErr {
+					err: (
+						http::StatusCode::UNAUTHORIZED,
+						LoginError::InvalidCredentials.to_string(),
+					)
+				});
+			} else {
+				ctx.session.flash(
+					LoginError::KEY,
+					LoginError::InvalidCredentials
+				).await;
+				return Ok(ctx.redirect_back().into_response());
+			}
 		};
 
 		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
 		_ = ctx.session.insert(USER_SESSION, UserSessionDTO::from(user)).await;
-		ctx.response.redirect_to("/chat")
+
+		if ctx.request.accept().json() {
+			let user_session = ctx.session.get::<UserSessionDTO>(
+				USER_SESSION
+			).await?.unwrap();
+			Ok(ctx.response.json(user_session).into_response())
+		} else {
+			Ok(ctx.response.redirect_to(ChatRouteID::Home).into_response())
+		}
 	}
 }
 

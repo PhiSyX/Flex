@@ -28,8 +28,7 @@ use crate::AxumState;
 // Interface //
 // --------- //
 
-pub trait HttpContextInterface
-	: Send + Sync
+pub trait HttpContextInterface: Send + Sync
 {
 	type State;
 
@@ -79,9 +78,9 @@ pub enum HttpContextError<T>
 	Extension(#[from] axum::extract::rejection::ExtensionRejection),
 	Infaillible(#[from] std::convert::Infallible),
 	#[error("{}", err.1)]
-	StaticErr
+	TupleErr
 	{
-		err: (http::StatusCode, &'static str),
+		err: (http::StatusCode, String),
 	},
 	MissingExtension,
 	Session(#[from] tower_sessions::session::Error),
@@ -184,10 +183,10 @@ where
 		// Cookie / Session
 		let cookies = Cookies::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::StaticErr { err })?;
+			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
 		let session = Session::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::StaticErr { err })?;
+			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
 
 		// Request
 		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)
@@ -248,14 +247,28 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 
 		let status_code = match self {
 			| Self::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
+			| Self::TupleErr { err: (status, ..) } => status,
 			| _ => StatusCode::INTERNAL_SERVER_ERROR,
 		};
 
 		let title = match self {
 			| Self::Unauthorized { .. } => {
-				"Non autorisé à consulter cette ressource"
+				String::from("Non autorisé à consulter cette ressource")
 			}
-			| _ => "Un problème est survenue sur le serveur",
+			| Self::TupleErr {
+				err: (header, ref msg),
+			} => {
+				if header.is_client_error() {
+					if header.as_u16() == 401 {
+						String::from("Non autorisé à consulter cette ressource")
+					} else {
+						msg.to_owned()
+					}
+				} else {
+					String::from("Un problème est survenue sur le serveur")
+				}
+			}
+			| _ => String::from("Un problème est survenue sur le serveur"),
 		};
 
 		let detail = match self {
@@ -264,6 +277,19 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 				 à consulter les détails de cette ressource. Seuls les \
 				 utilisateurs connectés sont autorisés à le faire."
 					.to_owned()
+			}
+			| Self::TupleErr {
+				err: (header, ref msg),
+			} => {
+				if header.is_client_error() {
+					if header.as_u16() == 401 {
+						msg.to_owned()
+					} else {
+						self.to_string()
+					}
+				} else {
+					self.to_string()
+				}
 			}
 			| _ => self.to_string(),
 		};
@@ -333,10 +359,10 @@ where
 		// Cookie / Session
 		let cookies = Cookies::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::StaticErr { err })?;
+			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
 		let session = Session::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::StaticErr { err })?;
+			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
 
 		// Request
 		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)

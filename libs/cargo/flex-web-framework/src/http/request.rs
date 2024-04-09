@@ -23,6 +23,7 @@ pub use axum::extract::{
 	State,
 };
 use axum::http::HeaderValue;
+use hyper::header::ACCEPT;
 use hyper::HeaderMap;
 
 // --------- //
@@ -38,4 +39,42 @@ pub struct HttpRequest<T>
 	pub raw_query: Option<String>,
 	pub referer: Option<axum_extra::headers::Referer>,
 	pub headers: HeaderMap<HeaderValue>,
+}
+
+pub struct HttpRequestHeaderAccept<'h>
+{
+	accept_header: Option<&'h HeaderValue>,
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<T> HttpRequest<T>
+{
+	/// Accept Header
+	pub fn accept(&self) -> HttpRequestHeaderAccept
+	{
+		HttpRequestHeaderAccept {
+			accept_header: self.headers.get(ACCEPT),
+		}
+	}
+}
+
+impl<'h> HttpRequestHeaderAccept<'h>
+{
+	pub fn json(&self) -> bool
+	{
+		#[rustfmt::skip]
+		let Some(accept) = self.accept_header else { return false };
+
+		if accept.is_empty() {
+			return false;
+		}
+
+		#[rustfmt::skip]
+		let Ok(s) = accept.to_str() else { return false };
+
+		s.contains("json")
+	}
 }

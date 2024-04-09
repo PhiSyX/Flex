@@ -22,7 +22,7 @@ export class AuthCommand
 {
 	static from_str(value: string): Result<AuthSubCommand, Error>
 	{
-		switch(value) {
+		switch (value) {
 			case "id":
 			case "ident":
 			case "identify":
@@ -33,36 +33,73 @@ export class AuthCommand
 				return Ok(AuthSubCommand.REGISTER);
 
 			default:
-				return Err(new Error(`La commande "${value}" n'est pas valide pour le module AUTH`));
+			{
+				let err = new Error(
+					`La commande "${value}" n'est pas valide pour le module AUTH`,
+				)
+				return Err(err);
+			}
 		}
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStore, private authApiHttpClient: AuthApiHTTPClient) {}
+	constructor(
+		private store: ChatStore,
+		private authApiHttpClient: AuthApiHTTPClient,
+	)
+	{
+	}
 
 	sendIdentify(payload: AuthIdentifyFormData)
 	{
 		payload.remember_me ??= false;
 
-		this.authApiHttpClient.identify(payload)
-			.then((response) => this.store.emit("AUTH IDENTIFY", response));
+		const onSuccess = (response: AuthIdentifyHttpResponse) =>
+		{
+			this.store.emit("AUTH IDENTIFY", response);
+		};
+
+		const onError = async (response: Response) =>
+		{
+			const id = response.headers.get("date") as string;
+
+			if (response.status >= 400 && response.status < 600)
+			{
+				const problem = await response.json();
+				const detail = problem.detail;
+				const message = `-AuthServ- ${detail}`;
+				const connectData = {
+					origin: this.store.client(),
+					tags: { msgid: id },
+				};
+				this.store.roomManager().active().addConnectEvent(
+					connectData,
+					message,
+				);
+			}
+		};
+
+		this.authApiHttpClient.identify(payload).then(onSuccess).catch(onError);
 	}
 
 	sendRegister(payload: AuthRegisterFormData)
 	{
-		this.authApiHttpClient.register(payload)
-			.then((response) => {
-				this.store.roomManager().active()
-					// FIXME: addEvent(response.code, ...)
-					.addConnectEvent(
-						{
-							origin: this.store.client(),
-							tags: { msgid: response.id }
-						},
-						`-AuthServ- ${response.message}`
-					)
-			})
+		const onSuccess = (response: AuthRegisterHttpResponse) =>
+		{
+			const connectData = {
+				origin: this.store.client(),
+				tags: { msgid: response.id },
+			};
+			const message = `-AuthServ- ${response.message}`;
+
+			// FIXME: addEvent(response.code, ...)
+			this.store.roomManager().active().addConnectEvent(
+				connectData,
+				message,
+			);
+		};
+		this.authApiHttpClient.register(payload).then(onSuccess);
 	}
 }

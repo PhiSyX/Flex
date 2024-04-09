@@ -14,21 +14,11 @@
 
 const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	headers: {
+		"Accept": "application/json",
 		"Content-Type": "application/json",
 	},
 	credentials: "same-origin",
 };
-
-// --------- //
-// Interface //
-// --------- //
-
-interface AuthRegisterResponse
-{
-	code: string;
-	message: string;
-	id: UUID;
-}
 
 // -------------- //
 // Implémentation // -> Interface
@@ -39,7 +29,7 @@ export class AuthApiHTTPClient
 	static AUTH_IDENTIFY_ENDPOINT = "/api/v1/auth/identify";
 	static AUTH_REGISTER_ENDPOINT = "/api/v1/auth/register";
 
-	identify(payload: AuthIdentifyFormData)
+	identify(payload: AuthIdentifyFormData): Promise<AuthIdentifyHttpResponse>
 	{
 		const fetchOpts: RequestInit = {
 			...DEFAULT_FETCH_OPTIONS,
@@ -54,7 +44,7 @@ export class AuthApiHTTPClient
 			});
 	}
 
-	register(payload : AuthRegisterFormData): Promise<AuthRegisterResponse>
+	register(payload : AuthRegisterFormData): Promise<AuthRegisterHttpResponse>
 	{
 		const fetchOpts: RequestInit = {
 			...DEFAULT_FETCH_OPTIONS,

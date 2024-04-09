@@ -15,13 +15,6 @@ flex_kernel::import! {
 		pub mod login_controller use *;
 		pub mod logout_controller use *;
 		pub mod signup_controller use *;
-
-		pub mod api {
-			pub mod v1 {
-				pub mod identify_controller use *;
-				pub mod register_controller use *;
-			};
-		};
 	};
 
 	pub(crate) mod forms {

@@ -11,15 +11,17 @@
 use std::sync::Arc;
 
 use flex_web_framework::extract::Form;
-use flex_web_framework::http::response::{Html, Redirect};
-use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
+use flex_web_framework::http::response::Html;
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface, IntoResponse};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
+use flex_web_framework::types::uuid;
 use flex_web_framework::{
 	DatabaseService,
 	PostgreSQLDatabase,
 	SessionFlashExtension,
 };
+use serde_json::json;
 
 use crate::features::auth::forms::RegistrationFormData;
 use crate::features::auth::responses::CreatedAccountReply;
@@ -59,14 +61,23 @@ impl SignupController
 	pub async fn handle(
 		ctx: HttpContext<Self>,
 		Form(form): Form<RegistrationFormData>,
-	) -> Redirect
+	) -> impl IntoResponse
 	{
 		let user_new = UserNewActionDTO::from(form);
 		if let Err(err) = ctx.auth_service.signup(user_new).await {
 			tracing::error!(?err, "Erreur lors de l'inscription");
 		}
-		ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
-		ctx.response.redirect_to(AuthRouteID::Login)
+
+		if ctx.request.accept().json() {
+			ctx.response.json(json!({
+				"id": uuid::Uuid::new_v4(),
+				"code": CreatedAccountReply::KEY,
+				"message": CreatedAccountReply.to_string()
+			})).into_response()
+		} else {
+			ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
+			ctx.response.redirect_to(AuthRouteID::Login).into_response()
+		}
 	}
 }
 

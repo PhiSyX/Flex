@@ -10,7 +10,9 @@
 
 flex_kernel::import! {
 	pub mod feature use *;
-	mod routes;
+
+	pub(crate) mod routes;
+
 	mod sessions {
 		pub(crate) mod channel use *;
 		pub(crate) mod client use *;

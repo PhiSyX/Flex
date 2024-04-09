@@ -16,10 +16,7 @@ use flex_web_framework::{
 	RouterInterface,
 };
 
-use crate::features::auth::controllers::api::v1::{
-	IdentifyController,
-	RegisterController,
-};
+use crate::features::auth::controllers::{LoginController, SignupController};
 use crate::features::auth::middleware::GuestMiddleware;
 use crate::{FlexApplicationState, FlexState};
 
@@ -56,12 +53,12 @@ impl RouterInterface<FlexState> for AuthApi_V1_Router
 		Self::group()
 			.add(
 				Router::path(AuthApi_V1_RouteID::Identify)
-					.post(IdentifyController::handle)
+					.post(LoginController::handle)
 					.middleware(middleware::from_fn(GuestMiddleware::api)),
 			)
 			.add(
 				Router::path(AuthApi_V1_RouteID::Register)
-					.post(RegisterController::handle)
+					.post(SignupController::handle)
 					.middleware(middleware::from_fn(GuestMiddleware::api)),
 			)
 	}
