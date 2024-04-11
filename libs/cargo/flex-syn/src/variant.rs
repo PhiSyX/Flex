@@ -8,38 +8,53 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// -------- //
-// Fonction //
-// -------- //
+// --------- //
+// Interface //
+// --------- //
 
-/// Cherche l'attribut passé en argument parmi la liste des attributs d'un
-/// variant.
-#[rustfmt::skip]
-pub fn find_attr(
-	variant: &syn::Variant,
-	attr_name: impl AsRef<str>,
-) -> Option<&syn::Attribute>
+pub trait VariantExt
 {
-	variant.attrs
-		.iter()
-		.find(|attr| attr.path().is_ident(attr_name.as_ref()))
+	/// Récupère les features d'une variante.
+	fn features(&self) -> Vec<&syn::Attribute>;
+
+	/// Cherche l'attribut passé en argument parmi la liste des attributs d'un
+	/// variant.
+	fn find_attribute(
+		&self,
+		attr_name: impl AsRef<str>,
+	) -> Option<&syn::Attribute>;
 }
 
-/// Récupère les features d'une variante.
-#[rustfmt::skip]
-pub fn get_features(variant: &syn::Variant) -> Vec<&syn::Attribute>
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl VariantExt for syn::Variant
 {
-	variant.attrs
-		.iter()
-		.filter(|attr| {
-			let cfg = attr.path().is_ident("cfg").then_some(
-				attr.parse_args_with(|parser: &syn::parse::ParseBuffer| {
+	fn features(&self) -> Vec<&syn::Attribute>
+	{
+		self.attrs
+			.iter()
+			.filter(|attr| {
+				let parser = |parser: &syn::parse::ParseBuffer| {
 					parser.parse::<syn::MetaNameValue>()
-				})
-				.ok()
-				.filter(|nv| !nv.path.is_ident("feature")),
-			);
-			cfg.is_some()
-		})
-		.collect()
+				};
+				let maybe_cfg = attr.parse_args_with(parser)
+					.ok()
+					.filter(|nv| !nv.path.is_ident("feature"));
+				let cfg = attr.path().is_ident("cfg").then_some(maybe_cfg);
+				cfg.is_some()
+			})
+			.collect()
+	}
+
+	fn find_attribute(
+		&self,
+		attr_name: impl AsRef<str>,
+	) -> Option<&syn::Attribute>
+	{
+		self.attrs
+			.iter()
+			.find(|attr| attr.path().is_ident(attr_name.as_ref()))
+	}
 }

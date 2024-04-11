@@ -10,7 +10,11 @@
 
 use std::{error, fmt};
 
-use flex_syn::{field, meta, structure, Parser, ParserError};
+use flex_syn::attribute::AttributeExt;
+use flex_syn::field::{FieldExt, FieldsExt};
+use flex_syn::meta::MetaSplittedByCommaExt;
+use flex_syn::structure::ItemStructExt;
+use flex_syn::{structure, Parser, ParserError};
 use syn::__private::quote::{quote, quote_spanned};
 use syn::__private::{Span, TokenStream, TokenStream2};
 use syn::spanned::Spanned;
@@ -62,12 +66,14 @@ impl PromptDerive
 {
 	pub const ATTRIBUTE_NAME: &'static str = "prompt";
 
-	fn parse_field<'a>(&'a self, f: &'a syn::Field)
-		-> Result<'_, TokenStream2>
+	fn parse_field<'a>(
+		&'a self,
+		field: &'a syn::Field,
+	) -> Result<'_, TokenStream2>
 	{
-		let Some(attribute) = field::find_attr(f, Self::ATTRIBUTE_NAME) else {
-			let field_name = &f.ident;
-			let field_type = &f.ty;
+		let Some(attribute) = field.find_attribute(Self::ATTRIBUTE_NAME) else {
+			let field_name = &field.ident;
+			let field_type = &field.ty;
 
 			return Ok(quote! {
 				#field_name : #field_type :: prompt()?,
@@ -84,7 +90,7 @@ impl PromptDerive
 				span: attribute.span(),
 				kind:
 					ErrorDeriveParserErrorKind::PromptAttributeFormatIsInvalid {
-						field: f
+						field: field
 							.ident
 							.as_ref()
 							.expect("identifiant du champ")
@@ -93,20 +99,18 @@ impl PromptDerive
 			});
 		}
 
-		let meta_list =
-			meta::get_metalist_from_attr(attribute).ok_or_else(|| {
-				PromptDeriveParserError {
-					span: attribute.span(),
-					kind: ErrorDeriveParserErrorKind::OneOfPropertiesIsRequired,
-				}
-			})?;
+		let meta_list = attribute.metalist().ok_or_else(|| {
+			PromptDeriveParserError {
+				span: attribute.span(),
+				kind: ErrorDeriveParserErrorKind::OneOfPropertiesIsRequired,
+			}
+		})?;
 
-		let confirm_value =
-			meta::get_value_lit_in_meta_namevalue(&meta_list, "confirm");
+		let confirm_value = meta_list.literal_value_nv("confirm");
 
 		if let Some(confirm_value) = confirm_value {
-			let field_name = &f.ident;
-			let field_type = if let syn::Type::Path(ty_path) = &f.ty {
+			let field_name = &field.ident;
+			let field_type = if let syn::Type::Path(ty_path) = &field.ty {
 				let seg = &ty_path.path.segments[0];
 				if seg.ident == "Option" {
 					match &seg.arguments {
@@ -132,13 +136,11 @@ impl PromptDerive
 			});
 		}
 
-		#[rustfmt::skip]
-		let ask_value = meta::get_value_lit_in_meta_namevalue(&meta_list, "ask");
-		#[rustfmt::skip]
-		let default_value = meta::get_value_in_meta_namevalue(&meta_list, "default");
-		let list_value = meta::get_value_in_meta_namevalue(&meta_list, "list");
+		let ask_value = meta_list.literal_value_nv("ask");
+		let default_value = meta_list.value_nv("default");
+		let list_value = meta_list.value_nv("list");
 
-		let field_name = &f.ident;
+		let field_name = &field.ident;
 
 		if let Some(ty) = list_value {
 			Ok(quote! {
@@ -174,7 +176,7 @@ impl Parser for PromptDerive
 
 	fn analyze(&self) -> Result<'_, TokenStream>
 	{
-		if !field::is_named_fields(&self.item_struct.fields) {
+		if !self.item_struct.fields.is_named_fields() {
 			return Err(PromptDeriveParserError {
 				span: self.item_struct.span(),
 				kind: ErrorDeriveParserErrorKind::IsNotNamedStruct,
@@ -189,13 +191,10 @@ impl Parser for PromptDerive
 			.collect::<Result<_>>()?;
 
 		#[rustfmt::skip]
-		let title = structure::find_attr(&self.item_struct, Self::ATTRIBUTE_NAME)
+		let title = self.item_struct.find_attribute(Self::ATTRIBUTE_NAME)
 				.and_then(|attribute| {
-					if let Some(list) = meta::get_metalist_from_attr(attribute)
-					{
-						let title_value = meta::get_value_lit_in_meta_namevalue(
-							&list, "title",
-						);
+					if let Some(list) = attribute.metalist() {
+						let title_value = list.literal_value_nv("title");
 						Some(quote! {
 							println!(#title_value);
 						})

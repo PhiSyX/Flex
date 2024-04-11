@@ -1,5 +1,5 @@
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-// ┃ Copyright: (c) 2023, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
 // ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
 // ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
 // ┃                                                                           ┃
@@ -8,55 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use syn::Token;
+
+use crate::meta::MetaSplittedByCommaToken;
+
 // --------- //
 // Interface //
 // --------- //
 
-pub trait FieldExt
+pub trait AttributeExt
 {
-	/// Cherche l'attribut passé en argument parmi la liste des attributs d'un
-	/// champ.
-	fn find_attribute(
-		&self,
-		attr_name: impl AsRef<str>,
-	) -> Option<&syn::Attribute>;
-}
-
-pub trait FieldsExt
-{
-	/// Vérifie que la structure est une structure de champs nommés.
-	fn is_named_fields(&self) -> bool;
-
-	/// Vérifie que la structure est une structure unitaire.
-	fn is_unit_fields(&self) -> bool;
+	/// Retourne une liste de méta à partir d'un attribut.
+	fn metalist(&self) -> Option<MetaSplittedByCommaToken>;
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl FieldExt for syn::Field
+impl AttributeExt for syn::Attribute
 {
-	fn find_attribute(
-		&self,
-		attr_name: impl AsRef<str>,
-	) -> Option<&syn::Attribute>
+	fn metalist(&self) -> Option<MetaSplittedByCommaToken>
 	{
-		self.attrs
-			.iter()
-			.find(|attr| attr.path().is_ident(attr_name.as_ref()))
-	}
-}
-
-impl FieldsExt for syn::Fields
-{
-	fn is_named_fields(&self) -> bool
-	{
-		matches!(self, syn::Fields::Named(_))
-	}
-
-	fn is_unit_fields(&self) -> bool
-	{
-		matches!(self, syn::Fields::Unit)
+		let parser = |buf: &syn::parse::ParseBuffer| {
+			buf.parse_terminated(|a| a.parse::<syn::Meta>(), Token![,])
+		};
+		self.meta.require_list().ok()?.parse_args_with(parser).ok()
 	}
 }

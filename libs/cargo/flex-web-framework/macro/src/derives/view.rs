@@ -10,7 +10,7 @@
 
 use std::{error, fmt};
 
-use flex_syn::field;
+use flex_syn::field::FieldsExt;
 use syn::__private::quote::{quote, quote_spanned};
 use syn::__private::{Span, TokenStream, TokenStream2};
 use syn::spanned::Spanned;
@@ -64,8 +64,8 @@ impl flex_syn::Parser for ViewDerive
 
 	fn analyze(&self) -> Result<'_, TokenStream>
 	{
-		if !field::is_named_fields(&self.item_struct.fields)
-			&& !field::is_unit_fields(&self.item_struct.fields)
+		if !self.item_struct.fields.is_named_fields()
+			&& !self.item_struct.fields.is_unit_fields()
 		{
 			return Err(ViewDeriveParserError {
 				span: self.item_struct.span(),

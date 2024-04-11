@@ -8,19 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// -------- //
-// Fonction //
-// -------- //
+// --------- //
+// Interface //
+// --------- //
 
-/// Cherche l'attribut passé en argument parmi la liste des attributs d'un
-/// champ.
-pub fn find_attr(
-	field: &syn::ItemStruct,
-	attr_name: impl AsRef<str>,
-) -> Option<&syn::Attribute>
+pub trait ItemStructExt
 {
-	field
-		.attrs
-		.iter()
-		.find(|attr| attr.path().is_ident(attr_name.as_ref()))
+	/// Cherche l'attribut passé en argument parmi la liste des attributs d'un
+	/// champ.
+	fn find_attribute(
+		&self,
+		attr_name: impl AsRef<str>,
+	) -> Option<&syn::Attribute>;
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl ItemStructExt for syn::ItemStruct
+{
+	fn find_attribute(
+		&self,
+		attr_name: impl AsRef<str>,
+	) -> Option<&syn::Attribute>
+	{
+		self.attrs
+			.iter()
+			.find(|attr| attr.path().is_ident(attr_name.as_ref()))
+	}
 }
