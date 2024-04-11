@@ -14,7 +14,7 @@ use flex_syn::attribute::AttributeExt;
 use flex_syn::field::{FieldExt, FieldsExt};
 use flex_syn::meta::MetaSplittedByCommaExt;
 use flex_syn::structure::ItemStructExt;
-use flex_syn::{structure, Parser, ParserError};
+use flex_syn::{Parser, ParserError};
 use syn::__private::quote::{quote, quote_spanned};
 use syn::__private::{Span, TokenStream, TokenStream2};
 use syn::spanned::Spanned;

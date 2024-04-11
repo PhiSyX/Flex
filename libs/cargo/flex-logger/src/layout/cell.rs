@@ -57,7 +57,7 @@ impl<'d> Cell<'d>
 {
 	pub(crate) fn width(&self) -> usize
 	{
-		self.wrapped_content(std::usize::MAX)
+		self.wrapped_content(usize::MAX)
 			.iter()
 			.fold(0, |max, text| cmp::max(max, str_len(text)))
 	}

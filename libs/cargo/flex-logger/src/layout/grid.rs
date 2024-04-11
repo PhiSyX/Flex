@@ -53,7 +53,7 @@ impl<'d> GridLayout<'d>
 			style: STYLE_BLANK,
 
 			widths: HashMap::new(),
-			max_width: std::usize::MAX,
+			max_width: usize::MAX,
 
 			separate_rows: true,
 
