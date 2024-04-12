@@ -31,4 +31,14 @@ impl Feature for AuthApplication
 	type State = FlexState;
 
 	const NAME: &'static str = "AuthApplication";
+
+	fn register_services(
+		_config: &flex_web_framework::settings::Config<Self::Config>,
+		axum_state: &mut flex_web_framework::AxumState<Self::State>,
+		router: flex_web_framework::AxumRouter<Self::State>,
+	) -> flex_web_framework::AxumRouter<Self::State>
+	{
+		axum_state.set_state(FlexState::Initial);
+		router
+	}
 }

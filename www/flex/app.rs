@@ -61,6 +61,7 @@ pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
 #[derive(Clone)]
 pub enum FlexState
 {
+	Initial,
 }
 
 // -------------- //

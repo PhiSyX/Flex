@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use hyper::http;
+use axum::http::HeaderValue;
+use axum::Json;
+use hyper::{header, http, HeaderMap};
+use serde_json::json;
 
 // --------- //
 // Structure //
@@ -63,9 +66,39 @@ impl axum::response::IntoResponse for MissingFormError
 {
 	fn into_response(self) -> axum::response::Response
 	{
-		let err_status = http::StatusCode::INTERNAL_SERVER_ERROR;
-		let err_body = self.to_string();
-		(err_status, err_body).into_response()
+		let mut headers = HeaderMap::new();
+
+		headers.insert(
+			header::CONTENT_TYPE,
+			HeaderValue::from_str("application/problem+json").unwrap(),
+		);
+
+		let status_code = match self {
+			| Self::FormRejection(ref r) => r.status(),
+			| Self::JsonRejection(ref r) => r.status(),
+		};
+
+		let title = "Échec de la dé-sérialisation du corps de la requête dans \
+		             le type cible";
+
+		let detail = match self {
+			| Self::FormRejection(ref r) => r.body_text(),
+			| Self::JsonRejection(ref r) => r.body_text(),
+		};
+
+		let ss = "Failed to deserialize the JSON body into the target type: ";
+		let err_body = detail.trim_start_matches(ss).to_owned();
+
+		(
+			status_code,
+			headers,
+			Json(json!({
+				"title": title,
+				"status": status_code.as_u16(),
+				"detail": err_body,
+			})),
+		)
+			.into_response()
 	}
 }
 
