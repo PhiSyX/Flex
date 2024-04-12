@@ -77,11 +77,8 @@ pub enum HttpContextError<T>
 {
 	Extension(#[from] axum::extract::rejection::ExtensionRejection),
 	Infaillible(#[from] std::convert::Infallible),
-	#[error("{}", err.1)]
-	TupleErr
-	{
-		err: (http::StatusCode, String),
-	},
+	#[error("{1}")]
+	Err(http::StatusCode, String),
 	MissingExtension,
 	Session(#[from] tower_sessions::session::Error),
 	Unauthorized
@@ -183,10 +180,10 @@ where
 		// Cookie / Session
 		let cookies = Cookies::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
+			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
 		let session = Session::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
+			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
 
 		// Request
 		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)
@@ -247,7 +244,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 
 		let status_code = match self {
 			| Self::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
-			| Self::TupleErr { err: (status, ..) } => status,
+			| Self::Err(status, _) => status,
 			| _ => StatusCode::INTERNAL_SERVER_ERROR,
 		};
 
@@ -255,9 +252,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 			| Self::Unauthorized { .. } => {
 				String::from("Non autorisé à consulter cette ressource")
 			}
-			| Self::TupleErr {
-				err: (header, ref msg),
-			} => {
+			| Self::Err(header, ref msg) => {
 				if header.is_client_error() {
 					if header.as_u16() == 401 {
 						String::from("Non autorisé à consulter cette ressource")
@@ -278,9 +273,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 				 utilisateurs connectés sont autorisés à le faire."
 					.to_owned()
 			}
-			| Self::TupleErr {
-				err: (header, ref msg),
-			} => {
+			| Self::Err(header, ref msg) => {
 				if header.is_client_error() {
 					if header.as_u16() == 401 {
 						msg.to_owned()
@@ -359,10 +352,10 @@ where
 		// Cookie / Session
 		let cookies = Cookies::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
+			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
 		let session = Session::from_request_parts(parts, state)
 			.await
-			.map_err(|err| HttpContextError::TupleErr { err: (err.0, err.1.to_owned()) })?;
+			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
 
 		// Request
 		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)

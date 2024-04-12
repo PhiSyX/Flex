@@ -8,28 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::types::uuid;
+
 // ----------- //
 // Énumération //
 // ----------- //
 
 #[derive(Debug)]
 #[derive(serde::Serialize, serde::Deserialize)]
-pub struct CreatedAccountReply;
+pub struct CreationAccountReply;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl CreatedAccountReply
+impl CreationAccountReply
 {
 	pub const KEY: &'static str = "CREATION_ACCOUNT";
+
+	pub fn json(&self) -> serde_json::Value
+	{
+		serde_json::json!({
+			"id": uuid::Uuid::new_v4(),
+			"code": Self::KEY,
+			"message": self.to_string()
+		})
+	}
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl std::fmt::Display for CreatedAccountReply
+impl std::fmt::Display for CreationAccountReply
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{

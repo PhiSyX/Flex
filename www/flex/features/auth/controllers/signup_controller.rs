@@ -24,7 +24,7 @@ use flex_web_framework::{
 use serde_json::json;
 
 use crate::features::auth::forms::RegistrationFormData;
-use crate::features::auth::responses::CreatedAccountReply;
+use crate::features::auth::responses::CreationAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::auth::services::{AuthService, AuthenticationService};
 use crate::features::auth::views::SignupView;
@@ -69,13 +69,9 @@ impl SignupController
 		}
 
 		if ctx.request.accept().json() {
-			ctx.response.json(json!({
-				"id": uuid::Uuid::new_v4(),
-				"code": CreatedAccountReply::KEY,
-				"message": CreatedAccountReply.to_string()
-			})).into_response()
+			ctx.response.json(CreationAccountReply.json()).into_response()
 		} else {
-			ctx.session.flash(CreatedAccountReply::KEY, CreatedAccountReply).await;
+			ctx.session.flash(CreationAccountReply::KEY, CreationAccountReply).await;
 			ctx.response.redirect_to(AuthRouteID::Login).into_response()
 		}
 	}

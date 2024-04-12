@@ -32,7 +32,7 @@ flex_kernel::import! {
 	};
 
 	mod responses {
-		pub mod rpl_created_account use *;
+		pub mod rpl_creation_account use *;
 	};
 
 	mod routes {

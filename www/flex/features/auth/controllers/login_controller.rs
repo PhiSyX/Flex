@@ -77,12 +77,10 @@ impl LoginController
 		).await else
 		{
 			if ctx.request.accept().json() {
-				return Err(HttpContextError::TupleErr {
-					err: (
-						http::StatusCode::UNAUTHORIZED,
-						LoginError::InvalidCredentials.to_string(),
-					)
-				});
+				return Err(HttpContextError::Err(
+					http::StatusCode::UNAUTHORIZED,
+					LoginError::InvalidCredentials.to_string(),
+				));
 			} else {
 				ctx.session.flash(
 					LoginError::KEY,

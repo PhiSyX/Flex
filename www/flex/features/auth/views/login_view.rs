@@ -12,7 +12,7 @@ use flex_web_framework::{html, Node, SessionFlashExtension, ViewInterface};
 
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
-use crate::features::auth::responses::CreatedAccountReply;
+use crate::features::auth::responses::CreationAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
 use crate::templates::layouts::BaseHTMLLayout;
 
@@ -27,7 +27,7 @@ pub struct LoginView
 	pub identifier: String,
 	pub password: String,
 	pub remember_me: bool,
-	pub success_message: Option<CreatedAccountReply>,
+	pub success_message: Option<CreationAccountReply>,
 	pub error_message: Option<LoginError>,
 }
 
@@ -48,7 +48,7 @@ impl ViewInterface for LoginView
 		session: &flex_web_framework::sessions::Session,
 	) -> Self
 	{
-		self.success_message = session.take(CreatedAccountReply::KEY).await;
+		self.success_message = session.take(CreationAccountReply::KEY).await;
 		self.error_message = session.take(LoginError::KEY).await;
 		self
 	}
