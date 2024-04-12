@@ -46,7 +46,7 @@ impl SilenceHandler
 
 		let nickname = &data.nickname[1..];
 
-		if client_socket.check_nickname(nickname) {
+		if client_socket.has_same_nickname(nickname) {
 			return;
 		}
 

@@ -48,7 +48,7 @@ impl PrivmsgHandler
 			let origin = Origin::from(client_socket.client());
 			client_socket.emit_privmsg(target, &data.text, &origin);
 
-			if client_socket.check_nickname(target) {
+			if client_socket.has_same_nickname(target) {
 				continue;
 			}
 

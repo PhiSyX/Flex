@@ -26,8 +26,8 @@ use crate::user::{UserFlagInterface, UserInterface};
 /// Interface Client
 pub trait ClientInterface: fmt::Debug
 {
-	#[rustfmt::skip]
 	/// Type représentant l'ID d'un client.
+	#[rustfmt::skip]
 	type ClientID
 		: serde::Serialize
 		+ fmt::Debug
@@ -37,7 +37,11 @@ pub trait ClientInterface: fmt::Debug
 		;
 
 	/// Type représentant l'ID de la socket du client.
-	type SocketID: fmt::Debug;
+	#[rustfmt::skip]
+	type SocketID
+		: fmt::Debug
+		+ fmt::Display
+		;
 
 	/// Type représentant l'utilisateur d'un client.
 	type User: UserInterface;
@@ -88,13 +92,13 @@ pub trait ClientInterface: fmt::Debug
 	}
 
 	/// Attribution d'un nouvel ID de Socket.
-	fn reconnect_with_new_sid(&mut self, sid: socketioxide::socket::Sid);
+	fn reconnect_with_new_sid(&mut self, sid: Self::SocketID);
 
 	/// Attribution d'un nouvel ID au client.
 	fn set_cid(&mut self, cid: Self::ClientID);
 
 	/// Attribution d'un nouvel ID de Socket.
-	fn set_sid(&mut self, sid: socketioxide::socket::Sid);
+	fn set_sid(&mut self, sid: Self::SocketID);
 
 	/// Définit le client comme étant connecté.
 	fn set_connected(&mut self);

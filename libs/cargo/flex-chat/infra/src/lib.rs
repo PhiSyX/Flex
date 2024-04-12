@@ -8,14 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::client::ClientSocketInterface;
+pub(crate) mod socket;
 
-// --------- //
-// Interface //
-// --------- //
+pub mod channel;
+pub mod client;
 
-pub trait NickClientSocketErrorReplies: ClientSocketInterface
-{
-	/// Émet au client l'erreur [crate::ErrNosuchnickError].
-	fn send_err_nosuchnick(&self, nickname: &str);
-}
+pub use flex_chat::{macros, mode, user};

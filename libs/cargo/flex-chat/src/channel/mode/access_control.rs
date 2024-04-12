@@ -26,14 +26,14 @@ pub const CHANNEL_MODE_LIST_BAN_EXCEPT: char = 'e';
 #[derive(Clone)]
 #[derive(Default)]
 #[derive(Debug)]
-pub struct AccessControl
+pub struct AccessControl<ID>
 {
 	/// Les utilisateurs bannis du salon.
 	pub banlist: HashMap<String, ApplyMode<AccessControlMask>>,
 	/// Les exceptions de bannissement du salon.
 	pub banlist_exceptions: HashMap<String, ApplyMode<AccessControlMask>>,
 	/// Les utilisateurs en attente dans la liste des invitations.
-	pub invite_list: HashSet<uuid::Uuid>,
+	pub invite_list: HashSet<ID>,
 }
 
 #[derive(Debug)]
@@ -57,7 +57,7 @@ impl AccessControlMask
 	}
 }
 
-impl AccessControl
+impl<ID> AccessControl<ID>
 {
 	pub fn add_ban(
 		&mut self,

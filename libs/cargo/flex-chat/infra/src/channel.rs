@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::client::ClientSocketInterface;
+pub use flex_chat::channel::*;
 
-// --------- //
-// Interface //
-// --------- //
+// ---- //
+// Type //
+// ---- //
 
-pub trait NickClientSocketErrorReplies: ClientSocketInterface
-{
-	/// Émet au client l'erreur [crate::ErrNosuchnickError].
-	fn send_err_nosuchnick(&self, nickname: &str);
-}
+pub type MemberID = uuid::Uuid;
+pub type Channel = flex_chat::channel::Channel<MemberID>;
+pub type ChannelMember = flex_chat::channel::ChannelMember<MemberID>;
+#[rustfmt::skip]
+pub type ChannelWritePermission = flex_chat::channel::ChannelWritePermission<MemberID>;

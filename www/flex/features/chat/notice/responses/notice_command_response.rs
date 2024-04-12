@@ -32,9 +32,54 @@ pub trait NoticeClientSocketCommandResponseInterface
 	type Channel: ChannelInterface;
 
 	/// Émet au client les réponses liées à la commande /NOTICE <nickname>
-	fn emit_notice_on_nick<User>(&self, target: &str, text: &str, by: User)
-	where
-		User: serde::Serialize,
+	fn emit_notice_on_nick(
+		&self,
+		target: &str,
+		text: &str,
+		by: impl serde::Serialize,
+	);
+
+	/// Émet au client les réponses liées à la commande /NOTICE <channel>
+	fn emit_external_notice_on_channel(
+		&self,
+		target: &str,
+		text: &str,
+		by: &<Self::Client as ClientInterface>::User,
+	);
+
+	/// Émet au client les réponses liées à la commande /NOTICE <channel>
+	fn emit_notice_on_channel(
+		&self,
+		target: &str,
+		text: &str,
+		by: &impl serde::Serialize,
+	);
+
+	/// Émet au client les réponses liées à la commande
+	/// /NOTICE <<prefix>channel>
+	fn emit_notice_on_prefixed_channel(
+		&self,
+		prefix: char,
+		target: &str,
+		text: &str,
+		by: impl serde::Serialize,
+	);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s>
+{
+	type Channel = Channel;
+
+	fn emit_notice_on_nick(
+		&self,
+		target: &str,
+		text: &str,
+		by: impl serde::Serialize,
+	)
 	{
 		let notice_command = NoticeCommandResponse {
 			origin: &by,
@@ -46,7 +91,6 @@ pub trait NoticeClientSocketCommandResponseInterface
 		_ = self.socket().emit(notice_command.name(), &notice_command);
 	}
 
-	/// Émet au client les réponses liées à la commande /NOTICE <channel>
 	fn emit_external_notice_on_channel(
 		&self,
 		target: &str,
@@ -65,21 +109,18 @@ pub trait NoticeClientSocketCommandResponseInterface
 
 		let target_room = format!("channel:{}", target.to_lowercase());
 
-		_ = self
-			.socket()
+		_ = self.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);
 	}
 
-	/// Émet au client les réponses liées à la commande /NOTICE <channel>
-	fn emit_notice_on_channel<MemberDTO>(
+	fn emit_notice_on_channel(
 		&self,
 		target: &str,
 		text: &str,
-		by: &MemberDTO,
-	) where
-		MemberDTO: serde::Serialize,
+		by: &impl serde::Serialize,
+	)
 	{
 		let notice_command = NoticeCommandResponse {
 			origin: &by,
@@ -92,24 +133,19 @@ pub trait NoticeClientSocketCommandResponseInterface
 
 		let target_room = format!("channel:{}", target.to_lowercase());
 
-		_ = self
-			.socket()
+		_ = self.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);
 	}
 
-	/// Émet au client les réponses liées à la commande
-	/// /NOTICE <<prefix>channel>
-	#[rustfmt::skip]
-	fn emit_notice_on_prefixed_channel<User>(
+	fn emit_notice_on_prefixed_channel(
 		&self,
 		prefix: char,
 		target: &str,
 		text: &str,
-		by: User,
-	) where
-		User: serde::Serialize,
+		by: impl serde::Serialize,
+	)
 	{
 		let notice_command = NoticeCommandResponse {
 			origin: &by,
@@ -120,6 +156,7 @@ pub trait NoticeClientSocketCommandResponseInterface
 
 		_ = self.socket().emit(notice_command.name(), &notice_command);
 
+		#[rustfmt::skip]
 		let target_room = format!("channel:{}{}", prefix, target.to_lowercase());
 
 		_ = self.socket()
@@ -127,13 +164,4 @@ pub trait NoticeClientSocketCommandResponseInterface
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);
 	}
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s>
-{
-	type Channel = Channel;
 }

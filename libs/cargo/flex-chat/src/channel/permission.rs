@@ -14,9 +14,9 @@ use super::member;
 // Énumération //
 // ----------- //
 
-pub enum ChannelWritePermission
+pub enum ChannelWritePermission<ID>
 {
-	Yes(member::ChannelMember),
+	Yes(member::ChannelMember<ID>),
 	Bypass,
 	No(ChannelNoPermissionCause),
 }

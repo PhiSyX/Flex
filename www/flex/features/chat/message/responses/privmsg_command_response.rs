@@ -29,9 +29,16 @@ pub trait PrivmsgClientSocketCommandResponseInterface
 	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
-	fn emit_privmsg<User>(&self, target: &str, text: &str, by: User)
-	where
-		User: serde::Serialize,
+	fn emit_privmsg(&self, target: &str, text: &str, by: impl serde::Serialize);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> PrivmsgClientSocketCommandResponseInterface for Socket<'s>
+{
+	fn emit_privmsg(&self, target: &str, text: &str, by: impl serde::Serialize)
 	{
 		let privmsg_command = PrivmsgCommandResponse {
 			origin: &by,
@@ -39,13 +46,6 @@ pub trait PrivmsgClientSocketCommandResponseInterface
 			text,
 			tags: PrivmsgCommandResponse::default_tags(),
 		};
-
 		_ = self.socket().emit(privmsg_command.name(), &privmsg_command);
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> PrivmsgClientSocketCommandResponseInterface for Socket<'s> {}

@@ -22,8 +22,8 @@ use crate::features::chat::sessions::ChannelsSession;
 // Interface //
 // --------- //
 
-pub trait ModeChannelAccessLevelChannelsSessionInterface:
-	ChannelsSessionInterface
+pub trait ModeChannelAccessLevelChannelsSessionInterface
+	: ChannelsSessionInterface
 {
 	/// Est-ce qu'un membre à des droits minimal.
 	fn does_member_have_rights(
@@ -32,9 +32,7 @@ pub trait ModeChannelAccessLevelChannelsSessionInterface:
 		member_id: &<
 			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
 		>::ID,
-		min_access_level: <
-			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
-		>::AccessLevel,
+		min_access_level: ChannelAccessLevel,
 	) -> bool;
 
 	/// Un membre PEUT-il effectuer des tâches sur un autre membre?
@@ -56,9 +54,7 @@ pub trait ModeChannelAccessLevelChannelsSessionInterface:
 		member_id: &<
 			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
 		>::ID,
-		access_level: <
-			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
-		>::AccessLevel,
+		access_level: ChannelAccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>;
 
 	/// Met à jour le niveau d'accès d'un pseudo.
@@ -68,9 +64,7 @@ pub trait ModeChannelAccessLevelChannelsSessionInterface:
 		member_id: &<
 			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
 		>::ID,
-		access_level: <
-			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
-		>::AccessLevel,
+		access_level: ChannelAccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>;
 }
 
@@ -87,9 +81,7 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 		member_id: &<
 			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
 		>::ID,
-		min_access_level: <
-			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
-		>::AccessLevel,
+		min_access_level: ChannelAccessLevel,
 	) -> bool
 	{
 		let Some(member) = self.get_member(channel_id, member_id) else {
@@ -158,9 +150,7 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 		member_id: &<
 			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
 		>::ID,
-		access_level: <
-			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
-		>::AccessLevel,
+		access_level: ChannelAccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>
 	{
 		let mut channel = self.get_mut(channel_id)?;
@@ -177,9 +167,7 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 		member_id: &<
 			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
 		>::ID,
-		access_level: <
-			<Self::Channel as ChannelMemberInterface>::Member as MemberInterface
-		>::AccessLevel,
+		access_level: ChannelAccessLevel,
 	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>
 	{
 		let mut channel = self.get_mut(channel_id)?;

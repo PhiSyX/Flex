@@ -15,8 +15,7 @@ name = "flex"
 path = "./bin/flex.rs"
 
 [dependencies]
-flex-chat = { path = "../../libs/cargo/flex-chat" }
-# flex-chat-macro = { path = "../../libs/cargo/flex-chat-macro" }
+flex-chat = { path = "../../libs/cargo/flex-chat/infra", package = "flex-chat-infra" }
 
 clap = { workspace = true, features = ["derive", "env"] }
 dashmap = { workspace = true }

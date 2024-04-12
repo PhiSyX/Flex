@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use tracing::instrument;
-
 use crate::client::ClientInterface;
 
 // --------- //
@@ -20,7 +18,7 @@ use crate::client::ClientInterface;
 pub trait ClientSocketInterface
 {
 	type Client: ClientInterface;
-	type Socket; // TODO: Crée une interface socketioxide::extract::SocketRef
+	type Socket;
 
 	/// Le client courant de la socket courante.
 	fn client(&self) -> &Self::Client;
@@ -31,66 +29,30 @@ pub trait ClientSocketInterface
 	/// Déconnecte la socket.
 	fn disconnect(self);
 
-	#[instrument(name = "ClientSocketInterface::broadcast", skip(self))]
 	fn broadcast<E, S>(&self, event: E, data: S)
 	where
 		E: ToString + std::fmt::Display + std::fmt::Debug,
-		S: serde::Serialize + std::fmt::Debug,
-	{
-		tracing::debug!(
-			cid = ?self.client().cid(),
-			sid = ?self.client().sid(),
-			"Emission des données au client de la socket courante"
-		);
-		_ = self.socket().broadcast().emit(event.to_string(), data);
-	}
+		S: serde::Serialize + std::fmt::Debug;
 
-	#[instrument(name = "ClientSocketInterface::emit", skip(self))]
 	fn emit<E, S>(&self, event: E, data: S)
 	where
 		E: ToString + std::fmt::Display + std::fmt::Debug,
-		S: serde::Serialize + std::fmt::Debug,
-	{
-		tracing::debug!(
-			cid = ?self.client().cid(),
-			sid = ?self.client().sid(),
-			"Emission des données au client de la socket courante"
-		);
-		_ = self.socket().emit(event.to_string(), data);
-	}
+		S: serde::Serialize + std::fmt::Debug;
 
-	#[instrument(name = "ClientSocketInterface::emit_to", skip(self))]
 	fn emit_to<T, E, S>(&self, to: T, event: E, data: S)
 	where
-		T: socketioxide::operators::RoomParam + std::fmt::Debug,
+		T: ToString + std::fmt::Debug,
 		E: ToString + std::fmt::Display + std::fmt::Debug,
-		S: serde::Serialize + std::fmt::Debug,
-	{
-		tracing::debug!(
-			cid = ?self.client().cid(),
-			sid = ?self.client().sid(),
-			"Emission des données au client de la socket courante"
-		);
-		_ = self.socket().to(to).emit(event.to_string(), data);
-	}
+		S: serde::Serialize + std::fmt::Debug;
 
-	#[instrument(name = "ClientSocketInterface::emit_within", skip(self))]
 	fn emit_within<T, E, S>(&self, to: T, event: E, data: S)
 	where
-		T: socketioxide::operators::RoomParam + std::fmt::Debug,
+		T: ToString + std::fmt::Debug,
 		E: ToString + std::fmt::Display + std::fmt::Debug,
-		S: serde::Serialize + std::fmt::Debug,
-	{
-		tracing::debug!(
-			cid = ?self.client().cid(),
-			sid = ?self.client().sid(),
-			"Emission des données au client de la socket courante"
-		);
-		_ = self.socket().within(to).emit(event.to_string(), data);
-	}
+		S: serde::Serialize + std::fmt::Debug;
 
 	/// Socket courante.
-	fn socket(&self) -> &socketioxide::extract::SocketRef;
+	fn socket(&self) -> &Self::Socket;
 
 	/// ID du client courant.
 	fn cid(&self) -> &<Self::Client as ClientInterface>::ClientID

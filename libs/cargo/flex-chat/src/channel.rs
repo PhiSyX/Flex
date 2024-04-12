@@ -42,12 +42,16 @@ pub(crate) type ChannelNameRef = str;
 
 #[derive(Clone)]
 #[derive(Debug)]
-pub struct Channel
+pub struct Channel<MemberID>
+where
+	MemberID: Clone,
+	MemberID: ToString,
+	MemberID: PartialEq + Eq + std::hash::Hash,
 {
 	/// Nom du salon.
 	pub name: ChannelName,
 	/// Les modes de contrôles d'accès
-	pub access_control: AccessControl,
+	pub access_control: AccessControl<MemberID>,
 	/// Les paramètres du salon.
 	pub modes_settings:
 		ChannelModes<<Self as ChannelSettingsInterface>::SettingsFlag>,
@@ -64,7 +68,12 @@ pub struct Channel
 // Implémentation //
 // -------------- //
 
-impl Channel
+impl<ID> Channel<ID>
+where
+	ID: Default,
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
 	/// Crée une nouvelle structure d'un salon.
 	pub fn new(name: impl ToString) -> Self
@@ -83,11 +92,15 @@ impl Channel
 // Implémentation // -> Interface
 // -------------- //
 
-impl ChannelInterface for Channel
+impl<ID> ChannelInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
 	type Key = Secret<String>;
 	type OwnedID = ChannelName;
-	type RefID<'a> = ChannelNameRef;
+	type RefID<'a> = ChannelNameRef where ID: 'a;
 
 	/// ID du salon.
 	fn id(&self) -> Self::OwnedID
@@ -101,9 +114,13 @@ impl ChannelInterface for Channel
 	}
 }
 
-impl ChannelAccessControlInterface for Channel
+impl<ID> ChannelAccessControlInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
-	type ClientID = uuid::Uuid;
+	type ClientID = ID;
 	type User = User;
 
 	#[rustfmt::skip]
@@ -124,7 +141,11 @@ impl ChannelAccessControlInterface for Channel
 	}
 }
 
-impl ChannelAccessControlBanInterface for Channel
+impl<ID> ChannelAccessControlBanInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
 	fn add_ban(
 		&mut self,
@@ -197,7 +218,11 @@ impl ChannelAccessControlBanInterface for Channel
 	}
 }
 
-impl ChannelAccessControlBanExceptInterface for Channel
+impl<ID> ChannelAccessControlBanExceptInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
 	fn add_ban_except(
 		&mut self,
@@ -268,7 +293,11 @@ impl ChannelAccessControlBanExceptInterface for Channel
 	}
 }
 
-impl ChannelAccessControlInviteInterface for Channel
+impl<ID> ChannelAccessControlInviteInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
 	fn add_invite(
 		&mut self,
@@ -287,43 +316,64 @@ impl ChannelAccessControlInviteInterface for Channel
 	}
 }
 
-impl ChannelMemberInterface for Channel
+impl<ID> ChannelMemberInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: PartialEq + Eq + std::hash::Hash,
+	ID: ToString,
 {
-	type Member = ChannelMember;
+	type Member = ChannelMember<ID>;
 
 	/// Ajoute un membre au salon.
-	fn add_member(&mut self, id: member::MemberID, member: Self::Member)
+	fn add_member(
+		&mut self,
+		id: <Self::Member as MemberInterface>::ID,
+		member: Self::Member,
+	)
 	{
 		self.members.insert(id, member);
 	}
 
 	/// Récupère un membre du salon.
-	fn member(&self, id: &member::MemberID) -> Option<&Self::Member>
+	fn member(
+		&self,
+		id: &<Self::Member as MemberInterface>::ID,
+	) -> Option<&Self::Member>
 	{
 		self.members.get(id)
 	}
 
 	/// Récupère un membre du salon.
-	#[rustfmt::skip]
-	fn member_mut(&mut self, id: &member::MemberID) -> Option<&mut Self::Member>
+	fn member_mut(
+		&mut self,
+		id: &<Self::Member as MemberInterface>::ID,
+	) -> Option<&mut Self::Member>
 	{
 		self.members.get_mut(id)
 	}
 
 	/// Tous les membres du salon.
-	fn members(&self) -> &HashMap<member::MemberID, Self::Member>
+	fn members(
+		&self,
+	) -> &HashMap<<Self::Member as MemberInterface>::ID, Self::Member>
 	{
 		&self.members
 	}
 
 	/// Tous les membres du salon (version mutable).
-	fn members_mut(&mut self) -> &mut HashMap<member::MemberID, Self::Member>
+	fn members_mut(
+		&mut self,
+	) -> &mut HashMap<<Self::Member as MemberInterface>::ID, Self::Member>
 	{
 		&mut self.members
 	}
 }
 
-impl ChannelSettingsInterface for Channel
+impl<ID> ChannelSettingsInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
 	type SettingsFlag = SettingsFlag;
 
@@ -360,7 +410,11 @@ impl ChannelSettingsInterface for Channel
 	}
 }
 
-impl ChannelTopicInterface for Channel
+impl<ID> ChannelTopicInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
 {
 	type Topic = ChannelTopic;
 

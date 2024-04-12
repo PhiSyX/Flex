@@ -13,23 +13,16 @@ use std::collections::HashSet;
 use crate::channel::mode::ChannelAccessLevel;
 use crate::channel::MemberInterface;
 
-// ---- //
-// Type //
-// ---- //
-
-/// ID faisant référence à un client utilisateur.
-pub type MemberID = uuid::Uuid;
-
 // --------- //
 // Structure //
 // --------- //
 
 #[derive(Debug)]
 #[derive(Clone)]
-pub struct ChannelMember
+pub struct ChannelMember<ID>
 {
 	/// ID faisant référence à un client utilisateur.
-	member_id: MemberID,
+	member_id: ID,
 	/// Les niveaux d'accès liés au membre du salon.
 	access_level: HashSet<ChannelAccessLevel>,
 }
@@ -38,10 +31,12 @@ pub struct ChannelMember
 // Implémentation //
 // -------------- //
 
-impl ChannelMember
+impl<ID> ChannelMember<ID>
 {
 	/// Crée la structure [ChannelMember]
-	pub fn new(member_id: MemberID) -> Self
+	pub fn new(member_id: <Self as MemberInterface>::ID) -> Self
+	where
+		ID: ToString,
 	{
 		Self {
 			member_id,
@@ -64,24 +59,23 @@ impl ChannelMember
 // Implémentation // -> Interface
 // -------------- //
 
-impl MemberInterface for ChannelMember
+impl<ID> MemberInterface for ChannelMember<ID>
+where
+	ID: ToString,
 {
-	type AccessLevel = ChannelAccessLevel;
-	type ID = MemberID;
+	type ID = ID;
 
-	fn access_level(&self) -> &HashSet<Self::AccessLevel>
+	fn access_level(&self) -> &HashSet<ChannelAccessLevel>
 	{
 		&self.access_level
 	}
 
-	/// ID faisant référence à un [client](Client).
-	fn id(&self) -> &MemberID
+	fn id(&self) -> &Self::ID
 	{
 		&self.member_id
 	}
 
-	/// Le niveau le plus élevé qu'à le membre.
-	fn highest_access_level(&self) -> Option<&Self::AccessLevel>
+	fn highest_access_level(&self) -> Option<&ChannelAccessLevel>
 	{
 		if self.access_level.is_empty() {
 			return None;
@@ -89,7 +83,7 @@ impl MemberInterface for ChannelMember
 
 		let last = self.access_level.iter().last();
 
-		let highest: Option<&Self::AccessLevel> =
+		let highest: Option<&ChannelAccessLevel> =
 			self.access_level.iter().fold(last, |maybe_level, level| {
 				(level.flag() >= maybe_level?.flag())
 					.then_some(level)
@@ -99,13 +93,12 @@ impl MemberInterface for ChannelMember
 		highest
 	}
 
-	/// Supprime le niveau d'accès du membre.
-	fn remove_access_level(&mut self, access_level: Self::AccessLevel) -> bool
+	#[rustfmt::skip]
+	fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
 	{
 		self.access_level.remove(&access_level)
 	}
 
-	/// Met à jour le niveau d'accès du membre.
 	#[rustfmt::skip]
 	fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
 	{

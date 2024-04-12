@@ -35,6 +35,15 @@ pub trait NickClientSocketCommandResponseInterface
 	: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /NICK.
+	fn emit_nick(&self);
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<'s> NickClientSocketCommandResponseInterface for Socket<'s>
+{
 	#[rustfmt::skip]
 	fn emit_nick(&self)
 	{
@@ -69,9 +78,3 @@ pub trait NickClientSocketCommandResponseInterface
 		_ = self.socket().leave(format!("private:{}", old_nickname.to_lowercase()));
 	}
 }
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<'s> NickClientSocketCommandResponseInterface for Socket<'s> {}

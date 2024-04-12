@@ -8,14 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::client::ClientSocketInterface;
+pub use flex_chat::client::*;
+
+pub use crate::socket::*;
+
+// ---- //
+// Type //
+// ---- //
+
+pub type ClientID = uuid::Uuid;
+pub type SocketID = socketioxide::socket::Sid;
 
 // --------- //
-// Interface //
+// Structure //
 // --------- //
 
-pub trait NickClientSocketErrorReplies: ClientSocketInterface
-{
-	/// Émet au client l'erreur [crate::ErrNosuchnickError].
-	fn send_err_nosuchnick(&self, nickname: &str);
-}
+pub type Client = flex_chat::client::Client<ClientID, SocketID>;

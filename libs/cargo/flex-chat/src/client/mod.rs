@@ -12,8 +12,8 @@ pub mod channel;
 mod interface;
 pub mod nick;
 mod origin;
-mod socket;
 
+use core::fmt;
 use std::collections::HashSet;
 use std::net;
 
@@ -21,27 +21,16 @@ use flex_crypto::SHA256;
 
 pub use self::interface::*;
 pub use self::origin::*;
-pub use self::socket::*;
 use crate::user::{Flag, Mode, User, UserFlagInterface, UserInterface};
-
-// ---- //
-// Type //
-// ---- //
-
-pub type ClientID = uuid::Uuid;
-
-// --------- //
-// Structure //
-// --------- //
 
 #[derive(Debug)]
 #[derive(Clone)]
-pub struct Client
+pub struct Client<cID, sID>
 {
 	/// ID du client.
-	id: ClientID,
+	id: cID,
 	/// ID de la Socket.
-	socket_id: Option<socketioxide::socket::Sid>,
+	socket_id: Option<sID>,
 	/// Enregistré au serveur de Chat.
 	registered: bool,
 	/// Connecté au serveur de Chat?
@@ -58,14 +47,13 @@ pub struct Client
 // Implémentation //
 // -------------- //
 
-impl Client
+impl<cID, sID> Client<cID, sID>
 {
 	/// Crée une nouvelle structure d'un [client](Self).
-	pub fn new(
-		ip: net::IpAddr,
-		client_id: uuid::Uuid,
-		socket_id: socketioxide::socket::Sid,
-	) -> Self
+	pub fn new(ip: net::IpAddr, client_id: cID, socket_id: sID) -> Self
+	where
+		cID: fmt::Display,
+		sID: fmt::Display,
 	{
 		let token = format!("{}:{}:{}", client_id, socket_id, ip).sha256();
 		Self {
@@ -84,10 +72,13 @@ impl Client
 // Implémentation // -> Interface
 // -------------- //
 
-impl ClientInterface for Client
+impl<cID, sID> ClientInterface for Client<cID, sID>
+where
+	cID: Clone + fmt::Debug + fmt::Display + serde::Serialize,
+	sID: fmt::Debug + fmt::Display,
 {
-	type ClientID = ClientID;
-	type SocketID = socketioxide::socket::Sid;
+	type ClientID = cID;
+	type SocketID = sID;
 	type User = User;
 
 	fn channels(&self) -> &std::collections::HashSet<String>
@@ -161,17 +152,17 @@ impl ClientInterface for Client
 		format!("private:{}", self.user.nickname().to_lowercase())
 	}
 
-	fn reconnect_with_new_sid(&mut self, sid: socketioxide::socket::Sid)
+	fn reconnect_with_new_sid(&mut self, sid: Self::SocketID)
 	{
 		self.socket_id.replace(sid);
 	}
 
-	fn set_cid(&mut self, cid: ClientID)
+	fn set_cid(&mut self, cid: Self::ClientID)
 	{
 		self.id = cid;
 	}
 
-	fn set_sid(&mut self, sid: socketioxide::socket::Sid)
+	fn set_sid(&mut self, sid: Self::SocketID)
 	{
 		self.socket_id.replace(sid);
 	}

@@ -24,6 +24,9 @@ pub trait ClientServerApplicationInterface
 	/// Récupère un client à partir de son ID.
 	fn get_client_by_id(
 		&self,
-		client_id: &<<Self::ClientSocket<'_> as ClientSocketInterface>::Client as ClientInterface>::ClientID,
+		client_id: &<
+			<Self::ClientSocket<'_> as ClientSocketInterface>
+				::Client as ClientInterface
+		>::ClientID,
 	) -> Option<<Self::ClientSocket<'_> as ClientSocketInterface>::Client>;
 }

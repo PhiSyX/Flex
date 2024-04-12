@@ -52,7 +52,7 @@ impl<'s> KillClientSocketCommandResponseInterface for Socket<'s>
 		};
 
 		self.emit_within(
-			knick_client_socket.channels_rooms(),
+			knick_client_socket.channels_rooms().join(","),
 			cmd_kill.name(),
 			cmd_kill,
 		);

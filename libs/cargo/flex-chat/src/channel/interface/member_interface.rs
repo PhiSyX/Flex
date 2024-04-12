@@ -10,6 +10,8 @@
 
 use std::collections::{HashMap, HashSet};
 
+use crate::channel::ChannelAccessLevel;
+
 // --------- //
 // Interface //
 // --------- //
@@ -51,23 +53,23 @@ pub trait ChannelMemberInterface
 
 pub trait MemberInterface
 {
-	type AccessLevel;
-
 	/// Type représentant l'ID d'un membre.
 	type ID: ToString;
 
 	/// Les niveaux d'access d'un membre d'un salon.
-	fn access_level(&self) -> &HashSet<Self::AccessLevel>;
+	fn access_level(&self) -> &HashSet<ChannelAccessLevel>;
 
 	/// ID faisant référence à un [client](Client).
 	fn id(&self) -> &Self::ID;
 
 	/// Le niveau le plus élevé qu'à le membre.
-	fn highest_access_level(&self) -> Option<&Self::AccessLevel>;
+	fn highest_access_level(&self) -> Option<&ChannelAccessLevel>;
 
 	/// Supprime le niveau d'accès du membre.
-	fn remove_access_level(&mut self, access_level: Self::AccessLevel) -> bool;
+	#[rustfmt::skip]
+	fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool;
 
 	/// Met à jour le niveau d'accès du membre.
-	fn update_access_level(&mut self, access_level: Self::AccessLevel) -> bool;
+	#[rustfmt::skip]
+	fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool;
 }

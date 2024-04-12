@@ -1,0 +1,15 @@
+[package]
+name = "flex-chat-infra"
+version = "0.1.0"
+edition = "2021"
+
+[lints]
+workspace = true
+
+[dependencies]
+flex-chat = { path =".." }
+flex-crypto = { workspace = true }
+serde = { workspace = true }
+socketioxide = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
