@@ -10,14 +10,33 @@
 
 use axum::http::HeaderValue;
 use axum::Json;
-use hyper::{header, http, HeaderMap};
-use serde_json::json;
+use hyper::{header, HeaderMap};
 
 // --------- //
 // Structure //
 // --------- //
 
 pub struct Form<F>(pub F);
+
+#[derive(serde::Serialize, serde::Deserialize)]
+struct ProblemError<'a>
+{
+	title: &'a str,
+	status: u16,
+	#[serde(skip_serializing_if = "Vec::is_empty")]
+	errors: Vec<ProblemChildrenError>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	detail: Option<&'a str>,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+struct ProblemChildrenError
+{
+	#[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+	ty: Option<String>,
+	detail: String,
+	pointer: String,
+}
 
 // ----------- //
 // Énumération //
@@ -87,18 +106,29 @@ impl axum::response::IntoResponse for MissingFormError
 		};
 
 		let ss = "Failed to deserialize the JSON body into the target type: ";
-		let err_body = detail.trim_start_matches(ss).to_owned();
+		let err_body = detail.trim_start_matches(ss);
 
-		(
-			status_code,
-			headers,
-			Json(json!({
-				"title": title,
-				"status": status_code.as_u16(),
-				"detail": err_body,
-			})),
-		)
-			.into_response()
+		let errors: Result<Vec<ProblemChildrenError>, _> =
+			serde_json::from_str(err_body);
+
+		if let Ok(problem) = errors {
+			let problem_s = ProblemError {
+				title,
+				status: status_code.as_u16(),
+				errors: problem,
+				detail: Default::default(),
+			};
+			(status_code, headers, Json(problem_s))
+		} else {
+			let problem_s = ProblemError {
+				title,
+				status: status_code.as_u16(),
+				errors: Default::default(),
+				detail: Some(err_body),
+			};
+			(status_code, headers, Json(problem_s))
+		}
+		.into_response()
 	}
 }
 

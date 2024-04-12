@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::types::{email, secret};
+use serde_json::json;
 
 use crate::features::auth::specs::owasp::{
 	PASSWORD_LENGTH_MAX,
@@ -28,7 +29,7 @@ pub struct RegistrationFormData
 	/// Nouveau nom d'utilisateur.
 	pub username: String,
 	/// Adresse e-mail de l'utilisateur associé à l'identifiant.
-	pub email_address: email::EmailAddress,
+	pub email_address: String,
 	/// Mot de passe du compte.
 	pub password: secret::Secret<String>,
 	/// Confirmation du mot de passe.
@@ -47,25 +48,47 @@ impl<'de> serde::Deserialize<'de> for RegistrationFormData
 	{
 		let this = Self::deserialize(deserializer)?;
 
+		let mut errors = vec![];
+
 		if this.username.trim().is_empty() {
-			let reason = "[username]: le nom NE DOIT PAS être vide.";
-			return Err(serde::de::Error::custom(reason));
+			errors.push(json!({
+				"detail": "Le nom NE DOIT PAS être vide",
+				"pointer": "#/username"
+			}));
+		}
+
+		if let Err(err) = this.email_address.parse::<email::EmailAddress>() {
+			errors.push(json!({
+				"type": "https://datatracker.ietf.org/doc/html/rfc2822",
+				"detail": err.to_string(),
+				"pointer": "#/email_address"
+			}));
 		}
 
 		if this.password != this.password_confirmation {
-			let reason = "[password]: les mots de passes ne sont pas identiques";
-			return Err(serde::de::Error::custom(reason));
+			errors.push(json!({
+				"detail": "Les mots de passes ne sont pas identiques",
+				"pointer": "#/password"
+			}));
 		}
 
 		let password_size = this.password.len();
-		if !(PASSWORD_LENGTH_MIN..=PASSWORD_LENGTH_MAX).contains(&password_size) {
+		if !(PASSWORD_LENGTH_MIN..=PASSWORD_LENGTH_MAX).contains(&password_size)
+		{
 			let reason = format!(
-				"[password]: un mot de passe valide DOIT être compris entre « \
-				 {} » et « {} » caractères. La taille du mot de passe que \
-				 vous avez envoyé est de « {} ».",
+				"Un mot de passe valide DOIT être compris entre « {} » et « \
+				 {} » caractères. La taille du mot de passe que vous avez \
+				 envoyé est de « {} ».",
 				PASSWORD_LENGTH_MIN, PASSWORD_LENGTH_MAX, password_size,
 			);
-			return Err(serde::de::Error::custom(reason));
+			errors.push(json!({
+				"detail": reason,
+				"pointer": "#/password"
+			}));
+		}
+
+		if !errors.is_empty() {
+			return Err(serde::de::Error::custom(json!(errors)));
 		}
 
 		Ok(this)

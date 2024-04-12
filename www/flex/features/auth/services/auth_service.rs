@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 use flex_crypto::Hasher;
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::types::secret;
+use flex_web_framework::types::{email, secret};
 
 use crate::features::auth::forms::{Identifier, RegistrationFormData};
 use crate::features::users::dto::UserNewActionDTO;
@@ -149,7 +149,7 @@ impl From<RegistrationFormData> for UserNewActionDTO
 	{
 		Self {
 			username: form.username,
-			email_address: form.email_address,
+			email_address: email::EmailAddress::new_unchecked(form.email_address),
 			password: form.password,
 			role: Default::default(),
 		}
