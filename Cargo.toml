@@ -15,7 +15,7 @@ non_camel_case_types = "allow"
 # unsafe_code = "forbid"
 
 [workspace.dependencies]
-async-trait = "0.1.79"
+async-trait = "0.1.80"
 chrono = { version = "0.4.37", features = ["clock", "serde"] }
 clap = { version = "4.5.4", features = ["derive"] }
 console = { version = "0.15.8" }

@@ -20,14 +20,13 @@ flex-chat = { path = "../../libs/cargo/flex-chat" }
 
 clap = { workspace = true, features = ["derive", "env"] }
 dashmap = { workspace = true }
-dns-lookup = { workspace = true }
 flex-cli = { workspace = true }
 flex-crypto = { workspace = true }
 flex-logger = { path = "../../libs/cargo/flex-logger" }
 flex-serde-validation = { workspace = true }
 flex-web-framework = { workspace = true }
 flex-kernel = { workspace = true }
-reqwest = { version = "0.12.2", features = ["json"] }
+reqwest = { version = "0.12.3", features = ["json"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 sqlx = { workspace = true }
