@@ -21,6 +21,7 @@ pub struct ServerState<UserState>
 	cookie_key: Option<tower_cookies::Key>,
 	server_settings: ServerSettings,
 	user: Option<UserState>,
+	wsio: Option<socketioxide::SocketIo>,
 }
 
 // -------------- //
@@ -73,6 +74,19 @@ impl<S> ServerState<S>
 
 impl<S> ServerState<S>
 {
+	pub fn ws(&self) -> &socketioxide::SocketIo
+	{
+		self.wsio.as_ref().unwrap()
+	}
+
+	pub fn set_ws(&mut self, io: socketioxide::SocketIo)
+	{
+		self.wsio.replace(io);
+	}
+}
+
+impl<S> ServerState<S>
+{
 	pub fn state(&self) -> &S
 	{
 		self.user.as_ref().expect(
@@ -107,6 +121,14 @@ impl<S> axum::extract::FromRef<ServerState<S>> for ServerSettings
 	}
 }
 
+impl<S> axum::extract::FromRef<ServerState<S>> for socketioxide::SocketIo
+{
+	fn from_ref(state: &ServerState<S>) -> Self
+	{
+		state.wsio.clone().expect("Instance SocketIO")
+	}
+}
+
 impl<S> axum::extract::FromRef<ServerState<S>> for tower_cookies::Key
 {
 	fn from_ref(state: &ServerState<S>) -> Self
@@ -124,6 +146,7 @@ impl<S> Default for ServerState<S>
 			cookie_key: Default::default(),
 			server_settings: Default::default(),
 			user: Default::default(),
+			wsio: Default::default(),
 		}
 	}
 }

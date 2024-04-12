@@ -71,7 +71,7 @@ async fn main() -> impl process::Termination
 		application
 			.feature::<AuthApplication>()
 			.feature::<UsersApplication>()
-			.feature::<ChatApplication>()
+			.feature_ws::<ChatApplication>()
 	};
 
 	// 3. Layers, extensions, services

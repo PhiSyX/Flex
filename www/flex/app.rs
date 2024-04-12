@@ -61,28 +61,11 @@ pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
 #[derive(Clone)]
 pub enum FlexState
 {
-	Auth,
-
-	Chat
-	{
-		socket_io: socketioxide::SocketIo,
-	},
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
-
-impl FlexState
-{
-	pub fn socket_io(&self) -> &socketioxide::SocketIo
-	{
-		let Self::Chat { socket_io } = self else {
-			panic!("N'est pas une application Socket.IO")
-		};
-		socket_io
-	}
-}
 
 // -------------- //
 // Implémentation // -> Interface

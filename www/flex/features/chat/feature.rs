@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::Feature;
+use flex_web_framework::WebSocketFeature;
 use socketioxide::extract::{SocketRef, State, TryData};
 
 use crate::features::chat::auth::*;
@@ -89,78 +90,70 @@ impl Feature for ChatApplication
 	type State = FlexState;
 
 	const NAME: &'static str = "ChatApplication";
+}
 
-	fn register_services(
-		_config: &flex_web_framework::Config<Self::Config>,
-		axum_state: &mut FlexApplicationState,
-		router: flex_web_framework::AxumRouter<Self::State>,
-	) -> flex_web_framework::AxumRouter<Self::State>
-	{
-		let (layer, io) = socketioxide::SocketIo::builder()
-			.with_state(axum_state.clone())
-			.with_state(Self::default())
-			.build_layer();
+impl WebSocketFeature<FlexState> for ChatApplication
+{
+	type Auth = RememberUserFormData;
 
-		io.ns(
-			"/chat",
-			|socket: SocketRef,
-			 server_state: State<FlexApplicationState>,
-			 state: State<ChatApplication>,
-			 data: TryData<RememberUserFormData>| {
-				ConnectionRegistrationHandler::handle_connect(
-					&socket,
-					server_state,
-					state,
-					data,
-				);
+	type State = Self;
 
-				handlers!( socket,
-					+ use AwayHandler;
-					+ use InviteHandler;
-					+ use JoinHandler;
-					+ use KickHandler;
-					+ use KillHandler;
-					+ use ListHandler;
-					+ use NickHandler;
-					+ use NoticeHandler;
-					+ use OperHandler;
-					+ use PartHandler;
-					+ use PrivmsgHandler;
-					+ use PubmsgHandler;
-					+ use QuitHandler;
-					+ use SajoinHandler;
-					+ use SapartHandler;
-					+ use SilenceHandler;
-					+ use TopicHandler;
-				);
+	const ENDPOINT: &'static str = "/chat";
 
-				/* Channel Modes */
-				handlers!( socket,
-					+ use ModeChannelSettingsHandler;
-				);
-				/* Channel Access Control */
-				handlers!( socket,
-					-/+ use ModeChannelAccessControlBanHandler;
-					-/+ use ModeChannelAccessControlBanExceptionHandler;
-				);
-				/* Channel Access Level */
-				handlers!( socket,
-					-/+ use ModeChannelAccessLevelQOPHandler;
-					-/+ use ModeChannelAccessLevelAOPHandler;
-					-/+ use ModeChannelAccessLevelOPHandler;
-					-/+ use ModeChannelAccessLevelHOPHandler;
-					-/+ use ModeChannelAccessLevelVIPHandler;
-				);
-
-				/* Auth */
-				handlers!( socket,
-					+ use AuthIdentifyHandler;
-				);
-			},
+	fn on_connect(
+		socket: SocketRef,
+		server_state: State<FlexApplicationState>,
+		user_state: State<<Self as WebSocketFeature<FlexState>>::State>,
+		auth_data: TryData<Self::Auth>,
+	) {
+		ConnectionRegistrationHandler::handle_connect(
+			&socket,
+			server_state,
+			user_state,
+			auth_data,
 		);
 
-		axum_state.set_state(FlexState::Chat { socket_io: io });
+		handlers!( socket,
+			+ use AwayHandler;
+			+ use InviteHandler;
+			+ use JoinHandler;
+			+ use KickHandler;
+			+ use KillHandler;
+			+ use ListHandler;
+			+ use NickHandler;
+			+ use NoticeHandler;
+			+ use OperHandler;
+			+ use PartHandler;
+			+ use PrivmsgHandler;
+			+ use PubmsgHandler;
+			+ use QuitHandler;
+			+ use SajoinHandler;
+			+ use SapartHandler;
+			+ use SilenceHandler;
+			+ use TopicHandler;
+		);
 
-		router.layer(layer)
+		/* Channel Modes */
+		handlers!( socket,
+			+ use ModeChannelSettingsHandler;
+		);
+		/* Channel Access Control */
+		handlers!( socket,
+			-/+ use ModeChannelAccessControlBanHandler;
+			-/+ use ModeChannelAccessControlBanExceptionHandler;
+		);
+		/* Channel Access Level */
+		handlers!( socket,
+			-/+ use ModeChannelAccessLevelQOPHandler;
+			-/+ use ModeChannelAccessLevelAOPHandler;
+			-/+ use ModeChannelAccessLevelOPHandler;
+			-/+ use ModeChannelAccessLevelHOPHandler;
+			-/+ use ModeChannelAccessLevelVIPHandler;
+		);
+
+		/* Auth */
+		handlers!( socket,
+			+ use AuthIdentifyHandler;
+		);
 	}
 }

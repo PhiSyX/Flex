@@ -116,8 +116,75 @@ pub trait AsyncFeature
 	}
 }
 
-pub trait FeatureConfig:
-	Clone + std::fmt::Debug + Send + Sync + 'static + serde::de::DeserializeOwned
+pub trait WebSocketFeature<UserState>
+	: Feature<State = UserState>
+{
+	#[rustfmt::skip]
+	type Auth
+		: 'static
+		+ Send + Sync
+		+ serde::de::DeserializeOwned
+		;
+
+	/// L'état de la feature WebSocket.
+	#[rustfmt::skip]
+	type State
+		: 'static
+		+ Send + Sync
+		+ Default
+		;
+
+	/// Point d'entrée racine de la WebSocket.
+	const ENDPOINT: &'static str;
+
+	fn on_connect(
+		socket: socketioxide::extract::SocketRef,
+		server_state: socketioxide::extract::State<AxumState<UserState>>,
+		user_state: socketioxide::extract::State<
+			<Self as WebSocketFeature<UserState>>::State
+		>,
+		auth_data: socketioxide::extract::TryData<Self::Auth>,
+	);
+}
+
+
+pub trait WebSocketAsyncFeature<UserState>
+	: AsyncFeature<State = UserState>
+{
+	#[rustfmt::skip]
+	type Auth
+		: 'static
+		+ Send + Sync
+		+ serde::de::DeserializeOwned
+		;
+
+	/// L'état de la feature WebSocket.
+	#[rustfmt::skip]
+	type State
+		: 'static
+		+ Send + Sync
+		+ Default
+		;
+
+	/// Point d'entrée racine de la WebSocket.
+	const ENDPOINT: &'static str;
+
+	fn on_connect(
+		socket: socketioxide::extract::SocketRef,
+		server_state: socketioxide::extract::State<AxumState<UserState>>,
+		user_state: socketioxide::extract::State<
+			<Self as WebSocketAsyncFeature<UserState>>::State
+		>,
+		auth_data: socketioxide::extract::TryData<Self::Auth>,
+	);
+}
+
+pub trait FeatureConfig
+	: 'static
+	+ Send + Sync
+	+ Clone
+	+ std::fmt::Debug
+	+ serde::de::DeserializeOwned
 {
 	/// Nom du fichier de configuration de la feature à dé-sérialiser.
 	///
