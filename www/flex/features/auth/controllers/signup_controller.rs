@@ -15,13 +15,11 @@ use flex_web_framework::http::response::Html;
 use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface, IntoResponse};
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::security::Argon2Password;
-use flex_web_framework::types::uuid;
 use flex_web_framework::{
 	DatabaseService,
 	PostgreSQLDatabase,
 	SessionFlashExtension,
 };
-use serde_json::json;
 
 use crate::features::auth::forms::RegistrationFormData;
 use crate::features::auth::responses::CreationAccountReply;
