@@ -54,10 +54,23 @@ impl LoggerInitiator
 			.with_ansi(stdout.colorized)
 			.with_line_number(true);
 
-		if stdout.timestamp {
-			trsb.init();
+		if stdout.filter.dependencies.is_empty() {
+			if stdout.timestamp {
+				trsb.init();
+			} else {
+				trsb.without_time().init();
+			}
 		} else {
-			trsb.without_time().init();
+			let deps: Vec<_> = stdout.filter.dependencies.iter()
+				.map(|dep| format!("{dep}={level}"))
+				.collect();
+			let filter = tracing_subscriber::EnvFilter::new(deps.join(","));
+
+			if stdout.timestamp {
+				trsb.with_env_filter(filter).init();
+			} else {
+				trsb.with_env_filter(filter).without_time().init();
+			}
 		}
 
 		Ok(())

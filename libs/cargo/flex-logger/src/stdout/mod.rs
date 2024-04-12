@@ -43,8 +43,8 @@ pub struct LoggerStdout
 #[derive(Default)]
 pub struct LoggerFilter
 {
-	callbacks: Vec<Box<LoggerFilterCallback>>,
-	dependencies: Vec<String>,
+	pub(crate) callbacks: Vec<Box<LoggerFilterCallback>>,
+	pub(crate) dependencies: Vec<String>,
 }
 
 // -------------- //

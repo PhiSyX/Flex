@@ -82,8 +82,8 @@ impl<A, E, C> ApplicationLoggerExtension for Kernel<A, E, C>
 		};
 
 		if let Err(err) = settings.make_builder(level_based_on_process_mode) {
-			self.logger_signal
-				.send_error(format!("Erreur liée au logger. Raison « {err} »"));
+			let reason = format!("Erreur liée au logger. Raison « {err} »");
+			self.logger_signal.send_error(reason);
 			return self;
 		}
 
