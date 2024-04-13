@@ -59,7 +59,7 @@ impl<'de> serde::Deserialize<'de> for RegistrationFormData
 
 		if let Err(err) = this.email_address.parse::<email::EmailAddress>() {
 			errors.push(json!({
-				"type": "https://datatracker.ietf.org/doc/html/rfc2822",
+				"type": "https://en.wikipedia.org/wiki/Email_address",
 				"detail": err.to_string(),
 				"pointer": "#/email_address"
 			}));
@@ -82,6 +82,7 @@ impl<'de> serde::Deserialize<'de> for RegistrationFormData
 				PASSWORD_LENGTH_MIN, PASSWORD_LENGTH_MAX, password_size,
 			);
 			errors.push(json!({
+				"type": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#implement-proper-password-strength-controls",
 				"detail": reason,
 				"pointer": "#/password"
 			}));

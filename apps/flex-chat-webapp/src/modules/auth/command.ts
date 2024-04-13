@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Err, Ok, type Result } from "@phisyx/flex-safety";
+import { Err, None, Ok, type Result } from "@phisyx/flex-safety";
 import type { ChatStore } from "~/store/ChatStore";
 
 import type { AuthApiHTTPClient } from "./feign/api";
@@ -36,7 +36,7 @@ export class AuthCommand
 			{
 				let err = new Error(
 					`La commande "${value}" n'est pas valide pour le module AUTH`,
-				)
+				);
 				return Err(err);
 			}
 		}
@@ -59,29 +59,29 @@ export class AuthCommand
 		const onSuccess = (response: AuthIdentifyHttpResponse) =>
 		{
 			this.store.emit("AUTH IDENTIFY", response);
+
+			const message = "-AuthServ:IDENTIFY- Connexion réussie";
+			const connectData = {
+				origin: this.store.client(),
+				tags: { msgid: response.id },
+			};
+			this.store.roomManager().active()
+				.addConnectEvent(connectData, message);
 		};
 
-		const onError = async (response: Response) =>
+		const onFailure = async (problem: HttpProblemErrorResponse) =>
 		{
-			const id = response.headers.get("date") as string;
-
-			if (response.status >= 400 && response.status < 600)
-			{
-				const problem = await response.json();
-				const detail = problem.detail;
-				const message = `-AuthServ- ${detail}`;
-				const connectData = {
-					origin: this.store.client(),
-					tags: { msgid: id },
-				};
-				this.store.roomManager().active().addConnectEvent(
-					connectData,
-					message,
-				);
-			}
+			const detail = problem.detail;
+			const message = `-AuthServ:IDENTIFY- ${detail}`;
+			const connectData = {
+				origin: this.store.client(),
+				tags: { msgid: new Date().toISOString() },
+			};
+			this.store.roomManager().active()
+				.addErrorEvent(connectData, message);
 		};
 
-		this.authApiHttpClient.identify(payload).then(onSuccess).catch(onError);
+		this.authApiHttpClient.identify(payload).then(onSuccess).catch(onFailure);
 	}
 
 	sendRegister(payload: AuthRegisterFormData)
@@ -92,14 +92,56 @@ export class AuthCommand
 				origin: this.store.client(),
 				tags: { msgid: response.id },
 			};
-			const message = `-AuthServ- ${response.message}`;
+			const message = `-AuthServ:REGISTER- ${response.message}`;
 
-			// FIXME: addEvent(response.code, ...)
-			this.store.roomManager().active().addConnectEvent(
-				connectData,
-				message,
-			);
+			this.store.roomManager().active()
+				.addConnectEvent(connectData, message);
 		};
-		this.authApiHttpClient.register(payload).then(onSuccess);
+
+		const onFailure = (problem: HttpProblemErrorResponse) =>
+		{
+			this.store.overlayer.create({
+				id: "authserv-register-error",
+				centered: true,
+				onClose: () => {
+					this.store.clientError = None();
+				},
+			});
+
+			function filterObject<T extends object>(
+				obj: T,
+				keys: Array<string>,
+			): Partial<T>
+			{
+				let filtered = Object.entries(obj)
+					.filter(([key, _]) => keys.includes(key));
+				return Object.fromEntries(filtered) as Partial<T>;
+			}
+
+			const filteredPayload = filterObject(
+				payload,
+				(problem.errors || []).flatMap((err) => err.pointer.slice(2).split("/")),
+			);
+
+			this.store.clientError.replace({
+				id: "authserv-register-error",
+				title: "L'inscription est impossible",
+				subtitle: problem.title,
+				problems: problem.errors || [],
+				detail: problem.detail,
+				data: filteredPayload,
+			});
+
+			const connectData = {
+				origin: this.store.client(),
+				tags: { msgid: new Date().toISOString() },
+			};
+			const message = `-AuthServ:REGISTER- ${problem.title}`;
+
+			this.store.roomManager().active()
+				.addErrorEvent(connectData, message);
+		};
+
+		this.authApiHttpClient.register(payload).then(onSuccess).catch(onFailure);
 	}
 }

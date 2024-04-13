@@ -83,10 +83,16 @@ export class ChatStore {
 	// Propriété //
 	// --------- //
 
-	private overlayer = useOverlayerStore();
+	public overlayer = useOverlayerStore();
 	private _connectUserInfo: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
-	public clientError: Option<{ id: string; data: unknown }> = None();
+	public clientError: Option<{
+		id: string;
+		title?: string;
+		subtitle?: string;
+		problems?: HttpProblemErrorResponse["errors"];
+		data: unknown;
+	}> = None();
 	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
 	private _userID: Option<UUID> = None();
 	private _network: Option<CustomRoomID> = None();

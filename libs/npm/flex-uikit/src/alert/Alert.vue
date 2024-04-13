@@ -101,11 +101,11 @@ onMounted(() => {
 		} @else if $name == ice {
 			border-color: var(--color-red300);
 			color: var(--color-white);
-			background-color: var(--color-red900);
+			background-color: var(--color-red400);
 		} @else if $name == dark {
 			border-color: var(--color-red300);
 			color: var(--color-white);
-			background-color: var(--color-red900);
+			background-color: var(--color-red400);
 		}
 	}
 }

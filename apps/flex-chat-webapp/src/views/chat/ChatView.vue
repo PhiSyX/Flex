@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Alert } from "@phisyx/flex-uikit";
 import { computed } from "vue";
 
 import type { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
@@ -16,11 +15,11 @@ import ServerCustomRoomComponent from "~/components/custom-room/ServerCustomRoom
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
+import ClientError from "~/components/error/ClientError.vue";
 import Navigation from "~/components/navigation/Navigation.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
 import CustomRoomNotice from "#/sys/custom-room-notice/CustomRoomNotice.vue";
-import Match from "#/sys/match/Match.vue";
 
 const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();
@@ -114,21 +113,7 @@ function openJoinChannelDialog(event: Event) {
 
 		<!-- Teleport -->
 
-		<Match :maybe="chatStore.store.clientError">
-			<template #some="{ data: error }">
-				<Teleport :to="`#${error.id}_teleport`">
-					<Alert type="error" :can-close="false">
-						<h1 class="[ align-t:left ]">
-							<IconError class="[ size=4 align-v:top ]" />
-							Erreur
-						</h1>
-
-						<p>{{ error.data }}</p>
-					</Alert>
-				</Teleport>
-			</template>
-		</Match>
-
+		<ClientError />
 		<ChannelCreateDialog />
 		<ChannelSettingsDialog />
 		<ChangeNickDialog />

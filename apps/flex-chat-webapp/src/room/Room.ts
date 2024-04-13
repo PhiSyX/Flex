@@ -120,6 +120,27 @@ export class Room<R = RoomID, Type extends string = string> {
 	}
 
 	/**
+	 * Ajoute un événement d'erreur au tableau de messages.
+	 */
+	addErrorEvent(
+		payload: {
+			origin: Origin;
+			tags: { msgid: string };
+		},
+		messageText: string,
+	) {
+		const message = new RoomMessage()
+			.withID(payload.tags.msgid)
+			.withType("event:error")
+			.withNickname("*")
+			.withMessage(messageText)
+			.withTarget(this._name)
+			.withTime(new Date())
+			.withData(payload);
+		this.addMessage(message);
+	}
+
+	/**
 	 * Ajoute un événement au tableau de messages.
 	 */
 	addEvent<R extends RepliesNames>(

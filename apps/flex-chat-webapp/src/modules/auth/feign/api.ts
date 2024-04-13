@@ -24,38 +24,55 @@ const DEFAULT_FETCH_OPTIONS: RequestInit = {
 // Implémentation // -> Interface
 // -------------- //
 
-export class AuthApiHTTPClient
+class HTTPClient
+{
+	fetch<T>(endpoint: string, options: RequestInit): Promise<T>
+	{
+		const fetchOpts: RequestInit = {
+			...DEFAULT_FETCH_OPTIONS,
+			...options,
+		};
+
+		return fetch(endpoint, fetchOpts).then(async (res) => {
+			const contentType = res.headers.get("Content-Type");
+			const isJsonContentType = (contentType?.indexOf("json") ?? -1) > 0;
+
+			if (res.ok) {
+				if (isJsonContentType) return res.json();
+				return res.text();
+			}
+
+			const isError = res.status >= 400 && res.status < 600;
+
+			if (isJsonContentType || isError) {
+				return Promise.reject(await res.json());
+			}
+
+			return Promise.reject(res);
+		});
+	}
+
+	post<T>(endpoint: string, data: object): Promise<T>
+	{
+		return this.fetch(endpoint, {
+			method: "POST",
+			body: JSON.stringify(data),
+		});
+	}
+}
+
+export class AuthApiHTTPClient extends HTTPClient
 {
 	static AUTH_IDENTIFY_ENDPOINT = "/api/v1/auth/identify";
 	static AUTH_REGISTER_ENDPOINT = "/api/v1/auth/register";
 
 	identify(payload: AuthIdentifyFormData): Promise<AuthIdentifyHttpResponse>
 	{
-		const fetchOpts: RequestInit = {
-			...DEFAULT_FETCH_OPTIONS,
-			method: "POST",
-			body: JSON.stringify(payload),
-		};
-
-		return fetch(AuthApiHTTPClient.AUTH_IDENTIFY_ENDPOINT, fetchOpts)
-			.then((response) => {
-				if (response.ok) return response.json();
-				return Promise.reject(response);
-			});
+		return this.post(AuthApiHTTPClient.AUTH_IDENTIFY_ENDPOINT, payload);
 	}
 
-	register(payload : AuthRegisterFormData): Promise<AuthRegisterHttpResponse>
+	register(payload: AuthRegisterFormData): Promise<AuthRegisterHttpResponse>
 	{
-		const fetchOpts: RequestInit = {
-			...DEFAULT_FETCH_OPTIONS,
-			method: "POST",
-			body: JSON.stringify(payload),
-		};
-
-		return fetch(AuthApiHTTPClient.AUTH_REGISTER_ENDPOINT, fetchOpts)
-			.then((response) => {
-				if (response.ok) return response.json();
-				return Promise.reject(response);
-			});
+		return this.post(AuthApiHTTPClient.AUTH_REGISTER_ENDPOINT, payload);
 	}
 }

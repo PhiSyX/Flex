@@ -97,8 +97,7 @@ impl axum::response::IntoResponse for MissingFormError
 			| Self::JsonRejection(ref r) => r.status(),
 		};
 
-		let title = "Échec de la dé-sérialisation du corps de la requête dans \
-		             le type cible";
+		let title = "Échec de la dé-sérialisation du corps de la requête";
 
 		let detail = match self {
 			| Self::FormRejection(ref r) => r.body_text(),
