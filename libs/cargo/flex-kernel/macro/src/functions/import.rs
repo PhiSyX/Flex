@@ -146,7 +146,7 @@ impl ImportMacro
 			}
 		};
 
-		imports.iter().map(move |import_item| cb(import_item))
+		imports.iter().map(cb)
 	}
 }
 

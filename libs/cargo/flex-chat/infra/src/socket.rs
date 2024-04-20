@@ -11,7 +11,6 @@
 use flex_chat::channel::{
 	Channel,
 	ChannelInterface,
-	ChannelMember,
 	ChannelMemberInterface,
 };
 use flex_chat::client::channel::errors::{

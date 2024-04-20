@@ -19,6 +19,7 @@ use tower_sessions::Session;
 
 pub struct HttpResponse<T>
 {
+	#[allow(dead_code)]
 	pub(crate) context: Arc<T>,
 	pub(crate) session: Session,
 }

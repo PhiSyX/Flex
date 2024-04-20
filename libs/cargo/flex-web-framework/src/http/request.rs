@@ -32,6 +32,7 @@ use hyper::HeaderMap;
 
 pub struct HttpRequest<T>
 {
+	#[allow(dead_code)]
 	pub(crate) context: Arc<T>,
 	pub ip: std::net::IpAddr,
 	pub method: hyper::Method,
