@@ -5,9 +5,9 @@ import type { View } from "../index";
 
 import { useSettingsStore } from "~/store/SettingsStore";
 
-import ChannelUserlistLayoutSettings from "./layout/ChannelUserlist.vue";
-import NavigationBarLayoutSettings from "./layout/NavigationBar.vue";
-import ThemePersonalizationSettings from "./personalization/Theme.vue";
+import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
+import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
+import SettingsPersonalizationTheme from "./personalization/Theme.vue";
 
 interface Props {
 	previousView: View;
@@ -38,14 +38,14 @@ function saveAndExit() {
 			<section>
 				<h1 class="[ pos-s ]">Personnalisation</h1>
 
-				<ThemePersonalizationSettings />
+				<SettingsPersonalizationTheme />
 			</section>
 
 			<section>
 				<h1 class="[ pos-s ]">Disposition</h1>
 
-				<NavigationBarLayoutSettings />
-				<ChannelUserlistLayoutSettings />
+				<SettingsLayoutNavigationBar />
+				<SettingsLayoutChannelUserlist />
 			</section>
 		</div>
 	</main>
@@ -60,7 +60,7 @@ function saveAndExit() {
 }
 
 h1 {
-	padding: fx.space(1);
+	padding-block: fx.space(1);
 	backdrop-filter: blur(8px);
 }
 </style>
