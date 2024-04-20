@@ -23,6 +23,7 @@ export interface Props {
 	completionList?: Array<string>;
 	currentNickname: string;
 	currentClientMember: Option<ChannelMember>;
+	userlistDisplayedByDefault: boolean,
 	room: ChannelRoom;
 	selectedMember: Option<ChannelMemberSelected>;
 }
@@ -67,7 +68,7 @@ const {
 	topicInput,
 } = useChannelTopic(props, emit);
 
-const displayUserlist = ref(true);
+const displayUserlist = ref(props.userlistDisplayedByDefault);
 
 // La boite de saisie est désactivé quand le membre du salon actuellement
 // connecté au client est sanctionné d'un KICK.

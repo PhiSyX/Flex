@@ -61,6 +61,17 @@ export class PersonalizationSettings {
 export class LayoutSettings {
 	storage = new LayoutStorage();
 
+	get channelUserlistDisplay() {
+		return this.storage.get().channelUserlistDisplay;
+	}
+
+	set channelUserlistDisplay(value: LayoutData["channelUserlistDisplay"]) {
+		this.storage.set({
+			...this.storage.value,
+			channelUserlistDisplay: value,
+		});
+	}
+
 	get channelUserlistPosition() {
 		return this.storage.get().channelUserlistPosition;
 	}

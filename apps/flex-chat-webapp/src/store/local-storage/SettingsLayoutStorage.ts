@@ -12,6 +12,7 @@ import { markRaw } from "vue";
 import { STORAGE_SETTINGS_LAYOUT_KEY } from "./constant";
 
 export interface LayoutData {
+	channelUserlistDisplay?: boolean;
 	channelUserlistPosition?: "left" | "right";
 	navigationBarPosition?: "left" | "right";
 }
@@ -29,6 +30,7 @@ export class LayoutStorage {
 
 	static default(): LayoutData {
 		return {
+			channelUserlistDisplay: true,
 			channelUserlistPosition: "right",
 			navigationBarPosition: "left",
 		};
@@ -92,9 +94,13 @@ export class LayoutStorage {
 	 */
 	fromJSON(key: string, value: string): unknown | undefined {
 		if (key !== "") {
-			let keys = ["channelUserlistPosition", "navigationBarPosition"];
+			let keys = [
+				"channelUserlistDisplay",
+				"channelUserlistPosition",
+				"navigationBarPosition",
+			];
 			if (!keys.includes(key)) return;
-			if (!["left", "right"].includes(value)) return;
+			if (![true, false, "left", "right"].includes(value)) return;
 		}
 
 		if (value == null) {

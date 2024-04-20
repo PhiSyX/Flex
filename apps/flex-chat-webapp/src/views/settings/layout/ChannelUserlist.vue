@@ -10,6 +10,7 @@ const settingsStore = useSettingsStore();
 	<h2>Liste des utilisateurs de salon</h2>
 
 	<SettingsLayoutChannelUserlist
-		v-model="settingsStore.layout.channelUserlistPosition"
+		v-model:display="settingsStore.layout.channelUserlistDisplay"
+		v-model:position="settingsStore.layout.channelUserlistPosition"
 	/>
 </template>

@@ -57,6 +57,9 @@ const completionList = computed(() => [
 	...chatStore.allCommands(),
 ]);
 
+/// Affichage de la liste des utilisateurs
+const userlistDisplay = computed(() => settingsStore.layout.channelUserlistDisplay as boolean);
+
 /// Position de la liste des utilisateurs
 const userlistPosition = computed(() => settingsStore.layout.channelUserlistPosition);
 
@@ -218,6 +221,7 @@ function toggleSelectChannelMember(origin: Origin) {
 		:current-client-member="currentClientMember"
 		:room="room"
 		:selected-member="selectedMember"
+		:userlist-displayed-by-default="userlistDisplay"
 		@ban-member="sendBanMemberCommand"
 		@ban-nick="sendBanMemberNickCommand"
 		@change-nickname="openChangeNicknameDialog"
