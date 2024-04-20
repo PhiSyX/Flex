@@ -133,6 +133,12 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 	loader.value = false;
 }
 
+
+function toSettingsView()
+{
+	changeView.value = View.Settings;
+}
+
 onMounted(() => {
 	chatStore.store.setUserID(user.value.id);
 	if (loginFormData.rememberMe.get()) {
@@ -142,7 +148,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<main id="chat-login-view" class="[ scroll:y flex! flex/center:full m:a ]">
+	<main id="chat-login-view" class="[ scroll:y flex! flex/center:full m:a pos-r ]">
 		<section class="[ flex! gap=3 min-w=43 ]">
 			<h1>Accès direct au Chat</h1>
 
@@ -238,6 +244,8 @@ onMounted(() => {
 				<span class="[ flex:full ]">Accéder au Chat</span>
 			</UiButton>
 		</section>
+
+		<UiButton icon="settings" class="color-scheme" @click="toSettingsView" />
 	</main>
 </template>
 
@@ -309,5 +317,21 @@ body:has(#chat-login-view) {
 .remember-me {
 	font-size: 14px;
 	line-height: 1.2;
+}
+
+.color-scheme {
+	position: absolute;
+	top: fx.space(1);
+	right: fx.space(1);
+
+	padding: 2px;
+	background: var(--login-button-submit-bg);
+	color: var(--default-text-color_alt);
+	border-radius: 4px;
+	font-size: 14px;
+
+	&:hover {
+		background: var(--login-button-submit-bg-hover);
+	}
 }
 </style>
