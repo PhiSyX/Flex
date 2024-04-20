@@ -21,8 +21,16 @@ import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ChannelList from "#/sys/channel-list/ChannelList.vue";
 import CustomRoomNotice from "#/sys/custom-room-notice/CustomRoomNotice.vue";
 
+import { View } from "../index";
+
+// --------- //
+// Composant //
+// --------- //
+
 const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();
+
+const changeView = defineModel<View>("changeView");
 
 const rooms = computed(() => chatStore.store.roomManager().rooms());
 
@@ -38,11 +46,15 @@ function closeRoom(name: RoomID) {
 function openJoinChannelDialog(event: Event) {
 	ChannelJoinDialog.create(overlayerStore.store, { event });
 }
+
+function openSettingsView() {
+	changeView.value = View.Settings;
+}
 </script>
 
 <template>
 	<main id="chat-view" class="[ flex h:full ]">
-		<Navigation />
+		<Navigation @open-settings-view="openSettingsView" />
 
 		<div class="room [ flex:full flex ]">
 			<template v-for="room in rooms" :key="room.id">

@@ -27,6 +27,7 @@ interface Emits {
 	(evtName: "change-room", origin: Origin | RoomID): void;
 	(evtName: "close-room", origin: Origin | RoomID): void;
 	(evtName: "open-channel-list"): void;
+	(evtName: "open-settings-view"): void;
 }
 
 // --------- //
@@ -41,6 +42,7 @@ const navWidth = computed(() => (folded.value ? "42px" : "255px"));
 const changeRoom = (origin: Origin | RoomID) => emit("change-room", origin);
 const closeRoom = (origin: Origin | RoomID) => emit("close-room", origin);
 const openChannelList = () => emit("open-channel-list");
+const openSettingsView = () => emit("open-settings-view");
 </script>
 
 <template>
@@ -65,6 +67,7 @@ const openChannelList = () => emit("open-channel-list");
 			<div
 				v-show="!folded"
 				class="[ flex:full flex flex/center:full gap=1 ]"
+				dir="ltr"
 			>
 				<UiButton
 					id="goto-channel-list"
@@ -74,7 +77,7 @@ const openChannelList = () => emit("open-channel-list");
 					@click="openChannelList"
 				/>
 
-				<ButtonIcon icon="settings" disabled title="TODO" />
+				<ButtonIcon icon="settings" @click="openSettingsView" />
 			</div>
 		</footer>
 	</section>

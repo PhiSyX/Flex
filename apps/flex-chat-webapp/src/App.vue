@@ -1,18 +1,12 @@
 <script setup lang="ts">
 import { None, type Option } from "@phisyx/flex-safety";
-import { defineAsyncComponent, onMounted, ref } from "vue";
+import { defineAsyncComponent, onMounted, ref, watch } from "vue";
 
 import type { UserSession } from "./user/UserSession";
 import { View } from "./views";
 
 import Overlayer from "./components/overlayer/Overlayer.vue";
-
-// ------ //
-// Effect //
-// ------ //
-
-// FIXME(phisyx): dynamiser ça
-document.documentElement.dataset["scheme"] = "ice";
+import { useTheme } from "./theme";
 
 // --------- //
 // Composant //
@@ -23,11 +17,15 @@ defineOptions({
 		[View.Chat]: defineAsyncComponent(() => import("./views/chat/ChatView.vue")),
 		[View.DirectAccess]: defineAsyncComponent(() => import("./views/direct-access/DirectAccessView.vue")),
 		[View.Login]: defineAsyncComponent(() => import("./views/login/LoginView.vue")),
+		[View.Settings]: defineAsyncComponent(() => import("./views/settings/SettingsView.vue")),
 	},
 });
 
+const previousView = ref();
 const view = ref(View.Login);
 const user = ref(None() as Option<UserSession>);
+
+useTheme();
 
 onMounted(() => {
 	const fetchOpts: RequestInit = { credentials: "same-origin" };
@@ -41,12 +39,21 @@ onMounted(() => {
 		user.value.replace(currentUser);
 	});
 });
+
+watch(view, (_, oldView) => {
+	previousView.value = oldView;
+});
 </script>
 
 <template>
 	<div id="app">
 		<KeepAlive>
-			<component :is="view" v-model:change-view="view" :user="user" />
+			<component
+				:is="view"
+				v-model:change-view="view"
+				:previous-view="previousView"
+				:user="user"
+			/>
 		</KeepAlive>
 
 		<Overlayer />

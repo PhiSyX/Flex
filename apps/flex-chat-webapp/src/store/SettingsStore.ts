@@ -8,26 +8,54 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// -------- //
-// Constant //
-// -------- //
+import { defineStore } from "pinia";
+import { reactive } from "vue";
+import type { Theme } from "~/theme";
+import {
+	type PersonalizationData,
+	PersonalizationStorage,
+} from "./local-storage/SettingsPersonalizationStorage";
 
-/**
- * Clé localStorage de l'ID du client courant connecté.
- */
-export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
+export class SettingsStore {
+	static readonly NAME = "settings-store";
 
-/**
- * Clé localStorage "Se souvenir de moi".
- */
-export const STORAGE_REMEMBER_ME_KEY = "flex.remember_me";
+	static default(): SettingsStore {
+		const def = reactive(new SettingsStore());
+		return def as SettingsStore;
+	}
 
-/**
- * Clé localStorage paramètres "layout".
- */
-export const STORAGE_SETTINGS_LAYOUT_KEY = "flex.settings.layout";
+	// --------- //
+	// Propriété //
+	// --------- //
 
-/**
- * Clé localStorage paramètres "Personalization".
- */
-export const STORAGE_SETTINGS_PERSONALIZATION_KEY = "flex.settings.personalization";
+	public personalization: PersonalizationSettings =
+		new PersonalizationSettings();
+
+	save() {
+		this.personalization.persist();
+	}
+}
+
+export class PersonalizationSettings {
+	storage = new PersonalizationStorage();
+
+	get theme() {
+		return this.storage.get().theme;
+	}
+
+	set theme(value: PersonalizationData["theme"]) {
+		this.storage.set({ ...this.storage.value, theme: value });
+	}
+
+	persist() {
+		this.storage.save();
+	}
+}
+
+export const useSettingsStore = defineStore(SettingsStore.NAME, () => {
+	const store = SettingsStore.default();
+	return {
+		...store,
+		save: store.save.bind(store),
+	};
+});
