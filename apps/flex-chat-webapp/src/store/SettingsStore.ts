@@ -12,6 +12,10 @@ import { defineStore } from "pinia";
 import { reactive } from "vue";
 import type { Theme } from "~/theme";
 import {
+	type LayoutData,
+	LayoutStorage,
+} from "./local-storage/SettingsLayoutStorage";
+import {
 	type PersonalizationData,
 	PersonalizationStorage,
 } from "./local-storage/SettingsPersonalizationStorage";
@@ -30,9 +34,11 @@ export class SettingsStore {
 
 	public personalization: PersonalizationSettings =
 		new PersonalizationSettings();
+	public layout: LayoutSettings = new LayoutSettings();
 
 	save() {
 		this.personalization.persist();
+		this.layout.persist();
 	}
 }
 
@@ -45,6 +51,36 @@ export class PersonalizationSettings {
 
 	set theme(value: PersonalizationData["theme"]) {
 		this.storage.set({ ...this.storage.value, theme: value });
+	}
+
+	persist() {
+		this.storage.save();
+	}
+}
+
+export class LayoutSettings {
+	storage = new LayoutStorage();
+
+	get channelUserlistPosition() {
+		return this.storage.get().channelUserlistPosition;
+	}
+
+	set channelUserlistPosition(value: LayoutData["channelUserlistPosition"]) {
+		this.storage.set({
+			...this.storage.value,
+			channelUserlistPosition: value,
+		});
+	}
+
+	get navigationBarPosition() {
+		return this.storage.get().navigationBarPosition;
+	}
+
+	set navigationBarPosition(value: LayoutData["navigationBarPosition"]) {
+		this.storage.set({
+			...this.storage.value,
+			navigationBarPosition: value,
+		});
 	}
 
 	persist() {

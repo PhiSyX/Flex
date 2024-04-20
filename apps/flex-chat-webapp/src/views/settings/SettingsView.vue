@@ -5,6 +5,8 @@ import type { View } from "../index";
 
 import { useSettingsStore } from "~/store/SettingsStore";
 
+import ChannelUserlistLayoutSettings from "./layout/ChannelUserlist.vue";
+import NavigationBarLayoutSettings from "./layout/NavigationBar.vue";
 import ThemePersonalizationSettings from "./personalization/Theme.vue";
 
 interface Props {
@@ -37,6 +39,13 @@ function saveAndExit() {
 				<h1 class="[ pos-s ]">Personnalisation</h1>
 
 				<ThemePersonalizationSettings />
+			</section>
+
+			<section>
+				<h1 class="[ pos-s ]">Disposition</h1>
+
+				<NavigationBarLayoutSettings />
+				<ChannelUserlistLayoutSettings />
 			</section>
 		</div>
 	</main>

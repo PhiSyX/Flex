@@ -10,6 +10,7 @@ import { ChannelSettingsDialog } from "~/channel/ChannelSettings";
 import { ChannelTopicLayer } from "~/channel/ChannelTopic";
 import { useChatStore } from "~/store/ChatStore";
 import { useOverlayerStore } from "~/store/OverlayerStore";
+import { useSettingsStore } from "~/store/SettingsStore";
 import { UserChangeNicknameDialog } from "~/user/User";
 
 import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
@@ -26,6 +27,7 @@ interface Props {
 
 const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();
+const settingsStore = useSettingsStore();
 
 const props = defineProps<Props>();
 
@@ -54,6 +56,9 @@ const completionList = computed(() => [
 	...props.room.members.all.map((user) => user.nickname),
 	...chatStore.allCommands(),
 ]);
+
+/// Position de la liste des utilisateurs
+const userlistPosition = computed(() => settingsStore.layout.channelUserlistPosition);
 
 // -------- //
 // Handlers //
@@ -231,6 +236,9 @@ function toggleSelectChannelMember(origin: Origin) {
 		@unignore-user="(o) => sendSilenceUserCommand('-')(o)"
 		@unset-access-level="(m, a) => sendAccessLevel('-')(m, a)"
 		@update-topic="sendUpdateTopic"
+		:style="{
+			'--room-info-position': userlistPosition === 'left' ? 0 : 1
+		}"
 	>
 		<template v-if="room.kicked" #history>
 			<ChannelRoomKicked

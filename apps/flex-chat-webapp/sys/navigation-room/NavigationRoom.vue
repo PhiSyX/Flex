@@ -153,6 +153,10 @@ li {
 	}
 }
 
+bdo {
+	direction: ltr;
+}
+
 .close {
 	visibility: hidden;
 }

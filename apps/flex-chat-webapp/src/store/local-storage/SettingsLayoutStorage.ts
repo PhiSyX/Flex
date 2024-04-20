@@ -8,32 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Theme } from "~/theme";
+import { markRaw } from "vue";
+import { STORAGE_SETTINGS_LAYOUT_KEY } from "./constant";
 
-import { STORAGE_SETTINGS_PERSONALIZATION_KEY } from "./constant";
-
-// ---- //
-// Type //
-// ---- //
-
-export interface PersonalizationData {
-	theme?: keyof Theme;
+export interface LayoutData {
+	channelUserlistPosition?: "left" | "right";
+	navigationBarPosition?: "left" | "right";
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class PersonalizationStorage {
+export class LayoutStorage {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static readonly KEY = STORAGE_SETTINGS_PERSONALIZATION_KEY;
+	static readonly KEY = STORAGE_SETTINGS_LAYOUT_KEY;
 
-	static default(): PersonalizationData {
+	static default(): LayoutData {
 		return {
-			theme: "ice",
+			channelUserlistPosition: "right",
+			navigationBarPosition: "left",
 		};
 	}
 
@@ -45,11 +42,11 @@ export class PersonalizationStorage {
 		try {
 			this.value = JSON.parse(
 				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(PersonalizationStorage.KEY),
-				this.fromJSON,
+				localStorage.getItem(LayoutStorage.KEY),
+				this.fromJSON.bind(this),
 			);
 		} catch {
-			this.value = PersonalizationStorage.default();
+			this.value = LayoutStorage.default();
 		}
 	}
 
@@ -57,17 +54,17 @@ export class PersonalizationStorage {
 	// Propriété //
 	// --------- //
 
-	private personalization = PersonalizationStorage.default();
+	private layout = LayoutStorage.default();
 
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
 
-	get value(): PersonalizationData {
+	get value(): LayoutData {
 		return this.get();
 	}
 
-	set value($1: PersonalizationData) {
+	set value($1: LayoutData) {
 		this.set($1);
 	}
 
@@ -75,18 +72,18 @@ export class PersonalizationStorage {
 	// Méthode // -> API Publique
 	// ------- //
 
-	get(): PersonalizationData {
-		return this.personalization;
+	get(): LayoutData {
+		return this.layout;
 	}
 
 	/**
 	 * Définit une nouvelle valeur.
 	 */
-	set(theme: PersonalizationData) {
-		this.personalization = theme;
+	set(layout: LayoutData) {
+		this.layout = layout;
 
 		try {
-			localStorage.setItem(PersonalizationStorage.KEY, this.toString());
+			localStorage.setItem(LayoutStorage.KEY, this.toString());
 		} catch {}
 	}
 
@@ -95,13 +92,13 @@ export class PersonalizationStorage {
 	 */
 	fromJSON(key: string, value: string): unknown | undefined {
 		if (key !== "") {
-			let keys = ["theme"];
+			let keys = ["channelUserlistPosition", "navigationBarPosition"];
 			if (!keys.includes(key)) return;
-			if (!["dark", "ice", "light", "system"].includes(value)) return;
+			if (!["left", "right"].includes(value)) return;
 		}
 
 		if (value == null) {
-			return PersonalizationStorage.default();
+			return LayoutStorage.default();
 		}
 
 		return value;
@@ -109,11 +106,11 @@ export class PersonalizationStorage {
 
 	save() {
 		try {
-			localStorage.setItem(PersonalizationStorage.KEY, this.toString());
+			localStorage.setItem(LayoutStorage.KEY, this.toString());
 		} catch {}
 	}
 
 	toString() {
-		return JSON.stringify(this.personalization);
+		return JSON.stringify(markRaw(this.layout));
 	}
 }

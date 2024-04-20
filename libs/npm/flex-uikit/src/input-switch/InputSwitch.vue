@@ -8,7 +8,9 @@ import { computed } from "vue";
 interface Props {
 	form?: string;
 	labelN?: string;
+	valueN?: string | boolean;
 	labelY?: string;
+	valueY?: string | boolean;
 	modelValue: boolean;
 	name: string;
 }
@@ -26,7 +28,10 @@ enum InputRadioLabelDefault {
 // Composant //
 // --------- //
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+	valueY: true,
+	valueN: false,
+});
 
 const inputModel = defineModel();
 const uniqueID = computed(() => props.name);
@@ -46,7 +51,7 @@ const inputAttrIDNo = `${inputAttrID}_n`;
 					v-model="inputModel"
 					:form="form"
 					:name="name"
-					:value="true"
+					:value="valueY"
 					type="radio"
 				/>
 
@@ -61,7 +66,7 @@ const inputAttrIDNo = `${inputAttrID}_n`;
 					v-model="inputModel"
 					:form="form"
 					:name="name"
-					:value="false"
+					:value="valueN"
 					type="radio"
 				/>
 

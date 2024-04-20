@@ -231,7 +231,7 @@ const unsetAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevel
 	}
 
 	aside {
-		order: 1;
+		order: var(--room-info-position, 1);
 		~ div form {
 			padding-right: 0;
 		}

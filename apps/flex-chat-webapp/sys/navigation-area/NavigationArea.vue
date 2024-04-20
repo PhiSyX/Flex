@@ -90,5 +90,6 @@ section {
 	min-width: v-bind(navWidth);
 	width: v-bind(navWidth);
 	max-width: fx.space(255);
+	order: var(--navigation-area-order, initial);
 }
 </style>
