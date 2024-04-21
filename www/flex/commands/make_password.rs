@@ -80,7 +80,7 @@ impl FlexCLIMakePassword
 				let exposed_secret = app_secret_key.expose();
 				#[rustfmt::skip]
 				let argon2 = Argon2Password::new(exposed_secret.as_str().into());
-				let encoded = argon2.encrypt(self.password.expose()).expect(
+				let encoded = argon2.hash(self.password.expose()).expect(
 					"Impossible d'encoder le mot de passe avec l'algorithme \
 					 Argon2.",
 				);

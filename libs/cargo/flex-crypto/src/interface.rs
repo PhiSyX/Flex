@@ -26,8 +26,8 @@ pub trait Hasher
 	/// Compare une entrée à l'aide d'un secret.
 	fn cmp(&self, secret: impl AsRef<str>, input: impl AsRef<str>) -> bool;
 
-	/// Hache ou chiffre une entrée.
-	fn encrypt(&self, input: impl AsRef<str>) -> Result<String, Self::Err>;
+	/// Hache une entrée.
+	fn hash(&self, input: impl AsRef<str>) -> Result<String, Self::Err>;
 
 	/// Vérifie une entrée à l'aide du secret enregistré dans l'instance.
 	fn verify(&self, input: impl AsRef<str>) -> bool;

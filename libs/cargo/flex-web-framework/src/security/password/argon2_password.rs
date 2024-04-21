@@ -58,28 +58,6 @@ impl Hasher for Argon2PasswordHasher
 {
 	type Err = Argon2PasswordError;
 
-	fn encrypt(&self, input: impl AsRef<str>) -> Result<String, Self::Err>
-	{
-		let algorithm = Algorithm::Argon2id;
-		let version = Version::V0x13;
-		let params = ParamsBuilder::new().build()?;
-		let argon2_hasher = Argon2::new_with_secret(
-			self.secret.as_bytes(),
-			algorithm,
-			version,
-			params,
-		)?;
-		let salt = SaltString::generate(&mut OsRng);
-		let encoded =
-			argon2_hasher.hash_password(input.as_ref().as_bytes(), &salt)?;
-		Ok(encoded.to_string())
-	}
-
-	fn verify(&self, input: impl AsRef<str>) -> bool
-	{
-		self.cmp(&self.secret, input)
-	}
-
 	fn cmp(&self, secret: impl AsRef<str>, input: impl AsRef<str>) -> bool
 	{
 		let algorithm = Algorithm::Argon2id;
@@ -104,5 +82,27 @@ impl Hasher for Argon2PasswordHasher
 		argon2_hasher
 			.verify_password(input.as_ref().as_bytes(), &password_hasher)
 			.is_ok()
+	}
+
+	fn hash(&self, input: impl AsRef<str>) -> Result<String, Self::Err>
+	{
+		let algorithm = Algorithm::Argon2id;
+		let version = Version::V0x13;
+		let params = ParamsBuilder::new().build()?;
+		let argon2_hasher = Argon2::new_with_secret(
+			self.secret.as_bytes(),
+			algorithm,
+			version,
+			params,
+		)?;
+		let salt = SaltString::generate(&mut OsRng);
+		let encoded =
+			argon2_hasher.hash_password(input.as_ref().as_bytes(), &salt)?;
+		Ok(encoded.to_string())
+	}
+
+	fn verify(&self, input: impl AsRef<str>) -> bool
+	{
+		self.cmp(&self.secret, input)
 	}
 }

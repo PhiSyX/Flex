@@ -100,7 +100,7 @@ impl AuthenticationService for AuthService
 
 		if let Err(err) = maybe_user {
 			// SECURITY: timing attacks.
-			self.password_service.encrypt("1234567890").unwrap();
+			self.password_service.hash("1234567890").unwrap();
 			return Err(AuthErrorService::SQLx(err));
 		}
 
@@ -124,12 +124,12 @@ impl AuthenticationService for AuthService
 
 		if user_exists {
 			// SECURITY: timing attacks.
-			_ = self.password_service.encrypt("1234567890");
+			_ = self.password_service.hash("1234567890");
 			return Err(AuthErrorService::EmailOrNameAlreadyTaken);
 		}
 
 		let exposed_password = new_user.password.expose();
-		let encoded_password = self.password_service.encrypt(exposed_password)
+		let encoded_password = self.password_service.hash(exposed_password)
 			.map_err(|_| AuthErrorService::Hasher)?;
 		new_user.password = secret::Secret::from(encoded_password);
 		let user = self.user_repository.create(new_user).await?;
