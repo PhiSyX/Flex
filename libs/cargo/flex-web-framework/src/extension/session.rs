@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use tower_sessions::Session;
-
 // --------- //
 // Interface //
 // --------- //
@@ -29,7 +27,7 @@ pub trait SessionFlashExtension
 // Implémentation // -> Interface
 // -------------- //
 
-impl SessionFlashExtension for Session
+impl SessionFlashExtension for tower_sessions::Session
 {
 	async fn flash(&self, key: impl AsRef<str>, value: impl serde::Serialize)
 	{

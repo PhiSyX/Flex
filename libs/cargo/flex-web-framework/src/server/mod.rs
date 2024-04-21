@@ -19,12 +19,21 @@ mod net
 
 use axum_server::tls_rustls::RustlsConfig;
 use console::style;
+use flex_kernel::{
+	ApplicationAdapterCLIInterface,
+	ApplicationAdapterEnvInterface,
+	ApplicationAdapterInterface,
+	ApplicationAdapterSettingsInterface,
+	ApplicationCLIInterface,
+	ApplicationEnvInterface,
+	AsyncApplicationStartupExtension,
+};
 
 pub use self::error::Error as ServerError;
 pub use self::state::ServerState;
 use crate::routing::RouterCollection;
 use crate::settings::ServerSettings;
-use crate::AxumState;
+use crate::{server, settings, AxumState};
 
 // --------- //
 // Structure //
@@ -132,5 +141,78 @@ impl<S, E, C> Server<S, E, C>
 		}
 
 		Ok(())
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl ApplicationAdapterSettingsInterface for settings::ServerSettings
+{
+	const FILENAME: &'static str = Self::FILENAME;
+}
+
+impl<S, E, C> ApplicationAdapterInterface for server::Server<S, E, C>
+{
+	type Settings = settings::ServerSettings;
+
+	fn new(settings: Self::Settings) -> Self
+	{
+		Self {
+			settings,
+			router: Default::default(),
+			env_vars: Default::default(),
+			cli_args: Default::default(),
+			state: Default::default(),
+		}
+	}
+}
+
+impl<S, E, C> AsyncApplicationStartupExtension for server::Server<S, E, C>
+{
+	async fn run(mut self)
+	{
+		self.display_all_routes();
+		self = self.define_static_resources();
+		self.launch().await.expect("Ouverture du serveur HTTP");
+	}
+}
+
+impl<S, E, C> ApplicationAdapterEnvInterface for server::Server<S, E, C>
+where
+	E: ApplicationEnvInterface,
+{
+	type Env = E;
+
+	fn env(&self) -> &Self::Env
+	{
+		self.env_vars.as_ref().expect(
+			"Il ne faut pas oublier d'appeler « \
+			 application.include_env_vars() » à l'initialisation de \
+			 l'application.",
+		)
+	}
+
+	fn set_env(&mut self, env: Self::Env)
+	{
+		self.env_vars.replace(env);
+	}
+}
+
+impl<S, E, C> ApplicationAdapterCLIInterface for server::Server<S, E, C>
+where
+	C: ApplicationCLIInterface,
+{
+	type CLI = C;
+
+	fn cli(&self) -> &Self::CLI
+	{
+		self.cli_args.as_ref().unwrap()
+	}
+
+	fn set_cli(&mut self, cli_args: Self::CLI)
+	{
+		self.cli_args.replace(cli_args);
 	}
 }

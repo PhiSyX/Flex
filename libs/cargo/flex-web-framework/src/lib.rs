@@ -8,7 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
 mod database;
 mod extension;
 pub mod extract;
@@ -42,7 +41,7 @@ pub type AxumApplication<
 	E = (),
 	C = ()
 > = flex_kernel::Kernel<
-	adapter::Adapter<
+	server::Server<
 		S,
 		E,
 		C

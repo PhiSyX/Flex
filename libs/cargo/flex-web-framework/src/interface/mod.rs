@@ -8,12 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod ext;
+mod cookie;
+mod cors;
+mod extension;
 mod feature;
 mod router;
 mod view;
 
-pub use self::ext::*;
+pub use self::cookie::*;
+pub use self::cors::*;
+pub use self::extension::*;
 pub use self::feature::*;
 pub use self::router::*;
 pub use self::view::*;

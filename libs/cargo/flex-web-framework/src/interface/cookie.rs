@@ -17,8 +17,8 @@ use crate::AxumApplication;
 // Interface //
 // --------- //
 
-/// Extension d'application "Cookie Layer"
-pub trait ApplicationCookieLayerExtension
+/// Interface d'application "Cookie Layer"
+pub trait ApplicationCookieLayerInterface
 {
 	/// Définit une clé de cookie.
 	fn define_cookie_key(self, key: impl TryInto<tower_cookies::Key>) -> Self;
@@ -31,7 +31,7 @@ pub trait ApplicationCookieLayerExtension
 // Implémentation //
 // -------------- //
 
-impl<S, E, C> ApplicationCookieLayerExtension for AxumApplication<S, E, C>
+impl<S, E, C> ApplicationCookieLayerInterface for AxumApplication<S, E, C>
 where
 	S: Clone,
 {

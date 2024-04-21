@@ -18,7 +18,7 @@ use flex_kernel::{
 };
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::{
-	ApplicationCookieLayerExtension,
+	ApplicationCookieLayerInterface,
 	DatabaseService,
 	PostgreSQLDatabase,
 };
@@ -67,7 +67,7 @@ async fn main() -> impl process::Termination
 
 	// 2. Features / Async Features
 	let application = {
-		use flex_web_framework::ApplicationFeatureExtension;
+		use flex_web_framework::ApplicationFeatureInterface;
 		application
 			.feature::<AuthApplication>()
 			.feature::<UsersApplication>()
@@ -76,7 +76,7 @@ async fn main() -> impl process::Termination
 
 	// 3. Layers, extensions, services
 	let application = {
-		use flex_web_framework::ApplicationExtExtension;
+		use flex_web_framework::ApplicationExtensionInterface;
 		application
 			.use_cookie_layer()
 			.extension_with::<Argon2Password>(app_secret_key)
@@ -84,7 +84,7 @@ async fn main() -> impl process::Termination
 
 	// 3.1. Layers, extensions, services (Async)
 	let application = {
-		use flex_web_framework::AsyncApplicationExtExtension;
+		use flex_web_framework::AsyncApplicationExtensionInterface;
 		let database_url = application.env().database_url.expose().to_owned();
 		application.extension_with::<DatabaseService<PostgreSQLDatabase>>(
 			database_url,

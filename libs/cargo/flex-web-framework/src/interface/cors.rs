@@ -17,8 +17,8 @@ use crate::AxumApplication;
 // Interface //
 // --------- //
 
-/// Extension d'application "CORS Layer"
-pub trait ApplicationCorsLayerExtension
+/// Interface d'application "CORS Layer"
+pub trait ApplicationCorsLayerInterface
 {
 	/// Applique un layer CORS au serveur.
 	fn use_cors_layer(self) -> Self;
@@ -28,7 +28,7 @@ pub trait ApplicationCorsLayerExtension
 // Implémentation //
 // -------------- //
 
-impl<S, E, C> ApplicationCorsLayerExtension for AxumApplication<S, E, C>
+impl<S, E, C> ApplicationCorsLayerInterface for AxumApplication<S, E, C>
 {
 	#[rustfmt::skip]
 	fn use_cors_layer(mut self) -> Self

@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::{AsyncExtensionInterface, AxumApplication, ExtensionInterface};
+use crate::AxumApplication;
 
 // --------- //
 // Interface //
 // --------- //
 
-/// Extension d'application "Extension"
-pub trait ApplicationExtExtension
+/// Interface d'application "Extension"
+pub trait ApplicationExtensionInterface
 {
 	/// Applique une extension au serveur.
 	fn extension<Ext>(self) -> Self
@@ -30,7 +30,7 @@ pub trait ApplicationExtExtension
 }
 
 /// Extension d'application "Extension" asynchrone.
-pub trait AsyncApplicationExtExtension
+pub trait AsyncApplicationExtensionInterface
 {
 	/// Applique une extension au serveur.
 	async fn extension<Ext>(self) -> Self
@@ -47,17 +47,31 @@ pub trait AsyncApplicationExtExtension
 		Ext: AsyncExtensionInterface;
 }
 
+pub trait ExtensionInterface: 'static + Clone + Send + Sync
+{
+	type Payload;
+
+	fn new(payload: Self::Payload) -> Self;
+}
+
+pub trait AsyncExtensionInterface: 'static + Clone + Send + Sync
+{
+	type Payload;
+
+	async fn new(payload: Self::Payload) -> Self;
+}
+
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl<S, E, C> ApplicationExtExtension for AxumApplication<S, E, C>
+impl<S, E, C> ApplicationExtensionInterface for AxumApplication<S, E, C>
 {
 	fn extension<Ext>(self) -> Self
 	where
 		Ext: ExtensionInterface<Payload = ()>,
 	{
-		ApplicationExtExtension::extension_with::<Ext>(self, ())
+		ApplicationExtensionInterface::extension_with::<Ext>(self, ())
 	}
 
 	#[rustfmt::skip]
@@ -73,13 +87,14 @@ impl<S, E, C> ApplicationExtExtension for AxumApplication<S, E, C>
 	}
 }
 
-impl<S, E, C> AsyncApplicationExtExtension for AxumApplication<S, E, C>
+impl<S, E, C> AsyncApplicationExtensionInterface for AxumApplication<S, E, C>
 {
 	async fn extension<Ext>(self) -> Self
 	where
 		Ext: AsyncExtensionInterface<Payload = ()>,
 	{
-		AsyncApplicationExtExtension::extension_with::<Ext>(self, ()).await
+		AsyncApplicationExtensionInterface::extension_with::<Ext>(self, ())
+			.await
 	}
 
 	#[rustfmt::skip]
@@ -96,4 +111,22 @@ impl<S, E, C> AsyncApplicationExtExtension for AxumApplication<S, E, C>
 			.layer(axum::Extension(instance));
 		self
 	}
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl ExtensionInterface for ()
+{
+	type Payload = Self;
+
+	fn new(_: Self::Payload) -> Self {}
+}
+
+impl AsyncExtensionInterface for ()
+{
+	type Payload = Self;
+
+	async fn new(_: Self::Payload) -> Self {}
 }
