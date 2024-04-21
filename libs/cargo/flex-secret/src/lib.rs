@@ -31,6 +31,11 @@ impl<S> Secret<S>
 	{
 		Self(secret)
 	}
+
+	pub fn set(&mut self, secret: S)
+	{
+		self.0 = secret;
+	}
 }
 
 impl<S> Secret<S>
@@ -130,7 +135,9 @@ impl<T> serde::Serialize for Secret<T>
 	}
 }
 
-impl Default for Secret<String>
+impl<S> Default for Secret<S>
+where
+	S: Default
 {
 	fn default() -> Self
 	{
