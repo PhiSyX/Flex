@@ -11,7 +11,7 @@
 use std::sync::Arc;
 
 use flex_kernel::settings::KernelSettings;
-use flex_kernel::{process, ApplicationEnvInterface};
+use flex_kernel::{process, UserApplicationEnvInterface};
 use flex_web_framework::types::{secret, url};
 
 // --------- //
@@ -34,7 +34,7 @@ pub struct FlexEnv
 // Implémentation // -> Interface
 // -------------- //
 
-impl ApplicationEnvInterface for FlexEnv
+impl UserApplicationEnvInterface for FlexEnv
 {
 	const FILENAME: &'static str = ".env";
 

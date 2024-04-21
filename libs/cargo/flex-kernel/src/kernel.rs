@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 pub(super) mod error;
-pub(super) mod extension;
 pub(super) mod interface;
 pub(super) mod settings;
 

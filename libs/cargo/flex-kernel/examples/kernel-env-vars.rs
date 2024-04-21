@@ -8,8 +8,8 @@ mod external_crate;
 use external_crate::AnyApplicationAdapter;
 use flex_kernel::{
 	ApplicationAdapterEnvInterface,
-	ApplicationEnvExtension,
 	ApplicationEnvInterface,
+	UserApplicationEnvInterface,
 	ApplicationStartupExtension,
 };
 
@@ -41,7 +41,7 @@ pub struct ApplicationEnv
 	pub secret_string: String,
 }
 
-impl ApplicationEnvInterface for ApplicationEnv
+impl UserApplicationEnvInterface for ApplicationEnv
 {
 	const FILENAME: &'static str = ".env";
 

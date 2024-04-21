@@ -13,7 +13,7 @@ mod make_password;
 use std::ops;
 
 use flex_cli::{EmptyArguments, EmptyFlags, EmptyOptions};
-use flex_kernel::ApplicationCLIInterface;
+use flex_kernel::UserApplicationCLIInterface;
 
 // ---- //
 // Type //
@@ -69,7 +69,7 @@ impl FlexCLI
 // Implémentation // -> Interface
 // -------------- //
 
-impl ApplicationCLIInterface for FlexCLI
+impl UserApplicationCLIInterface for FlexCLI
 {
 	fn arguments() -> Self
 	{

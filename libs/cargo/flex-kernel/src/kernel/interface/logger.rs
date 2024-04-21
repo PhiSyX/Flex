@@ -13,11 +13,11 @@ use crate::logger::settings::{LoggerSettings, LoggerSettingsPreset};
 use crate::process::ProcessMode;
 
 // --------- //
-// Interface // -> Extension
+// Interface //
 // --------- //
 
 /// Extension de l'Application: Logger.
-pub trait ApplicationLoggerExtension
+pub trait ApplicationLoggerInterface
 {
 	/// Active le logger avec les paramètres récupéré depuis le fichier de
 	/// configuration de l'application. Ce fichier est trouvé et résolu
@@ -33,7 +33,7 @@ pub trait ApplicationLoggerExtension
 // Implémentation // -> Interface
 // -------------- //
 
-impl<A, E, C> ApplicationLoggerExtension for Kernel<A, E, C>
+impl<A, E, C> ApplicationLoggerInterface for Kernel<A, E, C>
 {
 	fn initialize_logger(self) -> Self
 	{

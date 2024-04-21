@@ -11,9 +11,9 @@
 use std::process;
 
 use flex_kernel::{
-	ApplicationCLIExtension,
-	ApplicationEnvExtension,
-	ApplicationLoggerExtension,
+	ApplicationCLIInterface,
+	ApplicationEnvInterface,
+	ApplicationLoggerInterface,
 	AsyncApplicationStartupExtension,
 };
 use flex_web_framework::security::Argon2Password;

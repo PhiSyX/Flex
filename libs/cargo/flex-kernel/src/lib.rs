@@ -23,7 +23,6 @@ pub use flex_fs::Extension as LoaderExtension;
 pub use flex_kernel_macro::*;
 
 pub use self::kernel::error::KernelError;
-pub use self::kernel::extension::*;
 pub use self::kernel::interface::*;
 pub use self::kernel::Kernel;
 

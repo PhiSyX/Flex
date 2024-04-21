@@ -9,8 +9,8 @@ mod external_crate;
 use external_crate::AnyApplicationAdapter;
 use flex_kernel::{
 	ApplicationAdapterCLIInterface,
-	ApplicationCLIExtension,
 	ApplicationCLIInterface,
+	UserApplicationCLIInterface,
 	ApplicationStartupExtension,
 };
 
@@ -46,7 +46,7 @@ pub struct ApplicationCLI
 	channel: String,
 }
 
-impl ApplicationCLIInterface for ApplicationCLI
+impl UserApplicationCLIInterface for ApplicationCLI
 {
 	fn arguments() -> Self
 	{

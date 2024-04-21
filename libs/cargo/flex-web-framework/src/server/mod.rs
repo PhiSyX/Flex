@@ -24,8 +24,8 @@ use flex_kernel::{
 	ApplicationAdapterEnvInterface,
 	ApplicationAdapterInterface,
 	ApplicationAdapterSettingsInterface,
-	ApplicationCLIInterface,
-	ApplicationEnvInterface,
+	UserApplicationCLIInterface,
+	UserApplicationEnvInterface,
 	AsyncApplicationStartupExtension,
 };
 
@@ -181,7 +181,7 @@ impl<S, E, C> AsyncApplicationStartupExtension for server::Server<S, E, C>
 
 impl<S, E, C> ApplicationAdapterEnvInterface for server::Server<S, E, C>
 where
-	E: ApplicationEnvInterface,
+	E: UserApplicationEnvInterface,
 {
 	type Env = E;
 
@@ -202,7 +202,7 @@ where
 
 impl<S, E, C> ApplicationAdapterCLIInterface for server::Server<S, E, C>
 where
-	C: ApplicationCLIInterface,
+	C: UserApplicationCLIInterface,
 {
 	type CLI = C;
 

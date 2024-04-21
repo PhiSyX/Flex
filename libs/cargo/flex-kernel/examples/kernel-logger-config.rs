@@ -6,7 +6,7 @@
 mod external_crate;
 
 use external_crate::AnyApplicationAdapter;
-use flex_kernel::{ApplicationLoggerExtension, ApplicationStartupExtension};
+use flex_kernel::{ApplicationLoggerInterface, ApplicationStartupExtension};
 
 // -------- //
 // Constant //

@@ -11,7 +11,11 @@
 mod adapter;
 mod cli;
 mod env;
+mod logger;
+mod startup;
 
 pub use self::adapter::*;
 pub use self::cli::*;
 pub use self::env::*;
+pub use self::logger::*;
+pub use self::startup::*;
