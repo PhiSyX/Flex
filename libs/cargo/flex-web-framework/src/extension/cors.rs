@@ -19,7 +19,6 @@ use crate::AxumApplication;
 
 /// Extension d'application "CORS Layer"
 pub trait ApplicationCorsLayerExtension
-	: Sized
 {
 	/// Applique un layer CORS au serveur.
 	fn use_cors_layer(self) -> Self;

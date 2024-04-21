@@ -16,8 +16,7 @@ use std::fmt::Debug;
 
 /// Interface pour la récupération des variables d'environnement.
 pub trait ApplicationEnvInterface
-	: Sized
-	+ Clone
+	: Clone
 	+ Debug
 	+ serde::de::DeserializeOwned
 {

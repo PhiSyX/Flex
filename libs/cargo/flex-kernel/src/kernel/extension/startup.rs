@@ -18,7 +18,6 @@ use crate::Kernel;
 
 /// Interface de lancement d'application.
 pub trait ApplicationStartupExtension
-	: Sized
 {
 	/// Démarre l'application.
 	fn run(self);
@@ -26,7 +25,6 @@ pub trait ApplicationStartupExtension
 
 /// Interface de lancement d'application.
 pub trait ApplicationStartupCallableExtension
-	: Sized
 {
 	type Callable;
 
@@ -36,7 +34,6 @@ pub trait ApplicationStartupCallableExtension
 
 /// Interface de lancement d'application asynchrone.
 pub trait AsyncApplicationStartupExtension
-	: Sized
 {
 	/// Démarre l'application.
 	async fn run(self);
@@ -44,7 +41,6 @@ pub trait AsyncApplicationStartupExtension
 
 /// Interface de lancement d'application.
 pub trait AsyncApplicationStartupCallableExtension
-	: Sized
 {
 	type Callable;
 

@@ -16,8 +16,7 @@ use std::fmt::Debug;
 
 /// Interface pour la récupération des arguments de la CLI.
 pub trait ApplicationCLIInterface
-	: Sized
-	+ Clone
+	: Clone
 	+ Debug
 {
 	/// Récupère les arguments de la CLI.

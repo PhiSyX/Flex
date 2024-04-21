@@ -16,7 +16,6 @@ use crate::{AsyncExtensionInterface, AxumApplication, ExtensionInterface};
 
 /// Extension d'application "Extension"
 pub trait ApplicationExtExtension
-	: Sized
 {
 	/// Applique une extension au serveur.
 	fn extension<Ext>(self) -> Self
@@ -32,7 +31,6 @@ pub trait ApplicationExtExtension
 
 /// Extension d'application "Extension" asynchrone.
 pub trait AsyncApplicationExtExtension
-	: Sized
 {
 	/// Applique une extension au serveur.
 	async fn extension<Ext>(self) -> Self

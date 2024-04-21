@@ -20,7 +20,6 @@ use crate::{ApplicationEnvInterface, Kernel};
 /// N'A PAS besoin de variables d'environnement, ce dernier PEUT également être
 /// un tuple vide.
 pub trait ApplicationEnvExtension<UserEnv>
-	: Sized
 where
 	UserEnv: ApplicationEnvInterface,
 {
@@ -46,7 +45,7 @@ where
 }
 
 /// Interface adapter liée aux variables d'environnement.
-pub trait ApplicationAdapterEnvInterface: Sized
+pub trait ApplicationAdapterEnvInterface
 {
 	type Env: ApplicationEnvInterface;
 

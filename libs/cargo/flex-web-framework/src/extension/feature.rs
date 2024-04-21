@@ -29,7 +29,6 @@ use crate::{
 
 /// Extension d'application Feature
 pub trait ApplicationFeatureExtension<UserState>
-	: Sized
 {
 	/// Applique une feature au serveur.
 	fn feature<F>(self) -> Self
@@ -44,7 +43,6 @@ pub trait ApplicationFeatureExtension<UserState>
 
 /// Extension d'application Feature dans un contexte asynchrone.
 pub trait AsyncApplicationFeatureExtension<UserState>
-	: Sized
 {
 	/// Applique une feature asynchrone au serveur.
 	async fn feature<F>(self) -> Self

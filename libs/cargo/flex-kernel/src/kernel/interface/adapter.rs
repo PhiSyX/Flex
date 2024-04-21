@@ -13,7 +13,6 @@
 // --------- //
 
 pub trait ApplicationAdapterInterface
-	: Sized
 {
 	type Settings: ApplicationAdapterSettingsInterface;
 

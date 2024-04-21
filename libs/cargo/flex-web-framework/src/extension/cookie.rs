@@ -19,7 +19,6 @@ use crate::AxumApplication;
 
 /// Extension d'application "Cookie Layer"
 pub trait ApplicationCookieLayerExtension
-	: Sized
 {
 	/// Définit une clé de cookie.
 	fn define_cookie_key(self, key: impl TryInto<tower_cookies::Key>) -> Self;

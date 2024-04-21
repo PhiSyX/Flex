@@ -13,7 +13,7 @@
 // --------- //
 
 #[async_trait::async_trait]
-pub trait SGBD: Sized + Clone
+pub trait SGBD: Clone
 {
 	type Pool;
 

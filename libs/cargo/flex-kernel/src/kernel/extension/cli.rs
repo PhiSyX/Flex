@@ -19,7 +19,6 @@ use crate::{ApplicationCLIInterface, Kernel};
 /// `<UserCLI>` :: une structure de champs nommés. Si une application N'A PAS
 /// besoin de ces arguments, ce dernier PEUT également être un tuple vide.
 pub trait ApplicationCLIExtension<UserCLI>
-	: Sized
 where
 	UserCLI: ApplicationCLIInterface,
 {
@@ -34,7 +33,6 @@ where
 
 /// Interface adapter liée aux variables d'environnement.
 pub trait ApplicationAdapterCLIInterface
-	: Sized
 {
 	type CLI: ApplicationCLIInterface;
 

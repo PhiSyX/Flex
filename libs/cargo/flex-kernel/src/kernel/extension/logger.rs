@@ -18,7 +18,6 @@ use crate::process::ProcessMode;
 
 /// Extension de l'Application: Logger.
 pub trait ApplicationLoggerExtension
-	: Sized
 {
 	/// Active le logger avec les paramètres récupéré depuis le fichier de
 	/// configuration de l'application. Ce fichier est trouvé et résolu

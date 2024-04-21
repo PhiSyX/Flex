@@ -16,8 +16,7 @@ use std::path;
 // --------- //
 
 pub trait EnvInterface
-	: Sized
-	+ Debug
+	: Debug
 	+ Clone
 	+ Send + Sync
 	+ serde::de::DeserializeOwned

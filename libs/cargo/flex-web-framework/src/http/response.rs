@@ -70,8 +70,6 @@ impl<T> HttpResponse<T>
 	/// Redirige le client vers une URL (Code HTTP 303).
 	#[inline]
 	pub fn redirect_to(&self, uri: impl ToString) -> axum::response::Redirect
-	where
-		Self: Sized,
 	{
 		axum::response::Redirect::to(uri.to_string().as_ref())
 	}
@@ -82,8 +80,6 @@ impl<T> HttpResponse<T>
 		&self,
 		uri: impl ToString,
 	) -> axum::response::Redirect
-	where
-		Self: Sized,
 	{
 		axum::response::Redirect::permanent(uri.to_string().as_ref())
 	}
@@ -94,8 +90,6 @@ impl<T> HttpResponse<T>
 		&self,
 		uri: impl ToString,
 	) -> axum::response::Redirect
-	where
-		Self: Sized,
 	{
 		axum::response::Redirect::temporary(uri.to_string().as_ref())
 	}

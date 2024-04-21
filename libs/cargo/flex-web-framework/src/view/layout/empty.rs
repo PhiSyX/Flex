@@ -34,8 +34,6 @@ impl ViewLayoutInterface for EmptyHTMLLayout
 	type View = Node;
 
 	fn new() -> Self
-	where
-		Self: Sized,
 	{
 		Self {
 			body: Default::default(),

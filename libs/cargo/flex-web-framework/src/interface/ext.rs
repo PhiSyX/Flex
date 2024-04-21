@@ -16,7 +16,6 @@ pub trait ExtensionInterface
 	: 'static
 	+ Clone
 	+ Send + Sync
-	+ Sized
 {
 	type Payload;
 
@@ -27,7 +26,6 @@ pub trait AsyncExtensionInterface
 	: 'static
 	+ Clone
 	+ Send + Sync
-	+ Sized
 {
 	type Payload;
 
