@@ -43,7 +43,7 @@ test("Sanctionner d'un KILL un utilisateur via la commande /KILL", async ({
 	await containsMessage(
 		user1.page,
 		channelToJoin,
-		`* Quits: ${user2.nick} (${user2.nick}@adm.phisy.rc) (${quitReason})`,
+		`* Quits: ${user2.nick} (${user2.nick}@flex.chat) (${quitReason})`,
 	);
 
 	const $teleportErrorKill = user2.page.locator("#error-layer_teleport");

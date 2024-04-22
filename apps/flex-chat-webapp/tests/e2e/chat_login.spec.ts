@@ -50,5 +50,5 @@ test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {
 	await expect($navServer).toHaveText("Flex");
 
 	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(`Bienvenue sur le réseau ${nickname}!${nickname}@adm.phisy.rc`);
+	await expect($mainRoom).toContainText(`Bienvenue sur le réseau ${nickname}!${nickname}@flex.chat`);
 });
