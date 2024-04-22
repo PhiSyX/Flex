@@ -35,13 +35,13 @@ function saveAndExit() {
 		</div>
 
 		<div class="content [ flex! w:full scroll:y ]">
-			<section>
+			<section class="[ p=1 ]">
 				<h1 class="[ pos-s ]">Personnalisation</h1>
 
 				<SettingsPersonalizationTheme />
 			</section>
 
-			<section>
+			<section class="[ p=1 ]">
 				<h1 class="[ pos-s ]">Disposition</h1>
 
 				<SettingsLayoutNavigationBar />
