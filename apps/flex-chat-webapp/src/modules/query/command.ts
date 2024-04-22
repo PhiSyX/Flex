@@ -28,7 +28,9 @@ export class QueryCommand {
 		const room = this.store.roomManager().getOrInsert(user.id, () => {
 			const priv = new PrivateRoom(user.nickname).withID(user.id);
 			priv.addParticipant(
-				new PrivateParticipant(this.store.client()).withIsCurrentClient(true),
+				new PrivateParticipant(this.store.client()).withIsCurrentClient(
+					true,
+				),
 			);
 			priv.addParticipant(new PrivateParticipant(user));
 			return priv;

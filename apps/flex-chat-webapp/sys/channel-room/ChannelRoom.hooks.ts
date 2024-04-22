@@ -8,7 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { type ComputedRef, type Ref, computed, nextTick, ref, watchEffect } from "vue";
+import {
+	type ComputedRef,
+	type Ref,
+	computed,
+	nextTick,
+	ref,
+	watchEffect,
+} from "vue";
 
 import type { Emits, Props } from "./ChannelRoom.vue";
 
@@ -93,7 +100,9 @@ export function useChannelTopic(props: Props, emit: Emits) {
 
 	// Est-ce que le client courant peut éditer le sujet.
 	const currentClientMemberCanEditTopic = computed(() =>
-		props.currentClientMember.map((member) => props.room.canEditTopic(member)).unwrap_or(false),
+		props.currentClientMember
+			.map((member) => props.room.canEditTopic(member))
+			.unwrap_or(false),
 	);
 
 	const submitTopicHandler = submitTopic(emit, props, {

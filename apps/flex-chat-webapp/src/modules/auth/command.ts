@@ -18,10 +18,8 @@ import { AuthSubCommand } from "./subcommand";
 // Implémentation //
 // -------------- //
 
-export class AuthCommand
-{
-	static from_str(value: string): Result<AuthSubCommand, Error>
-	{
+export class AuthCommand {
+	static from_str(value: string): Result<AuthSubCommand, Error> {
 		switch (value) {
 			case "id":
 			case "ident":
@@ -32,8 +30,7 @@ export class AuthCommand
 			case "register":
 				return Ok(AuthSubCommand.REGISTER);
 
-			default:
-			{
+			default: {
 				let err = new Error(
 					`La commande "${value}" n'est pas valide pour le module AUTH`,
 				);
@@ -48,16 +45,12 @@ export class AuthCommand
 	constructor(
 		private store: ChatStore,
 		private authApiHttpClient: AuthApiHTTPClient,
-	)
-	{
-	}
+	) {}
 
-	sendIdentify(payload: AuthIdentifyFormData)
-	{
+	sendIdentify(payload: AuthIdentifyFormData) {
 		payload.remember_me ??= false;
 
-		const onSuccess = (response: AuthIdentifyHttpResponse) =>
-		{
+		const onSuccess = (response: AuthIdentifyHttpResponse) => {
 			this.store.emit("AUTH IDENTIFY", response);
 
 			const message = "-AuthServ:IDENTIFY- Connexion réussie";
@@ -65,41 +58,46 @@ export class AuthCommand
 				origin: this.store.client(),
 				tags: { msgid: response.id },
 			};
-			this.store.roomManager().active()
+			this.store
+				.roomManager()
+				.active()
 				.addConnectEvent(connectData, message);
 		};
 
-		const onFailure = async (problem: HttpProblemErrorResponse) =>
-		{
+		const onFailure = async (problem: HttpProblemErrorResponse) => {
 			const detail = problem.detail;
 			const message = `-AuthServ:IDENTIFY- ${detail}`;
 			const connectData = {
 				origin: this.store.client(),
 				tags: { msgid: new Date().toISOString() },
 			};
-			this.store.roomManager().active()
+			this.store
+				.roomManager()
+				.active()
 				.addErrorEvent(connectData, message);
 		};
 
-		this.authApiHttpClient.identify(payload).then(onSuccess).catch(onFailure);
+		this.authApiHttpClient
+			.identify(payload)
+			.then(onSuccess)
+			.catch(onFailure);
 	}
 
-	sendRegister(payload: AuthRegisterFormData)
-	{
-		const onSuccess = (response: AuthRegisterHttpResponse) =>
-		{
+	sendRegister(payload: AuthRegisterFormData) {
+		const onSuccess = (response: AuthRegisterHttpResponse) => {
 			const connectData = {
 				origin: this.store.client(),
 				tags: { msgid: response.id },
 			};
 			const message = `-AuthServ:REGISTER- ${response.message}`;
 
-			this.store.roomManager().active()
+			this.store
+				.roomManager()
+				.active()
 				.addConnectEvent(connectData, message);
 		};
 
-		const onFailure = (problem: HttpProblemErrorResponse) =>
-		{
+		const onFailure = (problem: HttpProblemErrorResponse) => {
 			this.store.overlayer.create({
 				id: "authserv-register-error",
 				centered: true,
@@ -111,16 +109,18 @@ export class AuthCommand
 			function filterObject<T extends object>(
 				obj: T,
 				keys: Array<string>,
-			): Partial<T>
-			{
-				let filtered = Object.entries(obj)
-					.filter(([key, _]) => keys.includes(key));
+			): Partial<T> {
+				let filtered = Object.entries(obj).filter(([key, _]) =>
+					keys.includes(key),
+				);
 				return Object.fromEntries(filtered) as Partial<T>;
 			}
 
 			const filteredPayload = filterObject(
 				payload,
-				(problem.errors || []).flatMap((err) => err.pointer.slice(2).split("/")),
+				(problem.errors || []).flatMap((err) =>
+					err.pointer.slice(2).split("/"),
+				),
 			);
 
 			this.store.clientError.replace({
@@ -138,10 +138,15 @@ export class AuthCommand
 			};
 			const message = `-AuthServ:REGISTER- ${problem.title}`;
 
-			this.store.roomManager().active()
+			this.store
+				.roomManager()
+				.active()
 				.addErrorEvent(connectData, message);
 		};
 
-		this.authApiHttpClient.register(payload).then(onSuccess).catch(onFailure);
+		this.authApiHttpClient
+			.register(payload)
+			.then(onSuccess)
+			.catch(onFailure);
 	}
 }

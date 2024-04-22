@@ -30,4 +30,5 @@ export const STORAGE_SETTINGS_LAYOUT_KEY = "flex.settings.layout";
 /**
  * Clé localStorage paramètres "Personalization".
  */
-export const STORAGE_SETTINGS_PERSONALIZATION_KEY = "flex.settings.personalization";
+export const STORAGE_SETTINGS_PERSONALIZATION_KEY =
+	"flex.settings.personalization";

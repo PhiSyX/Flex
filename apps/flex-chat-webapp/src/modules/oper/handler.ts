@@ -29,7 +29,10 @@ export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER"> {
 	}
 
 	handle(data: GenericReply<"RPL_YOUREOPER">) {
-		this.store.userManager().upsert(data.origin).withOperatorFlag(data.oper_type);
+		this.store
+			.userManager()
+			.upsert(data.origin)
+			.withOperatorFlag(data.oper_type);
 		const currentRoom = this.store.roomManager().active();
 		currentRoom.addEvent(
 			"event:rpl_youreoper",

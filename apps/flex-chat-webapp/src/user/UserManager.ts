@@ -49,7 +49,9 @@ export class UserManager {
 			user = userOrigin;
 		}
 
-		const maybeFoundUser = this.find(user.id).or_else(() => this.findByNickname(user.nickname));
+		const maybeFoundUser = this.find(user.id).or_else(() =>
+			this.findByNickname(user.nickname),
+		);
 
 		maybeFoundUser.then((foundUser) => {
 			if (foundUser.id !== user.id) {
@@ -143,7 +145,8 @@ export class UserManager {
 
 		const maybeUser = Option.from(
 			Array.from(this._users.values()).find(
-				(user) => user.nickname.toLowerCase() === nickname.toLowerCase(),
+				(user) =>
+					user.nickname.toLowerCase() === nickname.toLowerCase(),
 			),
 		);
 
@@ -200,7 +203,10 @@ export class UserManager {
 
 		if (foundUser) {
 			foundUser.away ||= user.away;
-			foundUser.channels = new Set([...foundUser.channels, ...user.channels]);
+			foundUser.channels = new Set([
+				...foundUser.channels,
+				...user.channels,
+			]);
 			foundUser.host = user.host;
 			foundUser.ident = user.ident;
 			foundUser.nickname = user.nickname;

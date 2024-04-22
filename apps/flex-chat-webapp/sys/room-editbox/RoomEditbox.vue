@@ -4,7 +4,12 @@ import { onActivated } from "vue";
 
 import { type Emits, changeNick, onSubmit } from "./RoomEditbox.handlers";
 import { useAutocompletion, useInputHistory } from "./RoomEditbox.hooks";
-import { $input, type Props, computeFormAction, inputModel } from "./RoomEditbox.state";
+import {
+	$input,
+	type Props,
+	computeFormAction,
+	inputModel,
+} from "./RoomEditbox.state";
 
 // --------- //
 // Composant //

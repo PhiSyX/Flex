@@ -132,15 +132,21 @@ export function useAutocompletion(props: Props) {
 		const last = words.at(-1);
 
 		if (["Tab", "ShiftTab"].includes(type) && last) {
-			const newPositionWord = words.slice(0, positionWord.value + 1).join(" ").length;
-			const newValueInput = words.join(" ").slice(0, newPositionWord - last.length) + suggest;
+			const newPositionWord = words
+				.slice(0, positionWord.value + 1)
+				.join(" ").length;
+			const newValueInput =
+				words.join(" ").slice(0, newPositionWord - last.length) +
+				suggest;
 			inputModel.value = newValueInput;
 			suggestionInput.value = "";
 		}
 	}
 
 	function wordCompleter(completionList: Array<string>, word: string) {
-		return completionList.filter((item) => !item.toLowerCase().indexOf(word.toLowerCase()));
+		return completionList.filter(
+			(item) => !item.toLowerCase().indexOf(word.toLowerCase()),
+		);
 	}
 
 	function submitHandler() {

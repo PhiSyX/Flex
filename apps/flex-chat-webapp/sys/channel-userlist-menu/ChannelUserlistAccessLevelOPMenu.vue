@@ -19,7 +19,11 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "set-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 	(
 		evtName: "unset-access-level",
 		member: ChannelMember,
@@ -41,7 +45,9 @@ const isCurrentClientMemberOperator = computed(() =>
 	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Operator),
 );
 const isCurrentClientMemberHaveOperatorRights = computed(
-	() => props.currentClientMember.accessLevel.highest.level >= ChannelAccessLevelFlag.Operator,
+	() =>
+		props.currentClientMember.accessLevel.highest.level >=
+		ChannelAccessLevelFlag.Operator,
 );
 
 const isSelectedMemberOperator = computed(() =>

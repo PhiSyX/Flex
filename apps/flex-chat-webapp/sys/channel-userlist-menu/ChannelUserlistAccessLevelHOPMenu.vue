@@ -19,7 +19,11 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "set-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 	(
 		evtName: "unset-access-level",
 		member: ChannelMember,
@@ -39,18 +43,24 @@ const isCurrentClientMemberGlobalOperator = computed(() =>
 );
 
 const isCurrentClientMemberHalfOperator = computed(() =>
-	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.HalfOperator),
+	props.currentClientMember.accessLevel.eq(
+		ChannelAccessLevelFlag.HalfOperator,
+	),
 );
 
 const isCurrentClientMemberHaveOperatorRights = computed(() =>
 	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Operator),
 );
 const isCurrentClientMemberHaveHalfOperatorRights = computed(() =>
-	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.HalfOperator),
+	props.currentClientMember.accessLevel.ge(
+		ChannelAccessLevelFlag.HalfOperator,
+	),
 );
 
 const isSelectedMemberHalfOperator = computed(() =>
-	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.HalfOperator),
+	props.selectedMember.member.accessLevel.eq(
+		ChannelAccessLevelFlag.HalfOperator,
+	),
 );
 const isSelectedMemberVipRights = computed(() =>
 	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Vip),

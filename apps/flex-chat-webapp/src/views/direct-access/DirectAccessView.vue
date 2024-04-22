@@ -1,7 +1,12 @@
 
 <script setup lang="ts">
 import type { Option } from "@phisyx/flex-safety";
-import { ButtonIcon, InputSwitch, TextInput, UiButton } from "@phisyx/flex-uikit";
+import {
+	ButtonIcon,
+	InputSwitch,
+	TextInput,
+	UiButton,
+} from "@phisyx/flex-uikit";
 import { type ModelRef, computed, onMounted, reactive, ref } from "vue";
 
 import { channelID } from "~/asserts/room";
@@ -100,11 +105,17 @@ function connectSubmit(changeViewModel: ModelRef<View | undefined, string>) {
 
 		chatStore.connect(loginFormData);
 
-		chatStore.listen("RPL_WELCOME", () => replyWelcomeHandler(changeViewModel), {
-			once: true,
-		});
+		chatStore.listen(
+			"RPL_WELCOME",
+			() => replyWelcomeHandler(changeViewModel),
+			{
+				once: true,
+			},
+		);
 
-		chatStore.listen("ERR_NICKNAMEINUSE", (data) => errorNicknameinuseHandler(data));
+		chatStore.listen("ERR_NICKNAMEINUSE", (data) =>
+			errorNicknameinuseHandler(data),
+		);
 	}
 
 	return connectSubmitHandler;
@@ -113,7 +124,9 @@ function connectSubmit(changeViewModel: ModelRef<View | undefined, string>) {
 /**
  * Écoute de l'événement `RPL_WELCOME`.
  */
-function replyWelcomeHandler(changeViewModel: ModelRef<View | undefined, string>) {
+function replyWelcomeHandler(
+	changeViewModel: ModelRef<View | undefined, string>,
+) {
 	loader.value = false;
 	changeViewModel.value = View.Chat;
 }
@@ -133,18 +146,16 @@ function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 	loader.value = false;
 }
 
-
-function toSettingsView()
-{
+function toSettingsView() {
 	changeView.value = View.Settings;
 }
 
 onMounted(() => {
 	chatStore.store.setUserID(user.value.id);
 	if (loginFormData.rememberMe.get()) {
-		submitHandler()
+		submitHandler();
 	}
-})
+});
 </script>
 
 <template>

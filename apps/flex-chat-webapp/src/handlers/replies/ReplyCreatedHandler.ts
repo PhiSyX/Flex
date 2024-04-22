@@ -14,7 +14,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ReplyCreatedHandler implements SocketEventInterface<"RPL_CREATED"> {
+export class ReplyCreatedHandler
+	implements SocketEventInterface<"RPL_CREATED">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {

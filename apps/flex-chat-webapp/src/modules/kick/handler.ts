@@ -44,7 +44,9 @@ export class KickHandler implements SocketEventInterface<"KICK"> {
 	}
 
 	handleClientItself(data: GenericReply<"KICK">, channel: ChannelRoom) {
-		this.store.network().addEvent("event:kick", { ...data, isCurrentClient: true });
+		this.store
+			.network()
+			.addEvent("event:kick", { ...data, isCurrentClient: true });
 		channel.addEvent("event:kick", { ...data, isCurrentClient: true });
 		channel.removeMember(data.knick.id);
 		channel.setKicked(true);

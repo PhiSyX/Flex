@@ -19,7 +19,10 @@ import AppComponent from "./App.vue";
 const app = createApp(AppComponent);
 
 // 1. Setup
-const plugins = import.meta.glob<{ install: VuePluginInstall }>("./plugins/*.ts", { eager: true });
+const plugins = import.meta.glob<{ install: VuePluginInstall }>(
+	"./plugins/*.ts",
+	{ eager: true },
+);
 
 for (const plugin of Object.values(plugins)) {
 	plugin.install(app);
@@ -33,8 +36,14 @@ const eventsComponentsImports = import.meta.glob<{ default: unknown }>(
 
 const eventsComponentsEntries = Object.entries(eventsComponentsImports).map(
 	([eventFilepath, eventComponent]) => {
-		const componentName = eventFilepath.slice("../sys/room-events/".length, 0 - ".vue".length);
-		return [componentName, eventComponent] as [string, () => Promise<{ default: unknown }>];
+		const componentName = eventFilepath.slice(
+			"../sys/room-events/".length,
+			0 - ".vue".length,
+		);
+		return [componentName, eventComponent] as [
+			string,
+			() => Promise<{ default: unknown }>,
+		];
 	},
 );
 

@@ -72,7 +72,7 @@ export class RoomManager {
 	 */
 	close(
 		roomID: RoomID,
-		options?: { state: "opened" | "closed" }
+		options?: { state: "opened" | "closed" },
 	): Option<Room> {
 		if (this._currentRoom.is_some()) {
 			if (this.current().eq(roomID)) {
@@ -122,7 +122,9 @@ export class RoomManager {
 			state: "opened" | "closed" | "opened:not-kicked";
 		} = { state: "opened" },
 	): Option<Room> {
-		const maybeRoom = Option.from(this._rooms.get(roomID(currentRoomID.toLowerCase())));
+		const maybeRoom = Option.from(
+			this._rooms.get(roomID(currentRoomID.toLowerCase())),
+		);
 
 		if (options) {
 			switch (options.state) {
@@ -181,7 +183,7 @@ export class RoomManager {
 	 */
 	remove(
 		roomId: RoomID,
-		options?: { state: "opened" | "closed" }
+		options?: { state: "opened" | "closed" },
 	): Option<Room> {
 		const maybeRoom = this.get(roomId, options);
 		maybeRoom.then(() => this._rooms.delete(roomID(roomId.toLowerCase())));

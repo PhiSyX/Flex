@@ -27,7 +27,13 @@ type MessageProperties<T = any> = {
 		datetime: string;
 		formattedTime: string;
 	};
-	type: "action" | `error:${string}` | "event" | `event:${string}` | "pubmsg" | "privmsg";
+	type:
+		| "action"
+		| `error:${string}`
+		| "event"
+		| `event:${string}`
+		| "pubmsg"
+		| "privmsg";
 };
 
 // -------- //

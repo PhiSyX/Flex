@@ -41,10 +41,14 @@ const currentClientNickname = computed(() => currentClient.value.nickname);
 //
 // NOTE: l'utilisateur courant PEUT être sanctionné à tout moment, c'est
 //       pourquoi l'on évitera de .unwrap() le retour de la fonction `getUser`.
-const currentClientMember = computed(() => props.room.getMember(currentClient.value.id));
+const currentClientMember = computed(() =>
+	props.room.getMember(currentClient.value.id),
+);
 
 // Membre du salon actuellement sélectionné par le client courant.
-const selectedMember = computed(() => chatStore.getCurrentSelectedChannelMember(props.room));
+const selectedMember = computed(() =>
+	chatStore.getCurrentSelectedChannelMember(props.room),
+);
 
 // Liste de la complétion pour la boite de saisie, il y contient:
 //
@@ -58,10 +62,14 @@ const completionList = computed(() => [
 ]);
 
 /// Affichage de la liste des utilisateurs
-const userlistDisplay = computed(() => settingsStore.layout.channelUserlistDisplay as boolean);
+const userlistDisplay = computed(
+	() => settingsStore.layout.channelUserlistDisplay as boolean,
+);
 
 /// Position de la liste des utilisateurs
-const userlistPosition = computed(() => settingsStore.layout.channelUserlistPosition);
+const userlistPosition = computed(
+	() => settingsStore.layout.channelUserlistPosition,
+);
 
 // -------- //
 // Handlers //
@@ -93,7 +101,8 @@ function createTopicLayer(payload: {
  * Envoie les commandes liées aux niveaux d'accès.
  */
 const sendAccessLevel =
-	(applyState: "+" | "-") => (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) => {
+	(applyState: "+" | "-") =>
+	(member: ChannelMember, accessLevel: ChannelAccessLevelFlag) => {
 		if (applyState === "+") {
 			chatStore.sendSetAccessLevel(props.room, member, accessLevel);
 		} else {
@@ -148,7 +157,10 @@ function openPrivate(origin: Origin) {
  * de sanction BAN à un autre membre du salon.
  */
 function sendBanMemberCommand(member: ChannelMember) {
-	chatStore.banChannelMemberMask(props.room, member.address("*!ident@hostname"));
+	chatStore.banChannelMemberMask(
+		props.room,
+		member.address("*!ident@hostname"),
+	);
 }
 
 /**

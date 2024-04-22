@@ -71,34 +71,38 @@ declare interface Replies
 declare type RepliesNames = keyof Replies;
 declare type Reply<T> = T extends keyof Replies ? Replies[T] : never;
 
-declare type GenericCommandResponseFromServer<T extends keyof CommandResponsesFromServer> =
-	CommandResponsesFromServer[T] & {
-		name: T;
-		tags: { msgid: string } & Record<string, unknown>;
-		origin: Origin;
-	};
-
-declare type GenericCommandResponseReply<T extends keyof CommandResponsesReplies> =
-	CommandResponsesReplies[T] & {
-		name: T;
-		code: number;
-		message: string;
-		tags: { msgid: string } & Record<string, unknown>;
-		origin: Origin;
-	};
-
-declare type GenericErrorReply<T extends keyof ErrorReplies> = ErrorReplies[T] & {
+declare type GenericCommandResponseFromServer<
+	T extends keyof CommandResponsesFromServer,
+> = CommandResponsesFromServer[T] & {
 	name: T;
-	code: number;
-	reason: string;
 	tags: { msgid: string } & Record<string, unknown>;
 	origin: Origin;
 };
 
-declare type GenericReply<T extends RepliesNames> = T extends keyof CommandResponsesFromServer
-	? GenericCommandResponseFromServer<T>
-	: T extends keyof CommandResponsesReplies
-	  ? GenericCommandResponseReply<T>
-	  : T extends keyof ErrorReplies
-		  ? GenericErrorReply<T>
-		  : never;
+declare type GenericCommandResponseReply<
+	T extends keyof CommandResponsesReplies,
+> = CommandResponsesReplies[T] & {
+	name: T;
+	code: number;
+	message: string;
+	tags: { msgid: string } & Record<string, unknown>;
+	origin: Origin;
+};
+
+declare type GenericErrorReply<T extends keyof ErrorReplies> =
+	ErrorReplies[T] & {
+		name: T;
+		code: number;
+		reason: string;
+		tags: { msgid: string } & Record<string, unknown>;
+		origin: Origin;
+	};
+
+declare type GenericReply<T extends RepliesNames> =
+	T extends keyof CommandResponsesFromServer
+		? GenericCommandResponseFromServer<T>
+		: T extends keyof CommandResponsesReplies
+			? GenericCommandResponseReply<T>
+			: T extends keyof ErrorReplies
+				? GenericErrorReply<T>
+				: never;

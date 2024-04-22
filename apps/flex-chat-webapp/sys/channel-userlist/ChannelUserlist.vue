@@ -3,7 +3,11 @@ import { UiButton } from "@phisyx/flex-uikit";
 
 import type { ChannelMembers } from "~/channel/ChannelMembers";
 
-import { UserlistModeView, useFilterView, useInputFilterUserlist } from "./ChannelUserlist.hooks";
+import {
+	UserlistModeView,
+	useFilterView,
+	useInputFilterUserlist,
+} from "./ChannelUserlist.hooks";
 
 // ---- //
 // Type //

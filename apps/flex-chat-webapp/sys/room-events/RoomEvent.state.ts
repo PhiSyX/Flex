@@ -25,7 +25,13 @@ export interface Props<E extends keyof Replies> {
 		datetime: string;
 		formattedTime: string;
 	};
-	type: "action" | `error:${string}` | "event" | `event:${string}` | "pubmsg" | "privmsg";
+	type:
+		| "action"
+		| `error:${string}`
+		| "event"
+		| `event:${string}`
+		| "pubmsg"
+		| "privmsg";
 }
 
 // ----------- //

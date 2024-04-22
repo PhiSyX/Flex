@@ -63,7 +63,9 @@ export class ChatStore {
 	static default(): ChatStore {
 		const self = reactive(new ChatStore()) as ChatStore;
 
-		self._handlerManager.extends(HANDLERS).extends(MODULES_REPLIES_HANDLERS);
+		self._handlerManager
+			.extends(HANDLERS)
+			.extends(MODULES_REPLIES_HANDLERS);
 		self._moduleManager.extends(MODULES);
 
 		const thisServer = new ServerCustomRoom();
@@ -134,9 +136,14 @@ export class ChatStore {
 	 * Connexion au serveur de Chat WebSocket.
 	 */
 	connectWebsocket(websocketServerURL: string) {
-		console.info("Connexion au serveur de WebSocket « %s »", websocketServerURL);
+		console.info(
+			"Connexion au serveur de WebSocket « %s »",
+			websocketServerURL,
+		);
 
-		let clientID = this._clientIDStorage.maybe().unwrap_or("") as string | null;
+		let clientID = this._clientIDStorage.maybe().unwrap_or("") as
+			| string
+			| null;
 		let userID = this._userID.unwrap_or("") as string | null;
 
 		if (clientID?.length === 0) {
@@ -147,7 +154,7 @@ export class ChatStore {
 			userID = null;
 		}
 
-		let wsio = <TypeSafeSocket> io(websocketServerURL, {
+		let wsio = <TypeSafeSocket>io(websocketServerURL, {
 			auth: { user_id: userID, client_id: clientID },
 			transports: ["websocket"],
 			reconnection: true,
@@ -165,8 +172,13 @@ export class ChatStore {
 	/**
 	 * Méthode d'émission de données vers le serveur WebSocket.
 	 */
-	emit<E extends keyof Commands>(eventName: E, ...payload: Parameters<ClientToServerEvent[E]>) {
-		this._ws.expect("Instance WebSocket connecté au serveur").emit(eventName, ...payload);
+	emit<E extends keyof Commands>(
+		eventName: E,
+		...payload: Parameters<ClientToServerEvent[E]>
+	) {
+		this._ws
+			.expect("Instance WebSocket connecté au serveur")
+			.emit(eventName, ...payload);
 	}
 
 	/**
@@ -200,13 +212,17 @@ export class ChatStore {
 	 * Récupère les informations de connexion de l'utilisateur.
 	 */
 	getConnectUserInfo(): ConnectUserInfo {
-		return this._connectUserInfo.expect("Information de connexion de l'utilisateur");
+		return this._connectUserInfo.expect(
+			"Information de connexion de l'utilisateur",
+		);
 	}
 
 	/**
 	 * Récupère l'utilisateur sélectionné d'un salon.
 	 */
-	getCurrentSelectedChannelMember(room: ChannelRoom): Option<ChannelMemberSelected> {
+	getCurrentSelectedChannelMember(
+		room: ChannelRoom,
+	): Option<ChannelMemberSelected> {
 		return this.roomManager()
 			.get(room.id())
 			.and_then((room) => {
@@ -309,8 +325,14 @@ export class ChatStore {
 			}
 
 			for (const [moduleName, moduleCtor] of modules) {
-				console.info("Le module « %s » est maintenant en écoute.", moduleName);
-				this.moduleManager().set(moduleCtor.NAME.toUpperCase(), moduleCtor.create(this));
+				console.info(
+					"Le module « %s » est maintenant en écoute.",
+					moduleName,
+				);
+				this.moduleManager().set(
+					moduleCtor.NAME.toUpperCase(),
+					moduleCtor.create(this),
+				);
 
 				loaded += 1;
 
@@ -345,7 +367,9 @@ export class ChatStore {
 	 * La chambre personnalisée du serveur.
 	 */
 	network(): ServerCustomRoom {
-		return this.roomManager().get(this.networkName()).unwrap_unchecked() as ServerCustomRoom;
+		return this.roomManager()
+			.get(this.networkName())
+			.unwrap_unchecked() as ServerCustomRoom;
 	}
 
 	/**
@@ -366,21 +390,33 @@ export class ChatStore {
 	 * Désactive un événement.
 	 */
 	off<K extends keyof ServerToClientEvent>(eventName: K) {
-		this._ws.expect("Instance WebSocket connecté au serveur").off(eventName);
+		this._ws
+			.expect("Instance WebSocket connecté au serveur")
+			.off(eventName);
 	}
 
 	/**
 	 * Active/écoute un événement.
 	 */
-	on<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
-		this._ws.expect("Instance WebSocket connecté au serveur").on(eventName, listener);
+	on<K extends keyof ServerToClientEvent>(
+		eventName: K,
+		listener: ServerToClientEvent[K],
+	) {
+		this._ws
+			.expect("Instance WebSocket connecté au serveur")
+			.on(eventName, listener);
 	}
 
 	/**
 	 * Active/écoute un événement une seule et unique fois.
 	 */
-	once<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]) {
-		this._ws.expect("Instance WebSocket connecté au serveur").once(eventName, listener);
+	once<K extends keyof ServerToClientEvent>(
+		eventName: K,
+		listener: ServerToClientEvent[K],
+	) {
+		this._ws
+			.expect("Instance WebSocket connecté au serveur")
+			.once(eventName, listener);
 	}
 
 	/**
@@ -486,8 +522,14 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Applique les paramètres d'un salon.
 	 */
-	function applyChannelSettings(target: string, modesSettings: Command<"MODE">["modes"]) {
-		const module = store.moduleManager().get("MODE").expect("Récupération du module `MODE`");
+	function applyChannelSettings(
+		target: string,
+		modesSettings: Command<"MODE">["modes"],
+	) {
+		const module = store
+			.moduleManager()
+			.get("MODE")
+			.expect("Récupération du module `MODE`");
 		module.send({ target, modes: modesSettings });
 	}
 
@@ -495,7 +537,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Change le pseudonyme de l'utilisateur actuel.
 	 */
 	function changeNick(newNick: string) {
-		const module = store.moduleManager().get("NICK").expect("Récupération du module `NICK`");
+		const module = store
+			.moduleManager()
+			.get("NICK")
+			.expect("Récupération du module `NICK`");
 		module.send({ nickname: newNick });
 	}
 
@@ -523,7 +568,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 */
 	function channelList(channels?: Array<string>) {
 		changeRoom(ChannelListCustomRoom.ID);
-		const module = store.moduleManager().get("LIST").expect("Récupération du module `LIST`");
+		const module = store
+			.moduleManager()
+			.get("LIST")
+			.expect("Récupération du module `LIST`");
 		module?.send({ channels });
 	}
 
@@ -551,7 +599,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			return;
 		}
 
-		const module = store.moduleManager().get("PART").expect("Récupération du module `PART`");
+		const module = store
+			.moduleManager()
+			.get("PART")
+			.expect("Récupération du module `PART`");
 		module.send({ channels: [roomID], message });
 	}
 
@@ -609,7 +660,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * @see ChatStore#getCurrentSelectedChannelMember
 	 */
-	function getCurrentSelectedChannelMember(room: ChannelRoom): Option<ChannelMemberSelected> {
+	function getCurrentSelectedChannelMember(
+		room: ChannelRoom,
+	): Option<ChannelMemberSelected> {
 		return store.getCurrentSelectedChannelMember(room);
 	}
 
@@ -628,7 +681,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /JOIN vers le serveur.
 	 */
 	function joinChannel(channelsRaw: ChannelID, keysRaw?: string) {
-		const module = store.moduleManager().get("JOIN").expect("Récupération du module `JOIN`");
+		const module = store
+			.moduleManager()
+			.get("JOIN")
+			.expect("Récupération du module `JOIN`");
 		const channels = channelsRaw.split(",") as Array<ChannelID>;
 		const keys = keysRaw?.split(",");
 		module.send({ channels, keys });
@@ -637,9 +693,20 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	/**
 	 * Émet la commande /KICK vers le serveur.
 	 */
-	function kickChannelMember(channel: ChannelRoom, member: ChannelMember, comment = "Kick.") {
-		const module = store.moduleManager().get("KICK").expect("Récupération du module `KICK`");
-		module.send({ channels: [channel.name], knicks: [member.nickname], comment });
+	function kickChannelMember(
+		channel: ChannelRoom,
+		member: ChannelMember,
+		comment = "Kick.",
+	) {
+		const module = store
+			.moduleManager()
+			.get("KICK")
+			.expect("Récupération du module `KICK`");
+		module.send({
+			channels: [channel.name],
+			knicks: [member.nickname],
+			comment,
+		});
 	}
 
 	/**
@@ -663,9 +730,15 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	function openPrivateOrCreate(origin: Origin) {
 		const room = store.roomManager().getOrInsert(origin.id, () => {
 			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
-			priv.addParticipant(new PrivateParticipant(store.client()).withIsCurrentClient(true));
+			priv.addParticipant(
+				new PrivateParticipant(store.client()).withIsCurrentClient(
+					true,
+				),
+			);
 			const maybeUser = store.userManager().find(origin.id);
-			maybeUser.then((user) => priv.addParticipant(new PrivateParticipant(user)));
+			maybeUser.then((user) =>
+				priv.addParticipant(new PrivateParticipant(user)),
+			);
 			return priv;
 		});
 
@@ -699,7 +772,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			}
 		}
 
-		const module = store.moduleManager().get("JOIN").expect("Récupération du module `JOIN`");
+		const module = store
+			.moduleManager()
+			.get("JOIN")
+			.expect("Récupération du module `JOIN`");
 		module.send({ channels: [roomID] });
 	}
 
@@ -707,7 +783,8 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * (Dé-)sélectionne un utilisateur d'un salon.
 	 */
 	function toggleSelectChannelMember(room: ChannelRoom, origin: Origin) {
-		const maybeSelectedChannelMember = store.getCurrentSelectedChannelMember(room);
+		const maybeSelectedChannelMember =
+			store.getCurrentSelectedChannelMember(room);
 		if (maybeSelectedChannelMember.is_some()) {
 			const selectedChannelMember = maybeSelectedChannelMember.unwrap();
 			if (selectedChannelMember.member.id === origin.id) {
@@ -724,9 +801,13 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet les commandes au serveur.
 	 */
 	function sendMessage(name: RoomID, message: string) {
-		const room = store.roomManager().get(name)
+		const room = store
+			.roomManager()
+			.get(name)
 			.or_else(() =>
-				store.userManager().findByNickname(name)
+				store
+					.userManager()
+					.findByNickname(name)
 					.and_then((user) => store.roomManager().get(user.id)),
 			)
 			.unwrap_unchecked();
@@ -736,11 +817,15 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 			const words = message.split(" ");
 
 			if (name.startsWith("#")) {
-				const module = store.moduleManager().get("PUBMSG")
+				const module = store
+					.moduleManager()
+					.get("PUBMSG")
 					.expect("Récupération du module `PUBMSG`");
 				module.input(name, ...words);
 			} else {
-				const module = store.moduleManager().get("PRIVMSG")
+				const module = store
+					.moduleManager()
+					.get("PRIVMSG")
 					.expect("Récupération du module `PRIVMSG`");
 				module.input(name, ...words);
 			}
@@ -750,7 +835,9 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 		const words = message.slice(1).split(" ");
 		const [commandName, ...args] = words;
 
-		const maybeModule = store.moduleManager().get(commandName.toUpperCase() as CommandsNames);
+		const maybeModule = store
+			.moduleManager()
+			.get(commandName.toUpperCase() as CommandsNames);
 
 		if (maybeModule.is_none()) {
 			console.error(
@@ -855,7 +942,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /TOPIC vers le serveur.
 	 */
 	function updateTopic(channelName: ChannelID, topic?: string) {
-		const module = store.moduleManager().get("TOPIC").expect("Récupération du module `TOPIC`");
+		const module = store
+			.moduleManager()
+			.get("TOPIC")
+			.expect("Récupération du module `TOPIC`");
 		module.send({ channel: channelName, topic });
 	}
 
@@ -863,7 +953,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /BAN vers le serveur.
 	 */
 	function banChannelMemberMask(channel: ChannelRoom, mask: MaskAddr) {
-		const module = store.moduleManager().get("BAN").expect("Récupération du module `BAN`");
+		const module = store
+			.moduleManager()
+			.get("BAN")
+			.expect("Récupération du module `BAN`");
 		module.send({ channels: [channel.name], masks: [mask] });
 	}
 
@@ -871,7 +964,10 @@ export const useChatStore = defineStore(ChatStore.NAME, () => {
 	 * Émet la commande /UNBAN vers le serveur.
 	 */
 	function unbanChannelMemberMask(channel: ChannelRoom, mask: MaskAddr) {
-		const module = store.moduleManager().get("UNBAN").expect("Récupération du module `UNBAN`");
+		const module = store
+			.moduleManager()
+			.get("UNBAN")
+			.expect("Récupération du module `UNBAN`");
 		module.send({ channels: [channel.name], masks: [mask] });
 	}
 

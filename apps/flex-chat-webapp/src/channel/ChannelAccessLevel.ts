@@ -84,9 +84,11 @@ export enum ChannelAccessLevelClassName {
 
 const CHANNEL_ACCESS_LEVEL_SYMBOLS = {
 	[ChannelAccessLevelFlag.Owner]: ChannelAccessLevelSymbol.Owner,
-	[ChannelAccessLevelFlag.AdminOperator]: ChannelAccessLevelSymbol.AdminOperator,
+	[ChannelAccessLevelFlag.AdminOperator]:
+		ChannelAccessLevelSymbol.AdminOperator,
 	[ChannelAccessLevelFlag.Operator]: ChannelAccessLevelSymbol.Operator,
-	[ChannelAccessLevelFlag.HalfOperator]: ChannelAccessLevelSymbol.HalfOperator,
+	[ChannelAccessLevelFlag.HalfOperator]:
+		ChannelAccessLevelSymbol.HalfOperator,
 	[ChannelAccessLevelFlag.Vip]: ChannelAccessLevelSymbol.Vip,
 	[ChannelAccessLevelFlag.User]: ChannelAccessLevelSymbol.User,
 } as const;
@@ -102,18 +104,22 @@ const CHANNEL_ACCESS_LEVEL_SYMBOLS = {
 
 const CHANNEL_ACCESS_LEVEL_SYMBOLS_LETTERS = {
 	[ChannelAccessLevelSymbol.Owner]: ChannelAccessLevelLetter.Owner,
-	[ChannelAccessLevelSymbol.AdminOperator]: ChannelAccessLevelLetter.AdminOperator,
+	[ChannelAccessLevelSymbol.AdminOperator]:
+		ChannelAccessLevelLetter.AdminOperator,
 	[ChannelAccessLevelSymbol.Operator]: ChannelAccessLevelLetter.Operator,
-	[ChannelAccessLevelSymbol.HalfOperator]: ChannelAccessLevelLetter.HalfOperator,
+	[ChannelAccessLevelSymbol.HalfOperator]:
+		ChannelAccessLevelLetter.HalfOperator,
 	[ChannelAccessLevelSymbol.Vip]: ChannelAccessLevelLetter.Vip,
 	[ChannelAccessLevelSymbol.User]: ChannelAccessLevelLetter.User,
 } as const;
 
 const CHANNEL_ACCESS_LEVEL_SYMBOLS_CLASSNAMES = {
 	[ChannelAccessLevelSymbol.Owner]: ChannelAccessLevelClassName.Owner,
-	[ChannelAccessLevelSymbol.AdminOperator]: ChannelAccessLevelClassName.AdminOperator,
+	[ChannelAccessLevelSymbol.AdminOperator]:
+		ChannelAccessLevelClassName.AdminOperator,
 	[ChannelAccessLevelSymbol.Operator]: ChannelAccessLevelClassName.Operator,
-	[ChannelAccessLevelSymbol.HalfOperator]: ChannelAccessLevelClassName.HalfOperator,
+	[ChannelAccessLevelSymbol.HalfOperator]:
+		ChannelAccessLevelClassName.HalfOperator,
 	[ChannelAccessLevelSymbol.Vip]: ChannelAccessLevelClassName.Vip,
 	[ChannelAccessLevelSymbol.User]: ChannelAccessLevelClassName.User,
 } as const;

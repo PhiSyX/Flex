@@ -16,7 +16,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorChanoprivsneededHandler implements SocketEventInterface<"ERR_CHANOPRIVSNEEDED"> {
+export class ErrorChanoprivsneededHandler
+	implements SocketEventInterface<"ERR_CHANOPRIVSNEEDED">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {

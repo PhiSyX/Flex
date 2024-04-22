@@ -47,8 +47,7 @@ const DEFAULT_THEME: keyof Theme = "ice";
 // Fonction //
 // -------- //
 
-export function findTheme(fallbackTheme = DEFAULT_THEME): ThemeRecord
-{
+export function findTheme(fallbackTheme = DEFAULT_THEME): ThemeRecord {
 	const settingsStore = useSettingsStore();
 
 	const themeLS = settingsStore.personalization.theme || fallbackTheme;
@@ -67,15 +66,13 @@ export function findTheme(fallbackTheme = DEFAULT_THEME): ThemeRecord
 	};
 }
 
-export function setThemeLS(name: keyof Theme)
-{
+export function setThemeLS(name: keyof Theme) {
 	const settingsStore = useSettingsStore();
 	document.documentElement.dataset["scheme"] = name;
 	settingsStore.personalization.theme = name;
 }
 
-export function findThemeName(fallbackTheme = DEFAULT_THEME)
-{
+export function findThemeName(fallbackTheme = DEFAULT_THEME) {
 	return findTheme(fallbackTheme).name;
 }
 

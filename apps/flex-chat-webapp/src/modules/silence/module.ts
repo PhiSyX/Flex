@@ -38,7 +38,10 @@ export class SilenceModule implements Module<SilenceModule> {
 	// ------- //
 
 	input(_: string, nickname?: string) {
-		if (!nickname || (!nickname.startsWith("-") && !nickname.startsWith("+"))) {
+		if (
+			!nickname ||
+			(!nickname.startsWith("-") && !nickname.startsWith("+"))
+		) {
 			return;
 		}
 

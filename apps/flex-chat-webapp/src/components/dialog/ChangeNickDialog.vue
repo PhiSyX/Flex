@@ -12,7 +12,9 @@ const overlayerStore = useOverlayerStore();
 
 const LAYER_NAME: string = UserChangeNicknameDialog.ID;
 
-const dialog = computed(() => new UserChangeNicknameDialog(overlayerStore.store));
+const dialog = computed(
+	() => new UserChangeNicknameDialog(overlayerStore.store),
+);
 const hasLayer = computed(() => dialog.value.exists());
 
 /**

@@ -51,7 +51,10 @@ enum FuzzySearchType {
 // Fonction //
 // -------- //
 
-const push_to_result = (arr: Array<FuzzySearchRecord>, word: FuzzySearchRecord["word"]) => {
+const push_to_result = (
+	arr: Array<FuzzySearchRecord>,
+	word: FuzzySearchRecord["word"],
+) => {
 	return (type: FuzzySearchRecord["type"]) => {
 		if (word.length === 0) {
 			return arr;
@@ -69,7 +72,10 @@ const push_to_result = (arr: Array<FuzzySearchRecord>, word: FuzzySearchRecord["
 	};
 };
 
-function fuzzy_search(needle: string, haystack: string): Option<Array<FuzzySearchRecord>> {
+function fuzzy_search(
+	needle: string,
+	haystack: string,
+): Option<Array<FuzzySearchRecord>> {
 	return memcache(haystack + needle, () => {
 		const search_size = needle.length;
 		const in_str_len = haystack.length;
@@ -83,7 +89,10 @@ function fuzzy_search(needle: string, haystack: string): Option<Array<FuzzySearc
 			const pattern_ch = needle.charAt(pattern_idx);
 			const str_ch = haystack.charAt(str_idx);
 			const push = push_to_result(matches, str_ch);
-			if (pattern_ch === str_ch || pattern_ch.toLowerCase() === str_ch.toLowerCase()) {
+			if (
+				pattern_ch === str_ch ||
+				pattern_ch.toLowerCase() === str_ch.toLowerCase()
+			) {
 				++pattern_idx;
 				matches = push(FuzzySearchType.Hit);
 			} else {
@@ -92,9 +101,14 @@ function fuzzy_search(needle: string, haystack: string): Option<Array<FuzzySearc
 			++str_idx;
 		}
 
-		matches = push_to_result(matches, haystack.slice(str_idx))(FuzzySearchType.Text);
+		matches = push_to_result(
+			matches,
+			haystack.slice(str_idx),
+		)(FuzzySearchType.Text);
 
-		return search_size !== 0 && in_str_len !== 0 && pattern_idx === search_size
+		return search_size !== 0 &&
+			in_str_len !== 0 &&
+			pattern_idx === search_size
 			? Some(matches)
 			: None();
 	});

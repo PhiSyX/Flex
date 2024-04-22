@@ -26,7 +26,10 @@ export class PubmsgModule implements Module<PubmsgModule> {
 	static NAME = "PUBMSG";
 
 	static create(store: ChatStore): PubmsgModule {
-		return new PubmsgModule(new PubmsgCommand(store), new PubmsgHandler(store));
+		return new PubmsgModule(
+			new PubmsgCommand(store),
+			new PubmsgHandler(store),
+		);
 	}
 
 	// ----------- //
@@ -41,9 +44,15 @@ export class PubmsgModule implements Module<PubmsgModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomMessage: RoomID, channelsRaw?: ChannelID, ...words: Array<string>) {
+	input(
+		roomMessage: RoomID,
+		channelsRaw?: ChannelID,
+		...words: Array<string>
+	) {
 		if (!roomMessage.startsWith("#")) {
-			const channels = channelsRaw?.split(",") as Array<ChannelID> | undefined;
+			const channels = channelsRaw?.split(",") as
+				| Array<ChannelID>
+				| undefined;
 			if (!channels) return;
 			const text = words.join(" ");
 			this.send({ channels, text });
@@ -51,7 +60,9 @@ export class PubmsgModule implements Module<PubmsgModule> {
 		}
 
 		if (channelsRaw?.startsWith("#")) {
-			const channels = channelsRaw?.split(",") as Array<ChannelID> | undefined;
+			const channels = channelsRaw?.split(",") as
+				| Array<ChannelID>
+				| undefined;
 			if (!channels) return;
 			const text = words.join(" ");
 			this.send({ channels, text });

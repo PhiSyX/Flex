@@ -18,18 +18,26 @@ import type { PrivateRoom } from "~/private/PrivateRoom";
 /**
  * Certifie que l'argument donné est une chambre de type [ChannelRoom].
  */
-export function assertChannelRoom(room: { type: string }): asserts room is ChannelRoom {
+export function assertChannelRoom(room: {
+	type: string;
+}): asserts room is ChannelRoom {
 	if (room.type !== "channel") {
-		throw new Error(`« ${room} » n'est pas une chambre de type « channel »`);
+		throw new Error(
+			`« ${room} » n'est pas une chambre de type « channel »`,
+		);
 	}
 }
 
 /**
  * Certifie que l'argument donné est une chambre de type [PrivateRoom].
  */
-export function assertPrivateRoom(room: { type: string }): asserts room is PrivateRoom {
+export function assertPrivateRoom(room: {
+	type: string;
+}): asserts room is PrivateRoom {
 	if (room.type !== "private") {
-		throw new Error(`« ${room} » n'est pas une chambre de type « private »`);
+		throw new Error(
+			`« ${room} » n'est pas une chambre de type « private »`,
+		);
 	}
 }
 

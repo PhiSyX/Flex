@@ -11,7 +11,9 @@
 import { type App, defineAsyncComponent } from "vue";
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const iconsImports = import.meta.glob<{ default: any }>("./src/icons/Icon*.vue");
+const iconsImports = import.meta.glob<{ default: any }>(
+	"./src/icons/Icon*.vue",
+);
 
 const iconsComponents = Object.entries(iconsImports).map(
 	([iconComponentFilepath, iconComponent]) => {
@@ -42,7 +44,10 @@ export type { Icons } from "./src/icons";
 export default {
 	install(app: App<Element>) {
 		for (const [iconComponentName, iconComponent] of iconsComponents) {
-			app.component(iconComponentName, defineAsyncComponent(iconComponent));
+			app.component(
+				iconComponentName,
+				defineAsyncComponent(iconComponent),
+			);
 		}
 	},
 };

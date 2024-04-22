@@ -12,13 +12,12 @@
 // Interface //
 // --------- //
 
-export interface ServerSettings
-{
+export interface ServerSettings {
 	ip: string;
-    port: number;
+	port: number;
 
-    tls?: {
-		cert: string,
-		key: string
-    };
+	tls?: {
+		cert: string;
+		key: string;
+	};
 }

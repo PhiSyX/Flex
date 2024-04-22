@@ -34,7 +34,9 @@ export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
 	}
 }
 
-export class ReplyListstartHandler implements SocketEventInterface<"RPL_LISTSTART"> {
+export class ReplyListstartHandler
+	implements SocketEventInterface<"RPL_LISTSTART">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -55,7 +57,9 @@ export class ReplyListstartHandler implements SocketEventInterface<"RPL_LISTSTAR
 	}
 }
 
-export class ReplyListendHandler implements SocketEventInterface<"RPL_LISTEND"> {
+export class ReplyListendHandler
+	implements SocketEventInterface<"RPL_LISTEND">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //

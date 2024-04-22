@@ -10,7 +10,6 @@
 
 import { defineStore } from "pinia";
 import { reactive } from "vue";
-import type { Theme } from "~/theme";
 import {
 	type LayoutData,
 	LayoutStorage,

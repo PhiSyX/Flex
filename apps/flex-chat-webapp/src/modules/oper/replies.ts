@@ -10,7 +10,9 @@
 
 import type { ChatStore } from "~/store/ChatStore";
 
-export class ErrorNooperhostHandler implements SocketEventInterface<"ERR_NOOPERHOST"> {
+export class ErrorNooperhostHandler
+	implements SocketEventInterface<"ERR_NOOPERHOST">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -34,7 +36,9 @@ export class ErrorNooperhostHandler implements SocketEventInterface<"ERR_NOOPERH
 	}
 }
 
-export class ErrorPasswdmismatchHandler implements SocketEventInterface<"ERR_PASSWDMISMATCH"> {
+export class ErrorPasswdmismatchHandler
+	implements SocketEventInterface<"ERR_PASSWDMISMATCH">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -58,7 +62,9 @@ export class ErrorPasswdmismatchHandler implements SocketEventInterface<"ERR_PAS
 	}
 }
 
-export class ErrorOperonlyHandler implements SocketEventInterface<"ERR_OPERONLY"> {
+export class ErrorOperonlyHandler
+	implements SocketEventInterface<"ERR_OPERONLY">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //

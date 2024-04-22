@@ -143,7 +143,10 @@ export class User {
 				tmp = `*!*@${this.hostname}`;
 				break;
 			case "*!*ident@*.hostname":
-				tmp = `*!*${this.ident}@${this.hostname}`.replace(/[@][^.]+(.*)/, "@*$1");
+				tmp = `*!*${this.ident}@${this.hostname}`.replace(
+					/[@][^.]+(.*)/,
+					"@*$1",
+				);
 				break;
 			case "*!*@*.hostname":
 				tmp = `*!*@${this.hostname}`.replace(/[@][^.]+(.*)/, "@*$1");
@@ -157,13 +160,17 @@ export class User {
 				tmp = `${this.nickname}!*@${this.hostname}`;
 				break;
 			case "nick!*ident@*.hostname":
-				tmp = `${this.nickname}!*${this.ident}@${this.hostname}`.replace(
+				tmp =
+					`${this.nickname}!*${this.ident}@${this.hostname}`.replace(
+						/[@][^.]+(.*)/,
+						"@*$1",
+					);
+				break;
+			case "nick!*@*.hostname":
+				tmp = `${this.nickname}!*@${this.hostname}`.replace(
 					/[@][^.]+(.*)/,
 					"@*$1",
 				);
-				break;
-			case "nick!*@*.hostname":
-				tmp = `${this.nickname}!*@${this.hostname}`.replace(/[@][^.]+(.*)/, "@*$1");
 				break;
 			case "nick!*@*":
 				tmp = `${this.nickname}!*@*`;
@@ -213,14 +220,18 @@ export class User {
 	 * Est-ce que l'utilisateur est un opérateur local?
 	 */
 	isLocalOperator() {
-		return this.operator.filter((flag) => flag === UserFlag.LocalOperator).is_some();
+		return this.operator
+			.filter((flag) => flag === UserFlag.LocalOperator)
+			.is_some();
 	}
 
 	/**
 	 * Est-ce que l'utilisateur est un opérateur global?
 	 */
 	isGlobalOperator() {
-		return this.operator.filter((flag) => flag === UserFlag.GlobalOperator).is_some();
+		return this.operator
+			.filter((flag) => flag === UserFlag.GlobalOperator)
+			.is_some();
 	}
 
 	/**
@@ -296,7 +307,10 @@ export class UserChangeNicknameDialog {
 
 	static ID = "user-change-nickname-dialog";
 
-	static create(overlayerStore: OverlayerStore, { event }: { event: MouseEvent }) {
+	static create(
+		overlayerStore: OverlayerStore,
+		{ event }: { event: MouseEvent },
+	) {
 		overlayerStore.create({
 			id: UserChangeNicknameDialog.ID,
 			centered: true,

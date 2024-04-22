@@ -39,10 +39,14 @@ const currentClientUser = computed(() =>
 );
 
 // Participant de la chambre.
-const recipient = computed(() => props.room.getParticipant(props.room.id()).unwrap());
+const recipient = computed(() =>
+	props.room.getParticipant(props.room.id()).unwrap(),
+);
 
 // Est-ce que le participant est bloqué?
-const isRecipientBlocked = computed(() => chatStore.checkUserIsBlocked(recipient.value));
+const isRecipientBlocked = computed(() =>
+	chatStore.checkUserIsBlocked(recipient.value),
+);
 
 // La liste de la complétion de la boite de saisie, il y contient:
 //
@@ -85,13 +89,14 @@ function sendMessage(message: string) {
 /**
  * Envoie de la commande /SILENCE.
  */
-const sendSilenceUserCommand = (applyState: "+" | "-") => (nickname: string) => {
-	if (applyState === "+") {
-		chatStore.ignoreUser(nickname);
-	} else {
-		chatStore.unignoreUser(nickname);
-	}
-};
+const sendSilenceUserCommand =
+	(applyState: "+" | "-") => (nickname: string) => {
+		if (applyState === "+") {
+			chatStore.ignoreUser(nickname);
+		} else {
+			chatStore.unignoreUser(nickname);
+		}
+	};
 </script>
 
 <template>

@@ -28,9 +28,15 @@ const origin3: User = new User({
 	nickname: "User",
 });
 
-users.add(new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner));
-users.add(new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip));
-users.add(new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User));
+users.add(
+	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner),
+);
+users.add(
+	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip),
+);
+users.add(
+	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User),
+);
 </script>
 
 <template>

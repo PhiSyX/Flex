@@ -54,19 +54,28 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	}
 
 	handleUser(data: GenericReply<"PRIVMSG">) {
-		const priv = this.store.roomManager().getOrInsert(data.origin.id, () => {
-			this.store
-				.roomManager()
-				.active()
-				// @ts-expect-error : type à corriger
-				.addEvent("event:query", { ...data, isCurrentClient: false });
-			const room = new PrivateRoom(data.origin.nickname).withID(data.origin.id);
-			room.addParticipant(new PrivateParticipant(data.origin));
-			room.addParticipant(
-				new PrivateParticipant(this.store.client()).withIsCurrentClient(true),
-			);
-			return room;
-		});
+		const priv = this.store
+			.roomManager()
+			.getOrInsert(data.origin.id, () => {
+				this.store
+					.roomManager()
+					.active()
+					// @ts-expect-error : type à corriger
+					.addEvent("event:query", {
+						...data,
+						isCurrentClient: false,
+					});
+				const room = new PrivateRoom(data.origin.nickname).withID(
+					data.origin.id,
+				);
+				room.addParticipant(new PrivateParticipant(data.origin));
+				room.addParticipant(
+					new PrivateParticipant(
+						this.store.client(),
+					).withIsCurrentClient(true),
+				);
+				return room;
+			});
 
 		this.handleClientItselfssage(priv, data);
 	}
@@ -77,13 +86,19 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
 			// message.
 			const currentClientNickname = this.store.nickname();
-			if (data.text.toLowerCase().indexOf(currentClientNickname.toLowerCase()) >= 0) {
+			if (
+				data.text
+					.toLowerCase()
+					.indexOf(currentClientNickname.toLowerCase()) >= 0
+			) {
 				room.setHighlighted(true);
 			}
 		}
 
 		const nickname =
-			room.type === "channel" || room.type === "private" ? data.origin.nickname : "*";
+			room.type === "channel" || room.type === "private"
+				? data.origin.nickname
+				: "*";
 
 		room.addMessage(
 			new RoomMessage()

@@ -20,33 +20,33 @@ import { AuthSubCommand } from "./subcommand";
 // Implémentation //
 // -------------- //
 
-export class AuthModule implements Module<AuthModule>
-{
+export class AuthModule implements Module<AuthModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "AUTH";
 
-	static create(store: ChatStore): AuthModule
-	{
+	static create(store: ChatStore): AuthModule {
 		return new AuthModule(
 			new AuthCommand(store, new AuthApiHTTPClient()),
-			new UpgradeUserHandler(store)
+			new UpgradeUserHandler(store),
 		);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AuthCommand, private upgradeUserHandler: UpgradeUserHandler) {}
+	constructor(
+		private command: AuthCommand,
+		private upgradeUserHandler: UpgradeUserHandler,
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_roomName: RoomID, ...args: Array<string>)
-	{
+	input(_roomName: RoomID, ...args: Array<string>) {
 		const size = args.length;
 		if (size < 1) return;
 
@@ -60,23 +60,25 @@ export class AuthModule implements Module<AuthModule>
 
 		switch (subCommand) {
 			case AuthSubCommand.IDENTIFY:
-			{
-				if (size < 3) return;
-				const [identifier, password] = args;
-				this.command.sendIdentify({ identifier, password });
-			} break;
+				{
+					if (size < 3) return;
+					const [identifier, password] = args;
+					this.command.sendIdentify({ identifier, password });
+				}
+				break;
 
 			case AuthSubCommand.REGISTER:
-			{
-				if (size < 4) return;
-				const [username, password, email_address] = args;
-				this.command.sendRegister({
-					username,
-					email_address,
-					password,
-					password_confirmation: password
-				});
-			} break;
+				{
+					if (size < 4) return;
+					const [username, password, email_address] = args;
+					this.command.sendRegister({
+						username,
+						email_address,
+						password,
+						password_confirmation: password,
+					});
+				}
+				break;
 		}
 	}
 

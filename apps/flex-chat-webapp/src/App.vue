@@ -14,10 +14,18 @@ import { useTheme } from "./theme";
 
 defineOptions({
 	components: {
-		[View.Chat]: defineAsyncComponent(() => import("./views/chat/ChatView.vue")),
-		[View.DirectAccess]: defineAsyncComponent(() => import("./views/direct-access/DirectAccessView.vue")),
-		[View.Login]: defineAsyncComponent(() => import("./views/login/LoginView.vue")),
-		[View.Settings]: defineAsyncComponent(() => import("./views/settings/SettingsView.vue")),
+		[View.Chat]: defineAsyncComponent(
+			() => import("./views/chat/ChatView.vue"),
+		),
+		[View.DirectAccess]: defineAsyncComponent(
+			() => import("./views/direct-access/DirectAccessView.vue"),
+		),
+		[View.Login]: defineAsyncComponent(
+			() => import("./views/login/LoginView.vue"),
+		),
+		[View.Settings]: defineAsyncComponent(
+			() => import("./views/settings/SettingsView.vue"),
+		),
 	},
 });
 
@@ -30,14 +38,17 @@ useTheme();
 onMounted(() => {
 	const fetchOpts: RequestInit = { credentials: "same-origin" };
 
-	fetch("/api/v1/users/@me", fetchOpts).then(async (r) => {
-		if (r.ok) return r.json();
-		if (r.status >= 400 && r.status < 600) return Promise.reject(await r.json());
-		return Promise.reject(r);
-	}).then((currentUser: UserSession) => {
-		view.value = View.DirectAccess;
-		user.value.replace(currentUser);
-	});
+	fetch("/api/v1/users/@me", fetchOpts)
+		.then(async (r) => {
+			if (r.ok) return r.json();
+			if (r.status >= 400 && r.status < 600)
+				return Promise.reject(await r.json());
+			return Promise.reject(r);
+		})
+		.then((currentUser: UserSession) => {
+			view.value = View.DirectAccess;
+			user.value.replace(currentUser);
+		});
 });
 
 watch(view, (_, oldView) => {

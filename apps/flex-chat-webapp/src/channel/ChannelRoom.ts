@@ -135,17 +135,28 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
 	canEditTopic(member: ChannelMember): boolean {
-		return this.topic.isEditable() || member.isGlobalOperator() || member.isChanOperator();
+		return (
+			this.topic.isEditable() ||
+			member.isGlobalOperator() ||
+			member.isChanOperator()
+		);
 	}
 
 	/**
 	 * Cherche si membre se trouve dans la liste des bans.
 	 */
-	findBan(member: ChannelMember): Option<[MaskAddr, AccessControlMode["mask"]]> {
+	findBan(
+		member: ChannelMember,
+	): Option<[MaskAddr, AccessControlMode["mask"]]> {
 		const banList = this.accessControl.banlist;
 
-		const get = (addr: MaskAddr): Option<[MaskAddr, AccessControlMode["mask"]]> => {
-			return Option.from(banList.get(addr)).map((mode) => [addr, mode.flag.mask]);
+		const get = (
+			addr: MaskAddr,
+		): Option<[MaskAddr, AccessControlMode["mask"]]> => {
+			return Option.from(banList.get(addr)).map((mode) => [
+				addr,
+				mode.flag.mask,
+			]);
 		};
 
 		return get(member.address("nick!ident@hostname"))
@@ -224,7 +235,11 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
 	withOwner(user: User): this {
-		this.addMember(new ChannelMember(user).withAccessLevel(ChannelAccessLevelFlag.Owner));
+		this.addMember(
+			new ChannelMember(user).withAccessLevel(
+				ChannelAccessLevelFlag.Owner,
+			),
+		);
 		return this;
 	}
 }

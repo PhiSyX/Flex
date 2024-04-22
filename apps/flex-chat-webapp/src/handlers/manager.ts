@@ -29,8 +29,12 @@ export class HandlerManager {
 		return this;
 	}
 
-	get<T extends CommandsNames = CommandsNames>(moduleID: T): Option<SocketEventHandler> {
-		return Option.from(this._maps.get(moduleID) as SocketEventHandler | undefined);
+	get<T extends CommandsNames = CommandsNames>(
+		moduleID: T,
+	): Option<SocketEventHandler> {
+		return Option.from(
+			this._maps.get(moduleID) as SocketEventHandler | undefined,
+		);
 	}
 
 	set(moduleID: string, module: SocketEventHandler) {

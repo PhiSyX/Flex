@@ -35,7 +35,10 @@ export class ChannelSettingsDialog {
 
 	static ID = "channel-settings-layer";
 
-	static create(overlayerStore: OverlayerStore, data: ChannelSettingsRecordDialog) {
+	static create(
+		overlayerStore: OverlayerStore,
+		data: ChannelSettingsRecordDialog,
+	) {
 		overlayerStore.create({
 			id: ChannelSettingsDialog.ID,
 			destroyable: "manual",

@@ -19,8 +19,16 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "set-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
+	(
+		evtName: "unset-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 }
 
 // --------- //
@@ -37,10 +45,14 @@ const isCurrentClientMemberOwner = computed(() =>
 	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Owner),
 );
 const isCurrentClientMemberAdmin = computed(() =>
-	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.AdminOperator),
+	props.currentClientMember.accessLevel.eq(
+		ChannelAccessLevelFlag.AdminOperator,
+	),
 );
 const isSelectedMemberAdmin = computed(() =>
-	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.AdminOperator),
+	props.selectedMember.member.accessLevel.eq(
+		ChannelAccessLevelFlag.AdminOperator,
+	),
 );
 
 const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>

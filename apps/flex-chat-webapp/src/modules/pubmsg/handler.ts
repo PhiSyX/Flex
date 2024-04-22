@@ -44,7 +44,11 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
 			// message.
 			const currentClientNickname = this.store.nickname();
-			if (data.text.toLowerCase().indexOf(currentClientNickname.toLowerCase()) >= 0) {
+			if (
+				data.text
+					.toLowerCase()
+					.indexOf(currentClientNickname.toLowerCase()) >= 0
+			) {
 				room.setHighlighted(true);
 			}
 		}

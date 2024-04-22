@@ -12,10 +12,15 @@ import type { Directive } from "vue";
 
 import { type FocusTrap, createFocusTrap } from "focus-trap";
 
+type DirectiveTrap = Directive<
+	HTMLElement & { trap?: FocusTrap },
+	boolean | undefined
+>;
+
 /// Directive `v-trap`.
 ///
 /// Utilise la librairie [focus-trap]
-const trap: Directive<HTMLElement & { trap?: FocusTrap }, boolean | undefined> = {
+const trap: DirectiveTrap = {
 	mounted(el, binding, _vnode, _pnode) {
 		if (binding.value) {
 			el.trap = createFocusTrap(el, {

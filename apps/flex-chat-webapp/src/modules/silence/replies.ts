@@ -36,7 +36,8 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
 		const currentRoom = this.store.roomManager().active();
 
 		if (data.updated) {
-			const message = "Votre liste des utilisateurs ignorés a été mis à jour";
+			const message =
+				"Votre liste des utilisateurs ignorés a été mis à jour";
 			currentRoom.addConnectEvent(
 				{
 					...data,

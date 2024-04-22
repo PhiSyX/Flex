@@ -21,8 +21,7 @@ import type { ServerSettings } from "./server.config";
 /**
  * Récupère les paramètres du serveur backend.
  */
-async function getFlexServerSettings(): Promise<ServerSettings>
-{
+async function getFlexServerSettings(): Promise<ServerSettings> {
 	const filepath = path.resolve("..", "..", "config", "flex", "server.yml");
 	const rawContent = await fs.readFile(filepath);
 	const settings = yaml.parse(rawContent.toString("utf8"));
@@ -31,10 +30,11 @@ async function getFlexServerSettings(): Promise<ServerSettings>
 
 const flexServerSettings = await getFlexServerSettings();
 
-const viteServerHttpsConfig: CommonServerOptions["https"] = flexServerSettings.tls && {
-	cert: path.resolve("..", "..", flexServerSettings.tls.cert),
-	key: path.resolve("..", "..", flexServerSettings.tls.key),
-};
+const viteServerHttpsConfig: CommonServerOptions["https"] =
+	flexServerSettings.tls && {
+		cert: path.resolve("..", "..", flexServerSettings.tls.cert),
+		key: path.resolve("..", "..", flexServerSettings.tls.key),
+	};
 
 // ISSUE(vitejs): Activer l'HTTPS + Proxy rétrograde vers le protocole HTTP/1.
 //                Complètement débile.

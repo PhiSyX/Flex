@@ -45,7 +45,9 @@ export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
 	}
 }
 
-export class ReplyNotopicHandler implements SocketEventInterface<"RPL_NOTOPIC"> {
+export class ReplyNotopicHandler
+	implements SocketEventInterface<"RPL_NOTOPIC">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //

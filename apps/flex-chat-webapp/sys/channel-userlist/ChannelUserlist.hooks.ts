@@ -14,7 +14,10 @@ import { type Ref, ref, shallowRef, watchEffect } from "vue";
 import type { ChannelMember } from "~/channel/ChannelMember";
 import type { Props } from "./ChannelUserlist.vue";
 
-import { ChannelMemberFiltered, ChannelMemberUnfiltered } from "~/channel/ChannelMemberFiltered";
+import {
+	ChannelMemberFiltered,
+	ChannelMemberUnfiltered,
+} from "~/channel/ChannelMemberFiltered";
 
 import ChannelNicklist from "#/sys/channel-nicklist/ChannelNicklist.vue";
 
@@ -38,7 +41,8 @@ function sort(
 		const rf = r instanceof ChannelMemberFiltered;
 		if (lf && !rf) return -1;
 		if (!lf && rf) return 1;
-		if (lf && rf) return l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1;
+		if (lf && rf)
+			return l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1;
 		return l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 0;
 	});
 	return list;
@@ -65,45 +69,52 @@ export function useInputFilterUserlist(props: Props) {
 			return;
 		}
 
-		const filteredModerators = props.members.moderators.map((member: ChannelMember) => {
-			const test = fuzzy_search(filterNick.value, member.nickname)
-				.map(mapSearchRecord(false))
-				.or_else(() =>
-					fuzzy_search(filterNick.value, member.accessLevel.highest.symbol).map(
-						mapSearchRecord(true),
-					),
-				)
-				.unwrap_or([]);
-			return test.length === 0
-				? new ChannelMemberUnfiltered(member)
-				: new ChannelMemberFiltered(member, test);
-		});
+		const filteredModerators = props.members.moderators.map(
+			(member: ChannelMember) => {
+				const test = fuzzy_search(filterNick.value, member.nickname)
+					.map(mapSearchRecord(false))
+					.or_else(() =>
+						fuzzy_search(
+							filterNick.value,
+							member.accessLevel.highest.symbol,
+						).map(mapSearchRecord(true)),
+					)
+					.unwrap_or([]);
+				return test.length === 0
+					? new ChannelMemberUnfiltered(member)
+					: new ChannelMemberFiltered(member, test);
+			},
+		);
 		const filteredVips = props.members.vips.map((member: ChannelMember) => {
 			const test = fuzzy_search(filterNick.value, member.nickname)
 				.map(mapSearchRecord(false))
 				.or_else(() =>
-					fuzzy_search(filterNick.value, member.accessLevel.highest.symbol).map(
-						mapSearchRecord(true),
-					),
+					fuzzy_search(
+						filterNick.value,
+						member.accessLevel.highest.symbol,
+					).map(mapSearchRecord(true)),
 				)
 				.unwrap_or([]);
 			return test.length === 0
 				? new ChannelMemberUnfiltered(member)
 				: new ChannelMemberFiltered(member, test);
 		});
-		const filteredUsers = props.members.users.map((member: ChannelMember) => {
-			const test = fuzzy_search(filterNick.value, member.nickname)
-				.map(mapSearchRecord(false))
-				.or_else(() =>
-					fuzzy_search(filterNick.value, member.accessLevel.highest.symbol).map(
-						mapSearchRecord(true),
-					),
-				)
-				.unwrap_or([]);
-			return test.length === 0
-				? new ChannelMemberUnfiltered(member)
-				: new ChannelMemberFiltered(member, test);
-		});
+		const filteredUsers = props.members.users.map(
+			(member: ChannelMember) => {
+				const test = fuzzy_search(filterNick.value, member.nickname)
+					.map(mapSearchRecord(false))
+					.or_else(() =>
+						fuzzy_search(
+							filterNick.value,
+							member.accessLevel.highest.symbol,
+						).map(mapSearchRecord(true)),
+					)
+					.unwrap_or([]);
+				return test.length === 0
+					? new ChannelMemberUnfiltered(member)
+					: new ChannelMemberFiltered(member, test);
+			},
+		);
 
 		const m = filteredModerators.length;
 		const v = filteredVips.length;

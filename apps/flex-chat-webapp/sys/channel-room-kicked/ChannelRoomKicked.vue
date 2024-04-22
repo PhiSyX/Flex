@@ -33,7 +33,9 @@ const displayJoinButton = ref(true);
 //       KICK mais actif. Exemple, Lorsqu'un utilisateur entre en contact avec
 //       l'utilisateur qui a été KICK, l'événement "QUERY" est ajouté à la
 //       chambre active.
-const toRawLastMessage = toRaw(props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> });
+const toRawLastMessage = toRaw(
+	props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> },
+);
 
 const nickname = computed(() => toRawLastMessage.data.origin.nickname);
 const channel = computed(() => toRawLastMessage.data.channel);

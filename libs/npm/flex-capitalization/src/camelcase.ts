@@ -36,7 +36,10 @@ const Default: Options = {
 // -------- //
 
 /// Transforme une chaîne de caractère en une chaîne capitalisée.
-function camelCase<T extends string>(text: T, user_options: Options = Default): Capitalize<T> {
+function camelCase<T extends string>(
+	text: T,
+	user_options: Options = Default,
+): Capitalize<T> {
 	const options: Options = { ...Default, ...user_options };
 
 	const algo = (word: string) => {
@@ -64,7 +67,10 @@ function camelCase<T extends string>(text: T, user_options: Options = Default): 
 	}
 
 	if (options.includes_separators === true) {
-		return text.split(INCLUDE_SEPARATOR).map(algo).join("") as Capitalize<T>;
+		return text
+			.split(INCLUDE_SEPARATOR)
+			.map(algo)
+			.join("") as Capitalize<T>;
 	}
 
 	return text.split(EXCLUDE_SEPARATOR).map(algo).join("") as Capitalize<T>;

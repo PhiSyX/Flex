@@ -27,24 +27,38 @@ const origin3: User = new User({
 
 const moderatorsOriginal = [
 	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner),
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.AdminOperator),
+	new ChannelMember(origin1).withAccessLevel(
+		ChannelAccessLevelFlag.AdminOperator,
+	),
 	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Operator),
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.HalfOperator),
+	new ChannelMember(origin1).withAccessLevel(
+		ChannelAccessLevelFlag.HalfOperator,
+	),
 ];
 const moderators = {
 	original: moderatorsOriginal,
-	filtered: moderatorsOriginal.map((member) => new ChannelMemberFiltered(member, [])),
+	filtered: moderatorsOriginal.map(
+		(member) => new ChannelMemberFiltered(member, []),
+	),
 };
 
-const vipsOriginal = [new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip)];
+const vipsOriginal = [
+	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip),
+];
 const vips = {
 	original: vipsOriginal,
-	filtered: vipsOriginal.map((member) => new ChannelMemberFiltered(member, [])),
+	filtered: vipsOriginal.map(
+		(member) => new ChannelMemberFiltered(member, []),
+	),
 };
-const usersOriginal = [new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User)];
+const usersOriginal = [
+	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User),
+];
 const users = {
 	original: usersOriginal,
-	filtered: usersOriginal.map((member) => new ChannelMemberFiltered(member, [])),
+	filtered: usersOriginal.map(
+		(member) => new ChannelMemberFiltered(member, []),
+	),
 };
 </script>
 

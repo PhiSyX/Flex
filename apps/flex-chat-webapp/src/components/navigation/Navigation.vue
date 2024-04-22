@@ -24,7 +24,9 @@ const settingsStore = useSettingsStore();
 
 const emit = defineEmits<Emits>();
 
-const navigationBarPosition = computed(() => settingsStore.layout.navigationBarPosition);
+const navigationBarPosition = computed(
+	() => settingsStore.layout.navigationBarPosition,
+);
 
 const servers = computed(() => {
 	const network = chatStore.store.network();

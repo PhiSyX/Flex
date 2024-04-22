@@ -18,7 +18,8 @@ declare interface SocketEventHandler {
 	listen(): void;
 }
 
-declare interface SocketEventInterface<R extends RepliesNames> extends SocketEventHandler {
+declare interface SocketEventInterface<R extends RepliesNames>
+	extends SocketEventHandler {
 	handle(data: GenericReply<R>, ...userData: Array<unknown>): void;
 }
 
@@ -37,13 +38,22 @@ declare type ClientToServerEvent = {
 	[C in CommandsNames]: (data: Command<C>) => void;
 };
 
-type SocketIOClientSocket<S,C> = import("socket.io-client").Socket;
+type SocketIOClientSocket<S, C> = import("socket.io-client").Socket;
 
-declare interface TypeSafeSocket extends SocketIOClientSocket<ServerToClientEvent, ClientToServerEvent>
-{
-	emit<E extends keyof ClientToServerEvent>(eventName: E, ...payload: Parameters<ClientToServerEvent[E]>);
+declare interface TypeSafeSocket
+	extends SocketIOClientSocket<ServerToClientEvent, ClientToServerEvent> {
+	emit<E extends keyof ClientToServerEvent>(
+		eventName: E,
+		...payload: Parameters<ClientToServerEvent[E]>
+	);
 
-	on<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]): void;
+	on<K extends keyof ServerToClientEvent>(
+		eventName: K,
+		listener: ServerToClientEvent[K],
+	): void;
 
-	once<K extends keyof ServerToClientEvent>(eventName: K, listener: ServerToClientEvent[K]): void;
+	once<K extends keyof ServerToClientEvent>(
+		eventName: K,
+		listener: ServerToClientEvent[K],
+	): void;
 }

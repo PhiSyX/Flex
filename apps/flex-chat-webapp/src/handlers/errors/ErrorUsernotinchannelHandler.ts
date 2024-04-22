@@ -14,7 +14,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorUsernotinchannelHandler implements SocketEventInterface<"ERR_USERNOTINCHANNEL"> {
+export class ErrorUsernotinchannelHandler
+	implements SocketEventInterface<"ERR_USERNOTINCHANNEL">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {

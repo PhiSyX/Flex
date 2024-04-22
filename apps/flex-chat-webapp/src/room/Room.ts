@@ -219,7 +219,10 @@ export class Room<R = RoomID, Type extends string = string> {
 
 	eq($1: string | this): boolean {
 		if (typeof $1 === "string") {
-			return this.id() === $1 || (this.name as string).toLowerCase() === $1.toLowerCase();
+			return (
+				this.id() === $1 ||
+				(this.name as string).toLowerCase() === $1.toLowerCase()
+			);
 		}
 		return $1.id() === this.id();
 	}

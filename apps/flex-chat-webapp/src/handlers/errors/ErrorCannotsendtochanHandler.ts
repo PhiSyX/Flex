@@ -16,7 +16,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorCannotsendtochanHandler implements SocketEventInterface<"ERR_CANNOTSENDTOCHAN"> {
+export class ErrorCannotsendtochanHandler
+	implements SocketEventInterface<"ERR_CANNOTSENDTOCHAN">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {

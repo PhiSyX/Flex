@@ -14,7 +14,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ReplyInvitingHandler implements SocketEventInterface<"RPL_INVITING"> {
+export class ReplyInvitingHandler
+	implements SocketEventInterface<"RPL_INVITING">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -30,11 +32,16 @@ export class ReplyInvitingHandler implements SocketEventInterface<"RPL_INVITING"
 
 	handle(data: GenericReply<"RPL_INVITING">) {
 		const networkRoom = this.store.network();
-		networkRoom.addConnectEvent(data, `* ${data.nick} a été invité sur ${data.channel}`);
+		networkRoom.addConnectEvent(
+			data,
+			`* ${data.nick} a été invité sur ${data.channel}`,
+		);
 	}
 }
 
-export class ErrorInviteonlychanHandler implements SocketEventInterface<"ERR_INVITEONLYCHAN"> {
+export class ErrorInviteonlychanHandler
+	implements SocketEventInterface<"ERR_INVITEONLYCHAN">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //

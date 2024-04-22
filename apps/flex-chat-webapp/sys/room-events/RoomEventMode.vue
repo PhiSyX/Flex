@@ -23,7 +23,9 @@ const updatedBy = computed(() => {
 });
 
 const settingsWord = computed(() =>
-	props.data.target.startsWith("#") ? "Paramètres du salon" : "Modes utilisateur",
+	props.data.target.startsWith("#")
+		? "Paramètres du salon"
+		: "Modes utilisateur",
 );
 </script>
 

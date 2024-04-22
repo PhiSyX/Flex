@@ -32,7 +32,9 @@ function submitFormData(modesSettings: Partial<Command<"MODE">["modes"]>) {
  * Mise à jour du sujet.
  */
 function updateTopicHandler(topic?: string) {
-	if (!layer.value.data || layer.value.data.room.topic.get() === topic) return;
+	if (!layer.value.data || layer.value.data.room.topic.get() === topic) {
+		return;
+	}
 	chatStore.updateTopic(layer.value.data.room.name, topic);
 }
 </script>

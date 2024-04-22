@@ -52,43 +52,41 @@ function kebabcase(text: string, user_options: Options = Default): string {
 	const options: Options = { ...Default, ...user_options };
 
 	const algo = (ch: string[number] /* char */, idx: number) => {
-		if (ch === "-") {
+		if (ch === "-" || ch !== ch.toUpperCase()) {
 			return ch;
 		}
 
-		if (ch === ch.toUpperCase()) {
-			const prefix = idx !== 0 ? "-" : "";
+		const prefix = idx !== 0 ? "-" : "";
 
-			if (options.includes_dash_before_number) {
-				if (/\d/.test(ch)) {
-					return `${prefix}${ch.toLowerCase()}`;
-				}
-			}
-
-			if (options.includes_special_chars_after_dash) {
-				if (!/[a-z]/i.test(ch)) {
-					return `${prefix}${ch.toLowerCase()}`;
-				}
-			}
-
-			if (/[a-z]/i.test(ch)) {
+		if (options.includes_dash_before_number) {
+			if (/\d/.test(ch)) {
 				return `${prefix}${ch.toLowerCase()}`;
 			}
-
-			if (/\d/.test(ch)) {
-				return ch;
-			}
-
-			return prefix;
 		}
 
-		return ch;
+		if (options.includes_special_chars_after_dash) {
+			if (!/[a-z]/i.test(ch)) {
+				return `${prefix}${ch.toLowerCase()}`;
+			}
+		}
+
+		if (/[a-z]/i.test(ch)) {
+			return `${prefix}${ch.toLowerCase()}`;
+		}
+
+		if (/\d/.test(ch)) {
+			return ch;
+		}
+
+		return prefix;
 	};
 
 	const output = text.split("").map(algo).join("");
+
 	if (options.reduce_cumulative_hyphens_into_one) {
 		return output.replace(/-{2,}/g, "-");
 	}
+
 	return output;
 }
 

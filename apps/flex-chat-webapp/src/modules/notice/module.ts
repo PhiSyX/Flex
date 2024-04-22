@@ -26,7 +26,10 @@ export class NoticeModule implements Module<NoticeModule> {
 	static NAME = "NOTICE";
 
 	static create(store: ChatStore): NoticeModule {
-		return new NoticeModule(new NoticeCommand(store), new NoticeHandler(store));
+		return new NoticeModule(
+			new NoticeCommand(store),
+			new NoticeHandler(store),
+		);
 	}
 
 	// ----------- //

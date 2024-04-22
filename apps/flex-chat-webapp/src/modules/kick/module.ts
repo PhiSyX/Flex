@@ -41,7 +41,12 @@ export class KickModule implements Module<KickModule> {
 	// Méthode //
 	// ------- //
 
-	input(_: string, channelsRaw?: ChannelID, knicksRaw?: string, ...words: Array<string>) {
+	input(
+		_: string,
+		channelsRaw?: ChannelID,
+		knicksRaw?: string,
+		...words: Array<string>
+	) {
 		const channels = channelsRaw?.split(",");
 		const knicks = knicksRaw?.split(",");
 		if (!channels || !knicks) return;

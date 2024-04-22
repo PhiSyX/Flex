@@ -26,7 +26,10 @@ export class PrivmsgModule implements Module<PrivmsgModule> {
 	static NAME = "PRIVMSG";
 
 	static create(store: ChatStore): PrivmsgModule {
-		return new PrivmsgModule(new PrivmsgCommand(store), new PrivmsgHandler(store));
+		return new PrivmsgModule(
+			new PrivmsgCommand(store),
+			new PrivmsgHandler(store),
+		);
 	}
 
 	// ----------- //

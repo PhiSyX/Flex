@@ -27,7 +27,13 @@ interface Props {
 		datetime: string;
 		formattedTime: string;
 	};
-	type: "action" | `error:${string}` | "event" | `event:${string}` | "pubmsg" | "privmsg";
+	type:
+		| "action"
+		| `error:${string}`
+		| "event"
+		| `event:${string}`
+		| "pubmsg"
+		| "privmsg";
 }
 
 type Emits = (evtName: "open-room", roomName: RoomID) => void;
@@ -41,7 +47,9 @@ const emit = defineEmits<Emits>();
 
 const eventsComponents = inject<Array<string>>("eventsComponents");
 
-const isChannel = computed(() => props.nickname !== "*" && props.target.startsWith("#"));
+const isChannel = computed(
+	() => props.nickname !== "*" && props.target.startsWith("#"),
+);
 
 const isPrivate = computed(() => props.nickname !== "*" && !isChannel.value);
 
@@ -56,10 +64,10 @@ const maybeChannelMember = computed(() => {
 const maybePrivateNick = computed(() => {
 	return isPrivate.value
 		? Some(
-				new PrivateParticipant(new User(props.data.origin)).withIsCurrentClient(
-					props.isCurrentClient,
-				),
-		  )
+				new PrivateParticipant(
+					new User(props.data.origin),
+				).withIsCurrentClient(props.isCurrentClient),
+			)
 		: None();
 });
 
@@ -83,7 +91,10 @@ const isExternalMessage = computed(() => {
 });
 
 const isEventOrError = computed(() => {
-	return props.type.startsWith("error:err_") || props.type.startsWith("event:rpl_");
+	return (
+		props.type.startsWith("error:err_") ||
+		props.type.startsWith("event:rpl_")
+	);
 });
 
 const openRoom = (roomName: RoomID) => emit("open-room", roomName);

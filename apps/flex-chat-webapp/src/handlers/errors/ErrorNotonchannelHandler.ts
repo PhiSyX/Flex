@@ -14,7 +14,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorNotonchannelHandler implements SocketEventInterface<"ERR_NOTONCHANNEL"> {
+export class ErrorNotonchannelHandler
+	implements SocketEventInterface<"ERR_NOTONCHANNEL">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -23,6 +25,10 @@ export class ErrorNotonchannelHandler implements SocketEventInterface<"ERR_NOTON
 
 	handle(data: GenericReply<"ERR_NOTONCHANNEL">) {
 		const room = this.store.roomManager().active();
-		room.addEvent("error:err_notonchannel", { ...data, isCurrentClient: true }, data.reason);
+		room.addEvent(
+			"error:err_notonchannel",
+			{ ...data, isCurrentClient: true },
+			data.reason,
+		);
 	}
 }

@@ -31,7 +31,9 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 	}
 
 	handle(data: GenericReply<"NICK">) {
-		this.store.userManager().changeNickname(data.old_nickname, data.new_nickname);
+		this.store
+			.userManager()
+			.changeNickname(data.old_nickname, data.new_nickname);
 
 		const isCurrentClient = this.store.isCurrentClient(data.origin);
 		if (isCurrentClient) {
@@ -40,7 +42,10 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 		}
 
 		for (const room of this.store.roomManager().rooms()) {
-			room.addEvent("event:nick", { ...data, isCurrentClient: isCurrentClient });
+			room.addEvent("event:nick", {
+				...data,
+				isCurrentClient: isCurrentClient,
+			});
 
 			if (room.type === "channel") {
 				assertChannelRoom(room);
@@ -54,7 +59,11 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 					continue;
 				}
 
-				room.members.changeNickname(data.origin.id, data.old_nickname, data.new_nickname);
+				room.members.changeNickname(
+					data.origin.id,
+					data.old_nickname,
+					data.new_nickname,
+				);
 			} else if (room.type === "private") {
 				if (!room.eq(data.old_nickname)) {
 					continue;

@@ -9,7 +9,10 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { User } from "~/user/User";
-import { ChannelAccessLevel, ChannelAccessLevelFlag } from "./ChannelAccessLevel";
+import {
+	ChannelAccessLevel,
+	ChannelAccessLevelFlag,
+} from "./ChannelAccessLevel";
 
 // -------------- //
 // Implémentation //

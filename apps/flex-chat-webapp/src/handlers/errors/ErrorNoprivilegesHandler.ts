@@ -14,7 +14,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorNoprivilegesHandler implements SocketEventInterface<"ERR_NOPRIVILEGES"> {
+export class ErrorNoprivilegesHandler
+	implements SocketEventInterface<"ERR_NOPRIVILEGES">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {

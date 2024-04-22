@@ -25,7 +25,10 @@ export class ChannelMembers {
 	/**
 	 * Les membres du salon organisé par groupes de niveaux d'access.
 	 */
-	private members: Record<ChannelAccessLevelGroup, Map<UserID, ChannelMember>> = {
+	private members: Record<
+		ChannelAccessLevelGroup,
+		Map<UserID, ChannelMember>
+	> = {
 		owners: new Map(),
 		adminOperators: new Map(),
 		operators: new Map(),
@@ -69,9 +72,13 @@ export class ChannelMembers {
 	 */
 	get moderators() {
 		const owners = sort(Array.from(this.members.owners.values()));
-		const adminOperators = sort(Array.from(this.members.adminOperators.values()));
+		const adminOperators = sort(
+			Array.from(this.members.adminOperators.values()),
+		);
 		const operators = Array.from(this.members.operators.values());
-		const halfOperators = sort(Array.from(this.members.halfOperators.values()));
+		const halfOperators = sort(
+			Array.from(this.members.halfOperators.values()),
+		);
 		return [...owners, ...adminOperators, ...operators, ...halfOperators];
 	}
 
@@ -175,6 +182,8 @@ export class ChannelMembers {
 // -------- //
 
 function sort(list: Array<ChannelMember>): Array<ChannelMember> {
-	list.sort((l, r) => (l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1));
+	list.sort((l, r) => {
+		return l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1;
+	});
 	return list;
 }

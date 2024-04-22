@@ -80,7 +80,9 @@ export class AccessLevelQOPModule implements Module<AccessLevelQOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -122,7 +124,9 @@ export class AccessLevelAOPModule implements Module<AccessLevelAOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -164,7 +168,9 @@ export class AccessLevelOPModule implements Module<AccessLevelOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -206,7 +212,9 @@ export class AccessLevelHOPModule implements Module<AccessLevelHOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -248,7 +256,9 @@ export class AccessLevelVIPModule implements Module<AccessLevelVIPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -290,7 +300,9 @@ export class AccessLevelDEQOPModule implements Module<AccessLevelDEQOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -332,7 +344,9 @@ export class AccessLevelDEAOPModule implements Module<AccessLevelDEAOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -374,7 +388,9 @@ export class AccessLevelDEOPModule implements Module<AccessLevelDEOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
@@ -416,12 +432,16 @@ export class AccessLevelDEHOPModule implements Module<AccessLevelDEHOPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}
 
-		if (!channel || !nicknamesR || !isChannel(channel)) return;
+		if (!channel || !nicknamesR || !isChannel(channel)) {
+			return;
+		}
 		const nicknames = nicknamesR.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -458,7 +478,9 @@ export class AccessLevelDEVIPModule implements Module<AccessLevelDEVIPModule> {
 		let nicknamesR = nicknamesRaw;
 
 		if (channelNameRaw && !nicknamesRaw) {
-			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) return;
+			if (channelNameRaw.startsWith("#") && !roomName.startsWith("#")) {
+				return;
+			}
 			nicknamesR = channelNameRaw;
 			channel = roomName;
 		}

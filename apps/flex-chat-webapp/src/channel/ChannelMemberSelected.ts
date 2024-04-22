@@ -55,7 +55,9 @@ export class ChannelMemberSelected {
 	 */
 	get isNickBanned() {
 		return this.banned
-			.filter(([_, mask]) => mask.nick !== "*" && mask.ident === "*" && mask.host === "*")
+			.filter(([_, { host, ident, nick }]) => {
+				return nick !== "*" && ident === "*" && host === "*";
+			})
 			.is_some();
 	}
 

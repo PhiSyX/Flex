@@ -23,7 +23,7 @@ export interface Props {
 	completionList?: Array<string>;
 	currentNickname: string;
 	currentClientMember: Option<ChannelMember>;
-	userlistDisplayedByDefault: boolean,
+	userlistDisplayedByDefault: boolean;
 	room: ChannelRoom;
 	selectedMember: Option<ChannelMemberSelected>;
 }
@@ -35,7 +35,11 @@ export interface Emits {
 	(evtName: "close"): void;
 	(
 		evtName: "create-topic-layer",
-		payload: { event: Event; linkedElement: HTMLInputElement | undefined; mode: boolean },
+		payload: {
+			event: Event;
+			linkedElement: HTMLInputElement | undefined;
+			mode: boolean;
+		},
 	): void;
 	(evtName: "ignore-user", origin: Origin): void;
 	(evtName: "kick-member", member: ChannelMember): void;
@@ -44,11 +48,19 @@ export interface Emits {
 	(evtName: "open-room", roomName: RoomID): void;
 	(evtName: "select-member", origin: Origin): void;
 	(evtName: "send-message", message: string): void;
-	(evtName: "set-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "set-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 	(evtName: "unban-member", member: ChannelMemberSelected): void;
 	(evtName: "unban-nick", member: ChannelMemberSelected): void;
 	(evtName: "unignore-user", origin: Origin): void;
-	(evtName: "unset-access-level", member: ChannelMember, accessLevel: ChannelAccessLevelFlag): void;
+	(
+		evtName: "unset-access-level",
+		member: ChannelMember,
+		accessLevel: ChannelAccessLevelFlag,
+	): void;
 	(evtName: "update-topic", topic: string): void;
 }
 
@@ -86,7 +98,8 @@ const toggleNicklistTitleAttr = computed(() => {
 
 const banMember = (member: ChannelMember) => emit("ban-member", member);
 const banNick = (member: ChannelMember) => emit("ban-nick", member);
-const unbanMember = (member: ChannelMemberSelected) => emit("unban-member", member);
+const unbanMember = (member: ChannelMemberSelected) =>
+	emit("unban-member", member);
 const unbanNick = (member: ChannelMemberSelected) => emit("unban-nick", member);
 const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
 const openRoom = (roomName: RoomID) => emit("open-room", roomName);
@@ -94,14 +107,19 @@ const closeRoom = () => emit("close");
 const ignoreUser = (origin: Origin) => emit("ignore-user", origin);
 const kickMember = (member: ChannelMember) => emit("kick-member", member);
 const unignoreUser = (origin: Origin) => emit("unignore-user", origin);
-const openChannelSettings = (event: Event) => emit("open-channel-settings", event);
+const openChannelSettings = (event: Event) =>
+	emit("open-channel-settings", event);
 const openPrivate = (origin: Origin) => emit("open-private", origin);
 const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 const sendMessage = (message: string) => emit("send-message", message);
-const setAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) =>
-	emit("set-access-level", member, accessLevel);
-const unsetAccessLevel = (member: ChannelMember, accessLevel: ChannelAccessLevelFlag) =>
-	emit("unset-access-level", member, accessLevel);
+const setAccessLevel = (
+	member: ChannelMember,
+	accessLevel: ChannelAccessLevelFlag,
+) => emit("set-access-level", member, accessLevel);
+const unsetAccessLevel = (
+	member: ChannelMember,
+	accessLevel: ChannelAccessLevelFlag,
+) => emit("unset-access-level", member, accessLevel);
 </script>
 
 <template>

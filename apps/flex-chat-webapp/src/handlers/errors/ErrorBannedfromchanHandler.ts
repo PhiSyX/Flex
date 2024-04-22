@@ -16,7 +16,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorBannedfromchanHandler implements SocketEventInterface<"ERR_BANNEDFROMCHAN"> {
+export class ErrorBannedfromchanHandler
+	implements SocketEventInterface<"ERR_BANNEDFROMCHAN">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -29,6 +31,10 @@ export class ErrorBannedfromchanHandler implements SocketEventInterface<"ERR_BAN
 			.get(data.channel, { state: "opened:not-kicked" })
 			.or_else(() => Some(this.store.network()))
 			.unwrap();
-		room.addEvent("error:err_bannedfromchan", { ...data, isCurrentClient: true }, data.reason);
+		room.addEvent(
+			"error:err_bannedfromchan",
+			{ ...data, isCurrentClient: true },
+			data.reason,
+		);
 	}
 }

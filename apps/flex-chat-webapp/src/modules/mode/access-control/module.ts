@@ -11,14 +11,21 @@
 import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/store/ChatStore";
 
-import { BanCommand, BanExCommand, UnbanCommand, UnbanExCommand } from "./command";
+import {
+	BanCommand,
+	BanExCommand,
+	UnbanCommand,
+	UnbanExCommand,
+} from "./command";
 import { ModeAccessControlHandler } from "./handler";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ModeAccessControlModule implements Module<ModeAccessControlModule> {
+export class ModeAccessControlModule
+	implements Module<ModeAccessControlModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -63,7 +70,11 @@ export class BanModule implements Module<BanModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
+	input(
+		roomName?: string,
+		channelsRaw?: ChannelID,
+		...masksRaw: Array<string>
+	) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
@@ -115,7 +126,11 @@ export class UnbanModule implements Module<UnbanModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
+	input(
+		roomName?: string,
+		channelsRaw?: ChannelID,
+		...masksRaw: Array<string>
+	) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
@@ -167,7 +182,11 @@ export class BanExModule implements Module<BanExModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
+	input(
+		roomName?: string,
+		channelsRaw?: ChannelID,
+		...masksRaw: Array<string>
+	) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;
@@ -219,7 +238,11 @@ export class UnbanExModule implements Module<UnbanExModule> {
 	// Méthode //
 	// ------- //
 
-	input(roomName?: string, channelsRaw?: ChannelID, ...masksRaw: Array<string>) {
+	input(
+		roomName?: string,
+		channelsRaw?: ChannelID,
+		...masksRaw: Array<string>
+	) {
 		if (!roomName?.startsWith("#")) {
 			const channels = channelsRaw?.split(",");
 			if (!channels) return;

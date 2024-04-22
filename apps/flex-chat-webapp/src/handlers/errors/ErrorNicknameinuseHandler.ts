@@ -14,7 +14,9 @@ import type { ChatStore } from "~/store/ChatStore";
 // Implémentation //
 // -------------- //
 
-export class ErrorNicknameinuseHandler implements SocketEventInterface<"ERR_NICKNAMEINUSE"> {
+export class ErrorNicknameinuseHandler
+	implements SocketEventInterface<"ERR_NICKNAMEINUSE">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -23,11 +25,15 @@ export class ErrorNicknameinuseHandler implements SocketEventInterface<"ERR_NICK
 
 	handle(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 		if (!this.store.isConnected()) {
-			if (data.nickname === this.store.getConnectUserInfo().alternativeNickname) {
+			if (
+				data.nickname ===
+				this.store.getConnectUserInfo().alternativeNickname
+			) {
 				this.store.off("ERR_NICKNAMEINUSE");
 			} else {
 				this.store.emit("NICK (unregistered)", {
-					nickname: this.store.getConnectUserInfo().alternativeNickname,
+					nickname:
+						this.store.getConnectUserInfo().alternativeNickname,
 				});
 			}
 			return;

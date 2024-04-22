@@ -84,7 +84,8 @@ export class OverlayerStore {
 			return this.layers.get(payload.id) as Layer<D>;
 		}
 
-		const DOMElement = payload.DOMElement || (payload.event.currentTarget as HTMLElement);
+		const DOMElement =
+			payload.DOMElement || (payload.event.currentTarget as HTMLElement);
 
 		if (
 			DOMElement.classList.contains(LAYER_HL_CSS_CLASS) ||
@@ -111,7 +112,9 @@ export class OverlayerStore {
 			bottom: to_px(DOMPositionElement.bottom - MOUSE_POSITION_PADDING),
 			left: to_px(DOMPositionElement.left - MOUSE_POSITION_PADDING),
 			width: to_px(DOMPositionElement.width + MOUSE_POSITION_PADDING * 2),
-			height: to_px(DOMPositionElement.height + MOUSE_POSITION_PADDING * 2),
+			height: to_px(
+				DOMPositionElement.height + MOUSE_POSITION_PADDING * 2,
+			),
 		};
 
 		const mousePosition: Layer["mousePosition"] = {};
@@ -181,7 +184,9 @@ export class OverlayerStore {
 			bottom: to_px(DOMPositionElement.bottom - MOUSE_POSITION_PADDING),
 			left: to_px(DOMPositionElement.left - MOUSE_POSITION_PADDING),
 			width: to_px(DOMPositionElement.width + MOUSE_POSITION_PADDING * 2),
-			height: to_px(DOMPositionElement.height + MOUSE_POSITION_PADDING * 2),
+			height: to_px(
+				DOMPositionElement.height + MOUSE_POSITION_PADDING * 2,
+			),
 		};
 
 		this.layers.set(layerID, { ...layer, style });

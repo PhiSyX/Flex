@@ -27,7 +27,10 @@ export class InviteModule implements Module<InviteModule> {
 	static NAME = "INVITE";
 
 	static create(store: ChatStore): InviteModule {
-		return new InviteModule(new InviteCommand(store), new InviteHandler(store));
+		return new InviteModule(
+			new InviteCommand(store),
+			new InviteHandler(store),
+		);
 	}
 
 	// ----------- //

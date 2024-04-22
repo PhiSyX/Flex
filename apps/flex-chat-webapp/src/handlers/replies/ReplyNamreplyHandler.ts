@@ -17,7 +17,9 @@ import { ChannelMember } from "~/channel/ChannelMember";
 // Implémentation //
 // -------------- //
 
-export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"> {
+export class ReplyNamreplyHandler
+	implements SocketEventInterface<"RPL_NAMREPLY">
+{
 	constructor(private store: ChatStore) {}
 
 	listen() {
@@ -33,7 +35,10 @@ export class ReplyNamreplyHandler implements SocketEventInterface<"RPL_NAMREPLY"
 		assertChannelRoom(channel);
 
 		for (const userOrigin of data.users) {
-			const user = this.store.userManager().add(userOrigin).withChannel(channel.id());
+			const user = this.store
+				.userManager()
+				.add(userOrigin)
+				.withChannel(channel.id());
 
 			const newMember = new ChannelMember(user)
 				.withIsCurrentClient(this.store.isCurrentClient(user))

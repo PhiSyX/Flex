@@ -10,7 +10,9 @@ import type { Props } from "./RoomEvent.state";
 defineOptions({ inheritAttrs: false });
 const props = defineProps<Props<"RPL_AWAY">>();
 
-const message = computed(() => props.data.message.slice(props.data.nick.length + " :".length));
+const message = computed(() =>
+	props.data.message.slice(props.data.nick.length + " :".length),
+);
 </script>
 
 <template>
