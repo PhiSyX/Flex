@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option } from "@phisyx/flex-safety";
 import { STORAGE_CLIENT_ID_KEY } from "./constant";
+import { AppLocalStorage } from "./storage";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ClientIDStorage {
+export class ClientIDStorage extends AppLocalStorage<string> {
 	// ------ //
 	// Static //
 	// ------ //
@@ -27,39 +27,6 @@ export class ClientIDStorage {
 	// ----------- //
 
 	constructor() {
-		try {
-			const clientID = localStorage.getItem(ClientIDStorage.KEY);
-			this.clientID = Option.from(clientID);
-		} catch {}
-	}
-
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	private clientID: Option<string> = None();
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	maybe() {
-		return this.clientID;
-	}
-
-	get() {
-		return this.clientID.expect("ID du client stocké dans le localStorage");
-	}
-
-	set($1: string) {
-		this.clientID.replace($1);
-
-		try {
-			localStorage.setItem(ClientIDStorage.KEY, this.toString());
-		} catch {}
-	}
-
-	toString() {
-		return this.clientID.unwrap();
+		super(ClientIDStorage.KEY);
 	}
 }

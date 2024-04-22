@@ -9,80 +9,42 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { STORAGE_REMEMBER_ME_KEY } from "./constant";
+import { AppLocalStorage } from "./storage";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RememberMeStorage {
+export class RememberMeStorage extends AppLocalStorage<boolean> {
 	// ------ //
 	// Static //
 	// ------ //
 
 	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
 
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor() {
-		try {
-			this.rememberMe = JSON.parse(
-				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(RememberMeStorage.KEY),
-				this.fromJSON,
-			);
-		} catch {}
-	}
-
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	private rememberMe = false;
-
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
-
-	get value(): boolean {
-		return this.get();
-	}
-
-	set value($1: boolean) {
-		this.set($1);
-	}
-
-	// ------- //
-	// Méthode // -> API Publique
-	// ------- //
-
-	get(): boolean {
-		return this.rememberMe;
-	}
-
-	/**
-	 * Définit une nouvelle valeur.
-	 */
-	set(rememberMeValue: boolean) {
-		this.rememberMe = rememberMeValue;
-
-		try {
-			localStorage.setItem(RememberMeStorage.KEY, this.toString());
-		} catch {}
-	}
-
 	/**
 	 * Validation du JSON
 	 */
-	fromJSON(key: string, value: unknown): boolean | undefined {
+	static fromJSON(key: string, value: string): boolean | undefined {
 		if (!(key.length === 0 && typeof value === "boolean")) {
 			return;
 		}
 		return value;
 	}
 
-	toString() {
-		return JSON.stringify(this.rememberMe);
+	// ----------- //
+	// Constructor //
+	// ----------- //
+
+	constructor() {
+		super(RememberMeStorage.KEY, RememberMeStorage.fromJSON);
+	}
+
+	// -------- //
+	// Override //
+	// -------- //
+
+	override get() {
+		return this.item.unwrap_or(false);
 	}
 }

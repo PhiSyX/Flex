@@ -10,10 +10,7 @@
 
 import { defineStore } from "pinia";
 import { reactive } from "vue";
-import {
-	type LayoutData,
-	LayoutStorage,
-} from "../local/settings_layout";
+import { type LayoutData, LayoutStorage } from "../local/settings_layout";
 import {
 	type PersonalizationData,
 	PersonalizationStorage,
@@ -31,9 +28,8 @@ export class SettingsStore {
 	// Propriété //
 	// --------- //
 
-	public personalization: PersonalizationSettings =
-		new PersonalizationSettings();
-	public layout: LayoutSettings = new LayoutSettings();
+	personalization: PersonalizationSettings = new PersonalizationSettings();
+	layout: LayoutSettings = new LayoutSettings();
 
 	save() {
 		this.personalization.persist();

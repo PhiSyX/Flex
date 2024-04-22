@@ -11,6 +11,7 @@
 import type { Theme } from "~/theme";
 
 import { STORAGE_SETTINGS_PERSONALIZATION_KEY } from "./constant";
+import { AppLocalStorage } from "./storage";
 
 // ---- //
 // Type //
@@ -24,7 +25,7 @@ export interface PersonalizationData {
 // Implémentation //
 // -------------- //
 
-export class PersonalizationStorage {
+export class PersonalizationStorage extends AppLocalStorage<PersonalizationData> {
 	// ------ //
 	// Static //
 	// ------ //
@@ -37,63 +38,10 @@ export class PersonalizationStorage {
 		};
 	}
 
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor() {
-		try {
-			this.value = JSON.parse(
-				// @ts-expect-error: un type null retourne null de toute manière
-				localStorage.getItem(PersonalizationStorage.KEY),
-				this.fromJSON,
-			);
-		} catch {
-			this.value = PersonalizationStorage.default();
-		}
-	}
-
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	private personalization = PersonalizationStorage.default();
-
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
-
-	get value(): PersonalizationData {
-		return this.get();
-	}
-
-	set value($1: PersonalizationData) {
-		this.set($1);
-	}
-
-	// ------- //
-	// Méthode // -> API Publique
-	// ------- //
-
-	get(): PersonalizationData {
-		return this.personalization;
-	}
-
-	/**
-	 * Définit une nouvelle valeur.
-	 */
-	set(theme: PersonalizationData) {
-		this.personalization = theme;
-
-		try {
-			localStorage.setItem(PersonalizationStorage.KEY, this.toString());
-		} catch {}
-	}
-
 	/**
 	 * Validation du JSON
 	 */
-	fromJSON(key: string, value: string): unknown | undefined {
+	static fromJSON(key: string, value: string): unknown | undefined {
 		if (key !== "") {
 			let keys = ["theme"];
 			if (!keys.includes(key)) return;
@@ -107,13 +55,15 @@ export class PersonalizationStorage {
 		return value;
 	}
 
-	save() {
-		try {
-			localStorage.setItem(PersonalizationStorage.KEY, this.toString());
-		} catch {}
-	}
+	// ----------- //
+	// Constructor //
+	// ----------- //
 
-	toString() {
-		return JSON.stringify(this.personalization);
+	constructor() {
+		super(
+			PersonalizationStorage.KEY,
+			PersonalizationStorage.fromJSON,
+			PersonalizationStorage.default(),
+		);
 	}
 }
