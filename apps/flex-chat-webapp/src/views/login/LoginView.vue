@@ -8,8 +8,8 @@ import {
 import { type ModelRef, reactive, ref } from "vue";
 
 import { channelID } from "~/asserts/room";
-import { useChatStore } from "~/store/ChatStore";
-import { RememberMeStorage } from "~/store/local-storage/RememberMeStorage";
+import { RememberMeStorage } from "~/storage/local/remember_me";
+import { useChatStore } from "~/storage/memory/chat";
 import { View } from "~/views";
 
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";

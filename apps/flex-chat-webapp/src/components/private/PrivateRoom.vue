@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { PrivateRoom } from "~/private/PrivateRoom";
+import type { PrivateRoom } from "~/private/room";
 
 import { roomID } from "~/asserts/room";
-import { useChatStore } from "~/store/ChatStore";
-import { useOverlayerStore } from "~/store/OverlayerStore";
-import { UserChangeNicknameDialog } from "~/user/User";
+import { useChatStore } from "~/storage/memory/chat";
+import { useOverlayerStore } from "~/storage/memory/overlayer";
+import { UserChangeNicknameDialog } from "~/user";
 
-import PrivateRoomComponent from "#/sys/private-room/PrivateRoom.vue";
+import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.vue";
 
 // ---- //
 // Type //

@@ -2,7 +2,7 @@
 import { None, type Option } from "@phisyx/flex-safety";
 import { defineAsyncComponent, onMounted, ref, watch } from "vue";
 
-import type { UserSession } from "./user/UserSession";
+import type { UserSession } from "./user/session";
 import { View } from "./views";
 
 import Overlayer from "./components/overlayer/Overlayer.vue";

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { ChannelJoinDialog } from "~/channel/ChannelRoom";
-import { useChatStore } from "~/store/ChatStore";
-import { useOverlayerStore } from "~/store/OverlayerStore";
+import { ChannelJoinDialog } from "~/channel/room";
+import { useChatStore } from "~/storage/memory/chat";
+import { useOverlayerStore } from "~/storage/memory/overlayer";
 
-import ChannelCreateDialog from "#/sys/channel-create-dialog/ChannelCreateDialog.vue";
+import ChannelCreateDialog from "#/sys/channel_create_dialog/ChannelCreateDialog.vue";
 
 const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();

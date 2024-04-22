@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useChatStore } from "~/store/ChatStore";
-import { useOverlayerStore } from "~/store/OverlayerStore";
-import { UserChangeNicknameDialog } from "~/user/User";
+import { useChatStore } from "~/storage/memory/chat";
+import { useOverlayerStore } from "~/storage/memory/overlayer";
+import { UserChangeNicknameDialog } from "~/user";
 
-import ChangeNickDialogComponent from "#/sys/change-nick-dialog/ChangeNickDialog.vue";
+import ChangeNickDialogComponent from "#/sys/change_nick_dialog/ChangeNickDialog.vue";
 
 const chatStore = useChatStore();
 const overlayerStore = useOverlayerStore();

@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Module } from "~/modules/interface";
-import type { ChatStore } from "~/store/ChatStore";
+import type { ChatStore } from "~/storage/memory/chat";
 
 import { channelID, channelsID, isChannel } from "~/asserts/room";
 import { PartCommand, SapartCommand } from "./command";

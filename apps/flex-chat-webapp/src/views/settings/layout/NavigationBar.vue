@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import SettingsLayoutNavigationBar from "#/sys/settings-layout-navigation-bar/SettingsLayoutNavigationBar.vue";
+import SettingsLayoutNavigationBar from "#/sys/settings_layout_navigation_bar/SettingsLayoutNavigationBar.vue";
 
-import { useSettingsStore } from "~/store/SettingsStore";
+import { useSettingsStore } from "~/storage/memory/settings";
 
 const settingsStore = useSettingsStore();
 </script>

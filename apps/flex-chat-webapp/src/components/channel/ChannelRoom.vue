@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ChannelAccessLevelFlag } from "~/channel/ChannelAccessLevel";
-import type { ChannelMember } from "~/channel/ChannelMember";
-import type { ChannelMemberSelected } from "~/channel/ChannelMemberSelected";
-import type { ChannelRoom } from "~/channel/ChannelRoom";
+import type { ChannelAccessLevelFlag } from "~/channel/access_level";
+import type { ChannelMember } from "~/channel/member";
+import type { ChannelMemberSelected } from "~/channel/member/selected";
+import type { ChannelRoom } from "~/channel/room";
 
-import { ChannelSettingsDialog } from "~/channel/ChannelSettings";
-import { ChannelTopicLayer } from "~/channel/ChannelTopic";
-import { useChatStore } from "~/store/ChatStore";
-import { useOverlayerStore } from "~/store/OverlayerStore";
-import { useSettingsStore } from "~/store/SettingsStore";
-import { UserChangeNicknameDialog } from "~/user/User";
+import { ChannelSettingsDialog } from "~/channel/settings";
+import { ChannelTopicLayer } from "~/channel/topic";
+import { useChatStore } from "~/storage/memory/chat";
+import { useOverlayerStore } from "~/storage/memory/overlayer";
+import { useSettingsStore } from "~/storage/memory/settings";
+import { UserChangeNicknameDialog } from "~/user";
 
-import ChannelRoomKicked from "#/sys/channel-room-kicked/ChannelRoomKicked.vue";
-import ChannelRoomComponent from "#/sys/channel-room/ChannelRoom.vue";
+import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.vue";
+import ChannelRoomKicked from "#/sys/channel_room_kicked/ChannelRoomKicked.vue";
 
 interface Props {
 	// Le salon actif.

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Alert } from "@phisyx/flex-uikit";
 
-import { useChatStore } from "~/store/ChatStore";
+import { useChatStore } from "~/storage/memory/chat";
 
 import Match from "#/sys/match/Match.vue";
 

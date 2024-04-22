@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { CommandInterface } from "~/modules/interface";
-import type { ChatStore } from "~/store/ChatStore";
+import type { ChatStore } from "~/storage/memory/chat";
 
 // -------------- //
 // Implémentation //

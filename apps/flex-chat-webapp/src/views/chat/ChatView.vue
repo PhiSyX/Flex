@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ChannelListCustomRoom } from "~/custom-room/ChannelListCustomRoom";
-import type { ServerCustomRoom } from "~/custom-room/ServerCustomRoom";
-import type { PrivateRoom } from "~/private/PrivateRoom";
+import type { ChannelListCustomRoom } from "~/custom_room/channel_list";
+import type { ServerCustomRoom } from "~/custom_room/server";
+import type { PrivateRoom } from "~/private/room";
 
-import { ChannelJoinDialog, type ChannelRoom } from "~/channel/ChannelRoom";
-import { NoticeCustomRoom } from "~/custom-room/NoticeCustomRoom";
-import { useChatStore } from "~/store/ChatStore";
-import { useOverlayerStore } from "~/store/OverlayerStore";
+import { ChannelJoinDialog, type ChannelRoom } from "~/channel/room";
+import { NoticeCustomRoom } from "~/custom_room/notice";
+import { useChatStore } from "~/storage/memory/chat";
+import { useOverlayerStore } from "~/storage/memory/overlayer";
 
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
-import ServerCustomRoomComponent from "~/components/custom-room/ServerCustomRoom.vue";
+import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
 import ClientError from "~/components/error/ClientError.vue";
 import Navigation from "~/components/navigation/Navigation.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
-import ChannelList from "#/sys/channel-list/ChannelList.vue";
-import CustomRoomNotice from "#/sys/custom-room-notice/CustomRoomNotice.vue";
+import ChannelList from "#/sys/channel_list/ChannelList.vue";
+import CustomRoomNotice from "#/sys/custom_room_notice/CustomRoomNotice.vue";
 
 import { View } from "../index";
 

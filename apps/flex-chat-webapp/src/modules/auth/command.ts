@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { Err, None, Ok, type Result } from "@phisyx/flex-safety";
-import type { ChatStore } from "~/store/ChatStore";
+import type { ChatStore } from "~/storage/memory/chat";
 
 import type { AuthApiHTTPClient } from "./feign/api";
 import { AuthSubCommand } from "./subcommand";

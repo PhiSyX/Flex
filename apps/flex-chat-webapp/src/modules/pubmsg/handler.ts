@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Room } from "~/room/Room";
-import type { ChatStore } from "~/store/ChatStore";
+import type { Room } from "~/room";
+import type { ChatStore } from "~/storage/memory/chat";
 
-import { RoomMessage } from "~/room/RoomMessage";
+import { RoomMessage } from "~/room/message";
 
 // -------------- //
 // Implémentation //

@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Module } from "~/modules/interface";
-import type { ChatStore } from "~/store/ChatStore";
+import type { ChatStore } from "~/storage/memory/chat";
 
 import { AuthCommand } from "./command";
 import { AuthApiHTTPClient } from "./feign/api";

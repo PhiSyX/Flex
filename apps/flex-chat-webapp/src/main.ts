@@ -31,13 +31,13 @@ for (const plugin of Object.values(plugins)) {
 // Chargement des composants (events)
 
 const eventsComponentsImports = import.meta.glob<{ default: unknown }>(
-	"../sys/room-events/RoomEvent*.vue",
+	"../sys/room_events/RoomEvent*.vue",
 );
 
 const eventsComponentsEntries = Object.entries(eventsComponentsImports).map(
 	([eventFilepath, eventComponent]) => {
 		const componentName = eventFilepath.slice(
-			"../sys/room-events/".length,
+			"../sys/room_events/".length,
 			0 - ".vue".length,
 		);
 		return [componentName, eventComponent] as [

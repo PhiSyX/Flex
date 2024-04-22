@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onActivated, shallowRef } from "vue";
 
-import SettingsPersonalizationTheme from "#/sys/settings-personalization-theme/SettingsPersonalizationTheme.vue";
+import SettingsPersonalizationTheme from "#/sys/settings_personalization_theme/SettingsPersonalizationTheme.vue";
 
 import {
 	THEMES,

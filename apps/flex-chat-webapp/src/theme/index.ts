@@ -10,7 +10,7 @@
 
 import { onMounted } from "vue";
 
-import { useSettingsStore } from "~/store/SettingsStore";
+import { useSettingsStore } from "~/storage/memory/settings";
 
 import themeDarkImage from "#/assets/img/theme-dark.jpg";
 import themeIceImage from "#/assets/img/theme-ice.jpg";
