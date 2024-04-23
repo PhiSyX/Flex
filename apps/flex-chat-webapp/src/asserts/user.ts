@@ -8,50 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Option } from "@phisyx/flex-safety";
+import { User } from "~/user";
 
-import type { PrivateParticipant } from "~/private/participant";
-
-import { Room } from "~/room";
-
-// ---- //
-// Type //
-// ---- //
-
-export type Participants = Map<string, PrivateParticipant>;
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class PrivateRoom extends Room<UserID, "private"> {
-	/**
-	 * Liste des participant de la chambre privé.
-	 */
-	participants: Participants = new Map();
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(name: string) {
-		super("private", name);
-	}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	/**
-	 * Ajoute un participant à la chambre privé.
-	 */
-	addParticipant(participant: PrivateParticipant) {
-		this.participants.set(participant.id, participant);
-	}
-
-	/**
-	 * Récupère un participant de la chambre privé.
-	 */
-	getParticipant(id: string): Option<PrivateParticipant> {
-		return Option.from(this.participants.get(id));
-	}
+/**
+ * Certifie que la donnée passée en argument est un utilisateur.
+ */
+export function isUser(user: unknown): user is User {
+	return user instanceof User;
 }

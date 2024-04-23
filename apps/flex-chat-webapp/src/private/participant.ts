@@ -15,15 +15,7 @@ export class PrivateParticipant extends User {
 	// Constructor //
 	// ----------- //
 	constructor(userOrigin: User | Origin) {
-		let user: User;
-
-		if (!(userOrigin instanceof User)) {
-			user = new User(userOrigin);
-		} else {
-			user = userOrigin;
-		}
-
-		super(user);
+		super(User.from(userOrigin));
 	}
 
 	// ------- //

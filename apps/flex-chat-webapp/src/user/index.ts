@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { None, type Option, Some } from "@phisyx/flex-safety";
+import { isUser } from "~/asserts/user";
 
 import type { Layer, OverlayerStore } from "~/storage/memory/overlayer";
 
@@ -38,6 +39,18 @@ export enum UserFlag {
 // -------------- //
 
 export class User {
+	static from(userOrigin: Origin | User): User {
+		let user: User;
+
+		if (isUser(userOrigin)) {
+			user = userOrigin;
+		} else {
+			user = new User(userOrigin);
+		}
+
+		return user;
+	}
+
 	// ----------- //
 	// Constructor //
 	// ----------- //

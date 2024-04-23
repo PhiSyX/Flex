@@ -41,13 +41,7 @@ export class UserManager {
 	 * Ajoute un nouvel utilisateur au Store.
 	 */
 	add(userOrigin: User | Origin): User {
-		let user: User;
-
-		if (!(userOrigin instanceof User)) {
-			user = new User(userOrigin);
-		} else {
-			user = userOrigin;
-		}
+		let user: User = User.from(userOrigin);
 
 		const maybeFoundUser = this.find(user.id).or_else(() =>
 			this.findByNickname(user.nickname),
@@ -191,13 +185,7 @@ export class UserManager {
 	 * l'ajoute à la liste des utilisateurs.
 	 */
 	upsert(userOrigin: User | Origin): User {
-		let user: User;
-
-		if (!(userOrigin instanceof User)) {
-			user = new User(userOrigin);
-		} else {
-			user = userOrigin;
-		}
+		let user: User = User.from(userOrigin);
 
 		const foundUser = this._users.get(user.id);
 
