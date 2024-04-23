@@ -124,6 +124,13 @@ it("Option: replace", () => {
 	expect(maybe_str.replace("world")).toEqual(Some("world"));
 });
 
+it("Option: replace null value", () => {
+	const value = JSON.parse("null");
+	// NOTE: Le type `Option<string>` est requis ici.
+	const maybe_str: Option<string> = None();
+	expect(maybe_str.replace(value)).toEqual(None());
+});
+
 it("Option: zip", () => {
 	expect(Some("hello").zip(Some("world"))).toEqual(Some(["hello", "world"]));
 

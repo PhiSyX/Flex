@@ -170,6 +170,10 @@ class Option<T> {
 	 * Remplace la valeur de l'instance actuelle.
 	 */
 	replace<U extends safe<T>>(value: U): Option<U> {
+		if (value == null) {
+			return None();
+		}
+
 		this.type = OptionVariant.Some;
 		this.value = value;
 		return this as unknown as Option<U>;
