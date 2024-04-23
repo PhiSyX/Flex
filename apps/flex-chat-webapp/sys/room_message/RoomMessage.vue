@@ -56,7 +56,7 @@ const isPrivate = computed(() => props.nickname !== "*" && !isChannel.value);
 const maybeChannelMember = computed(() => {
 	const member = new ChannelMember(new User(props.data.origin));
 	if ("access_level" in props.data.origin) {
-		member.withRawAccessLevel(props.data.origin.access_level);
+		member.withAccessLevel(props.data.origin.access_level);
 	}
 	return isChannel.value ? Some(member) : None();
 });

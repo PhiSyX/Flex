@@ -42,7 +42,7 @@ export class ReplyNamreplyHandler
 
 			const newMember = new ChannelMember(user)
 				.withIsCurrentClient(this.store.isCurrentClient(user))
-				.withRawAccessLevel(userOrigin.access_level);
+				.withAccessLevel(userOrigin.access_level);
 
 			const maybeChannelMember = channel.getMember(user.id);
 			if (maybeChannelMember.is_some()) {

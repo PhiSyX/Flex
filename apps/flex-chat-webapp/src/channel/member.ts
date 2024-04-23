@@ -55,19 +55,18 @@ export class ChannelMember extends User {
 	/**
 	 * Définit le niveau d'accès du pseudo.
 	 */
-	withAccessLevel(level: ChannelAccessLevelFlag): this {
-		this.accessLevel.add(level);
-		return this;
-	}
+	withAccessLevel(level: ChannelAccessLevelFlag | Array<string>): this {
+		if (Array.isArray(level)) {
+			const levels = this.accessLevel.parse(level);
 
-	/**
-	 * Définit les niveaux d'accès du pseudo (raw).
-	 */
-	withRawAccessLevel(raw: Array<string>): this {
-		const levels = this.accessLevel.parse(raw);
-		for (const level of levels) {
-			this.withAccessLevel(level);
+			for (const level of levels) {
+				this.accessLevel.add(level);
+			}
+
+			return this;
 		}
+
+		this.accessLevel.add(level);
 		return this;
 	}
 }
