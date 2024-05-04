@@ -35,7 +35,8 @@ defineEmits<Emits>();
 				}"
 				@click="$emit('update', name)"
 			>
-				<img
+				<input
+					type="image"
 					:src="src"
 					:alt="`Thème ${name}`"
 					:title="`Thème ${name}`"
@@ -72,5 +73,9 @@ defineEmits<Emits>();
 	width: fx.space(280);
 	border-radius: 8px;
 	border: 8px solid var(--color-blue-grey800);
+}
+
+input[type="image"]:focus {
+	border: 3px solid var(--color-yellow700);
 }
 </style>
