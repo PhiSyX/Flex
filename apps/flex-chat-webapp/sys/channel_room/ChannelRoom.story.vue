@@ -88,6 +88,7 @@ chan.members.add(
 				:current-client-member="me"
 				:selected-member="None()"
 				:room="chan"
+				:userlist-displayed-by-default="true"
 			/>
 		</Variant>
 
@@ -98,6 +99,7 @@ chan.members.add(
 				:name="channelName"
 				:selected-member="None()"
 				:room="chan"
+				:userlist-displayed-by-default="true"
 			>
 				<template #history>
 					<ChannelRoomKicked

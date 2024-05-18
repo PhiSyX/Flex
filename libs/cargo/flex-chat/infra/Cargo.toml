@@ -7,7 +7,7 @@ edition = "2021"
 workspace = true
 
 [dependencies]
-flex-chat = { path =".." }
+flex-chat = { path = ".." }
 flex-crypto = { workspace = true }
 serde = { workspace = true }
 socketioxide = { workspace = true }

@@ -10,7 +10,7 @@
 
 import { None, Option, Some } from "@phisyx/flex-safety";
 
-import type { Room } from "./room";
+import type { Room } from "./index";
 
 import { assertChannelRoom, roomID } from "~/asserts/room";
 import { ServerCustomRoom } from "~/custom_room/server";

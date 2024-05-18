@@ -7,6 +7,6 @@ edition = "2021"
 workspace = true
 
 [dependencies]
-paste = { version = "1.0.14" }
+paste = { version = "1.0.15" }
 flex-web-framework = { path = "../../flex-web-framework" }
 serde = { workspace = true }

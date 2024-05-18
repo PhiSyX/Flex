@@ -16,7 +16,7 @@ non_camel_case_types = "allow"
 
 [workspace.dependencies]
 async-trait = "0.1.80"
-chrono = { version = "0.4.37", features = ["clock", "serde"] }
+chrono = { version = "0.4.38", features = ["clock", "serde"] }
 clap = { version = "4.5.4", features = ["derive"] }
 console = { version = "0.15.8" }
 dashmap = { version = "5.5.3", features = ["serde"] }
@@ -28,12 +28,12 @@ flex-serde-validation = { path = "libs/cargo/flex-serde-validation" }
 flex-web-framework = { path = "libs/cargo/flex-web-framework" }
 log = { version = "0.4.21" }
 regex = { version = "1.10.4" }
-serde = { version = "1.0.197", features = ["derive"] }
-serde_json = { version = "1.0.115" }
-socketioxide = { version = "0.12.0", features = ["extensions", "state"] }
+serde = { version = "1.0.201", features = ["derive"] }
+serde_json = { version = "1.0.117" }
+socketioxide = { version = "0.13.1", features = ["extensions", "state"] }
 sqlx = { version = "0.7.4", features = ["chrono", "postgres", "uuid"] }
-syn = { version = "2.0.58", features = ["full"] }
-thiserror = { version = "1.0.58" }
+syn = { version = "2.0.63", features = ["full"] }
+thiserror = { version = "1.0.60" }
 tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 tracing = { version = "0.1.40" }
 uuid = { version = "1.8.0", features = ["v4", "serde"] }

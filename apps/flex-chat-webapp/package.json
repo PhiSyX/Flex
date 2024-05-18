@@ -22,19 +22,19 @@
 		"focus-trap": "^7.5.4",
 		"pinia": "^2.1.7",
 		"socket.io-client": "^4.7.5",
-		"vue": "^3.4.23"
+		"vue": "^3.4.27"
 	},
 	"devDependencies": {
 		"@histoire/plugin-vue": "^0.17.17",
-		"@playwright/test": "^1.43.1",
+		"@playwright/test": "^1.44.1",
 		"@tsconfig/node20": "^20.1.4",
-		"@types/node": "^20.12.7",
-		"@vitejs/plugin-vue": "^5.0.4",
+		"@types/node": "^20.14.0",
+		"@vitejs/plugin-vue": "^5.0.5",
 		"histoire": "^0.17.17",
-		"sass": "^1.75.0",
+		"sass": "^1.77.4",
 		"typescript": "^5.4.5",
-		"vite": "^5.2.10",
-		"vue-tsc": "^2.0.14",
-		"yaml": "^2.4.1"
+		"vite": "^5.2.12",
+		"vue-tsc": "^2.0.19",
+		"yaml": "^2.4.3"
 	}
 }

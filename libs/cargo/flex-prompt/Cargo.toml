@@ -13,7 +13,7 @@ serde = ["dep:serde"]
 
 [dependencies]
 flex-prompt-macro = { path = "macro" }
-inquire = { version = "0.7.4" }
+inquire = { version = "0.7.5" }
 log = { workspace = true }
 serde = { workspace = true, optional = true }
 thiserror = { workspace = true }
