@@ -82,11 +82,14 @@ impl Settings
 		}
 	}
 
-	pub fn http_url(&self) -> url::Url
+	pub fn http_url(&self) -> String
 	{
 		format!("{}://{}:{}", self.protocol(), self.hostname(), self.port)
-			.parse()
-			.unwrap()
+	}
+
+	pub fn url(&self) -> url::Url
+	{
+		self.http_url().parse().unwrap()
 	}
 }
 

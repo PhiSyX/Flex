@@ -33,7 +33,7 @@ impl HomeController
 		State(server_settings): State<ServerSettings>,
 	) -> Html<HomeView>
 	{
-		let mut vite_url = server_settings.http_url();
+		let mut vite_url = server_settings.url();
 		_ = vite_url.set_port(Some(5173));
 		http.response.html(HomeView { vite_url })
 	}
