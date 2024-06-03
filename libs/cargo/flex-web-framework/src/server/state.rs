@@ -95,6 +95,14 @@ impl<S> ServerState<S>
 		)
 	}
 
+	pub fn state_mut(&mut self) -> &mut S
+	{
+		self.user.as_mut().expect(
+			"Le state n'est pas définit. Vérifier que `ServerState#set_state` \
+			 est bien appelée avant.",
+		)
+	}
+
 	pub fn set_state(&mut self, state: S)
 	{
 		self.user.replace(state);

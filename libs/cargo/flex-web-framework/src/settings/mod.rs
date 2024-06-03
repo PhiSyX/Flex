@@ -12,6 +12,8 @@ mod cookie;
 mod cors;
 mod server;
 
+use std::sync::Arc;
+
 pub use self::cookie::{
 	Settings as CookieSettings,
 	SettingsSameSite as CookieSettingsSameSite,
@@ -37,4 +39,18 @@ where
 	#[serde(bound(deserialize = ""))]
 	#[serde(flatten)]
 	pub user: UserConfig,
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<U> Config<U>
+where
+	U: crate::FeatureConfig,
+{
+	pub fn shared_user(&self) -> Arc<U>
+	{
+		Arc::new(self.user.clone())
+	}
 }

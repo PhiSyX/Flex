@@ -11,7 +11,8 @@
 use console::style;
 use tower_http::cors::CorsLayer;
 
-use crate::{settings::Config, AxumApplication, AxumRouter, AxumState, RouterInterface};
+use crate::settings::Config;
+use crate::{AxumApplication, AxumRouter, AxumState, RouterInterface};
 
 // --------- //
 // Interface //

@@ -24,9 +24,9 @@ use flex_kernel::{
 	ApplicationAdapterEnvInterface,
 	ApplicationAdapterInterface,
 	ApplicationAdapterSettingsInterface,
+	AsyncApplicationStartupExtension,
 	UserApplicationCLIInterface,
 	UserApplicationEnvInterface,
-	AsyncApplicationStartupExtension,
 };
 
 pub use self::error::Error as ServerError;
@@ -57,6 +57,15 @@ pub struct Server<UserState, UserEnv, UserCLI>
 // -------------- //
 // Implémentation //
 // -------------- //
+
+impl<S, E, C> Server<S, E, C>
+{
+	pub fn define_default_state(mut self, state: S) -> Self
+	{
+		self.state.set_state(state);
+		self
+	}
+}
 
 impl<S, E, C> Server<S, E, C>
 {
