@@ -39,5 +39,5 @@ tower-http = { version = "0.5.2", features = ["cors", "fs"] }
 tower-layer = { version = "0.3.2" }
 tower-service = { version = "0.3.2" }
 tower-sessions = { version = "0.12.2" }
-url = { version = "2.5.0", features = ["serde"] }
+url = { version = "2.5.2", features = ["serde"] }
 uuid = { workspace = true }
