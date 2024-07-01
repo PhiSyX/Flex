@@ -1,0 +1,21 @@
+{
+	"name": "@phisyx/flex-chat-webapp-scratch",
+	"version": "0.1.0",
+	"description": "Frontend Chat Application from scratch",
+	"private": true,
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@phisyx/flex-chat": "workspace:*",
+		"@phisyx/flex-custom-element": "workspace:*",
+		"@phisyx/flex-html-element-extension": "workspace:*",
+		"@phisyx/flex-signal": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.2.2",
+		"vite": "^5.3.1"
+	}
+}

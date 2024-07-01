@@ -8,7 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/asserts";
-export * from "./src/option";
-export * from "./src/result";
-export * from "./src/tags";
+import { HTMLElementExtension as Ext } from "../extension";
+
+export function img(...args: Ext.Args): Ext<HTMLImageElement> {
+	return Ext.createHTMLElement("img", args);
+}
+
+export function picture(...args: Ext.Args): Ext<HTMLPictureElement> {
+	return Ext.createHTMLElement("picture", args);
+}
+
+export function video(...args: Ext.Args): Ext<HTMLVideoElement> {
+	return Ext.createHTMLElement("video", args);
+}

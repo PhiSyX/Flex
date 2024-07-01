@@ -8,7 +8,35 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/asserts";
-export * from "./src/option";
-export * from "./src/result";
-export * from "./src/tags";
+function basename(path: string): string {
+	return path.split("/").reverse()[0];
+}
+
+function defineCustomElements(imports: Record<string, CustomElementFile>) {
+	for (const [fileName, { default: defineElement }] of Object.entries(
+		imports,
+	)) {
+		const tagName = basename(fileName).slice(0, -".ts".length);
+		window.customElements.define(
+			tagName,
+			defineElement,
+			defineElement.options,
+		);
+	}
+}
+
+defineCustomElements(
+	import.meta.glob<CustomElementFile>("./uikit/*/*-*.ts", {
+		eager: true,
+	}),
+);
+defineCustomElements(
+	import.meta.glob<CustomElementFile>("./views/*/*-*.ts", {
+		eager: true,
+	}),
+);
+defineCustomElements(
+	import.meta.glob<CustomElementFile>("./customElements/*-*.ts", {
+		eager: true,
+	}),
+);

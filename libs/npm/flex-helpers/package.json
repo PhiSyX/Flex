@@ -1,0 +1,9 @@
+{
+    "name": "@phisyx/flex-helpers",
+    "description": "Flex Helpers",
+    "version": "0.1.0",
+    "author": "Mike 'PhiSyX' S.",
+    "devDependencies": {
+        "@phisyx/flex-code-quality": "workspace:*"
+    }
+}

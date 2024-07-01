@@ -8,7 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/asserts";
-export * from "./src/option";
-export * from "./src/result";
-export * from "./src/tags";
+import { HTMLElementExtension as Ext } from "../extension";
+
+export function link(...args: Ext.Args): Ext<HTMLLinkElement> {
+	return Ext.createHTMLElement("link", args);
+}
+
+export function meta(...args: Ext.Args): Ext<HTMLMetaElement> {
+	return Ext.createHTMLElement("meta", args);
+}

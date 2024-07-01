@@ -1,0 +1,13 @@
+{
+    "name": "@phisyx/flex-custom-element",
+    "description": "Custom Element",
+    "authors": "Mike 'PhiSyX' S.",
+    "version": "0.1.0",
+    "devDependencies": {
+        "@phisyx/flex-asserts": "workspace:*",
+        "@phisyx/flex-code-quality": "workspace:*",
+        "@phisyx/flex-capitalization": "workspace:*",
+        "@phisyx/flex-html-element-extension": "workspace:*",
+        "@phisyx/flex-signal": "workspace:*"
+    }
+}

@@ -8,7 +8,28 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/asserts";
-export * from "./src/option";
-export * from "./src/result";
-export * from "./src/tags";
+import { HTMLElementExtension as Ext } from "../extension";
+
+type Heading = Ext<HTMLHeadingElement>;
+export function h1(...args: Ext.Args): Heading {
+	return Ext.createHTMLElement("h1", args);
+}
+export function h2(...args: Ext.Args): Heading {
+	return Ext.createHTMLElement("h2", args);
+}
+export function h3(...args: Ext.Args): Heading {
+	return Ext.createHTMLElement("h3", args);
+}
+export function h4(...args: Ext.Args): Heading {
+	return Ext.createHTMLElement("h4", args);
+}
+export function h5(...args: Ext.Args): Heading {
+	return Ext.createHTMLElement("h5", args);
+}
+export function h6(...args: Ext.Args): Heading {
+	return Ext.createHTMLElement("h6", args);
+}
+
+export function hgroup(...args: Ext.Args) {
+	return Ext.createHTMLElement("hgroup", args);
+}

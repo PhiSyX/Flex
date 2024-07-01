@@ -1,0 +1,10 @@
+{
+    "name": "@phisyx/flex-signal",
+    "description": "Signal",
+    "version": "0.1.0",
+    "author": "Mike 'PhiSyX' S.",
+    "devDependencies": {
+        "@phisyx/flex-code-quality": "workspace:*",
+        "@phisyx/flex-asserts": "workspace:*"
+    }
+}
