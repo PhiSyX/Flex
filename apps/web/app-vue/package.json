@@ -1,5 +1,5 @@
 {
-	"name": "@phisyx/flex-chat-webapp",
+	"name": "@phisyx/flex-chat-webapp-vue",
 	"private": true,
 	"version": "0.1.0",
 	"type": "module",
