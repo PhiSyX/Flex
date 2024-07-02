@@ -94,6 +94,11 @@ export default defineConfig({
 				find: /^~/,
 				replacement: path.resolve("src"),
 			},
+			// Assets
+			{
+				find: /^assets:~/,
+				replacement: path.resolve("..", "..", "..", "assets"),
+			},
 			// SCSS Libs
 			{
 				find: /^scss:~/,
