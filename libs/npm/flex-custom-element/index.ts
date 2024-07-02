@@ -10,4 +10,3 @@
 
 export * from "./src/decorator";
 export * from "./src/global";
-export * from "./src/use";

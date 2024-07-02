@@ -9,48 +9,53 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { View } from "@phisyx/flex-chat";
-import { customElement, use } from "@phisyx/flex-custom-element";
+import { customElement } from "@phisyx/flex-custom-element";
 import {
 	type HTMLElementExtension,
 	div,
 	dynview,
+	use,
 } from "@phisyx/flex-html-element-extension";
 import { signal } from "@phisyx/flex-signal";
 
 import LoginView from "../views/login/login-view";
 
+import baseSCSS from "assets:~/scss/_base.scss?inline";
+
 /**
  * Chat App.
  */
-@customElement()
+@customElement({ mode: "open", styles: [baseSCSS] })
 export default class ChatApp {
 	#view = signal(View.Login);
 
 	render(): HTMLElementExtension {
 		return div(
-			dynview(this.#view, (view) => {
-				switch (view) {
-					case View.Login:
-						return use(LoginView, {});
+			div(
+				dynview(this.#view, (view) => {
+					switch (view) {
+						case View.Login:
+							return use(LoginView, {});
 
-					case View.DirectAccess:
-						{
-						}
-						break;
+						case View.DirectAccess:
+							{
+							}
+							break;
 
-					case View.Chat:
-						{
-						}
-						break;
+						case View.Chat:
+							{
+							}
+							break;
 
-					case View.Settings:
-						{
-						}
-						break;
-				}
+						case View.Settings:
+							{
+							}
+							break;
+					}
 
-				return div("hey");
-			}),
+					return div("hello world");
+				}),
+			).id("#app"),
 		).id("#🆔");
 	}
 }

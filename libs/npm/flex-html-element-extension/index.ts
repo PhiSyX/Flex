@@ -23,3 +23,4 @@ export * from "./src/elements/phrasing";
 export * from "./src/elements/svg";
 
 export * from "./src/widgets/dynview";
+export * from "./src/widgets/use";

@@ -12,9 +12,8 @@ import {
 	type GlobalCustomElement,
 	attr,
 	customElement,
-	use,
 } from "@phisyx/flex-custom-element";
-import { div, input, p } from "@phisyx/flex-html-element-extension";
+import { div, input, p, use } from "@phisyx/flex-html-element-extension";
 import { type Signal, signal } from "@phisyx/flex-signal";
 import LabelIcon from "../icons/label-icon";
 

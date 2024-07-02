@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { customElement, use } from "@phisyx/flex-custom-element";
+import { customElement } from "@phisyx/flex-custom-element";
 import {
 	div,
 	form,
@@ -16,6 +16,7 @@ import {
 	label,
 	main,
 	section,
+	use,
 } from "@phisyx/flex-html-element-extension";
 
 import { signal } from "@phisyx/flex-signal";
@@ -30,7 +31,9 @@ import ButtonIcon from "../../uikit/icons/button-icon";
 import InputSwitch from "../../uikit/inputswitch/input-switch";
 import TextInput from "../../uikit/textinput/text-input";
 
-@customElement()
+import scss from "./login-view.scss?inline";
+
+@customElement({ mode: "open", styles: [scss] })
 export default class LoginView {
 	declare static TAG_NAME: string;
 

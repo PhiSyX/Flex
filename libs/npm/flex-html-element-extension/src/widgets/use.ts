@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { isClass } from "@phisyx/flex-asserts";
-import { HTMLElementExtension as Ext } from "@phisyx/flex-html-element-extension";
+import { HTMLElementExtension as Ext } from "../extension";
 
 // biome-ignore lint/suspicious/noExplicitAny: ;-)
 type FIXME = any;
