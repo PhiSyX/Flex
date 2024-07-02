@@ -8,9 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/nickname";
-export * from "./src/view";
+import {
+	type GlobalCustomElement,
+	attr,
+	customElement,
+} from "@phisyx/flex-custom-element";
+import { button } from "@phisyx/flex-html-element-extension";
 
-export * from "./src/storage/local/constant";
-export * from "./src/storage/local/remember_me";
-export * from "./src/storage/local/storage";
+@customElement({ mode: "open" })
+export default class ButtonIcon {
+	constructor(public customElement: GlobalCustomElement) {}
+
+	@attr({ parser: Boolean })
+	get disabled(): boolean {
+		return false;
+	}
+
+	@attr()
+	get icon(): string {
+		return "<icon-attr>";
+	}
+
+	render() {
+		const $icon = document.createElement(`icon-${this.icon}`);
+		return button($icon)
+			.extendsAttrs(this.customElement.attributes)
+			.class("btn flex:shrink=0")
+			.type("button");
+	}
+}

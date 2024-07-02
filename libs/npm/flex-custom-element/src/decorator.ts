@@ -26,6 +26,10 @@ type CustomElementDecoratorOptions = {
 	 * Shadow DOM tree encapsulation mode.
 	 */
 	mode?: AttachShadowMode;
+	/**
+	 * Stylesheets of the custom elements
+	 */
+	styles?: Array<string>;
 };
 
 export function customElement(options?: CustomElementDecoratorOptions) {
@@ -82,6 +86,14 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 			}
 
 			connectedCallback() {
+				if (options?.styles) {
+					for (const stylesheet of options.styles) {
+						let $style = document.createElement("style");
+						$style.textContent = stylesheet;
+						this.root.appendChild($style);
+					}
+				}
+
 				this.element.mounted?.();
 
 				let $extension = this.render();
@@ -153,6 +165,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 type AttrDecoratorOptions = {
 	parser?:
 		| (<T>(...args: FIXME[]) => T)
+		| BooleanConstructor
 		| StringConstructor
 		| NumberConstructor;
 };
@@ -160,13 +173,14 @@ type AttrDecoratorOptions = {
 export function attr<T extends CustomElementInterface>(
 	options?: AttrDecoratorOptions,
 ) {
-	const parser = options?.parser || String;
+	const defaultParser = (v: unknown) => v;
+	const parser = options?.parser || defaultParser;
 	return (_: T, propertyName: string, descriptor: PropertyDescriptor) => {
 		const propertyNameKb = kebabcase(propertyName);
 		const originGetter = descriptor.get;
 		descriptor.get = function (this: T) {
 			return parser(
-				this.customElement?.getAttribute(propertyNameKb) ||
+				this.customElement?.getAttribute(propertyNameKb) ??
 					originGetter?.call(this),
 			);
 		};

@@ -15,7 +15,6 @@ import {
 	h1,
 	label,
 	main,
-	p,
 	section,
 } from "@phisyx/flex-html-element-extension";
 
@@ -24,8 +23,11 @@ import { signal } from "@phisyx/flex-signal";
 import {
 	MAXLENGTH_NICKNAME,
 	PLACEHOLDER_NICKNAME,
+	RememberMeStorage,
 	VALIDATION_NICKNAME_INFO,
 } from "@phisyx/flex-chat";
+import ButtonIcon from "../../uikit/icons/button-icon";
+import InputSwitch from "../../uikit/inputswitch/input-switch";
 import TextInput from "../../uikit/textinput/text-input";
 
 @customElement()
@@ -39,6 +41,7 @@ export default class LoginView {
 	alternativeNickname = signal("");
 	realname = signal("");
 	channels = signal("");
+	rememberMe = new RememberMeStorage();
 
 	render() {
 		return main(
@@ -161,11 +164,15 @@ export default class LoginView {
 						success: this.submitHandler,
 					}),
 				div(
-					// 	<ButtonIcon
-					// 		icon="plus"
-					// 		title="Afficher les champs avancés"
-					// 		@click="displayAdvancedInfoHandler"
-					// 	/>
+					use(
+						ButtonIcon,
+						{
+							icon: "plus",
+						},
+						{
+							title: "Afficher les champs avancés",
+						},
+					).onClick(this.displayAdvancedInfoHandler),
 				)
 					.class("align-t:center")
 					.displayWhen(this.advancedInfo.computed((b) => !b)),
@@ -173,12 +180,15 @@ export default class LoginView {
 					label(
 						"Connexion automatique lors de vos prochaines sessions :",
 					),
-					// 	<InputSwitch
-					// 		v-model="loginFormData.rememberMe.value"
-					// 		labelN="Non"
-					// 		labelY="Oui"
-					// 		name="remember_me"
-					// 	/>
+					use(InputSwitch, {
+						labelN: "Non",
+						labelY: "Oui",
+						name: "remember_me",
+						// @ts-expect-error à corriger
+						model: this.rememberMe.value,
+					}).on("sync:model", (evt: CustomEvent<boolean>) => {
+						this.rememberMe.set(evt.detail);
+					}),
 				).class("remember-me [ m:a align-t:center w=35 ]"),
 				//
 				// <UiButton
@@ -198,6 +208,13 @@ export default class LoginView {
 			.id("#chat-login-view")
 			.class("scroll:y flex! flex/center:full m:a pos-r");
 	}
+
+	/**
+	 * Affiche les informations de connexion avancées.
+	 */
+	displayAdvancedInfoHandler = () => {
+		this.advancedInfo.set(true);
+	};
 
 	submitHandler = (evt: SubmitEvent) => {
 		console.log(this, evt);

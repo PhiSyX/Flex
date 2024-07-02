@@ -17,6 +17,7 @@ import {
 	isPrimitive,
 	isString,
 } from "@phisyx/flex-asserts";
+import { kebabcase } from "@phisyx/flex-capitalization";
 import { noopBool } from "@phisyx/flex-helpers";
 import { stripTags } from "@phisyx/flex-safety";
 import {
@@ -291,7 +292,7 @@ class HTMLElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		}
 
 		for (const [attr, value] of Object.entries(obj)) {
-			this.#nativeElement.setAttribute(attr, value);
+			this.#nativeElement.setAttribute(kebabcase(attr), value);
 		}
 
 		return true;
@@ -412,6 +413,11 @@ class HTMLElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return this;
 	}
 
+	form(formID?: string): this {
+		if (formID) this.#nativeElement.setAttribute("form", formID);
+		return this;
+	}
+
 	id(id: `#${string}`): this {
 		this.#nativeElement.id = id.slice(1);
 		return this;
@@ -434,6 +440,16 @@ class HTMLElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			signal.set(evt.target.value);
 		});
 
+		return this;
+	}
+
+	name(name: string): this {
+		this.#nativeElement.setAttribute("name", name);
+		return this;
+	}
+
+	value(value: unknown): this {
+		this.#nativeElement.setAttribute("value", String(value));
 		return this;
 	}
 
@@ -504,7 +520,7 @@ class HTMLElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 
 		for (const attr of attrs) {
 			if (excludesAttributes.includes(attr.name)) continue;
-			this.#nativeElement.setAttribute(attr.name, attr.value);
+			this.#nativeElement.setAttribute(kebabcase(attr.name), attr.value);
 		}
 
 		return this;

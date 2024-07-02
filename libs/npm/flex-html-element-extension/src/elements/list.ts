@@ -8,37 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import "assets:~/scss/style.scss";
+import { HTMLElementExtension as Ext } from "../extension";
 
-function basename(path: string): string {
-	return path.split("/").reverse()[0];
+export function ol(...args: Ext.Args): Ext<HTMLOListElement> {
+	return Ext.createHTMLElement("ol", args);
 }
 
-function defineCustomElements(imports: Record<string, CustomElementFile>) {
-	for (const [fileName, { default: defineElement }] of Object.entries(
-		imports,
-	)) {
-		const tagName = basename(fileName).slice(0, -".ts".length);
-		window.customElements.define(
-			tagName,
-			defineElement,
-			defineElement.options,
-		);
-	}
+export function ul(...args: Ext.Args): Ext<HTMLUListElement> {
+	return Ext.createHTMLElement("ul", args);
 }
 
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./uikit/*/*-*.ts", {
-		eager: true,
-	}),
-);
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./views/*/*-*.ts", {
-		eager: true,
-	}),
-);
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./customElements/*-*.ts", {
-		eager: true,
-	}),
-);
+export function li(...args: Ext.Args): Ext<HTMLLIElement> {
+	return Ext.createHTMLElement("li", args);
+}

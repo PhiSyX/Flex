@@ -5,6 +5,7 @@
     "author": "Mike 'PhiSyX' S.",
     "devDependencies": {
         "@phisyx/flex-asserts": "workspace:*",
+        "@phisyx/flex-capitalization": "workspace:*",
         "@phisyx/flex-code-quality": "workspace:*",
         "@phisyx/flex-helpers": "workspace:*",
         "@phisyx/flex-safety": "workspace:*",

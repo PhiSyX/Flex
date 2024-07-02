@@ -16,6 +16,7 @@ export * from "./src/elements/form";
 export * from "./src/elements/fragment";
 export * from "./src/elements/heading";
 export * from "./src/elements/interactive";
+export * from "./src/elements/list";
 export * from "./src/elements/metadata";
 export * from "./src/elements/phrasing";
 

@@ -8,37 +8,43 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import "assets:~/scss/style.scss";
+import { STORAGE_REMEMBER_ME_KEY } from "./constant";
+import { AppLocalStorage } from "./storage";
 
-function basename(path: string): string {
-	return path.split("/").reverse()[0];
-}
+// -------------- //
+// Implémentation //
+// -------------- //
 
-function defineCustomElements(imports: Record<string, CustomElementFile>) {
-	for (const [fileName, { default: defineElement }] of Object.entries(
-		imports,
-	)) {
-		const tagName = basename(fileName).slice(0, -".ts".length);
-		window.customElements.define(
-			tagName,
-			defineElement,
-			defineElement.options,
-		);
+export class RememberMeStorage extends AppLocalStorage<boolean> {
+	// ------ //
+	// Static //
+	// ------ //
+
+	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
+
+	/**
+	 * Validation du JSON
+	 */
+	static fromJSON(key: string, value: string): boolean | undefined {
+		if (!(key.length === 0 && typeof value === "boolean")) {
+			return;
+		}
+		return value;
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+
+	constructor() {
+		super(RememberMeStorage.KEY, RememberMeStorage.fromJSON);
+	}
+
+	// -------- //
+	// Override //
+	// -------- //
+
+	override get() {
+		return this.item.unwrap_or(false);
 	}
 }
-
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./uikit/*/*-*.ts", {
-		eager: true,
-	}),
-);
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./views/*/*-*.ts", {
-		eager: true,
-	}),
-);
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./customElements/*-*.ts", {
-		eager: true,
-	}),
-);

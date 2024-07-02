@@ -3,6 +3,9 @@
     "description": "Flex Chat",
     "authors": "Mike 'PhiSyX' S.",
     "version": "0.1.0",
+    "dependencies": {
+        "@phisyx/flex-safety": "workspace:*"
+    },
     "devDependencies": {
         "@phisyx/flex-code-quality": "workspace:*"
     }

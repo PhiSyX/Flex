@@ -8,37 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import "assets:~/scss/style.scss";
+// -------- //
+// Constant //
+// -------- //
 
-function basename(path: string): string {
-	return path.split("/").reverse()[0];
-}
+/**
+ * Clé localStorage de l'ID du client courant connecté.
+ */
+export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
 
-function defineCustomElements(imports: Record<string, CustomElementFile>) {
-	for (const [fileName, { default: defineElement }] of Object.entries(
-		imports,
-	)) {
-		const tagName = basename(fileName).slice(0, -".ts".length);
-		window.customElements.define(
-			tagName,
-			defineElement,
-			defineElement.options,
-		);
-	}
-}
+/**
+ * Clé localStorage "Se souvenir de moi".
+ */
+export const STORAGE_REMEMBER_ME_KEY = "flex.remember_me";
 
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./uikit/*/*-*.ts", {
-		eager: true,
-	}),
-);
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./views/*/*-*.ts", {
-		eager: true,
-	}),
-);
-defineCustomElements(
-	import.meta.glob<CustomElementFile>("./customElements/*-*.ts", {
-		eager: true,
-	}),
-);
+/**
+ * Clé localStorage paramètres "layout".
+ */
+export const STORAGE_SETTINGS_LAYOUT_KEY = "flex.settings.layout";
+
+/**
+ * Clé localStorage paramètres "Personalization".
+ */
+export const STORAGE_SETTINGS_PERSONALIZATION_KEY =
+	"flex.settings.personalization";
