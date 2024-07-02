@@ -8,19 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { HTMLElementExtension as Ext } from "../extension";
+import {
+	ButtonHTMLElementExtension,
+	HTMLElementExtension as Ext,
+} from "../extension";
 
 type Anchor = Ext<HTMLAnchorElement>;
 export function a(...args: Ext.Args): Anchor {
-	return Ext.createHTMLElement("a", args);
+	return Ext.createElement("a", args);
 }
 
-type Button = Ext<HTMLButtonElement>;
-export function button(...args: Ext.Args): Button {
-	return Ext.createHTMLElement("button", args);
+export function button(...args: Ext.Args): ButtonHTMLElementExtension {
+	return ButtonHTMLElementExtension.make(args);
 }
 
 type Details = Ext<HTMLDetailsElement>;
 export function details(...args: Ext.Args): Details {
-	return Ext.createHTMLElement("details", args);
+	return Ext.createElement("details", args);
 }

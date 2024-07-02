@@ -8,51 +8,51 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { GlobalCustomElement } from "./global";
+import type { Signal } from "@phisyx/flex-signal";
+import { HTMLElementExtension } from "./html";
 
-import type {
-	HTMLElementExtension,
-	SVGElementExtension,
-} from "@phisyx/flex-html-element-extension";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// --------- //
-// Interface //
-// --------- //
+export class InputHTMLElementExtension extends HTMLElementExtension<HTMLInputElement> {
+	static make(args: HTMLElementExtension.Args): InputHTMLElementExtension {
+		return new InputHTMLElementExtension(args);
+	}
 
-export interface CustomElementConstructor<
-	Instance extends CustomElementInterface,
-> {
-	new (_: GlobalCustomElement): Instance;
-
-	/**
-	 * Dynamic attributes (aka. observedAttributes)
-	 */
-	props?: Array<string>;
+	constructor(args: HTMLElementExtension.Args) {
+		super(document.createElement("input"), args);
+	}
 
 	/**
-	 * Allowed events
+	 * Public API
 	 */
-	events?: Array<string>;
-}
 
-export interface CustomElementInterface {
-	customElement?: GlobalCustomElement;
+	form(id?: string): this {
+		this.setAttribute("form", id);
+		return this;
+	}
 
-	mounted?: () => void;
-	unmounted?: () => void;
+	model<M extends HTMLElementExtension.Primitives>(signal: Signal<M>): this {
+		signal.watch((model) => this.handleSignal(model), { immediate: true });
 
-	/**
-	 * When the attributes of the custom element change. These attributes MUST
-	 * be indicated in the static `observedAttributes` array.
-	 */
-	updatedAttribute?: (
-		attributeName: string,
-		attributeOldValue: string | null,
-		attributeNewValue: string | null,
-	) => void;
+		this.on("input", (evt) => {
+			// @ts-expect-error - We know that the input event is only triggered
+			// on form elements, and that they have the property (`value` in
+			// `EventTarget`) in their object.
+			signal.set(evt.target.value);
+		});
 
-	/**
-	 * Render the custom element.
-	 */
-	render(): HTMLElementExtension | SVGElementExtension;
+		return this;
+	}
+
+	name(user: string): this {
+		this.setAttribute("name", user);
+		return this;
+	}
+
+	value(userValue: unknown): this {
+		this.setAttribute("value", String(userValue));
+		return this;
+	}
 }

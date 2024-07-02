@@ -11,13 +11,13 @@
 import { HTMLElementExtension as Ext } from "../extension";
 
 export function ol(...args: Ext.Args): Ext<HTMLOListElement> {
-	return Ext.createHTMLElement("ol", args);
+	return Ext.createElement("ol", args);
 }
 
 export function ul(...args: Ext.Args): Ext<HTMLUListElement> {
-	return Ext.createHTMLElement("ul", args);
+	return Ext.createElement("ul", args);
 }
 
 export function li(...args: Ext.Args): Ext<HTMLLIElement> {
-	return Ext.createHTMLElement("li", args);
+	return Ext.createElement("li", args);
 }

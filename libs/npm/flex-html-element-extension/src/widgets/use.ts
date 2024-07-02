@@ -36,7 +36,7 @@ export function use(
 	...args: Ext.Args
 ): Ext {
 	const customTagName = isClass(customTag) ? customTag.TAG_NAME : customTag;
-	const customElement = Ext.createHTMLElement(
+	const customElement = Ext.createElement(
 		customTagName as keyof HTMLElementTagNameMap,
 		args,
 	);

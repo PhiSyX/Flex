@@ -8,29 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { HTMLElementExtension as Ext } from "../extension";
+import { SVGElementExtension as Ext } from "../extension";
 
-export function svg(size: [w: number, h: number], ...args: Ext.Args) {
-	const viewBox = `0 0 ${size[0]} ${size[1]}`;
-
-	return Ext.createSVGElement("svg", [
-		{
-			// @ts-expect-error à améliorer
-			width: size[0],
-			height: size[1],
-			viewBox,
-		},
-		...args,
-	]);
+export function svg(
+	size: [w: number, h: number],
+	...args: Ext.Args
+): Ext<SVGSVGElement> {
+	return Ext.createElement("svg", args)
+		.width(size[0])
+		.height(size[1])
+		.viewBox(`0 0 ${size[0]} ${size[1]}`);
 }
 
-export function path(d: string, ...args: Ext.Args) {
-	return Ext.createSVGElement("path", [
-		{
-			// @ts-expect-error à améliorer
-			d,
-			fill: "currentColor",
-		},
-		...args,
-	]);
+export function path(d: string, ...args: Ext.Args): Ext<SVGPathElement> {
+	return Ext.createElement("path", args).d(d).fill("currentColor");
 }

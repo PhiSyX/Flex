@@ -11,53 +11,53 @@
 import { HTMLElementExtension as Ext } from "../extension";
 
 export function abbr(...args: Ext.Args) {
-	return Ext.createHTMLElement("abbr", args);
+	return Ext.createElement("abbr", args);
 }
 
 export function br(...args: Ext.Args): Ext<HTMLBRElement> {
-	return Ext.createHTMLElement("br", args);
+	return Ext.createElement("br", args);
 }
 
 export function cite(...args: Ext.Args): Ext<HTMLSpanElement> {
-	return Ext.createHTMLElement("cite", args);
+	return Ext.createElement("cite", args);
 }
 
 export function code(...args: Ext.Args): Ext<HTMLSpanElement> {
-	return Ext.createHTMLElement("code", args);
+	return Ext.createElement("code", args);
 }
 
 export function em(...args: Ext.Args): Ext<HTMLSpanElement> {
-	return Ext.createHTMLElement("em", args);
+	return Ext.createElement("em", args);
 }
 
 export function kbd(...args: Ext.Args) {
-	return Ext.createHTMLElement("kbd", args);
+	return Ext.createElement("kbd", args);
 }
 
 export function p(...args: Ext.Args): Ext<HTMLParagraphElement> {
-	return Ext.createHTMLElement("p", args);
+	return Ext.createElement("p", args);
 }
 
 export function ruby(...args: Ext.Args) {
-	return Ext.createHTMLElement("ruby", args);
+	return Ext.createElement("ruby", args);
 }
 
 export function q(...args: Ext.Args): Ext<HTMLQuoteElement> {
-	return Ext.createHTMLElement("q", args);
+	return Ext.createElement("q", args);
 }
 
 export function slot(...args: Ext.Args): Ext<HTMLSlotElement> {
-	return Ext.createHTMLElement("slot", args);
+	return Ext.createElement("slot", args);
 }
 
 export function span(...args: Ext.Args): Ext<HTMLSpanElement> {
-	return Ext.createHTMLElement("span", args);
+	return Ext.createElement("span", args);
 }
 
 export function strong(...args: Ext.Args): Ext<HTMLSpanElement> {
-	return Ext.createHTMLElement("strong", args);
+	return Ext.createElement("strong", args);
 }
 
 export function time(...args: Ext.Args): Ext<HTMLTimeElement> {
-	return Ext.createHTMLElement("time", args);
+	return Ext.createElement("time", args);
 }

@@ -11,62 +11,62 @@
 import { HTMLElementExtension as Ext } from "../extension";
 
 export function article(...args: Ext.Args) {
-	return Ext.createHTMLElement("article", args);
+	return Ext.createElement("article", args);
 }
 
 export function aside(...args: Ext.Args) {
-	return Ext.createHTMLElement("aside", args);
+	return Ext.createElement("aside", args);
 }
 
 type Dialog = Ext<HTMLDialogElement>;
 export function dialog(...a: Ext.Args): Dialog {
-	return Ext.createHTMLElement("dialog", a);
+	return Ext.createElement("dialog", a);
 }
 
 type Div = Ext<HTMLDivElement>;
 export function div(...args: Ext.Args): Div {
-	return Ext.createHTMLElement("div", args);
+	return Ext.createElement("div", args);
 }
 
 export function figure(...args: Ext.Args) {
-	return Ext.createHTMLElement("figure", args);
+	return Ext.createElement("figure", args);
 }
 
 export function footer(...args: Ext.Args) {
-	return Ext.createHTMLElement("footer", args);
+	return Ext.createElement("footer", args);
 }
 
 export function header(...args: Ext.Args) {
-	return Ext.createHTMLElement("header", args);
+	return Ext.createElement("header", args);
 }
 
 type Hr = Ext<HTMLHRElement>;
 export function hr(...args: Ext.Args): Hr {
-	return Ext.createHTMLElement("hr", args);
+	return Ext.createElement("hr", args);
 }
 
 export function main(...args: Ext.Args) {
-	return Ext.createHTMLElement("main", args);
+	return Ext.createElement("main", args);
 }
 
 type Menu = Ext<HTMLMenuElement>;
 export function menu(...args: Ext.Args): Menu {
-	return Ext.createHTMLElement("menu", args);
+	return Ext.createElement("menu", args);
 }
 
 export function nav(...args: Ext.Args) {
-	return Ext.createHTMLElement("nav", args);
+	return Ext.createElement("nav", args);
 }
 
 type Pre = Ext<HTMLPreElement>;
 export function pre(...args: Ext.Args): Pre {
-	return Ext.createHTMLElement("pre", args);
+	return Ext.createElement("pre", args);
 }
 
 export function search(...args: Ext.Args) {
-	return Ext.createHTMLElement("search", args);
+	return Ext.createElement("search", args);
 }
 
 export function section(...args: Ext.Args) {
-	return Ext.createHTMLElement("section", args);
+	return Ext.createElement("section", args);
 }
