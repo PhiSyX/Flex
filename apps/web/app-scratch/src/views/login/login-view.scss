@@ -1,4 +1,5 @@
-@use "scss:~/flexsheets" as fx;
+@use "assets:~/scss/variables" as var;
+@use "scss:~/flexsheets" as fx with($spacing: var.$spacing);
 
 body:has(#chat-login-view) {
 	--body-bg: var(--login-page-bg);

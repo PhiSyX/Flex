@@ -89,7 +89,17 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 				if (options?.styles) {
 					for (const stylesheet of options.styles) {
 						let $style = document.createElement("style");
-						$style.textContent = stylesheet;
+						if (stylesheet.indexOf("/") >= 0) {
+							fetch(stylesheet, {
+								headers: { accept: "text/css" },
+							})
+								.then((r) => r.text())
+								.then((style) => {
+									$style.textContent = style;
+								});
+						} else {
+							$style.textContent = stylesheet;
+						}
 						this.root.appendChild($style);
 					}
 				}

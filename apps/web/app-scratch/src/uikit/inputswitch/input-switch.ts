@@ -23,7 +23,7 @@ import {
 } from "@phisyx/flex-html-element-extension";
 import { type Signal, signal } from "@phisyx/flex-signal";
 
-import scss from "./input-switch.scss?inline";
+import scss from "./input-switch.scss?url";
 
 enum InputRadioLabelDefault {
 	Yes = "Yes",

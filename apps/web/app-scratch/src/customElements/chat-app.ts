@@ -20,7 +20,7 @@ import { signal } from "@phisyx/flex-signal";
 
 import LoginView from "../views/login/login-view";
 
-import baseSCSS from "assets:~/scss/_base.scss?inline";
+import baseSCSS from "assets:~/scss/_base.scss?url";
 
 /**
  * Chat App.

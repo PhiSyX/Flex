@@ -31,7 +31,7 @@ import ButtonIcon from "../../uikit/icons/button-icon";
 import InputSwitch from "../../uikit/inputswitch/input-switch";
 import TextInput from "../../uikit/textinput/text-input";
 
-import scss from "./login-view.scss?inline";
+import scss from "./login-view.scss?url";
 
 @customElement({ mode: "open", styles: [scss] })
 export default class LoginView {
