@@ -13,7 +13,7 @@ import {
 	attr,
 	customElement,
 } from "@phisyx/flex-custom-element";
-import { button, fragment, slot } from "@phisyx/flex-html-element-extension";
+import { button, fragment, slot, templateContent } from "@phisyx/flex-html-element-extension";
 
 import { signal } from "@phisyx/flex-signal";
 import scss from "./ui-button.scss?url";
@@ -79,10 +79,10 @@ export default class UiButton {
 
 	render() {
 		return button(
-			fragment(() => document.createElement(`icon-${this.icon}`)) //
+			fragment(() => templateContent(`#icon-${this.icon}`)) //
 				.onlyIf(this.icon != null && this.position === "left"),
 			slot,
-			fragment(() => document.createElement(`icon-${this.icon}`)) //
+			fragment(() => templateContent(`#icon-${this.icon}`)) //
 				.onlyIf(this.icon != null && this.position === "right"),
 		)
 			.extendsAttrs(this.customElement.attributes)

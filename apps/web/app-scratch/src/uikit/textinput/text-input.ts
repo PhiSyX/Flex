@@ -17,7 +17,9 @@ import { div, input, p, use } from "@phisyx/flex-html-element-extension";
 import { type Signal, signal } from "@phisyx/flex-signal";
 import LabelIcon from "../icons/label-icon";
 
-@customElement({ mode: "open" })
+import scss from "./text-input.scss?url";
+
+@customElement({ mode: "open", styles: [scss] })
 export default class TextInput {
 	declare static TAG_NAME: string;
 

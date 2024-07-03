@@ -1,0 +1,46 @@
+@use "scss:~/flexsheets" as fx;
+
+@include fx.use("flex", "flex!", "align-ji:center", "p:reset");
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: margin-left,
+		values: (
+			4,
+		),
+	),
+	(
+		className: padding-block,
+		values: (
+			1,
+		),
+	)
+);
+
+.form-group {
+	border: 1px dashed transparent;
+}
+
+p {
+	font-size: 13px;
+	font-style: italic;
+}
+
+.form-group.error {
+	border-radius: 4px;
+	color: var(--text-input-color-error);
+	border-color: currentColor;
+}
+
+input {
+	font-family: Nunito, sans-serif;
+}

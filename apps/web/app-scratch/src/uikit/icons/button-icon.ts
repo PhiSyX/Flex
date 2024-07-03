@@ -13,9 +13,11 @@ import {
 	attr,
 	customElement,
 } from "@phisyx/flex-custom-element";
-import { button } from "@phisyx/flex-html-element-extension";
+import { button, templateContent } from "@phisyx/flex-html-element-extension";
 
-@customElement({ mode: "open" })
+import scss from "./button-icon.scss?url";
+
+@customElement({ mode: "open", styles: [scss] })
 export default class ButtonIcon {
 	constructor(public customElement: GlobalCustomElement) {}
 
@@ -30,7 +32,7 @@ export default class ButtonIcon {
 	}
 
 	render() {
-		const $icon = document.createElement(`icon-${this.icon}`);
+		const $icon = templateContent(`#icon-${this.icon}`);
 		return button($icon)
 			.extendsAttrs(this.customElement.attributes)
 			.class("btn flex:shrink=0")

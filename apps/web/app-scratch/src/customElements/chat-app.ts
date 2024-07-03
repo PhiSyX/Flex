@@ -20,12 +20,12 @@ import { signal } from "@phisyx/flex-signal";
 
 import LoginView from "../views/login/login-view";
 
-import baseSCSS from "assets:~/scss/_base.scss?url";
+import scss from "./chat-app.scss?url";
 
 /**
  * Chat App.
  */
-@customElement({ mode: "open", styles: [baseSCSS] })
+@customElement({ mode: "open", styles: [scss] })
 export default class ChatApp {
 	#view = signal(View.Login);
 

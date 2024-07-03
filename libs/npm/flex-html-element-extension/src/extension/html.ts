@@ -25,7 +25,8 @@ namespace HTMLElementExtension {
 		| Sig
 		| Com
 		| HTMLElement
-		| HTMLElementExtension;
+		| HTMLElementExtension
+		| Node;
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;

@@ -17,3 +17,9 @@ export function link(...args: Ext.Args): Ext<HTMLLinkElement> {
 export function meta(...args: Ext.Args): Ext<HTMLMetaElement> {
 	return Ext.createElement("meta", args);
 }
+
+export function templateContent(id: `#${string}`): Node {
+	const element = document.getElementById(id.slice(1)) as HTMLTemplateElement;
+	if (!element) return document.createElement("span");
+	return element.content.cloneNode(true);
+}

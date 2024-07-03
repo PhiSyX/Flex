@@ -43,11 +43,12 @@ namespace ElementExtension {
 		| Com
 		| SVGElement
 		| HTMLElement
-		| ElementExtension;
+		| ElementExtension
+		| Node;
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;
-	export type Fn = () => ElementExtension | Element;
+	export type Fn = () => ElementExtension | Element | Node;
 	export type Sig = Signal;
 	export type Com = Computed;
 	export type Self = ElementExtension;

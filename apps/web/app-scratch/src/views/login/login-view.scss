@@ -1,6 +1,63 @@
 @use "assets:~/scss/variables" as var;
 @use "scss:~/flexsheets" as fx with($spacing: var.$spacing);
 
+@include fx.use(
+	"align-jc:se",
+	"align-t:center",
+	"b:none",
+	"cursor:pointer",
+	"m:a",
+	"flex",
+	"flex!",
+	"flex:full",
+	"flex/center:full",
+	"ov:h",
+	"pos-r",
+	"scroll:y"
+);
+
+@include fx.use(
+	(
+		className: border-radius,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			3,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: width,
+		values: (
+			35,
+		),
+	),
+	(
+		className: min-width,
+		values: (
+			43,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: padding,
+		values: (
+			2,
+		),
+	)
+);
+
 body:has(#chat-login-view) {
 	--body-bg: var(--login-page-bg);
 }
@@ -20,7 +77,7 @@ body:has(#chat-login-view) {
 		background: var(--login-form-bg);
 	}
 
-	form input {
+	form text-input input {
 		flex-grow: 1;
 
 		background: transparent;

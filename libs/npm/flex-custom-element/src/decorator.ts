@@ -44,7 +44,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 			return `handle${capitalized}Event`;
 		}
 
-		return class extends GlobalCustomElement {
+		return class LocalCustomElement extends GlobalCustomElement {
 			public static options: ElementDefinitionOptions | undefined = {
 				extends: options?.extends,
 			};
@@ -63,11 +63,48 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 
 			public element!: UCEInstance;
 
+			static STYLESHEETS: Map<string, string> = new Map();
+
 			constructor() {
 				super(options?.mode || "closed");
 
 				this.element = new UserCustomElement(this);
 				this.element.customElement = this;
+
+				if (options?.styles) {
+					for (const stylesheet of options.styles) {
+						if (LocalCustomElement.STYLESHEETS.has(stylesheet)) {
+							this.root.adoptedStyleSheets.push(
+								LocalCustomElement.STYLESHEETS(stylesheet),
+							);
+
+							continue;
+						}
+
+						const sheet = new CSSStyleSheet();
+
+						if (
+							stylesheet.indexOf(".css") >= 0 ||
+							stylesheet.indexOf(".scss") >= 0
+						) {
+							fetch(stylesheet, {
+								headers: { accept: "text/css" },
+							})
+								.then((r) => r.text())
+								.then((s) => {
+									LocalCustomElement.STYLESHEETS.set(
+										stylesheet,
+										s,
+									);
+									return sheet.replace(s);
+								});
+						} else {
+							sheet.replaceSync(stylesheet);
+						}
+
+						this.root.adoptedStyleSheets.push(sheet);
+					}
+				}
 			}
 
 			render() {
@@ -86,24 +123,6 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 			}
 
 			connectedCallback() {
-				if (options?.styles) {
-					for (const stylesheet of options.styles) {
-						let $style = document.createElement("style");
-						if (stylesheet.indexOf("/") >= 0) {
-							fetch(stylesheet, {
-								headers: { accept: "text/css" },
-							})
-								.then((r) => r.text())
-								.then((style) => {
-									$style.textContent = style;
-								});
-						} else {
-							$style.textContent = stylesheet;
-						}
-						this.root.appendChild($style);
-					}
-				}
-
 				this.element.mounted?.();
 
 				let $extension = this.render();
