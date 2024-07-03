@@ -16,6 +16,7 @@ import {
 	label,
 	main,
 	section,
+	span,
 	use,
 } from "@phisyx/flex-html-element-extension";
 
@@ -31,6 +32,7 @@ import ButtonIcon from "../../uikit/icons/button-icon";
 import InputSwitch from "../../uikit/inputswitch/input-switch";
 import TextInput from "../../uikit/textinput/text-input";
 
+import UiButton from "../../uikit/button/ui-button";
 import scss from "./login-view.scss?url";
 
 @customElement({ mode: "open", styles: [scss] })
@@ -45,6 +47,7 @@ export default class LoginView {
 	realname = signal("");
 	channels = signal("");
 	rememberMe = new RememberMeStorage();
+	loader = signal(false);
 
 	render() {
 		return main(
@@ -193,16 +196,22 @@ export default class LoginView {
 						this.rememberMe.set(evt.detail);
 					}),
 				).class("remember-me [ m:a align-t:center w=35 ]"),
-				//
-				// <UiButton
-				// 	:icon="loader ? 'loader' : undefined"
-				// 	position="right"
-				// 	type="submit"
-				// 	form="chat-login-form"
-				// 	class="[ flex align-jc:se p=2 b:none cursor:pointer ]"
-				// >
-				// 	<span class="[ flex:full ]">Accéder au Chat</span>
-				// </UiButton>
+
+				this.loader.computed((loader) =>
+					use(
+						UiButton,
+						{
+							icon: loader ? "loader" : undefined,
+							position: "right",
+							type: "submit",
+						},
+						{
+							form: "chat-login-form",
+						},
+
+						span("Accéder au Chat").class("flex:full"),
+					).class("flex align-jc:se p=2 b:none cursor:pointer"),
+				),
 			).class("flex! gap=3 min-w=43"),
 			// 	<UiButton icon="settings" class="color-scheme" @click="toSettingsView" />
 			//
