@@ -4,7 +4,7 @@ import { HTMLElementExtension } from "./html";
 // Type //
 // ---- //
 
-type ButtonType = "button" | "submit";
+type ButtonType = HTMLButtonElement["type"] | "dialog";
 
 // -------------- //
 // Implémentation //
@@ -23,7 +23,7 @@ export class ButtonHTMLElementExtension extends HTMLElementExtension<HTMLButtonE
 	 * Public API
 	 */
 
-	override type(ty: ButtonType & {}): this {
+	override type(ty?: ButtonType & {}): this {
 		return super.type(ty);
 	}
 }

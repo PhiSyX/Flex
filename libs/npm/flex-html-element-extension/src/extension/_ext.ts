@@ -14,6 +14,7 @@ import {
 	isDOMFragment,
 	isDOMInput,
 	isDOMNode,
+	isFunction,
 	isPrimitive,
 	isString,
 } from "@phisyx/flex-asserts";
@@ -46,7 +47,7 @@ namespace ElementExtension {
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;
-	export type Fn = () => ElementExtension;
+	export type Fn = () => ElementExtension | Element;
 	export type Sig = Signal;
 	export type Com = Computed;
 	export type Self = ElementExtension;
@@ -65,7 +66,9 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		let $nativeFragment = document.createDocumentFragment();
 
 		for (let child of children) {
-			if (isString(child)) {
+			if (isFunction<Node>(child)) {
+				$nativeFragment.append(child());
+			} else if (isString(child)) {
 				$nativeFragment.append(child);
 			} else if (isDOMFragment(child)) {
 				$nativeFragment.append(child);
@@ -228,6 +231,14 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	#handleComputed(arg: Computed): boolean {
+		const value = arg.valueOf();
+
+		if (isElementExtension(value)) {
+			this.nativeElement.append(value.node());
+
+			return true;
+		}
+
 		let $ext: ElementExtension<E> = ElementExtension.createText(
 			arg.valueOf(),
 		);
@@ -341,9 +352,23 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return this;
 	}
 
-	class(rawClassName: string): this {
-		const classNames = rawClassName.split(" ");
-		this.nativeElement.classList.add(...classNames);
+	class(rawClassName: string | Record<PropertyKey, unknown>): this {
+		if (isString(rawClassName)) {
+			const classNames = rawClassName.split(" ");
+			this.nativeElement.classList.add(...classNames);
+		} else {
+			let temp: unknown;
+			let str = "";
+			let size = Object.keys(rawClassName).length;
+			for (let i = 0; i < size; i++) {
+				temp = rawClassName[i];
+				if (temp) {
+					if (typeof temp === "string") {
+						str += (str && " ") + temp;
+					}
+				}
+			}
+		}
 		return this;
 	}
 
@@ -354,6 +379,11 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 
 	replaceText($1: { toString(): string }): this {
 		this.nativeElement.textContent = $1.toString();
+		return this;
+	}
+
+	onlyIf(condition: boolean): this {
+		if (!condition) this.nativeElement.lastElementChild.remove();
 		return this;
 	}
 

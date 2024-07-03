@@ -8,14 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isBoolean } from "@phisyx/flex-asserts";
-import { kebabcase } from "@phisyx/flex-capitalization";
-import {
-	type Computed,
-	type Signal,
-	isComputed,
-	isSignal,
-} from "@phisyx/flex-signal";
+import type { Computed, Signal } from "@phisyx/flex-signal";
 import { ElementExtension } from "./_ext";
 
 // --------- //
@@ -36,7 +29,7 @@ namespace SVGElementExtension {
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;
-	export type Fn = () => SVGElementExtension;
+	export type Fn = () => SVGElementExtension | SVGElement;
 	export type Sig = Signal;
 	export type Com = Computed;
 	export type Self = SVGElementExtension;
@@ -61,6 +54,41 @@ namespace SVGElementExtension {
 		: (this: Self, evt: CustomEvent) => void;
 }
 
+type SVGPreserveAspectRatioAlignment =
+	| "none"
+	| "xMinYMin"
+	| "xMidYMin"
+	| "xMaxYMin"
+	| "xMinYMid"
+	| "xMidYMid"
+	| "xMaxYMid"
+	| "xMinYMax"
+	| "xMidYMax"
+	| "xMaxYMax";
+
+type SVGPreserveAspectRatioMeetOrSlice = "meet" | "slice";
+
+type SVGPreserveAspectRatio =
+	| SVGPreserveAspectRatioAlignment
+	| SVGPreserveAspectRatioMeetOrSlice
+	| `${SVGPreserveAspectRatioAlignment} ${SVGPreserveAspectRatioMeetOrSlice}`;
+
+type SVGStrokeLineCap = "butt" | "round" | "square";
+
+type SVGClockValue =
+	| `${number}h`
+	| `${number}min`
+	| `${number}s`
+	| `${number}ms`;
+
+type SVGDur = SVGClockValue | "media" | "indefinite";
+
+type SVGType = "translate" | "scale" | "rotate" | "skewX" | "skewY";
+
+type SVGRepeatCount = number | "indefinite";
+
+type SVGKeyTimes = number | `${number};${number}`;
+
 // -------------- //
 // Implémentation //
 // -------------- //
@@ -79,6 +107,7 @@ class SVGElementExtension<
 			"http://www.w3.org/2000/svg",
 			tagName,
 		) as NE;
+		$nativeElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 		return new SVGElementExtension($nativeElement, args);
 	}
 
@@ -92,6 +121,7 @@ class SVGElementExtension<
 	}
 
 	fill(value: "currentColor"): this;
+	fill(value: "none"): this;
 	fill(value: string): this {
 		this.setAttribute("fill", value);
 		return this;
@@ -126,6 +156,36 @@ class SVGElementExtension<
 		return this;
 	}
 
+	preserveAspectRatio(aspectRatio: SVGPreserveAspectRatio): this {
+		this.setAttribute("preserveAspectRatio", aspectRatio);
+		return this;
+	}
+
+	stroke(color: `#${string}`): this {
+		this.setAttribute("stroke", color);
+		return this;
+	}
+
+	strokeDashArray(da: string): this {
+		this.setAttribute("stroke-dasharray", da);
+		return this;
+	}
+
+	strokeDashOffset(dof: string): this {
+		this.setAttribute("stroke-dashoffset", dof);
+		return this;
+	}
+
+	strokeLineCap(lc: SVGStrokeLineCap): this {
+		this.setAttribute("stroke-linecap", lc);
+		return this;
+	}
+
+	strokeWidth(width: number): this {
+		this.setAttribute("stroke-width", width);
+		return this;
+	}
+
 	viewBox(box: string): this {
 		this.setAttribute("viewBox", box);
 		return this;
@@ -135,14 +195,95 @@ class SVGElementExtension<
 		this.setAttribute("width", w);
 		return this;
 	}
+
+	xmlns_1999_xlink(): this {
+		this.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+		return this;
+	}
 }
 
-// -------- //
-// Fonction //
-// -------- //
+export class AnimateTransformSVGElementExtension extends SVGElementExtension<SVGAnimateTransformElement> {
+	static make(
+		args: SVGElementExtension.Args,
+	): AnimateTransformSVGElementExtension {
+		return new AnimateTransformSVGElementExtension(args);
+	}
 
-function isHTMLElementExtension(value: unknown): value is SVGElementExtension {
-	return value instanceof SVGElementExtension;
+	constructor(args: SVGElementExtension.Args) {
+		super(
+			document.createElementNS(
+				"http://www.w3.org/2000/svg",
+				"animateTransform",
+			),
+			args,
+		);
+	}
+
+	/*
+	 * Public API
+	 */
+
+	attributeName(name: string): this {
+		this.setAttribute("attributeName", name);
+		return this;
+	}
+
+	dur(value: SVGDur): this {
+		this.setAttribute("dur", value);
+		return this;
+	}
+
+	keyTimes(value: SVGKeyTimes): this {
+		this.setAttribute("keyTimes", value);
+		return this;
+	}
+
+	repeatCount(value: SVGRepeatCount): this {
+		this.setAttribute("repeatCount", value);
+		return this;
+	}
+
+	type(value: SVGType): this {
+		this.setAttribute("type", value);
+		return this;
+	}
+
+	values(value: string): this {
+		this.setAttribute("values", value);
+		return this;
+	}
+}
+
+export class CircleSVGElementExtension extends SVGElementExtension<SVGCircleElement> {
+	static make(args: SVGElementExtension.Args): CircleSVGElementExtension {
+		return new CircleSVGElementExtension(args);
+	}
+
+	constructor(args: SVGElementExtension.Args) {
+		super(
+			document.createElementNS("http://www.w3.org/2000/svg", "circle"),
+			args,
+		);
+	}
+
+	/*
+	 * Public API
+	 */
+
+	cx(value: number): this {
+		this.setAttribute("cx", value);
+		return this;
+	}
+
+	cy(value: number): this {
+		this.setAttribute("cy", value);
+		return this;
+	}
+
+	r(value: number): this {
+		this.setAttribute("r", value);
+		return this;
+	}
 }
 
 // ------ //

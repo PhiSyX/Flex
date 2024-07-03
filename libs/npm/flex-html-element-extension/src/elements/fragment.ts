@@ -8,10 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { HTMLElementExtension as Ext } from "../extension";
+import {
+	type ElementExtension,
+	HTMLElementExtension as HExt,
+} from "../extension";
 
 export function fragment(
-	...exts: Array<Ext | string | DocumentFragment | Node>
-): Ext {
-	return Ext.createFragment(exts);
+	...args: Array<string | ElementExtension | DocumentFragment | Node>
+): HExt {
+	return HExt.createFragment(args);
 }

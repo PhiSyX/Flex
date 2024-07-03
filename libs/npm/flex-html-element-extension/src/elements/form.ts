@@ -15,23 +15,30 @@ import {
 	LabelHTMLElementExtension,
 } from "../extension";
 
-export const fieldset = (...args: Ext.Args): Ext<HTMLFieldSetElement> =>
-	Ext.createElement("fieldset", args);
+export function fieldset(...args: Ext.Args): Ext<HTMLFieldSetElement> {
+	return Ext.createElement("fieldset", args);
+}
 
-export const label = (...args: Ext.Args): LabelHTMLElementExtension =>
-	LabelHTMLElementExtension.make(args);
+export function label(...args: Ext.Args): LabelHTMLElementExtension {
+	return LabelHTMLElementExtension.make(args);
+}
 
-export const form = (...args: Ext.Args): FormHTMLElementExtension =>
-	FormHTMLElementExtension.make(args);
+export function form(...args: Ext.Args): FormHTMLElementExtension {
+	return FormHTMLElementExtension.make(args);
+}
 
-export const input = (...args: Ext.Args): InputHTMLElementExtension =>
-	InputHTMLElementExtension.make(args);
+export function input(...args: Ext.Args): InputHTMLElementExtension {
+	return InputHTMLElementExtension.make(args);
+}
 
-export const output = (...args: Ext.Args): Ext<HTMLOutputElement> =>
-	Ext.createElement("output", args);
+export function output(...args: Ext.Args): Ext<HTMLOutputElement> {
+	return Ext.createElement("output", args);
+}
 
-export const progress = (...args: Ext.Args): Ext<HTMLProgressElement> =>
-	Ext.createElement("progress", args);
+export function progress(...args: Ext.Args): Ext<HTMLProgressElement> {
+	return Ext.createElement("progress", args);
+}
 
-export const textarea = (...args: Ext.Args): Ext<HTMLTextAreaElement> =>
-	Ext.createElement("textarea", args);
+export function textarea(...args: Ext.Args): Ext<HTMLTextAreaElement> {
+	return Ext.createElement("textarea", args);
+}

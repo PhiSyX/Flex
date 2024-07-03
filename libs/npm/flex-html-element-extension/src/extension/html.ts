@@ -29,7 +29,7 @@ namespace HTMLElementExtension {
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;
-	export type Fn = () => HTMLElementExtension;
+	export type Fn = () => HTMLElementExtension | HTMLElement;
 	export type Sig = Signal;
 	export type Com = Computed;
 	export type Self = HTMLElementExtension;
@@ -124,7 +124,7 @@ class HTMLElementExtension<
 		return this.on("click", fn);
 	}
 
-	type(ty: InputTypeHTMLAttribute): this {
+	type(ty?: InputTypeHTMLAttribute): this {
 		this.setAttribute("type", ty);
 		return this;
 	}

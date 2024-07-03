@@ -12,6 +12,8 @@ export function isClass<O>(value: unknown): value is object & O {
 	return typeof value === "function";
 }
 
-export function isFunction<O>(value: unknown): value is O {
+export function isFunction<O>(
+	value: unknown,
+): value is (...args: Array<unknown>) => O {
 	return typeof value === "function";
 }

@@ -30,6 +30,7 @@ export function use<T extends abstract new (...args: FIXME) => FIXME>(
 	customTag: T,
 	attributes: Partial<Omit<Attributes<T>, "customElement">>,
 	arg?: Omit<Ext.Arg, "HTMLElementExtension">,
+	...args: Ext.Args
 ): Ext;
 export function use(
 	customTag: string | { TAG_NAME: string },
