@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Alert } from "@phisyx/flex-uikit";
+import { Alert } from "@phisyx/flex-vue-uikit";
 
 import { useChatStore } from "~/storage/memory/chat";
 

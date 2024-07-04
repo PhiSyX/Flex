@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { fuzzy_search } from "@phisyx/flex-search";
-import { UiButton } from "@phisyx/flex-uikit";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref } from "vue";
 
 import type { ChannelListCustomRoom } from "~/custom_room/channel_list";

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Option } from "@phisyx/flex-safety";
-import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref } from "vue";
 
 import type { ChannelAccessLevelFlag } from "~/channel/access_level";

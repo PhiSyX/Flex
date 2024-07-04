@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ButtonIcon } from "@phisyx/flex-uikit";
+import { ButtonIcon } from "@phisyx/flex-vue-uikit";
 
 import type { NoticeCustomRoom } from "~/custom_room/notice";
 

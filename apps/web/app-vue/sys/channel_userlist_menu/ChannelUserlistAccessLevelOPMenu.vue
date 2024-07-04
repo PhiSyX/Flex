@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-uikit";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 import { computed } from "vue";
 
 import type { ChannelMember } from "~/channel/member";

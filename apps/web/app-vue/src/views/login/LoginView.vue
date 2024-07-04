@@ -4,7 +4,7 @@ import {
 	InputSwitch,
 	TextInput,
 	UiButton,
-} from "@phisyx/flex-uikit";
+} from "@phisyx/flex-vue-uikit";
 import { type ModelRef, reactive, ref } from "vue";
 
 import { channelID } from "~/asserts/room";

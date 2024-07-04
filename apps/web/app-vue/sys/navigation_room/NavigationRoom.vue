@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Badge, ButtonIcon } from "@phisyx/flex-uikit";
+import { Badge, ButtonIcon } from "@phisyx/flex-vue-uikit";
 import { computed } from "vue";
 
 // ---- //

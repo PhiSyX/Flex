@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { onActivated } from "vue";
 
 import { type Emits, changeNick, onSubmit } from "./RoomEditbox.handlers";

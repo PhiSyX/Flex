@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed } from "vue";
 
 import type { PrivateParticipant } from "~/private/participant";

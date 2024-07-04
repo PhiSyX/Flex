@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-uikit";
+import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref, watch } from "vue";
 
 import type { ChannelMember } from "~/channel/member";

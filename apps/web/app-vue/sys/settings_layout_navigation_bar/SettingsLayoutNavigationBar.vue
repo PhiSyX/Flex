@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { InputSwitch } from "@phisyx/flex-uikit";
+import { InputSwitch } from "@phisyx/flex-vue-uikit";
 
 const navigationBarPosition = defineModel<"left" | "right">();
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ButtonIcon, UiButton } from "@phisyx/flex-uikit";
+import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref } from "vue";
 
 import type { Room } from "~/room";
