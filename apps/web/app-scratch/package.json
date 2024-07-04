@@ -12,7 +12,8 @@
 		"@phisyx/flex-chat": "workspace:*",
 		"@phisyx/flex-custom-element": "workspace:*",
 		"@phisyx/flex-html-element-extension": "workspace:*",
-		"@phisyx/flex-signal": "workspace:*"
+		"@phisyx/flex-signal": "workspace:*",
+		"@phisyx/flex-uikit": "workspace:*"
 	},
 	"devDependencies": {
 		"typescript": "^5.2.2",

@@ -28,11 +28,12 @@ import {
 	RememberMeStorage,
 	VALIDATION_NICKNAME_INFO,
 } from "@phisyx/flex-chat";
-import ButtonIcon from "../../uikit/icons/button-icon";
-import InputSwitch from "../../uikit/inputswitch/input-switch";
-import TextInput from "../../uikit/textinput/text-input";
-
-import UiButton from "../../uikit/button/ui-button";
+import {
+	ButtonIcon,
+	InputSwitch,
+	TextInput,
+	UiButton,
+} from "@phisyx/flex-uikit";
 import scss from "./login-view.scss?url";
 
 @customElement({ mode: "open", styles: [scss] })
