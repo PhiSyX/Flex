@@ -63,7 +63,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 
 			public element!: UCEInstance;
 
-			static STYLESHEETS: Map<string, string> = new Map();
+			static STYLESHEETS: Map<string, CSSStyleSheet> = new Map();
 
 			constructor() {
 				super(options?.mode || "closed");
@@ -75,34 +75,35 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 					for (const stylesheet of options.styles) {
 						if (LocalCustomElement.STYLESHEETS.has(stylesheet)) {
 							this.root.adoptedStyleSheets.push(
-								LocalCustomElement.STYLESHEETS(stylesheet),
+								// biome-ignore lint/style/noNonNullAssertion: condition ci-haut.
+								LocalCustomElement.STYLESHEETS.get(stylesheet)!,
 							);
 
 							continue;
 						}
 
-						const sheet = new CSSStyleSheet();
-
 						if (
 							stylesheet.indexOf(".css") >= 0 ||
 							stylesheet.indexOf(".scss") >= 0
 						) {
+							const sheet = new CSSStyleSheet();
+							LocalCustomElement.STYLESHEETS.set(
+								stylesheet,
+								sheet,
+							);
+
 							fetch(stylesheet, {
 								headers: { accept: "text/css" },
 							})
 								.then((r) => r.text())
-								.then((s) => {
-									LocalCustomElement.STYLESHEETS.set(
-										stylesheet,
-										s,
-									);
-									return sheet.replace(s);
-								});
-						} else {
-							sheet.replaceSync(stylesheet);
-						}
+								.then((s) => sheet.replace(s));
 
-						this.root.adoptedStyleSheets.push(sheet);
+							this.root.adoptedStyleSheets.push(sheet);
+						} else {
+							const sheet = new CSSStyleSheet();
+							sheet.replaceSync(stylesheet);
+							this.root.adoptedStyleSheets.push(sheet);
+						}
 					}
 				}
 			}
@@ -146,6 +147,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 						break;
 					}
 
+					// @ts-expect-error : TODO
 					$extension.on(evtName, (evt) => {
 						// @ts-expect-error : TODO
 						this.element[methodName].call(this.element, evt);
