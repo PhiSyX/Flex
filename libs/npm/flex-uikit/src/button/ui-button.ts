@@ -128,7 +128,7 @@ export default class UiButton {
 
 export function uiButton(
 	attrs: Attributes<typeof UiButton>,
-	nativeAttrs?: Partial<keyof HTMLButtonElement>,
+	nativeAttrs?: Partial<HTMLButtonElement>,
 	...args: HExt.Args
 ) {
 	return use(UiButton, attrs, nativeAttrs, ...args);

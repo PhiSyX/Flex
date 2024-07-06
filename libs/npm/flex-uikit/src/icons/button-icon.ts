@@ -47,7 +47,7 @@ export default class ButtonIcon {
 
 export function buttonIcon(
 	iconAttr: ButtonIcon["icon"],
-	nativeAttrs?: Partial<keyof HTMLButtonElement>,
+	nativeAttrs?: Partial<HTMLButtonElement>,
 	...args: HExt.Args
 ) {
 	return use(ButtonIcon, { icon: iconAttr }, nativeAttrs, ...args);

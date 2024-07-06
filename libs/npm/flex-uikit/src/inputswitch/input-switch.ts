@@ -119,17 +119,13 @@ export default class InputSwitch {
 export function inputSwitch<P extends HExt.Primitives>(
 	model: Signal<P> | P,
 	attrs: Attributes<typeof InputSwitch>,
-	nativeAttrs?: Attributes<typeof HTMLInputElement>,
+	nativeAttrs?: Partial<HTMLInputElement>,
 	...args: HExt.Args
 ) {
-	return use(
-		InputSwitch,
-		{
-			...attrs,
-			// @ts-expect-error à corriger
-			model,
-		},
-		nativeAttrs,
-		...args,
-	);
+	let $attrs: Attributes<typeof InputSwitch> = {
+		...attrs,
+		// @ts-expect-error à corriger
+		model,
+	};
+	return use(InputSwitch, $attrs, nativeAttrs, ...args);
 }

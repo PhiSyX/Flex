@@ -78,14 +78,10 @@ export function textInput<P extends HExt.Primitives>(
 	nativeAttrs?: Partial<HTMLInputElement>,
 	...args: HExt.Args
 ) {
-	return use(
-		TextInput,
-		{
-			...attrs,
-			// @ts-expect-error Signal<HExt.Primitives>
-			model,
-		},
-		nativeAttrs,
-		...args,
-	);
+	let $attrs: Attributes<typeof TextInput> = {
+		...attrs,
+		// @ts-expect-error à corriger
+		model,
+	};
+	return use(TextInput, $attrs, nativeAttrs, ...args);
 }

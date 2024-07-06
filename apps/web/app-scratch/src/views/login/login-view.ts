@@ -190,8 +190,8 @@ export default class LoginView {
 							position: "right",
 							type: "submit",
 						},
-						// @ts-expect-error à corriger
 						{
+							// @ts-expect-error à corriger
 							form: "chat-login-form",
 						},
 						span("Accéder au Chat").class("flex:full"),

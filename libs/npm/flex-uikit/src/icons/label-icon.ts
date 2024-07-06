@@ -37,7 +37,7 @@ export default class LabelIcon {
 export function labelIcon(
 	forAttr: LabelIcon["for"],
 	iconAttr: LabelIcon["icon"],
-	nativeAttrs?: Partial<keyof HTMLLabelElement>,
+	nativeAttrs?: Partial<HTMLLabelElement>,
 	...args: HExt.Args
 ) {
 	return use(
