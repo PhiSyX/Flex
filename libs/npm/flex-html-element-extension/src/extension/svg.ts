@@ -26,7 +26,8 @@ namespace SVGElementExtension {
 		| Com
 		| SVGElement
 		| SVGElementExtension
-		| Node;
+		| Node
+		| Promise<Arg>;
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;

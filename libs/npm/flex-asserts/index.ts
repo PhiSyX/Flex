@@ -12,3 +12,4 @@ export * from "./src/dom";
 export * from "./src/fn";
 export * from "./src/object";
 export * from "./src/primitive";
+export * from "./src/promise";

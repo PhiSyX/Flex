@@ -8,52 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { View } from "@phisyx/flex-chat";
-import { customElement } from "@phisyx/flex-custom-element";
-import {
-	type HTMLElementExtension,
-	div,
-	dynview,
-	use,
-} from "@phisyx/flex-html-element-extension";
-import { signal } from "@phisyx/flex-signal";
+import { isFunction } from "./fn";
 
-import scss from "./chat-app.scss?url";
+export function isFuture<T>(value: unknown): value is Promise<T> {
+	return value instanceof Promise;
+}
 
-/**
- * Chat App.
- */
-@customElement({ mode: "open", styles: [scss] })
-export default class ChatApp {
-	#view = signal(View.Login);
-
-	render(): HTMLElementExtension {
-		return div(
-			div(
-				dynview(this.#view, (view) => {
-					switch (view) {
-						case View.Login:
-							return use(() => import("../views/login/login-view.ts"));
-
-						case View.DirectAccess:
-							{
-							}
-							break;
-
-						case View.Chat:
-							{
-							}
-							break;
-
-						case View.Settings:
-							{
-							}
-							break;
-					}
-
-					return div("hello world");
-				}),
-			).id("#app"),
-		).id("#🆔");
-	}
+export function isImportFuture<T>(value: unknown): value is () => Promise<T> {
+	return isFunction(value) && value.toString().indexOf("() => import") >= 0;
 }

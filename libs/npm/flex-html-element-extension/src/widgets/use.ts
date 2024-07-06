@@ -8,11 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isClass } from "@phisyx/flex-asserts";
+import {
+	isClass,
+	isFunction,
+	isFuture,
+	isImportFuture,
+} from "@phisyx/flex-asserts";
 import { HTMLElementExtension as Ext } from "../extension";
 
 // biome-ignore lint/suspicious/noExplicitAny: ;-)
 type FIXME = any;
+
+export function use(
+	_import: () => Promise<{ default: FIXME }>,
+	...args: Ext.Args
+): Promise<Ext>;
 
 // @ts-expect-error à améliorer
 export function use<T extends abstract new (...args: FIXME) => FIXME>(
@@ -21,16 +31,33 @@ export function use<T extends abstract new (...args: FIXME) => FIXME>(
 	arg?: Omit<Ext.Arg, "HTMLElementExtension">,
 	...args: Ext.Args
 ): Ext;
+
 export function use(
-	customTag: string | { TAG_NAME: string },
+	customTag:
+		| string
+		| { TAG_NAME: string }
+		| Promise<{ default: FIXME }>
+		| (() => Promise<{ default: FIXME }>),
 	...args: Ext.Args
-): Ext {
-	const customTagName = isClass(customTag) ? customTag.TAG_NAME : customTag;
-	const customElement = Ext.createElement(
-		customTagName as keyof HTMLElementTagNameMap,
-		args,
-	);
-	return customElement;
+): Ext | Promise<Ext> {
+	let render = (customTagName: string) => {
+		const customElement = Ext.createElement(
+			customTagName as keyof HTMLElementTagNameMap,
+			args,
+		);
+		return customElement;
+	};
+
+	if (isImportFuture<{ default: FIXME }>(customTag)) {
+		// biome-ignore lint/style/noParameterAssign: ;-)
+		customTag = customTag();
+	}
+
+	if (isFuture<{ default: FIXME }>(customTag)) {
+		return customTag.then((cel) => render(cel.default.TAG_NAME));
+	}
+
+	return render(isClass(customTag) ? customTag.TAG_NAME : customTag);
 }
 
 export const is = use;

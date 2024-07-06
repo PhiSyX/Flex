@@ -26,7 +26,8 @@ namespace HTMLElementExtension {
 		| Com
 		| HTMLElement
 		| HTMLElementExtension
-		| Node;
+		| Node
+		| Promise<Arg>;
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;

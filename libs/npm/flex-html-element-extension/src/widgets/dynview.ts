@@ -13,7 +13,7 @@ import type { HTMLElementExtension as Ext } from "../extension";
 
 export function dynview<T>(
 	signalKey: Signal<T>,
-	shallowView: (key: T) => Ext,
-): Ext {
+	shallowView: (key: T) => Ext | Promise<Ext>,
+): Ext | Promise<Ext> {
 	return shallowView(signalKey.valueOf());
 }

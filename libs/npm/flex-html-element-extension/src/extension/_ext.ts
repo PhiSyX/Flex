@@ -15,6 +15,7 @@ import {
 	isDOMInput,
 	isDOMNode,
 	isFunction,
+	isFuture,
 	isPrimitive,
 	isString,
 } from "@phisyx/flex-asserts";
@@ -44,7 +45,8 @@ namespace ElementExtension {
 		| SVGElement
 		| HTMLElement
 		| ElementExtension
-		| Node;
+		| Node
+		| Promise<Arg>;
 
 	export type Args = Array<Arg>;
 	export type Primitives = string | number | boolean | bigint;
@@ -222,6 +224,11 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 
 		if (isDOMNode(obj)) {
 			return this.#handleDOMNode(obj);
+		}
+
+		if (isFuture<object>(obj)) {
+			obj.then((self) => this.#createElementFromObject(self));
+			return true;
 		}
 
 		for (const [attr, value] of Object.entries(obj)) {
