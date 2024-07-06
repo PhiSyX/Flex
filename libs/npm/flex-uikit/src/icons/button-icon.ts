@@ -13,7 +13,12 @@ import {
 	attr,
 	customElement,
 } from "@phisyx/flex-custom-element";
-import { button, templateContent } from "@phisyx/flex-html-element-extension";
+import {
+	type HTMLElementExtension as HExt,
+	button,
+	templateContent,
+	use,
+} from "@phisyx/flex-html-element-extension";
 
 import scss from "./button-icon.scss?url";
 
@@ -38,4 +43,12 @@ export default class ButtonIcon {
 			.class("btn flex:shrink=0")
 			.type("button");
 	}
+}
+
+export function buttonIcon(
+	iconAttr: ButtonIcon["icon"],
+	nativeAttrs?: Partial<keyof HTMLButtonElement>,
+	...args: HExt.Args
+) {
+	return use(ButtonIcon, { icon: iconAttr }, nativeAttrs, ...args);
 }

@@ -8,37 +8,48 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { isPrimitive } from "@phisyx/flex-asserts";
+import { type Signal, isSignal } from "@phisyx/flex-signal";
 import {
-	HTMLElementExtension as Ext,
 	FormHTMLElementExtension,
+	HTMLElementExtension as HExt,
 	InputHTMLElementExtension,
 	LabelHTMLElementExtension,
 } from "../extension";
 
-export function fieldset(...args: Ext.Args): Ext<HTMLFieldSetElement> {
-	return Ext.createElement("fieldset", args);
+export function fieldset(...args: HExt.Args): HExt<HTMLFieldSetElement> {
+	return HExt.createElement("fieldset", args);
 }
 
-export function label(...args: Ext.Args): LabelHTMLElementExtension {
+export function label(...args: HExt.Args): LabelHTMLElementExtension {
 	return LabelHTMLElementExtension.make(args);
 }
 
-export function form(...args: Ext.Args): FormHTMLElementExtension {
+export function form(...args: HExt.Args): FormHTMLElementExtension {
 	return FormHTMLElementExtension.make(args);
 }
 
-export function input(...args: Ext.Args): InputHTMLElementExtension {
-	return InputHTMLElementExtension.make(args);
+export function input<P extends HExt.Primitives>(
+	model: Signal<P> | P,
+	...args: HExt.Args
+): InputHTMLElementExtension {
+	let $input = InputHTMLElementExtension.make(args);
+	if (isSignal<P>(model)) {
+		$input = $input.model(model);
+	} else {
+		$input = $input.value(model);
+	}
+	return $input;
 }
 
-export function output(...args: Ext.Args): Ext<HTMLOutputElement> {
-	return Ext.createElement("output", args);
+export function output(...args: HExt.Args): HExt<HTMLOutputElement> {
+	return HExt.createElement("output", args);
 }
 
-export function progress(...args: Ext.Args): Ext<HTMLProgressElement> {
-	return Ext.createElement("progress", args);
+export function progress(...args: HExt.Args): HExt<HTMLProgressElement> {
+	return HExt.createElement("progress", args);
 }
 
-export function textarea(...args: Ext.Args): Ext<HTMLTextAreaElement> {
-	return Ext.createElement("textarea", args);
+export function textarea(...args: HExt.Args): HExt<HTMLTextAreaElement> {
+	return HExt.createElement("textarea", args);
 }

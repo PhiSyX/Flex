@@ -17,7 +17,6 @@ import {
 	main,
 	section,
 	span,
-	use,
 } from "@phisyx/flex-html-element-extension";
 
 import { signal } from "@phisyx/flex-signal";
@@ -29,10 +28,10 @@ import {
 	VALIDATION_NICKNAME_INFO,
 } from "@phisyx/flex-chat";
 import {
-	ButtonIcon,
-	InputSwitch,
-	TextInput,
-	UiButton,
+	buttonIcon,
+	inputSwitch,
+	textInput,
+	uiButton,
 } from "@phisyx/flex-uikit";
 import scss from "./login-view.scss?url";
 
@@ -56,12 +55,11 @@ export default class LoginView {
 				h1("Accès direct au Chat"),
 
 				form(
-					use(
-						TextInput,
+					textInput(
+						this.websocketServerURL,
 						{
 							label: "url",
 							name: "server",
-							model: this.websocketServerURL,
 						},
 						{
 							placeholder: "URL WebSocket du serveur de Chat",
@@ -74,12 +72,11 @@ export default class LoginView {
 							this.websocketServerURL.set(evt.detail);
 						}),
 
-					use(
-						TextInput,
+					textInput(
+						this.passwordServer,
 						{
 							label: "password",
 							name: "password_server",
-							model: this.passwordServer,
 						},
 						{
 							placeholder: "Mot de passe du serveur de Chat",
@@ -92,50 +89,47 @@ export default class LoginView {
 							this.passwordServer.set(evt.detail);
 						}),
 
-					use(
-						TextInput,
+					textInput(
+						this.nickname,
 						{
 							label: "user",
 							name: "nickname",
-							model: this.nickname,
 							// error: errors.nickname
 						},
 						{
-							maxlength: MAXLENGTH_NICKNAME,
+							maxLength: MAXLENGTH_NICKNAME,
 							placeholder: PLACEHOLDER_NICKNAME,
-							title: VALIDATION_NICKNAME_INFO,
 						},
 					)
+						.title(VALIDATION_NICKNAME_INFO)
 						// FIXME: trouver un moyen d'automatiser cette partie.
 						.on("sync:model", (evt: CustomEvent<string>) => {
 							this.nickname.set(evt.detail);
 						}),
 
-					use(
-						TextInput,
+					textInput(
+						this.alternativeNickname,
 						{
 							label: "user",
 							name: "alternative_nickname",
-							model: this.alternativeNickname,
 						},
 						{
-							maxlength: MAXLENGTH_NICKNAME,
+							maxLength: MAXLENGTH_NICKNAME,
 							placeholder: "Pseudonyme alternatif",
-							title: VALIDATION_NICKNAME_INFO,
 						},
 					)
 						.displayWhen(this.advancedInfo)
+						.title(VALIDATION_NICKNAME_INFO)
 						// FIXME: trouver un moyen d'automatiser cette partie.
 						.on("sync:model", (evt: CustomEvent<string>) => {
 							this.alternativeNickname.set(evt.detail);
 						}),
 
-					use(
-						TextInput,
+					textInput(
+						this.realname,
 						{
 							label: "user",
 							name: "realname",
-							model: this.realname,
 						},
 						{
 							placeholder: "Nom réel",
@@ -147,12 +141,11 @@ export default class LoginView {
 							this.alternativeNickname.set(evt.detail);
 						}),
 
-					use(
-						TextInput,
+					textInput(
+						this.channels,
 						{
 							label: "channel",
 							name: "channels",
-							model: this.channels,
 						},
 						{
 							placeholder: "Salons à rejoindre",
@@ -171,15 +164,9 @@ export default class LoginView {
 						success: this.submitHandler,
 					}),
 				div(
-					use(
-						ButtonIcon,
-						{
-							icon: "plus",
-						},
-						{
-							title: "Afficher les champs avancés",
-						},
-					).onClick(this.displayAdvancedInfoHandler),
+					buttonIcon("plus")
+						.title("Afficher les champs avancés")
+						.onClick(this.displayAdvancedInfoHandler),
 				)
 					.class("align-t:center")
 					.displayWhen(this.advancedInfo.computed((b) => !b)),
@@ -187,29 +174,26 @@ export default class LoginView {
 					label(
 						"Connexion automatique lors de vos prochaines sessions :",
 					),
-					use(InputSwitch, {
+					inputSwitch(this.rememberMe.value, {
 						labelN: "Non",
 						labelY: "Oui",
 						name: "remember_me",
-						// @ts-expect-error à corriger
-						model: this.rememberMe.value,
 					}).on("sync:model", (evt: CustomEvent<boolean>) => {
 						this.rememberMe.set(evt.detail);
 					}),
 				).class("remember-me [ m:a align-t:center w=35 ]"),
 
 				this.loader.computed((loader) =>
-					use(
-						UiButton,
+					uiButton(
 						{
 							icon: loader ? "loader" : undefined,
 							position: "right",
 							type: "submit",
 						},
+						// @ts-expect-error à corriger
 						{
 							form: "chat-login-form",
 						},
-
 						span("Accéder au Chat").class("flex:full"),
 					).class("flex align-jc:se p=2 b:none cursor:pointer"),
 				),

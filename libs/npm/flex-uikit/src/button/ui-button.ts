@@ -13,7 +13,14 @@ import {
 	attr,
 	customElement,
 } from "@phisyx/flex-custom-element";
-import { button, fragment, slot, templateContent } from "@phisyx/flex-html-element-extension";
+import {
+	type HTMLElementExtension as HExt,
+	button,
+	fragment,
+	slot,
+	templateContent,
+	use,
+} from "@phisyx/flex-html-element-extension";
 
 import { signal } from "@phisyx/flex-signal";
 import scss from "./ui-button.scss?url";
@@ -117,4 +124,12 @@ export default class UiButton {
 			}
 		}
 	};
+}
+
+export function uiButton(
+	attrs: Attributes<typeof UiButton>,
+	nativeAttrs?: Partial<keyof HTMLButtonElement>,
+	...args: HExt.Args
+) {
+	return use(UiButton, attrs, nativeAttrs, ...args);
 }

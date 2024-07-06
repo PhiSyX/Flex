@@ -9,7 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { attr, customElement } from "@phisyx/flex-custom-element";
-import { label, templateContent } from "@phisyx/flex-html-element-extension";
+import {
+	type HTMLElementExtension as HExt,
+	label,
+	templateContent,
+	use,
+} from "@phisyx/flex-html-element-extension";
 
 @customElement({ mode: "open" })
 export default class LabelIcon {
@@ -27,4 +32,18 @@ export default class LabelIcon {
 		const $icon = templateContent(`#icon-${this.icon}`);
 		return label($icon).for(`#${this.for}`);
 	}
+}
+
+export function labelIcon(
+	forAttr: LabelIcon["for"],
+	iconAttr: LabelIcon["icon"],
+	nativeAttrs?: Partial<keyof HTMLLabelElement>,
+	...args: HExt.Args
+) {
+	return use(
+		LabelIcon,
+		{ for: forAttr, icon: iconAttr },
+		nativeAttrs,
+		...args,
+	);
 }

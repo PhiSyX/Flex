@@ -13,9 +13,15 @@ import {
 	attr,
 	customElement,
 } from "@phisyx/flex-custom-element";
-import { div, input, p, use } from "@phisyx/flex-html-element-extension";
+import {
+	type HTMLElementExtension as HExt,
+	div,
+	input,
+	p,
+	use,
+} from "@phisyx/flex-html-element-extension";
 import { type Signal, signal } from "@phisyx/flex-signal";
-import LabelIcon from "../icons/label-icon";
+import LabelIcon, { labelIcon } from "../icons/label-icon";
 
 import scss from "./text-input.scss?url";
 
@@ -25,10 +31,12 @@ export default class TextInput {
 
 	static props = ["model"];
 
-	declare model: Signal<string>;
+	declare model: Signal<HExt.Primitives>;
 
 	constructor(public customElement: GlobalCustomElement) {
-		this.model = signal("" as string, { watch: this.watchModelUpdate });
+		this.model = signal("" as HExt.Primitives, {
+			watch: this.watchModelUpdate,
+		});
 	}
 
 	@attr()
@@ -49,21 +57,35 @@ export default class TextInput {
 	render() {
 		return div(
 			div(
-				use(LabelIcon, {
-					for: this.name,
-					icon: this.label,
-				}),
-				input()
+				labelIcon(this.name, this.label),
+				input(this.model)
 					.extendsAttrs(this.customElement.attributes)
 					.id(`#${this.name}`)
-					.type(this.type)
-					.model(this.model),
+					.type(this.type),
 			).class("flex align-ji:center gap=1"),
 			p().class("p:reset ml=4"),
 		).class("form-group [ flex! py=1 ]");
 	}
 
-	watchModelUpdate = (newValue: string) => {
+	watchModelUpdate = (newValue: HExt.Primitives) => {
 		this.customElement.emit("sync:model", newValue);
 	};
+}
+
+export function textInput<P extends HExt.Primitives>(
+	model: Signal<P>,
+	attrs: Attributes<typeof TextInput>,
+	nativeAttrs?: Partial<HTMLInputElement>,
+	...args: HExt.Args
+) {
+	return use(
+		TextInput,
+		{
+			...attrs,
+			// @ts-expect-error Signal<HExt.Primitives>
+			model,
+		},
+		nativeAttrs,
+		...args,
+	);
 }

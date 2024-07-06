@@ -308,7 +308,13 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	protected setAttribute(key: string, value: unknown) {
-		if (value) this.nativeElement.setAttribute(key, String(value));
+		if (value) {
+			this.nativeElement.setAttribute(key.toLowerCase(), String(value));
+		}
+	}
+
+	node(): E {
+		return this.nativeElement;
 	}
 
 	/**
@@ -388,8 +394,9 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return this;
 	}
 
-	node(): E {
-		return this.nativeElement;
+	title(value: { toString(): string }): this {
+		this.setAttribute("title", value.toString());
+		return this;
 	}
 }
 

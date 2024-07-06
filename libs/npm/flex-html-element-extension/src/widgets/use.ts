@@ -14,17 +14,6 @@ import { HTMLElementExtension as Ext } from "../extension";
 // biome-ignore lint/suspicious/noExplicitAny: ;-)
 type FIXME = any;
 
-type FlagExcludedType<B, T> = {
-	[Key in keyof B]: B[Key] extends T ? never : Key;
-};
-type AllowedNames<B, T> = FlagExcludedType<B, T>[keyof B];
-type OmitType<B, T> = Pick<B, AllowedNames<B, T>>;
-type Attributes<T extends abstract new (...args: FIXME) => FIXME> = OmitType<
-	InstanceType<T>,
-	// biome-ignore lint/complexity/noBannedTypes: ;-)
-	Function
->;
-
 // @ts-expect-error à améliorer
 export function use<T extends abstract new (...args: FIXME) => FIXME>(
 	customTag: T,

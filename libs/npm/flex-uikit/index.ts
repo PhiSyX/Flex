@@ -8,11 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export { default as ButtonIcon } from "./src/icons/button-icon";
-export { default as LabelIcon } from "./src/icons/label-icon";
-export { default as UiButton } from "./src/button/ui-button";
-export { default as InputSwitch } from "./src/inputswitch/input-switch";
-export { default as TextInput } from "./src/textinput/text-input";
+export { default as ButtonIcon, buttonIcon } from "./src/icons/button-icon";
+export { default as LabelIcon, labelIcon } from "./src/icons/label-icon";
+export { default as UiButton, uiButton } from "./src/button/ui-button";
+export {
+	default as InputSwitch,
+	inputSwitch,
+} from "./src/inputswitch/input-switch";
+export { default as TextInput, textInput } from "./src/textinput/text-input";
 
 export function install_flex_uikit(): Record<string, CustomElementFile> {
 	return import.meta.glob<CustomElementFile>("./src/*/*-*.ts", {

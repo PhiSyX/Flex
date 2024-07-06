@@ -14,12 +14,14 @@ import {
 	customElement,
 } from "@phisyx/flex-custom-element";
 import {
+	type HTMLElementExtension as HExt,
 	div,
 	input,
 	label,
 	li,
 	ol,
 	slot,
+	use,
 } from "@phisyx/flex-html-element-extension";
 import { type Signal, signal } from "@phisyx/flex-signal";
 
@@ -84,23 +86,21 @@ export default class InputSwitch {
 			slot,
 			ol(
 				li(
-					input()
+					input(this.model)
 						.id(`#${inputAttrIDYes}`)
 						.form(this.form)
 						.name(this.name)
 						.value(this.valueY)
-						.type("radio")
-						.model(this.model),
+						.type("radio"),
 					label(this.labelY).for(`#${inputAttrIDYes}`),
 				),
 				li(
-					input()
+					input(this.model)
 						.id(`#${inputAttrIDNo}`)
 						.form(this.form)
 						.name(this.name)
 						.value(this.valueN)
-						.type("radio")
-						.model(this.model),
+						.type("radio"),
 					label(this.labelN).for(`#${inputAttrIDNo}`),
 					div({
 						// @ts-expect-error à corriger
@@ -114,4 +114,22 @@ export default class InputSwitch {
 	watchModelUpdate = (newValue: boolean) => {
 		this.customElement.emit("sync:model", newValue);
 	};
+}
+
+export function inputSwitch<P extends HExt.Primitives>(
+	model: Signal<P> | P,
+	attrs: Attributes<typeof InputSwitch>,
+	nativeAttrs?: Attributes<typeof HTMLInputElement>,
+	...args: HExt.Args
+) {
+	return use(
+		InputSwitch,
+		{
+			...attrs,
+			// @ts-expect-error à corriger
+			model,
+		},
+		nativeAttrs,
+		...args,
+	);
 }
