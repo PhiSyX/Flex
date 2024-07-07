@@ -8,65 +8,65 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { User } from "~/user";
-import { ChannelAccessLevel, ChannelAccessLevelFlag } from "./access_level";
+import { Room } from "../room";
+
+// --------- //
+// Interface //
+// --------- //
+
+export interface ListDataResponse {
+	channel: ChannelID;
+	modes_settings: string;
+	topic: string;
+	total_members: number;
+}
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelMember extends User {
+export class ChannelListCustomRoom extends Room<
+	CustomRoomID,
+	"channel-list-custom-room"
+> {
 	/**
-	 * Les niveaux d'accès du pseudo.
+	 * ID de la chambre personnalisée.
 	 */
-	accessLevel: ChannelAccessLevel = new ChannelAccessLevel();
+	public static ID: CustomRoomID = "@channel-list" as CustomRoomID;
 
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
+	// ----------- //
+	// Constructor //
+	// ----------- //
 
-	/**
-	 * Les classes CSS qu'il faut appliquer aux éléments de pseudo de salon.
-	 */
-	get className(): string {
-		return `${super.className} ${this.accessLevel.highest.className}`;
+	constructor() {
+		super("channel-list-custom-room", "Liste des salons");
+		this.withID(ChannelListCustomRoom.ID);
 	}
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	/**
+	 * La liste des salons publiques du serveur.
+	 */
+	channels: Map<ListDataResponse["channel"], ListDataResponse> = new Map();
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	/**
-	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
-	 * minimal donné.
+	 * Efface tous les salons de l'instance.
 	 */
-	geAccessLevel(level: ChannelAccessLevelFlag): boolean {
-		return this.accessLevel.ge(level);
+	clear() {
+		this.channels.clear();
 	}
 
 	/**
-	 * Est-ce que le membre est opérateur du salon avec le niveau d'accès
-	 * minimal à demi-opérateur.
+	 * Insère un nouveau salon du serveur.
 	 */
-	isChanOperator(): boolean {
-		return this.geAccessLevel(ChannelAccessLevelFlag.HalfOperator);
-	}
-
-	/**
-	 * Définit le niveau d'accès du pseudo.
-	 */
-	withAccessLevel(level: ChannelAccessLevelFlag | Array<string>): this {
-		if (Array.isArray(level)) {
-			const levels = this.accessLevel.parse(level);
-
-			for (const level of levels) {
-				this.accessLevel.add(level);
-			}
-
-			return this;
-		}
-
-		this.accessLevel.add(level);
-		return this;
+	insert(data: ListDataResponse) {
+		this.channels.set(data.channel, data);
 	}
 }

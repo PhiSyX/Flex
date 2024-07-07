@@ -3,7 +3,7 @@ import { fuzzy_search } from "@phisyx/flex-search";
 import { UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref } from "vue";
 
-import type { ChannelListCustomRoom } from "~/custom_room/channel_list";
+import type { ChannelListCustomRoom } from "@phisyx/flex-chat";
 
 // ---- //
 // Type //

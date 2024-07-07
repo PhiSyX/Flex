@@ -11,7 +11,7 @@
 import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/storage/memory/chat";
 
-import { roomID } from "~/asserts/room";
+import { roomID } from "@phisyx/flex-chat";
 import { ClearCommand, ClearallCommand } from "./command";
 
 // -------------- //

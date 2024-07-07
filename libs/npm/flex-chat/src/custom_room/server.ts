@@ -8,50 +8,44 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Room } from "~/room";
+import { Room } from "../room";
 
-export class ChannelListCustomRoom extends Room<
-	CustomRoomID,
-	"channel-list-custom-room"
-> {
+export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room"> {
 	/**
 	 * ID de la chambre personnalisée.
 	 */
-	public static ID: CustomRoomID = "@channel-list" as CustomRoomID;
+	public static ID: CustomRoomID = "@flex" as CustomRoomID;
+	public static NAME = "Flex";
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
 	constructor() {
-		super("channel-list-custom-room", "Liste des salons");
-		this.withID(ChannelListCustomRoom.ID);
+		super("server-custom-room", ServerCustomRoom.NAME);
+		this.withID(ServerCustomRoom.ID);
 	}
 
-	// --------- //
-	// Propriété //
-	// --------- //
+	// ---------- //
+	// Properties //
+	// ---------- //
 
 	/**
-	 * La liste des salons publiques du serveur.
+	 * Connecté ou non
 	 */
-	channels: Map<ListDataResponse["channel"], ListDataResponse> = new Map();
-
-	// ------- //
-	// Méthode //
-	// ------- //
+	connected = false;
 
 	/**
-	 * Efface tous les salons de l'instance.
+	 * Est-ce que le serveur est connecté?
 	 */
-	clear() {
-		this.channels.clear();
+	isConnected(): boolean {
+		return this.connected;
 	}
 
 	/**
-	 * Insère un nouveau salon du serveur.
+	 * Définit le serveur comme étant connecté ou non.
 	 */
-	insert(data: ListDataResponse) {
-		this.channels.set(data.channel, data);
+	setConnected(bool: boolean) {
+		this.connected = bool;
 	}
 }

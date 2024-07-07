@@ -9,15 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { None, type Option, Some } from "@phisyx/flex-safety";
-import { isUser } from "~/asserts/user";
-
-import type { Layer, OverlayerStore } from "~/storage/memory/overlayer";
-
-// ---- //
-// Type //
-// ---- //
-
-export interface UserChangeNicknameRecordDialog {}
+import { isUser } from "../asserts/user";
 
 // ----------- //
 // Énumération //
@@ -43,6 +35,7 @@ export class User {
 		let user: User;
 
 		if (isUser(userOrigin)) {
+			// @ts-expect-error test
 			user = userOrigin;
 		} else {
 			user = new User(userOrigin);
@@ -310,58 +303,5 @@ export class User {
 		}
 		this.operator.replace(flag);
 		return this;
-	}
-}
-
-export class UserChangeNicknameDialog {
-	// ------ //
-	// Static //
-	// ------ //
-
-	static ID = "user-change-nickname-dialog";
-
-	static create(
-		overlayerStore: OverlayerStore,
-		{ event }: { event: MouseEvent },
-	) {
-		overlayerStore.create({
-			id: UserChangeNicknameDialog.ID,
-			centered: true,
-			event,
-		});
-		return new UserChangeNicknameDialog(overlayerStore);
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private overlayerStore: OverlayerStore) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	destroy() {
-		this.overlayerStore.destroy(UserChangeNicknameDialog.ID);
-	}
-
-	get(): Layer<UserChangeNicknameRecordDialog> | undefined {
-		return this.overlayerStore.get(UserChangeNicknameDialog.ID) as
-			| Layer<UserChangeNicknameRecordDialog>
-			| undefined;
-	}
-
-	getUnchecked(): Layer<UserChangeNicknameRecordDialog> {
-		return this.overlayerStore.get(
-			UserChangeNicknameDialog.ID,
-		) as Layer<UserChangeNicknameRecordDialog>;
-	}
-
-	exists(): boolean {
-		return this.overlayerStore.has(UserChangeNicknameDialog.ID);
-	}
-
-	withData(data: UserChangeNicknameRecordDialog) {
-		this.overlayerStore.updateData(UserChangeNicknameDialog.ID, data);
 	}
 }

@@ -8,44 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Room } from "~/room";
+import { Room } from "../room";
 
-export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room"> {
+export class NoticeCustomRoom extends Room<CustomRoomID, "notice-custom-room"> {
 	/**
 	 * ID de la chambre personnalisée.
 	 */
-	public static ID: CustomRoomID = "@flex" as CustomRoomID;
-	public static NAME = "Flex";
+	public static ID: CustomRoomID = "@notices" as CustomRoomID;
+	public static NAME = "Notices";
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
 	constructor() {
-		super("server-custom-room", ServerCustomRoom.NAME);
-		this.withID(ServerCustomRoom.ID);
-	}
-
-	// ---------- //
-	// Properties //
-	// ---------- //
-
-	/**
-	 * Connecté ou non
-	 */
-	connected = false;
-
-	/**
-	 * Est-ce que le serveur est connecté?
-	 */
-	isConnected(): boolean {
-		return this.connected;
-	}
-
-	/**
-	 * Définit le serveur comme étant connecté ou non.
-	 */
-	setConnected(bool: boolean) {
-		this.connected = bool;
+		super("notice-custom-room", NoticeCustomRoom.NAME);
+		this.withID(NoticeCustomRoom.ID);
 	}
 }

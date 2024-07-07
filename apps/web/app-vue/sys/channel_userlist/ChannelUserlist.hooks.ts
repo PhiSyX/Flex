@@ -11,13 +11,13 @@
 import { type FuzzySearchRecord, fuzzy_search } from "@phisyx/flex-search";
 import { type Ref, ref, shallowRef, watchEffect } from "vue";
 
-import type { ChannelMember } from "~/channel/member";
+import type { ChannelMember } from "@phisyx/flex-chat";
 import type { Props } from "./ChannelUserlist.vue";
 
 import {
 	ChannelMemberFiltered,
 	ChannelMemberUnfiltered,
-} from "~/channel/member/filtered";
+} from "@phisyx/flex-chat";
 
 import ChannelNicklist from "#/sys/channel_nicklist/ChannelNicklist.vue";
 

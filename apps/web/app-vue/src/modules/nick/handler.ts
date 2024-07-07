@@ -10,7 +10,7 @@
 
 import type { ChatStore } from "~/storage/memory/chat";
 
-import { assertChannelRoom, assertPrivateRoom } from "~/asserts/room";
+import { assertChannelRoom, assertPrivateRoom } from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //

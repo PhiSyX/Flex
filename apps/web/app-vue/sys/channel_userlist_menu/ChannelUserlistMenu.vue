@@ -2,10 +2,9 @@
 import { UiButton } from "@phisyx/flex-vue-uikit";
 import { computed } from "vue";
 
-import type { ChannelMember } from "~/channel/member";
-import type { ChannelMemberSelected } from "~/channel/member/selected";
+import type { ChannelMember, ChannelMemberSelected } from "@phisyx/flex-chat";
 
-import { ChannelAccessLevelFlag } from "~/channel/access_level";
+import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
 
 import ChannelUserlistAdminOperatorMenu from "./ChannelUserlistAccessLevelAOPMenu.vue";
 import ChannelUserlistHalfOperatorMenu from "./ChannelUserlistAccessLevelHOPMenu.vue";

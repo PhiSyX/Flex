@@ -14,89 +14,68 @@ import { None, type Option } from "@phisyx/flex-safety";
 // Implémentation //
 // -------------- //
 
-export class AppLocalStorage<T> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor(
-		protected key: string,
-		// biome-ignore lint/suspicious/noExplicitAny: ?
-		reviver?: (a: string, b: string) => any | undefined,
-		private withDefaults?: T,
-	) {
-		if (withDefaults) {
-			this.value = withDefaults;
-		}
-
-		try {
-			const item = localStorage.getItem(key);
-			if (reviver) {
-				if (item) {
-					this.value = JSON.parse(item, reviver);
-				}
-			} else {
-				this.value = JSON.parse(item as NonNullable<string>);
-			}
-		} catch {
-			if (withDefaults) {
-				this.value = withDefaults;
-			}
-		}
-	}
-
+export class ChannelTopic {
 	// --------- //
 	// Propriété //
 	// --------- //
 
-	protected item: Option<T> = None();
+	/**
+	 * Sujet du salon.
+	 */
+	private text: Option<string> = None();
 
-	// --------------- //
-	// Getter | Setter //
-	// --------------- //
+	/**
+	 * État d'édition.
+	 */
+	private editable = true;
 
-	get value(): T {
-		return this.get();
-	}
-
-	set value($1: NonNullable<T>) {
-		this.set($1);
-	}
+	/**
+	 * Historique des sujets (en session)
+	 */
+	public history: Set<string> = new Set();
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	maybe() {
-		return this.item;
+	/**
+	 * Est-ce que le sujet du salon est éditable.
+	 */
+	isEditable(): boolean {
+		return this.editable;
 	}
 
-	get() {
-		if (this.withDefaults) {
-			return this.item.unwrap_or(this.withDefaults);
+	/**
+	 * Sujet du salon.
+	 */
+	get(): string {
+		return this.text.unwrap_or("");
+	}
+
+	/**
+	 * Définit le sujet du salon.
+	 */
+	set(topic: string, options?: { force: boolean }) {
+		if (this.editable || options?.force) {
+			this.history.delete(topic);
+			this.history.add(topic);
+			this.text.replace(topic);
 		}
-
-		return this.item.expect(
-			`Impossible de récupérer la clé du localStorage "${this.key}".`,
-		);
 	}
 
-	save() {
-		try {
-			localStorage.setItem(this.key, JSON.stringify(this.toString()));
-		} catch {}
+	/**
+	 * Définit l'état d'édition.
+	 */
+	setEditable(b: boolean) {
+		this.editable = b;
 	}
 
-	set($1: NonNullable<T>) {
-		if (this.withDefaults && $1 == null) {
-			this.item.replace(this.withDefaults);
-		} else {
-			this.item.replace($1);
+	/**
+	 * Définit le sujet du salon à du vide.
+	 */
+	unset(options?: { force: boolean }) {
+		if (this.editable || options?.force) {
+			this.text = None();
 		}
-		this.save();
-	}
-
-	toString(): string {
-		return this.item.unwrap() as string;
 	}
 }

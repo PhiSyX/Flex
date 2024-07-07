@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onActivated, ref } from "vue";
 
-import type { RoomMessage } from "~/room/message";
+import type { RoomMessage } from "@phisyx/flex-chat";
 
 import RoomMessageComponent from "#/sys/room_message/RoomMessage.vue";
 

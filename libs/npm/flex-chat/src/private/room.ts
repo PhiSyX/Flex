@@ -8,27 +8,50 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// -------- //
-// Constant //
-// -------- //
+import { Option } from "@phisyx/flex-safety";
 
-/**
- * Clé localStorage de l'ID du client courant connecté.
- */
-export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
+import type { PrivateParticipant } from "../private/participant";
 
-/**
- * Clé localStorage "Se souvenir de moi".
- */
-export const STORAGE_REMEMBER_ME_KEY = "flex.remember_me";
+import { Room } from "../room";
 
-/**
- * Clé localStorage paramètres "layout".
- */
-export const STORAGE_SETTINGS_LAYOUT_KEY = "flex.settings.layout";
+// ---- //
+// Type //
+// ---- //
 
-/**
- * Clé localStorage paramètres "Personalization".
- */
-export const STORAGE_SETTINGS_PERSONALIZATION_KEY =
-	"flex.settings.personalization";
+export type Participants = Map<string, PrivateParticipant>;
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class PrivateRoom extends Room<UserID, "private"> {
+	/**
+	 * Liste des participant de la chambre privé.
+	 */
+	participants: Participants = new Map();
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(name: string) {
+		super("private", name);
+	}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	/**
+	 * Ajoute un participant à la chambre privé.
+	 */
+	addParticipant(participant: PrivateParticipant) {
+		this.participants.set(participant.id, participant);
+	}
+
+	/**
+	 * Récupère un participant de la chambre privé.
+	 */
+	getParticipant(id: string): Option<PrivateParticipant> {
+		return Option.from(this.participants.get(id));
+	}
+}

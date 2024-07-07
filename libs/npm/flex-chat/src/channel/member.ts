@@ -8,33 +8,28 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Option } from "@phisyx/flex-safety";
-
-import type { PrivateParticipant } from "~/private/participant";
-
-import { Room } from "~/room";
-
-// ---- //
-// Type //
-// ---- //
-
-export type Participants = Map<string, PrivateParticipant>;
+import { User } from "../user";
+import { ChannelAccessLevel, ChannelAccessLevelFlag } from "./access_level";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class PrivateRoom extends Room<UserID, "private"> {
+export class ChannelMember extends User {
 	/**
-	 * Liste des participant de la chambre privé.
+	 * Les niveaux d'accès du pseudo.
 	 */
-	participants: Participants = new Map();
+	accessLevel: ChannelAccessLevel = new ChannelAccessLevel();
 
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(name: string) {
-		super("private", name);
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	/**
+	 * Les classes CSS qu'il faut appliquer aux éléments de pseudo de salon.
+	 */
+	get className(): string {
+		return `${super.className} ${this.accessLevel.highest.className}`;
 	}
 
 	// ------- //
@@ -42,16 +37,36 @@ export class PrivateRoom extends Room<UserID, "private"> {
 	// ------- //
 
 	/**
-	 * Ajoute un participant à la chambre privé.
+	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
+	 * minimal donné.
 	 */
-	addParticipant(participant: PrivateParticipant) {
-		this.participants.set(participant.id, participant);
+	geAccessLevel(level: ChannelAccessLevelFlag): boolean {
+		return this.accessLevel.ge(level);
 	}
 
 	/**
-	 * Récupère un participant de la chambre privé.
+	 * Est-ce que le membre est opérateur du salon avec le niveau d'accès
+	 * minimal à demi-opérateur.
 	 */
-	getParticipant(id: string): Option<PrivateParticipant> {
-		return Option.from(this.participants.get(id));
+	isChanOperator(): boolean {
+		return this.geAccessLevel(ChannelAccessLevelFlag.HalfOperator);
+	}
+
+	/**
+	 * Définit le niveau d'accès du pseudo.
+	 */
+	withAccessLevel(level: ChannelAccessLevelFlag | Array<string>): this {
+		if (Array.isArray(level)) {
+			const levels = this.accessLevel.parse(level);
+
+			for (const level of levels) {
+				this.accessLevel.add(level);
+			}
+
+			return this;
+		}
+
+		this.accessLevel.add(level);
+		return this;
 	}
 }

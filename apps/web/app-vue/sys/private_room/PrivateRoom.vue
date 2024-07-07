@@ -2,8 +2,7 @@
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed } from "vue";
 
-import type { PrivateParticipant } from "~/private/participant";
-import type { PrivateRoom } from "~/private/room";
+import type { PrivateParticipant, PrivateRoom } from "@phisyx/flex-chat";
 
 import Room from "#/sys/room/Room.vue";
 

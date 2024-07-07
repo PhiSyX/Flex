@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ChannelAccessLevelFlag } from "~/channel/access_level";
-import { ChannelMember } from "~/channel/member";
-import { ChannelMembers } from "~/channel/member/list";
-import { User } from "~/user";
+import {
+	ChannelAccessLevelFlag,
+	ChannelMember,
+	ChannelMembers,
+	User,
+} from "@phisyx/flex-chat";
 
 import ChannelUserlist from "./ChannelUserlist.vue";
 

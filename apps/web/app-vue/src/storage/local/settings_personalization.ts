@@ -10,8 +10,10 @@
 
 import type { Theme } from "~/theme";
 
-import { STORAGE_SETTINGS_PERSONALIZATION_KEY } from "./constant";
-import { AppLocalStorage } from "./storage";
+import {
+	AppLocalStorage,
+	STORAGE_SETTINGS_PERSONALIZATION_KEY,
+} from "@phisyx/flex-chat";
 
 // ---- //
 // Type //

@@ -10,7 +10,7 @@
 
 import { computed, ref } from "vue";
 
-import type { Room } from "~/room";
+import type { Room } from "@phisyx/flex-chat";
 
 // ---- //
 // Type //

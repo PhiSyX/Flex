@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { channelID } from "~/asserts/room";
-import { ChannelListCustomRoom } from "~/custom_room/channel_list";
+import { ChannelListCustomRoom, channelID } from "@phisyx/flex-chat";
 
 import ChannelList from "./ChannelList.vue";
 

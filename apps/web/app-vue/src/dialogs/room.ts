@@ -10,43 +10,34 @@
 
 import type { Layer, OverlayerStore } from "~/storage/memory/overlayer";
 
-import type { ChannelMember } from "./member";
-import type { ChannelRoom } from "./room";
-
-// ---- //
-// Type //
-// ---- //
-
-export interface ChannelSettingsRecordDialog {
-	// Salon actif
-	room: ChannelRoom;
-	// Le client courant, qui est membre du salon.
-	currentClientChannelMember: ChannelMember;
-}
-
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelSettingsDialog {
+export class ChannelJoinDialog {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "channel-settings-layer";
+	static ID = "channel-join-layer";
 
 	static create(
 		overlayerStore: OverlayerStore,
-		data: ChannelSettingsRecordDialog,
+		payload: {
+			event: Event;
+		},
 	) {
 		overlayerStore.create({
-			id: ChannelSettingsDialog.ID,
-			destroyable: "manual",
+			id: ChannelJoinDialog.ID,
 			centered: true,
-			data,
+			event: payload.event,
 		});
 
-		return new ChannelSettingsDialog(overlayerStore);
+		return new ChannelJoinDialog(overlayerStore);
+	}
+
+	static destroy(overlayerStore: OverlayerStore) {
+		overlayerStore.destroy(ChannelJoinDialog.ID);
 	}
 
 	// ----------- //
@@ -59,26 +50,14 @@ export class ChannelSettingsDialog {
 	// ------- //
 
 	destroy() {
-		this.overlayerStore.destroy(ChannelSettingsDialog.ID);
+		this.overlayerStore.destroy(ChannelJoinDialog.ID);
 	}
 
-	get(): Layer<ChannelSettingsRecordDialog> | undefined {
-		return this.overlayerStore.get(ChannelSettingsDialog.ID) as
-			| Layer<ChannelSettingsRecordDialog>
-			| undefined;
-	}
-
-	getUnchecked(): Layer<ChannelSettingsRecordDialog> {
-		return this.overlayerStore.get(
-			ChannelSettingsDialog.ID,
-		) as Layer<ChannelSettingsRecordDialog>;
+	get(): Layer | undefined {
+		return this.overlayerStore.get(ChannelJoinDialog.ID);
 	}
 
 	exists(): boolean {
-		return this.overlayerStore.has(ChannelSettingsDialog.ID);
-	}
-
-	withData(data: ChannelSettingsRecordDialog) {
-		this.overlayerStore.updateData(ChannelSettingsDialog.ID, data);
+		return this.overlayerStore.has(ChannelJoinDialog.ID);
 	}
 }

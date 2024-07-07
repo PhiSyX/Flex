@@ -10,7 +10,7 @@
 
 import type { ChatStore } from "~/storage/memory/chat";
 
-import { isChannel } from "~/asserts/room";
+import { isChannel } from "@phisyx/flex-chat";
 import type { Module } from "../../interface";
 import {
 	AccessLevelAOPCommand,

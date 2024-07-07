@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ServerCustomRoom } from "~/custom_room/server";
+import type { ServerCustomRoom } from "@phisyx/flex-chat";
 
+import { UserChangeNicknameDialog } from "~/dialogs/user";
 import { useChatStore } from "~/storage/memory/chat";
 import { useOverlayerStore } from "~/storage/memory/overlayer";
-import { UserChangeNicknameDialog } from "~/user";
 
 import CustomRoomServer from "#/sys/custom_room_server/CustomRoomServer.vue";
 

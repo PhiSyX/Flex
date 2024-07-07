@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ChannelListCustomRoom } from "~/custom_room/channel_list";
-import type { ServerCustomRoom } from "~/custom_room/server";
-import type { PrivateRoom } from "~/private/room";
-
-import { ChannelJoinDialog, type ChannelRoom } from "~/channel/room";
-import { NoticeCustomRoom } from "~/custom_room/notice";
+import type {
+	ChannelListCustomRoom,
+	ChannelRoom,
+	NoticeCustomRoom,
+	PrivateRoom,
+	ServerCustomRoom,
+} from "@phisyx/flex-chat";
+import { ChannelJoinDialog } from "~/dialogs/room";
 import { useChatStore } from "~/storage/memory/chat";
 import { useOverlayerStore } from "~/storage/memory/overlayer";
 

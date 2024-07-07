@@ -7,8 +7,7 @@ import {
 } from "@phisyx/flex-vue-uikit";
 import { type ModelRef, reactive, ref } from "vue";
 
-import { channelID } from "~/asserts/room";
-import { RememberMeStorage } from "~/storage/local/remember_me";
+import { RememberMeStorage, channelID  } from "@phisyx/flex-chat";
 import { useChatStore } from "~/storage/memory/chat";
 import { View } from "~/views";
 

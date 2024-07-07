@@ -1,5 +1,10 @@
 
 <script setup lang="ts">
+import {
+	RememberMeStorage,
+	type UserSession,
+	channelID,
+} from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 import {
 	ButtonIcon,
@@ -9,10 +14,7 @@ import {
 } from "@phisyx/flex-vue-uikit";
 import { type ModelRef, computed, onMounted, reactive, ref } from "vue";
 
-import { channelID } from "~/asserts/room";
-import { RememberMeStorage } from "~/storage/local/remember_me";
 import { useChatStore } from "~/storage/memory/chat";
-import type { UserSession } from "~/user/session";
 import { View } from "~/views";
 
 // ---- //

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import { UserChangeNicknameDialog } from "~/dialogs/user";
 import { useChatStore } from "~/storage/memory/chat";
 import { useOverlayerStore } from "~/storage/memory/overlayer";
-import { UserChangeNicknameDialog } from "~/user";
 
 import ChangeNickDialogComponent from "#/sys/change_nick_dialog/ChangeNickDialog.vue";
 

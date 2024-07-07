@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ButtonIcon } from "@phisyx/flex-vue-uikit";
 
-import type { NoticeCustomRoom } from "~/custom_room/notice";
+import type { NoticeCustomRoom } from "@phisyx/flex-chat";
 
 import Room from "#/sys/room/Room.vue";
 

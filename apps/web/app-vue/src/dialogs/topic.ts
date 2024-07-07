@@ -8,43 +8,59 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { STORAGE_REMEMBER_ME_KEY } from "./constant";
-import { AppLocalStorage } from "./storage";
+import type { Layer, OverlayerStore } from "~/storage/memory/overlayer";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RememberMeStorage extends AppLocalStorage<boolean> {
+export class ChannelTopicLayer {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
+	static ID = "channel-topic-layer";
 
-	/**
-	 * Validation du JSON
-	 */
-	static fromJSON(key: string, value: string): boolean | undefined {
-		if (!(key.length === 0 && typeof value === "boolean")) {
-			return;
-		}
-		return value;
+	static create(
+		overlayerStore: OverlayerStore,
+		payload: {
+			event: Event;
+			linkedElement: HTMLElement | undefined;
+		},
+	) {
+		overlayerStore.create({
+			id: ChannelTopicLayer.ID,
+			destroyable: "manual",
+			event: payload.event,
+			DOMElement: payload.linkedElement,
+			trapFocus: false,
+		});
+
+		return new ChannelTopicLayer(overlayerStore);
+	}
+
+	static destroy(overlayerStore: OverlayerStore) {
+		overlayerStore.destroy(ChannelTopicLayer.ID);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
+	constructor(private overlayerStore: OverlayerStore) {}
 
-	constructor() {
-		super(RememberMeStorage.KEY, RememberMeStorage.fromJSON);
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	destroy() {
+		this.overlayerStore.destroy(ChannelTopicLayer.ID);
 	}
 
-	// -------- //
-	// Override //
-	// -------- //
+	get(): Layer | undefined {
+		return this.overlayerStore.get(ChannelTopicLayer.ID);
+	}
 
-	override get() {
-		return this.item.unwrap_or(false);
+	exists(): boolean {
+		return this.overlayerStore.has(ChannelTopicLayer.ID);
 	}
 }

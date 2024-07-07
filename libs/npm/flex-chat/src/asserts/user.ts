@@ -8,21 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Room } from "~/room";
+import { User } from "../user";
 
-export class NoticeCustomRoom extends Room<CustomRoomID, "notice-custom-room"> {
-	/**
-	 * ID de la chambre personnalisée.
-	 */
-	public static ID: CustomRoomID = "@notices" as CustomRoomID;
-	public static NAME = "Notices";
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor() {
-		super("notice-custom-room", NoticeCustomRoom.NAME);
-		this.withID(NoticeCustomRoom.ID);
-	}
+/**
+ * Certifie que la donnée passée en argument est un utilisateur.
+ */
+export function isUser(user: unknown): user is User {
+	return user instanceof User;
 }

@@ -2,7 +2,7 @@
 import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref } from "vue";
 
-import type { Room } from "~/room";
+import type { Room } from "@phisyx/flex-chat";
 
 import NavigationServer from "#/sys/navigation_server/NavigationServer.vue";
 

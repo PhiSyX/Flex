@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelRoom } from "~/channel/room";
+import type { ChannelRoom } from "@phisyx/flex-chat";
 import type { ChatStore } from "~/storage/memory/chat";
 
-import { assertChannelRoom } from "~/asserts/room";
+import { assertChannelRoom } from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //

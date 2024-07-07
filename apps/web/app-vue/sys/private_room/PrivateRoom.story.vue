@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { PrivateParticipant } from "~/private/participant";
-import { PrivateRoom } from "~/private/room";
-import { User } from "~/user";
+import { PrivateParticipant, PrivateRoom, User } from "@phisyx/flex-chat";
 
 import PrivateRoomComponent from "./PrivateRoom.vue";
 

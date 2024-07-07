@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ChannelMemberSearchHits } from "~/channel/member/filtered";
+import type { ChannelMemberSearchHits } from "@phisyx/flex-chat";
 
 // ---- //
 // Type //

@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ChannelAccessLevelFlag } from "~/channel/access_level";
-import type { ChannelMember } from "~/channel/member";
-import type { ChannelMemberSelected } from "~/channel/member/selected";
-import type { ChannelRoom } from "~/channel/room";
+import type {
+	ChannelAccessLevelFlag,
+	ChannelMember,
+	ChannelMemberSelected,
+	ChannelRoom,
+} from "@phisyx/flex-chat";
 
-import { ChannelSettingsDialog } from "~/channel/settings";
-import { ChannelTopicLayer } from "~/channel/topic";
+import { ChannelSettingsDialog } from "~/dialogs/settings";
+import { ChannelTopicLayer } from "~/dialogs/topic";
+import { UserChangeNicknameDialog } from "~/dialogs/user";
 import { useChatStore } from "~/storage/memory/chat";
 import { useOverlayerStore } from "~/storage/memory/overlayer";
 import { useSettingsStore } from "~/storage/memory/settings";
-import { UserChangeNicknameDialog } from "~/user";
 
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.vue";
 import ChannelRoomKicked from "#/sys/channel_room_kicked/ChannelRoomKicked.vue";
@@ -253,7 +255,7 @@ function toggleSelectChannelMember(origin: Origin) {
 		@unset-access-level="(m, a) => sendAccessLevel('-')(m, a)"
 		@update-topic="sendUpdateTopic"
 		:style="{
-			'--room-info-position': userlistPosition === 'left' ? 0 : 1
+			'--room-info-position': userlistPosition === 'left' ? 0 : 1,
 		}"
 	>
 		<template v-if="room.kicked" #history>

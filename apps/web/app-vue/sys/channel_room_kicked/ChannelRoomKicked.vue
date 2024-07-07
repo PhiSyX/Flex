@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, toRaw } from "vue";
 
-import type { RoomMessage } from "~/room/message";
+import type { RoomMessage } from "@phisyx/flex-chat";
 
 // ---- //
 // Type //

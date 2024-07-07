@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { channelID } from "@phisyx/flex-chat";
 import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 
 import { ref } from "vue";
-import { channelID } from "~/asserts/room";
 
 // ---- //
 // Type //

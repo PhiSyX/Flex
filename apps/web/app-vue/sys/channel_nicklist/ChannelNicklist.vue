@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ChannelMember } from "~/channel/member";
+import type { ChannelMember } from "@phisyx/flex-chat";
 import {
 	ChannelMemberFiltered,
 	type ChannelMemberUnfiltered,
-} from "~/channel/member/filtered";
+} from "@phisyx/flex-chat";
 
 import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.vue";
 

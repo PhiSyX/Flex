@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { Room } from "~/room";
+import type { Room } from "@phisyx/flex-chat";
 
 import RoomEditbox from "#/sys/room_editbox/RoomEditbox.vue";
 import RoomHistoryLogs from "#/sys/room_history_logs/RoomHistoryLogs.vue";

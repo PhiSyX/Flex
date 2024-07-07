@@ -11,7 +11,7 @@
 import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/storage/memory/chat";
 
-import { isChannel } from "~/asserts/room";
+import { isChannel } from "@phisyx/flex-chat";
 import { TopicCommand } from "./command";
 
 // -------------- //

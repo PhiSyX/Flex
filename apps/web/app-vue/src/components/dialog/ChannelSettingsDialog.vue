@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { ChannelSettingsDialog } from "~/channel/settings";
+import { ChannelSettingsDialog } from "~/dialogs/settings";
 import { useChatStore } from "~/storage/memory/chat";
 import { useOverlayerStore } from "~/storage/memory/overlayer";
 

@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { STORAGE_SETTINGS_LAYOUT_KEY } from "./constant";
-import { AppLocalStorage } from "./storage";
+import {
+	AppLocalStorage,
+	STORAGE_SETTINGS_LAYOUT_KEY,
+} from "@phisyx/flex-chat";
 
 // ---- //
 // Type //

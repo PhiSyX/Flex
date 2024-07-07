@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { NoticeCustomRoom } from "~/custom_room/notice";
+import { NoticeCustomRoom } from "@phisyx/flex-chat";
 import type { ChatStore } from "~/storage/memory/chat";
 
 // -------------- //

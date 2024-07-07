@@ -10,10 +10,12 @@
 
 import type { ChatStore } from "~/storage/memory/chat";
 
-import { assertChannelRoom } from "~/asserts/room";
-import { ChannelMember } from "~/channel/member";
-import { ChannelRoom } from "~/channel/room";
-import { User } from "~/user";
+import {
+	ChannelMember,
+	ChannelRoom,
+	User,
+	assertChannelRoom,
+} from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //

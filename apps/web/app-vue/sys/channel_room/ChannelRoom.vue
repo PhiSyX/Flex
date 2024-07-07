@@ -3,10 +3,12 @@ import type { Option } from "@phisyx/flex-safety";
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref } from "vue";
 
-import type { ChannelAccessLevelFlag } from "~/channel/access_level";
-import type { ChannelMember } from "~/channel/member";
-import type { ChannelMemberSelected } from "~/channel/member/selected";
-import type { ChannelRoom } from "~/channel/room";
+import type {
+	ChannelAccessLevelFlag,
+	ChannelMember,
+	ChannelMemberSelected,
+	ChannelRoom,
+} from "@phisyx/flex-chat";
 
 import { useChannelTopic } from "./ChannelRoom.hooks";
 

@@ -10,8 +10,7 @@
 
 import type { ChatStore } from "~/storage/memory/chat";
 
-import { PrivateParticipant } from "~/private/participant";
-import { PrivateRoom } from "~/private/room";
+import { PrivateParticipant, PrivateRoom } from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //

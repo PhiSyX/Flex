@@ -2,8 +2,7 @@
 import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-vue-uikit";
 import { computed, ref, watch } from "vue";
 
-import type { ChannelMember } from "~/channel/member";
-import type { ChannelRoom } from "~/channel/room";
+import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
 
 // ---- //
 // Type //

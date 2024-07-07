@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Room } from "~/room";
+import type { Room } from "@phisyx/flex-chat";
 
 import Match from "#/sys/match/Match.vue";
 import NavigationRoom from "#/sys/navigation_room/NavigationRoom.vue";

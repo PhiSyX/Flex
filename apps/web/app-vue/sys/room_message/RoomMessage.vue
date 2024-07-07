@@ -3,9 +3,7 @@ import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
 import { None, Some } from "@phisyx/flex-safety";
 import { computed, inject } from "vue";
 
-import { ChannelMember } from "~/channel/member";
-import { PrivateParticipant } from "~/private/participant";
-import { User } from "~/user";
+import { ChannelMember, PrivateParticipant, User } from "@phisyx/flex-chat";
 
 import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.vue";
 import Match from "#/sys/match/Match.vue";

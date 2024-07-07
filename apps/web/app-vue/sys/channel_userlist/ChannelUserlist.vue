@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
-import type { ChannelMembers } from "~/channel/member/list";
+import type { ChannelMembers } from "@phisyx/flex-chat";
 
 import {
 	UserlistModeView,

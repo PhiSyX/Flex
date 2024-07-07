@@ -14,6 +14,7 @@
 	},
 	"dependencies": {
 		"@phisyx/flex-capitalization": "workspace:*",
+		"@phisyx/flex-chat": "workspace:*",
 		"@phisyx/flex-css": "workspace:*",
 		"@phisyx/flex-date": "workspace:*",
 		"@phisyx/flex-safety": "workspace:*",

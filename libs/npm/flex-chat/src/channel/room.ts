@@ -10,9 +10,8 @@
 
 import { Option } from "@phisyx/flex-safety";
 
-import { Room } from "~/room";
-import type { Layer, OverlayerStore } from "~/storage/memory/overlayer";
-import type { User } from "~/user";
+import { Room } from "../room";
+import type { User } from "../user";
 
 import { ChannelAccessControl } from "./access_control";
 import { ChannelAccessLevelFlag } from "./access_level";
@@ -23,54 +22,6 @@ import { ChannelTopic } from "./topic";
 // -------------- //
 // Implémentation //
 // -------------- //
-
-export class ChannelJoinDialog {
-	// ------ //
-	// Static //
-	// ------ //
-
-	static ID = "channel-join-layer";
-
-	static create(
-		overlayerStore: OverlayerStore,
-		payload: {
-			event: Event;
-		},
-	) {
-		overlayerStore.create({
-			id: ChannelJoinDialog.ID,
-			centered: true,
-			event: payload.event,
-		});
-
-		return new ChannelJoinDialog(overlayerStore);
-	}
-
-	static destroy(overlayerStore: OverlayerStore) {
-		overlayerStore.destroy(ChannelJoinDialog.ID);
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private overlayerStore: OverlayerStore) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	destroy() {
-		this.overlayerStore.destroy(ChannelJoinDialog.ID);
-	}
-
-	get(): Layer | undefined {
-		return this.overlayerStore.get(ChannelJoinDialog.ID);
-	}
-
-	exists(): boolean {
-		return this.overlayerStore.has(ChannelJoinDialog.ID);
-	}
-}
 
 export class ChannelRoom extends Room<ChannelID, "channel"> {
 	// ------ //

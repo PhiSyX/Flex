@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { None, Some } from "@phisyx/flex-safety";
 
-import { channelID } from "~/asserts/room";
-import { ChannelAccessLevelFlag } from "~/channel/access_level";
-import { ChannelMember } from "~/channel/member";
-import { ChannelRoom } from "~/channel/room";
-import { RoomMessage } from "~/room/message";
-import { User } from "~/user";
+import {
+	ChannelAccessLevelFlag,
+	ChannelMember,
+	ChannelRoom,
+	RoomMessage,
+	User,
+	channelID,
+} from "@phisyx/flex-chat";
 
 import ChannelRoomKicked from "#/sys/channel_room_kicked/ChannelRoomKicked.vue";
 import ChannelRoomComponent from "./ChannelRoom.vue";

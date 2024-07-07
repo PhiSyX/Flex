@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelRoom } from "~/channel/room";
-import type { PrivateRoom } from "~/private/room";
+import type { ChannelRoom } from "../channel/room";
+import type { PrivateRoom } from "../private/room";
 
 // -------- //
 // Fonction //

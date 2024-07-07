@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { channelID } from "~/asserts/room";
-import { ChannelMember } from "~/channel/member";
-import { ChannelRoom } from "~/channel/room";
-import { User } from "~/user";
+import { ChannelMember, ChannelRoom, User, channelID } from "@phisyx/flex-chat";
 
 import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
 
