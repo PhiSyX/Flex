@@ -8,9 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./_ext";
-export * from "./interactive";
-export * from "./form";
-export * from "./html";
-export * from "./phrasing";
-export * from "./svg";
+import { HTMLElementExtension } from "./html";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class SlotHTMLElementExtension extends HTMLElementExtension<HTMLSlotElement> {
+	static make(args: HTMLElementExtension.Args): SlotHTMLElementExtension {
+		return new SlotHTMLElementExtension(args);
+	}
+
+	constructor(args: HTMLElementExtension.Args) {
+		super(document.createElement("slot"), args);
+	}
+
+	/**
+	 * Public API
+	 */
+
+	name(value: HTMLSlotElement["name"]): this {
+		this.setAttribute("name", value);
+		return this;
+	}
+}

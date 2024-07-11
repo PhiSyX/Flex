@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { HTMLElementExtension as Ext } from "../extension";
+import { HTMLElementExtension as Ext, SlotHTMLElementExtension } from "../extension";
 
 export function abbr(...args: Ext.Args) {
 	return Ext.createElement("abbr", args);
@@ -46,8 +46,8 @@ export function q(...args: Ext.Args): Ext<HTMLQuoteElement> {
 	return Ext.createElement("q", args);
 }
 
-export function slot(...args: Ext.Args): Ext<HTMLSlotElement> {
-	return Ext.createElement("slot", args);
+export function slot(...args: Ext.Args): SlotHTMLElementExtension {
+	return SlotHTMLElementExtension.make(args);
 }
 
 export function span(...args: Ext.Args): Ext<HTMLSpanElement> {
