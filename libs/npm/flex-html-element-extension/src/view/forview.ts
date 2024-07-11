@@ -8,20 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/extension";
+import { isArray } from "@phisyx/flex-asserts";
+import { type Signal, isSignal } from "@phisyx/flex-signal";
+import {
+	// ElementExtension as Ext,
+	HTMLElementExtension as HExt,
+} from "../extension";
 
-export * from "./src/elements/embedded";
-export * from "./src/elements/flow";
-export * from "./src/elements/form";
-export * from "./src/elements/fragment";
-export * from "./src/elements/heading";
-export * from "./src/elements/interactive";
-export * from "./src/elements/list";
-export * from "./src/elements/metadata";
-export * from "./src/elements/phrasing";
+// TODO: use Computed
+export function forview<T>(
+	arr: Signal<Array<T>> | Array<T>,
+	shallowView: (key: T) => HExt | Promise<HExt>,
+): HExt {
+	let fragment = HExt.createFragment() as HExt;
 
-export * from "./src/elements/svg";
+	console.log(fragment);
+	if (isArray<T>(arr)) {
+		for (const item of arr.map(shallowView)) {
+			fragment.append(item);
+		}
+	}
 
-export * from "./src/view/dynview";
-export * from "./src/view/forview";
-export * from "./src/view/use";
+	if (isSignal<Array<T>>(arr)) {
+		for (const item of arr.valueOf().map(shallowView)) {
+			fragment.append(item);
+		}
+	}
+
+	return fragment;
+}

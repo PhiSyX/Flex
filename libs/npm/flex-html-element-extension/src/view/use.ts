@@ -8,23 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import {
-	isClass,
-	isFunction,
-	isFuture,
-	isImportFuture,
-} from "@phisyx/flex-asserts";
+import { isClass, isFuture, isImportFuture } from "@phisyx/flex-asserts";
 import { HTMLElementExtension as Ext } from "../extension";
 
 // biome-ignore lint/suspicious/noExplicitAny: ;-)
 type FIXME = any;
 
-export function use(
-	_import: () => Promise<{ default: FIXME }>,
+// @ts-expect-error à améliorer
+export function use<T extends abstract new (...args: FIXME) => FIXME>(
+	_import: () => Promise<{ default: T }>,
+	attributes?: Partial<Omit<Attributes<T>, "customElement">>,
 	...args: Ext.Args
 ): Promise<Ext>;
 
-// @ts-expect-error à améliorer
 export function use<T extends abstract new (...args: FIXME) => FIXME>(
 	customTag: T,
 	attributes: Partial<Omit<Attributes<T>, "customElement">>,
