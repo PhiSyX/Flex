@@ -64,7 +64,9 @@ namespace ElementExtension {
 
 class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	public static createFragment(
-		children: Array<string | ElementExtension | DocumentFragment | Node>,
+		children: Array<
+			string | ElementExtension | DocumentFragment | Node
+		> = [],
 	): ElementExtension {
 		let $nativeFragment = document.createDocumentFragment();
 
@@ -314,14 +316,20 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		}
 	}
 
-	protected setAttribute(key: string, value: unknown) {
+	protected setAttribute(key: string, value: unknown): this {
 		if (value) {
 			this.nativeElement.setAttribute(key.toLowerCase(), String(value));
 		}
+		return this;
 	}
 
 	node(): E {
 		return this.nativeElement;
+	}
+
+	append(self: ElementExtension<E> | Promise<ElementExtension<E>>) {
+		let createElement = this.#createElementByTypes[typeof self];
+		createElement.call(this, self);
 	}
 
 	/**
@@ -386,8 +394,20 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return this;
 	}
 
+	data(dataset: Record<string, string>): this {
+		for (const [key, value] of Object.entries(dataset)) {
+			this.nativeElement.dataset[key] = value;
+		}
+		return this;
+	}
+
 	id(id: `#${string}`): this {
 		this.nativeElement.id = id.slice(1);
+		return this;
+	}
+
+	onlyIf(condition: boolean): this {
+		if (!condition) this.nativeElement.lastElementChild.remove();
 		return this;
 	}
 
@@ -396,8 +416,8 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return this;
 	}
 
-	onlyIf(condition: boolean): this {
-		if (!condition) this.nativeElement.lastElementChild.remove();
+	slot(name: string): this {
+		this.setAttribute("slot", name);
 		return this;
 	}
 
