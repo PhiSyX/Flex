@@ -20,6 +20,24 @@ type ButtonType = HTMLButtonElement["type"] | "dialog";
 // Implémentation //
 // -------------- //
 
+export class AnchorHTMLElementExtension extends HTMLElementExtension<HTMLAnchorElement> {
+	static make(args: HTMLElementExtension.Args): AnchorHTMLElementExtension {
+		return new AnchorHTMLElementExtension(args);
+	}
+
+	constructor(args: HTMLElementExtension.Args) {
+		super(document.createElement("a"), args);
+	}
+
+	/**
+	 * Public API
+	 */
+
+	href(value: HTMLAnchorElement["href"]): this {
+		return this.setAttribute("href", value);
+	}
+}
+
 export class ButtonHTMLElementExtension extends HTMLElementExtension<HTMLButtonElement> {
 	static make(args: HTMLElementExtension.Args): ButtonHTMLElementExtension {
 		return new ButtonHTMLElementExtension(args);

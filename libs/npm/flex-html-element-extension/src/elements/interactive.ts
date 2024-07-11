@@ -9,13 +9,13 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import {
+	AnchorHTMLElementExtension,
 	ButtonHTMLElementExtension,
 	HTMLElementExtension as Ext,
 } from "../extension";
 
-type Anchor = Ext<HTMLAnchorElement>;
-export function a(...args: Ext.Args): Anchor {
-	return Ext.createElement("a", args);
+export function a(...args: Ext.Args): AnchorHTMLElementExtension {
+	return AnchorHTMLElementExtension.make(args);
 }
 
 export function button(...args: Ext.Args): ButtonHTMLElementExtension {
