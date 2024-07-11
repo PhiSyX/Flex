@@ -8,9 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/array";
-export * from "./src/dom";
-export * from "./src/fn";
-export * from "./src/object";
-export * from "./src/primitive";
-export * from "./src/promise";
+export function isArray<T>(value: unknown): value is Array<T> {
+	return Array.isArray(value);
+}
