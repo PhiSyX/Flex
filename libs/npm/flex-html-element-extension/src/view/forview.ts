@@ -22,7 +22,6 @@ export function forview<T>(
 ): HExt {
 	let fragment = HExt.createFragment() as HExt;
 
-	console.log(fragment);
 	if (isArray<T>(arr)) {
 		for (const item of arr.map(shallowView)) {
 			fragment.append(item);

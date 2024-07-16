@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
 import type { Computed, Signal } from "@phisyx/flex-signal";
 import { ElementExtension } from "./_ext";
 
@@ -27,6 +28,7 @@ namespace HTMLElementExtension {
 		| HTMLElement
 		| HTMLElementExtension
 		| Node
+		| Option<Arg>
 		| Promise<Arg>;
 
 	export type Args = Array<Arg>;

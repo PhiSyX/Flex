@@ -21,7 +21,11 @@ import {
 } from "@phisyx/flex-asserts";
 import { kebabcase } from "@phisyx/flex-capitalization";
 import { noopBool } from "@phisyx/flex-helpers";
-import { stripTags } from "@phisyx/flex-safety";
+import {
+	type Option,
+	is_option as isOption,
+	stripTags,
+} from "@phisyx/flex-safety";
 import {
 	type Computed,
 	type Signal,
@@ -46,6 +50,7 @@ namespace ElementExtension {
 		| HTMLElement
 		| ElementExtension
 		| Node
+		| Option<Arg>
 		| Promise<Arg>;
 
 	export type Args = Array<Arg>;
@@ -177,8 +182,8 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		}
 	};
 
-	#handleArgs() {
-		for (const arg of this.#args) {
+	#handleArgs(args: ElementExtension.Args = this.#args) {
+		for (const arg of args) {
 			let createElement = this.#createElementByTypes[typeof arg];
 			createElement.call(this, arg);
 		}
@@ -228,13 +233,25 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			return this.#handleDOMNode(obj);
 		}
 
-		if (isFuture<object>(obj)) {
-			obj.then((self) => this.#createElementFromObject(self));
+		if (isOption<FIXME>(obj)) {
+			obj.then((self) => this.#handleArgs([self]));
+			return true;
+		}
+
+		if (isFuture<FIXME>(obj)) {
+			obj.then((self) => this.#handleArgs([self]));
 			return true;
 		}
 
 		for (const [attr, value] of Object.entries(obj)) {
-			this.nativeElement.setAttribute(kebabcase(attr), value);
+			if (isPrimitive(value)) {
+				this.nativeElement.setAttribute(kebabcase(attr), value);
+			} else {
+				this.nativeElement.setAttribute(
+					kebabcase(attr),
+					JSON.stringify(value),
+				);
+			}
 		}
 
 		return true;
@@ -394,9 +411,15 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return this;
 	}
 
-	data(dataset: Record<string, string>): this {
+	data(dataset: Record<string, string | Option<string>>): this {
 		for (const [key, value] of Object.entries(dataset)) {
-			this.nativeElement.dataset[key] = value;
+			if (isOption(value)) {
+				if (value.is_some()) {
+					this.nativeElement.dataset[key] = value.unwrap();
+				}
+			} else {
+				this.nativeElement.dataset[key] = value;
+			}
 		}
 		return this;
 	}

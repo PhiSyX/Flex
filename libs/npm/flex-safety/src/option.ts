@@ -37,14 +37,14 @@ class Option<T> {
 
 	static Some = <T>(value: T): Option<NonNullable<T>> => {
 		if (value == null) {
-			return None();
+			return this.None();
 		}
 		return new this(OptionVariant.Some, value);
 	};
 
 	static from = <T>(value: T): Option<NonNullable<T>> => {
 		if (value == null) {
-			return None();
+			return this.None();
 		}
 		return this.Some(value);
 	};
@@ -241,10 +241,22 @@ class Option<T> {
 	}
 }
 
+// -------- //
+// Fonction //
+// -------- //
+
+function is_option<T>(value: unknown): value is Option<T> {
+	return value instanceof Option;
+}
+
+// -------- //
+// Constant //
+// -------- //
+
 const { Some, None } = Option;
 
 // ------ //
 // Export //
 // ------ //
 
-export { Option, None, Some };
+export { Option, None, Some, is_option };
