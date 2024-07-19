@@ -82,12 +82,12 @@ const sendMessage = (message: string) => emit("send-message", message);
 		text-decoration: none;
 		border-radius: 4px;
 
+		background-color: var(--color-cyan800);
+
 		strong {
 			font-weight: 800;
 			text-transform: uppercase;
 		}
-
-		background-color: var(--color-cyan800);
 	}
 
 	@include fx.class("room/topic") {

@@ -71,6 +71,8 @@ const { store, destroyHandler } = useOverlayer();
 	border: 1px solid var(--layer-border);
 	box-shadow: 0 2px 16px var(--layer-box-shadow);
 
+	z-index: 1005;
+
 	@include fx.scheme using ($name) {
 		@if $name == ice {
 			--overlayer-bg: var(--color-black_hsl);
@@ -86,8 +88,6 @@ const { store, destroyHandler } = useOverlayer();
 			--layer-box-shadow: hsla(var(--color-black_hsl), 30%);
 		}
 	}
-
-	z-index: 1005;
 }
 
 .layer\@highlight {

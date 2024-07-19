@@ -138,6 +138,8 @@ input[type="search"] {
 }
 
 .btn-change-nick {
+	font-size: 14px;
+
 	@include fx.scheme using ($name) {
 		@if $name == dark {
 			--btn-primary-bg: var(--body-bg);
@@ -145,6 +147,5 @@ input[type="search"] {
 			--btn-primary-bg: var(--body-bg_alt);
 		}
 	}
-	font-size: 14px;
 }
 </style>

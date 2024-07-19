@@ -12,12 +12,13 @@
 		"@phisyx/flex-chat": "workspace:*",
 		"@phisyx/flex-custom-element": "workspace:*",
 		"@phisyx/flex-html-element-extension": "workspace:*",
+		"@phisyx/flex-safety": "workspace:*",
 		"@phisyx/flex-signal": "workspace:*",
 		"@phisyx/flex-uikit": "workspace:*"
 	},
 	"devDependencies": {
-		"typescript": "^5.2.2",
-		"vite": "^5.3.1",
-		"sass": "^1.77.6"
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"sass": "catalog:"
 	}
 }

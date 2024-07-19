@@ -397,18 +397,21 @@ input {
 }
 
 button[type="button"] {
+	--btn-secondary-color: var(--color-black);
+	
+	padding: fx.space(1) fx.space(2);
+	border-radius: 2px;
+	
+	&:hover {
+		outline: 3px solid var(--dialog-border-color);
+	}
+
 	@include fx.scheme using($name) {
 		@if $name == dark {
 			--btn-secondary-bg: var(--color-grey400);
 		} @else {
 			--btn-secondary-bg: var(--color-blue-grey200);
 		}
-	}
-	--btn-secondary-color: var(--color-black);
-	padding: fx.space(1) fx.space(2);
-	border-radius: 2px;
-	&:hover {
-		outline: 3px solid var(--dialog-border-color);
 	}
 }
 
