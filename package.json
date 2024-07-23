@@ -6,7 +6,6 @@
 	"type": "module",
 	"license": "MPL-2.0",
 	"scripts": {
-		"chat:scratch": "pnpm --filter @phisyx/flex-chat-webapp-scratch dev",
 		"chat:webapp": "pnpm --filter @phisyx/flex-chat-webapp-vue dev",
 		"story:webapp": "pnpm --filter @phisyx/flex-chat-webapp-vue story:dev",
 		"build": "pnpm run -r build",
