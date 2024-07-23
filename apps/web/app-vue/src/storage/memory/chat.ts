@@ -11,11 +11,15 @@
 import {
 	ChannelAccessLevelFlag,
 	ChannelListCustomRoom,
+	type ChannelMember,
 	ChannelMemberSelected,
+	type ChannelRoom,
+	ClientIDStorage,
 	PrivateParticipant,
 	PrivateRoom,
 	RoomManager,
 	ServerCustomRoom,
+	type User,
 	UserManager,
 	assertChannelRoom,
 	isChannel,
@@ -25,12 +29,10 @@ import { defineStore } from "pinia";
 import { io } from "socket.io-client";
 import { reactive } from "vue";
 
-import type { ChannelMember, ChannelRoom, User } from "@phisyx/flex-chat";
 import type { CommandInterface, Module } from "~/modules/interface";
 
 import { HandlerManager } from "~/handlers/manager";
 import { ModuleManager } from "~/modules/manager";
-import { ClientIDStorage } from "~/storage/local/client_id";
 import { useOverlayerStore } from "./overlayer";
 
 const HANDLERS = import.meta.glob("~/handlers/*/*.ts");

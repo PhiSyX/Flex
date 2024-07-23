@@ -8,27 +8,72 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// -------- //
-// Constant //
-// -------- //
-
-/**
- * Clé localStorage de l'ID du client courant connecté.
- */
-export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
-
-/**
- * Clé localStorage "Se souvenir de moi".
- */
-export const STORAGE_REMEMBER_ME_KEY = "flex.remember_me";
+import { AppLocalStorage } from "./storage";
 
 /**
  * Clé localStorage paramètres "layout".
  */
 export const STORAGE_SETTINGS_LAYOUT_KEY = "flex.settings.layout";
 
-/**
- * Clé localStorage paramètres "Personalization".
- */
-export const STORAGE_SETTINGS_PERSONALIZATION_KEY =
-	"flex.settings.personalization";
+// ---- //
+// Type //
+// ---- //
+
+export interface LayoutData {
+	channelUserlistDisplay?: boolean;
+	channelUserlistPosition?: "left" | "right";
+	navigationBarPosition?: "left" | "right";
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class LayoutStorage extends AppLocalStorage<LayoutData> {
+	// ------ //
+	// Static //
+	// ------ //
+
+	static readonly KEY = STORAGE_SETTINGS_LAYOUT_KEY;
+
+	static default(): LayoutData {
+		return {
+			channelUserlistDisplay: true,
+			channelUserlistPosition: "right",
+			navigationBarPosition: "left",
+		};
+	}
+
+	/**
+	 * Validation du JSON
+	 */
+	static fromJSON(key: string, value: string): unknown | undefined {
+		if (key !== "") {
+			let keys = [
+				"channelUserlistDisplay",
+				"channelUserlistPosition",
+				"navigationBarPosition",
+			];
+			if (!keys.includes(key)) return;
+			if (![true, false, "left", "right"].includes(value)) return;
+		}
+
+		if (value == null) {
+			return LayoutStorage.default();
+		}
+
+		return value;
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+
+	constructor() {
+		super(
+			LayoutStorage.KEY,
+			LayoutStorage.fromJSON,
+			LayoutStorage.default(),
+		);
+	}
+}

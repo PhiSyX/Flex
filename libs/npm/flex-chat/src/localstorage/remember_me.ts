@@ -8,52 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Theme } from "~/theme";
+import { AppLocalStorage } from "./storage";
 
-import {
-	AppLocalStorage,
-	STORAGE_SETTINGS_PERSONALIZATION_KEY,
-} from "@phisyx/flex-chat";
-
-// ---- //
-// Type //
-// ---- //
-
-export interface PersonalizationData {
-	theme?: keyof Theme;
-}
+/**
+ * Clé localStorage "Se souvenir de moi".
+ */
+export const STORAGE_REMEMBER_ME_KEY = "flex.remember_me";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class PersonalizationStorage extends AppLocalStorage<PersonalizationData> {
+export class RememberMeStorage extends AppLocalStorage<boolean> {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static readonly KEY = STORAGE_SETTINGS_PERSONALIZATION_KEY;
-
-	static default(): PersonalizationData {
-		return {
-			theme: "ice",
-		};
-	}
+	static readonly KEY = STORAGE_REMEMBER_ME_KEY;
 
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): unknown | undefined {
-		if (key !== "") {
-			let keys = ["theme"];
-			if (!keys.includes(key)) return;
-			if (!["dark", "ice", "light", "system"].includes(value)) return;
+	static fromJSON(key: string, value: string): boolean | undefined {
+		if (!(key.length === 0 && typeof value === "boolean")) {
+			return;
 		}
-
-		if (value == null) {
-			return PersonalizationStorage.default();
-		}
-
 		return value;
 	}
 
@@ -62,10 +41,14 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 	// ----------- //
 
 	constructor() {
-		super(
-			PersonalizationStorage.KEY,
-			PersonalizationStorage.fromJSON,
-			PersonalizationStorage.default(),
-		);
+		super(RememberMeStorage.KEY, RememberMeStorage.fromJSON);
+	}
+
+	// -------- //
+	// Override //
+	// -------- //
+
+	override get() {
+		return this.item.unwrap_or(false);
 	}
 }

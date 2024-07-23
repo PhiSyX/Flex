@@ -8,70 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import {
-	AppLocalStorage,
-	STORAGE_SETTINGS_LAYOUT_KEY,
-} from "@phisyx/flex-chat";
+import { AppLocalStorage } from "./storage";
 
-// ---- //
-// Type //
-// ---- //
-
-export interface LayoutData {
-	channelUserlistDisplay?: boolean;
-	channelUserlistPosition?: "left" | "right";
-	navigationBarPosition?: "left" | "right";
-}
+/**
+ * Clé localStorage de l'ID du client courant connecté.
+ */
+export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class LayoutStorage extends AppLocalStorage<LayoutData> {
+export class ClientIDStorage extends AppLocalStorage<string> {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static readonly KEY = STORAGE_SETTINGS_LAYOUT_KEY;
-
-	static default(): LayoutData {
-		return {
-			channelUserlistDisplay: true,
-			channelUserlistPosition: "right",
-			navigationBarPosition: "left",
-		};
-	}
-
-	/**
-	 * Validation du JSON
-	 */
-	static fromJSON(key: string, value: string): unknown | undefined {
-		if (key !== "") {
-			let keys = [
-				"channelUserlistDisplay",
-				"channelUserlistPosition",
-				"navigationBarPosition",
-			];
-			if (!keys.includes(key)) return;
-			if (![true, false, "left", "right"].includes(value)) return;
-		}
-
-		if (value == null) {
-			return LayoutStorage.default();
-		}
-
-		return value;
-	}
+	static readonly KEY = STORAGE_CLIENT_ID_KEY;
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 
 	constructor() {
-		super(
-			LayoutStorage.KEY,
-			LayoutStorage.fromJSON,
-			LayoutStorage.default(),
-		);
+		super(ClientIDStorage.KEY);
 	}
 }

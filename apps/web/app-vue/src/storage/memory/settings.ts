@@ -8,13 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { defineStore } from "pinia";
-import { reactive } from "vue";
-import { type LayoutData, LayoutStorage } from "../local/settings_layout";
 import {
+	type LayoutData,
+	LayoutStorage,
 	type PersonalizationData,
 	PersonalizationStorage,
-} from "../local/settings_personalization";
+} from "@phisyx/flex-chat";
+import { defineStore } from "pinia";
+import { reactive } from "vue";
 
 export class SettingsStore {
 	static readonly NAME = "settings-store";

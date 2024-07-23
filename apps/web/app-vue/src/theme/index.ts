@@ -8,27 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Theme, ThemeRecord } from "@phisyx/flex-chat";
 import { onMounted } from "vue";
 
 import { useSettingsStore } from "~/storage/memory/settings";
-
 import themeDarkImage from "#/assets/img/theme-dark.jpg";
 import themeIceImage from "#/assets/img/theme-ice.jpg";
 import themeLightImage from "#/assets/img/theme-light.jpg";
 import themeSystemImage from "#/assets/img/theme-system.jpg";
 
-// --------- //
-// Interface //
-// --------- //
-
-export type Theme = {
-	[key in "dark" | "ice" | "light" | "system"]: string;
-};
-
-export type ThemeRecord = {
-	name: keyof Theme;
-	src: Theme[keyof Theme];
-};
+export type { Theme, ThemeRecord } from "@phisyx/flex-chat";
 
 // -------- //
 // Constant //
