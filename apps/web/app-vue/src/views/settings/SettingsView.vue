@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import type { View } from "@phisyx/flex-chat";
 import { UiButton } from "@phisyx/flex-vue-uikit";
-
-import type { View } from "../index";
 
 import { useSettingsStore } from "~/store";
 

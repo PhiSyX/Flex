@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { UserSession } from "@phisyx/flex-chat";
+import { type UserSession, View } from "@phisyx/flex-chat";
 import { None, type Option } from "@phisyx/flex-safety";
 import { defineAsyncComponent, onMounted, ref, watch } from "vue";
-
-import { View } from "./views";
 
 import Overlayer from "./components/overlayer/Overlayer.vue";
 import { useTheme } from "./theme";

@@ -7,9 +7,8 @@ import {
 } from "@phisyx/flex-vue-uikit";
 import { type ModelRef, reactive, ref } from "vue";
 
-import { RememberMeStorage, channelID } from "@phisyx/flex-chat";
+import { RememberMeStorage, View, channelID } from "@phisyx/flex-chat";
 import { useChatStore } from "~/store";
-import { View } from "~/views";
 
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 

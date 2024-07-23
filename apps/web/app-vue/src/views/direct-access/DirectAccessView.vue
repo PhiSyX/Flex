@@ -3,6 +3,7 @@
 import {
 	RememberMeStorage,
 	type UserSession,
+	View,
 	channelID,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
@@ -15,7 +16,6 @@ import {
 import { type ModelRef, computed, onMounted, reactive, ref } from "vue";
 
 import { useChatStore } from "~/store";
-import { View } from "~/views";
 
 // ---- //
 // Type //

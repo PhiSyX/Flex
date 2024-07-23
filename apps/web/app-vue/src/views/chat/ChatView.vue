@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type {
-	ChannelListCustomRoom,
-	ChannelRoom,
-	NoticeCustomRoom,
-	PrivateRoom,
-	ServerCustomRoom,
+import {
+	type ChannelListCustomRoom,
+	type ChannelRoom,
+	type NoticeCustomRoom,
+	type PrivateRoom,
+	type ServerCustomRoom,
+	View,
 } from "@phisyx/flex-chat";
 import { ChannelJoinDialog } from "~/dialogs";
 import { useChatStore } from "~/store";
@@ -22,8 +23,6 @@ import Navigation from "~/components/navigation/Navigation.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ChannelList from "#/sys/channel_list/ChannelList.vue";
 import CustomRoomNotice from "#/sys/custom_room_notice/CustomRoomNotice.vue";
-
-import { View } from "../index";
 
 // --------- //
 // Composant //
