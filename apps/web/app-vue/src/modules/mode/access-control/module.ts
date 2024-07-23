@@ -12,10 +12,10 @@ import type { Module } from "~/modules/interface";
 import type { ChatStore } from "~/store";
 
 import {
-    BanCommand,
-    BanExCommand,
-    UnbanCommand,
-    UnbanExCommand,
+	BanCommand,
+	BanExCommand,
+	UnbanCommand,
+	UnbanExCommand,
 } from "./command";
 import { ModeAccessControlHandler } from "./handler";
 

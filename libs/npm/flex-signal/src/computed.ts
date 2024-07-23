@@ -46,7 +46,8 @@ export class Computed<R = FIXME> {
 		options?: ComputedWatchFnOptions,
 	) {
 		this.signal.addCallback((oldValue, newValue) => {
-			if (oldValue !== newValue) callback(this.#returnFn(newValue), oldValue);
+			if (oldValue !== newValue)
+				callback(this.#returnFn(newValue), oldValue);
 		});
 		if (options?.immediate) callback(this.valueOf(), null);
 	}

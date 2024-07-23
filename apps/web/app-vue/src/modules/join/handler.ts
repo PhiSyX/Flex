@@ -11,10 +11,10 @@
 import type { ChatStore } from "~/store";
 
 import {
-    ChannelMember,
-    ChannelRoom,
-    User,
-    assertChannelRoom,
+	ChannelMember,
+	ChannelRoom,
+	User,
+	assertChannelRoom,
 } from "@phisyx/flex-chat";
 
 // -------------- //

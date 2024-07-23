@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { HTMLElementExtension as Ext, SlotHTMLElementExtension } from "../extension";
+import {
+	HTMLElementExtension as Ext,
+	SlotHTMLElementExtension,
+} from "../extension";
 
 export function abbr(...args: Ext.Args) {
 	return Ext.createElement("abbr", args);

@@ -12,7 +12,7 @@
 // Type //
 // ---- //
 
-export type AttachShadowMode = "open" | "closed" ;
+export type AttachShadowMode = "open" | "closed";
 
 // -------------- //
 // Implémentation //

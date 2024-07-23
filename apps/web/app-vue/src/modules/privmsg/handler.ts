@@ -12,9 +12,9 @@ import type { Room } from "@phisyx/flex-chat";
 import type { ChatStore } from "~/store";
 
 import {
-    PrivateParticipant,
-    PrivateRoom,
-    RoomMessage,
+	PrivateParticipant,
+	PrivateRoom,
+	RoomMessage,
 } from "@phisyx/flex-chat";
 
 // -------------- //
