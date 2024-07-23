@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Option } from "@phisyx/flex-safety";
-import type { Computed, Signal } from "@phisyx/flex-signal";
+import { type Computed, type Signal, isComputed } from "@phisyx/flex-signal";
 import { ElementExtension } from "./_ext";
 
 // --------- //
@@ -124,8 +124,65 @@ class HTMLElementExtension<
 		return this;
 	}
 
+	off<K extends keyof HTMLElementEventMap>(
+		type: K,
+		listener: HTMLElementExtension.ChooseGoodEvent<E, K>,
+		options?: boolean | AddEventListenerOptions,
+	): this;
+	off<K>(
+		type: K,
+		listener: HTMLElementExtension.ChooseGoodEvent<E, K>,
+		options?: boolean | AddEventListenerOptions,
+	): this;
+	off(
+		type: FIXME,
+		listener: HTMLElementExtension.ChooseGoodEvent<E, FIXME>,
+		options?: boolean | AddEventListenerOptions,
+	): this {
+		this.nativeElement.removeEventListener(
+			type,
+			listener.bind(this),
+			options,
+		);
+		return this;
+	}
+
 	onClick(fn: (evt: MouseEvent) => void): this {
 		return this.on("click", fn);
+	}
+
+	onKeydown(fn: (evt: KeyboardEvent) => void): this {
+		return this.onKeydown(fn);
+	}
+
+	onKeydownCode(
+		code: Computed<KeyboardEvent["code"]> | KeyboardEvent["code"],
+		fn: (evt: KeyboardEvent) => void,
+	): this {
+		const hndlr = (code: KeyboardEvent["code"]) => (evt: KeyboardEvent) => {
+			if (evt.code.toLowerCase() === code.toLowerCase()) fn(evt);
+		};
+
+		if (isComputed(code)) {
+			code.watch(
+				(newValue, oldValue) => {
+					this.off("keydown", hndlr(oldValue || newValue));
+					this.on("keydown", hndlr(newValue));
+				},
+				{ immediate: true },
+			);
+			return this;
+		}
+
+		return this.on("keydown", hndlr(code));
+	}
+
+	onKeydownEnter(fn: (evt: KeyboardEvent) => void): this {
+		return this.onKeydownCode("enter", fn);
+	}
+
+	onKeydownEscape(fn: (evt: KeyboardEvent) => void): this {
+		return this.onKeydownCode("escape", fn);
 	}
 
 	type(ty?: InputTypeHTMLAttribute): this {

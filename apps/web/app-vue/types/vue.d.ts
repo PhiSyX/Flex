@@ -8,6 +8,4 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { App } from "vue";
-
-export type VuePluginInstall = (vueApp: App<Element>) => void;
+declare type VuePluginInstall = (vueApp: import("vue").App<Element>) => void;

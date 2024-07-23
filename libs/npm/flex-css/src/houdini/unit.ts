@@ -8,8 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare namespace CSS {
-	declare type CSSUnitValue = { value: number; unit: string } | string;
+export type CSSHoudiniUnitValue =
+	| { value: number; unit: string }
+	| `${string}px`;
 
-	function px(n: number): CSSUnitValue;
+// -------- //
+// Fonction //
+// -------- //
+
+/// CSS.px houdini
+function to_px(n: number): CSSHoudiniUnitValue {
+	// NOTE(phisyx): `CSS` est disponible dans l'objet Window dans certains
+	// navigateurs.
+	if (typeof globalThis.CSS?.px !== "undefined") {
+		return globalThis.CSS.px(n) || `${n}px`;
+	}
+	return `${n}px`;
 }
+
+// ------ //
+// Export //
+// ------ //
+
+export { to_px };

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { to_px } from "@phisyx/flex-css";
+import { type CSSHoudiniUnitValue, to_px } from "@phisyx/flex-css";
 import { defineStore } from "pinia";
 import { type CSSProperties, computed, nextTick, reactive } from "vue";
 
@@ -25,7 +25,10 @@ export type Layer<D = unknown> = {
 	DOMElement?: HTMLElement;
 	style?: CSSProperties;
 	onClose?: () => void;
-	mousePosition?: Partial<{ top: CSSUnitValue; left: CSSUnitValue }>;
+	mousePosition?: Partial<{
+		top: CSSHoudiniUnitValue;
+		left: CSSHoudiniUnitValue;
+	}>;
 	trapFocus?: boolean;
 };
 
@@ -107,11 +110,17 @@ export class OverlayerStore {
 
 		const DOMPositionElement = DOMElement.getBoundingClientRect();
 		const style: Layer["style"] = {
+			// @ts-expect-error à corriger
 			top: to_px(DOMPositionElement.top - MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			right: to_px(DOMPositionElement.right + MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			bottom: to_px(DOMPositionElement.bottom - MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			left: to_px(DOMPositionElement.left - MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			width: to_px(DOMPositionElement.width + MOUSE_POSITION_PADDING * 2),
+			// @ts-expect-error à corriger
 			height: to_px(
 				DOMPositionElement.height + MOUSE_POSITION_PADDING * 2,
 			),
@@ -179,11 +188,17 @@ export class OverlayerStore {
 		if (!DOMPositionElement) return;
 
 		const style: Layer["style"] = {
+			// @ts-expect-error à corriger
 			top: to_px(DOMPositionElement.top - MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			right: to_px(DOMPositionElement.right + MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			bottom: to_px(DOMPositionElement.bottom - MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			left: to_px(DOMPositionElement.left - MOUSE_POSITION_PADDING),
+			// @ts-expect-error à corriger
 			width: to_px(DOMPositionElement.width + MOUSE_POSITION_PADDING * 2),
+			// @ts-expect-error à corriger
 			height: to_px(
 				DOMPositionElement.height + MOUSE_POSITION_PADDING * 2,
 			),

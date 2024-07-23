@@ -35,7 +35,6 @@ export class User {
 		let user: User;
 
 		if (isUser(userOrigin)) {
-			// @ts-expect-error test
 			user = userOrigin;
 		} else {
 			user = new User(userOrigin);

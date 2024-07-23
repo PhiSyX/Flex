@@ -12,8 +12,6 @@ import "#/assets/scss/style.scss";
 
 import { createApp, defineAsyncComponent } from "vue";
 
-import type { VuePluginInstall } from "#/types/vue";
-
 import AppComponent from "./App.vue";
 
 const app = createApp(AppComponent);
