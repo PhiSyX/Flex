@@ -10,14 +10,41 @@
 
 import * as path from "node:path";
 
-import { HstVue } from "@histoire/plugin-vue";
-import { defineConfig } from "histoire";
+import { defineConfig } from "vite";
 
-import viteConfig from "./vite.histoire";
+import vue from "@vitejs/plugin-vue";
 
+function resolveFromFlex(...paths: Array<string>) {
+	return path.resolve("..", "..", "..", ...paths);
+}
+
+// https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [HstVue()],
-	setupFile: path.resolve("config", "histoire.setup.ts"),
-	routerMode: "history",
-	vite: viteConfig,
+	plugins: [vue()],
+	build: {
+		outDir: path.resolve("dist"),
+	},
+	resolve: {
+		alias: [
+			// Application
+			{
+				find: /^#/,
+				replacement: path.resolve("."),
+			},
+			{
+				find: /^~/,
+				replacement: path.resolve("src"),
+			},
+			// Assets
+			{
+				find: /^assets:~/,
+				replacement: resolveFromFlex("assets"),
+			},
+			// SCSS Libs
+			{
+				find: /^scss:~/,
+				replacement: resolveFromFlex("libs", "scss"),
+			},
+		],
+	},
 });
