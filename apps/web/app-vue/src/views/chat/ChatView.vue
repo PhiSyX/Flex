@@ -8,7 +8,7 @@ import type {
 	PrivateRoom,
 	ServerCustomRoom,
 } from "@phisyx/flex-chat";
-import { ChannelJoinDialog } from "~/dialogs/room";
+import { ChannelJoinDialog } from "~/dialogs";
 import { useChatStore } from "~/store";
 import { useOverlayerStore } from "~/store";
 

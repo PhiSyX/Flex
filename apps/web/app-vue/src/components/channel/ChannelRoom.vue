@@ -8,9 +8,9 @@ import type {
 	ChannelRoom,
 } from "@phisyx/flex-chat";
 
-import { ChannelSettingsDialog } from "~/dialogs/settings";
-import { ChannelTopicLayer } from "~/dialogs/topic";
-import { UserChangeNicknameDialog } from "~/dialogs/user";
+import { ChannelSettingsDialog } from "~/dialogs";
+import { ChannelTopicLayer } from "~/dialogs";
+import { UserChangeNicknameDialog } from "~/dialogs";
 import { useChatStore, useOverlayerStore, useSettingsStore } from "~/store";
 
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.vue";

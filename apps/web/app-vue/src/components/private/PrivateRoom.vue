@@ -4,7 +4,7 @@ import { computed } from "vue";
 import type { PrivateRoom } from "@phisyx/flex-chat";
 
 import { roomID } from "@phisyx/flex-chat";
-import { UserChangeNicknameDialog } from "~/dialogs/user";
+import { UserChangeNicknameDialog } from "~/dialogs";
 import { useChatStore, useOverlayerStore } from "~/store";
 
 import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.vue";

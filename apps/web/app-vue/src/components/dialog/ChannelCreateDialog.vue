@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { ChannelJoinDialog } from "~/dialogs/room";
+import { ChannelJoinDialog } from "~/dialogs";
 import { useChatStore, useOverlayerStore } from "~/store";
 
 import ChannelCreateDialog from "#/sys/channel_create_dialog/ChannelCreateDialog.vue";
