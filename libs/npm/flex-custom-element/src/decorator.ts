@@ -32,6 +32,8 @@ type CustomElementDecoratorOptions = {
 	styles?: Array<string>;
 };
 
+function assertShadowRoot(_: FIXME): asserts _ is ShadowRoot {}
+
 export function customElement(options?: CustomElementDecoratorOptions) {
 	function Ctor<
 		UCE extends CustomElementConstructor<UCEInstance>,
@@ -71,14 +73,19 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 				this.element = new UserCustomElement(this);
 				this.element.customElement = this;
 
-				if (options?.styles) {
+				const applyStylesheets = (doc: {
+					adoptedStyleSheets: Array<CSSStyleSheet>;
+				}) => {
+					// @ts-expect-error ;)
 					for (const stylesheet of options.styles) {
-						if (LocalCustomElement.STYLESHEETS.has(stylesheet)) {
-							this.root.adoptedStyleSheets.push(
+						if (
+							this.mode === "open" &&
+							LocalCustomElement.STYLESHEETS.has(stylesheet)
+						) {
+							doc.adoptedStyleSheets.push(
 								// biome-ignore lint/style/noNonNullAssertion: condition ci-haut.
 								LocalCustomElement.STYLESHEETS.get(stylesheet)!,
 							);
-
 							continue;
 						}
 
@@ -98,12 +105,21 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 								.then((r) => r.text())
 								.then((s) => sheet.replace(s));
 
-							this.root.adoptedStyleSheets.push(sheet);
+							doc.adoptedStyleSheets.push(sheet);
 						} else {
 							const sheet = new CSSStyleSheet();
 							sheet.replaceSync(stylesheet);
-							this.root.adoptedStyleSheets.push(sheet);
+							doc.adoptedStyleSheets.push(sheet);
 						}
+					}
+				};
+
+				if (options?.styles) {
+					if (this.mode === "open") {
+						assertShadowRoot(this.root);
+						applyStylesheets(this.root);
+					} else {
+						applyStylesheets(document);
 					}
 				}
 			}
@@ -152,6 +168,10 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 						// @ts-expect-error : TODO
 						this.element[methodName].call(this.element, evt);
 					});
+				}
+
+				if (this.mode === "closed") {
+					this.appendChild($extension.node());
 				}
 			}
 

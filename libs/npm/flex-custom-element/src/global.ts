@@ -12,19 +12,23 @@
 // Type //
 // ---- //
 
-export type AttachShadowMode = "open" | "closed";
+export type AttachShadowMode = "open" | "closed" ;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class GlobalCustomElement extends HTMLElement {
-	public root!: ShadowRoot;
+	public root!: ShadowRoot | DocumentFragment;
 
-	constructor(mode: AttachShadowMode) {
+	constructor(protected mode: AttachShadowMode) {
 		super();
 
-		this.root = this.attachShadow({ mode });
+		if (mode === "open") {
+			this.root = this.attachShadow({ mode });
+		} else {
+			this.root = document.createDocumentFragment();
+		}
 	}
 
 	emit(key: string, value: unknown) {
