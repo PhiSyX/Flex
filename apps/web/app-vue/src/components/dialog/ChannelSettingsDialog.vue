@@ -2,8 +2,7 @@
 import { computed } from "vue";
 
 import { ChannelSettingsDialog } from "~/dialogs/settings";
-import { useChatStore } from "~/storage/memory/chat";
-import { useOverlayerStore } from "~/storage/memory/overlayer";
+import { useChatStore, useOverlayerStore } from "~/store";
 
 import ChannelSettingsDialogComponent from "#/sys/channel_settings_dialog/ChannelSettingsDialog.vue";
 

@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { ChannelRoom } from "@phisyx/flex-chat";
-import type { ChatStore } from "~/storage/memory/chat";
+import type { ChatStore } from "~/store";
 
 import { assertChannelRoom } from "@phisyx/flex-chat";
 

@@ -2,8 +2,7 @@
 import { computed } from "vue";
 
 import { ChannelJoinDialog } from "~/dialogs/room";
-import { useChatStore } from "~/storage/memory/chat";
-import { useOverlayerStore } from "~/storage/memory/overlayer";
+import { useChatStore, useOverlayerStore } from "~/store";
 
 import ChannelCreateDialog from "#/sys/channel_create_dialog/ChannelCreateDialog.vue";
 

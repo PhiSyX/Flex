@@ -10,7 +10,7 @@
 
 import { onBeforeMount, onBeforeUnmount } from "vue";
 
-import { type Layer, useOverlayerStore } from "~/storage/memory/overlayer";
+import { type Layer, useOverlayerStore } from "~/store";
 
 // ----- //
 // Hooks //

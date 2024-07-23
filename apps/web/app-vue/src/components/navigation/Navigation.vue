@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useChatStore } from "~/storage/memory/chat";
-import { useSettingsStore } from "~/storage/memory/settings";
+import { useChatStore, useSettingsStore } from "~/store";
 
 import NavigationArea from "#/sys/navigation_area/NavigationArea.vue";
 

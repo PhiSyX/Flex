@@ -8,21 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStore } from "~/storage/memory/chat";
+import type { ChatStore } from "~/store";
 
 import { isChannel } from "@phisyx/flex-chat";
 import type { Module } from "../../interface";
 import {
-	AccessLevelAOPCommand,
-	AccessLevelDEAOPCommand,
-	AccessLevelDEHOPCommand,
-	AccessLevelDEOPCommand,
-	AccessLevelDEQOPCommand,
-	AccessLevelDEVIPCommand,
-	AccessLevelHOPCommand,
-	AccessLevelOPCommand,
-	AccessLevelQOPCommand,
-	AccessLevelVIPCommand,
+    AccessLevelAOPCommand,
+    AccessLevelDEAOPCommand,
+    AccessLevelDEHOPCommand,
+    AccessLevelDEOPCommand,
+    AccessLevelDEQOPCommand,
+    AccessLevelDEVIPCommand,
+    AccessLevelHOPCommand,
+    AccessLevelOPCommand,
+    AccessLevelQOPCommand,
+    AccessLevelVIPCommand,
 } from "./command";
 import { ModeAccessLevelHandler } from "./handler";
 

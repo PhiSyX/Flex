@@ -10,7 +10,7 @@
 
 import { Some } from "@phisyx/flex-safety";
 
-import type { ChatStore } from "~/storage/memory/chat";
+import type { ChatStore } from "~/store";
 
 // -------------- //
 // Implémentation //

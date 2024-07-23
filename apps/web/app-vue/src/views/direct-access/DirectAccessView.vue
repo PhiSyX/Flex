@@ -14,7 +14,7 @@ import {
 } from "@phisyx/flex-vue-uikit";
 import { type ModelRef, computed, onMounted, reactive, ref } from "vue";
 
-import { useChatStore } from "~/storage/memory/chat";
+import { useChatStore } from "~/store";
 import { View } from "~/views";
 
 // ---- //

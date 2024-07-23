@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { type Layer, useOverlayerStore } from "~/storage/memory/overlayer";
+import { type Layer, useOverlayerStore } from "~/store";
 
 const overlayerStore = useOverlayerStore();
 

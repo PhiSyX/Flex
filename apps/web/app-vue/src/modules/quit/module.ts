@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Module } from "~/modules/interface";
-import type { ChatStore } from "~/storage/memory/chat";
+import type { ChatStore } from "~/store";
 
 import { QuitCommand } from "./command";
 import { QuitHandler } from "./handler";

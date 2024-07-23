@@ -9,8 +9,8 @@ import type {
 	ServerCustomRoom,
 } from "@phisyx/flex-chat";
 import { ChannelJoinDialog } from "~/dialogs/room";
-import { useChatStore } from "~/storage/memory/chat";
-import { useOverlayerStore } from "~/storage/memory/overlayer";
+import { useChatStore } from "~/store";
+import { useOverlayerStore } from "~/store";
 
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import SettingsLayoutChannelUserlist from "#/sys/settings_layout_channel_userlist/SettingsLayoutChannelUserlist.vue";
 
-import { useSettingsStore } from "~/storage/memory/settings";
+import { useSettingsStore } from "~/store";
 
 const settingsStore = useSettingsStore();
 </script>

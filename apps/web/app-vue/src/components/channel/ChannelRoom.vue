@@ -11,9 +11,7 @@ import type {
 import { ChannelSettingsDialog } from "~/dialogs/settings";
 import { ChannelTopicLayer } from "~/dialogs/topic";
 import { UserChangeNicknameDialog } from "~/dialogs/user";
-import { useChatStore } from "~/storage/memory/chat";
-import { useOverlayerStore } from "~/storage/memory/overlayer";
-import { useSettingsStore } from "~/storage/memory/settings";
+import { useChatStore, useOverlayerStore, useSettingsStore } from "~/store";
 
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.vue";
 import ChannelRoomKicked from "#/sys/channel_room_kicked/ChannelRoomKicked.vue";

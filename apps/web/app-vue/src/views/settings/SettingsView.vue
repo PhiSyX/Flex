@@ -3,7 +3,7 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 
 import type { View } from "../index";
 
-import { useSettingsStore } from "~/storage/memory/settings";
+import { useSettingsStore } from "~/store";
 
 import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
 import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";

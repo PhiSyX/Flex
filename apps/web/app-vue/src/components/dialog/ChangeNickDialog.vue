@@ -2,8 +2,7 @@
 import { computed } from "vue";
 
 import { UserChangeNicknameDialog } from "~/dialogs/user";
-import { useChatStore } from "~/storage/memory/chat";
-import { useOverlayerStore } from "~/storage/memory/overlayer";
+import { useChatStore, useOverlayerStore } from "~/store";
 
 import ChangeNickDialogComponent from "#/sys/change_nick_dialog/ChangeNickDialog.vue";
 
