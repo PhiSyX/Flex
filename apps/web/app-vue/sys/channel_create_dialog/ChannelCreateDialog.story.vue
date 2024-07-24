@@ -3,7 +3,7 @@ import ChannelCreateDialog from "./ChannelCreateDialog.vue";
 </script>
 
 <template>
-	<Story title="Molecules/ChannelCreateDialog" responsive-disabled>
+	<Story title="Molecules/Dialog/ChannelCreateDialog" responsive-disabled>
 		<Variant title="Default">
 			<ChannelCreateDialog layer-name="layer" />
 		</Variant>

@@ -21,7 +21,7 @@ channel2.setSettingMode("t");
 </script>
 
 <template>
-	<Story title="Molecules/ChannelSettingsDialog" responsive-disabled>
+	<Story title="Molecules/Dialog/ChannelSettingsDialog" responsive-disabled>
 		<Variant title="Désactivé">
 			<ChannelSettingsDialog
 				layer-name="layer"

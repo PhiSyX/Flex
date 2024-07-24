@@ -3,7 +3,7 @@ import { Dialog } from "@phisyx/flex-vue-uikit";
 </script>
 
 <template>
-	<Story title="Molecules/Dialog" responsive-disabled>
+	<Story title="Molecules/Dialog/Skeleton" responsive-disabled>
 		<Variant title="Default">
 			<Dialog>
 				<template #label>Label</template>
