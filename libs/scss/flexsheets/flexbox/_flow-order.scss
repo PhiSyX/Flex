@@ -1,0 +1,11 @@
+@use "../mixins/class" as class;
+
+@mixin use-flexbox-flow-order($options...) {
+	$classes: (
+		"flex:wrap": (
+			flex-wrap: wrap,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

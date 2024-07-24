@@ -37,7 +37,7 @@ export { default as InputSwitch } from "./src/inputswitch/InputSwitch.vue";
 export { default as InputSwitchV2 } from "./src/inputswitch/InputSwitchV2.vue";
 export { default as TextInput } from "./src/textinput/TextInput.vue";
 
-export { ButtonIcon, LabelIcon } from "./src/icons";
+export { ButtonIcon, LabelIcon, ICON_NAMES } from "./src/icons";
 export type { Icons } from "./src/icons";
 
 // NOTE(phisyx): plugin Vue.

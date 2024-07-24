@@ -1,7 +1,9 @@
 @use "./alignment";
 @use "./flexibility";
+@use "./flow-order" as fo;
 
 @mixin use-flexbox($options...) {
 	@include alignment.use-flexbox-alignment($options...);
 	@include flexibility.use-flexbox-flexibility($options...);
+	@include fo.use-flexbox-flow-order($options...);
 }

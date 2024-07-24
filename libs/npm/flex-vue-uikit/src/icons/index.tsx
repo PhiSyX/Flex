@@ -18,29 +18,32 @@ import { resolveComponent } from "vue";
 // Type //
 // ---- //
 
-export type Icons =
-	| "arrow-down"
-	| "arrow-left"
-	| "arrow-right"
-	| "channel"
-	| "channel-list"
-	| "close"
-	| "error"
-	| "home"
-	| "loader"
-	| "logoff"
-	| "notice"
-	| "password"
-	| "plus"
-	| "report"
-	| "send"
-	| "settings"
-	| "text-color"
-	| "url"
-	| "user"
-	| "user-block"
-	| "users"
-	| "view-list";
+export const ICON_NAMES = [
+	"arrow-down",
+	"arrow-left",
+	"arrow-right",
+	"channel",
+	"channel-list",
+	"close",
+	"error",
+	"home",
+	"loader",
+	"logoff",
+	"notice",
+	"password",
+	"plus",
+	"report",
+	"send",
+	"settings",
+	"text-color",
+	"url",
+	"user",
+	"user-block",
+	"users",
+	"view-list",
+] as const;
+
+export type Icons = (typeof ICON_NAMES)[number];
 
 interface ButtonProps {
 	disabled?: boolean;
@@ -70,10 +73,11 @@ export function ButtonIcon(props: ButtonProps): JSX.Element {
 }
 
 export function LabelIcon(props: LabelProps): JSX.Element {
-	const IconName = resolveComponent(`icon-${props.icon}`);
+	const { icon, ...rest } = props;
+	const IconName = resolveComponent(`icon-${icon}`);
 	assertIcon(IconName);
 	return (
-		<label for={props.for}>
+		<label {...rest}>
 			<IconName />
 		</label>
 	);
