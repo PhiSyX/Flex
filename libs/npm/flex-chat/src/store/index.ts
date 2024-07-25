@@ -10,3 +10,4 @@
 
 export * from "./chat";
 export * from "./overlayer";
+export * from "./settings";

@@ -8,95 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import {
-	type LayoutData,
-	LayoutStorage,
-	type PersonalizationData,
-	PersonalizationStorage,
-} from "@phisyx/flex-chat";
+import { SettingsStore } from "@phisyx/flex-chat";
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
-export class SettingsStore {
-	static readonly NAME = "settings-store";
-
-	static default(): SettingsStore {
-		const def = reactive(new SettingsStore());
-		return def as SettingsStore;
-	}
-
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	personalization: PersonalizationSettings = new PersonalizationSettings();
-	layout: LayoutSettings = new LayoutSettings();
-
-	save() {
-		this.personalization.persist();
-		this.layout.persist();
-	}
-}
-
-export class PersonalizationSettings {
-	storage = new PersonalizationStorage();
-
-	get theme() {
-		return this.storage.get().theme;
-	}
-
-	set theme(value: PersonalizationData["theme"]) {
-		this.storage.set({ ...this.storage.value, theme: value });
-	}
-
-	persist() {
-		this.storage.save();
-	}
-}
-
-export class LayoutSettings {
-	storage = new LayoutStorage();
-
-	get channelUserlistDisplay() {
-		return this.storage.get().channelUserlistDisplay;
-	}
-
-	set channelUserlistDisplay(value: LayoutData["channelUserlistDisplay"]) {
-		this.storage.set({
-			...this.storage.value,
-			channelUserlistDisplay: value,
-		});
-	}
-
-	get channelUserlistPosition() {
-		return this.storage.get().channelUserlistPosition;
-	}
-
-	set channelUserlistPosition(value: LayoutData["channelUserlistPosition"]) {
-		this.storage.set({
-			...this.storage.value,
-			channelUserlistPosition: value,
-		});
-	}
-
-	get navigationBarPosition() {
-		return this.storage.get().navigationBarPosition;
-	}
-
-	set navigationBarPosition(value: LayoutData["navigationBarPosition"]) {
-		this.storage.set({
-			...this.storage.value,
-			navigationBarPosition: value,
-		});
-	}
-
-	persist() {
-		this.storage.save();
-	}
-}
-
 export const useSettingsStore = defineStore(SettingsStore.NAME, () => {
-	const store = SettingsStore.default();
+	const store = reactive(new SettingsStore()) as SettingsStore;
 	return {
 		...store,
 		save: store.save.bind(store),
