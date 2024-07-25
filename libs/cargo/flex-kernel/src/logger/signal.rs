@@ -8,19 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// FIXME: à améliorer
-
-use std::sync::mpsc;
-
 use console::style;
+use tokio::sync::mpsc;
 
 // ---- //
 // Type //
 // ---- //
 
 pub(crate) type LoggerReaderHandle = (
-	/* warning */ std::thread::JoinHandle<()>,
-	/* error */ std::thread::JoinHandle<()>,
+	/* warning */ tokio::task::JoinHandle<()>,
+	/* error */ tokio::task::JoinHandle<()>,
 );
 
 // --------- //
@@ -36,17 +33,17 @@ pub(crate) struct LoggerReader
 	/// Version de l'application.
 	pub(crate) version: String,
 	/// Gestion des erreurs.
-	pub(crate) error: mpsc::Receiver<String>,
+	pub(crate) error: mpsc::UnboundedReceiver<String>,
 	/// Gestion des warnings.
-	pub(crate) warning: mpsc::Receiver<String>,
+	pub(crate) warning: mpsc::UnboundedReceiver<String>,
 }
 
 pub(crate) struct LoggerWriter
 {
 	/// Gestion des erreurs.
-	pub(crate) error: mpsc::Sender<String>,
+	pub(crate) error: mpsc::UnboundedSender<String>,
 	/// Gestion des warnings.
-	pub(crate) warning: mpsc::Sender<String>,
+	pub(crate) warning: mpsc::UnboundedSender<String>,
 }
 
 // -------------- //
@@ -61,8 +58,8 @@ impl LoggerSignal
 		application_version: impl ToString,
 	) -> Self
 	{
-		let (sender_error, recv_error) = mpsc::channel();
-		let (sender_warning, recv_warning) = mpsc::channel();
+		let (sender_error, recv_error) = mpsc::unbounded_channel();
+		let (sender_warning, recv_warning) = mpsc::unbounded_channel();
 
 		let lrx = LoggerReader {
 			name: application_name.to_string(),
@@ -122,7 +119,7 @@ impl LoggerSignal
 impl LoggerReader
 {
 	/// Lis les messages d'avertissements, d'erreurs, etc... en tâche de fond.
-	pub(crate) fn spawn(self) -> LoggerReaderHandle
+	pub(crate) fn spawn(mut self) -> LoggerReaderHandle
 	{
 		let name: &'static str = self.name.leak();
 		let version: &'static str = self.version.leak();
@@ -147,8 +144,8 @@ impl LoggerReader
 			);
 		};
 
-		let wh = std::thread::spawn(move || {
-			while let Ok(warn) = self.warning.recv() {
+		let wh = tokio::spawn(async move {
+			while let Some(warn) = self.warning.recv().await {
 				if warn == "terminated" {
 					break;
 				}
@@ -156,8 +153,8 @@ impl LoggerReader
 			}
 		});
 
-		let eh = std::thread::spawn(move || {
-			while let Ok(err) = self.error.recv() {
+		let eh = tokio::spawn(async move {
+			while let Some(err) = self.error.recv().await {
 				if err == "terminated" {
 					break;
 				}

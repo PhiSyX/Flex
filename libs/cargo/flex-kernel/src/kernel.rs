@@ -171,17 +171,17 @@ impl<A, E, C> Kernel<A, E, C>
 ///
 /// À savoir que **par défaut** :
 ///
-/// - 1) Le répertoire de configuration se trouve à la racine du projet
+/// [1]: Le répertoire de configuration se trouve à la racine du projet
 ///   `config/`
 ///
-/// - 2) Le fichier de configuration du logger se trouve dans :
+/// [2]: Le fichier de configuration du logger se trouve dans :
 ///
 ///         2.1) En local : `config/<config_name>.<EXT>`.
 ///         2.2) En dev   : `config/dev/<config_name>.<EXT>`.
 ///         2.3) En prod  : `config/prod/<config_name>.<EXT>`.
 ///         2.4) En test  : `config/test/<config_name>.<EXT>`.
 ///
-/// - 3) L'extension <EXT> utilisée pour ce fichier de configuration est le
+/// [3]: L'extension <EXT> utilisée pour ce fichier de configuration est le
 ///   `yml`. Cette extension peut être modifiée dans les paramètres de la
 ///   configuration.
 pub fn fetch_config<O>(
@@ -213,17 +213,17 @@ where
 ///
 /// À savoir que **par défaut** :
 ///
-/// - 1) Le répertoire de configuration se trouve à la racine du projet
+/// [1]: Le répertoire de configuration se trouve à la racine du projet
 ///   `config/`
 ///
-/// - 2) Le fichier de configuration du logger se trouve dans :
+/// [2]: Le fichier de configuration du logger se trouve dans :
 ///
 ///         2.1) En local : `config/<config_name>.<EXT>`.
 ///         2.2) En dev   : `config/dev/<config_name>.<EXT>`.
 ///         2.3) En prod  : `config/prod/<config_name>.<EXT>`.
 ///         2.4) En test  : `config/test/<config_name>.<EXT>`.
 ///
-/// - 3) L'extension <EXT> utilisée pour ce fichier de configuration est le
+/// [3]: L'extension <EXT> utilisée pour ce fichier de configuration est le
 ///   `yml`. Cette extension peut être modifiée dans les paramètres de la
 ///   configuration.
 pub fn fetch_config_or_prompt<O>(
