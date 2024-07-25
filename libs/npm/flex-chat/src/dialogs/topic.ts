@@ -8,47 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	ChannelMember,
-	ChannelRoom,
-	Layer,
-	OverlayerStore,
-} from "@phisyx/flex-chat";
-
-// ---- //
-// Type //
-// ---- //
-
-export interface ChannelSettingsRecordDialog {
-	// Salon actif
-	room: ChannelRoom;
-	// Le client courant, qui est membre du salon.
-	currentClientChannelMember: ChannelMember;
-}
+import type { Layer, OverlayerStore } from "../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelSettingsDialog {
+export class ChannelTopicLayer {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "channel-settings-layer";
+	static ID = "channel-topic-layer";
 
 	static create(
 		overlayerStore: OverlayerStore,
-		data: ChannelSettingsRecordDialog,
+		payload: {
+			event: Event;
+			linkedElement: HTMLElement | undefined;
+		},
 	) {
 		overlayerStore.create({
-			id: ChannelSettingsDialog.ID,
+			id: ChannelTopicLayer.ID,
 			destroyable: "manual",
-			centered: true,
-			data,
+			event: payload.event,
+			DOMElement: payload.linkedElement,
+			trapFocus: false,
 		});
 
-		return new ChannelSettingsDialog(overlayerStore);
+		return new ChannelTopicLayer(overlayerStore);
+	}
+
+	static destroy(overlayerStore: OverlayerStore) {
+		overlayerStore.destroy(ChannelTopicLayer.ID);
 	}
 
 	// ----------- //
@@ -61,26 +53,14 @@ export class ChannelSettingsDialog {
 	// ------- //
 
 	destroy() {
-		this.overlayerStore.destroy(ChannelSettingsDialog.ID);
+		this.overlayerStore.destroy(ChannelTopicLayer.ID);
 	}
 
-	get(): Layer<ChannelSettingsRecordDialog> | undefined {
-		return this.overlayerStore.get(ChannelSettingsDialog.ID) as
-			| Layer<ChannelSettingsRecordDialog>
-			| undefined;
-	}
-
-	getUnchecked(): Layer<ChannelSettingsRecordDialog> {
-		return this.overlayerStore.get(
-			ChannelSettingsDialog.ID,
-		) as Layer<ChannelSettingsRecordDialog>;
+	get(): Layer | undefined {
+		return this.overlayerStore.get(ChannelTopicLayer.ID);
 	}
 
 	exists(): boolean {
-		return this.overlayerStore.has(ChannelSettingsDialog.ID);
-	}
-
-	withData(data: ChannelSettingsRecordDialog) {
-		this.overlayerStore.updateData(ChannelSettingsDialog.ID, data);
+		return this.overlayerStore.has(ChannelTopicLayer.ID);
 	}
 }

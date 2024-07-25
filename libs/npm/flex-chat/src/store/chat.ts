@@ -26,11 +26,11 @@ import type { OverlayerStore } from "./overlayer";
 // Constant //
 // -------- //
 
-// @ts-expect-error Vite
+// @ts-ignore : Vite
 const HANDLERS = import.meta.glob("../handlers/*/*.ts");
-// @ts-expect-error Vite
+// @ts-ignore : Vite
 const MODULES = import.meta.glob("../modules/**/module.ts");
-// @ts-expect-error Vite
+// @ts-ignore : Vite
 const MODULES_REPLIES_HANDLERS = import.meta.glob("../modules/**/replies.ts");
 
 // ---- //

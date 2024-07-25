@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import {
+	ChannelJoinDialog,
 	type ChannelListCustomRoom,
 	type ChannelRoom,
 	type NoticeCustomRoom,
@@ -9,7 +8,8 @@ import {
 	type ServerCustomRoom,
 	View,
 } from "@phisyx/flex-chat";
-import { ChannelJoinDialog } from "~/dialogs";
+import { computed } from "vue";
+
 import { useChatStore } from "~/store";
 import { useOverlayerStore } from "~/store";
 

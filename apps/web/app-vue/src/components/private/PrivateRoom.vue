@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { PrivateRoom } from "@phisyx/flex-chat";
+import {
+	type PrivateRoom,
+	UserChangeNicknameDialog,
+	roomID,
+} from "@phisyx/flex-chat";
 
-import { roomID } from "@phisyx/flex-chat";
-import { UserChangeNicknameDialog } from "~/dialogs";
 import { useChatStore, useOverlayerStore } from "~/store";
 
 import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.vue";

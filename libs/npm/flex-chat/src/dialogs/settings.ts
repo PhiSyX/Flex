@@ -8,31 +8,44 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Layer, OverlayerStore } from "@phisyx/flex-chat";
+import type { ChannelMember } from "../channel/member";
+import type { ChannelRoom } from "../channel/room";
+import type { Layer, OverlayerStore } from "../store";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface UserChangeNicknameRecordDialog {}
+export interface ChannelSettingsRecordDialog {
+	// Salon actif
+	room: ChannelRoom;
+	// Le client courant, qui est membre du salon.
+	currentClientChannelMember: ChannelMember;
+}
 
-export class UserChangeNicknameDialog {
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ChannelSettingsDialog {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "user-change-nickname-dialog";
+	static ID = "channel-settings-layer";
 
 	static create(
 		overlayerStore: OverlayerStore,
-		{ event }: { event: MouseEvent },
+		data: ChannelSettingsRecordDialog,
 	) {
 		overlayerStore.create({
-			id: UserChangeNicknameDialog.ID,
+			id: ChannelSettingsDialog.ID,
+			destroyable: "manual",
 			centered: true,
-			event,
+			data,
 		});
-		return new UserChangeNicknameDialog(overlayerStore);
+
+		return new ChannelSettingsDialog(overlayerStore);
 	}
 
 	// ----------- //
@@ -45,26 +58,26 @@ export class UserChangeNicknameDialog {
 	// ------- //
 
 	destroy() {
-		this.overlayerStore.destroy(UserChangeNicknameDialog.ID);
+		this.overlayerStore.destroy(ChannelSettingsDialog.ID);
 	}
 
-	get(): Layer<UserChangeNicknameRecordDialog> | undefined {
-		return this.overlayerStore.get(UserChangeNicknameDialog.ID) as
-			| Layer<UserChangeNicknameRecordDialog>
+	get(): Layer<ChannelSettingsRecordDialog> | undefined {
+		return this.overlayerStore.get(ChannelSettingsDialog.ID) as
+			| Layer<ChannelSettingsRecordDialog>
 			| undefined;
 	}
 
-	getUnchecked(): Layer<UserChangeNicknameRecordDialog> {
+	getUnchecked(): Layer<ChannelSettingsRecordDialog> {
 		return this.overlayerStore.get(
-			UserChangeNicknameDialog.ID,
-		) as Layer<UserChangeNicknameRecordDialog>;
+			ChannelSettingsDialog.ID,
+		) as Layer<ChannelSettingsRecordDialog>;
 	}
 
 	exists(): boolean {
-		return this.overlayerStore.has(UserChangeNicknameDialog.ID);
+		return this.overlayerStore.has(ChannelSettingsDialog.ID);
 	}
 
-	withData(data: UserChangeNicknameRecordDialog) {
-		this.overlayerStore.updateData(UserChangeNicknameDialog.ID, data);
+	withData(data: ChannelSettingsRecordDialog) {
+		this.overlayerStore.updateData(ChannelSettingsDialog.ID, data);
 	}
 }

@@ -8,36 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Layer, OverlayerStore } from "@phisyx/flex-chat";
+import type { Layer, OverlayerStore } from "../store";
 
-// -------------- //
-// Implémentation //
-// -------------- //
+// ---- //
+// Type //
+// ---- //
 
-export class ChannelJoinDialog {
+export interface UserChangeNicknameRecordDialog {}
+
+export class UserChangeNicknameDialog {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "channel-join-layer";
+	static ID = "user-change-nickname-dialog";
 
 	static create(
 		overlayerStore: OverlayerStore,
-		payload: {
-			event: Event;
-		},
+		{ event }: { event: MouseEvent },
 	) {
 		overlayerStore.create({
-			id: ChannelJoinDialog.ID,
+			id: UserChangeNicknameDialog.ID,
 			centered: true,
-			event: payload.event,
+			event,
 		});
-
-		return new ChannelJoinDialog(overlayerStore);
-	}
-
-	static destroy(overlayerStore: OverlayerStore) {
-		overlayerStore.destroy(ChannelJoinDialog.ID);
+		return new UserChangeNicknameDialog(overlayerStore);
 	}
 
 	// ----------- //
@@ -50,14 +45,26 @@ export class ChannelJoinDialog {
 	// ------- //
 
 	destroy() {
-		this.overlayerStore.destroy(ChannelJoinDialog.ID);
+		this.overlayerStore.destroy(UserChangeNicknameDialog.ID);
 	}
 
-	get(): Layer | undefined {
-		return this.overlayerStore.get(ChannelJoinDialog.ID);
+	get(): Layer<UserChangeNicknameRecordDialog> | undefined {
+		return this.overlayerStore.get(UserChangeNicknameDialog.ID) as
+			| Layer<UserChangeNicknameRecordDialog>
+			| undefined;
+	}
+
+	getUnchecked(): Layer<UserChangeNicknameRecordDialog> {
+		return this.overlayerStore.get(
+			UserChangeNicknameDialog.ID,
+		) as Layer<UserChangeNicknameRecordDialog>;
 	}
 
 	exists(): boolean {
-		return this.overlayerStore.has(ChannelJoinDialog.ID);
+		return this.overlayerStore.has(UserChangeNicknameDialog.ID);
+	}
+
+	withData(data: UserChangeNicknameRecordDialog) {
+		this.overlayerStore.updateData(UserChangeNicknameDialog.ID, data);
 	}
 }

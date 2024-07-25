@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import {
+	type ServerCustomRoom,
+	UserChangeNicknameDialog,
+} from "@phisyx/flex-chat";
 import { computed } from "vue";
 
-import type { ServerCustomRoom } from "@phisyx/flex-chat";
-
-import { UserChangeNicknameDialog } from "~/dialogs";
 import { useChatStore, useOverlayerStore } from "~/store";
 
 import CustomRoomServer from "#/sys/custom_room_server/CustomRoomServer.vue";

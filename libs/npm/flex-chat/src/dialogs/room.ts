@@ -8,39 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Layer, OverlayerStore } from "@phisyx/flex-chat";
+import type { Layer, OverlayerStore } from "../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelTopicLayer {
+export class ChannelJoinDialog {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "channel-topic-layer";
+	static ID = "channel-join-layer";
 
 	static create(
 		overlayerStore: OverlayerStore,
 		payload: {
 			event: Event;
-			linkedElement: HTMLElement | undefined;
 		},
 	) {
 		overlayerStore.create({
-			id: ChannelTopicLayer.ID,
-			destroyable: "manual",
+			id: ChannelJoinDialog.ID,
+			centered: true,
 			event: payload.event,
-			DOMElement: payload.linkedElement,
-			trapFocus: false,
 		});
 
-		return new ChannelTopicLayer(overlayerStore);
+		return new ChannelJoinDialog(overlayerStore);
 	}
 
 	static destroy(overlayerStore: OverlayerStore) {
-		overlayerStore.destroy(ChannelTopicLayer.ID);
+		overlayerStore.destroy(ChannelJoinDialog.ID);
 	}
 
 	// ----------- //
@@ -53,14 +50,14 @@ export class ChannelTopicLayer {
 	// ------- //
 
 	destroy() {
-		this.overlayerStore.destroy(ChannelTopicLayer.ID);
+		this.overlayerStore.destroy(ChannelJoinDialog.ID);
 	}
 
 	get(): Layer | undefined {
-		return this.overlayerStore.get(ChannelTopicLayer.ID);
+		return this.overlayerStore.get(ChannelJoinDialog.ID);
 	}
 
 	exists(): boolean {
-		return this.overlayerStore.has(ChannelTopicLayer.ID);
+		return this.overlayerStore.has(ChannelJoinDialog.ID);
 	}
 }

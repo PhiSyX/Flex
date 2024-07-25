@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 import { computed } from "vue";
 
-import { UserChangeNicknameDialog } from "~/dialogs";
 import { useChatStore, useOverlayerStore } from "~/store";
 
 import ChangeNickDialogComponent from "#/sys/change_nick_dialog/ChangeNickDialog.vue";

@@ -27,6 +27,8 @@ export * from "./src/custom_room/channel_list";
 export * from "./src/custom_room/notice";
 export * from "./src/custom_room/server";
 
+export * from "./src/dialogs";
+
 export * from "./src/handlers/manager";
 
 export * from "./src/modules/interface";
