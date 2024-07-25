@@ -9,4 +9,4 @@ static_resources:
     dir_path: www/flex/public/
 
   - url_path: /assets
-    dir_path: apps/web/app-vue/assets/
+    dir_path: apps/web/flex-discussion/assets/
