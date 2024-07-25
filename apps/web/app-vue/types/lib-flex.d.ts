@@ -8,6 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+/// <reference types="@phisyx/flex-chat/types/commands.d.ts" />
+/// <reference types="@phisyx/flex-chat/types/http-problem.d.ts" />
+/// <reference types="@phisyx/flex-chat/types/lib-flex.d.ts" />
+/// <reference types="@phisyx/flex-chat/types/mode.d.ts" />
+/// <reference types="@phisyx/flex-chat/types/replies.d.ts" />
+/// <reference types="@phisyx/flex-chat/types/socket.d.ts" />
+
 /// <reference types="@phisyx/flex-css" />
 
 declare const __opaque__: unique symbol;
@@ -18,11 +25,3 @@ declare type UUID = Opaque<
 	`${string}-${string}-${string}-${string}-${string}`,
 	"UUID"
 >;
-declare type ChannelID = Opaque<string, "ChannelID">;
-declare type UserID = Opaque<
-	`${string}-${string}-${string}-${string}-${string}`,
-	"UserID"
->;
-declare type CustomRoomID = Opaque<`@${string}`, "CustomRoomID">;
-declare type RoomID = ChannelID | UserID | CustomRoomID;
-declare type MaskAddr = Opaque<`${string}!${string}@${string}`, "MaskAddr">;

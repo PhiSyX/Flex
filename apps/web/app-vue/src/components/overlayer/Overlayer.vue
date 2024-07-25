@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CSSProperties } from "vue";
 import { useOverlayer } from "./Overlayer.hooks";
 
 import { vTrap } from "~/directives";
@@ -17,7 +18,7 @@ const { store, destroyHandler } = useOverlayer();
 						:id="`${id}_layer`"
 						class="layer [ border/radius=1 ]"
 						@keydown.esc="destroyHandler($event, id)"
-						:style="layer.style"
+						:style="(layer.style) as CSSProperties"
 					/>
 
 					<div

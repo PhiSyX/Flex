@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { Layer } from "@phisyx/flex-chat";
 import { computed } from "vue";
 
-import { type Layer, useOverlayerStore } from "~/store";
+import { useOverlayerStore } from "~/store";
 
 const overlayerStore = useOverlayerStore();
 

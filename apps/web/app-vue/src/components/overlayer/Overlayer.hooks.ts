@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Layer } from "@phisyx/flex-chat";
 import { onBeforeMount, onBeforeUnmount } from "vue";
 
-import { type Layer, useOverlayerStore } from "~/store";
+import { useOverlayerStore } from "~/store";
 
 // ----- //
 // Hooks //

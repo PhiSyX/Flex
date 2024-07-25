@@ -3,12 +3,17 @@
 	"description": "Flex Chat",
 	"authors": "Mike 'PhiSyX' S.",
 	"version": "0.1.0",
+	"scripts": {
+		"build": "tsc"
+	},
 	"dependencies": {
-		"@phisyx/flex-date": "workspace:*",
-		"@phisyx/flex-safety": "workspace:*",
-		"@phisyx/flex-search": "workspace:*"
+		"@phisyx/flex-css": "workspace:",
+		"@phisyx/flex-date": "workspace:",
+		"@phisyx/flex-safety": "workspace:",
+		"@phisyx/flex-search": "workspace:"
 	},
 	"devDependencies": {
-		"@phisyx/flex-code-quality": "workspace:*"
+		"@phisyx/flex-code-quality": "workspace:",
+		"typescript": "catalog:"
 	}
 }

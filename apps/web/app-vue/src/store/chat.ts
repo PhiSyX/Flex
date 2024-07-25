@@ -12,15 +12,17 @@ import {
 	ChannelAccessLevelFlag,
 	ChannelListCustomRoom,
 	type ChannelMember,
-	ChannelMemberSelected,
+	type ChannelMemberSelected,
 	type ChannelRoom,
-	ClientIDStorage,
+	ChatStore,
+	type ChatStoreInterfaceExt,
+	type CommandInterface,
+	type ConnectUserInfo,
+	type Module,
+	type OverlayerStore,
 	PrivateParticipant,
 	PrivateRoom,
-	RoomManager,
-	ServerCustomRoom,
 	type User,
-	UserManager,
 	assertChannelRoom,
 	isChannel,
 } from "@phisyx/flex-chat";
@@ -29,111 +31,22 @@ import { defineStore } from "pinia";
 import { io } from "socket.io-client";
 import { reactive } from "vue";
 
-import type { CommandInterface, Module } from "~/modules/interface";
-
-import { HandlerManager } from "~/handlers/manager";
-import { ModuleManager } from "~/modules/manager";
 import { useOverlayerStore } from "./overlayer";
-
-const HANDLERS = import.meta.glob("~/handlers/*/*.ts");
-const MODULES = import.meta.glob("~/modules/**/module.ts");
-const MODULES_REPLIES_HANDLERS = import.meta.glob("~/modules/**/replies.ts");
-
-// ---- //
-// Type //
-// ---- //
-
-type ConnectUserInfo = {
-	channels: ChannelID;
-	alternativeNickname: string;
-	nickname: string;
-	passwordServer: string | null;
-	realname: string;
-	websocketServerURL: string;
-};
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChatStore {
-	// ------ //
-	// Static //
-	// ------ //
+export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
+	public overlayer = useOverlayerStore() as unknown as OverlayerStore;
 
-	static readonly NAME = "chat-store";
-
-	static default(): ChatStore {
-		const self = reactive(new ChatStore()) as ChatStore;
-
-		self._handlerManager
-			.extends(HANDLERS)
-			.extends(MODULES_REPLIES_HANDLERS);
-		self._moduleManager.extends(MODULES);
-
-		const thisServer = new ServerCustomRoom();
-		const channelList = new ChannelListCustomRoom();
-
-		self.setNetworkName(thisServer.id());
-		self.roomManager().extends([
-			[thisServer.id(), thisServer],
-			[channelList.id(), channelList],
-		]);
-		self.roomManager().setCurrent(thisServer.id());
-
-		return self;
+	static default(): ChatStoreVue {
+		return reactive(new ChatStoreVue()) as ChatStoreVue;
 	}
-
-	// --------- //
-	// Propriété //
-	// --------- //
-
-	public overlayer = useOverlayerStore();
-	private _connectUserInfo: Option<ConnectUserInfo> = None();
-	private _client: Option<Origin> = None();
-	public clientError: Option<{
-		id: string;
-		title?: string;
-		subtitle?: string;
-		problems?: HttpProblemErrorResponse["errors"];
-		data: unknown;
-	}> = None();
-	private _clientIDStorage: ClientIDStorage = new ClientIDStorage();
-	private _userID: Option<UUID> = None();
-	private _network: Option<CustomRoomID> = None();
-	private _roomManager: RoomManager = new RoomManager();
-	private _ws: Option<TypeSafeSocket> = None();
-	private _userManager: UserManager = new UserManager();
-
-	private _handlerManager = new HandlerManager();
-	private _moduleManager = new ModuleManager();
 
 	// ------- //
 	// Méthode //
 	// ------- //
-
-	/**
-	 * Chambre personnalisé liste des salons.
-	 */
-	channelList(): ChannelListCustomRoom {
-		return this.roomManager()
-			.get(ChannelListCustomRoom.ID)
-			.unwrap_unchecked() as ChannelListCustomRoom;
-	}
-
-	/**
-	 * ID du client actuellement connecté à l'application.
-	 */
-	clientID() {
-		return this.client().id;
-	}
-
-	/**
-	 * L'utilisateur actuellement connecté à l'application.
-	 */
-	client(): Origin {
-		return this._client.expect("Le client courant connecté");
-	}
 
 	/**
 	 * Connexion au serveur de Chat WebSocket.
@@ -173,21 +86,9 @@ export class ChatStore {
 	}
 
 	/**
-	 * Méthode d'émission de données vers le serveur WebSocket.
-	 */
-	emit<E extends keyof Commands>(
-		eventName: E,
-		...payload: Parameters<ClientToServerEvent[E]>
-	) {
-		this._ws
-			.expect("Instance WebSocket connecté au serveur")
-			.emit(eventName, ...payload);
-	}
-
-	/**
 	 * Déconnexion du client liée à un événement d'erreur.
 	 */
-	disconnectError(comment: string) {
+	disconnectError(comment: GenericReply<"ERROR"> | string) {
 		this.overlayer.create({
 			id: "error-layer",
 			centered: true,
@@ -201,66 +102,6 @@ export class ChatStore {
 			id: "error-layer",
 			data: comment,
 		});
-	}
-
-	/**
-	 * Récupère les salons à rejoindre automatiquement.
-	 */
-	getAutoJoinChannels(): Array<ChannelID> {
-		const channels: ChannelID = this.getConnectUserInfo().channels;
-		return channels.split(",") as Array<ChannelID>;
-	}
-
-	/**
-	 * Récupère les informations de connexion de l'utilisateur.
-	 */
-	getConnectUserInfo(): ConnectUserInfo {
-		return this._connectUserInfo.expect(
-			"Information de connexion de l'utilisateur",
-		);
-	}
-
-	/**
-	 * Récupère l'utilisateur sélectionné d'un salon.
-	 */
-	getCurrentSelectedChannelMember(
-		room: ChannelRoom,
-	): Option<ChannelMemberSelected> {
-		return this.roomManager()
-			.get(room.id())
-			.and_then((room) => {
-				assertChannelRoom(room);
-				return room.members.selected();
-			})
-			.map((member) => {
-				const channelMemberSelected = new ChannelMemberSelected(
-					member,
-					this.userManager().isBlocked(member.id),
-				).withBanned(room.findBan(member));
-				return channelMemberSelected;
-			});
-	}
-
-	/**
-	 * Vérifie que le client est connecté au serveur.
-	 */
-	isConnected(): boolean {
-		return this.network().isConnected();
-	}
-
-	/**
-	 * Vérifie qu'une origine correspond à l'utilisateur actuellement connecté
-	 * à l'application.
-	 */
-	isCurrentClient(origin: Origin | string): boolean {
-		if (typeof origin === "string") {
-			return (
-				this.client().id === origin ||
-				this.client().nickname.toLowerCase() === origin.toLowerCase()
-			);
-		}
-
-		return this.client().id === origin.id;
 	}
 
 	/**
@@ -351,166 +192,10 @@ export class ChatStore {
 		this._moduleManager.free();
 		this.overlayer.destroy("load-all-modules");
 	}
-
-	/**
-	 * Gestion des handlers.
-	 */
-	handlerManager(): HandlerManager {
-		return this._handlerManager;
-	}
-
-	/**
-	 * Gestion des modules.
-	 */
-	moduleManager(): ModuleManager {
-		return this._moduleManager;
-	}
-
-	/**
-	 * La chambre personnalisée du serveur.
-	 */
-	network(): ServerCustomRoom {
-		return this.roomManager()
-			.get(this.networkName())
-			.unwrap_unchecked() as ServerCustomRoom;
-	}
-
-	/**
-	 * Le nom du serveur.
-	 */
-	networkName(): CustomRoomID {
-		return this._network.expect("Nom du réseau");
-	}
-
-	/**
-	 * Le pseudonyme du client actuellement connecté à l'application.
-	 */
-	nickname(): string {
-		return this.client().nickname;
-	}
-
-	/**
-	 * Désactive un événement.
-	 */
-	off<K extends keyof ServerToClientEvent>(eventName: K) {
-		this._ws
-			.expect("Instance WebSocket connecté au serveur")
-			.off(eventName);
-	}
-
-	/**
-	 * Active/écoute un événement.
-	 */
-	on<K extends keyof ServerToClientEvent>(
-		eventName: K,
-		listener: ServerToClientEvent[K],
-	) {
-		this._ws
-			.expect("Instance WebSocket connecté au serveur")
-			.on(eventName, listener);
-	}
-
-	/**
-	 * Active/écoute un événement une seule et unique fois.
-	 */
-	once<K extends keyof ServerToClientEvent>(
-		eventName: K,
-		listener: ServerToClientEvent[K],
-	) {
-		this._ws
-			.expect("Instance WebSocket connecté au serveur")
-			.once(eventName, listener);
-	}
-
-	/**
-	 * Gestion des chambres.
-	 */
-	roomManager(): RoomManager {
-		return this._roomManager;
-	}
-
-	/**
-	 * Définit les informations de connexion du formulaire d'accès direct au
-	 * Chat de l'utilisateur.
-	 */
-	setConnectUserInfo(connectUserInfo: ConnectUserInfo) {
-		this._connectUserInfo.replace(connectUserInfo);
-	}
-
-	/**
-	 * Définit l'application comme étant connecté au serveur.
-	 */
-	setConnected(b: boolean) {
-		this.network().setConnected(b);
-	}
-
-	/**
-	 * Définit l'origine du client.
-	 */
-	setClient(origin: Origin) {
-		this._clientIDStorage.set(origin.id);
-		this._client.replace(origin);
-	}
-
-	/**
-	 * Définit l'ID de l'utilisateur.
-	 */
-	setUserID(userID: UUID) {
-		this._userID.replace(userID);
-	}
-
-	/**
-	 * Définit le nom du serveur.
-	 */
-	setNetworkName(networkName: CustomRoomID) {
-		this._network.replace(networkName);
-	}
-
-	/**
-	 * Définit un nouvel ID au client connecté au serveur.
-	 */
-	setClientID(id: UserID) {
-		this.client().id = id;
-	}
-
-	/**
-	 * Définit le nom du client connecté au serveur.
-	 */
-	setClientNickname(nickname: string) {
-		this.client().nickname = nickname;
-	}
-
-	/**
-	 * Définit l'utilisateur sélectionné d'un salon.
-	 */
-	setSelectedUser(room: ChannelRoom, origin: Origin) {
-		room.members.select(origin.id);
-	}
-
-	/**
-	 * Désélectionne un utilisateur d'un salon.
-	 */
-	unsetSelectedUser(room: ChannelRoom, origin: Origin) {
-		room.members.unselect(origin.id);
-	}
-
-	/**
-	 * Gestion des utilisateurs.
-	 */
-	userManager(): UserManager {
-		return this._userManager;
-	}
-
-	/**
-	 * Instance de la WebSocket.
-	 */
-	websocket(): TypeSafeSocket {
-		return this._ws.expect("Instance WebSocket connecté au serveur");
-	}
 }
 
-export const useChatStore = defineStore(ChatStore.NAME, () => {
-	const store = ChatStore.default();
+export const useChatStore = defineStore(ChatStoreVue.NAME, () => {
+	const store = ChatStoreVue.default();
 
 	/**
 	 * Toutes les commandes basées sur les noms de modules.

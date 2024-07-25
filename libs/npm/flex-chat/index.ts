@@ -27,12 +27,19 @@ export * from "./src/custom_room/channel_list";
 export * from "./src/custom_room/notice";
 export * from "./src/custom_room/server";
 
+export * from "./src/handlers/manager";
+
+export * from "./src/modules/interface";
+export * from "./src/modules/manager";
+
+export * from "./src/private/participant";
+export * from "./src/private/room";
+
 export * from "./src/room";
 export * from "./src/room/manager";
 export * from "./src/room/message";
 
-export * from "./src/private/participant";
-export * from "./src/private/room";
+export * from "./src/store";
 
 export * from "./src/user";
 export * from "./src/user/manager";
@@ -43,5 +50,7 @@ export * from "./src/localstorage/remember_me";
 export * from "./src/localstorage/settings_layout";
 export * from "./src/localstorage/settings_personalization";
 export * from "./src/localstorage/storage";
+
+export * from "./src/store/chat";
 
 export * from "./src/theme";
