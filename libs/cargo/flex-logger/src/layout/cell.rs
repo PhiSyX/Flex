@@ -11,10 +11,24 @@
 use std::borrow::Cow;
 use std::cmp;
 use std::collections::HashSet;
+use std::sync::LazyLock;
 
 use unicode_width::UnicodeWidthStr;
 
 use super::style::Alignment;
+
+// ------ //
+// Static //
+// ------ //
+
+// STRIP_ANSI_RE is lifted from the "console" crate.
+// Copyright 2017 Armin Ronacher <armin.ronacher@active-4.com>. MIT License.
+static STRIP_ANSI_RE: LazyLock<regex::Regex> = LazyLock::new(|| {
+	regex::Regex::new(
+		r"[\x1b\x9b][\[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]",
+	)
+	.unwrap()
+});
 
 // --------- //
 // Structure //
@@ -132,13 +146,4 @@ pub(crate) fn str_len(string: &str) -> usize
 {
 	let stripped = STRIP_ANSI_RE.replace_all(string, "");
 	stripped.width()
-}
-
-lazy_static::lazy_static! {
-	// STRIP_ANSI_RE is lifted from the "console" crate.
-	// Copyright 2017 Armin Ronacher <armin.ronacher@active-4.com>. MIT License.
-	static ref STRIP_ANSI_RE: regex::Regex = regex::Regex::new(
-		r"[\x1b\x9b][\[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]"
-	)
-	.unwrap();
 }

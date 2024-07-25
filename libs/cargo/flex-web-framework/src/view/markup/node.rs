@@ -10,6 +10,8 @@
 
 use core::fmt;
 use std::path;
+use std::sync::LazyLock;
+use std::time::SystemTime;
 
 use dashmap::DashMap;
 
@@ -23,9 +25,8 @@ mod text;
 // Static //
 // ------ //
 
-lazy_static::lazy_static! {
-	pub static ref MEMOIZE_FILE: DashMap<path::PathBuf, String> = DashMap::new();
-}
+static MEMOIZE_FILE: LazyLock<DashMap<path::PathBuf, MemoizeFile>> =
+	LazyLock::new(DashMap::new);
 
 // ----------- //
 // Énumération //
@@ -47,6 +48,17 @@ pub enum Node
 	Json(text::JsonTextNode),
 	/// Noeud texte non sûr
 	UnsafeHtml(text::DangerousTextNode),
+}
+
+// --------- //
+// Structure //
+// --------- //
+
+#[derive(Debug)]
+pub struct MemoizeFile
+{
+	content: String,
+	modified_at: SystemTime,
 }
 
 // -------------- //
@@ -151,29 +163,54 @@ impl Node
 		fallback: impl FnOnce() -> String,
 	) -> Self
 	{
-		if let Some(content) = MEMOIZE_FILE.get(named.as_ref()) {
-			return Self::UnsafeHtml(text::DangerousTextNode {
-				raw_text: content.to_owned(),
-			});
+		let modified_at =
+			named.as_ref().metadata().unwrap().modified().unwrap();
+
+		if let Some(memfile) = MEMOIZE_FILE.get(named.as_ref()) {
+			if memfile.modified_at == modified_at {
+				return Self::UnsafeHtml(text::DangerousTextNode {
+					raw_text: memfile.content.to_owned(),
+				});
+			}
+			drop(memfile);
 		}
 
 		let content = fallback();
-		MEMOIZE_FILE.insert(named.as_ref().to_owned(), content.to_owned());
+
+		let memfile = MemoizeFile {
+			content: content.clone(),
+			modified_at,
+		};
+
+		MEMOIZE_FILE.insert(named.as_ref().to_owned(), memfile);
+
 		Self::UnsafeHtml(text::DangerousTextNode { raw_text: content })
 	}
 
 	pub fn create_unsafe_html_from_file(file: impl AsRef<path::Path>) -> Self
 	{
-		if let Some(content_of_file) = MEMOIZE_FILE.get(file.as_ref()) {
-			return Self::UnsafeHtml(text::DangerousTextNode {
-				raw_text: content_of_file.to_owned(),
-			});
+		let modified_at = file.as_ref().metadata().unwrap().modified().unwrap();
+
+		if let Some(memfile) = MEMOIZE_FILE.get(file.as_ref()) {
+			if memfile.modified_at == modified_at {
+				return Self::UnsafeHtml(text::DangerousTextNode {
+					raw_text: memfile.content.to_owned(),
+				});
+			}
+			drop(memfile);
 		}
 
 		let raw_text = std::fs::read_to_string(&file).unwrap_or_else(|_| {
 			panic!("le fichier « {} » n'existe pas.", file.as_ref().display())
 		});
-		MEMOIZE_FILE.insert(file.as_ref().to_owned(), raw_text.clone());
+
+		let memfile = MemoizeFile {
+			content: raw_text.clone(),
+			modified_at,
+		};
+
+		MEMOIZE_FILE.insert(file.as_ref().to_owned(), memfile);
+
 		Self::UnsafeHtml(text::DangerousTextNode { raw_text })
 	}
 }
