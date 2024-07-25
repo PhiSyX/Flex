@@ -22,18 +22,17 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 ## Applications de **Flex**:
 
--   [x] [**Chat**](docs/chat/README.md)
+-   [x] **Chat**
 
-    -   [x] Client Web (`pnpm chat:webapp`)
+    -   [x] `Flex Discussion` client web avec Vue
 
-        1. Un fichier `apps/flex-chat-webapp/.env` DOIT être crée.
-
-    -   [ ] Services (robots, automates, IA)
+        1. Un fichier `apps/web/flex-discussion/.env` DOIT être crée.
+        2. Commandes : `pnpm chat:discussion` et `pnpm story:discussion`
 
 -   [x] Serveur (`cargo run --bin flex`)
 
     1.  Un fichier `config/flex/.env` DOIT être crée. Se referer au fichier
         `config/flex/.env.example`.
 
-    2.  Les fichiers de configuration finissant par `.example.yml` DOIVENT être
-        renommés, sans `.example`. Exemple: `chat.example.yml` -> `chat.yml`.
+    2.  Les fichiers de configuration finissant par `.example.yml` DOIVENT être renommés, sans `.example`.  
+        Exemple: `chat.example.yml` -> `chat.yml`.

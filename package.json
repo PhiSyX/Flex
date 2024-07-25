@@ -6,8 +6,8 @@
 	"type": "module",
 	"license": "MPL-2.0",
 	"scripts": {
-		"chat:webapp": "pnpm --filter @phisyx/flex-chat-webapp-vue dev",
-		"story:webapp": "pnpm --filter @phisyx/flex-chat-webapp-vue story:dev",
+		"chat:discussion": "pnpm --filter @phisyx/flex-discussion dev",
+		"story:discussion": "pnpm --filter @phisyx/flex-discussion story:dev",
 		"build": "pnpm run -r build",
 		"lint": "biome lint --config-path=tools/code-quality . && pnpm run -r lint",
 		"fmt": "biome format --config-path=tools/code-quality . --write && pnpm run -r fmt",

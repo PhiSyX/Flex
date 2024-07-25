@@ -1,5 +1,5 @@
 {
-	"name": "@phisyx/flex-chat-webapp-vue",
+	"name": "@phisyx/flex-discussion",
 	"private": true,
 	"version": "0.1.0",
 	"type": "module",
@@ -13,13 +13,13 @@
 		"test:e2e:report": "playwright show-report tests/e2e/report"
 	},
 	"dependencies": {
-		"@phisyx/flex-capitalization": "workspace:*",
-		"@phisyx/flex-chat": "workspace:*",
-		"@phisyx/flex-css": "workspace:*",
-		"@phisyx/flex-date": "workspace:*",
-		"@phisyx/flex-safety": "workspace:*",
-		"@phisyx/flex-search": "workspace:*",
-		"@phisyx/flex-vue-uikit": "workspace:*",
+		"@phisyx/flex-capitalization": "workspace:",
+		"@phisyx/flex-chat": "workspace:",
+		"@phisyx/flex-css": "workspace:",
+		"@phisyx/flex-date": "workspace:",
+		"@phisyx/flex-safety": "workspace:",
+		"@phisyx/flex-search": "workspace:",
+		"@phisyx/flex-vue-uikit": "workspace:",
 		"focus-trap": "^7.5.4",
 		"pinia": "^2.1.7",
 		"socket.io-client": "^4.7.5",

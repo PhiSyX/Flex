@@ -17,7 +17,7 @@ import themeIceImage from "#/assets/img/theme-ice.jpg";
 import themeLightImage from "#/assets/img/theme-light.jpg";
 import themeSystemImage from "#/assets/img/theme-system.jpg";
 
-export type { Theme, ThemeRecord } from "@phisyx/flex-chat";
+export type { Theme, ThemeRecord };
 
 // -------- //
 // Constant //
