@@ -195,6 +195,10 @@ li:hover > div > .total-unread {
 	visibility: hidden;
 }
 
+li:not(:hover) > div > .total-unread + .close {
+	display: none;
+}
+
 @keyframes blink {
 	50% {
 		opacity: var(--blink-opacity, 0.5);
