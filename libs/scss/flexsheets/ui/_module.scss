@@ -1,7 +1,9 @@
 @use "./content-selection" as cs;
 @use "./pointer-interaction" as pi;
+@use "./resizing" as res;
 
 @mixin use-ui($options...) {
 	@include cs.use-ui-content-selection($options...);
 	@include pi.use-ui-cursor($options...);
+	@include res.use-ui-resizing($options...);
 }

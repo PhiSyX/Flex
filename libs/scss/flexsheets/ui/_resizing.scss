@@ -1,0 +1,16 @@
+@use "../mixins/class" as class;
+
+@mixin use-ui-resizing($options...) {
+	$classes: (
+		"resize:x": (
+			overflow: hidden,
+			resize: horizontal,
+		),
+        "resize:y": (
+			overflow: hidden,
+			resize: vertical,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

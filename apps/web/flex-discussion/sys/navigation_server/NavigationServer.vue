@@ -62,20 +62,22 @@ function toggleFoldHandler() {
 			class="[ flex align-i:center align-jc:sb p=1 cursor:pointer min-h=8 ]"
 			@click="changeRoomHandler"
 		>
-			<icon-home />
+			<icon-home class="[ flex:shrink=0 ]" />
 
-			<span v-show="!containerFolded">{{ name }}</span>
+			<span v-show="!containerFolded" class="[ flex:shrink=0 px=2 ]">{{ name }}</span>
 
 			<icon-arrow-down
 				v-if="connected === true && folded === false"
 				key="arrow-down"
 				v-show="!containerFolded"
+				class="[ flex:shrink=0 ]"
 				@click.stop="toggleFoldHandler()"
 			/>
 			<icon-arrow-right
 				v-else
 				key="arrow-right"
 				v-show="!containerFolded"
+				class="[ flex:shrink=0 ]"
 				@click.stop="toggleFoldHandler()"
 			/>
 
@@ -83,6 +85,7 @@ function toggleFoldHandler() {
 				v-if="connected == false"
 				key="logoff"
 				v-show="!containerFolded"
+				class="[ flex:shrink=0 ]"
 			/>
 		</summary>
 
@@ -101,10 +104,17 @@ function toggleFoldHandler() {
 					@close-room="closeRoomHandler"
 				>
 					<template #icon>
-						<icon-message v-if="room.type === 'channel'" />
-						<icon-user v-else-if="room.type === 'private'" />
+						<icon-message 
+							v-if="room.type === 'channel'" 
+							class="[ flex:shrink=0 ]"
+						/>
+						<icon-user 
+							v-else-if="room.type === 'private'"
+							class="[ flex:shrink=0 ]" 
+						/>
 						<icon-notice
 							v-else-if="room.type === 'notice-custom-room'"
+							class="[ flex:shrink=0 ]"
 						/>
 					</template>
 
