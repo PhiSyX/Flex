@@ -85,7 +85,7 @@ function resizeHandler(entries: Array<ResizeObserverEntry>) {
 <template>
 	<section 
 		v-resize="resizeHandler"
-		class="navigation-area [ flex! select:none resize:x ]"
+		class="navigation-area [ flex:shrink=0 flex! select:none resize:x ]"
 		:style="{ width: navWidth }"
 	>
 		<nav class="[ scroll:y flex:full size:full ]">
