@@ -2,13 +2,13 @@
 
 @mixin use-box-layout($options...) {
 	$classes: (
-		"d-i": (
+		"display-i": (
 			display: inline,
 		),
-		"d-b": (
+		"display-b": (
 			display: block,
 		),
-		"d-ib": (
+		"display-ib": (
 			display: inline-block,
 		),
 	);
