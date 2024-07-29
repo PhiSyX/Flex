@@ -39,6 +39,7 @@
 				--room-kicked-bg: var(--color-grey900);
 				--room-kicked-button-bg: var(--color-grey50);
 				--room-kicked-button-color: var(--color-grey900);
+				--room-event-color: var(--color-blue300);
 				--room-event-join-color: var(--color-green400);
 				--room-event-kick-color: var(--color-red300);
 				--room-event-mode-color: var(--color-blue300);
@@ -50,7 +51,7 @@
 				--room-message-error-color: var(--color-red300);
 				--room-topic-placeholder-color: var(--color-blue-grey200);
 
-				--room-nick-myself-color: var(--color-blue300);
+				--room-target-myself-color: var(--color-blue300);
 
 				--room-userlist-bg: var(--body-bg);
 				--room-userlist-search-bg: var(--room-bg);
@@ -98,8 +99,8 @@
 	.is-operator {
 		@include fx.scheme using ($name) {
 			@if $name == dark {
-				--room-nick-symbol: var(--color-red400);
-				--room-nick-color: var(--color-red400);
+				--room-target-symbol: var(--color-red400);
+				--room-target-color: var(--color-red400);
 			}
 		}
 	}
@@ -107,8 +108,8 @@
 	.is-half-operator {
 		@include fx.scheme using($name) {
 			@if $name == dark {
-				--room-nick-symbol: var(--color-cyan500);
-				--room-nick-color: var(--color-cyan300);
+				--room-target-symbol: var(--color-cyan500);
+				--room-target-color: var(--color-cyan300);
 			}
 		}
 	}
@@ -116,8 +117,8 @@
 	.is-vip {
 		@include fx.scheme using($name) {
 			@if $name == dark {
-				--room-nick-symbol: var(--color-orange400);
-				--room-nick-color: var(--color-orange300);
+				--room-target-symbol: var(--color-orange400);
+				--room-target-color: var(--color-orange300);
 			}
 		}
 	}
@@ -125,7 +126,7 @@
 	bdo.is-away {
 		@include fx.scheme using ($name) {
 			@if $name == dark {
-				--room-nick-color: var(--color-grey500);
+				--room-target-color: var(--color-grey500);
 			}
 		}
 	}

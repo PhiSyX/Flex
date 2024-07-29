@@ -40,6 +40,7 @@
 				--room-kicked-button-bg: var(--color-grey900);
 				--room-kicked-button-color: var(--color-grey50);
 				--room-editbox-bg: var(--room-bg);
+				--room-event-color: var(--color-blue300);
 				--room-event-join-color: var(--color-green500);
 				--room-event-kick-color: var(--color-red500);
 				--room-event-nick-color: var(--color-blue800);
@@ -51,7 +52,7 @@
 				--room-message-error-color: var(--color-red600);
 				--room-topic-placeholder-color: var(--color-grey500);
 
-				--room-nick-myself-color: var(--color-blue500);
+				--room-target-myself-color: var(--color-blue500);
 
 				--room-userlist-bg: var(--body-bg);
 				--room-userlist-search-bg: var(--room-bg);
@@ -106,7 +107,7 @@
 	bdo.is-away {
 		@include fx.scheme using ($name) {
 			@if $name == light {
-				--room-nick-color: var(--color-grey400);
+				--room-target-color: var(--color-grey400);
 			}
 		}
 	}

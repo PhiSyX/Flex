@@ -1,28 +1,28 @@
 .is-owner {
-	--room-nick-symbol: var(--color-red500);
-	--room-nick-color: var(--color-red500);
-	color: var(--room-nick-symbol);
+	--room-target-symbol: var(--color-red500);
+	--room-target-color: var(--color-red500);
+	color: var(--room-target-symbol);
 }
 .is-admin-operator {
-	--room-nick-symbol: var(--color-red500);
-	--room-nick-color: var(--color-red500);
-	color: var(--room-nick-symbol);
+	--room-target-symbol: var(--color-red500);
+	--room-target-color: var(--color-red500);
+	color: var(--room-target-symbol);
 }
 .is-operator {
-	--room-nick-symbol: var(--color-red500);
-	--room-nick-color: var(--color-red500);
-	color: var(--room-nick-symbol);
+	--room-target-symbol: var(--color-red500);
+	--room-target-color: var(--color-red500);
+	color: var(--room-target-symbol);
 }
 .is-half-operator {
-	--room-nick-symbol: var(--color-cyan500);
-	--room-nick-color: var(--color-cyan500);
+	--room-target-symbol: var(--color-cyan500);
+	--room-target-color: var(--color-cyan500);
 
-	color: var(--room-nick-symbol);
+	color: var(--room-target-symbol);
 }
 .is-vip {
-	--room-nick-symbol: var(--color-orange400);
-	--room-nick-color: var(--color-orange400);
-	color: var(--room-nick-symbol);
+	--room-target-symbol: var(--color-orange400);
+	--room-target-color: var(--color-orange400);
+	color: var(--room-target-symbol);
 }
 .is-user {
 	color: inherit;
@@ -31,5 +31,5 @@
 bdo.is-away::after {
 	content: "[away]";
 	text-decoration: underline;
-	color: var(--room-nick-color);
+	color: var(--room-target-color);
 }
