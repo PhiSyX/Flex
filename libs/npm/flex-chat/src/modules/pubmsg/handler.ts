@@ -8,7 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Room } from "../../room";
+import { assertChannelRoom } from "../../asserts/room";
+import type { ChannelRoom } from "../../channel/room";
 import { RoomMessage } from "../../room/message";
 import type { ChatStoreInterface } from "../../store";
 
@@ -34,12 +35,16 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 		const maybeChannel = this.store.roomManager().get(data.channel);
 		if (maybeChannel.is_none()) return;
 		const channel = maybeChannel.unwrap();
-		this.handleClientItselfssage(channel, data);
+		assertChannelRoom(channel);
+		this.handleMessage(channel, data);
 	}
 
-	handleClientItselfssage(room: Room, data: GenericReply<"PUBMSG">) {
+	handleMessage(room: ChannelRoom, data: GenericReply<"PUBMSG">) {
+		let hasMention = false;
+
 		const isCurrentClient = this.store.isCurrentClient(data.origin);
-		if (!isCurrentClient && !room.isActive()) {
+
+		if (!isCurrentClient) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
 			// message.
 			const currentClientNickname = this.store.nickname();
@@ -48,11 +53,20 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 					.toLowerCase()
 					.indexOf(currentClientNickname.toLowerCase()) >= 0
 			) {
-				room.setHighlighted(true);
+				hasMention = true;
+
+				if (!room.isActive()) {
+					room.setHighlighted(hasMention);
+				}
 			}
 		}
 
-		room.addMessage(
+		let previousMsgs = room.messages
+			.filter((msg) => !msg.isEventType)
+			.slice(-2)
+			.map((msg) => msg.id);
+
+		let msg = room.addMessage(
 			new RoomMessage()
 				.withID(data.tags.msgid)
 				.withMessage(data.text)
@@ -61,7 +75,17 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 				.withTime(new Date())
 				.withType("pubmsg")
 				.withData(data)
-				.withIsCurrentClient(isCurrentClient),
+				.withIsCurrentClient(isCurrentClient)
+				.withMention(hasMention),
 		);
+
+		if (hasMention && !isCurrentClient) {
+			room.activities.append("mention", {
+				channelID: room.id(),
+				messageID: msg.id,
+				nickname: msg.nickname,
+				previousMessageIDs: previousMsgs,
+			});
+		}
 	}
 }
