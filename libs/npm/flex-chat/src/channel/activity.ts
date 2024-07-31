@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { None, type Option } from "@phisyx/flex-safety";
 import type { RoomMessage } from "../room/message";
 import type { ChannelMember } from "./member";
 import type { ChannelRoom } from "./room";
@@ -16,7 +17,7 @@ import type { ChannelRoom } from "./room";
 // Type //
 // ---- //
 
-type ChannelActivityGroupName = "notice";
+type ChannelActivityGroupName = "mention" | "notice";
 
 export interface ChannelActivitiesView {
 	groups: Array<ChannelActivityGroup>;
@@ -26,20 +27,24 @@ export interface ChannelActivity {
 	channel: ChannelRoom;
 	member: ChannelMember;
 	message: RoomMessage<ChannelID, { text: string }>;
+	previousMessages: Array<ChannelActivity>;
 }
 export interface ChannelActivityRef {
 	channelID: ChannelID;
 	nickname: string;
 	messageID: RoomMessage["id"];
+	previousMessageIDs: Array<RoomMessage["id"]>;
 }
 
 export interface ChannelActivityGroup {
 	name: ChannelActivityGroupName;
 	createdAt: string;
+	updatedAt: Option<string>;
 	activities: Array<ChannelActivity>;
 }
 export interface ChannelActivityGroupRef {
 	createdAt: Date;
+	updatedAt: Option<Date>;
 	activities: Array<ChannelActivityRef>;
 }
 
@@ -63,6 +68,7 @@ export class ChannelActivities {
 		group: ChannelActivityGroupName,
 		payload: {
 			channelID: ChannelID;
+			previousMessageIDs?: Array<RoomMessage["id"]>;
 			nickname: string;
 			messageID: RoomMessage["id"];
 		},
@@ -71,16 +77,21 @@ export class ChannelActivities {
 			channelID: payload.channelID,
 			nickname: payload.nickname,
 			messageID: payload.messageID,
+			previousMessageIDs: payload.previousMessageIDs || [],
 		};
 
 		let [lastGroup, lastChannelActivities] = this.groups.at(-1) || [];
-		if (lastGroup === group) {
-			lastChannelActivities?.activities.push(newActivity);
+		if (lastGroup === group && lastChannelActivities) {
+			const newDate = new Date();
+			lastChannelActivities.updatedAt.replace(newDate);
+			lastChannelActivities.activities.push(newActivity);
 		} else {
+			const newDate = new Date();
 			this.groups.push([
 				group,
 				{
-					createdAt: new Date(),
+					createdAt: newDate,
+					updatedAt: None(),
 					activities: [newActivity],
 				},
 			]);

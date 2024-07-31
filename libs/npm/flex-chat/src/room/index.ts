@@ -202,6 +202,8 @@ export class Room<R = RoomID, Type extends string = string> {
 				this.totalUnreadMessages += 1;
 			}
 		}
+
+		return message;
 	}
 
 	/**

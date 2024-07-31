@@ -19,6 +19,7 @@ import PrivateNickComponent from "#/sys/private_nick/PrivateNick.vue";
 // ---- //
 
 interface Props {
+	mention: boolean;
 	data: object & { origin: Origin | ChannelOrigin };
 	archived: boolean;
 	id: string;
@@ -108,12 +109,15 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 		:id="id"
 		:data-archived="archived"
 		:data-external="isExternalMessage.is_some()"
-		:data-type="type"
+		:data-mention="mention"
 		:data-myself="isCurrentClient"
-		class="room/echo [ display-i max-w:max ]"
+		:data-type="type"
+		class="room/echo [ display-i max-w:max w:full ]"
 		:title="archived ? `Il s'agit d'un message archivé.` : undefined"
 		@dblclick.stop
 	>
+		<strong v-if="mention">[mention]</strong>
+
 		<template v-if="componentEventExists && isEvent">
 			<component
 				:is="componentEventName"
@@ -186,6 +190,11 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 
 	&[data-external="true"] em {
 		color: var(--room-message-error-color);
+	}
+
+	&[data-mention="true"] strong {
+		font-weight: 600;
+		color: var(--room-message-mention-color);
 	}
 
 	&[data-type*="error"] {

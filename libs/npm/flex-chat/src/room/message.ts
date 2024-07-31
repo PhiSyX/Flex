@@ -57,6 +57,8 @@ export class RoomMessage<T = unknown, D = object> {
 	time!: MessageProperties["time"];
 	type!: MessageProperties["type"];
 
+	mention = false;
+
 	get isEventType(): boolean {
 		return this.type.startsWith("event");
 	}
@@ -77,6 +79,11 @@ export class RoomMessage<T = unknown, D = object> {
 
 	withIsCurrentClient(bool: boolean): this {
 		this.isCurrentClient = bool;
+		return this;
+	}
+
+	withMention(bool: boolean): this {
+		this.mention = bool;
 		return this;
 	}
 

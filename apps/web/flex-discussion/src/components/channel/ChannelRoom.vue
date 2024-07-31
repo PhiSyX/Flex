@@ -3,6 +3,7 @@ import { computed } from "vue";
 
 import {
 	type ChannelAccessLevelFlag,
+	type ChannelActivity,
 	type ChannelMember,
 	type ChannelMemberSelected,
 	type ChannelRoom,
@@ -56,6 +57,8 @@ const selectedMember = computed(() =>
 	chatStore.getCurrentSelectedChannelMember(props.room),
 );
 
+// TODO: à corriger
+//
 // Les activités liées au salon courant (room).
 const channelActivities = computed(() => {
 	return {
@@ -63,10 +66,15 @@ const channelActivities = computed(() => {
 			return {
 				name,
 				createdAt: formatDate("d.m.Y - H:i:s", groups.createdAt),
+				updatedAt: groups.updatedAt.map((date) =>
+					formatDate("H:i:s", date),
+				),
 				activities: groups.activities.map((activity) => {
 					const channel = props.room;
 
-					// biome-ignore lint/suspicious/noExplicitAny: tkt
+					let previousMsgs: Array<ChannelActivity> = [];
+
+					// biome-ignore lint/suspicious/noExplicitAny: Lire la TODO ci-haut
 					let msg: RoomMessage<any, { text: string }>;
 
 					switch (name) {
@@ -77,7 +85,38 @@ const channelActivities = computed(() => {
 									.get(NoticeCustomRoom.ID)
 									.unwrap_or(channel);
 
-								// biome-ignore lint/style/noNonNullAssertion: tkt
+								// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
+								msg = room.getMessageFrom<{
+									text: string;
+								}>(activity.messageID)!;
+							}
+							break;
+
+						case "mention":
+							{
+								const room = channel;
+
+								previousMsgs = activity.previousMessageIDs.map(
+									(msgid) => {
+										// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
+										let msg = room.getMessageFrom<{
+											text: string;
+										}>(msgid)!;
+
+										const member = room
+											.getMemberByNickname(msg.nickname)
+											.unwrap();
+
+										return {
+											channel: room,
+											member: member,
+											message: msg,
+											previousMessages: [],
+										};
+									},
+								);
+
+								// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
 								msg = room.getMessageFrom<{
 									text: string;
 								}>(activity.messageID)!;
@@ -86,7 +125,7 @@ const channelActivities = computed(() => {
 
 						default:
 							{
-								// biome-ignore lint/style/noNonNullAssertion: tkt
+								// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
 								msg = props.room.getMessageFrom<{
 									text: string;
 								}>(activity.messageID)!;
@@ -102,6 +141,7 @@ const channelActivities = computed(() => {
 						channel,
 						member,
 						message: msg,
+						previousMessages: previousMsgs,
 					};
 				}),
 			};

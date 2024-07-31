@@ -31,6 +31,52 @@ const currentClientMember = inject<Option<ChannelMember>>(
 </script>
 
 <template>
+	<ul
+		v-if="activity.previousMessages.length"
+		class="[ list:reset pt=2 ]"
+		data-name="activity-previous-messages"
+		style="opacity: 0.5"
+	>
+		<li
+			v-for="previousMsg of activity.previousMessages"
+			class="activities@activity [ flex gap=1 ]"
+		>
+			<div class="[ flex:shrink=0 ]" style="visibility: hidden">
+				<icon-event />
+			</div>
+
+			<div class="[ flex:full ]">
+				<ChannelNick
+					:nickname="previousMsg.member.nickname"
+					:classes="previousMsg.member.className"
+					:symbol="previousMsg.member.accessLevel.highest.symbol"
+					tag="bdo"
+				/>
+
+				<span> sur </span>
+
+				<Match :maybe="currentClientMember">
+					<template #some="{ data }">
+						<ChannelName
+							:name="previousMsg.channel.name"
+							:classes="data.accessLevel.highest.className"
+							:symbol="data.accessLevel.highest.symbol"
+						/>
+					</template>
+					<template #none>
+						<ChannelName :name="previousMsg.channel.name" />
+					</template>
+				</Match>
+
+				<span>: </span>
+
+				<p class="[ display-i hyphens ]">
+					{{ previousMsg.message.data.text }}
+				</p>
+			</div>
+		</li>
+	</ul>
+
 	<li class="activities@activity [ flex gap=1 ]">
 		<div class="[ flex:shrink=0 ]">
 			<icon-event />
@@ -69,6 +115,13 @@ const currentClientMember = inject<Option<ChannelMember>>(
 </template>
 
 <style lang="scss" scoped>
+p {
+	line-height: 24px;
+	color: var(--channel-activities-color);
+}
+</style>
+
+<style lang="scss">
 p {
 	line-height: 24px;
 	color: var(--channel-activities-color);

@@ -3,6 +3,7 @@ import { camelCase } from "@phisyx/flex-capitalization";
 import type { ChannelActivitiesView } from "@phisyx/flex-chat";
 import { computed } from "vue";
 
+import Match from "../match/Match.vue";
 import ChannelActivity from "./ChannelActivity.vue";
 
 // ---- //
@@ -31,6 +32,11 @@ const activityGroupName = computed(() => camelCase(`${props.name}s`));
 		<li data-name="activity-name">
 			<strong class="[ display-b align-t:center ]">
 				{{ activityGroupName }} | {{ group.createdAt }}
+				<Match :maybe="group.updatedAt">
+					<template #some="{ data: updatedAt }">
+						à {{ updatedAt }}
+					</template>
+				</Match>
 			</strong>
 		</li>
 
@@ -67,7 +73,8 @@ ul[data-event^="notice"] {
 			display: initial;
 
 			& > li:first-child,
-			& > li > ul li:not(:last-child) {
+			& > li > ul li:not(:last-child),
+			& > li ul[data-name="activity-previous-messages"]{
 				display: none;
 			}
 		}

@@ -49,7 +49,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 		const maybeRoom = this.store.roomManager().get(user.id);
 		if (maybeRoom.is_none()) return;
 		const room = maybeRoom.unwrap();
-		this.handleClientItselfssage(room, data);
+		this.handleMessage(room, data);
 	}
 
 	handleUser(data: GenericReply<"PRIVMSG">) {
@@ -76,10 +76,10 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 				return room;
 			});
 
-		this.handleClientItselfssage(priv, data);
+		this.handleMessage(priv, data);
 	}
 
-	handleClientItselfssage(room: Room, data: GenericReply<"PRIVMSG">) {
+	handleMessage(room: Room, data: GenericReply<"PRIVMSG">) {
 		const isCurrentClient = this.store.isCurrentClient(data.origin);
 		if (!isCurrentClient && !room.isActive()) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
