@@ -1,22 +1,26 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type {
-	ChannelAccessLevelFlag,
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelRoom,
-} from "@phisyx/flex-chat";
-
 import {
+	type ChannelAccessLevelFlag,
+	type ChannelMember,
+	type ChannelMemberSelected,
+	type ChannelRoom,
 	ChannelSettingsDialog,
 	ChannelTopicLayer,
+	NoticeCustomRoom,
+	type RoomMessage,
 	UserChangeNicknameDialog,
 } from "@phisyx/flex-chat";
+import { formatDate } from "@phisyx/flex-date";
 import { useChatStore, useOverlayerStore, useSettingsStore } from "~/store";
 
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.vue";
 import ChannelRoomKicked from "#/sys/channel_room_kicked/ChannelRoomKicked.vue";
+
+// ---- //
+// Type //
+// ---- //
 
 interface Props {
 	// Le salon actif.
@@ -51,6 +55,59 @@ const currentClientMember = computed(() =>
 const selectedMember = computed(() =>
 	chatStore.getCurrentSelectedChannelMember(props.room),
 );
+
+// Les activités liées au salon courant (room).
+const channelActivities = computed(() => {
+	return {
+		groups: props.room.activities.groups.map(([name, groups]) => {
+			return {
+				name,
+				createdAt: formatDate("d.m.Y - H:i:s", groups.createdAt),
+				activities: groups.activities.map((activity) => {
+					const channel = props.room;
+
+					// biome-ignore lint/suspicious/noExplicitAny: tkt
+					let msg: RoomMessage<any, { text: string }>;
+
+					switch (name) {
+						case "notice":
+							{
+								const room = chatStore.store
+									.roomManager()
+									.get(NoticeCustomRoom.ID)
+									.unwrap_or(channel);
+
+								// biome-ignore lint/style/noNonNullAssertion: tkt
+								msg = room.getMessageFrom<{
+									text: string;
+								}>(activity.messageID)!;
+							}
+							break;
+
+						default:
+							{
+								// biome-ignore lint/style/noNonNullAssertion: tkt
+								msg = props.room.getMessageFrom<{
+									text: string;
+								}>(activity.messageID)!;
+							}
+							break;
+					}
+
+					const member = props.room
+						.getMemberByNickname(activity.nickname)
+						.unwrap();
+
+					return {
+						channel,
+						member,
+						message: msg,
+					};
+				}),
+			};
+		}),
+	};
+});
 
 // Liste de la complétion pour la boite de saisie, il y contient:
 //
@@ -230,6 +287,7 @@ function toggleSelectChannelMember(origin: Origin) {
 
 <template>
 	<ChannelRoomComponent
+		:activities="channelActivities"
 		:completion-list="completionList"
 		:current-nickname="currentClientNickname"
 		:current-client-member="currentClientMember"

@@ -15,6 +15,7 @@ import type { User } from "../user";
 
 import { ChannelAccessControl } from "./access_control";
 import { ChannelAccessLevelFlag } from "./access_level";
+import { ChannelActivities } from "./activity";
 import { ChannelMember } from "./member";
 import { ChannelMembers } from "./member/list";
 import { ChannelTopic } from "./topic";
@@ -50,6 +51,11 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	 * Control d'accès
 	 */
 	accessControl = new ChannelAccessControl();
+
+	/**
+	 * Activités du salon
+	 */
+	activities = new ChannelActivities();
 
 	/**
 	 * Le salon rejoint est en état de sanction.
@@ -125,10 +131,17 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	}
 
 	/**
-	 * Récupère un utilisateur du salon.
+	 * Récupère un utilisateur du salon de son ID.
 	 */
 	getMember(id: UserID): Option<ChannelMember> {
 		return this.members.get(id);
+	}
+
+	/**
+	 * Récupère un utilisateur du salon en fonction de son pseudo.
+	 */
+	getMemberByNickname(nickname: string): Option<ChannelMember> {
+		return this.members.getByNickname(nickname);
 	}
 
 	/**

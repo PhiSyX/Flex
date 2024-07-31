@@ -13,7 +13,7 @@
 				--disabled-color: var(--color-blue-grey500);
 
 				--body-bg: #31363a;
-				--body-bg_alt: ##282c2f;
+				--body-bg_alt: #282c2f;
 
 				--dialog-bg: var(--color-black);
 				--dialog-color: var(--default-text-color);
@@ -63,6 +63,9 @@
 				--tbody-bg-hover: var(--color-blue-grey200);
 
 				--channel-list-filter-input-bg: var(--color-grey900);
+
+				--channel-activities-bg: var(--color-white);
+				--channel-activities-color: var(--default-text-color_alt);
 			}
 		}
 	}

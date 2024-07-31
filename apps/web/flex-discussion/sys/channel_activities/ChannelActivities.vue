@@ -1,0 +1,86 @@
+<script setup lang="ts">
+import type { ChannelActivitiesView, ChannelMember } from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
+import { provide } from "vue";
+
+import ChannelActivityGroup from "./ChannelActivityGroup.vue";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props {
+	activities: ChannelActivitiesView;
+	currentClientMember: Option<ChannelMember>;
+}
+
+// --------- //
+// Composant //
+// --------- //
+
+const props = defineProps<Props>();
+
+// NOTE: Les composants `ChannelActivityGroup` et `ChannelActivity` ne sont
+// utilisés que dans ce composant. Ils ne sont pas utilisés dans un
+// design-system. De ce fait, je peux me permettre d'utiliser cette
+// fonctionnalité. (car d'habitude je me la déconseille) 
+provide("currentClientMember", props.currentClientMember);
+
+const expanded = defineModel<boolean>("expanded", { required: true });
+
+function expandPanelHandler() {
+	expanded.value = true;
+}
+
+function shrinkPanelHandler() {
+	expanded.value = false;
+}
+</script>
+
+<template>
+	<div
+		class="room/channel:activities [ ov:h min-h=6 px=2 pb=1 gap=1 ]"
+		:class="{
+			'pt=1 flex max-h=6 align-jc:end cursor:pointer': !expanded,
+			'pt=2 flex! h:full is-expanded': expanded,
+		}"
+		@click="expandPanelHandler"
+	>
+		<section class="[ flex:full scroll:y scroll:hidden flex! gap=2 ]">
+			<ChannelActivityGroup
+				v-for="group of activities.groups"
+				:group="group"
+				:name="group.name"
+				:key="group.name"
+			/>
+		</section>
+
+		<div
+			class="[ flex:shrink=0 box:shadow ]"
+			:class="{
+				'self.align:center align-t:center w:full cursor:pointer': expanded,
+				'self.align:base': !expanded,
+			}"
+		>
+			<icon-arrow-right v-if="!expanded"
+				variant="chevron"
+				@click.stop="expandPanelHandler"
+			/>
+			<icon-arrow-up v-else
+				variant="chevron"
+				@click.stop="shrinkPanelHandler"
+			/>
+		</div>
+	</div>
+</template>
+
+<style lang="scss" scoped>
+@use "scss:~/flexsheets" as fx;
+
+@include fx.class("room/channel:activities") {
+	border: 2px solid var(--color-red200);
+	background: var(--channel-activities-bg);
+	color: var(--channel-activities-color);
+	border-radius: 2px;
+}
+</style>

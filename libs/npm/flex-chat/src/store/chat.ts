@@ -215,8 +215,6 @@ export interface ChatStoreInterface {
 }
 
 export interface ChatStoreInterfaceExt {
-	overlayer: OverlayerStore;
-
 	/**
 	 * Connexion au serveur de Chat WebSocket.
 	 */
@@ -231,6 +229,8 @@ export interface ChatStoreInterfaceExt {
 	 * Charge tous les modules du Chat.
 	 */
 	loadAllModules(): Promise<void>;
+
+	overlayer(): OverlayerStore;
 }
 
 // -------------- //

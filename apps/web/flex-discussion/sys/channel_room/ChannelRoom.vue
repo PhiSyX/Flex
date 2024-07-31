@@ -5,6 +5,7 @@ import { computed, ref } from "vue";
 
 import type {
 	ChannelAccessLevelFlag,
+	ChannelActivitiesView,
 	ChannelMember,
 	ChannelMemberSelected,
 	ChannelRoom,
@@ -12,6 +13,7 @@ import type {
 
 import { useChannelTopic } from "./ChannelRoom.hooks";
 
+import ChannelActivities from "#/sys/channel_activities/ChannelActivities.vue";
 import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.vue";
 import ChannelUserlistMenu from "#/sys/channel_userlist_menu/ChannelUserlistMenu.vue";
 import Match from "#/sys/match/Match.vue";
@@ -22,6 +24,7 @@ import Room from "#/sys/room/Room.vue";
 // ---- //
 
 export interface Props {
+	activities?: ChannelActivitiesView;
 	completionList?: Array<string>;
 	currentNickname: string;
 	currentClientMember: Option<ChannelMember>;
@@ -94,6 +97,9 @@ const toggleNicklistTitleAttr = computed(() => {
 	return `${state} la liste des membres`;
 });
 
+// Étendre la page d'activité pour afficher toutes les activités liées au salon.
+const expandActivities = ref(false);
+
 // -------- //
 // Handlers //
 // -------- //
@@ -150,7 +156,7 @@ const unsetAccessLevel = (
 				/>
 				<output
 					v-else-if="room.topic.get().length > 0"
-					class="[ d-ib size:full p=1 select:none cursor:default ]"
+					class="[ display-ib size:full p=1 select:none cursor:default ]"
 					:class="{
 						'cursor:pointer': currentClientMemberCanEditTopic,
 					}"
@@ -198,6 +204,13 @@ const unsetAccessLevel = (
 					personnelles (nom, adresse, n° de téléphone...), ni tes
 					identifiants de connexion.
 				</Alert>
+
+				<ChannelActivities
+					v-if="activities?.groups.length"
+					v-model:expanded="expandActivities"
+					:activities="activities"
+					:current-client-member="currentClientMember"
+				/>
 			</template>
 
 			<template #history>
@@ -255,6 +268,12 @@ const unsetAccessLevel = (
 		order: var(--room-info-position, 1);
 		~ div form {
 			padding-right: 0;
+		}
+	}
+
+	@include fx.class("room/channel:activities") {
+		&.is-expanded ~ .room\/main {
+			display: none;
 		}
 	}
 }

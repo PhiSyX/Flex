@@ -58,6 +58,10 @@ class Option<T> {
 		private value?: unsafe<T>,
 	) {}
 
+	as<U>(): Option<U> {
+		return this as unknown as Option<U>;
+	}
+
 	expect(msg: string): safe<T> {
 		if (this.is_some()) {
 			return this.value as safe<T>;

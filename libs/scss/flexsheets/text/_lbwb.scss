@@ -1,0 +1,11 @@
+@use "../mixins/class" as class;
+
+@mixin use-text-line-breaking-word-boundaries($options...) {
+	$classes: (
+		"hyphens": (
+			hyphens: auto,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

@@ -16,6 +16,7 @@ export * from "./src/asserts/user";
 
 export * from "./src/channel/access_control";
 export * from "./src/channel/access_level";
+export * from "./src/channel/activity";
 export * from "./src/channel/member";
 export * from "./src/channel/member/filtered";
 export * from "./src/channel/member/list";

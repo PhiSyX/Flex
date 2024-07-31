@@ -120,13 +120,28 @@ export class ChannelMembers {
 	}
 
 	/**
-	 * Récupère le pseudo du salon en fonction d'un pseudonyme donné, s'il
-	 * existe.
+	 * Récupère le pseudo du salon en fonction d'un ID donné, s'il existe.
 	 */
 	get(id: UserID): Option<ChannelMember> {
 		for (const map of Object.values(this.members)) {
 			const member = map.get(id);
 			if (member) return Some(member);
+		}
+		return None();
+	}
+
+	/**
+	 * Récupère le pseudo du salon en fonction d'un pseudonyme donné, s'il
+	 * existe.
+	 */
+	getByNickname(nickname: string): Option<ChannelMember> {
+		for (const map of Object.values(this.members)) {
+			const members = new Set(map.values());
+			for (const member of members) {
+				if (member.eq(nickname)) {
+					return Some(member);
+				}
+			}
 		}
 		return None();
 	}

@@ -42,6 +42,7 @@
 	"align-i:base",
 	"align-i:center",
 	"align-jc:center",
+	"align-jc:end",
 	"align-ji:center",
 	"align-jc:stretch",
 	"align-jc:end",
@@ -66,6 +67,7 @@
 	"flex",
 	"flex/center:full",
 	"h:full",
+	"hyphens",
 	"i-flex!",
 	"i-flex",
 	"input:reset",
@@ -83,6 +85,8 @@
 	"pos-r",
 	"pos-s",
 	"resize:x",
+	"self.align:base",
+	"self.align:center",
 	"scroll:marquee",
 	"scroll:x",
 	"scroll:y",
@@ -182,7 +186,14 @@
 	(
 		className: padding-top,
 		values: (
+			1,
 			2,
+		),
+	),
+	(
+		className: padding-bottom,
+		values: (
+			1,
 		),
 	),
 	(
@@ -248,6 +259,8 @@
 	(
 		className: max-height,
 		values: (
+			6,
+			7,
 			8,
 			12,
 			35,

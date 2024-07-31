@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelRoom } from "../channel/room";
+import { ChannelMember } from "../channel/member";
+import { ChannelRoom } from "../channel/room";
 import type { PrivateRoom } from "../private/room";
+import type { Room } from "../room";
 
 // -------- //
 // Fonction //
@@ -44,8 +46,22 @@ export function assertPrivateRoom(room: {
 /**
  * Certifie que la chambre passée en argument est un salon.
  */
-export function isChannel(room?: string): room is ChannelID {
-	return room?.startsWith("#") ?? false;
+export function isChannel(room: unknown): room is ChannelID {
+	return (typeof room === "string" && room.startsWith("#")) ?? false;
+}
+
+/**
+ * Certifie que la chambre passée en argument est un salon.
+ */
+export function isChannelRoom(room?: Room): room is ChannelRoom {
+	return room instanceof ChannelRoom;
+}
+
+/**
+ * Certifie que la valeur donnée s'agit d'une instance d'un membre de salon.
+ */
+export function isChannelMember(member: unknown): member is ChannelMember {
+	return member instanceof ChannelMember;
 }
 
 /**
