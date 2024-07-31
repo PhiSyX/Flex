@@ -151,7 +151,7 @@ export class Room<R = RoomID, Type extends string = string> {
 			| `event:${Uppercase<R>}`,
 		payload: GenericReply<Uppercase<R>> & { isCurrentClient: boolean },
 		messageText?: string,
-	) {
+	): RoomMessage {
 		const msg = new RoomMessage()
 			.withData(payload)
 			.withID(payload.tags.msgid)
@@ -162,6 +162,7 @@ export class Room<R = RoomID, Type extends string = string> {
 			.withType(evtName)
 			.withIsCurrentClient(payload.isCurrentClient);
 		this.addMessage(msg);
+		return msg;
 	}
 
 	/**
@@ -232,6 +233,17 @@ export class Room<R = RoomID, Type extends string = string> {
 	 */
 	id(): R {
 		return this._id;
+	}
+
+	/**
+	 * Retourne un message parmi la liste des messages en fonction d'un ID.
+	 */
+	getMessageFrom<D extends object>(
+		id: RoomMessage<R, D>["id"],
+	): RoomMessage<R, D> | undefined {
+		return this.messages.find((msg) => msg.id === id) as
+			| RoomMessage<R, D>
+			| undefined;
 	}
 
 	/**

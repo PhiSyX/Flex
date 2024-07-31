@@ -54,7 +54,7 @@ onActivated(() => {
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<UiButton
 				variant="primary"
-				class="btn-change-nick [ max-w=12 d-i align-jc:stretch my=1 px=1 py=1 border/radius=1 ... ]"
+				class="btn-change-nick [ max-w=12 display-i align-jc:stretch my=1 px=1 py=1 border/radius=1 ... ]"
 				:title="currentClientNickname"
 				@click="changeNickHandler"
 			>

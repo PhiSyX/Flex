@@ -16,10 +16,14 @@ declare type UUID = Opaque<
 	`${string}-${string}-${string}-${string}-${string}`,
 	"UUID"
 >;
-declare type ChannelID = Opaque<string, "ChannelID">;
 declare type UserID = Opaque<
 	`${string}-${string}-${string}-${string}-${string}`,
 	"UserID"
+>;
+declare type ChannelID = Opaque<`#${string}`, "ChannelID">;
+declare type MemberID = Opaque<
+	`${string}-${string}-${string}-${string}-${string}`,
+	"MemberID"
 >;
 declare type CustomRoomID = Opaque<`@${string}`, "CustomRoomID">;
 declare type RoomID = ChannelID | UserID | CustomRoomID;

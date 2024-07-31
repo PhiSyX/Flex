@@ -38,14 +38,14 @@ import { useOverlayerStore } from "./overlayer";
 // -------------- //
 
 export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
-	public overlayer = useOverlayerStore() as unknown as OverlayerStore;
+	private _overlayer = useOverlayerStore() as unknown as OverlayerStore;
 
 	static default(): ChatStoreVue {
 		return reactive(new ChatStoreVue()) as ChatStoreVue;
 	}
 
 	// ------- //
-	// Méthode //
+	// Méthode // -> ChatStoreInterfaceExt
 	// ------- //
 
 	/**
@@ -89,7 +89,7 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 	 * Déconnexion du client liée à un événement d'erreur.
 	 */
 	disconnectError(comment: GenericReply<"ERROR"> | string) {
-		this.overlayer.create({
+		this._overlayer.create({
 			id: "error-layer",
 			centered: true,
 			onClose: () => {
@@ -117,7 +117,7 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 			loaded: number;
 		};
 
-		this.overlayer.create<LayerData>({
+		this._overlayer.create<LayerData>({
 			id: "load-all-modules",
 			centered: true,
 			destroyable: "manual",
@@ -143,7 +143,7 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 
 				loaded += 1;
 
-				this.overlayer.updateData<LayerData>("load-all-modules", {
+				this._overlayer.updateData<LayerData>("load-all-modules", {
 					loaded,
 					totalLoaded,
 					moduleName: handlerName,
@@ -180,7 +180,7 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 
 				loaded += 1;
 
-				this.overlayer.updateData<LayerData>("load-all-modules", {
+				this._overlayer.updateData<LayerData>("load-all-modules", {
 					loaded,
 					totalLoaded,
 					moduleName,
@@ -190,7 +190,11 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 
 		this._handlerManager.free();
 		this._moduleManager.free();
-		this.overlayer.destroy("load-all-modules");
+		this._overlayer.destroy("load-all-modules");
+	}
+
+	overlayer(): OverlayerStore {
+		return this._overlayer;
 	}
 }
 

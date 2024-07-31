@@ -1,5 +1,7 @@
 @use "./alignment";
+@use "./lbwb";
 
 @mixin use-text($options...) {
 	@include alignment.use-text-alignment($options...);
+	@include lbwb.use-text-line-breaking-word-boundaries($options...);
 }

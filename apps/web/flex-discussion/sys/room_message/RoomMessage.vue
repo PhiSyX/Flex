@@ -3,7 +3,12 @@ import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
 import { None, Some } from "@phisyx/flex-safety";
 import { computed, inject } from "vue";
 
-import { ChannelMember, PrivateParticipant, User } from "@phisyx/flex-chat";
+import {
+	ChannelMember,
+	PrivateParticipant,
+	User,
+	isChannel,
+} from "@phisyx/flex-chat";
 
 import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.vue";
 import Match from "#/sys/match/Match.vue";
@@ -20,7 +25,7 @@ interface Props {
 	message: string;
 	isCurrentClient: boolean;
 	nickname: string;
-	target: string;
+	target: unknown;
 	time: {
 		datetime: string;
 		formattedTime: string;
@@ -45,22 +50,22 @@ const emit = defineEmits<Emits>();
 
 const eventsComponents = inject<Array<string>>("eventsComponents");
 
-const isChannel = computed(
-	() => props.nickname !== "*" && props.target.startsWith("#"),
+const _isChannel = computed(
+	() => props.nickname !== "*" && isChannel(props.target),
 );
 
-const isPrivate = computed(() => props.nickname !== "*" && !isChannel.value);
+const _isPrivate = computed(() => props.nickname !== "*" && !_isChannel.value);
 
 const maybeChannelMember = computed(() => {
 	const member = new ChannelMember(new User(props.data.origin));
 	if ("access_level" in props.data.origin) {
 		member.withAccessLevel(props.data.origin.access_level);
 	}
-	return isChannel.value ? Some(member) : None();
+	return _isChannel.value ? Some(member) : None();
 });
 
 const maybePrivateNick = computed(() => {
-	return isPrivate.value
+	return _isPrivate.value
 		? Some(
 				new PrivateParticipant(
 					new User(props.data.origin),
@@ -105,7 +110,7 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 		:data-external="isExternalMessage.is_some()"
 		:data-type="type"
 		:data-myself="isCurrentClient"
-		class="room/echo [ d-i max-w:max ]"
+		class="room/echo [ display-i max-w:max ]"
 		:title="archived ? `Il s'agit d'un message archivé.` : undefined"
 		@dblclick.stop
 	>

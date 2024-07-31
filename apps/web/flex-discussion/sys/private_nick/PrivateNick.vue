@@ -30,13 +30,13 @@ defineProps<Props>();
 @use "scss:~/flexsheets" as fx;
 
 bdo {
-	color: var(--room-nick-color);
+	color: var(--room-target-color);
 	word-break: break-all;
 	hyphens: manual;
 	cursor: pointer;
 }
 
 [data-myself="true"] bdo {
-	color: var(--room-nick-myself-color, var(--room-nick-color));
+	color: var(--room-target-myself-color, var(--room-target-color));
 }
 </style>

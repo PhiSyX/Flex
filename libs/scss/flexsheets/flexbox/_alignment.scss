@@ -32,6 +32,12 @@
 		"align-jc:se": (
 			justify-content: space-evenly,
 		),
+		"self.align:base": (
+			align-self: baseline,
+		),
+		"self.align:center": (
+			align-self: center,
+		),
 		"flex/center:full": (
 			place-content: center,
 			place-items: center,

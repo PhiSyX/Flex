@@ -15,8 +15,8 @@ import { formatDate } from "@phisyx/flex-date";
 // ---- //
 
 // biome-ignore lint/suspicious/noExplicitAny: à corriger.
-type MessageProperties<T = any> = {
-	data: object & { origin: Origin };
+type MessageProperties<T = any, D = object> = {
+	data: D & { origin: Origin };
 	id: string;
 	archived: boolean;
 	message: string;
@@ -46,10 +46,9 @@ export const MESSAGES_LIMIT: number = 250;
 // Implémentation //
 // -------------- //
 
-// biome-ignore lint/suspicious/noExplicitAny: à corriger.
-export class RoomMessage<T = any> {
+export class RoomMessage<T = unknown, D = object> {
 	archived = false;
-	data!: MessageProperties["data"];
+	data!: MessageProperties<T, D>["data"];
 	id!: MessageProperties["id"];
 	message!: MessageProperties["message"];
 	isCurrentClient: MessageProperties["isCurrentClient"] = false;
@@ -109,5 +108,9 @@ export class RoomMessage<T = any> {
 
 		this.time = time;
 		return this;
+	}
+
+	toString() {
+		return this.message;
 	}
 }

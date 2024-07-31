@@ -211,7 +211,14 @@ export class User {
 	/**
 	 * Est-ce que l'utilisateur donné correspond à celui de l'instance.
 	 */
-	eq(other: this): boolean {
+	eq(other: this | string): boolean {
+		if (typeof other === "string") {
+			return (
+				other === this.id ||
+				other === this.nickname ||
+				other === this.ident
+			);
+		}
 		return (
 			other === this ||
 			(other.id === this.id &&
