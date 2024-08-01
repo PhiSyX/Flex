@@ -20,10 +20,10 @@ import type { Room } from "../room";
 /**
  * Certifie que l'argument donné est une chambre de type [ChannelRoom].
  */
-export function assertChannelRoom(room: {
+export function assertChannelRoom(room?: {
 	type: string;
 }): asserts room is ChannelRoom {
-	if (room.type !== "channel") {
+	if (room?.type !== "channel") {
 		throw new Error(
 			`« ${room} » n'est pas une chambre de type « channel »`,
 		);

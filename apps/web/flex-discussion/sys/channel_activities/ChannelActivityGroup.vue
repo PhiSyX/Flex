@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { camelCase } from "@phisyx/flex-capitalization";
-import type { ChannelActivitiesView } from "@phisyx/flex-chat";
-import { computed } from "vue";
+import type {
+	ChannelActivitiesView,
+	ChannelMember,
+	ChannelRoom,
+} from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
+import { computed, inject } from "vue";
 
+import ChannelName from "../channel_name/ChannelName.vue";
 import Match from "../match/Match.vue";
 import ChannelActivity from "./ChannelActivity.vue";
 
@@ -21,6 +27,12 @@ interface Props {
 
 const props = defineProps<Props>();
 
+// biome-ignore lint/style/noNonNullAssertion: retourne un type Option (None dans le cas de nil).
+const currentClientMember = inject<Option<ChannelMember>>(
+	"currentClientMember",
+)!;
+const room = inject<ChannelRoom>("room");
+
 const activityGroupName = computed(() => camelCase(`${props.name}s`));
 </script>
 
@@ -31,7 +43,23 @@ const activityGroupName = computed(() => camelCase(`${props.name}s`));
 	>
 		<li data-name="activity-name">
 			<strong class="[ display-b align-t:center ]">
-				{{ activityGroupName }} | {{ group.createdAt }}
+				{{ activityGroupName }}
+
+				<Match :maybe="currentClientMember">
+					<template #some="{ data: member }">
+						sur
+						<ChannelName 
+							v-if="room"
+							:name="room.name" 
+							:classes="member.accessLevel.highest.className"
+							:symbol="member.accessLevel.highest.symbol"
+						/>
+					</template>
+				</Match>
+
+				|
+
+				{{ group.createdAt }}
 				<Match :maybe="group.updatedAt">
 					<template #some="{ data: updatedAt }">
 						à {{ updatedAt }}
@@ -74,7 +102,7 @@ ul[data-event^="notice"] {
 
 			& > li:first-child,
 			& > li > ul li:not(:last-child),
-			& > li ul[data-name="activity-previous-messages"]{
+			& > li ul[data-name="activity-previous-messages"] {
 				display: none;
 			}
 		}

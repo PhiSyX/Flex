@@ -210,6 +210,7 @@ const unsetAccessLevel = (
 					v-model:expanded="expandActivities"
 					:activities="activities"
 					:current-client-member="currentClientMember"
+					:room="room"
 				/>
 			</template>
 

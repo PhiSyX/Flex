@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import type { ChannelActivity, ChannelMember } from "@phisyx/flex-chat";
-import type { Option } from "@phisyx/flex-safety";
-import { inject } from "vue";
+import { type ChannelActivity, isChannelMember } from "@phisyx/flex-chat";
 
-import ChannelName from "../channel_name/ChannelName.vue";
 import ChannelNick from "../channel_nick/ChannelNick.vue";
 import Match from "../match/Match.vue";
 
@@ -20,14 +17,6 @@ interface Props {
 // --------- //
 
 defineProps<Props>();
-
-// NOTE: nous n'utilisons jamais ce composant en tant qu'entité seul, il n'est
-// pas non plus utilisé dans un design system.
-//
-// biome-ignore lint/style/noNonNullAssertion: lire la NOTE ci-haut.
-const currentClientMember = inject<Option<ChannelMember>>(
-	"currentClientMember",
-)!;
 </script>
 
 <template>
@@ -36,9 +25,10 @@ const currentClientMember = inject<Option<ChannelMember>>(
 		class="[ list:reset pt=2 ]"
 		data-name="activity-previous-messages"
 		style="opacity: 0.5"
+		v-once
 	>
 		<li
-			v-for="previousMsg of activity.previousMessages"
+			v-for="previousMessage of activity.previousMessages"
 			class="activities@activity [ flex gap=1 ]"
 		>
 			<div class="[ flex:shrink=0 ]" style="visibility: hidden">
@@ -46,32 +36,25 @@ const currentClientMember = inject<Option<ChannelMember>>(
 			</div>
 
 			<div class="[ flex:full ]">
-				<ChannelNick
-					:nickname="previousMsg.member.nickname"
-					:classes="previousMsg.member.className"
-					:symbol="previousMsg.member.accessLevel.highest.symbol"
-					tag="bdo"
-				/>
-
-				<span> sur </span>
-
-				<Match :maybe="currentClientMember">
-					<template #some="{ data }">
-						<ChannelName
-							:name="previousMsg.channel.name"
-							:classes="data.accessLevel.highest.className"
-							:symbol="data.accessLevel.highest.symbol"
+				<Match :maybe="previousMessage.member">
+					<template #some="{ data: member }">
+						<ChannelNick
+							:nickname="member.nickname"
+							:classes="member.className"
+							:symbol="isChannelMember(member) ? member.accessLevel.highest.symbol : undefined"
 						/>
 					</template>
 					<template #none>
-						<ChannelName :name="previousMsg.channel.name" />
+						<ChannelNick
+							:nickname="previousMessage.message.nickname"
+						/>
 					</template>
 				</Match>
 
 				<span>: </span>
 
 				<p class="[ display-i hyphens ]">
-					{{ previousMsg.message.data.text }}
+					{{ previousMessage.message.data.text }}
 				</p>
 			</div>
 		</li>
@@ -83,25 +66,16 @@ const currentClientMember = inject<Option<ChannelMember>>(
 		</div>
 
 		<div class="[ flex:full ]">
-			<ChannelNick
-				:nickname="activity.member.nickname"
-				:classes="activity.member.className"
-				:symbol="activity.member.accessLevel.highest.symbol"
-				tag="bdo"
-			/>
-
-			<span> sur </span>
-
-			<Match :maybe="currentClientMember">
-				<template #some="{ data }">
-					<ChannelName
-						:name="activity.channel.name"
-						:classes="data.accessLevel.highest.className"
-						:symbol="data.accessLevel.highest.symbol"
+			<Match :maybe="activity.member">
+				<template #some="{ data: member }">
+					<ChannelNick
+						:nickname="member.nickname"
+						:classes="member.className"
+						:symbol="isChannelMember(member) ? member.accessLevel.highest.symbol : undefined"
 					/>
 				</template>
 				<template #none>
-					<ChannelName :name="activity.channel.name" />
+					<ChannelNick :nickname="activity.message.nickname" />
 				</template>
 			</Match>
 

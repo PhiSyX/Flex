@@ -242,10 +242,10 @@ export class Room<R = RoomID, Type extends string = string> {
 	 */
 	getMessageFrom<D extends object>(
 		id: RoomMessage<R, D>["id"],
-	): RoomMessage<R, D> | undefined {
-		return this.messages.find((msg) => msg.id === id) as
-			| RoomMessage<R, D>
-			| undefined;
+	): Option<RoomMessage<R, D>> {
+		return Option.from(this.messages.find((msg) => msg.id === id)).as<
+			RoomMessage<R, D>
+		>();
 	}
 
 	/**
