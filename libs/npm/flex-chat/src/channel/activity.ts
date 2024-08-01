@@ -10,6 +10,7 @@
 
 import { None, type Option } from "@phisyx/flex-safety";
 import type { RoomMessage } from "../room/message";
+import type { User } from "../user";
 import type { ChannelMember } from "./member";
 import type { ChannelRoom } from "./room";
 
@@ -25,7 +26,7 @@ export interface ChannelActivitiesView {
 
 export interface ChannelActivity {
 	channel: ChannelRoom;
-	member: ChannelMember;
+	member: Option<ChannelMember | User>;
 	message: RoomMessage<ChannelID, { text: string }>;
 	previousMessages: Array<ChannelActivity>;
 }
@@ -64,14 +65,16 @@ export type TupleActivitiesRef = [
 export class ChannelActivities {
 	public groups: Array<TupleActivitiesRef> = [];
 
-	append(
+	/**
+	 * Ajoute une nouvelle activité dans un groupe d'activités en fonction du
+	 * dernier nom de groupe. Dans le cas où le dernier nom de groupe en place
+	 * correspond à l'argument {@param group} donné, ce dernier groupe sera mis
+	 * à jour, sinon un nouveau groupe est ajouté à la liste des groupes
+	 * d'activités.
+	 */
+	upsert(
 		group: ChannelActivityGroupName,
-		payload: {
-			channelID: ChannelID;
-			previousMessageIDs?: Array<RoomMessage["id"]>;
-			nickname: string;
-			messageID: RoomMessage["id"];
-		},
+		payload: Optional<ChannelActivityRef, "previousMessageIDs">,
 	) {
 		const newActivity: ChannelActivityRef = {
 			channelID: payload.channelID,
@@ -80,21 +83,23 @@ export class ChannelActivities {
 			previousMessageIDs: payload.previousMessageIDs || [],
 		};
 
+		const newDate = new Date();
+
 		let [lastGroup, lastChannelActivities] = this.groups.at(-1) || [];
+
 		if (lastGroup === group && lastChannelActivities) {
-			const newDate = new Date();
 			lastChannelActivities.updatedAt.replace(newDate);
 			lastChannelActivities.activities.push(newActivity);
-		} else {
-			const newDate = new Date();
-			this.groups.push([
-				group,
-				{
-					createdAt: newDate,
-					updatedAt: None(),
-					activities: [newActivity],
-				},
-			]);
+			return;
 		}
+
+		this.groups.push([
+			group,
+			{
+				createdAt: newDate,
+				updatedAt: None(),
+				activities: [newActivity],
+			},
+		]);
 	}
 }

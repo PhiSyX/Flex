@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { ChannelActivitiesView, ChannelMember } from "@phisyx/flex-chat";
+import type {
+	ChannelActivitiesView,
+	ChannelMember,
+	ChannelRoom,
+} from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 import { provide } from "vue";
 
@@ -12,6 +16,7 @@ import ChannelActivityGroup from "./ChannelActivityGroup.vue";
 interface Props {
 	activities: ChannelActivitiesView;
 	currentClientMember: Option<ChannelMember>;
+	room: ChannelRoom;
 }
 
 // --------- //
@@ -23,8 +28,9 @@ const props = defineProps<Props>();
 // NOTE: Les composants `ChannelActivityGroup` et `ChannelActivity` ne sont
 // utilisés que dans ce composant. Ils ne sont pas utilisés dans un
 // design-system. De ce fait, je peux me permettre d'utiliser cette
-// fonctionnalité. (car d'habitude je me la déconseille) 
+// fonctionnalité. (car d'habitude je me la déconseille)
 provide("currentClientMember", props.currentClientMember);
+provide("room", props.room);
 
 const expanded = defineModel<boolean>("expanded", { required: true });
 

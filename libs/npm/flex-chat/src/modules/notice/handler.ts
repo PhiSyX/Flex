@@ -69,7 +69,7 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE"> {
 		payload: GenericReply<"NOTICE"> & { isCurrentClient: boolean },
 		message: RoomMessage,
 	) {
-		channel.activities.append("notice", {
+		channel.activities.upsert("notice", {
 			channelID: channel.id(),
 			nickname: payload.origin.nickname,
 			messageID: message.id,

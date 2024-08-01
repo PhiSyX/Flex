@@ -80,7 +80,7 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 		);
 
 		if (hasMention && !isCurrentClient) {
-			room.activities.append("mention", {
+			room.activities.upsert("mention", {
 				channelID: room.id(),
 				messageID: msg.id,
 				nickname: msg.nickname,

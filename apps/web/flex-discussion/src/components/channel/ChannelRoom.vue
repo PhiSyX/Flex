@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import {
 	type ChannelAccessLevelFlag,
 	type ChannelActivity,
+	type ChannelActivityRef,
 	type ChannelMember,
 	type ChannelMemberSelected,
 	type ChannelRoom,
 	ChannelSettingsDialog,
 	ChannelTopicLayer,
 	NoticeCustomRoom,
+	type Room,
 	type RoomMessage,
+	type User,
 	UserChangeNicknameDialog,
 } from "@phisyx/flex-chat";
 import { formatDate } from "@phisyx/flex-date";
+import type { Option } from "@phisyx/flex-safety";
+import { computed } from "vue";
+
 import { useChatStore, useOverlayerStore, useSettingsStore } from "~/store";
 
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.vue";
@@ -57,93 +61,73 @@ const selectedMember = computed(() =>
 	chatStore.getCurrentSelectedChannelMember(props.room),
 );
 
-// TODO: à corriger
-//
 // Les activités liées au salon courant (room).
 const channelActivities = computed(() => {
+	function makeActivity(
+		room: Room,
+		activity: Optional<ChannelActivityRef, "channelID">,
+	): ChannelActivity {
+		const member = props.room
+			.getMemberByNickname(activity.nickname)
+			.as<ChannelMember | User>()
+			.or_else(() => {
+				return chatStore.store
+					.userManager()
+					.findByNickname(activity.nickname);
+			});
+
+		// @ts-expect-error : type à corriger.
+		const message: Option<RoomMessage<ChannelID, { text: string }>> =
+			room.getMessageFrom<{ text: string }>(activity.messageID);
+
+		const previousMessages = activity.previousMessageIDs.map((msgid) => {
+			const message = room.getMessageFrom(msgid).unwrap();
+			return makeActivity(room, {
+				messageID: msgid,
+				nickname: message.nickname,
+				previousMessageIDs: [],
+			});
+		});
+
+		return {
+			channel: props.room,
+			member,
+			message: message.unwrap(),
+			previousMessages: previousMessages,
+		};
+	}
+
 	return {
 		groups: props.room.activities.groups.map(([name, groups]) => {
-			return {
-				name,
-				createdAt: formatDate("d.m.Y - H:i:s", groups.createdAt),
-				updatedAt: groups.updatedAt.map((date) =>
-					formatDate("H:i:s", date),
-				),
-				activities: groups.activities.map((activity) => {
-					const channel = props.room;
+			const createdAt = formatDate("d.m.Y - H:i:s", groups.createdAt);
 
-					let previousMsgs: Array<ChannelActivity> = [];
+			const updatedAt = groups.updatedAt.map((date) =>
+				formatDate("H:i:s", date),
+			);
 
-					// biome-ignore lint/suspicious/noExplicitAny: Lire la TODO ci-haut
-					let msg: RoomMessage<any, { text: string }>;
-
-					switch (name) {
-						case "notice":
-							{
-								const room = chatStore.store
-									.roomManager()
-									.get(NoticeCustomRoom.ID)
-									.unwrap_or(channel);
-
-								// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
-								msg = room.getMessageFrom<{
-									text: string;
-								}>(activity.messageID)!;
-							}
-							break;
-
-						case "mention":
-							{
-								const room = channel;
-
-								previousMsgs = activity.previousMessageIDs.map(
-									(msgid) => {
-										// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
-										let msg = room.getMessageFrom<{
-											text: string;
-										}>(msgid)!;
-
-										const member = room
-											.getMemberByNickname(msg.nickname)
-											.unwrap();
-
-										return {
-											channel: room,
-											member: member,
-											message: msg,
-											previousMessages: [],
-										};
-									},
-								);
-
-								// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
-								msg = room.getMessageFrom<{
-									text: string;
-								}>(activity.messageID)!;
-							}
-							break;
-
-						default:
-							{
-								// biome-ignore lint/style/noNonNullAssertion: Lire la TODO ci-haut
-								msg = props.room.getMessageFrom<{
-									text: string;
-								}>(activity.messageID)!;
-							}
-							break;
+			const activities = groups.activities.map((activity) => {
+				switch (name) {
+					case "notice": {
+						return makeActivity(
+							chatStore.store
+								.roomManager()
+								.get(NoticeCustomRoom.ID)
+								.unwrap_or(props.room),
+							activity,
+						);
 					}
 
-					const member = props.room
-						.getMemberByNickname(activity.nickname)
-						.unwrap();
+					default: {
+						return makeActivity(props.room, activity);
+					}
+				}
+			});
 
-					return {
-						channel,
-						member,
-						message: msg,
-						previousMessages: previousMsgs,
-					};
-				}),
+			return {
+				name,
+				createdAt,
+				updatedAt,
+				activities,
 			};
 		}),
 	};
