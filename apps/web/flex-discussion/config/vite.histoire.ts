@@ -10,20 +10,25 @@
 
 import * as path from "node:path";
 
-import { defineConfig } from "vite";
+import { defineConfig as define_config } from "vite";
 
 import vue from "@vitejs/plugin-vue";
 
-function resolveFromFlex(...paths: Array<string>) {
+/**
+ * Résout les chemins à partir de la racine du projet.
+ */
+function resolve_paths_from_flex(...paths: Array<string>) {
 	return path.resolve("..", "..", "..", ...paths);
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default define_config({
 	plugins: [vue()],
+
 	build: {
 		outDir: path.resolve("dist"),
 	},
+
 	resolve: {
 		alias: [
 			// Application
@@ -38,12 +43,12 @@ export default defineConfig({
 			// Assets
 			{
 				find: /^assets:~/,
-				replacement: resolveFromFlex("assets"),
+				replacement: resolve_paths_from_flex("assets"),
 			},
 			// SCSS Libs
 			{
 				find: /^scss:~/,
-				replacement: resolveFromFlex("libs", "scss"),
+				replacement: resolve_paths_from_flex("libs", "scss"),
 			},
 		],
 	},

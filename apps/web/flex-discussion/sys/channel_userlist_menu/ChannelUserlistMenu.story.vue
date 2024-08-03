@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChannelMember, ChannelMemberSelected, User } from "@phisyx/flex-chat";
 
-import ChannelUserlistMenu from "./ChannelUserlistMenu.vue";
+import ChannelUserlistMenu from "./ChannelUserlistMenu.template.vue";
 
 const origin: User = new User({
 	id: "a-b-c-d-e" as UserID,

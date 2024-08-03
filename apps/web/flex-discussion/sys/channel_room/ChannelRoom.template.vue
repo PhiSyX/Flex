@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import type { Option } from "@phisyx/flex-safety";
-import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
-import { computed, ref } from "vue";
-
 import type {
 	ChannelAccessLevelFlag,
 	ChannelActivitiesView,
@@ -10,20 +6,26 @@ import type {
 	ChannelMemberSelected,
 	ChannelRoom,
 } from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
+
+import { computed, ref } from "vue";
+
+import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
 import { useChannelTopic } from "./ChannelRoom.hooks";
 
-import ChannelActivities from "#/sys/channel_activities/ChannelActivities.vue";
-import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.vue";
-import ChannelUserlistMenu from "#/sys/channel_userlist_menu/ChannelUserlistMenu.vue";
+import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
+import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue";
+import ChannelUserlistMenu from "#/sys/channel_userlist_menu/ChannelUserlistMenu.template.vue";
 import Match from "#/sys/match/Match.vue";
-import Room from "#/sys/room/Room.vue";
+import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface Props {
+export interface Props 
+{
 	activities?: ChannelActivitiesView;
 	completionList?: Array<string>;
 	currentNickname: string;
@@ -33,40 +35,41 @@ export interface Props {
 	selectedMember: Option<ChannelMemberSelected>;
 }
 
-export interface Emits {
-	(evtName: "ban-member", member: ChannelMember): void;
-	(evtName: "ban-nick", member: ChannelMember): void;
-	(evtName: "change-nickname", event: MouseEvent): void;
-	(evtName: "close"): void;
+export interface Emits 
+{
+	(event_name: "ban-member", member: ChannelMember): void;
+	(event_name: "ban-nick", member: ChannelMember): void;
+	(event_name: "change-nickname", event: MouseEvent): void;
+	(event_name: "close"): void;
 	(
-		evtName: "create-topic-layer",
+		event_name: "create-topic-layer",
 		payload: {
 			event: Event;
 			linkedElement: HTMLInputElement | undefined;
 			mode: boolean;
 		},
 	): void;
-	(evtName: "ignore-user", origin: Origin): void;
-	(evtName: "kick-member", member: ChannelMember): void;
-	(evtName: "open-channel-settings", event: Event): void;
-	(evtName: "open-private", origin: Origin): void;
-	(evtName: "open-room", roomName: RoomID): void;
-	(evtName: "select-member", origin: Origin): void;
-	(evtName: "send-message", message: string): void;
+	(event_name: "ignore-user", origin: Origin): void;
+	(event_name: "kick-member", member: ChannelMember): void;
+	(event_name: "open-channel-settings", event: Event): void;
+	(event_name: "open-private", origin: Origin): void;
+	(event_name: "open-room", roomName: RoomID): void;
+	(event_name: "select-member", origin: Origin): void;
+	(event_name: "send-message", message: string): void;
 	(
-		evtName: "set-access-level",
+		event_name: "set-access-level",
 		member: ChannelMember,
 		accessLevel: ChannelAccessLevelFlag,
 	): void;
-	(evtName: "unban-member", member: ChannelMemberSelected): void;
-	(evtName: "unban-nick", member: ChannelMemberSelected): void;
-	(evtName: "unignore-user", origin: Origin): void;
+	(event_name: "unban-member", member: ChannelMemberSelected): void;
+	(event_name: "unban-nick", member: ChannelMemberSelected): void;
+	(event_name: "unignore-user", origin: Origin): void;
 	(
-		evtName: "unset-access-level",
+		event_name: "unset-access-level",
 		member: ChannelMember,
 		accessLevel: ChannelAccessLevelFlag,
 	): void;
-	(evtName: "update-topic", topic: string): void;
+	(event_name: "update-topic", topic: string): void;
 }
 
 // --------- //
@@ -76,7 +79,7 @@ export interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const {
+let {
 	$topic,
 	currentClientMemberCanEditTopic,
 	enableTopicEditModeHandler,
@@ -85,63 +88,55 @@ const {
 	topicInput,
 } = useChannelTopic(props, emit);
 
-const displayUserlist = ref(props.userlistDisplayedByDefault);
+let display_userlist = ref(props.userlistDisplayedByDefault);
 
 // La boite de saisie est désactivé quand le membre du salon actuellement
 // connecté au client est sanctionné d'un KICK.
-const isDisabledInput = computed(() => props.room.kicked);
+let is_disabled_input = computed(() => props.room.kicked);
 
 // Attribut title: afficher/cacher liste des pseudo
-const toggleNicklistTitleAttr = computed(() => {
-	let state = displayUserlist.value ? "Cacher" : "Afficher";
+let toggle_nicklist_title_attribute = computed(() => {
+	let state = display_userlist.value ? "Cacher" : "Afficher";
 	return `${state} la liste des membres`;
 });
 
 // Étendre la page d'activité pour afficher toutes les activités liées au salon.
-const expandActivities = ref(false);
+let expand_activities = ref(false);
 
 // -------- //
 // Handlers //
 // -------- //
 
-const banMember = (member: ChannelMember) => emit("ban-member", member);
-const banNick = (member: ChannelMember) => emit("ban-nick", member);
-const unbanMember = (member: ChannelMemberSelected) =>
-	emit("unban-member", member);
-const unbanNick = (member: ChannelMemberSelected) => emit("unban-nick", member);
-const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
-const openRoom = (roomName: RoomID) => emit("open-room", roomName);
-const closeRoom = () => emit("close");
-const ignoreUser = (origin: Origin) => emit("ignore-user", origin);
-const kickMember = (member: ChannelMember) => emit("kick-member", member);
-const unignoreUser = (origin: Origin) => emit("unignore-user", origin);
-const openChannelSettings = (event: Event) =>
-	emit("open-channel-settings", event);
-const openPrivate = (origin: Origin) => emit("open-private", origin);
-const selectChannelMember = (origin: Origin) => emit("select-member", origin);
-const sendMessage = (message: string) => emit("send-message", message);
-const setAccessLevel = (
-	member: ChannelMember,
-	accessLevel: ChannelAccessLevelFlag,
-) => emit("set-access-level", member, accessLevel);
-const unsetAccessLevel = (
-	member: ChannelMember,
-	accessLevel: ChannelAccessLevelFlag,
-) => emit("unset-access-level", member, accessLevel);
+const ban_member_handler = (member: ChannelMember) => emit("ban-member", member);
+const ban_nick_handler = (member: ChannelMember) => emit("ban-nick", member);
+const unban_member_handler = (member: ChannelMemberSelected) => emit("unban-member", member);
+const unban_nick_handler = (member: ChannelMemberSelected) => emit("unban-nick", member);
+const change_nickname_handler = (event: MouseEvent) => emit("change-nickname", event);
+const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
+const close_room_handler = () => emit("close");
+const ignore_user_handler = (origin: Origin) => emit("ignore-user", origin);
+const kick_member_handler = (member: ChannelMember) => emit("kick-member", member);
+const unignore_user_handler = (origin: Origin) => emit("unignore-user", origin);
+const open_channel_settings_handler = (event: Event) => emit("open-channel-settings", event);
+const open_private_handler = (origin: Origin) => emit("open-private", origin);
+const select_channel_member_handler = (origin: Origin) => emit("select-member", origin);
+const send_message_handler = (message: string) => emit("send-message", message);
+const set_access_level_handler = (member: ChannelMember, flag: ChannelAccessLevelFlag) => emit("set-access-level", member, flag);
+const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLevelFlag) => emit("unset-access-level", member, flag);
 </script>
 
 <template>
 	<div class="room/channel [ flex ]" :data-room="room.name">
 		<Room
 			:completion-list="completionList"
-			:disable-input="isDisabledInput"
+			:disable-input="is_disabled_input"
 			:current-client-nickname="currentNickname"
 			:room="room"
-			@change-nickname="changeNickname"
-			@open-private="openPrivate"
-			@open-room="openRoom"
-			@send-message="sendMessage"
-			@dblclick-main="openChannelSettings"
+			@change-nickname="change_nickname_handler"
+			@open-private="open_private_handler"
+			@open-room="open_room_handler"
+			@send-message="send_message_handler"
+			@dblclick-main="open_channel_settings_handler"
 		>
 			<template #topic>
 				<input
@@ -183,18 +178,18 @@ const unsetAccessLevel = (
 
 			<template #topic-action>
 				<UiButton
-					v-model:selected="displayUserlist"
+					v-model:selected="display_userlist"
 					:true-value="true"
 					:false-value="false"
 					icon="users"
-					:title="toggleNicklistTitleAttr"
+					:title="toggle_nicklist_title_attribute"
 				/>
 
 				<ButtonIcon
 					class="close"
 					icon="close"
 					title="Fermer la chambre active"
-					@click="closeRoom"
+					@click="close_room_handler"
 				/>
 			</template>
 
@@ -207,7 +202,7 @@ const unsetAccessLevel = (
 
 				<ChannelActivities
 					v-if="activities?.groups.length"
-					v-model:expanded="expandActivities"
+					v-model:expanded="expand_activities"
 					:activities="activities"
 					:current-client-member="currentClientMember"
 					:room="room"
@@ -218,7 +213,7 @@ const unsetAccessLevel = (
 				<slot name="history" />
 			</template>
 
-			<template #room-info v-if="displayUserlist">
+			<template #room-info v-if="display_userlist">
 				<aside
 					class="room/info [ flex! h:full pt=2 min-w=35 w=35 max-w=35 ]"
 				>
@@ -226,8 +221,8 @@ const unsetAccessLevel = (
 						:name="room.name"
 						:members="room.members"
 						class="room/userlist [ flex:full ov:h ]"
-						@open-private="openPrivate"
-						@select-member="selectChannelMember"
+						@open-private="open_private_handler"
+						@select-member="select_channel_member_handler"
 					/>
 
 					<!-- <slot name="userlist-menu" /> -->
@@ -236,16 +231,16 @@ const unsetAccessLevel = (
 							<ChannelUserlistMenu
 								:current-client-member="ccm"
 								:selected-member="sm"
-								@ban-member="banMember"
-								@ban-nick="banNick"
-								@ignore-user="ignoreUser"
-								@kick-member="kickMember"
-								@open-private="openPrivate"
-								@set-access-level="setAccessLevel"
-								@unignore-user="unignoreUser"
-								@unset-access-level="unsetAccessLevel"
-								@unban-member="unbanMember"
-								@unban-nick="unbanNick"
+								@ban-member="ban_member_handler"
+								@ban-nick="ban_nick_handler"
+								@ignore-user="ignore_user_handler"
+								@kick-member="kick_member_handler"
+								@open-private="open_private_handler"
+								@set-access-level="set_access_level_handler"
+								@unignore-user="unignore_user_handler"
+								@unset-access-level="unset_access_level_handler"
+								@unban-member="unban_member_handler"
+								@unban-nick="unban_nick_handler"
 							/>
 						</template>
 					</Match>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import PrivateNick from "./PrivateNick.vue";
+import PrivateNick from "./PrivateNick.template.vue";
 
 function initState() {
 	return {

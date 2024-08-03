@@ -1,36 +1,50 @@
 <script setup lang="ts">
-import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 import { computed } from "vue";
+
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
 import { useChatStore, useOverlayerStore } from "~/store";
 
-import ChangeNickDialogComponent from "#/sys/change_nick_dialog/ChangeNickDialog.vue";
+import ChangeNickDialog from "#/sys/change_nick_dialog/ChangeNickDialog.template.vue";
 
-const chatStore = useChatStore();
-const overlayerStore = useOverlayerStore();
+// -------- //
+// Constant //
+// -------- //
 
 const LAYER_NAME: string = UserChangeNicknameDialog.ID;
 
-const dialog = computed(
-	() => new UserChangeNicknameDialog(overlayerStore.store),
+// --------- //
+// Composant //
+// --------- //
+
+let chat_store = useChatStore();
+let overlayer_store = useOverlayerStore();
+
+let dialog = computed(
+	() => new UserChangeNicknameDialog(overlayer_store.store),
 );
-const hasLayer = computed(() => dialog.value.exists());
+let has_layer = computed(() => dialog.value.exists());
+
+// ------- //
+// Handler //
+// ------- //
 
 /**
  * Envoie de la commande de changement de pseudo.
  */
-function sendChangeNickCommand(nickname: string) {
-	chatStore.changeNick(nickname);
+function send_change_nick_command_handler(nickname: string) 
+{
+	chat_store.changeNick(nickname);
 	dialog.value.destroy();
 }
 </script>
 
 <template>
-	<Teleport v-if="hasLayer" :to="`#${LAYER_NAME}_teleport`">
-		<ChangeNickDialogComponent
+	<Teleport v-if="has_layer" :to="`#${LAYER_NAME}_teleport`">
+		<ChangeNickDialog
 			:layer-name="LAYER_NAME"
 			@close="dialog.destroy()"
-			@submit="sendChangeNickCommand"
+			@submit="send_change_nick_command_handler"
 		/>
 	</Teleport>
 </template>

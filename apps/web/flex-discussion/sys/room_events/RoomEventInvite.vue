@@ -8,7 +8,7 @@ import type { Props } from "./RoomEvent.state";
 interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
-	(evtName: "open-room", roomName: string): void;
+	(event_name: "open-room", roomName: string): void;
 }
 
 // --------- //

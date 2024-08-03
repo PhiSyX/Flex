@@ -8,6 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { defineStore as define_store } from "pinia";
+import { io } from "socket.io-client";
+import { reactive } from "vue";
+
 import {
 	ChannelAccessLevelFlag,
 	ChannelListCustomRoom,
@@ -27,9 +31,6 @@ import {
 	isChannel,
 } from "@phisyx/flex-chat";
 import { None, type Option } from "@phisyx/flex-safety";
-import { defineStore } from "pinia";
-import { io } from "socket.io-client";
-import { reactive } from "vue";
 
 import { useOverlayerStore } from "./overlayer";
 
@@ -198,7 +199,7 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 	}
 }
 
-export const useChatStore = defineStore(ChatStoreVue.NAME, () => {
+export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	const store = ChatStoreVue.default();
 
 	/**
@@ -306,15 +307,15 @@ export const useChatStore = defineStore(ChatStoreVue.NAME, () => {
 		store.connectWebsocket(connectUserInfo.websocketServerURL);
 
 		if (import.meta.env.DEV) {
-			store.websocket().onAnyOutgoing((evtName, ...payload) => {
-				console.groupCollapsed("> Event %s", evtName);
+			store.websocket().onAnyOutgoing((event_name, ...payload) => {
+				console.groupCollapsed("> Event %s", event_name);
 				console.debug("Données envoyées:");
 				console.table(payload);
 				console.groupEnd();
 			});
 
-			store.websocket().onAny((evtName, ...payload) => {
-				console.groupCollapsed("< Event %s", evtName);
+			store.websocket().onAny((event_name, ...payload) => {
+				console.groupCollapsed("< Event %s", event_name);
 				console.debug("Données reçues:");
 				console.table(payload);
 				console.groupEnd();

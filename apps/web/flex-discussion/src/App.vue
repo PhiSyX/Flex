@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { type UserSession, View } from "@phisyx/flex-chat";
-import { None, type Option } from "@phisyx/flex-safety";
+import type { UserSession } from "@phisyx/flex-chat";
+
 import { defineAsyncComponent, onMounted, ref, watch } from "vue";
 
+import { View } from "@phisyx/flex-chat";
+import { None, type Option } from "@phisyx/flex-safety";
+
 import Overlayer from "./components/overlayer/Overlayer.vue";
-import { useTheme } from "./theme";
+import { use_theme } from "./theme";
 
 // --------- //
 // Composant //
@@ -27,30 +30,39 @@ defineOptions({
 	},
 });
 
-const previousView = ref();
+const previous_view = ref();
 const view = ref(View.Login);
 const user = ref(None() as Option<UserSession>);
 
-useTheme();
+// --------- //
+// Lifecycle // -> Hooks
+// --------- //
+
+use_theme();
+
+watch(view, (_, oldView) => {
+	previous_view.value = oldView;
+});
 
 onMounted(() => {
 	const fetchOpts: RequestInit = { credentials: "same-origin" };
 
 	fetch("/api/v1/users/@me", fetchOpts)
-		.then(async (r) => {
-			if (r.ok) return r.json();
-			if (r.status >= 400 && r.status < 600)
-				return Promise.reject(await r.json());
-			return Promise.reject(r);
+		.then(async (res) => {
+			if (res.ok) {
+				return res.json();
+			}
+
+			if (res.status >= 400 && res.status < 600) {
+				return Promise.reject(await res.json());
+			}
+
+			return Promise.reject(res);
 		})
 		.then((currentUser: UserSession) => {
 			view.value = View.DirectAccess;
 			user.value.replace(currentUser);
 		});
-});
-
-watch(view, (_, oldView) => {
-	previousView.value = oldView;
 });
 </script>
 
@@ -60,7 +72,7 @@ watch(view, (_, oldView) => {
 			<component
 				:is="view"
 				v-model:change-view="view"
-				:previous-view="previousView"
+				:previous-view="previous_view"
 				:user="user"
 			/>
 		</KeepAlive>

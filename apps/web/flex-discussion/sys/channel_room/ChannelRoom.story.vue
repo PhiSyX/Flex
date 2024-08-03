@@ -10,8 +10,8 @@ import {
 	channelID,
 } from "@phisyx/flex-chat";
 
-import ChannelRoomKicked from "#/sys/channel_room_kicked/ChannelRoomKicked.vue";
-import ChannelRoomComponent from "./ChannelRoom.vue";
+import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
+import ChannelRoomComponent from "./ChannelRoom.template.vue";
 
 const channelName = channelID("#channel");
 

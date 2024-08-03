@@ -8,7 +8,12 @@ import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
 import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
 import SettingsPersonalizationTheme from "./personalization/Theme.vue";
 
-interface Props {
+// ---- //
+// Type //
+// ---- //
+
+interface Props 
+{
 	previousView: View;
 }
 
@@ -17,20 +22,27 @@ interface Props {
 // --------- //
 
 const props = defineProps<Props>();
-const changeView = defineModel<View>("changeView");
+let change_view = defineModel<View>("changeView");
 
-const settingsStore = useSettingsStore();
+let settings_store = useSettingsStore();
 
-function saveAndExit() {
-	settingsStore.save();
-	changeView.value = props.previousView;
+// ------- //
+// Handler //
+// ------- //
+
+function save_and_exit_handler() 
+{
+	settings_store.save();
+	change_view.value = props.previousView;
 }
 </script>
 
 <template>
 	<main id="settings-view" class="[ flex w:full h:full ]">
 		<div class="sidebar [ p=1 ]">
-			<UiButton icon="arrow-left" @click="saveAndExit"> Retour </UiButton>
+			<UiButton icon="arrow-left" @click="save_and_exit_handler">
+				Retour
+			</UiButton>
 		</div>
 
 		<div class="content [ flex! w:full scroll:y ]">

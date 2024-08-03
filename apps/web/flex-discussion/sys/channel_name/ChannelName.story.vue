@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ChannelName from "./ChannelName.vue";
+import ChannelName from "./ChannelName.template.vue";
 
 function initState() {
 	return {

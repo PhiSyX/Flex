@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { type ChannelActivity, isChannelMember } from "@phisyx/flex-chat";
 
-import ChannelNick from "../channel_nick/ChannelNick.vue";
+import ChannelNick from "../channel_nick/ChannelNick.template.vue";
 import Match from "../match/Match.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	activity: ChannelActivity;
 }
 

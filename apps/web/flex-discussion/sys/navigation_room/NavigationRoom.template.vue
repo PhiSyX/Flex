@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { Badge, ButtonIcon } from "@phisyx/flex-vue-uikit";
 import { computed } from "vue";
+
+import { Badge, ButtonIcon } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	active: boolean;
 	id: RoomID;
 	name: RoomID;
@@ -16,9 +18,10 @@ interface Props {
 	totalUnreadMessages?: number;
 }
 
-interface Emits {
-	(evtName: "open-room", origin: Origin | RoomID): void;
-	(evtName: "close-room", origin: Origin | RoomID): void;
+interface Emits 
+{
+	(event_name: "open-room", origin: Origin | RoomID): void;
+	(event_name: "close-room", origin: Origin | RoomID): void;
 }
 
 // --------- //
@@ -30,13 +33,13 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 // Est-ce qu'il y un total des événements non lus supérieur à zéro.
-const hasUnreadEvents = computed(() => (props.totalUnreadEvents || 0) > 0);
+let has_unread_events = computed(() => (props.totalUnreadEvents || 0) > 0);
 
 // Est-ce qu'il y un total des messages non lus supérieur à zéro.
-const hasUnreadMessages = computed(() => (props.totalUnreadMessages || 0) > 0);
+let has_unread_messages = computed(() => (props.totalUnreadMessages || 0) > 0);
 
 // Nombre total des messages ou des événements reçus.
-const totalUnread = computed(() => {
+let total_unread = computed(() => {
 	// FIXME
 	// return toUserFriendly(
 	// 	totalUnreadMessages || totalUnreadEvents || 0
@@ -45,7 +48,7 @@ const totalUnread = computed(() => {
 });
 
 // Attribute title: nom
-const nameTitleAttr = computed(() => {
+let name_title_attribute = computed(() => {
 	let title = `${props.name} :\n`;
 
 	if (props.highlight) {
@@ -73,7 +76,7 @@ const nameTitleAttr = computed(() => {
 });
 
 // Attribute title: fermeture
-const btnCloseAttrTitle = computed(() => {
+let btn_close_title_attribute = computed(() => {
 	let title = `${props.name}:\n`;
 	title += props.name.startsWith("#")
 		? "· Partir du salon (Commande /part)"
@@ -81,24 +84,28 @@ const btnCloseAttrTitle = computed(() => {
 	return title;
 });
 
-const openRoom = () => emit("open-room", props.id);
-const closeRoom = () => emit("close-room", props.id);
+// ------- //
+// Handler //
+// ------- //
+
+const open_room_handler = () => emit("open-room", props.id);
+const close_room_handler = () => emit("close-room", props.id);
 </script>
 
 <template>
 	<li
 		:class="{
-			'has-events': hasUnreadEvents,
-			'has-messages': hasUnreadMessages,
+			'has-events': has_unread_events,
+			'has-messages': has_unread_messages,
 			'is-active': active,
 			'is-highlight': highlight,
 		}"
 		:data-room="name"
-		@click="openRoom"
-		@click.middle="closeRoom"
-		@keypress.space="openRoom"
-		@keypress.enter="openRoom"
-		@keydown.esc="closeRoom"
+		@click="open_room_handler"
+		@click.middle="close_room_handler"
+		@keypress.space="open_room_handler"
+		@keypress.enter="open_room_handler"
+		@keydown.esc="close_room_handler"
 		tabindex="0"
 	>
 		<slot name="icon" />
@@ -106,26 +113,26 @@ const closeRoom = () => emit("close-room", props.id);
 		<bdo
 			v-show="!folded"
 			:class="{ '...': !name.startsWith('#') }"
-			:title="nameTitleAttr"
+			:title="name_title_attribute"
 		>
 			{{ name }}
 		</bdo>
 
 		<div>
 			<Badge
-				v-if="hasUnreadEvents || hasUnreadMessages"
+				v-if="has_unread_events || has_unread_messages"
 				v-show="!folded"
 				class="total-unread"
 			>
-				{{ totalUnread }}
+				{{ total_unread }}
 			</Badge>
 
 			<ButtonIcon
 				v-show="!folded"
 				icon="close"
 				class="close"
-				@click="closeRoom"
-				:title="btnCloseAttrTitle"
+				@click="close_room_handler"
+				:title="btn_close_title_attribute"
 			/>
 		</div>
 

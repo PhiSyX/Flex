@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ChannelNick from "./ChannelNick.vue";
+import ChannelNick from "./ChannelNick.template.vue";
 
 function initState() {
 	return {

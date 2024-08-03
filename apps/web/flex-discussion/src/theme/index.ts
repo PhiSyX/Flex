@@ -9,7 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Theme, ThemeRecord } from "@phisyx/flex-chat";
-import { onMounted } from "vue";
+
+import { onMounted as on_mounted } from "vue";
 
 import { useSettingsStore } from "~/store";
 import themeDarkImage from "#/assets/img/theme-dark.jpg";
@@ -36,11 +37,12 @@ const DEFAULT_THEME: keyof Theme = "ice";
 // Fonction //
 // -------- //
 
-export function findTheme(fallbackTheme = DEFAULT_THEME): ThemeRecord {
-	const settingsStore = useSettingsStore();
+export function find_theme(fallbackTheme = DEFAULT_THEME): ThemeRecord 
+{
+	let settingsStore = useSettingsStore();
 
-	const themeLS = settingsStore.personalization.theme || fallbackTheme;
-	const themeFound = THEMES[themeLS];
+	let themeLS = settingsStore.personalization.theme || fallbackTheme;
+	let themeFound = THEMES[themeLS];
 
 	if (!themeFound) {
 		return {
@@ -55,16 +57,16 @@ export function findTheme(fallbackTheme = DEFAULT_THEME): ThemeRecord {
 	};
 }
 
-export function setThemeLS(name: keyof Theme) {
+export function set_theme_ls(name: keyof Theme) {
 	const settingsStore = useSettingsStore();
 	document.documentElement.dataset["scheme"] = name;
 	settingsStore.personalization.theme = name;
 }
 
-export function findThemeName(fallbackTheme = DEFAULT_THEME) {
-	return findTheme(fallbackTheme).name;
+export function find_theme_name(fallbackTheme = DEFAULT_THEME) {
+	return find_theme(fallbackTheme).name;
 }
 
-export function useTheme() {
-	onMounted(() => setThemeLS(findThemeName()));
+export function use_theme() {
+	on_mounted(() => set_theme_ls(find_theme_name()));
 }

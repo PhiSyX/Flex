@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
-
 import { ref } from "vue";
+
+import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	layerName: string;
 }
 
-interface Emits {
-	(evtName: "close"): void;
-	(evtName: "submit", nickname: string): void;
+interface Emits 
+{
+	(event_name: "close"): void;
+	(event_name: "submit", nickname: string): void;
 }
 
 // --------- //
@@ -23,11 +25,15 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const newNickRequest = ref("");
+let new_nickname_request = ref("");
 
-function submitHandler() {
-	if (!newNickRequest.value) return;
-	emit("submit", newNickRequest.value);
+function change_nickname_handler() 
+{
+	if (!new_nickname_request.value) {
+		return;
+	}
+
+	emit("submit", new_nickname_request.value);
 }
 </script>
 
@@ -45,7 +51,7 @@ function submitHandler() {
 				variant="primary"
 				class="[ ml=1 mt=1 ]"
 				:form="`${layerName}_form`"
-				@click="submitHandler()"
+				@click="change_nickname_handler"
 			>
 				Changer maintenant
 			</UiButton>
@@ -55,7 +61,7 @@ function submitHandler() {
 			:id="`${layerName}_form`"
 			action="/chat/nick"
 			method="post"
-			@submit.prevent="submitHandler()"
+			@submit.prevent="change_nickname_handler"
 		>
 			<table class="[ w:full ]">
 				<tr>
@@ -66,7 +72,7 @@ function submitHandler() {
 					<td>
 						<input
 							id="nickname"
-							v-model="newNickRequest"
+							v-model="new_nickname_request"
 							placeholder="JohnDoe"
 							required
 							type="text"

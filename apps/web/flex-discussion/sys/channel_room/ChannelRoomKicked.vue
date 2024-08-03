@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { computed, ref, toRaw } from "vue";
-
 import type { RoomMessage } from "@phisyx/flex-chat";
+
+import { computed, ref, toRaw } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	lastMessage: RoomMessage;
 }
 
-interface Emits {
+interface Emits 
+{
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
-	(evtName: "join-channel", channelName: string): void;
+	(event_name: "join-channel", channelName: string): void;
 }
 
 // --------- //
@@ -24,7 +26,7 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const displayJoinButton = ref(true);
+let display_join_button = ref(true);
 
 // NOTE: Nous voulons récupérer le dernier événement du salon juste avant le
 //       KICK, car il contient les données du KICK, mais pas les nouveaux
@@ -33,17 +35,19 @@ const displayJoinButton = ref(true);
 //       KICK mais actif. Exemple, Lorsqu'un utilisateur entre en contact avec
 //       l'utilisateur qui a été KICK, l'événement "QUERY" est ajouté à la
 //       chambre active.
-const toRawLastMessage = toRaw(
+let to_raw_last_message = toRaw(
 	props.lastMessage as RoomMessage & { data: GenericReply<"KICK"> },
 );
 
-const nickname = computed(() => toRawLastMessage.data.origin.nickname);
-const channel = computed(() => toRawLastMessage.data.channel);
-const reason = computed(() => toRawLastMessage.data.reason);
+let nickname = computed(() => to_raw_last_message.data.origin.nickname);
+let channel = computed(() => to_raw_last_message.data.channel);
+let reason = computed(() => to_raw_last_message.data.reason);
 
-function joinChannelHandler() {
-	emit("join-channel", toRawLastMessage.data.channel);
-}
+// ------- //
+// Handler //
+// ------- //
+
+const join_channel_handler = () => emit("join-channel", to_raw_last_message.data.channel);
 </script>
 
 <template>
@@ -56,9 +60,9 @@ function joinChannelHandler() {
 		</p>
 
 		<button
-			v-if="displayJoinButton"
+			v-if="display_join_button"
 			class="[ p=1 cursor:pointer ]"
-			@click="joinChannelHandler()"
+			@click="join_channel_handler"
 		>
 			Rejoindre le salon
 		</button>

@@ -5,7 +5,8 @@ import type { ChannelMemberSearchHits } from "@phisyx/flex-chat";
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	classes?: string;
 	hits?: Array<ChannelMemberSearchHits>;
 	isCurrentClient?: boolean;

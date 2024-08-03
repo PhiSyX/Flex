@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { ButtonIcon } from "@phisyx/flex-vue-uikit";
-
 import type { NoticeCustomRoom } from "@phisyx/flex-chat";
 
-import Room from "#/sys/room/Room.vue";
+import { ButtonIcon } from "@phisyx/flex-vue-uikit";
+
+import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	room: NoticeCustomRoom;
 }
 
-interface Emits {
+interface Emits 
+{
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
-	(evtName: "close"): void;
+	(event_name: "close"): void;
 }
 
 // --------- //

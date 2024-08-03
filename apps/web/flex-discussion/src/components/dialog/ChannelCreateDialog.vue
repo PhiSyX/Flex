@@ -1,24 +1,45 @@
 <script setup lang="ts">
-import { ChannelJoinDialog } from "@phisyx/flex-chat";
 import { computed } from "vue";
+
+import { ChannelJoinDialog } from "@phisyx/flex-chat";
 
 import { useChatStore, useOverlayerStore } from "~/store";
 
-import ChannelCreateDialog from "#/sys/channel_create_dialog/ChannelCreateDialog.vue";
+import ChannelCreateDialog from "#/sys/channel_create_dialog/ChannelCreateDialog.template.vue";
 
-const chatStore = useChatStore();
-const overlayerStore = useOverlayerStore();
+// -------- //
+// Constant //
+// -------- //
 
 const LAYER_NAME: string = ChannelJoinDialog.ID;
 
-const dialog = computed(() => new ChannelJoinDialog(overlayerStore.store));
-const hasLayer = computed(() => dialog.value.exists());
-const closeLayer = () => dialog.value.destroy();
+// --------- //
+// Composant //
+// --------- //
 
-function joinChannel(channels: ChannelID, keys: string) {
-	if (!channels) return;
+let chatStore = useChatStore();
+let overlayerStore = useOverlayerStore();
+
+let dialog = computed(() => new ChannelJoinDialog(overlayerStore.store));
+let hasLayer = computed(() => dialog.value.exists());
+
+// ------- //
+// Handler //
+// ------- //
+
+function join_channel_handler(channels: ChannelID, keys: string) 
+{
+	if (!channels) {
+		return;
+	}
+
 	chatStore.joinChannel(channels, keys);
-	closeLayer();
+	close_layer_handler();
+}
+
+function close_layer_handler() 
+{
+	dialog.value.destroy();
 }
 </script>
 
@@ -26,8 +47,8 @@ function joinChannel(channels: ChannelID, keys: string) {
 	<Teleport v-if="hasLayer" :to="`#${LAYER_NAME}_teleport`">
 		<ChannelCreateDialog
 			:layer-name="LAYER_NAME"
-			@close="closeLayer"
-			@submit="joinChannel"
+			@close="close_layer_handler"
+			@submit="join_channel_handler"
 		/>
 	</Teleport>
 </template>

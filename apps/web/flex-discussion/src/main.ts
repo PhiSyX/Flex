@@ -10,11 +10,14 @@
 
 import "#/assets/scss/style.scss";
 
-import { createApp, defineAsyncComponent } from "vue";
+import {
+	createApp as create_app,
+	defineAsyncComponent as define_async_component,
+} from "vue";
 
 import AppComponent from "./App.vue";
 
-const app = createApp(AppComponent);
+const app = create_app(AppComponent);
 
 // 1. Setup
 const plugins = import.meta.glob<{ install: VuePluginInstall }>(
@@ -28,11 +31,11 @@ for (const plugin of Object.values(plugins)) {
 
 // Chargement des composants (events)
 
-const eventsComponentsImports = import.meta.glob<{ default: unknown }>(
+const events_components_imports = import.meta.glob<{ default: unknown }>(
 	"../sys/room_events/RoomEvent*.vue",
 );
 
-const eventsComponentsEntries = Object.entries(eventsComponentsImports).map(
+const events_components_entries = Object.entries(events_components_imports).map(
 	([eventFilepath, eventComponent]) => {
 		const componentName = eventFilepath.slice(
 			"../sys/room_events/".length,
@@ -46,12 +49,12 @@ const eventsComponentsEntries = Object.entries(eventsComponentsImports).map(
 );
 
 app.provide(
-	"eventsComponents",
-	eventsComponentsEntries.map(([key]) => key),
+	"events_components",
+	events_components_entries.map(([key]) => key),
 );
 
-for (const [componentName, eventComponent] of eventsComponentsEntries) {
-	app.component(componentName, defineAsyncComponent(eventComponent));
+for (const [component_name, event_component] of events_components_entries) {
+	app.component(component_name, define_async_component(event_component));
 }
 
 // 2. Run

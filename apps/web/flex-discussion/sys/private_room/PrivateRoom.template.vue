@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
-import { computed } from "vue";
-
 import type { PrivateParticipant, PrivateRoom } from "@phisyx/flex-chat";
 
-import Room from "#/sys/room/Room.vue";
+import { computed } from "vue";
+
+import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
+
+import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	completionList?: Array<string>;
 	currentClientUser: PrivateParticipant;
 	currentNickname: string;
@@ -19,13 +21,14 @@ interface Props {
 	room: PrivateRoom;
 }
 
-interface Emits {
-	(evtName: "change-nickname", event: MouseEvent): void;
-	(evtName: "close"): void;
-	(evtName: "open-room", roomName: RoomID): void;
-	(evtName: "send-message", message: string): void;
-	(evtName: "ignore-user", nickname: string): void;
-	(evtName: "unignore-user", nickname: string): void;
+interface Emits 
+{
+	(event_name: "change-nickname", event: MouseEvent): void;
+	(event_name: "close"): void;
+	(event_name: "open-room", room_id: RoomID): void;
+	(event_name: "send-message", message: string): void;
+	(event_name: "ignore-user", nickname: string): void;
+	(event_name: "unignore-user", nickname: string): void;
 }
 
 // --------- //
@@ -36,21 +39,26 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 // Est-ce que le client courant est le participant lui-même?
-const isCurrentClientParticipantHimself = computed(() =>
+let is_current_client_participant_himself = computed(() =>
 	props.currentClientUser.partialEq(props.recipient),
 );
 
-const titleIgnoreBtn = computed(() => {
-	return props.isRecipientBlocked
+let ignore_btn_title_attribute = computed(
+	() => props.isRecipientBlocked
 		? `Ne plus ignorer ${props.recipient.nickname}`
-		: `Ignorer ${props.recipient.nickname}`;
-});
+		: `Ignorer ${props.recipient.nickname}`
+);
 
-const changeNickname = (event: MouseEvent) => emit("change-nickname", event);
-const openRoom = (roomName: RoomID) => emit("open-room", roomName);
-const sendMessage = (message: string) => emit("send-message", message);
+// ------- //
+// Handler //
+// ------- //
 
-function toggleIgnoreUserHandler() {
+const change_nickname_handler = (event: MouseEvent) => emit("change-nickname", event);
+const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
+const send_message_handler = (message: string) => emit("send-message", message);
+
+function toggle_ignore_user_handler() 
+{
 	if (props.isRecipientBlocked) {
 		emit("unignore-user", props.recipient.nickname);
 	} else {
@@ -66,9 +74,9 @@ function toggleIgnoreUserHandler() {
 			:disable-input="isRecipientBlocked"
 			:current-client-nickname="currentNickname"
 			:room="room"
-			@open-room="openRoom"
-			@change-nickname="changeNickname"
-			@send-message="sendMessage"
+			@open-room="open_room_handler"
+			@change-nickname="change_nickname_handler"
+			@send-message="send_message_handler"
 		>
 			<template #topic>
 				<p class="[ flex flex/center:full h:full my=0 select:none ]">
@@ -78,13 +86,13 @@ function toggleIgnoreUserHandler() {
 
 			<template #topic-action>
 				<UiButton
-					v-if="!isCurrentClientParticipantHimself"
+					v-if="!is_current_client_participant_himself"
 					icon="user-block"
 					:selected="isRecipientBlocked"
 					:false-value="false"
 					:true-value="true"
-					:title="titleIgnoreBtn"
-					@click="toggleIgnoreUserHandler"
+					:title="ignore_btn_title_attribute"
+					@click="toggle_ignore_user_handler"
 				/>
 				<ButtonIcon
 					icon="close"

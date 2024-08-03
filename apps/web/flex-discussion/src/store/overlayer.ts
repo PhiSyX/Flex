@@ -8,53 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { type Layer, OverlayerStore } from "@phisyx/flex-chat";
 import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
+
+import { OverlayerStore } from "@phisyx/flex-chat";
 
 // ----- //
 // Store //
 // ----- //
 
 export const useOverlayerStore = defineStore(OverlayerStore.ID, () => {
-	const store = reactive(new OverlayerStore()) as OverlayerStore;
+	let store = reactive(new OverlayerStore()) as OverlayerStore;
 
-	const layers = computed(() => store.layers);
-	const hasLayers = computed(() => store.hasLayers);
-
-	function create<D = unknown>(payload: Layer<D>): Layer<D> {
-		return store.create(payload);
-	}
-
-	function destroy(layerID: Layer["id"]) {
-		store.destroy(layerID);
-	}
-
-	function destroyAll(options: { force: boolean } = { force: false }) {
-		store.destroyAll(options);
-	}
-
-	function update(layerID: Layer["id"]) {
-		store.update(layerID);
-	}
-
-	function updateData<D = unknown>(layerID: Layer<D>["id"], data: D) {
-		store.updateData(layerID, data);
-	}
-
-	function updateAll() {
-		store.updateAll();
-	}
+	let layers = computed(() => store.layers);
+	let hasLayers = computed(() => store.hasLayers);
 
 	return {
-		create,
-		destroy,
-		destroyAll,
+		create: store.create.bind(store),
+		destroy: store.destroy.bind(store),
+		destroyAll: store.destroyAll.bind(store),
+		get: store.get.bind(store),
+		has: store.has.bind(store),
 		hasLayers,
 		layers,
 		store,
-		update,
-		updateAll,
-		updateData,
+		update: store.update.bind(store),
+		updateAll: store.updateAll.bind(store),
+		updateData: store.updateData.bind(store),
 	};
 });

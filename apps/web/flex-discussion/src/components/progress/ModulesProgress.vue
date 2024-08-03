@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import type { Layer } from "@phisyx/flex-chat";
+
 import { computed } from "vue";
 
 import { useOverlayerStore } from "~/store";
 
-const overlayerStore = useOverlayerStore();
+// --------- //
+// Composant //
+// --------- //
 
-const hasLoadAllModulesLayer = computed(() =>
-	overlayerStore.layers.has("load-all-modules"),
+let overlayer_store = useOverlayerStore();
+
+let has_load_all_modules_layer = computed(() =>
+	overlayer_store.layers.has("load-all-modules"),
 );
 
-const loadAllModulesLayer = computed(() => {
-	return overlayerStore.layers.get("load-all-modules") as Layer<{
+let load_all_modulesLayer = computed(() => {
+	return overlayer_store.get("load-all-modules") as Layer<{
 		moduleName?: string;
 		totalLoaded: number;
 		loaded: number;
@@ -19,24 +24,24 @@ const loadAllModulesLayer = computed(() => {
 });
 </script>
 <template>
-	<Teleport v-if="hasLoadAllModulesLayer" to="#load-all-modules_teleport">
+	<Teleport v-if="has_load_all_modules_layer" to="#load-all-modules_teleport">
 		<div
-			v-if="loadAllModulesLayer && loadAllModulesLayer.data"
+			v-if="load_all_modulesLayer && load_all_modulesLayer.data"
 			class="align-t:center"
 		>
 			<p>
 				Chargement des modules
-				<output v-if="loadAllModulesLayer.data.moduleName">
-					: {{ loadAllModulesLayer.data.moduleName }}
+				<output v-if="load_all_modulesLayer.data.moduleName">
+					: {{ load_all_modulesLayer.data.moduleName }}
 				</output>
 			</p>
 
 			<progress
-				:max="loadAllModulesLayer.data.totalLoaded"
-				:value="loadAllModulesLayer.data.loaded"
+				:max="load_all_modulesLayer.data.totalLoaded"
+				:value="load_all_modulesLayer.data.loaded"
 				class="m:a"
 			>
-				{{ loadAllModulesLayer.data.loaded }}%
+				{{ load_all_modulesLayer.data.loaded }}%
 			</progress>
 		</div>
 	</Teleport>

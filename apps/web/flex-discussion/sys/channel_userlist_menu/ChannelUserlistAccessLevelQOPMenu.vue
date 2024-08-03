@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-vue-uikit";
-import { computed } from "vue";
-
 import type { ChannelMember, ChannelMemberSelected } from "@phisyx/flex-chat";
 
+import { computed } from "vue";
+
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -19,14 +19,14 @@ interface Props {
 
 interface Emits {
 	(
-		evtName: "set-access-level",
+		event_name: "set-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(
-		evtName: "unset-access-level",
+		event_name: "unset-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 }
 
@@ -37,45 +37,53 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
-const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember.isGlobalOperator(),
+let is_current_client_member_global_operator = computed(
+	() => props.currentClientMember.isGlobalOperator()
 );
-const isCurrentClientMemberOwner = computed(() =>
-	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Owner),
+let is_current_client_member_owner = computed(
+	() => props.currentClientMember.accessLevel.eq(
+		ChannelAccessLevelFlag.Owner
+	)
 );
-const isSelectedMemberOwner = computed(() =>
-	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Owner),
+let is_selected_member_owner = computed(
+	() => props.selectedMember.member.accessLevel.eq(
+		ChannelAccessLevelFlag.Owner
+	)
 );
 
-const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
+// ------- //
+// Handler //
+// ------- //
+
+const set_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
+const unset_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", props.selectedMember.member, accessLevel);
 </script>
 
 <template>
-	<template v-if="isSameMember && isCurrentClientMemberOwner">
+	<template v-if="isSameMember && is_current_client_member_owner">
 		<UiButton
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deqop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Owner)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.Owner)"
 		>
 			-q
 		</UiButton>
 	</template>
 	<template
 		v-else-if="
-			isCurrentClientMemberOwner || isCurrentClientMemberGlobalOperator
+			is_current_client_member_owner || is_current_client_member_global_operator
 		"
 	>
 		<UiButton
-			v-if="!isSelectedMemberOwner"
+			v-if="!is_selected_member_owner"
 			:disabled="disabled"
 			variant="secondary"
 			class="is-owner"
 			title="Commande /qop"
-			@click="setAccessLevelHandler(ChannelAccessLevelFlag.Owner)"
+			@click="set_access_level_handler(ChannelAccessLevelFlag.Owner)"
 		>
 			+q
 		</UiButton>
@@ -84,7 +92,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deqop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Owner)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.Owner)"
 		>
 			-q
 		</UiButton>

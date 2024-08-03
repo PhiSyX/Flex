@@ -8,7 +8,7 @@ import {
 import { formatDate } from "@phisyx/flex-date";
 import { None, type Option, Some } from "@phisyx/flex-safety";
 
-import ChannelActivities from "./ChannelActivities.vue";
+import ChannelActivities from "./ChannelActivities.template.vue";
 
 const channel = new ChannelRoom("#iBug" as ChannelID);
 

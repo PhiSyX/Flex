@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { InputSwitch } from "@phisyx/flex-vue-uikit";
 
-const userlistDisplay = defineModel<boolean>("display");
-const userlistPosition = defineModel<"left" | "right">("position");
+// --------- //
+// Composant //
+// --------- //
+
+let userlist_display = defineModel<boolean>("display");
+let userlist_position = defineModel<"left" | "right">("position");
 </script>
 
 <template>
@@ -18,7 +22,7 @@ const userlistPosition = defineModel<"left" | "right">("position");
 				name="channel-userlist2"
 				label-y="Oui"
 				label-n="Non"
-				v-model="userlistDisplay"
+				v-model="userlist_display"
 			/>
 		</div>
 
@@ -31,7 +35,7 @@ const userlistPosition = defineModel<"left" | "right">("position");
 				value-y="left"
 				label-n="Droite"
 				value-n="right"
-				v-model="userlistPosition"
+				v-model="userlist_position"
 			/>
 		</div>
 	</form>

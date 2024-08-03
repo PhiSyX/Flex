@@ -12,8 +12,8 @@ interface Props {
 }
 
 interface Emits {
-	(evtName: "on"): void;
-	(evtName: "off"): void;
+	(event_name: "on"): void;
+	(event_name: "off"): void;
 }
 
 // --------- //

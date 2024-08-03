@@ -1,23 +1,35 @@
 <script setup lang="ts">
-import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-vue-uikit";
+import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
+
 import { computed, ref, watch } from "vue";
 
-import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
+import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	layerName: string;
 	room: ChannelRoom;
 	currentClientChannelMember: ChannelMember;
 }
 
-interface Emits {
-	(evtName: "close"): void;
-	(evtName: "submit", modesSettings: Partial<Command<"MODE">["modes"]>): void;
-	(evtName: "update-topic", topic?: string): void;
+interface Emits 
+{
+	(event_name: "close"): void;
+	(event_name: "submit", modesSettings: Partial<Command<"MODE">["modes"]>): void;
+	(event_name: "update-topic", topic?: string): void;
+}
+
+// ----------- //
+// Énumération //
+// ----------- //
+
+enum AccessControl {
+	BanList = 0,
+	BanListException = 1,
 }
 
 // --------- //
@@ -28,45 +40,40 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 // Est-ce que le client courant a les droits d'édition du sujet?
-const isCurrentClientChannelMemberCanEditTopic = computed(() =>
-	props.room.canEditTopic(props.currentClientChannelMember),
+let is_current_client_channel_member_can_edit_topic = computed(
+	() => props.room.canEditTopic(props.currentClientChannelMember)
 );
 
 // Est-ce que le client courant est opérateur global?
-const isCurrentClientGlobalOperator = computed(() =>
-	props.currentClientChannelMember.isGlobalOperator(),
+let is_current_client_global_operator = computed(
+	() => props.currentClientChannelMember.isGlobalOperator()
 );
 
 // Est-ce que le client courant opérateur du salon?
-const isCurrentClientChannelMemberChannelOperator = computed(() =>
-	props.currentClientChannelMember.isChanOperator(),
+let is_current_client_channel_member_channel_operator = computed(
+	() => props.currentClientChannelMember.isChanOperator()
 );
 
 // Les paramètres du salon.
-const settings = computed(() => Array.from(props.room.settings));
-const settingsToString = computed(() => settings.value.join(""));
-const inviteOnlySettings = ref<boolean>();
-const moderateSettings = ref<boolean>();
-const operatorsOnlySettings = ref<boolean>();
-const noExternalMessagesSettings = ref<boolean>();
-const secretSettings = ref<boolean>();
-const topicSettings = ref<boolean>();
+let settings = computed(() => Array.from(props.room.settings));
+let settingsToString = computed(() => settings.value.join(""));
+let inviteOnlySettings = ref<boolean>();
+let moderateSettings = ref<boolean>();
+let operatorsOnlySettings = ref<boolean>();
+let noExternalMessagesSettings = ref<boolean>();
+let secretSettings = ref<boolean>();
+let topicSettings = ref<boolean>();
 
-const enabledKeySettings = props.room.settings.has("k") ? ref(true) : ref();
-const keySettings = props.room.settings.has("k") ? ref("") : ref();
+let enabledKeySettings = props.room.settings.has("k") ? ref(true) : ref();
+let keySettings = props.room.settings.has("k") ? ref("") : ref();
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
-const topicModel = ref(Array.from(props.room.topic.history).at(-1));
+let topicModel = ref(Array.from(props.room.topic.history).at(-1));
 
-enum AccessControl {
-	BanList = 0,
-	BanListException = 1,
-}
+let selectedAccessControlList = ref<Array<string>>([]);
 
-const selectedAccessControlList = ref<Array<string>>([]);
-
-const activeAccessControl = ref(AccessControl.BanList);
-const activeAccessControlList = computed(() => {
+let activeAccessControl = ref(AccessControl.BanList);
+let activeAccessControlList = computed(() => {
 	switch (activeAccessControl.value) {
 		case AccessControl.BanList:
 			return props.room.accessControl.banlist;
@@ -76,7 +83,7 @@ const activeAccessControlList = computed(() => {
 });
 
 // Titre courant du type de contrôles d'accès
-const activeTitleAccessControl = computed(() => {
+let activeTitleAccessControl = computed(() => {
 	switch (activeAccessControl.value) {
 		case AccessControl.BanList:
 			return "Liste des bannissements";
@@ -85,18 +92,27 @@ const activeTitleAccessControl = computed(() => {
 	}
 });
 
+// --------- //
+// Lifecycle // -> Hooks
+// --------- //
+
 watch(activeAccessControl, () => {
 	selectedAccessControlList.value = [];
 });
 
-function onSubmitHandler() {
-	if (isCurrentClientChannelMemberCanEditTopic.value) {
+// ------- //
+// Handler //
+// ------- //
+
+function submit_handler() 
+{
+	if (is_current_client_channel_member_can_edit_topic.value) {
 		emit("update-topic", topicModel.value);
 	}
 
 	if (
-		!isCurrentClientChannelMemberChannelOperator.value &&
-		!isCurrentClientGlobalOperator.value
+		!is_current_client_channel_member_channel_operator.value &&
+		!is_current_client_global_operator.value
 	) {
 		emit("close");
 		return;
@@ -114,10 +130,10 @@ function onSubmitHandler() {
 	emit("close");
 }
 
-function onDeleteSelectedMasksHandler() {
+function delete_selected_masks_handler() {
 	if (
-		!isCurrentClientChannelMemberChannelOperator.value &&
-		!isCurrentClientGlobalOperator.value
+		!is_current_client_channel_member_channel_operator.value &&
+		!is_current_client_global_operator.value
 	) {
 		emit("close");
 		return;
@@ -127,15 +143,14 @@ function onDeleteSelectedMasksHandler() {
 
 	switch (activeAccessControl.value) {
 		case AccessControl.BanList:
-			{
-				list = "b";
-			}
-			break;
+		{
+			list = "b";
+		} break;
+
 		case AccessControl.BanListException:
-			{
-				list = "e";
-			}
-			break;
+		{
+			list = "e";
+		} break;
 	}
 
 	emit("submit", {
@@ -179,7 +194,7 @@ function onDeleteSelectedMasksHandler() {
 			:id="`${layerName}_form`"
 			class="[ flex! gap=1 ]"
 			method="dialog"
-			@submit="onSubmitHandler()"
+			@submit="submit_handler()"
 		>
 			<h2 class="[ mt=0 ]">Historique des sujets</h2>
 
@@ -188,7 +203,7 @@ function onDeleteSelectedMasksHandler() {
 				list="topics"
 				type="text"
 				class="[ w:full ]"
-				:disabled="!isCurrentClientChannelMemberCanEditTopic"
+				:disabled="!is_current_client_channel_member_can_edit_topic"
 			/>
 			<datalist id="topics">
 				<option v-for="topic in room.topic.history" :value="topic" />
@@ -204,8 +219,8 @@ function onDeleteSelectedMasksHandler() {
 				<option
 					v-for="[addr, mode] of activeAccessControlList"
 					:disabled="
-						!isCurrentClientChannelMemberChannelOperator &&
-						!isCurrentClientGlobalOperator
+						!is_current_client_channel_member_channel_operator &&
+						!is_current_client_global_operator
 					"
 					:value="addr"
 				>
@@ -237,7 +252,7 @@ function onDeleteSelectedMasksHandler() {
 					type="button"
 					variant="secondary"
 					:disabled="selectedAccessControlList.length === 0"
-					@click="onDeleteSelectedMasksHandler"
+					@click="delete_selected_masks_handler"
 				>
 					Supprimer
 				</UiButton>
@@ -252,8 +267,8 @@ function onDeleteSelectedMasksHandler() {
 						name="invite-only-settings"
 						:checked="room.settings.has('i')"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 					>
 						Salon accessible sur invitation uniquement (+i)
@@ -266,8 +281,8 @@ function onDeleteSelectedMasksHandler() {
 						name="key-settings"
 						:checked="room.settings.has('k')"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 					>
 						Définir une clé (+k)
@@ -277,8 +292,8 @@ function onDeleteSelectedMasksHandler() {
 						v-if="enabledKeySettings"
 						v-model="keySettings"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 						maxlength="25"
 						placeholder="Clé de salon"
@@ -293,8 +308,8 @@ function onDeleteSelectedMasksHandler() {
 						name="moderate-settings"
 						:checked="room.settings.has('m')"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 					>
 						Salon en modéré (+m)
@@ -307,8 +322,8 @@ function onDeleteSelectedMasksHandler() {
 						name="no-external-messages-settings"
 						:checked="room.settings.has('n')"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 					>
 						Pas de messages à partir de l'extérieur (+n)
@@ -321,8 +336,8 @@ function onDeleteSelectedMasksHandler() {
 						name="secret-settings"
 						:checked="room.settings.has('s')"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 					>
 						Salon secret (+s)
@@ -335,22 +350,22 @@ function onDeleteSelectedMasksHandler() {
 						name="topic-settings"
 						:checked="room.settings.has('t')"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 					>
 						Seuls les opérateurs peuvent définir un topic (+t)
 					</InputSwitchV2>
 				</li>
 
-				<li v-if="isCurrentClientGlobalOperator">
+				<li v-if="is_current_client_global_operator">
 					<InputSwitchV2
 						v-model="operatorsOnlySettings"
 						name="operators-only-settings"
 						:checked="room.settings.has('O')"
 						:disabled="
-							!isCurrentClientChannelMemberChannelOperator &&
-							!isCurrentClientGlobalOperator
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
 						"
 					>
 						Salon accessible uniquement pour les opérateurs (+O)

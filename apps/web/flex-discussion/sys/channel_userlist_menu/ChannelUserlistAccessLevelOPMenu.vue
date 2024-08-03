@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-vue-uikit";
-import { computed } from "vue";
-
 import type { ChannelMember, ChannelMemberSelected } from "@phisyx/flex-chat";
 
+import { computed } from "vue";
+
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -19,14 +19,14 @@ interface Props {
 
 interface Emits {
 	(
-		evtName: "set-access-level",
+		event_name: "set-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(
-		evtName: "unset-access-level",
+		event_name: "unset-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 }
 
@@ -37,52 +37,60 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
-const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember.isGlobalOperator(),
+let is_current_client_member_global_operator = computed(
+	() => props.currentClientMember.isGlobalOperator(),
 );
-const isCurrentClientMemberOperator = computed(() =>
-	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Operator),
+let is_current_client_member_operator = computed(
+	() => props.currentClientMember.accessLevel.eq(
+		ChannelAccessLevelFlag.Operator
+	)
 );
-const isCurrentClientMemberHaveOperatorRights = computed(
-	() =>
-		props.currentClientMember.accessLevel.highest.level >=
-		ChannelAccessLevelFlag.Operator,
-);
-
-const isSelectedMemberOperator = computed(() =>
-	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Operator),
+let is_current_client_member_have_operator_rights = computed(
+	() => props.currentClientMember.accessLevel.ge(
+		ChannelAccessLevelFlag.Operator
+	)
 );
 
-const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
+let is_selected_member_operator = computed(
+	() => props.selectedMember.member.accessLevel.eq(
+		ChannelAccessLevelFlag.Operator
+	)
+);
+
+// ------- //
+// Handler //
+// ------- //
+
+const set_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
+const unset_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", props.selectedMember.member, accessLevel);
 </script>
 
 <template>
-	<template v-if="isSameMember && isCurrentClientMemberOperator">
+	<template v-if="isSameMember && is_current_client_member_operator">
 		<UiButton
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Operator)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.Operator)"
 		>
 			-o
 		</UiButton>
 	</template>
 	<template
 		v-else-if="
-			isCurrentClientMemberHaveOperatorRights ||
-			isCurrentClientMemberGlobalOperator
+			is_current_client_member_have_operator_rights ||
+			is_current_client_member_global_operator
 		"
 	>
 		<UiButton
-			v-if="!isSelectedMemberOperator"
+			v-if="!is_selected_member_operator"
 			:disabled="disabled"
 			variant="secondary"
 			class="is-operator"
 			title="Commande /op"
-			@click="setAccessLevelHandler(ChannelAccessLevelFlag.Operator)"
+			@click="set_access_level_handler(ChannelAccessLevelFlag.Operator)"
 		>
 			+o
 		</UiButton>
@@ -91,7 +99,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /deop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Operator)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.Operator)"
 		>
 			-o
 		</UiButton>

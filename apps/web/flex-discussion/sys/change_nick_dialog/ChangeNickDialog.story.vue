@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ChangeNickDialog from "./ChangeNickDialog.vue";
+import ChangeNickDialog from "./ChangeNickDialog.template.vue";
 </script>
 
 <template>

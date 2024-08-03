@@ -8,11 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { SettingsStore } from "@phisyx/flex-chat";
-import { defineStore } from "pinia";
+import { defineStore as define_store } from "pinia";
 import { reactive } from "vue";
 
-export const useSettingsStore = defineStore(SettingsStore.NAME, () => {
+import { SettingsStore } from "@phisyx/flex-chat";
+
+export const useSettingsStore = define_store(SettingsStore.NAME, () => {
 	const store = reactive(new SettingsStore()) as SettingsStore;
 	return {
 		...store,

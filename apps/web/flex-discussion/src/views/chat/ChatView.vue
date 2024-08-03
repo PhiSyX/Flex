@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {
-	ChannelJoinDialog,
-	type ChannelListCustomRoom,
-	type ChannelRoom,
-	type NoticeCustomRoom,
-	type PrivateRoom,
-	type ServerCustomRoom,
-	View,
+import type {
+	ChannelListCustomRoom,
+	ChannelRoom,
+	NoticeCustomRoom,
+	PrivateRoom,
+	ServerCustomRoom,
 } from "@phisyx/flex-chat";
+
 import { computed } from "vue";
+
+import { ChannelJoinDialog, View } from "@phisyx/flex-chat";
 
 import { useChatStore } from "~/store";
 import { useOverlayerStore } from "~/store";
@@ -21,41 +22,48 @@ import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue
 import ClientError from "~/components/error/ClientError.vue";
 import Navigation from "~/components/navigation/Navigation.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
-import ChannelList from "#/sys/channel_list/ChannelList.vue";
-import CustomRoomNotice from "#/sys/custom_room_notice/CustomRoomNotice.vue";
+import ChannelList from "#/sys/channel_list/ChannelList.template.vue";
+import CustomRoomNotice from "#/sys/custom_room_notice/CustomRoomNotice.template.vue";
 
 // --------- //
 // Composant //
 // --------- //
 
-const chatStore = useChatStore();
-const overlayerStore = useOverlayerStore();
+let chat_store = useChatStore();
+let overlayer_store = useOverlayerStore();
 
-const changeView = defineModel<View>("changeView");
+let change_view = defineModel<View>("changeView");
+let rooms = computed(() => chat_store.store.roomManager().rooms());
 
-const rooms = computed(() => chatStore.store.roomManager().rooms());
+// ------- //
+// Handler //
+// ------- //
 
-function joinChannel(name: ChannelID) {
-	chatStore.joinChannel(name);
-	chatStore.changeRoom(name);
+function join_channel_handler(name: ChannelID) 
+{
+	chat_store.joinChannel(name);
+	chat_store.changeRoom(name);
 }
 
-function closeRoom(name: RoomID) {
-	chatStore.closeRoom(name);
+function close_room_handler(name: RoomID) 
+{
+	chat_store.closeRoom(name);
 }
 
-function openJoinChannelDialog(event: Event) {
-	ChannelJoinDialog.create(overlayerStore.store, { event });
+function open_join_channel_dialog_handler(event: Event) 
+{
+	ChannelJoinDialog.create(overlayer_store.store, { event });
 }
 
-function openSettingsView() {
-	changeView.value = View.Settings;
+function open_settings_view_handler() 
+{
+	change_view.value = View.Settings;
 }
 </script>
 
 <template>
 	<main id="chat-view" class="[ flex h:full ]">
-		<Navigation @open-settings-view="openSettingsView" />
+		<Navigation @open-settings-view="open_settings_view_handler" />
 
 		<div class="room [ flex:full flex ]">
 			<template v-for="room in rooms" :key="room.id">
@@ -103,8 +111,8 @@ function openSettingsView() {
 							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as ChannelListCustomRoom)"
 							class="[ flex:full ]"
-							@join-channel="joinChannel"
-							@create-channel-dialog="openJoinChannelDialog"
+							@join-channel="join_channel_handler"
+							@create-channel-dialog="open_join_channel_dialog_handler"
 						/>
 					</KeepAlive>
 				</template>
@@ -117,7 +125,7 @@ function openSettingsView() {
 							v-if="room.isActive() && !room.isClosed()"
 							:room="(room as NoticeCustomRoom)"
 							class="[ flex:full ]"
-							@close="() => closeRoom(room.id())"
+							@close="() => close_room_handler(room.id())"
 						/>
 					</KeepAlive>
 				</template>

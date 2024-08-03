@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import type { ServerCustomRoom } from "@phisyx/flex-chat";
 
-import Room from "#/sys/room/Room.vue";
+import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	forumUrl: string;
 	vademecumUrl: string;
 	currentNickname: string;
 	room: ServerCustomRoom;
 }
 
-interface Emits {
-	(evtName: "change-nickname", event: MouseEvent): void;
-	(evtName: "open-room", roomName: RoomID): void;
-	(evtName: "send-message", message: string): void;
+interface Emits 
+{
+	(event_name: "change-nickname", event: MouseEvent): void;
+	(event_name: "open-room", room_id: RoomID): void;
+	(event_name: "send-message", message: string): void;
 }
 
 // --------- //
@@ -27,9 +29,13 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const changeNickRequest = (event: MouseEvent) => emit("change-nickname", event);
-const openRoom = (roomName: RoomID) => emit("open-room", roomName);
-const sendMessage = (message: string) => emit("send-message", message);
+// -------- //
+// Fonction //
+// -------- //
+
+const change_nickname_request_handler = (event: MouseEvent) => emit("change-nickname", event);
+const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
+const send_message_handler = (message: string) => emit("send-message", message);
 </script>
 
 <template>
@@ -37,9 +43,9 @@ const sendMessage = (message: string) => emit("send-message", message);
 		<Room
 			:current-client-nickname="currentNickname"
 			:room="room"
-			@change-nickname="changeNickRequest"
-			@open-room="openRoom"
-			@send-message="sendMessage"
+			@change-nickname="change_nickname_request_handler"
+			@open-room="open_room_handler"
+			@send-message="send_message_handler"
 		>
 			<template #topic>
 				<p class="[ flex flex/center:full h:full m=0 p=0 select:none ]">

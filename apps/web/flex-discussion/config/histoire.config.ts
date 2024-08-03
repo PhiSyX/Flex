@@ -10,14 +10,14 @@
 
 import * as path from "node:path";
 
-import { HstVue } from "@histoire/plugin-vue";
-import { defineConfig } from "histoire";
+import { HstVue as histoire_vue } from "@histoire/plugin-vue";
+import { defineConfig as define_config } from "histoire";
 
-import viteConfig from "./vite.histoire";
+import vite_config from "./vite.histoire";
 
-export default defineConfig({
-	plugins: [HstVue()],
+export default define_config({
+	plugins: [histoire_vue()],
 	setupFile: path.resolve("config", "histoire.setup.ts"),
 	routerMode: "history",
-	vite: viteConfig,
+	vite: vite_config,
 });

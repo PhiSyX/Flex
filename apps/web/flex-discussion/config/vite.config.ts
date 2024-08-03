@@ -11,33 +11,36 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { type CommonServerOptions, defineConfig } from "vite";
+import { type CommonServerOptions, defineConfig as define_config } from "vite";
 
 import vue from "@vitejs/plugin-vue";
 import yaml from "yaml";
 
 import type { ServerSettings } from "./server.config";
 
-function resolveFromFlex(...paths: Array<string>) {
+/**
+ * Résout les chemins à partir de la racine du projet.
+ */
+function resolve_paths_from_flex(...paths: Array<string>) {
 	return path.resolve("..", "..", "..", ...paths);
 }
 
 /**
  * Récupère les paramètres du serveur backend.
  */
-async function getFlexServerSettings(): Promise<ServerSettings> {
-	const filepath = resolveFromFlex("config", "flex", "server.yml");
-	const rawContent = await fs.readFile(filepath);
-	const settings = yaml.parse(rawContent.toString("utf8"));
+async function get_flex_server_settings(): Promise<ServerSettings> {
+	let filepath = resolve_paths_from_flex("config", "flex", "server.yml");
+	let rawContent = await fs.readFile(filepath);
+	let settings = yaml.parse(rawContent.toString("utf8"));
 	return settings satisfies ServerSettings;
 }
 
-const flexServerSettings = await getFlexServerSettings();
+let flex_server_settings = await get_flex_server_settings();
 
-const viteServerHttpsConfig: CommonServerOptions["https"] =
-	flexServerSettings.tls && {
-		cert: resolveFromFlex(flexServerSettings.tls.cert),
-		key: resolveFromFlex(flexServerSettings.tls.key),
+let vite_server_https_config: CommonServerOptions["https"] =
+	flex_server_settings.tls && {
+		cert: resolve_paths_from_flex(flex_server_settings.tls.cert),
+		key: resolve_paths_from_flex(flex_server_settings.tls.key),
 	};
 
 // ISSUE(vitejs): Activer l'HTTPS + Proxy rétrograde vers le protocole HTTP/1.
@@ -47,9 +50,9 @@ const viteServerHttpsConfig: CommonServerOptions["https"] =
 //
 // > Enable TLS + HTTP/2. Note this downgrades to TLS only when the server.proxy
 // > option is also used.
-const viteServerUrlProtocol = flexServerSettings.tls ? "https" : "http";
+const vite_server_url_protocol = flex_server_settings.tls ? "https" : "http";
 /*
-const viteServerProxyConfig: CommonServerOptions["proxy"] = {
+const vite_server_proxy_config: CommonServerOptions["proxy"] = {
 	"/api": {
 		secure: false,
 		target: `${viteServerUrlProtocol}://${flexServerSettings.ip}:${flexServerSettings.port}`,
@@ -61,25 +64,30 @@ const viteServerProxyConfig: CommonServerOptions["proxy"] = {
 };
 */
 
+let open_to_browser_url = `${vite_server_url_protocol}://localhost:${flex_server_settings.port}/chat`;
+
 // https://vitejs.dev/config/
-export default defineConfig({
+export default define_config({
 	plugins: [vue()],
+
 	build: {
 		outDir: path.resolve("dist"),
 	},
+
 	server: {
 		// NOTE: Activer l'HTTPS, active automatiquement le protocole HTTP/2,
 		// 		 sauf + proxy, voir le commentaire `ISSUE` ci-haut.
-		https: viteServerHttpsConfig,
+		https: vite_server_https_config,
 
 		// NOTE: Voir le commentaire `ISSUE` ci-haut.
-		//proxy: viteServerProxyConfig,
+		//proxy: vite_server_proxy_config,
 
 		// NOTE: Voir le commentaire `ISSUE` ci-haut. Ouvre l'URL vers le
 		//       serveur backend pour le moment, afin d'éviter de se manger des
 		//       erreurs à l'exécution lors des appels XHR (fetch).
-		open: `${viteServerUrlProtocol}://localhost:${flexServerSettings.port}/chat`,
+		open: open_to_browser_url,
 	},
+
 	resolve: {
 		alias: [
 			// Application
@@ -94,12 +102,12 @@ export default defineConfig({
 			// Assets
 			{
 				find: /^assets:~/,
-				replacement: resolveFromFlex("assets"),
+				replacement: resolve_paths_from_flex("assets"),
 			},
 			// SCSS Libs
 			{
 				find: /^scss:~/,
-				replacement: resolveFromFlex("libs", "scss"),
+				replacement: resolve_paths_from_flex("libs", "scss"),
 			},
 		],
 	},

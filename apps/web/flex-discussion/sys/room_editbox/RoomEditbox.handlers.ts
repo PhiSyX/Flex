@@ -14,9 +14,10 @@ import { type Props, inputModel } from "./RoomEditbox.state";
 // Type //
 // ---- //
 
-export interface Emits {
-	(evtName: "change-nickname", event: MouseEvent): void;
-	(evtName: "submit", inputModel: string): void;
+export interface Emits 
+{
+	(event_name: "change-nickname", event: MouseEvent): void;
+	(event_name: "submit", inputModel: string): void;
 }
 
 // -------- //

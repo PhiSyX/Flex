@@ -1,32 +1,34 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-vue-uikit";
-import { computed } from "vue";
-
 import type { ChannelMember, ChannelMemberSelected } from "@phisyx/flex-chat";
 
+import { computed } from "vue";
+
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	disabled?: boolean;
 	isSameMember: boolean;
 	currentClientMember: ChannelMember;
 	selectedMember: ChannelMemberSelected;
 }
 
-interface Emits {
+interface Emits 
+{
 	(
-		evtName: "set-access-level",
+		event_name: "set-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(
-		evtName: "unset-access-level",
+		event_name: "unset-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 }
 
@@ -37,47 +39,51 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
-const isCurrentClientMemberGlobalOperator = computed(() =>
+let is_current_client_member_global_operator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 
-const isCurrentClientMemberHalfOperator = computed(() =>
+let is_current_client_member_half_operator = computed(() =>
 	props.currentClientMember.accessLevel.eq(
 		ChannelAccessLevelFlag.HalfOperator,
 	),
 );
 
-const isCurrentClientMemberHaveOperatorRights = computed(() =>
+let is_current_client_member_have_operator_rights = computed(() =>
 	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Operator),
 );
-const isCurrentClientMemberHaveHalfOperatorRights = computed(() =>
+let is_current_client_member_have_half_operator_rights = computed(() =>
 	props.currentClientMember.accessLevel.ge(
 		ChannelAccessLevelFlag.HalfOperator,
 	),
 );
 
-const isSelectedMemberHalfOperator = computed(() =>
+let is_selected_member_half_operator = computed(() =>
 	props.selectedMember.member.accessLevel.eq(
 		ChannelAccessLevelFlag.HalfOperator,
 	),
 );
-const isSelectedMemberVipRights = computed(() =>
+let is_selected_member_vip_rights = computed(() =>
 	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Vip),
 );
 
-const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
+// ------- //
+// Handler //
+// ------- //
+
+const set_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
+const unset_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", props.selectedMember.member, accessLevel);
 </script>
 
 <template>
-	<template v-if="isSameMember && isCurrentClientMemberHalfOperator">
+	<template v-if="isSameMember && is_current_client_member_half_operator">
 		<UiButton
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /dehop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.HalfOperator)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
 			-h
 		</UiButton>
@@ -85,17 +91,17 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 
 	<template
 		v-if="
-			isCurrentClientMemberHaveOperatorRights ||
-			isCurrentClientMemberGlobalOperator
+			is_current_client_member_have_operator_rights ||
+			is_current_client_member_global_operator
 		"
 	>
 		<UiButton
-			v-if="!isSelectedMemberHalfOperator"
+			v-if="!is_selected_member_half_operator"
 			:disabled="disabled"
 			variant="secondary"
 			class="is-half-operator"
 			title="Commande /hop"
-			@click="setAccessLevelHandler(ChannelAccessLevelFlag.HalfOperator)"
+			@click="set_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
 			+h
 		</UiButton>
@@ -104,24 +110,24 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /dehop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.HalfOperator)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
 			-h
 		</UiButton>
 	</template>
 	<template
 		v-if="
-			isCurrentClientMemberHaveHalfOperatorRights ||
-			isCurrentClientMemberGlobalOperator
+			is_current_client_member_have_half_operator_rights ||
+			is_current_client_member_global_operator
 		"
 	>
 		<UiButton
-			v-if="!isSelectedMemberVipRights"
+			v-if="!is_selected_member_vip_rights"
 			:disabled="disabled"
 			variant="secondary"
 			class="is-vip"
 			title="Commande /vip"
-			@click="setAccessLevelHandler(ChannelAccessLevelFlag.Vip)"
+			@click="set_access_level_handler(ChannelAccessLevelFlag.Vip)"
 		>
 			+v
 		</UiButton>
@@ -130,7 +136,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /devip"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.Vip)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.Vip)"
 		>
 			-v
 		</UiButton>

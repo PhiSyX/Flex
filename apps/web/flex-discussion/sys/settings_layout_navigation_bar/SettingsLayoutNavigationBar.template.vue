@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { InputSwitch } from "@phisyx/flex-vue-uikit";
 
-const navigationBarPosition = defineModel<"left" | "right">();
+// --------- //
+// Composant //
+// --------- //
+
+let navigation_bar_position = defineModel<"left" | "right">();
 </script>
 
 <template>
@@ -19,7 +23,7 @@ const navigationBarPosition = defineModel<"left" | "right">();
 				value-y="left"
 				label-n="Droite"
 				value-n="right"
-				v-model="navigationBarPosition"
+				v-model="navigation_bar_position"
 			/>
 		</div>
 	</form>

@@ -8,13 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { defineSetupVue3 } from "@histoire/plugin-vue";
-import useFlexUIKit from "@phisyx/flex-vue-uikit";
+import { defineSetupVue3 as define_setup_vue3 } from "@histoire/plugin-vue";
+import use_flex_uikit from "@phisyx/flex-vue-uikit";
 
 import "#/assets/scss/style.scss";
 
-export const setupVue3 = defineSetupVue3(({ app, story, variant }) => {
-	app.use(useFlexUIKit);
+export const setupVue3 = define_setup_vue3(({ app, story, variant }) => {
+	app.use(use_flex_uikit);
 
 	document.documentElement.dataset.scheme = "ice";
 });

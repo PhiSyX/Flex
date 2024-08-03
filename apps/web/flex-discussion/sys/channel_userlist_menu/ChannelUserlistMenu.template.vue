@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-vue-uikit";
-import { computed } from "vue";
-
 import type { ChannelMember, ChannelMemberSelected } from "@phisyx/flex-chat";
 
+import { computed } from "vue";
+
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 import ChannelUserlistAdminOperatorMenu from "./ChannelUserlistAccessLevelAOPMenu.vue";
 import ChannelUserlistHalfOperatorMenu from "./ChannelUserlistAccessLevelHOPMenu.vue";
@@ -15,30 +15,32 @@ import ChannelUserlistOwnerMenu from "./ChannelUserlistAccessLevelQOPMenu.vue";
 // Type //
 // ---- //
 
-export interface Props {
+export interface Props 
+{
 	disabled?: boolean;
 	currentClientMember: ChannelMember;
 	selectedMember: ChannelMemberSelected;
 }
 
-export interface Emits {
-	(evtName: "ban-member", member: ChannelMember): void;
-	(evtName: "ban-nick", member: ChannelMember): void;
-	(evtName: "ignore-user", user: Origin): void;
-	(evtName: "kick-member", member: ChannelMember): void;
-	(evtName: "open-private", user: Origin): void;
+export interface Emits 
+{
+	(event_name: "ban-member", member: ChannelMember): void;
+	(event_name: "ban-nick", member: ChannelMember): void;
+	(event_name: "ignore-user", user: Origin): void;
+	(event_name: "kick-member", member: ChannelMember): void;
+	(event_name: "open-private", user: Origin): void;
 	(
-		evtName: "set-access-level",
+		event_name: "set-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
-	(evtName: "unban-member", member: ChannelMemberSelected): void;
-	(evtName: "unban-nick", member: ChannelMemberSelected): void;
-	(evtName: "unignore-user", user: Origin): void;
+	(event_name: "unban-member", member: ChannelMemberSelected): void;
+	(event_name: "unban-nick", member: ChannelMemberSelected): void;
+	(event_name: "unignore-user", user: Origin): void;
 	(
-		evtName: "unset-access-level",
+		event_name: "unset-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 }
 
@@ -49,40 +51,38 @@ export interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const isSameMember = computed(() =>
+let is_same_member = computed(() =>
 	props.currentClientMember.partialEq(props.selectedMember.member),
 );
 
-const isCurrentClientMemberGlobalOperator = computed(() =>
+let is_current_client_member_global_operator = computed(() =>
 	props.currentClientMember.isGlobalOperator(),
 );
 
-const isCurrentClientMemberHaveAccessLevel = computed(() =>
+let is_current_client_member_have_vip = computed(() =>
 	props.currentClientMember.accessLevel.gt(ChannelAccessLevelFlag.Vip),
 );
 
-const banMemberHandler = () => emit("ban-member", props.selectedMember.member);
-const banMemberNickHandler = () =>
-	emit("ban-nick", props.selectedMember.member);
-const unbanMemberHandler = () => emit("unban-member", props.selectedMember);
-const unbanMemberNickHandler = () => emit("unban-nick", props.selectedMember);
+// ------- //
+// Handler //
+// ------- //
 
-const openPrivateHandler = () =>
-	emit("open-private", props.selectedMember.member);
-const ignoreUserHandler = () =>
-	emit("ignore-user", props.selectedMember.member);
-const kickMemberHandler = () =>
-	emit("kick-member", props.selectedMember.member);
-const unignoreUserHandler = () =>
-	emit("unignore-user", props.selectedMember.member);
-const setAccessLevelHandler = (
+const ban_member_handler = () => emit("ban-member", props.selectedMember.member);
+const ban_nick_handler = () => emit("ban-nick", props.selectedMember.member);
+const unban_member_handler = () => emit("unban-member", props.selectedMember);
+const unban_nick_handler = () => emit("unban-nick", props.selectedMember);
+const open_private_handler = () => emit("open-private", props.selectedMember.member);
+const ignore_user_handler = () => emit("ignore-user", props.selectedMember.member);
+const kick_member_handler = () => emit("kick-member", props.selectedMember.member);
+const unignore_user_handler = () => emit("unignore-user", props.selectedMember.member);
+const set_access_level_handler = (
 	member: ChannelMember,
-	accessLevel: ChannelAccessLevelFlag,
-) => emit("set-access-level", member, accessLevel);
-const unsetAccessLevelHandler = (
+	access_level_flag: ChannelAccessLevelFlag,
+) => emit("set-access-level", member, access_level_flag);
+const unset_access_level_handler = (
 	member: ChannelMember,
-	accessLevel: ChannelAccessLevelFlag,
-) => emit("unset-access-level", member, accessLevel);
+	access_level_flag: ChannelAccessLevelFlag,
+) => emit("unset-access-level", member, access_level_flag);
 </script>
 
 <template>
@@ -102,20 +102,20 @@ const unsetAccessLevelHandler = (
 				position="right"
 				title="Commande /query"
 				variant="primary"
-				@click="openPrivateHandler"
+				@click="open_private_handler"
 			>
-				<span v-if="!isSameMember">Discuter en privé</span>
+				<span v-if="!is_same_member">Discuter en privé</span>
 				<span v-else>Ouvrir mon privé</span>
 			</UiButton>
 		</li>
-		<li v-if="!isSameMember">
+		<li v-if="!is_same_member">
 			<UiButton
 				v-if="!selectedMember.isBlocked"
 				icon="user-block"
 				position="right"
 				title="Commande /ignore <nickname>"
 				variant="primary"
-				@click="ignoreUserHandler"
+				@click="ignore_user_handler"
 			>
 				<span>Ignorer</span>
 			</UiButton>
@@ -128,7 +128,7 @@ const unsetAccessLevelHandler = (
 				:selected="selectedMember.isBlocked"
 				:true-value="true"
 				:false-value="false"
-				@click="unignoreUserHandler"
+				@click="unignore_user_handler"
 			>
 				<span>Ne plus ignorer</span>
 			</UiButton>
@@ -136,16 +136,16 @@ const unsetAccessLevelHandler = (
 
 		<li
 			v-if="
-				(isCurrentClientMemberGlobalOperator ||
-					isCurrentClientMemberHaveAccessLevel) &&
-				!isSameMember
+				(is_current_client_member_global_operator ||
+					is_current_client_member_have_vip) &&
+				!is_same_member
 			"
 		>
 			<UiButton
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /kick"
-				@click="kickMemberHandler"
+				@click="kick_member_handler"
 			>
 				Kick
 			</UiButton>
@@ -155,7 +155,7 @@ const unsetAccessLevelHandler = (
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /ban"
-				@click="banMemberHandler"
+				@click="ban_member_handler"
 			>
 				Ban
 			</UiButton>
@@ -164,7 +164,7 @@ const unsetAccessLevelHandler = (
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /unban"
-				@click="unbanMemberHandler"
+				@click="unban_member_handler"
 			>
 				Unban
 			</UiButton>
@@ -174,7 +174,7 @@ const unsetAccessLevelHandler = (
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /bannick"
-				@click="banMemberNickHandler"
+				@click="ban_nick_handler"
 			>
 				Bannick
 			</UiButton>
@@ -183,7 +183,7 @@ const unsetAccessLevelHandler = (
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /unbannick"
-				@click="unbanMemberNickHandler"
+				@click="unban_nick_handler"
 			>
 				Unbannick
 			</UiButton>
@@ -191,46 +191,46 @@ const unsetAccessLevelHandler = (
 
 		<li
 			v-if="
-				isCurrentClientMemberGlobalOperator ||
-				isCurrentClientMemberHaveAccessLevel
+				is_current_client_member_global_operator ||
+				is_current_client_member_have_vip
 			"
 			class="[ flex ]"
 		>
 			<ChannelUserlistOwnerMenu
 				:disabled="disabled"
-				:is-same-member="isSameMember"
+				:is-same-member="is_same_member"
 				:current-client-member="currentClientMember"
 				:selected-member="selectedMember"
-				@set-access-level="setAccessLevelHandler"
-				@unset-access-level="unsetAccessLevelHandler"
+				@set-access-level="set_access_level_handler"
+				@unset-access-level="unset_access_level_handler"
 			/>
 			<ChannelUserlistAdminOperatorMenu
 				:disabled="disabled"
-				:is-same-member="isSameMember"
+				:is-same-member="is_same_member"
 				:current-client-member="currentClientMember"
 				:selected-member="selectedMember"
-				@set-access-level="setAccessLevelHandler"
-				@unset-access-level="unsetAccessLevelHandler"
+				@set-access-level="set_access_level_handler"
+				@unset-access-level="unset_access_level_handler"
 			/>
 			<ChannelUserlistOperatorMenu
 				:disabled="disabled"
-				:is-same-member="isSameMember"
+				:is-same-member="is_same_member"
 				:current-client-member="currentClientMember"
 				:selected-member="selectedMember"
-				@set-access-level="setAccessLevelHandler"
-				@unset-access-level="unsetAccessLevelHandler"
+				@set-access-level="set_access_level_handler"
+				@unset-access-level="unset_access_level_handler"
 			/>
 			<ChannelUserlistHalfOperatorMenu
 				:disabled="disabled"
-				:is-same-member="isSameMember"
+				:is-same-member="is_same_member"
 				:current-client-member="currentClientMember"
 				:selected-member="selectedMember"
-				@set-access-level="setAccessLevelHandler"
-				@unset-access-level="unsetAccessLevelHandler"
+				@set-access-level="set_access_level_handler"
+				@unset-access-level="unset_access_level_handler"
 			/>
 		</li>
 
-		<li v-if="!isSameMember" title="TODO">
+		<li v-if="!is_same_member" title="TODO">
 			<UiButton
 				disabled
 				icon="report"

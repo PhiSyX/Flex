@@ -1,19 +1,23 @@
 
 <script setup lang="ts">
+import type { ModelRef } from "vue";
+
+import type { UserSession } from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
+
+import { computed, onMounted, reactive, ref } from "vue";
+
 import {
 	RememberMeStorage,
-	type UserSession,
 	View,
 	channelID,
 } from "@phisyx/flex-chat";
-import type { Option } from "@phisyx/flex-safety";
 import {
 	ButtonIcon,
 	InputSwitch,
 	TextInput,
 	UiButton,
 } from "@phisyx/flex-vue-uikit";
-import { type ModelRef, computed, onMounted, reactive, ref } from "vue";
 
 import { useChatStore } from "~/store";
 
@@ -21,26 +25,22 @@ import { useChatStore } from "~/store";
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	changeView: View;
 	user: Option<UserSession>;
 }
 
-// --------- //
-// Composant //
-// --------- //
-
-const props = defineProps<Props>();
-const changeView = defineModel<View>("changeView");
-
-const user = computed(() => props.user.unwrap());
+// -------- //
+// Constant //
+// -------- //
 
 /**
  * Attribut `title` de l'élément `<input name="nickname">`.
  *
  * Utilisé pour indiquer à l'utilisateur la valeur attendue pour un pseudonyme.
  */
-const VALIDATION_NICKNAME_INFO: string = `
+ const VALIDATION_NICKNAME_INFO: string = `
 Pour qu'un pseudonyme soit considéré comme valide, ses caractères doivent
 respecter, un format précis, les conditions suivantes :
 	- Il ne doit pas commencer par le caractère '-' ou par un caractère
@@ -63,12 +63,19 @@ const MAXLENGTH_NICKNAME: number = 30;
  */
 const PLACEHOLDER_NICKNAME: string = `Pseudonyme (max. ${MAXLENGTH_NICKNAME} caractères)`;
 
-const submitHandler = connectSubmit(changeView);
+// --------- //
+// Composant //
+// --------- //
 
-const chatStore = useChatStore();
+const props = defineProps<Props>();
+let changeView = defineModel<View>("changeView");
 
-const advancedInfo = ref(false);
-const loginFormData = reactive({
+let user = computed(() => props.user.unwrap());
+
+let chat_store = useChatStore();
+
+let advanced_info = ref(false);
+let login_form_data = reactive({
 	alternativeNickname: `${user.value.name}_`,
 	channels: import.meta.env.VITE_APP_CHANNELS || channelID(""),
 	nickname: user.value.name,
@@ -77,58 +84,72 @@ const loginFormData = reactive({
 	passwordServer: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
 	websocketServerURL: import.meta.env.VITE_APP_WEBSOCKET_URL,
 });
-const errors = reactive({
+let errors = reactive({
 	nickname: null as string | null,
 	alternativeNickname: null as string | null,
 });
-const loader = ref(false);
+let loader = ref(false);
+
+// --------- //
+// Lifecycle // -> Hooks
+// --------- //
+
+onMounted(() => {
+	chat_store.store.setUserID(user.value.id);
+	if (login_form_data.rememberMe.get()) {
+		submit_handler();
+	}
+});
 
 // ------- //
 // Handler //
 // ------- //
 
+const submit_handler = connect_submit(changeView);
+
 /**
  * Affiche les informations de connexion avancées.
  */
-function displayAdvancedInfoHandler() {
-	advancedInfo.value = true;
+function display_advanced_info_handler() 
+{
+	advanced_info.value = true;
 }
 
 /**
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
-function connectSubmit(changeViewModel: ModelRef<View | undefined, string>) {
-	async function connectSubmitHandler(evt?: Event) {
+function connect_submit(changeViewModel: ModelRef<View | undefined, string>) 
+{
+	async function connect_submit_handler(evt?: Event) {
 		evt?.preventDefault();
 
 		loader.value = true;
 
-		await chatStore.store.loadAllModules();
+		await chat_store.store.loadAllModules();
 
-		chatStore.connect(loginFormData);
+		chat_store.connect(login_form_data);
 
-		chatStore.listen(
+		chat_store.listen(
 			"RPL_WELCOME",
-			() => replyWelcomeHandler(changeViewModel),
+			() => reply_welcome_handler(changeViewModel),
 			{
 				once: true,
 			},
 		);
 
-		chatStore.listen("ERR_NICKNAMEINUSE", (data) =>
-			errorNicknameinuseHandler(data),
+		chat_store.listen("ERR_NICKNAMEINUSE", (data) =>
+			error_nicknameinuse_handler(data),
 		);
 	}
 
-	return connectSubmitHandler;
+	return connect_submit_handler;
 }
 
 /**
  * Écoute de l'événement `RPL_WELCOME`.
  */
-function replyWelcomeHandler(
-	changeViewModel: ModelRef<View | undefined, string>,
-) {
+function reply_welcome_handler(changeViewModel: ModelRef<View | undefined, string>) 
+{
 	loader.value = false;
 	changeViewModel.value = View.Chat;
 }
@@ -136,28 +157,22 @@ function replyWelcomeHandler(
 /**
  * Écoute de l'événement `ERR_NICKNAMEINUSE`.
  */
-function errorNicknameinuseHandler(data: GenericReply<"ERR_NICKNAMEINUSE">) {
-	if (data.nickname === loginFormData.alternativeNickname) {
+function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">) 
+{
+	if (data.nickname === login_form_data.alternativeNickname) {
 		errors.alternativeNickname = data.reason.slice(
-			loginFormData.alternativeNickname.length + 2,
+			login_form_data.alternativeNickname.length + 2,
 		);
 	} else {
-		errors.nickname = data.reason.slice(loginFormData.nickname.length + 2);
+		errors.nickname = data.reason.slice(login_form_data.nickname.length + 2);
 	}
 
 	loader.value = false;
 }
 
-function toSettingsView() {
+function to_settings_view_handler() {
 	changeView.value = View.Settings;
 }
-
-onMounted(() => {
-	chatStore.store.setUserID(user.value.id);
-	if (loginFormData.rememberMe.get()) {
-		submitHandler();
-	}
-});
 </script>
 
 <template>
@@ -170,11 +185,11 @@ onMounted(() => {
 				action="/chat/login"
 				method="POST"
 				class="[ ov:h flex! border/radius=1 ]"
-				@submit="submitHandler"
+				@submit="submit_handler"
 			>
 				<TextInput
-					v-show="advancedInfo"
-					v-model="loginFormData.websocketServerURL"
+					v-show="advanced_info"
+					v-model="login_form_data.websocketServerURL"
 					label="url"
 					name="server"
 					placeholder="URL WebSocket du serveur de Chat"
@@ -182,8 +197,8 @@ onMounted(() => {
 				/>
 
 				<TextInput
-					v-show="advancedInfo"
-					v-model="loginFormData.passwordServer"
+					v-show="advanced_info"
+					v-model="login_form_data.passwordServer"
 					label="password"
 					name="password_server"
 					placeholder="Mot de passe du serveur de Chat"
@@ -191,7 +206,7 @@ onMounted(() => {
 				/>
 
 				<TextInput
-					v-model="loginFormData.nickname"
+					v-model="login_form_data.nickname"
 					label="user"
 					name="nickname"
 					:error="errors.nickname"
@@ -201,8 +216,8 @@ onMounted(() => {
 				/>
 
 				<TextInput
-					v-show="advancedInfo"
-					v-model="loginFormData.alternativeNickname"
+					v-show="advanced_info"
+					v-model="login_form_data.alternativeNickname"
 					label="user"
 					name="alternative_nickname"
 					:error="errors.alternativeNickname"
@@ -212,25 +227,25 @@ onMounted(() => {
 				/>
 
 				<TextInput
-					v-show="advancedInfo"
-					v-model="loginFormData.realname"
+					v-show="advanced_info"
+					v-model="login_form_data.realname"
 					label="user"
 					name="realname"
 					placeholder="Nom réel"
 				/>
 
 				<TextInput
-					v-model="loginFormData.channels"
+					v-model="login_form_data.channels"
 					label="channel"
 					name="channels"
 				/>
 			</form>
 
-			<div class="[ align-t:center ]" v-if="!advancedInfo">
+			<div class="[ align-t:center ]" v-if="!advanced_info">
 				<ButtonIcon
 					icon="plus"
 					title="Afficher les champs avancés"
-					@click="displayAdvancedInfoHandler"
+					@click="display_advanced_info_handler"
 				/>
 			</div>
 
@@ -240,7 +255,7 @@ onMounted(() => {
 				</label>
 
 				<InputSwitch
-					v-model="loginFormData.rememberMe.value"
+					v-model="login_form_data.rememberMe.value"
 					labelN="Non"
 					labelY="Oui"
 					name="remember_me"
@@ -258,7 +273,7 @@ onMounted(() => {
 			</UiButton>
 		</section>
 
-		<UiButton icon="settings" class="color-scheme" @click="toSettingsView" />
+		<UiButton icon="settings" class="color-scheme" @click="to_settings_view_handler" />
 	</main>
 </template>
 

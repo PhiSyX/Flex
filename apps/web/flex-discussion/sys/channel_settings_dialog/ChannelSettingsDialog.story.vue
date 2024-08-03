@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ChannelMember, ChannelRoom, User, channelID } from "@phisyx/flex-chat";
 
-import ChannelSettingsDialog from "./ChannelSettingsDialog.vue";
+import ChannelSettingsDialog from "./ChannelSettingsDialog.template.vue";
 
 const channel1 = new ChannelRoom(channelID("#chan1"));
 channel1.setSettingMode("s");

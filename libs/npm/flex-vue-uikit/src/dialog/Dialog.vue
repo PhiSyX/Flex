@@ -13,7 +13,7 @@ interface Props {
 interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
-	(evtName: "close", evt: MouseEvent): void;
+	(event_name: "close", evt: MouseEvent): void;
 }
 
 // --------- //

@@ -1,28 +1,24 @@
 <script setup lang="ts">
-import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
-import { ref } from "vue";
-
 import type { Room } from "@phisyx/flex-chat";
 
+import { ref } from "vue";
+
+import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
+
 import vResize from "~/directives/resize";
-import NavigationServer from "#/sys/navigation_server/NavigationServer.vue";
-
-// -------- //
-// Constant //
-// -------- //
-
-const DEFAULT_MAX_SIZE = 255;
-const DEFAULT_MIN_SIZE = 42;
+import NavigationServer from "#/sys/navigation_server/NavigationServer.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	servers: Array<Server>;
 }
 
-interface Server {
+interface Server 
+{
 	active: boolean;
 	connected: boolean;
 	folded: boolean;
@@ -31,12 +27,20 @@ interface Server {
 	rooms: Array<Room>;
 }
 
-interface Emits {
-	(evtName: "change-room", origin: Origin | RoomID): void;
-	(evtName: "close-room", origin: Origin | RoomID): void;
-	(evtName: "open-channel-list"): void;
-	(evtName: "open-settings-view"): void;
+interface Emits 
+{
+	(event_name: "change-room", origin: Origin | RoomID): void;
+	(event_name: "close-room", origin: Origin | RoomID): void;
+	(event_name: "open-channel-list"): void;
+	(event_name: "open-settings-view"): void;
 }
+
+// -------- //
+// Constant //
+// -------- //
+
+const DEFAULT_MAX_SIZE = 255;
+const DEFAULT_MIN_SIZE = 42;
 
 // --------- //
 // Composant //
@@ -45,20 +49,23 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const folded = ref(false);
-const navWidth = ref(
-	folded.value ? `${DEFAULT_MIN_SIZE}px` : `${DEFAULT_MAX_SIZE}px`,
-);
+let folded = ref(false);
+let navWidth = ref(folded.value ? `${DEFAULT_MIN_SIZE}px` : `${DEFAULT_MAX_SIZE}px`);
 
-const changeRoom = (origin: Origin | RoomID) => emit("change-room", origin);
-const closeRoom = (origin: Origin | RoomID) => emit("close-room", origin);
-const openChannelList = () => emit("open-channel-list");
-const openSettingsView = () => emit("open-settings-view");
+// ------- //
+// Handler //
+// ------- //
 
-function toggleNavigationHandler() {
-	const navW = Number.parseInt(navWidth.value, 10);
+const change_room_handler = (origin: Origin | RoomID) => emit("change-room", origin);
+const close_room_handler = (origin: Origin | RoomID) => emit("close-room", origin);
+const open_channel_list_handler = () => emit("open-channel-list");
+const open_settings_view_handler = () => emit("open-settings-view");
 
-	if (folded.value || navW < DEFAULT_MAX_SIZE / 2) {
+function toggle_navigation_handler() 
+{
+	const nav_width = Number.parseInt(navWidth.value, 10);
+
+	if (folded.value || nav_width < DEFAULT_MAX_SIZE / 2) {
 		navWidth.value = `${DEFAULT_MAX_SIZE}px`;
 	} else {
 		navWidth.value = `${DEFAULT_MIN_SIZE}px`;
@@ -67,8 +74,9 @@ function toggleNavigationHandler() {
 	folded.value = !folded.value;
 }
 
-function resizeHandler(entries: Array<ResizeObserverEntry>) {
-	const [entry] = entries;
+function resize_handler(entries: Array<ResizeObserverEntry>) 
+{
+	let [entry] = entries;
 
 	navWidth.value = `${entry.contentRect.width}px`;
 
@@ -84,7 +92,7 @@ function resizeHandler(entries: Array<ResizeObserverEntry>) {
 
 <template>
 	<section 
-		v-resize="resizeHandler"
+		v-resize="resize_handler"
 		class="navigation-area [ flex:shrink=0 flex! select:none resize:x ]"
 		:style="{ width: navWidth }"
 	>
@@ -94,15 +102,15 @@ function resizeHandler(entries: Array<ResizeObserverEntry>) {
 				:container-folded="folded"
 				:key="server.name"
 				v-bind="server"
-				@change-room="changeRoom"
-				@close-room="closeRoom"
+				@change-room="change_room_handler"
+				@close-room="close_room_handler"
 			/>
 		</nav>
 
 		<footer class="[ flex gap=1 p=1 h=6 ]">
 			<ButtonIcon
 				:icon="folded ? 'arrow-right' : 'arrow-left'"
-				@click="toggleNavigationHandler"
+				@click="toggle_navigation_handler"
 			/>
 
 			<div
@@ -115,10 +123,10 @@ function resizeHandler(entries: Array<ResizeObserverEntry>) {
 					icon="channel-list"
 					:with-opacity="false"
 					title="Liste des salons"
-					@click="openChannelList"
+					@click="open_channel_list_handler"
 				/>
 
-				<ButtonIcon icon="settings" @click="openSettingsView" />
+				<ButtonIcon icon="settings" @click="open_settings_view_handler" />
 			</div>
 		</footer>
 	</section>

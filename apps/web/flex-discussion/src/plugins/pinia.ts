@@ -15,6 +15,7 @@ import { createPinia } from "pinia";
 /**
  * Installe le plugin Pinia.
  */
-export function install(app: App<Element>) {
+export function install(app: App<Element>)
+{
 	app.use(createPinia());
 }

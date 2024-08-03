@@ -3,19 +3,22 @@ import { onActivated, ref } from "vue";
 
 import type { RoomMessage } from "@phisyx/flex-chat";
 
-import RoomMessageComponent from "#/sys/room_message/RoomMessage.vue";
+import RoomMessageComponent from "#/sys/room_message/RoomMessage.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	messages: Array<RoomMessage>;
 }
-interface Emits {
+
+interface Emits 
+{
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
-	(evtName: "open-room", roomName: RoomID): void;
+	(event_name: "open-room", room_id: RoomID): void;
 }
 
 // --------- //
@@ -25,43 +28,48 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const $root = ref<HTMLElement>();
-const containerNeedsScroll = ref(true);
+let $root = ref<HTMLElement>();
+let container_needs_scroll = ref(true);
 
-// -------- //
-// Fonction //
-// -------- //
-
-function scrollToBottom() {
-	if (containerNeedsScroll.value) scroll();
-}
-
-function scroll() {
-	if (!$root.value) {
-		return;
-	}
-	$root.value.scrollTop = $root.value.scrollHeight;
-}
-
-// -------- //
-// Handlers //
-// -------- //
-
-const openRoom = (roomName: RoomID) => emit("open-room", roomName);
-
-function scrollHandler() {
-	if (!$root.value) {
-		return;
-	}
-
-	containerNeedsScroll.value =
-		$root.value.clientHeight + $root.value.scrollTop + 150 >=
-		$root.value.scrollHeight;
-
-	scrollToBottom();
-}
+// --------- //
+// Lifecycle // -> Hooks
+// --------- //
 
 onActivated(() => scroll());
+
+// ------- //
+// Handler //
+// ------- //
+
+const openRoom = (room_id: RoomID) => emit("open-room", room_id);
+
+function scroll_handler() 
+{
+	if (!$root.value) {
+		return;
+	}
+
+	container_needs_scroll.value = $root.value.clientHeight 
+								 + $root.value.scrollTop + 150 >= $root.value.scrollHeight;
+
+	scroll_to_bottom();
+}
+
+function scroll_to_bottom() 
+{
+	if (container_needs_scroll.value) {
+		scroll();
+	}
+}
+
+function scroll() 
+{
+	if (!$root.value) {
+		return;
+	}
+
+	$root.value.scrollTop = $root.value.scrollHeight;
+}
 </script>
 
 <template>
@@ -71,7 +79,7 @@ onActivated(() => scroll());
 				v-for="message in messages"
 				:key="message.id"
 				v-bind="message"
-				@vue:mounted="scrollHandler"
+				@vue:mounted="scroll_handler"
 				@open-room="openRoom"
 			/>
 		</ul>

@@ -1,20 +1,22 @@
 <script setup lang="ts">
+import { ref } from "vue";
+
 import { channelID } from "@phisyx/flex-chat";
 import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
-
-import { ref } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	layerName: string;
 }
 
-interface Emits {
-	(evtName: "close"): void;
-	(evtName: "submit", channels: ChannelID, keys: string): void;
+interface Emits 
+{
+	(event_name: "close"): void;
+	(event_name: "submit", channels: ChannelID, keys: string): void;
 }
 
 // --------- //
@@ -24,11 +26,16 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const channelsRequest = ref<ChannelID>(channelID(""));
-const keysRequest = ref("");
+let channels_request = ref<ChannelID>(channelID(""));
+let keys_request = ref("");
 
-function submitHandler() {
-	emit("submit", channelsRequest.value, keysRequest.value);
+// ------- //
+// Handler //
+// ------- //
+
+function create_channel_handler() 
+{
+	emit("submit", channels_request.value, keys_request.value);
 }
 </script>
 
@@ -46,7 +53,7 @@ function submitHandler() {
 				variant="primary"
 				class="[ ml=1 mt=1 ]"
 				:form="`${layerName}_form`"
-				@click="submitHandler()"
+				@click="create_channel_handler"
 			>
 				Rejoindre maintenant
 			</UiButton>
@@ -56,7 +63,7 @@ function submitHandler() {
 			:id="`${layerName}_form`"
 			action="/chat/join/channel"
 			method="post"
-			@submit.prevent="submitHandler()"
+			@submit.prevent="create_channel_handler"
 		>
 			<table class="[ w:full ]">
 				<tr>
@@ -67,7 +74,7 @@ function submitHandler() {
 					<td>
 						<input
 							id="channels"
-							v-model="channelsRequest"
+							v-model="channels_request"
 							placeholder="#channel1,#channel2"
 							required
 							type="text"
@@ -85,7 +92,7 @@ function submitHandler() {
 					<td>
 						<input
 							id="keys"
-							v-model="keysRequest"
+							v-model="keys_request"
 							name="keys"
 							placeholder="key1,key2"
 							type="text"

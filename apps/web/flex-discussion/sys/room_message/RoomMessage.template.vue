@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
-import { None, Some } from "@phisyx/flex-safety";
 import { computed, inject } from "vue";
 
+import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
 import {
 	ChannelMember,
 	PrivateParticipant,
-	User,
 	isChannel,
 } from "@phisyx/flex-chat";
+import { None, Some } from "@phisyx/flex-safety";
 
-import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.vue";
+import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";
 import Match from "#/sys/match/Match.vue";
-import PrivateNickComponent from "#/sys/private_nick/PrivateNick.vue";
+import PrivateNickComponent from "#/sys/private_nick/PrivateNick.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
-	mention: boolean;
+interface Props 
+{
 	data: object & { origin: Origin | ChannelOrigin };
 	archived: boolean;
 	id: string;
+	mention: boolean;
 	message: string;
 	isCurrentClient: boolean;
 	nickname: string;
@@ -40,7 +40,7 @@ interface Props {
 		| "privmsg";
 }
 
-type Emits = (evtName: "open-room", roomName: RoomID) => void;
+type Emits = (event_name: "open-room", room_id: RoomID) => void;
 
 // --------- //
 // Composant //
@@ -49,66 +49,75 @@ type Emits = (evtName: "open-room", roomName: RoomID) => void;
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const eventsComponents = inject<Array<string>>("eventsComponents");
+// NOTE: fournit depuis main.ts
+let events_components = inject<Array<string>>("events_components");
 
-const _isChannel = computed(
+let _is_channel = computed(
 	() => props.nickname !== "*" && isChannel(props.target),
 );
 
-const _isPrivate = computed(() => props.nickname !== "*" && !_isChannel.value);
+let _is_private = computed(() => props.nickname !== "*" && !_is_channel.value);
 
-const maybeChannelMember = computed(() => {
-	const member = new ChannelMember(new User(props.data.origin));
+let maybe_channel_member = computed(() => {
+	let member = new ChannelMember(props.data.origin);
+	
 	if ("access_level" in props.data.origin) {
-		member.withAccessLevel(props.data.origin.access_level);
+		member = member.withAccessLevel(props.data.origin.access_level);
 	}
-	return _isChannel.value ? Some(member) : None();
+
+	return _is_channel.value ? Some(member) : None();
 });
 
-const maybePrivateNick = computed(() => {
-	return _isPrivate.value
+let maybe_private_nick = computed(
+	() => _is_private.value
 		? Some(
-				new PrivateParticipant(
-					new User(props.data.origin),
-				).withIsCurrentClient(props.isCurrentClient),
+				new PrivateParticipant(props.data.origin)
+					.withIsCurrentClient(props.isCurrentClient),
 			)
-		: None();
-});
+		: None()
+);
 
-const isEvent = computed(() => props.type.startsWith("event:"));
+let is_event = computed(() => props.type.startsWith("event:"));
 
-const componentEventExists = computed(() => {
-	const componentName = camelCase(componentEventName.value, {
+let component_event_exists = computed(() => {
+	let component_name = camelCase(component_event_name.value, {
 		includes_separators: false,
 	});
-	return eventsComponents?.includes(componentName) ?? false;
+	return events_components?.includes(component_name) ?? false;
 });
 
-const componentEventName = computed(() => kebabcase(`room:${props.type}`));
+let component_event_name = computed(() => kebabcase(`room:${props.type}`));
 
-const isExternalMessage = computed(() => {
+let is_external_message = computed(() => {
 	if (props.type === "pubmsg") {
-		const data = props.data as GenericReply<"PUBMSG">;
-		if (data.external) return Some(data.origin);
+		let data = props.data as GenericReply<"PUBMSG">;
+		if (data.external) {
+			return Some(data.origin);
+		}
 	}
+
 	return None();
 });
 
-const isEventOrError = computed(() => {
-	return (
-		props.type.startsWith("error:err_") ||
+let is_event_or_error = computed(
+	() =>  (
+		props.type.startsWith("error:err_") || 
 		props.type.startsWith("event:rpl_")
-	);
-});
+	)
+);
 
-const openRoom = (roomName: RoomID) => emit("open-room", roomName);
+// ------- //
+// Handler //
+// ------- //
+
+const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 </script>
 
 <template>
 	<li
 		:id="id"
 		:data-archived="archived"
-		:data-external="isExternalMessage.is_some()"
+		:data-external="is_external_message.is_some()"
 		:data-mention="mention"
 		:data-myself="isCurrentClient"
 		:data-type="type"
@@ -118,11 +127,11 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 	>
 		<strong v-if="mention">[mention]</strong>
 
-		<template v-if="componentEventExists && isEvent">
+		<template v-if="component_event_exists && is_event">
 			<component
-				:is="componentEventName"
+				:is="component_event_name"
 				v-bind="props"
-				@open-room="openRoom"
+				@open-room="open_room_handler"
 			/>
 		</template>
 		<template v-else>
@@ -130,10 +139,10 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 				{{ time.formattedTime }}
 			</time>
 
-			<template v-if="isEventOrError"> * </template>
+			<template v-if="is_event_or_error"> * </template>
 			<Match
-				v-else-if="isExternalMessage.is_some()"
-				:maybe="isExternalMessage"
+				v-else-if="is_external_message.is_some()"
+				:maybe="is_external_message"
 			>
 				<template #some="{ data: origin }">
 					<em>(extern)</em>
@@ -141,9 +150,9 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 				</template>
 			</Match>
 			<template v-else>
-				<Match :maybe="maybeChannelMember">
+				<Match :maybe="maybe_channel_member">
 					<template #some="{ data: channelMember }">
-						<ChannelNickComponent
+						<ChannelNick
 							tag="span"
 							:nickname="channelMember.nickname"
 							:symbol="channelMember.accessLevel.highest.symbol"
@@ -154,7 +163,7 @@ const openRoom = (roomName: RoomID) => emit("open-room", roomName);
 						/>
 					</template>
 				</Match>
-				<Match :maybe="maybePrivateNick">
+				<Match :maybe="maybe_private_nick">
 					<template #some="{ data: privateNick }">
 						<PrivateNickComponent
 							tag="span"

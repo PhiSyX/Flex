@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { camelCase } from "@phisyx/flex-capitalization";
 import type {
 	ChannelActivitiesView,
 	ChannelMember,
 	ChannelRoom,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
+
 import { computed, inject } from "vue";
 
-import ChannelName from "../channel_name/ChannelName.vue";
+import { camelCase } from "@phisyx/flex-capitalization";
+
+import ChannelName from "../channel_name/ChannelName.template.vue";
 import Match from "../match/Match.vue";
 import ChannelActivity from "./ChannelActivity.vue";
 
@@ -16,7 +18,8 @@ import ChannelActivity from "./ChannelActivity.vue";
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	name: ChannelActivitiesView["groups"][number]["name"];
 	group: ChannelActivitiesView["groups"][number];
 }
@@ -28,12 +31,12 @@ interface Props {
 const props = defineProps<Props>();
 
 // biome-ignore lint/style/noNonNullAssertion: retourne un type Option (None dans le cas de nil).
-const currentClientMember = inject<Option<ChannelMember>>(
+let current_client_member = inject<Option<ChannelMember>>(
 	"currentClientMember",
 )!;
-const room = inject<ChannelRoom>("room");
+let room = inject<ChannelRoom>("room");
 
-const activityGroupName = computed(() => camelCase(`${props.name}s`));
+let activity_group_name = computed(() => camelCase(`${props.name}s`));
 </script>
 
 <template>
@@ -43,9 +46,9 @@ const activityGroupName = computed(() => camelCase(`${props.name}s`));
 	>
 		<li data-name="activity-name">
 			<strong class="[ display-b align-t:center ]">
-				{{ activityGroupName }}
+				{{ activity_group_name }}
 
-				<Match :maybe="currentClientMember">
+				<Match :maybe="current_client_member">
 					<template #some="{ data: member }">
 						sur
 						<ChannelName 

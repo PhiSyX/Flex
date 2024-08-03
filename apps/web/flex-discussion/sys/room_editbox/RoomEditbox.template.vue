@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 import { onActivated } from "vue";
+
+import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
 import { type Emits, changeNick, onSubmit } from "./RoomEditbox.handlers";
 import { useAutocompletion, useInputHistory } from "./RoomEditbox.hooks";
@@ -30,15 +31,24 @@ const {
 	suggestionInput,
 } = useAutocompletion(props);
 
-function submitHandler() {
-	historySubmitHandler();
-	autocompletionSubmitHandler();
-	onSubmit(emit, props)();
-}
+// --------- //
+// Lifecycle // -> Hooks
+// --------- //
 
 onActivated(() => {
 	$input.value?.focus();
 });
+
+// -------- //
+// Fonction //
+// -------- //
+
+function submit_handler() 
+{
+	historySubmitHandler();
+	autocompletionSubmitHandler();
+	onSubmit(emit, props)();
+}
 </script>
 
 <template>
@@ -47,7 +57,7 @@ onActivated(() => {
 		method="POST"
 		:disabled="disableInput ? 'disabled' : undefined"
 		class="[ p=1 pl=0 ]"
-		@submit.prevent="submitHandler()"
+		@submit.prevent="submit_handler"
 	>
 		<input type="hidden" name="target" :value="room.name" />
 

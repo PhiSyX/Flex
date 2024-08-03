@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { CSSProperties } from "vue";
-import { useOverlayer } from "./Overlayer.hooks";
 
 import { vTrap } from "~/directives";
+import { useOverlayer } from "./Overlayer.hooks";
 
 const { store, destroyHandler } = useOverlayer();
 </script>

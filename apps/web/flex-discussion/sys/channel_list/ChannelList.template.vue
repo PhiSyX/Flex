@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { fuzzy_search } from "@phisyx/flex-search";
-import { UiButton } from "@phisyx/flex-vue-uikit";
+import type { ChannelListCustomRoom } from "@phisyx/flex-chat";
+
 import { computed, ref } from "vue";
 
-import type { ChannelListCustomRoom } from "@phisyx/flex-chat";
+import { fuzzy_search } from "@phisyx/flex-search";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	room: ChannelListCustomRoom;
 }
 
-interface Emits {
-	(evtName: "join-channel", name: ChannelID): void;
-	(evtName: "create-channel-dialog", event: MouseEvent): void;
+interface Emits 
+{
+	(event_name: "join-channel", name: ChannelID): void;
+	(event_name: "create-channel-dialog", event: MouseEvent): void;
 }
 
 // --------- //
@@ -25,15 +28,16 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const filteredChannelInput = ref("");
-const selectedChannels = ref(new Set<ChannelID>());
+let filtered_channel_input = ref("");
+let selected_channels = ref(new Set<ChannelID>());
 
-const filteredChannels = computed(() => {
-	if (filteredChannelInput.value.length === 0) {
+let filtered_channels = computed(() => {
+	if (filtered_channel_input.value.length === 0) {
 		return props.room.channels;
 	}
+
 	return Array.from(props.room.channels).filter((channel) =>
-		fuzzy_search(filteredChannelInput.value, channel[0]).is_some(),
+		fuzzy_search(filtered_channel_input.value, channel[0]).is_some(),
 	);
 });
 
@@ -41,20 +45,17 @@ const filteredChannels = computed(() => {
 // Handlers //
 // -------- //
 
-function joinSelectedChannels() {
-	for (const channel of selectedChannels.value) {
-		joinChannel(channel);
+function join_selected_channels() 
+{
+	for (const channel of selected_channels.value) {
+		join_channel(channel);
 	}
-	selectedChannels.value.clear();
+
+	selected_channels.value.clear();
 }
 
-function joinChannel(name: ChannelID) {
-	emit("join-channel", name);
-}
-
-function createChannelDialog(event: MouseEvent) {
-	emit("create-channel-dialog", event);
-}
+const join_channel 			= (name: ChannelID) 	=> emit("join-channel", name);
+const create_channel_dialog = (event: MouseEvent) 	=> emit("create-channel-dialog", event);
 </script>
 
 <template>
@@ -62,7 +63,7 @@ function createChannelDialog(event: MouseEvent) {
 		<h1 class="[ align-t:center ]">Liste des salons</h1>
 
 		<input
-			v-model.trim="filteredChannelInput"
+			v-model.trim="filtered_channel_input"
 			placeholder="Filtrer ces salons..."
 			type="search"
 			class="[ input:reset p=1 border/radius=1 ]"
@@ -73,7 +74,7 @@ function createChannelDialog(event: MouseEvent) {
 				id="channel-join-layer_btn"
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
-				@click="createChannelDialog"
+				@click="create_channel_dialog"
 			>
 				Créer un salon
 			</UiButton>
@@ -81,8 +82,8 @@ function createChannelDialog(event: MouseEvent) {
 			<UiButton
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
-				:disabled="selectedChannels.size === 0"
-				@click="joinSelectedChannels()"
+				:disabled="selected_channels.size === 0"
+				@click="join_selected_channels()"
 			>
 				Rejoindre les salons sélectionnés
 			</UiButton>
@@ -99,7 +100,7 @@ function createChannelDialog(event: MouseEvent) {
 
 			<div
 				class="tbody"
-				v-for="([_, channelData], idx) of filteredChannels"
+				v-for="([_, channelData], idx) of filtered_channels"
 			>
 				<span>#</span>
 				<span>Nom du salon</span>
@@ -110,12 +111,12 @@ function createChannelDialog(event: MouseEvent) {
 				<div>
 					<label
 						:for="`chan-${idx}`"
-						@dblclick="joinChannel(channelData.channel)"
+						@dblclick="join_channel(channelData.channel)"
 					/>
 					<input
 						:id="`chan-${idx}`"
 						type="checkbox"
-						v-model="selectedChannels"
+						v-model="selected_channels"
 						:value="channelData.channel"
 					/>
 				</div>

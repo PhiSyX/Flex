@@ -2,13 +2,14 @@
 import type { Room } from "@phisyx/flex-chat";
 
 import Match from "#/sys/match/Match.vue";
-import NavigationRoom from "#/sys/navigation_room/NavigationRoom.vue";
+import NavigationRoom from "#/sys/navigation_room/NavigationRoom.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	active: boolean;
 	connected: boolean;
 	containerFolded?: boolean;
@@ -22,9 +23,10 @@ interface Props {
 // Type //
 // ---- //
 
-export interface Emits {
-	(evtName: "change-room", origin: Origin | RoomID): void;
-	(evtName: "close-room", origin: Origin | RoomID): void;
+export interface Emits 
+{
+	(event_name: "change-room", origin: Origin | RoomID): void;
+	(event_name: "close-room", origin: Origin | RoomID): void;
 }
 
 // --------- //
@@ -33,24 +35,32 @@ export interface Emits {
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
-const folded = defineModel<boolean>("folded");
 
-const openRoomHandler = (origin: Origin | RoomID) =>
+let folded = defineModel<boolean>("folded");
+
+// ------- //
+// Handler //
+// ------- //
+
+const open_room_handler = (origin: Origin | RoomID) =>
 	emit("change-room", origin);
-const closeRoomHandler = (origin: Origin | RoomID) =>
+const close_room_handler = (origin: Origin | RoomID) =>
 	emit("close-room", origin);
 
-function shouldBeListedInNav(room: Room) {
+function should_be_listed_in_nav(room: Room) 
+{
 	return ["channel", "private", "notice-custom-room"].includes(room.type);
 }
 
-function changeRoomHandler(evt: Event) {
+function change_room_handler(evt: Event) 
+{
 	evt.preventDefault();
 	evt.stopPropagation();
-	openRoomHandler(props.id);
+	open_room_handler(props.id);
 }
 
-function toggleFoldHandler() {
+function toggle_fold_handler() 
+{
 	folded.value = !folded.value;
 }
 </script>
@@ -60,7 +70,7 @@ function toggleFoldHandler() {
 		<summary
 			:class="{ 'is-active': active }"
 			class="[ flex align-i:center align-jc:sb p=1 cursor:pointer min-h=8 ]"
-			@click="changeRoomHandler"
+			@click="change_room_handler"
 		>
 			<icon-home class="[ flex:shrink=0 ]" />
 
@@ -71,14 +81,14 @@ function toggleFoldHandler() {
 				key="arrow-down"
 				v-show="!containerFolded"
 				class="[ flex:shrink=0 ]"
-				@click.stop="toggleFoldHandler()"
+				@click.stop="toggle_fold_handler()"
 			/>
 			<icon-arrow-right
 				v-else
 				key="arrow-right"
 				v-show="!containerFolded"
 				class="[ flex:shrink=0 ]"
-				@click.stop="toggleFoldHandler()"
+				@click.stop="toggle_fold_handler()"
 			/>
 
 			<icon-logoff
@@ -92,7 +102,7 @@ function toggleFoldHandler() {
 		<ul class="[ list:reset }">
 			<template v-for="room in rooms" :key="room.type + ':' + room.name">
 				<NavigationRoom
-					v-if="shouldBeListedInNav(room) && !room.isClosed()"
+					v-if="should_be_listed_in_nav(room) && !room.isClosed()"
 					:id="room.id()"
 					:active="room.isActive() && !room.isClosed()"
 					:highlight="room.highlighted"
@@ -100,8 +110,8 @@ function toggleFoldHandler() {
 					:folded="containerFolded"
 					:total-unread-events="room.totalUnreadEvents"
 					:total-unread-messages="room.totalUnreadMessages"
-					@open-room="openRoomHandler"
-					@close-room="closeRoomHandler"
+					@open-room="open_room_handler"
+					@close-room="close_room_handler"
 				>
 					<template #icon>
 						<icon-message 

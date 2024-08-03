@@ -1,32 +1,34 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-vue-uikit";
-import { computed } from "vue";
-
 import type { ChannelMember, ChannelMemberSelected } from "@phisyx/flex-chat";
 
+import { computed } from "vue";
+
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	disabled?: boolean;
 	isSameMember: boolean;
 	currentClientMember: ChannelMember;
 	selectedMember: ChannelMemberSelected;
 }
 
-interface Emits {
+interface Emits 
+{
 	(
-		evtName: "set-access-level",
+		event_name: "set-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(
-		evtName: "unset-access-level",
+		event_name: "unset-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 }
 
@@ -37,43 +39,49 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
-const isCurrentClientMemberGlobalOperator = computed(() =>
-	props.currentClientMember.isGlobalOperator(),
+let is_current_client_member_global_operator = computed(
+	() => props.currentClientMember .isGlobalOperator()
 );
-const isCurrentClientMemberOwner = computed(() =>
-	props.currentClientMember.accessLevel.eq(ChannelAccessLevelFlag.Owner),
+let is_current_client_member_owner = computed(
+	() => props.currentClientMember.accessLevel.eq(
+		ChannelAccessLevelFlag.Owner
+	)
 );
-const isCurrentClientMemberAdmin = computed(() =>
-	props.currentClientMember.accessLevel.eq(
-		ChannelAccessLevelFlag.AdminOperator,
-	),
+let is_current_client_member_admin = computed(
+	() => props.currentClientMember.accessLevel.eq(
+		ChannelAccessLevelFlag.AdminOperator
+	)
 );
-const isSelectedMemberAdmin = computed(() =>
-	props.selectedMember.member.accessLevel.eq(
-		ChannelAccessLevelFlag.AdminOperator,
-	),
+let isSelectedMemberAdmin = computed(
+	() => props.selectedMember.member.accessLevel.eq(
+		ChannelAccessLevelFlag.AdminOperator
+	)
 );
 
-const setAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
-	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
-	emit("unset-access-level", props.selectedMember.member, accessLevel);
+// ------- //
+// Handler //
+// ------- //
+
+const set_access_level_handler   = (flag: ChannelAccessLevelFlag) =>
+	emit("set-access-level", props.selectedMember.member, flag);
+const unset_access_level_handler = (flag: ChannelAccessLevelFlag) =>
+	emit("unset-access-level", props.selectedMember.member, flag);
 </script>
 
 <template>
-	<template v-if="isSameMember && isCurrentClientMemberAdmin">
+	<template v-if="isSameMember && is_current_client_member_admin">
 		<UiButton
 			:disabled="disabled"
 			class="btn/secondary"
 			title="Commande /deaop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.AdminOperator)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.AdminOperator)"
 		>
 			-a
 		</UiButton>
 	</template>
 	<template
 		v-else-if="
-			isCurrentClientMemberOwner || isCurrentClientMemberGlobalOperator
+			is_current_client_member_owner || is_current_client_member_global_operator
 		"
 	>
 		<UiButton
@@ -81,7 +89,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 			:disabled="disabled"
 			class="btn/secondary is-admin-operator"
 			title="Commande /aop"
-			@click="setAccessLevelHandler(ChannelAccessLevelFlag.AdminOperator)"
+			@click="set_access_level_handler(ChannelAccessLevelFlag.AdminOperator)"
 		>
 			+a
 		</UiButton>
@@ -90,7 +98,7 @@ const unsetAccessLevelHandler = (accessLevel: ChannelAccessLevelFlag) =>
 			:disabled="disabled"
 			class="btn/secondary"
 			title="Commande /deaop"
-			@click="unsetAccessLevelHandler(ChannelAccessLevelFlag.AdminOperator)"
+			@click="unset_access_level_handler(ChannelAccessLevelFlag.AdminOperator)"
 		>
 			-a
 		</UiButton>

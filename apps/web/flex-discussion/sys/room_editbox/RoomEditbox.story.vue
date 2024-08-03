@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PrivateRoom } from "@phisyx/flex-chat";
 
-import RoomEditbox from "./RoomEditbox.vue";
+import RoomEditbox from "./RoomEditbox.template.vue";
 
 const room = new PrivateRoom("PhiSyX");
 </script>

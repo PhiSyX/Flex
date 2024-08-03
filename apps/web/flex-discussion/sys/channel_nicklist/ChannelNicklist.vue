@@ -1,19 +1,18 @@
 <script setup lang="ts">
+import type { ChannelMember, ChannelMemberUnfiltered } from "@phisyx/flex-chat";
+
 import { computed } from "vue";
 
-import type { ChannelMember } from "@phisyx/flex-chat";
-import {
-	ChannelMemberFiltered,
-	type ChannelMemberUnfiltered,
-} from "@phisyx/flex-chat";
+import { ChannelMemberFiltered } from "@phisyx/flex-chat";
 
-import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.vue";
+import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	filterInput: string;
 	moderators: {
 		original: Array<ChannelMember>;
@@ -29,9 +28,10 @@ interface Props {
 	};
 }
 
-interface Emits {
-	(evtName: "open-private", origin: Origin): void;
-	(evtName: "select-member", origin: Origin): void;
+interface Emits 
+{
+	(event_name: "open-private", origin: Origin): void;
+	(event_name: "select-member", origin: Origin): void;
 }
 
 // --------- //
@@ -41,79 +41,70 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const channelMemberTitleAttr = computed(() => {
-	return (
-		"· Simple clique: ouvrir le menu du membre du salon... \n" +
-		"· Double clique: ouvrir la discussion privé avec le membre du salon\n"
-	);
-});
+let channel_member_title_attribute = (
+	"· Simple clique: ouvrir le menu du membre du salon... \n" +
+	"· Double clique: ouvrir la discussion privé avec le membre du salon\n"
+);
 
-const moderatorsList = computed<
-	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
->(() => {
-	return props.moderators.filtered.length > 0
+let moderators_list = computed<Array<
+	| ChannelMember
+	| ChannelMemberFiltered
+	| ChannelMemberUnfiltered
+>>(
+	() => props.moderators.filtered.length > 0
 		? props.moderators.filtered
-		: props.moderators.original;
-});
+		: props.moderators.original
+);
 
-const vipsList = computed<
-	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
->(() => {
-	return props.vips.filtered.length > 0
+let vips_list = computed<Array<
+	| ChannelMember
+	| ChannelMemberFiltered
+	| ChannelMemberUnfiltered
+>>(
+	() => props.vips.filtered.length > 0
 		? props.vips.filtered
-		: props.vips.original;
-});
+		: props.vips.original
+);
 
-const usersList = computed<
-	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
->(() => {
-	return props.users.filtered.length > 0
+let users_list = computed<Array<
+	| ChannelMember
+	| ChannelMemberFiltered
+	| ChannelMemberUnfiltered
+>>(
+	() => props.users.filtered.length > 0
 		? props.users.filtered
-		: props.users.original;
-});
+		: props.users.original
+);
 
-const hasFilteredModerators = computed(() => {
-	return props.moderators.filtered.some(
-		(member) => member instanceof ChannelMemberFiltered,
-	);
-});
-const hasFilteredVips = computed(() => {
-	return props.vips.filtered.some(
-		(member) => member instanceof ChannelMemberFiltered,
-	);
-});
-const hasFilteredUsers = computed(() => {
-	return props.users.filtered.some(
-		(member) => member instanceof ChannelMemberFiltered,
-	);
-});
+let has_filtered_moderators = computed(() => props.moderators
+	.filtered.some((member) => member instanceof ChannelMemberFiltered)
+);
+let has_filtered_vips = computed(() => props.vips
+	.filtered.some((member) => member instanceof ChannelMemberFiltered)
+);
+let has_filtered_users = computed(() => props.users
+	.filtered.some((member) => member instanceof ChannelMemberFiltered)
+);
 
-const hasFilters = computed(() => {
-	return (
-		hasFilteredModerators.value ||
-		hasFilteredVips.value ||
-		hasFilteredUsers.value
-	);
-});
+let has_filters = computed(() => (
+	has_filtered_moderators.value ||
+	has_filtered_vips.value ||
+	has_filtered_users.value
+));
 
 // -------- //
 // Handlers //
 // -------- //
 
-function openPrivateHandler(member: ChannelMember) {
-	emit("open-private", member);
-}
-
-function selectUserHandler(member: ChannelMember) {
-	emit("select-member", member);
-}
+const open_private_handler = (member: ChannelMember) => emit("open-private", member);
+const select_user_handler  = (member: ChannelMember) => emit("select-member", member);
 </script>
 
 <template>
 	<fieldset class="[ scroll:y flex! gap=3 p=2 select:none ]">
 		<legend
 			:class="{
-				'vis-h': filterInput.length === 0 || hasFilters,
+				'vis-h': filterInput.length === 0 || has_filters,
 			}"
 		>
 			Aucun résultat
@@ -121,76 +112,76 @@ function selectUserHandler(member: ChannelMember) {
 
 		<details
 			v-if="moderators.original.length > 0"
-			:open="moderatorsList.length > 0"
+			:open="moderators_list.length > 0"
 		>
 			<summary>Modérateurs</summary>
 
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="filteredMember in moderatorsList"
-					:key="filteredMember.id"
-					:classes="filteredMember.className"
+					v-for="filtered_member in moderators_list"
+					:key="filtered_member.id"
+					:classes="filtered_member.className"
 					:hits="
-						'searchHits' in filteredMember
-							? filteredMember.searchHits
+						'searchHits' in filtered_member
+							? filtered_member.searchHits
 							: []
 					"
-					:is-current-client="filteredMember.isCurrentClient"
-					:nickname="filteredMember.nickname"
-					:symbol="filteredMember.accessLevel.highest.symbol"
+					:is-current-client="filtered_member.isCurrentClient"
+					:nickname="filtered_member.nickname"
+					:symbol="filtered_member.accessLevel.highest.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredMember)"
-					@click="selectUserHandler(filteredMember)"
-					:title="channelMemberTitleAttr"
+					@dblclick="open_private_handler(filtered_member)"
+					@click="select_user_handler(filtered_member)"
+					:title="channel_member_title_attribute"
 				/>
 			</ul>
 		</details>
 
-		<details v-if="vips.original.length > 0" :open="vipsList.length > 0">
+		<details v-if="vips.original.length > 0" :open="vips_list.length > 0">
 			<summary>VIP</summary>
 
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="filteredMember in vipsList"
-					:key="filteredMember.id"
-					:classes="filteredMember.className"
+					v-for="filtered_member in vips_list"
+					:key="filtered_member.id"
+					:classes="filtered_member.className"
 					:hits="
-						'searchHits' in filteredMember
-							? filteredMember.searchHits
+						'searchHits' in filtered_member
+							? filtered_member.searchHits
 							: []
 					"
-					:is-current-client="filteredMember.isCurrentClient"
-					:nickname="filteredMember.nickname"
-					:symbol="filteredMember.accessLevel.highest.symbol"
+					:is-current-client="filtered_member.isCurrentClient"
+					:nickname="filtered_member.nickname"
+					:symbol="filtered_member.accessLevel.highest.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredMember)"
-					@click="selectUserHandler(filteredMember)"
+					@dblclick="open_private_handler(filtered_member)"
+					@click="select_user_handler(filtered_member)"
 				/>
 			</ul>
 		</details>
 
-		<details v-if="users.original.length > 0" :open="usersList.length > 0">
+		<details v-if="users.original.length > 0" :open="users_list.length > 0">
 			<summary>Utilisateurs</summary>
 
 			<ul class="[ list:reset ]">
 				<ChannelNickComponent
 					tag="li"
-					v-for="filteredMember in usersList"
-					:key="filteredMember.id"
-					:classes="filteredMember.className"
+					v-for="filtered_member in users_list"
+					:key="filtered_member.id"
+					:classes="filtered_member.className"
 					:hits="
-						'searchHits' in filteredMember
-							? filteredMember.searchHits
+						'searchHits' in filtered_member
+							? filtered_member.searchHits
 							: []
 					"
-					:is-current-client="filteredMember.isCurrentClient"
-					:nickname="filteredMember.nickname"
-					:symbol="filteredMember.accessLevel.highest.symbol"
+					:is-current-client="filtered_member.isCurrentClient"
+					:nickname="filtered_member.nickname"
+					:symbol="filtered_member.accessLevel.highest.symbol"
 					class="channel/nick"
-					@dblclick="openPrivateHandler(filteredMember)"
-					@click="selectUserHandler(filteredMember)"
+					@dblclick="open_private_handler(filtered_member)"
+					@click="select_user_handler(filtered_member)"
 				/>
 			</ul>
 		</details>

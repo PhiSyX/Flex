@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PrivateParticipant, PrivateRoom, User } from "@phisyx/flex-chat";
 
-import PrivateRoomComponent from "./PrivateRoom.vue";
+import PrivateRoomComponent from "./PrivateRoom.template.vue";
 
 const origin: User = new User({
 	id: "a-b-c-d-e" as UserID,

@@ -4,22 +4,37 @@ import { computed } from "vue";
 
 import { useChatStore, useOverlayerStore } from "~/store";
 
-import ChannelSettingsDialogComponent from "#/sys/channel_settings_dialog/ChannelSettingsDialog.vue";
+import ChannelSettingsDialogComponent from "#/sys/channel_settings_dialog/ChannelSettingsDialog.template.vue";
 
-const chatStore = useChatStore();
-const overlayerStore = useOverlayerStore();
+// -------- //
+// Constant //
+// -------- //
 
 const LAYER_NAME: string = ChannelSettingsDialog.ID;
 
-const dialog = computed(() => new ChannelSettingsDialog(overlayerStore.store));
-const hasLayer = computed(() => dialog.value.exists());
-const layer = computed(() => dialog.value.getUnchecked());
+// --------- //
+// Composant //
+// --------- //
+
+let chatStore = useChatStore();
+let overlayerStore = useOverlayerStore();
+
+let dialog = computed(() => new ChannelSettingsDialog(overlayerStore.store));
+let hasLayer = computed(() => dialog.value.exists());
+let layer = computed(() => dialog.value.getUnchecked());
+
+// ------- //
+// Handler //
+// ------- //
 
 /**
  * Soumission du formulaire.
  */
-function submitFormData(modesSettings: Partial<Command<"MODE">["modes"]>) {
-	if (!layer.value.data) return;
+function submit_form_data_handler(modesSettings: Partial<Command<"MODE">["modes"]>) 
+{
+	if (!layer.value.data) {
+		return;
+	}
 
 	chatStore.applyChannelSettings(
 		layer.value.data.room.name,
@@ -30,10 +45,12 @@ function submitFormData(modesSettings: Partial<Command<"MODE">["modes"]>) {
 /**
  * Mise à jour du sujet.
  */
-function updateTopicHandler(topic?: string) {
+function update_topic_handler(topic?: string) 
+{
 	if (!layer.value.data || layer.value.data.room.topic.get() === topic) {
 		return;
 	}
+
 	chatStore.updateTopic(layer.value.data.room.name, topic);
 }
 </script>
@@ -44,8 +61,8 @@ function updateTopicHandler(topic?: string) {
 			:layer-name="LAYER_NAME"
 			v-bind="layer.data"
 			@close="dialog.destroy()"
-			@submit="submitFormData"
-			@update-topic="updateTopicHandler"
+			@submit="submit_form_data_handler"
+			@update-topic="update_topic_handler"
 		/>
 	</Teleport>
 </template>

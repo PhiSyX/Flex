@@ -15,6 +15,7 @@ import useFlexUIKit from "@phisyx/flex-vue-uikit";
 /**
  * Installe notre plugin Flex UI Kit.
  */
-export function install(app: App<Element>) {
+export function install(app: App<Element>)
+{
 	app.use(useFlexUIKit as Plugin);
 }

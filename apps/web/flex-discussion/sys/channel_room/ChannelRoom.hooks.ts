@@ -17,7 +17,7 @@ import {
 	watchEffect,
 } from "vue";
 
-import type { Emits, Props } from "./ChannelRoom.vue";
+import type { Emits, Props } from "./ChannelRoom.template.vue";
 
 function submitTopic(
 	emit: Emits,

@@ -3,32 +3,33 @@ import { computed } from "vue";
 
 import { useChatStore, useSettingsStore } from "~/store";
 
-import NavigationArea from "#/sys/navigation_area/NavigationArea.vue";
+import NavigationArea from "#/sys/navigation_area/NavigationArea.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Emits {
+interface Emits 
+{
 	// biome-ignore lint/style/useShorthandFunctionType: ?
-	(evtName: "open-settings-view"): void;
+	(event_name: "open-settings-view"): void;
 }
 
 // --------- //
 // Composant //
 // --------- //
 
-const chatStore = useChatStore();
-const settingsStore = useSettingsStore();
+let chat_store = useChatStore();
+let settings_store = useSettingsStore();
 
 const emit = defineEmits<Emits>();
 
-const navigationBarPosition = computed(
-	() => settingsStore.layout.navigationBarPosition,
+let navigationBarPosition = computed(
+	() => settings_store.layout.navigationBarPosition,
 );
 
-const servers = computed(() => {
-	const network = chatStore.store.network();
+let servers = computed(() => {
+	let network = chat_store.store.network();
 	return [
 		{
 			active: network.isActive(),
@@ -36,35 +37,40 @@ const servers = computed(() => {
 			folded: false,
 			id: network.id(),
 			name: network.name,
-			rooms: chatStore.store.roomManager().rooms(),
+			rooms: chat_store.store.roomManager().rooms(),
 		},
 	];
 });
 
-function changeRoom(origin: Origin | RoomID) {
-	chatStore.changeRoom(origin);
+// ------- //
+// Handler //
+// ------- //
+
+const open_settings_view_handler = () => ("open-settings-view");
+
+function change_room_handler(origin: Origin | RoomID) 
+{
+	chat_store.changeRoom(origin);
 }
 
-function closeRoom(origin: Origin | RoomID) {
-	chatStore.closeRoom(origin);
+function close_room_handler(origin: Origin | RoomID) 
+{
+	chat_store.closeRoom(origin);
 }
 
-function openChannelList() {
-	chatStore.channelList();
-}
-
-function openSettingsView() {
-	emit("open-settings-view");
+function open_channel_list_handler() 
+{
+	chat_store.channelList();
 }
 </script>
 
 <template>
 	<NavigationArea
 		:servers="servers"
-		@change-room="changeRoom"
-		@close-room="closeRoom"
-		@open-channel-list="openChannelList"
-		@open-settings-view="openSettingsView"
+		@change-room="change_room_handler"
+		@close-room="close_room_handler"
+		@open-channel-list="open_channel_list_handler"
+		@open-settings-view="open_settings_view_handler"
 		:dir="navigationBarPosition === 'left' ? 'ltl' : 'rtl'"
 		:style="{
 			'--navigation-area-order': navigationBarPosition === 'right' && '1'

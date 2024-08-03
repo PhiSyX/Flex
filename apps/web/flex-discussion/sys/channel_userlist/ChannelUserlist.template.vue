@@ -13,14 +13,16 @@ import {
 // Type //
 // ---- //
 
-export interface Props {
+export interface Props
+{
 	name: string;
 	members: ChannelMembers;
 }
 
-interface Emits {
-	(evtName: "open-private", origin: Origin): void;
-	(evtName: "select-member", origin: Origin): void;
+interface Emits 
+{
+	(event_name: "open-private", origin: Origin): void;
+	(event_name: "select-member", origin: Origin): void;
 }
 
 // --------- //
@@ -35,8 +37,12 @@ const { filterNick, moderatorsFiltered, vipsFiltered, usersFiltered } =
 
 const { filterView, view } = useFilterView();
 
-const openPrivate = (origin: Origin) => emit("open-private", origin);
-const selectChannelMember = (origin: Origin) => emit("select-member", origin);
+// ------- //
+// Handler //
+// ------- //
+
+const open_private_handler = (origin: Origin) => emit("open-private", origin);
+const select_channel_member_handler = (origin: Origin) => emit("select-member", origin);
 </script>
 
 <template>
@@ -72,8 +78,8 @@ const selectChannelMember = (origin: Origin) => emit("select-member", origin);
 					original: members.users,
 					filtered: usersFiltered,
 				}"
-				@open-private="openPrivate"
-				@select-member="selectChannelMember"
+				@open-private="open_private_handler"
+				@select-member="select_channel_member_handler"
 			/>
 		</KeepAlive>
 	</div>

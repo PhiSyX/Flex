@@ -13,7 +13,8 @@ import ChannelActivityGroup from "./ChannelActivityGroup.vue";
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	activities: ChannelActivitiesView;
 	currentClientMember: Option<ChannelMember>;
 	room: ChannelRoom;
@@ -32,13 +33,15 @@ const props = defineProps<Props>();
 provide("currentClientMember", props.currentClientMember);
 provide("room", props.room);
 
-const expanded = defineModel<boolean>("expanded", { required: true });
+let expanded = defineModel<boolean>("expanded", { required: true });
 
-function expandPanelHandler() {
+function expand_panel_handler() 
+{
 	expanded.value = true;
 }
 
-function shrinkPanelHandler() {
+function shrink_panel_handler() 
+{
 	expanded.value = false;
 }
 </script>
@@ -50,7 +53,7 @@ function shrinkPanelHandler() {
 			'pt=1 flex max-h=6 align-jc:end cursor:pointer': !expanded,
 			'pt=2 flex! h:full is-expanded': expanded,
 		}"
-		@click="expandPanelHandler"
+		@click="expand_panel_handler"
 	>
 		<section class="[ flex:full scroll:y scroll:hidden flex! gap=2 ]">
 			<ChannelActivityGroup
@@ -70,11 +73,11 @@ function shrinkPanelHandler() {
 		>
 			<icon-arrow-right v-if="!expanded"
 				variant="chevron"
-				@click.stop="expandPanelHandler"
+				@click.stop="expand_panel_handler"
 			/>
 			<icon-arrow-up v-else
 				variant="chevron"
-				@click.stop="shrinkPanelHandler"
+				@click.stop="shrink_panel_handler"
 			/>
 		</div>
 	</div>

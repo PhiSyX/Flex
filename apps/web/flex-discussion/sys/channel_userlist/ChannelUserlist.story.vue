@@ -6,7 +6,7 @@ import {
 	User,
 } from "@phisyx/flex-chat";
 
-import ChannelUserlist from "./ChannelUserlist.vue";
+import ChannelUserlist from "./ChannelUserlist.template.vue";
 
 const channelName = "#channel";
 const users = new ChannelMembers();
