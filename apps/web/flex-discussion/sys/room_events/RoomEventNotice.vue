@@ -25,7 +25,7 @@ const target = computed(() =>
 	</time>
 	<span v-if="isCurrentClient">&ndash;&gt;</span>
 	<span v-else>&lt;&ndash;</span>
-	<p>-<strong>{{ target }}</strong>- {{ data.text }}</p>
+	<p>-<strong>{{ target }}</strong>- {{ message }}</p>
 </template>
 
 <style scoped lang="scss">

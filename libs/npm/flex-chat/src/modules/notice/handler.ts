@@ -37,7 +37,11 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE"> {
 		const activeRoom = this.store.roomManager().active();
 
 		const payload = { ...data, isCurrentClient };
-		const message = activeRoom.addEvent("event:notice", payload);
+		const message = activeRoom.addEvent(
+			"event:notice",
+			payload,
+			payload.text,
+		);
 
 		if (
 			!isCurrentClient ||
@@ -48,7 +52,7 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE"> {
 				.getOrInsert(NoticeCustomRoom.ID, () => new NoticeCustomRoom());
 
 			if (activeRoom.id() !== NoticeCustomRoom.ID) {
-				noticeRoom.addEvent("event:notice", payload);
+				noticeRoom.addEvent("event:notice", payload, payload.text);
 			}
 		}
 

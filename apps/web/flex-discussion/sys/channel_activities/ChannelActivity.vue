@@ -82,7 +82,7 @@ defineProps<Props>();
 			<span>: </span>
 
 			<p class="[ display-i hyphens ]">
-				{{ activity.message.data.text }}
+				{{ activity.message.message }}
 			</p>
 		</div>
 	</li>
