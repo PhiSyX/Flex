@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function stripTags(s: string): string {
+export function strip_tags(s: string): string 
+{
 	return s.replace(/(<([^>]+)>)/gi, "").trim();
 }

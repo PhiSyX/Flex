@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Option } from "@phisyx/flex-safety";
-import { type Computed, type Signal, isComputed } from "@phisyx/flex-signal";
+import { type Computed, type Signal, is_computed } from "@phisyx/flex-signal";
 import { ElementExtension } from "./_ext";
 
 // --------- //
@@ -163,7 +163,7 @@ class HTMLElementExtension<
 			if (evt.code.toLowerCase() === code.toLowerCase()) fn(evt);
 		};
 
-		if (isComputed(code)) {
+		if (is_computed(code)) {
 			code.watch(
 				(newValue, oldValue) => {
 					this.off("keydown", hndlr(oldValue || newValue));

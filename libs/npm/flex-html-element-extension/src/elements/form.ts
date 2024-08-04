@@ -8,8 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isPrimitive } from "@phisyx/flex-asserts";
-import { type Signal, isSignal } from "@phisyx/flex-signal";
+import type { Signal } from "@phisyx/flex-signal";
+import { isSignal } from "@phisyx/flex-signal";
+
 import {
 	FormHTMLElementExtension,
 	HTMLElementExtension as HExt,

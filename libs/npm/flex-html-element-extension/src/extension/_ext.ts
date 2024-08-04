@@ -8,6 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
+import type { Computed, Signal } from "@phisyx/flex-signal";
+
 import {
 	is_boolean,
 	is_dom_element,
@@ -17,21 +20,12 @@ import {
 	is_function,
 	is_future,
 	is_primitive,
-	is_string
+	is_string,
 } from "@phisyx/flex-asserts";
 import { kebabcase } from "@phisyx/flex-capitalization";
-import { noopBool } from "@phisyx/flex-helpers";
-import {
-	type Option,
-	is_option as isOption,
-	stripTags,
-} from "@phisyx/flex-safety";
-import {
-	type Computed,
-	type Signal,
-	isComputed,
-	isSignal,
-} from "@phisyx/flex-signal";
+import { noop_bool } from "@phisyx/flex-helpers";
+import { is_option, strip_tags } from "@phisyx/flex-safety";
+import { isComputed, isSignal } from "@phisyx/flex-signal";
 
 // --------- //
 // Interface //
@@ -111,8 +105,8 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		boolean: this.#createElementFromPrimitive,
 		object: this.#createElementFromObject,
 		function: this.#createElementFromFunction,
-		symbol: noopBool,
-		undefined: noopBool,
+		symbol: noop_bool,
+		undefined: noop_bool,
 	};
 
 	protected nativeElement: E;
@@ -197,7 +191,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 
 		if (str.startsWith("&") && str.endsWith(";")) {
 			let $temp = document.createElement("span");
-			$temp.innerHTML = stripTags(str);
+			$temp.innerHTML = strip_tags(str);
 
 			const firstChild = $temp.firstChild as ChildNode;
 			this.nativeElement.append(firstChild);
@@ -233,7 +227,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			return this.#handleDOMNode(obj);
 		}
 
-		if (isOption<FIXME>(obj)) {
+		if (is_option<FIXME>(obj)) {
 			obj.then((self) => this.#handleArgs([self]));
 			return true;
 		}
@@ -413,7 +407,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 
 	data(dataset: Record<string, string | Option<string>>): this {
 		for (const [key, value] of Object.entries(dataset)) {
-			if (isOption(value)) {
+			if (is_option(value)) {
 				if (value.is_some()) {
 					this.nativeElement.dataset[key] = value.unwrap();
 				}
