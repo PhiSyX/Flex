@@ -35,11 +35,11 @@ const props = withDefaults(defineProps<Props>(), {
 	valueN: false,
 });
 
-const inputModel = defineModel();
-const uniqueID = computed(() => props.name);
-const inputAttrID = `radio_${uniqueID.value}`;
-const inputAttrIDYes = `${inputAttrID}_y`;
-const inputAttrIDNo = `${inputAttrID}_n`;
+let inputModel = defineModel();
+let uniqueID = computed(() => props.name);
+let inputAttrID = `radio_${uniqueID.value}`;
+let inputAttrIDYes = `${inputAttrID}_y`;
+let inputAttrIDNo = `${inputAttrID}_n`;
 </script>
 
 <template>

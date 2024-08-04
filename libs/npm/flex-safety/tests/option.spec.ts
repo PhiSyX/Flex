@@ -70,7 +70,7 @@ it("Option: filter_map", () => {
 	).toEqual(None());
 
 	// NOTE: Le type `Option<number>` est requis ici.
-	const maybe_n: Option<number> = None();
+	let maybe_n: Option<number> = None();
 	expect(
 		maybe_n.filter_map((n) => {
 			if (n <= 18) return Some(n * 2);
@@ -95,7 +95,7 @@ it("Option: {or, or_else}", () => {
 	);
 
 	// NOTE: Le type `Option<string>` est requis ici.
-	const maybe_str: Option<string> = None();
+	let maybe_str: Option<string> = None();
 	expect(maybe_str.or_else(() => Some("Hello World"))).toEqual(
 		Some("Hello World"),
 	);
@@ -120,14 +120,14 @@ it("Option: replace", () => {
 	expect(Some("hello").replace("world")).toEqual(Some("world"));
 
 	// NOTE: Le type `Option<string>` est requis ici.
-	const maybe_str: Option<string> = None();
+	let maybe_str: Option<string> = None();
 	expect(maybe_str.replace("world")).toEqual(Some("world"));
 });
 
 it("Option: replace null value", () => {
-	const value = JSON.parse("null");
+	let value = JSON.parse("null");
 	// NOTE: Le type `Option<string>` est requis ici.
-	const maybe_str: Option<string> = None();
+	let maybe_str: Option<string> = None();
 	expect(maybe_str.replace(value)).toEqual(None());
 });
 

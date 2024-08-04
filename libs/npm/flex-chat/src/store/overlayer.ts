@@ -156,7 +156,7 @@ export class OverlayerStore
 
 	destroy_all(options: { force: boolean } = { force: false })
 	{
-		for (const [id, layer] of this.layers) {
+		for (let [id, layer] of this.layers) {
 			if (options.force) {
 				this.destroy(id);
 				continue;
@@ -218,7 +218,7 @@ export class OverlayerStore
 
 	update_all()
 	{
-		for (const [id, _] of this.layers) {
+		for (let [id, _] of this.layers) {
 			this.update(id);
 		}
 	}

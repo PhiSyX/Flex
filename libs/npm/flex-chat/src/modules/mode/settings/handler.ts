@@ -54,7 +54,7 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 		}
 
 		if (data.added) {
-			for (const [letter, mode] of data.added) {
+			for (let [letter, mode] of data.added) {
 				if (!is_channel_settings_letter_allowed(letter, mode)) continue;
 
 				channel.set_setting_mode(letter);
@@ -65,7 +65,7 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 		}
 
 		if (data.removed) {
-			for (const [letter, mode] of data.removed) {
+			for (let [letter, mode] of data.removed) {
 				if (!is_channel_settings_letter_allowed(letter, mode)) continue;
 
 				channel.unset_setting_mode(letter);

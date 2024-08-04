@@ -60,7 +60,7 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 		}
 
 		if (data.added) {
-			for (const [letter, mode] of data.added) {
+			for (let [letter, mode] of data.added) {
 				if (!is_control_access_letter_allowed(letter, mode)) {
 					continue;
 				}
@@ -81,7 +81,7 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 		}
 
 		if (data.removed) {
-			for (const [letter, mode] of data.removed) {
+			for (let [letter, mode] of data.removed) {
 				if (!is_control_access_letter_allowed(letter, mode)) {
 					continue;
 				}

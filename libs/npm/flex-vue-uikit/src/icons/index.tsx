@@ -80,7 +80,7 @@ export function ButtonIcon(props: ButtonProps): JSX.Element
 
 export function LabelIcon(props: LabelProps): JSX.Element
 {
-	const { icon, ...rest } = props;
+	let { icon, ...rest } = props;
 	const IconName = resolveComponent(`icon-${icon}`);
 	assertIcon(IconName);
 	return (

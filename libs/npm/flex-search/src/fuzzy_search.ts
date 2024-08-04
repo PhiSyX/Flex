@@ -64,12 +64,12 @@ const push_to_result = (
 		if (word.length === 0) {
 			return arr;
 		}
-		const maybe_last = arr[arr.length - 1];
+		let maybe_last = arr[arr.length - 1];
 		if (maybe_last == null) {
 			return [...arr, { type, word }];
 		}
 
-		const last = maybe_last;
+		let last = maybe_last;
 		if (last.type === type) {
 			return [...arr.slice(0, -1), { type, word: last.word + word }];
 		}
@@ -83,8 +83,8 @@ function fuzzy_search(
 ): Option<Array<FuzzySearchRecord>>
 {
 	return memcache(haystack + needle, () => {
-		const search_size = needle.length;
-		const in_str_len = haystack.length;
+		let search_size = needle.length;
+		let in_str_len = haystack.length;
 
 		let pattern_idx = 0;
 		let str_idx = 0;
@@ -92,9 +92,9 @@ function fuzzy_search(
 		let matches: Array<FuzzySearchRecord> = [];
 
 		while (pattern_idx !== search_size && str_idx !== in_str_len) {
-			const pattern_ch = needle.charAt(pattern_idx);
-			const str_ch = haystack.charAt(str_idx);
-			const push = push_to_result(matches, str_ch);
+			let pattern_ch = needle.charAt(pattern_idx);
+			let str_ch = haystack.charAt(str_idx);
+			let push = push_to_result(matches, str_ch);
 			if (
 				pattern_ch === str_ch ||
 				pattern_ch.toLowerCase() === str_ch.toLowerCase()

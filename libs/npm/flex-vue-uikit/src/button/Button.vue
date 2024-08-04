@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Icons } from "~/icons";
+import type { Icons } from "../icons";
 
 import { computed } from "vue";
 

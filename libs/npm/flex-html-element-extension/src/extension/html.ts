@@ -164,7 +164,7 @@ class HTMLElementExtension<E extends HTMLElement = FIXME> extends ElementExtensi
 		fn: (evt: KeyboardEvent) => void,
 	): this
 	{
-		const hndlr = (code: KeyboardEvent["code"]) => (evt: KeyboardEvent) => {
+		let hndlr = (code: KeyboardEvent["code"]) => (evt: KeyboardEvent) => {
 			if (evt.code.toLowerCase() === code.toLowerCase()) fn(evt);
 		};
 

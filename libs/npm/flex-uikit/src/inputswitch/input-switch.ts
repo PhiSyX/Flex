@@ -78,10 +78,10 @@ export default class InputSwitch {
 	}
 
 	render() {
-		const uniqueID = this.name;
-		const inputAttrID = `radio_${uniqueID}`;
-		const inputAttrIDYes = `${inputAttrID}_y`;
-		const inputAttrIDNo = `${inputAttrID}_n`;
+		let uniqueID = this.name;
+		let inputAttrID = `radio_${uniqueID}`;
+		let inputAttrIDYes = `${inputAttrID}_y`;
+		let inputAttrIDNo = `${inputAttrID}_n`;
 		return div(
 			slot,
 			ol(
