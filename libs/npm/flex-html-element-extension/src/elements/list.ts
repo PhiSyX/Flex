@@ -10,14 +10,17 @@
 
 import { HTMLElementExtension as Ext } from "../extension";
 
-export function ol(...args: Ext.Args): Ext<HTMLOListElement> {
-	return Ext.createElement("ol", args);
+export function ol(...args: Ext.Args): Ext<HTMLOListElement>
+{
+	return Ext.create_element("ol", args);
 }
 
-export function ul(...args: Ext.Args): Ext<HTMLUListElement> {
-	return Ext.createElement("ul", args);
+export function ul(...args: Ext.Args): Ext<HTMLUListElement>
+{
+	return Ext.create_element("ul", args);
 }
 
-export function li(...args: Ext.Args): Ext<HTMLLIElement> {
-	return Ext.createElement("li", args);
+export function li(...args: Ext.Args): Ext<HTMLLIElement>
+{
+	return Ext.create_element("li", args);
 }

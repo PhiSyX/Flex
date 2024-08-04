@@ -20,12 +20,15 @@ type ButtonType = HTMLButtonElement["type"] | "dialog";
 // Implémentation //
 // -------------- //
 
-export class AnchorHTMLElementExtension extends HTMLElementExtension<HTMLAnchorElement> {
-	static make(args: HTMLElementExtension.Args): AnchorHTMLElementExtension {
+export class AnchorHTMLElementExtension extends HTMLElementExtension<HTMLAnchorElement>
+{
+	static make(args: HTMLElementExtension.Args): AnchorHTMLElementExtension
+	{
 		return new AnchorHTMLElementExtension(args);
 	}
 
-	constructor(args: HTMLElementExtension.Args) {
+	constructor(args: HTMLElementExtension.Args)
+	{
 		super(document.createElement("a"), args);
 	}
 
@@ -33,17 +36,21 @@ export class AnchorHTMLElementExtension extends HTMLElementExtension<HTMLAnchorE
 	 * Public API
 	 */
 
-	href(value: HTMLAnchorElement["href"]): this {
-		return this.setAttribute("href", value);
+	href(value: HTMLAnchorElement["href"]): this
+	{
+		return this.set_attribute("href", value);
 	}
 }
 
-export class ButtonHTMLElementExtension extends HTMLElementExtension<HTMLButtonElement> {
-	static make(args: HTMLElementExtension.Args): ButtonHTMLElementExtension {
+export class ButtonHTMLElementExtension extends HTMLElementExtension<HTMLButtonElement>
+{
+	static make(args: HTMLElementExtension.Args): ButtonHTMLElementExtension
+	{
 		return new ButtonHTMLElementExtension(args);
 	}
 
-	constructor(args: HTMLElementExtension.Args) {
+	constructor(args: HTMLElementExtension.Args)
+	{
 		super(document.createElement("button"), args);
 	}
 
@@ -51,7 +58,8 @@ export class ButtonHTMLElementExtension extends HTMLElementExtension<HTMLButtonE
 	 * Public API
 	 */
 
-	override type(ty?: ButtonType & {}): this {
+	override type(ty?: ButtonType & {}): this
+	{
 		return super.type(ty);
 	}
 }

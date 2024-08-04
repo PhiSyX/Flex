@@ -8,28 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Signal } from "@phisyx/flex-signal";
+
 import { is_array } from "@phisyx/flex-asserts";
-import { type Signal, isSignal } from "@phisyx/flex-signal";
-import {
-	// ElementExtension as Ext,
-	HTMLElementExtension as HExt,
-} from "../extension";
+import { is_signal } from "@phisyx/flex-signal";
+
+import { HTMLElementExtension as HExt, } from "../extension";
 
 // TODO: use Computed
 export function forview<T>(
 	arr: Signal<Array<T>> | Array<T>,
-	shallowView: (key: T) => HExt | Promise<HExt>,
-): HExt {
-	let fragment = HExt.createFragment() as HExt;
+	shallow_view: (key: T) => HExt | Promise<HExt>,
+): HExt
+{
+	let fragment = HExt.create_fragment() as HExt;
 
 	if (is_array<T>(arr)) {
-		for (const item of arr.map(shallowView)) {
+		for (let item of arr.map(shallow_view)) {
 			fragment.append(item);
 		}
 	}
 
-	if (isSignal<Array<T>>(arr)) {
-		for (const item of arr.valueOf().map(shallowView)) {
+	if (is_signal<Array<T>>(arr)) {
+		for (let item of arr.valueOf().map(shallow_view)) {
 			fragment.append(item);
 		}
 	}

@@ -10,14 +10,17 @@
 
 import { HTMLElementExtension as Ext } from "../extension";
 
-export function img(...args: Ext.Args): Ext<HTMLImageElement> {
-	return Ext.createElement("img", args);
+export function img(...args: Ext.Args): Ext<HTMLImageElement>
+{
+	return Ext.create_element("img", args);
 }
 
-export function picture(...args: Ext.Args): Ext<HTMLPictureElement> {
-	return Ext.createElement("picture", args);
+export function picture(...args: Ext.Args): Ext<HTMLPictureElement>
+{
+	return Ext.create_element("picture", args);
 }
 
-export function video(...args: Ext.Args): Ext<HTMLVideoElement> {
-	return Ext.createElement("video", args);
+export function video(...args: Ext.Args): Ext<HTMLVideoElement>
+{
+	return Ext.create_element("video", args);
 }

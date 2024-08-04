@@ -10,16 +10,21 @@
 
 import { HTMLElementExtension as Ext } from "../extension";
 
-export function link(...args: Ext.Args): Ext<HTMLLinkElement> {
-	return Ext.createElement("link", args);
+export function link(...args: Ext.Args): Ext<HTMLLinkElement>
+{
+	return Ext.create_element("link", args);
 }
 
-export function meta(...args: Ext.Args): Ext<HTMLMetaElement> {
-	return Ext.createElement("meta", args);
+export function meta(...args: Ext.Args): Ext<HTMLMetaElement>
+{
+	return Ext.create_element("meta", args);
 }
 
-export function templateContent(id: `#${string}`): Node {
-	const element = document.getElementById(id.slice(1)) as HTMLTemplateElement;
-	if (!element) return document.createElement("span");
+export function template_content(id: `#${string}`): Node
+{
+	let element = document.getElementById(id.slice(1)) as HTMLTemplateElement | null;
+	if (element == null) {
+		return document.createElement("span");
+	}
 	return element.content.cloneNode(true);
 }

@@ -87,18 +87,18 @@ type InputTypeHTMLAttribute =
 // Implémentation //
 // -------------- //
 
-class HTMLElementExtension<
-	E extends HTMLElement = FIXME,
-> extends ElementExtension<E> {
-	public static createElement<
+class HTMLElementExtension<E extends HTMLElement = FIXME> extends ElementExtension<E>
+{
+	public static create_element<
 		T extends keyof HTMLElementTagNameMap,
 		NE extends HTMLElementTagNameMap[T],
 	>(
-		tagName: T,
+		tag_name: T,
 		args: Array<HTMLElementExtension.Arg>,
-	): HTMLElementExtension<NE> {
-		let $nativeElement = document.createElement(tagName) as NE;
-		return new HTMLElementExtension($nativeElement, args);
+	): HTMLElementExtension<NE>
+	{
+		let $native_element = document.createElement(tag_name) as NE;
+		return new HTMLElementExtension($native_element, args);
 	}
 
 	/**
@@ -119,8 +119,9 @@ class HTMLElementExtension<
 		type: FIXME,
 		listener: HTMLElementExtension.ChooseGoodEvent<E, FIXME>,
 		options?: boolean | AddEventListenerOptions,
-	): this {
-		this.nativeElement.addEventListener(type, listener.bind(this), options);
+	): this
+	{
+		this.native_element.addEventListener(type, listener.bind(this), options);
 		return this;
 	}
 
@@ -138,8 +139,9 @@ class HTMLElementExtension<
 		type: FIXME,
 		listener: HTMLElementExtension.ChooseGoodEvent<E, FIXME>,
 		options?: boolean | AddEventListenerOptions,
-	): this {
-		this.nativeElement.removeEventListener(
+	): this
+	{
+		this.native_element.removeEventListener(
 			type,
 			listener.bind(this),
 			options,
@@ -147,27 +149,30 @@ class HTMLElementExtension<
 		return this;
 	}
 
-	onClick(fn: (evt: MouseEvent) => void): this {
+	on_click(fn: (evt: MouseEvent) => void): this
+	{
 		return this.on("click", fn);
 	}
 
-	onKeydown(fn: (evt: KeyboardEvent) => void): this {
-		return this.onKeydown(fn);
+	on_keydown(fn: (evt: KeyboardEvent) => void): this
+	{
+		return this.on_keydown(fn);
 	}
 
-	onKeydownCode(
+	on_keydown_code(
 		code: Computed<KeyboardEvent["code"]> | KeyboardEvent["code"],
 		fn: (evt: KeyboardEvent) => void,
-	): this {
+	): this
+	{
 		const hndlr = (code: KeyboardEvent["code"]) => (evt: KeyboardEvent) => {
 			if (evt.code.toLowerCase() === code.toLowerCase()) fn(evt);
 		};
 
 		if (is_computed(code)) {
 			code.watch(
-				(newValue, oldValue) => {
-					this.off("keydown", hndlr(oldValue || newValue));
-					this.on("keydown", hndlr(newValue));
+				(new_value, old_value) => {
+					this.off("keydown", hndlr(old_value || new_value));
+					this.on("keydown", hndlr(new_value));
 				},
 				{ immediate: true },
 			);
@@ -177,16 +182,19 @@ class HTMLElementExtension<
 		return this.on("keydown", hndlr(code));
 	}
 
-	onKeydownEnter(fn: (evt: KeyboardEvent) => void): this {
-		return this.onKeydownCode("enter", fn);
+	on_keydown_enter(fn: (evt: KeyboardEvent) => void): this
+	{
+		return this.on_keydown_code("enter", fn);
 	}
 
-	onKeydownEscape(fn: (evt: KeyboardEvent) => void): this {
-		return this.onKeydownCode("escape", fn);
+	on_keydown_escape(fn: (evt: KeyboardEvent) => void): this
+	{
+		return this.on_keydown_code("escape", fn);
 	}
 
-	type(ty?: InputTypeHTMLAttribute): this {
-		this.setAttribute("type", ty);
+	type(ty?: InputTypeHTMLAttribute): this
+	{
+		this.set_attribute("type", ty);
 		return this;
 	}
 }

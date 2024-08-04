@@ -22,38 +22,39 @@ export function use<T extends abstract new (...args: FIXME) => FIXME>(
 ): Promise<Ext>;
 
 export function use<T extends abstract new (...args: FIXME) => FIXME>(
-	customTag: T,
+	custom_tag: T,
 	attributes: Partial<Omit<Attributes<T>, "customElement">>,
 	arg?: Omit<Ext.Arg, "HTMLElementExtension">,
 	...args: Ext.Args
 ): Ext;
 
 export function use(
-	customTag:
+	custom_tag:
 		| string
 		| { TAG_NAME: string }
 		| Promise<{ default: FIXME }>
 		| (() => Promise<{ default: FIXME }>),
 	...args: Ext.Args
-): Ext | Promise<Ext> {
-	let render = (customTagName: string) => {
-		const customElement = Ext.createElement(
-			customTagName as keyof HTMLElementTagNameMap,
+): Ext | Promise<Ext>
+{
+	let render = (custom_tag_name: string) => {
+		let custom_element = Ext.create_element(
+			custom_tag_name as keyof HTMLElementTagNameMap,
 			args,
 		);
-		return customElement;
+		return custom_element;
 	};
 
-	if (is_import_future<{ default: FIXME }>(customTag)) {
+	if (is_import_future<{ default: FIXME }>(custom_tag)) {
 		// biome-ignore lint/style/noParameterAssign: ;-)
-		customTag = customTag();
+		custom_tag = custom_tag();
 	}
 
-	if (is_future<{ default: FIXME }>(customTag)) {
-		return customTag.then((cel) => render(cel.default.TAG_NAME));
+	if (is_future<{ default: FIXME }>(custom_tag)) {
+		return custom_tag.then((cel) => render(cel.default.TAG_NAME));
 	}
 
-	return render(is_class(customTag) ? customTag.TAG_NAME : customTag);
+	return render(is_class(custom_tag) ? custom_tag.TAG_NAME : custom_tag);
 }
 
 export const is = use;

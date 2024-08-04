@@ -12,8 +12,9 @@ import type { Signal } from "@phisyx/flex-signal";
 import type { HTMLElementExtension as Ext } from "../extension";
 
 export function dynview<T>(
-	signalKey: Signal<T>,
-	shallowView: (key: T) => Ext | Promise<Ext>,
-): Ext | Promise<Ext> {
-	return shallowView(signalKey.valueOf());
+	signal_key: Signal<T>,
+	shallow_view: (key: T) => Ext | Promise<Ext>,
+): Ext | Promise<Ext>
+{
+	return shallow_view(signal_key.valueOf());
 }

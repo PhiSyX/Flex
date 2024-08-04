@@ -9,7 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Signal } from "@phisyx/flex-signal";
-import { isSignal } from "@phisyx/flex-signal";
+
+import { is_signal } from "@phisyx/flex-signal";
 
 import {
 	FormHTMLElementExtension,
@@ -18,24 +19,28 @@ import {
 	LabelHTMLElementExtension,
 } from "../extension";
 
-export function fieldset(...args: HExt.Args): HExt<HTMLFieldSetElement> {
-	return HExt.createElement("fieldset", args);
+export function fieldset(...args: HExt.Args): HExt<HTMLFieldSetElement>
+{
+	return HExt.create_element("fieldset", args);
 }
 
-export function label(...args: HExt.Args): LabelHTMLElementExtension {
+export function label(...args: HExt.Args): LabelHTMLElementExtension
+{
 	return LabelHTMLElementExtension.make(args);
 }
 
-export function form(...args: HExt.Args): FormHTMLElementExtension {
+export function form(...args: HExt.Args): FormHTMLElementExtension
+{
 	return FormHTMLElementExtension.make(args);
 }
 
 export function input<P extends HExt.Primitives>(
 	model: Signal<P> | P,
 	...args: HExt.Args
-): InputHTMLElementExtension {
+): InputHTMLElementExtension
+{
 	let $input = InputHTMLElementExtension.make(args);
-	if (isSignal<P>(model)) {
+	if (is_signal<P>(model)) {
 		$input = $input.model(model);
 	} else {
 		$input = $input.value(model);
@@ -43,14 +48,17 @@ export function input<P extends HExt.Primitives>(
 	return $input;
 }
 
-export function output(...args: HExt.Args): HExt<HTMLOutputElement> {
-	return HExt.createElement("output", args);
+export function output(...args: HExt.Args): HExt<HTMLOutputElement>
+{
+	return HExt.create_element("output", args);
 }
 
-export function progress(...args: HExt.Args): HExt<HTMLProgressElement> {
-	return HExt.createElement("progress", args);
+export function progress(...args: HExt.Args): HExt<HTMLProgressElement>
+{
+	return HExt.create_element("progress", args);
 }
 
-export function textarea(...args: HExt.Args): HExt<HTMLTextAreaElement> {
-	return HExt.createElement("textarea", args);
+export function textarea(...args: HExt.Args): HExt<HTMLTextAreaElement>
+{
+	return HExt.create_element("textarea", args);
 }

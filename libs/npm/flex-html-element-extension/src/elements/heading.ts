@@ -11,25 +11,32 @@
 import { HTMLElementExtension as Ext } from "../extension";
 
 type Heading = Ext<HTMLHeadingElement>;
-export function h1(...args: Ext.Args): Heading {
-	return Ext.createElement("h1", args);
+export function h1(...args: Ext.Args): Heading
+{
+	return Ext.create_element("h1", args);
 }
-export function h2(...args: Ext.Args): Heading {
-	return Ext.createElement("h2", args);
+export function h2(...args: Ext.Args): Heading
+{
+	return Ext.create_element("h2", args);
 }
-export function h3(...args: Ext.Args): Heading {
-	return Ext.createElement("h3", args);
+export function h3(...args: Ext.Args): Heading
+{
+	return Ext.create_element("h3", args);
 }
-export function h4(...args: Ext.Args): Heading {
-	return Ext.createElement("h4", args);
+export function h4(...args: Ext.Args): Heading
+{
+	return Ext.create_element("h4", args);
 }
-export function h5(...args: Ext.Args): Heading {
-	return Ext.createElement("h5", args);
+export function h5(...args: Ext.Args): Heading
+{
+	return Ext.create_element("h5", args);
 }
-export function h6(...args: Ext.Args): Heading {
-	return Ext.createElement("h6", args);
+export function h6(...args: Ext.Args): Heading
+{
+	return Ext.create_element("h6", args);
 }
 
-export function hgroup(...args: Ext.Args) {
-	return Ext.createElement("hgroup", args);
+export function hgroup(...args: Ext.Args): Ext
+{
+	return Ext.create_element("hgroup", args);
 }

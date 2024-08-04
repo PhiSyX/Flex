@@ -25,7 +25,7 @@ import {
 import { kebabcase } from "@phisyx/flex-capitalization";
 import { noop_bool } from "@phisyx/flex-helpers";
 import { is_option, strip_tags } from "@phisyx/flex-safety";
-import { isSignal, is_computed } from "@phisyx/flex-signal";
+import { is_computed, is_signal } from "@phisyx/flex-signal";
 
 // --------- //
 // Interface //
@@ -61,81 +61,86 @@ namespace ElementExtension {
 // Implémentation //
 // -------------- //
 
-class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
-	public static createFragment(
+class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
+{
+	public static create_fragment(
 		children: Array<
 			string | ElementExtension | DocumentFragment | Node
 		> = [],
-	): ElementExtension {
-		let $nativeFragment = document.createDocumentFragment();
+	): ElementExtension
+	{
+		let $native_fragment = document.createDocumentFragment();
 
 		for (let child of children) {
 			if (is_function<Node>(child)) {
-				$nativeFragment.append(child());
+				$native_fragment.append(child());
 			} else if (is_string(child)) {
-				$nativeFragment.append(child);
+				$native_fragment.append(child);
 			} else if (is_dom_fragment(child)) {
-				$nativeFragment.append(child);
+				$native_fragment.append(child);
 			} else if (is_dom_node(child)) {
-				$nativeFragment.append(child);
+				$native_fragment.append(child);
 			} else {
-				$nativeFragment.append(child.node());
+				$native_fragment.append(child.node());
 			}
 		}
 
 		// @ts-expect-error : mauvais type.
-		return new ElementExtension($nativeFragment, []);
+		return new ElementExtension($native_fragment, []);
 	}
 
-	public static createText(text: ElementExtension.Arg): ElementExtension {
-		let $nativeElement = document.createElement(
+	public static create_text(text: ElementExtension.Arg): ElementExtension
+	{
+		let $native_element = document.createElement(
 			"output",
 		) as unknown as HTMLElement;
-		$nativeElement.textContent = text.toString();
-		return new ElementExtension($nativeElement.firstChild as FIXME, []);
+		$native_element.textContent = text.toString();
+		return new ElementExtension($native_element.firstChild as FIXME, []);
 	}
 
-	#createElementByTypes: Record<
+	#create_element_by_types: Record<
 		string,
 		(arg: FIXME, replace?: boolean) => boolean
 	> = {
-		string: this.#createElementFromPrimitive,
-		number: this.#createElementFromPrimitive,
-		bigint: this.#createElementFromPrimitive,
-		boolean: this.#createElementFromPrimitive,
-		object: this.#createElementFromObject,
-		function: this.#createElementFromFunction,
+		string: this.#create_element_from_primitive,
+		number: this.#create_element_from_primitive,
+		bigint: this.#create_element_from_primitive,
+		boolean: this.#create_element_from_primitive,
+		object: this.#create_element_from_object,
+		function: this.#create_element_from_function,
 		symbol: noop_bool,
 		undefined: noop_bool,
 	};
 
-	protected nativeElement: E;
+	protected native_element: E;
 	#args: Array<ElementExtension.Arg> = [];
 	#events: Array<string> = [];
 	#children_EX: Array<ElementExtension> = [];
 	#children_CE: Array<HTMLElement> = [];
 	parent?: ElementExtension;
 
-	constructor(nativeElement: E, args: Array<ElementExtension.Arg>) {
-		this.nativeElement = nativeElement;
+	constructor(native_element: E, args: Array<ElementExtension.Arg>)
+	{
+		this.native_element = native_element;
 		// @ts-expect-error
-		this.nativeElement.extension = this;
+		this.native_element.extension = this;
 		this.#args = args;
 
 		let observer = new MutationObserver(this.observer);
 
-		observer.observe(nativeElement, {
+		observer.observe(native_element, {
 			childList: true,
 		});
 
-		this.#handleArgs();
+		this.#handle_args();
 	}
 
-	observer = (records: Array<MutationRecord>) => {
+	observer = (records: Array<MutationRecord>) =>
+	{
 		let added_nodes = (node: ElementExtension.NodeExtension) => {
 			let extension = node.extension;
 
-			this.nativeElement.dispatchEvent(
+			this.native_element.dispatchEvent(
 				new CustomEvent("added:children", {
 					detail: extension || node,
 				}),
@@ -152,7 +157,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		let removed_nodes = (node: ElementExtension.NodeExtension) => {
 			let extension = node.extension;
 
-			this.nativeElement.dispatchEvent(
+			this.native_element.dispatchEvent(
 				new CustomEvent("deleted:children", {
 					detail: extension || node,
 				}),
@@ -176,72 +181,75 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		}
 	};
 
-	#handleArgs(args: ElementExtension.Args = this.#args) {
+	#handle_args(args: ElementExtension.Args = this.#args)
+	{
 		for (let arg of args) {
-			let createElement = this.#createElementByTypes[typeof arg];
-			createElement.call(this, arg);
+			let create_element = this.#create_element_by_types[typeof arg];
+			create_element.call(this, arg);
 		}
 	}
 
-	#createElementFromPrimitive(
+	#create_element_from_primitive(
 		arg: ElementExtension.Primitives,
 		replace?: boolean,
-	): boolean {
+	): boolean
+	{
 		let str = arg.toString();
 
 		if (str.startsWith("&") && str.endsWith(";")) {
 			let $temp = document.createElement("span");
 			$temp.innerHTML = strip_tags(str);
 
-			let firstChild = $temp.firstChild as ChildNode;
-			this.nativeElement.append(firstChild);
+			let first_child = $temp.firstChild as ChildNode;
+			this.native_element.append(first_child);
 		} else {
 			if (replace) {
-				this.nativeElement.textContent = str;
+				this.native_element.textContent = str;
 			} else {
-				this.nativeElement.append(str);
+				this.native_element.append(str);
 			}
 		}
 
 		return true;
 	}
 
-	#createElementFromObject(obj: object): boolean {
+	#create_element_from_object(obj: object): boolean
+	{
 		if (is_computed(obj)) {
-			return this.#handleComputed(obj);
+			return this.#handle_computed(obj);
 		}
 
-		if (isSignal(obj)) {
-			return this.handleSignal(obj);
+		if (is_signal(obj)) {
+			return this.handle_signal(obj);
 		}
 
-		if (isElementExtension(obj)) {
-			return this.#handleSelf(obj);
+		if (is_element_extension(obj)) {
+			return this.#handle_self(obj);
 		}
 
 		if (is_dom_element(obj)) {
-			return this.#handleDOMElement(obj);
+			return this.#handle_dom_element(obj);
 		}
 
 		if (is_dom_node(obj)) {
-			return this.#handleDOMNode(obj);
+			return this.#handle_dom_node(obj);
 		}
 
 		if (is_option<FIXME>(obj)) {
-			obj.then((self) => this.#handleArgs([self]));
+			obj.then((self) => this.#handle_args([self]));
 			return true;
 		}
 
 		if (is_future<FIXME>(obj)) {
-			obj.then((self) => this.#handleArgs([self]));
+			obj.then((self) => this.#handle_args([self]));
 			return true;
 		}
 
 		for (let [attr, value] of Object.entries(obj)) {
 			if (is_primitive(value)) {
-				this.nativeElement.setAttribute(kebabcase(attr), value);
+				this.native_element.setAttribute(kebabcase(attr), value);
 			} else {
-				this.nativeElement.setAttribute(
+				this.native_element.setAttribute(
 					kebabcase(attr),
 					JSON.stringify(value),
 				);
@@ -251,31 +259,32 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return true;
 	}
 
-	#handleComputed(arg: Computed): boolean {
+	#handle_computed(arg: Computed): boolean
+	{
 		let value = arg.valueOf();
 
-		if (isElementExtension(value)) {
-			this.nativeElement.append(value.node());
+		if (is_element_extension(value)) {
+			this.native_element.append(value.node());
 
 			return true;
 		}
 
-		let $ext: ElementExtension<E> = ElementExtension.createText(
+		let $ext: ElementExtension<E> = ElementExtension.create_text(
 			arg.valueOf(),
 		);
 
-		this.nativeElement.append($ext.node());
+		this.native_element.append($ext.node());
 
-		let updateDOM = (value: { toString(): string }) =>
-			$ext.replaceText(value);
-		arg.watch(updateDOM);
+		let update_dom = (value: { toString(): string }) => $ext.replace_text(value);
+		arg.watch(update_dom);
 
 		return true;
 	}
 
-	protected handleSignal(signal: Signal): boolean {
-		if (is_dom_input(this.nativeElement)) {
-			this.nativeElement.value = signal.toString();
+	protected handle_signal(signal: Signal): boolean
+	{
+		if (is_dom_input(this.native_element)) {
+			this.native_element.value = signal.toString();
 			return true;
 		}
 
@@ -285,116 +294,127 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			signal.add_trigger_element(document.createTextNode(value.toString()));
 		}
 
-		this.nativeElement.append(signal.last_triggered_element());
+		this.native_element.append(signal.last_triggered_element());
 
 		return true;
 	}
 
-	#handleSelf(arg: ElementExtension): boolean {
-		this.nativeElement.append(arg.nativeElement);
+	#handle_self(arg: ElementExtension): boolean
+	{
+		this.native_element.append(arg.native_element);
 		return true;
 	}
 
-	#handleDOMElement(arg: HTMLElement): boolean {
+	#handle_dom_element(arg: HTMLElement): boolean
+	{
 		this.#children_CE.push(arg);
-		this.nativeElement.append(arg);
+		this.native_element.append(arg);
 		return true;
 	}
 
-	#handleDOMNode(arg: Node): boolean {
-		this.nativeElement.append(arg);
+	#handle_dom_node(arg: Node): boolean
+	{
+		this.native_element.append(arg);
 		return true;
 	}
 
-	#createElementFromFunction(argFunction: () => unknown): boolean {
-		let arg = argFunction();
-		let createElement = this.#createElementByTypes[typeof arg];
-		return createElement.call(this, arg);
+	#create_element_from_function(arg_function: () => unknown): boolean
+	{
+		let arg = arg_function();
+		let create_element = this.#create_element_by_types[typeof arg];
+		return create_element.call(this, arg);
 	}
 
-	defineEventsOnCustomElements(events: Array<string>) {
+	defineEventsOnCustomElements(events: Array<string>)
+	{
 		this.#events = events;
 
-		for (let evtName of this.#events) {
+		for (let event_name of this.#events) {
 			for (let children of this.#children_CE) {
 				// @ts-expect-error CustomEvent.
-				children.addEventListener(evtName, (evt: CustomEvent) => {
-					this.nativeElement.dispatchEvent(
-						new CustomEvent(evtName, { detail: evt.detail }),
+				children.addEventListener(event_name, (evt: CustomEvent) => {
+					this.native_element.dispatchEvent(
+						new CustomEvent(event_name, { detail: evt.detail }),
 					);
 				});
 			}
 		}
 	}
 
-	protected setAttribute(key: string, value: unknown): this {
+	protected set_attribute(key: string, value: unknown): this
+	{
 		if (value) {
-			this.nativeElement.setAttribute(key.toLowerCase(), String(value));
+			this.native_element.setAttribute(key.toLowerCase(), String(value));
 		}
 		return this;
 	}
 
-	node(): E {
-		return this.nativeElement;
+	node(): E
+	{
+		return this.native_element;
 	}
 
-	append(self: ElementExtension<E> | Promise<ElementExtension<E>>) {
-		let createElement = this.#createElementByTypes[typeof self];
-		createElement.call(this, self);
+	append(self: ElementExtension<E> | Promise<ElementExtension<E>>)
+	{
+		let create_element = this.#create_element_by_types[typeof self];
+		create_element.call(this, self);
 	}
 
 	/**
 	 * Public API
 	 */
 
-	displayWhen(sig: Signal<boolean>): this;
-	displayWhen(sig: Computed<boolean>): this;
-	displayWhen(sig: boolean): this;
-	displayWhen(sig: unknown): this {
-		let updateDisplay = (when: boolean) => {
+	display_when(sig: Signal<boolean>): this;
+	display_when(sig: Computed<boolean>): this;
+	display_when(sig: boolean): this;
+	display_when(sig: unknown): this
+	{
+		let update_display = (when: boolean) => {
 			if (when) {
-				this.nativeElement.style.display = "block";
+				this.native_element.style.display = "block";
 			} else {
-				this.nativeElement.style.display = "none";
+				this.native_element.style.display = "none";
 			}
 		};
 
-		if (isSignal<boolean>(sig)) {
-			sig.add_callback((_, newValue) => {
-				updateDisplay(newValue);
+		if (is_signal<boolean>(sig)) {
+			sig.add_callback((_, new_value) => {
+				update_display(new_value);
 			});
 
-			updateDisplay(sig.valueOf());
+			update_display(sig.valueOf());
 		} else if (is_computed(sig)) {
-			sig.watch((a) => updateDisplay(a), { immediate: true });
+			sig.watch((a) => update_display(a), { immediate: true });
 		} else if (is_boolean(sig)) {
-			updateDisplay(sig);
+			update_display(sig);
 		}
 
 		return this;
 	}
 
-	extendsAttrs(attrs: NamedNodeMap): this {
-		let excludesAttributes = ["model", "style"];
+	extends_attrs(attrs: NamedNodeMap): this
+	{
+		let excludes_attributes = ["model", "style"];
 
 		for (let attr of attrs) {
-			if (excludesAttributes.includes(attr.name)) continue;
-			this.nativeElement.setAttribute(kebabcase(attr.name), attr.value);
+			if (excludes_attributes.includes(attr.name)) continue;
+			this.native_element.setAttribute(kebabcase(attr.name), attr.value);
 		}
 
 		return this;
 	}
 
-	class(rawClassName: string | Record<PropertyKey, unknown>): this {
-		if (is_string(rawClassName)) {
-			let classNames = rawClassName.split(" ");
-			this.nativeElement.classList.add(...classNames);
+	class(raw_class_name: string | Record<PropertyKey, unknown>): this
+	{
+		if (is_string(raw_class_name)) {
+			let class_names = raw_class_name.split(" ");
+			this.native_element.classList.add(...class_names);
 		} else {
 			let temp: unknown;
 			let str = "";
-			let size = Object.keys(rawClassName).length;
+			let size = Object.keys(raw_class_name).length;
 			for (let i = 0; i < size; i++) {
-				temp = rawClassName[i];
+				temp = raw_class_name[i];
 				if (temp) {
 					if (typeof temp === "string") {
 						str += (str && " ") + temp;
@@ -405,42 +425,48 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		return this;
 	}
 
-	data(dataset: Record<string, string | Option<string>>): this {
+	data(dataset: Record<string, string | Option<string>>): this
+	{
 		for (let [key, value] of Object.entries(dataset)) {
 			if (is_option(value)) {
 				if (value.is_some()) {
-					this.nativeElement.dataset[key] = value.unwrap();
+					this.native_element.dataset[key] = value.unwrap();
 				}
 			} else {
-				this.nativeElement.dataset[key] = value;
+				this.native_element.dataset[key] = value;
 			}
 		}
 		return this;
 	}
 
-	id(id: `#${string}`): this {
-		this.nativeElement.id = id.slice(1);
+	id(id: `#${string}`): this
+	{
+		this.native_element.id = id.slice(1);
 		return this;
 	}
 
-	onlyIf(condition: boolean): this {
+	only_if(condition: boolean): this
+	{
 		// @ts-expect-error à corriger
-		if (!condition) this.nativeElement.lastElementChild.remove();
+		if (!condition) this.native_element.lastElementChild.remove();
 		return this;
 	}
 
-	replaceText($1: { toString(): string }): this {
-		this.nativeElement.textContent = $1.toString();
+	replace_text($1: { toString(): string }): this
+	{
+		this.native_element.textContent = $1.toString();
 		return this;
 	}
 
-	slot(name: string): this {
-		this.setAttribute("slot", name);
+	slot(name: string): this
+	{
+		this.set_attribute("slot", name);
 		return this;
 	}
 
-	title(value: { toString(): string }): this {
-		this.setAttribute("title", value.toString());
+	title(value: { toString(): string }): this
+	{
+		this.set_attribute("title", value.toString());
 		return this;
 	}
 }
@@ -449,7 +475,8 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 // Fonction //
 // -------- //
 
-function isElementExtension(value: unknown): value is ElementExtension {
+function is_element_extension(value: unknown): value is ElementExtension
+{
 	return value instanceof ElementExtension;
 }
 

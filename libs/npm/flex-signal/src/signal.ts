@@ -148,7 +148,7 @@ export function signal<T>(data: T, options?: SignalOptions<T>): Signal<T>
 	return new Signal(data, options);
 }
 
-export function isSignal<T>(value: unknown): value is Signal<T>
+export function is_signal<T>(value: unknown): value is Signal<T>
 {
 	return value instanceof Signal;
 }

@@ -10,63 +10,77 @@
 
 import { HTMLElementExtension as Ext } from "../extension";
 
-export function article(...args: Ext.Args) {
-	return Ext.createElement("article", args);
+export function article(...args: Ext.Args)
+{
+	return Ext.create_element("article", args);
 }
 
-export function aside(...args: Ext.Args) {
-	return Ext.createElement("aside", args);
+export function aside(...args: Ext.Args)
+{
+	return Ext.create_element("aside", args);
 }
 
 type Dialog = Ext<HTMLDialogElement>;
-export function dialog(...a: Ext.Args): Dialog {
-	return Ext.createElement("dialog", a);
+export function dialog(...a: Ext.Args): Dialog
+{
+	return Ext.create_element("dialog", a);
 }
 
 type Div = Ext<HTMLDivElement>;
-export function div(...args: Ext.Args): Div {
-	return Ext.createElement("div", args);
+export function div(...args: Ext.Args): Div
+{
+	return Ext.create_element("div", args);
 }
 
-export function figure(...args: Ext.Args) {
-	return Ext.createElement("figure", args);
+export function figure(...args: Ext.Args)
+{
+	return Ext.create_element("figure", args);
 }
 
-export function footer(...args: Ext.Args) {
-	return Ext.createElement("footer", args);
+export function footer(...args: Ext.Args)
+{
+	return Ext.create_element("footer", args);
 }
 
-export function header(...args: Ext.Args) {
-	return Ext.createElement("header", args);
+export function header(...args: Ext.Args)
+{
+	return Ext.create_element("header", args);
 }
 
 type Hr = Ext<HTMLHRElement>;
-export function hr(...args: Ext.Args): Hr {
-	return Ext.createElement("hr", args);
+export function hr(...args: Ext.Args): Hr
+{
+	return Ext.create_element("hr", args);
 }
 
-export function main(...args: Ext.Args) {
-	return Ext.createElement("main", args);
+export function main(...args: Ext.Args)
+{
+	return Ext.create_element("main", args);
 }
 
 type Menu = Ext<HTMLMenuElement>;
-export function menu(...args: Ext.Args): Menu {
-	return Ext.createElement("menu", args);
+export function menu(...args: Ext.Args): Menu
+{
+	return Ext.create_element("menu", args);
 }
 
-export function nav(...args: Ext.Args) {
-	return Ext.createElement("nav", args);
+export function nav(...args: Ext.Args)
+{
+	return Ext.create_element("nav", args);
 }
 
 type Pre = Ext<HTMLPreElement>;
-export function pre(...args: Ext.Args): Pre {
-	return Ext.createElement("pre", args);
+export function pre(...args: Ext.Args): Pre
+{
+	return Ext.create_element("pre", args);
 }
 
-export function search(...args: Ext.Args) {
-	return Ext.createElement("search", args);
+export function search(...args: Ext.Args)
+{
+	return Ext.create_element("search", args);
 }
 
-export function section(...args: Ext.Args) {
-	return Ext.createElement("section", args);
+export function section(...args: Ext.Args)
+{
+	return Ext.create_element("section", args);
 }

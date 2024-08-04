@@ -21,7 +21,8 @@ export function fragment(
 		| DocumentFragment
 		| Node
 	>
-): HExt {
+): HExt
+{
 	// @ts-expect-error ?
-	return HExt.createFragment(args);
+	return HExt.create_fragment(args);
 }
