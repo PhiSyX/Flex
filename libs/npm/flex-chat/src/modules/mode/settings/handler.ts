@@ -34,14 +34,18 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 
 	handle(data: GenericReply<"MODE">)
 	{
-		if (this.store.is_current_client(data.target)) return;
+		if (this.store.is_current_client(data.target)) {
+			return;
+		};
 		this.handle_channel(data);
 	}
 
 	handle_channel(data: GenericReply<"MODE">)
 	{
 		let maybe_room = this.store.room_manager().get(data.target);
-		if (maybe_room.is_none()) return;
+		if (maybe_room.is_none()) {
+			return;
+		}
 
 		let channel = maybe_room.unwrap();
 		assert_channel_room(channel);
@@ -55,7 +59,9 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 
 		if (data.added) {
 			for (let [letter, mode] of data.added) {
-				if (!is_channel_settings_letter_allowed(letter, mode)) continue;
+				if (!is_channel_settings_letter_allowed(letter, mode)) {
+					continue;
+				}
 
 				channel.set_setting_mode(letter);
 				if (letter === "t") {
@@ -66,7 +72,9 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 
 		if (data.removed) {
 			for (let [letter, mode] of data.removed) {
-				if (!is_channel_settings_letter_allowed(letter, mode)) continue;
+				if (!is_channel_settings_letter_allowed(letter, mode)) {
+					continue;
+				}
 
 				channel.unset_setting_mode(letter);
 				if (letter === "t") {

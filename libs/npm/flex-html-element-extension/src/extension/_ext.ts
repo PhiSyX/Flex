@@ -397,7 +397,9 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		let excludes_attributes = ["model", "style"];
 
 		for (let attr of attrs) {
-			if (excludes_attributes.includes(attr.name)) continue;
+			if (excludes_attributes.includes(attr.name)) {
+				continue;
+			}
 			this.native_element.setAttribute(kebabcase(attr.name), attr.value);
 		}
 

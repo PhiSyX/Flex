@@ -44,7 +44,9 @@ export class NickModule implements Module<NickModule>
 
 	input(_: string, nickname?: string)
 	{
-		if (!nickname) return;
+		if (!nickname) {
+			return;
+		}
 		this.send({ nickname });
 	}
 

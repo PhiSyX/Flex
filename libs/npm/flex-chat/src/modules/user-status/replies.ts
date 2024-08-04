@@ -35,7 +35,9 @@ export class ReplyAwayHandler implements SocketEventInterface<"RPL_AWAY">
 	handle(data: GenericReply<"RPL_AWAY">)
 	{
 		let maybe_private = this.store.room_manager().get(data.origin.id);
-		if (maybe_private.is_none()) return;
+		if (maybe_private.is_none()) {
+			return;
+		}
 		let priv = maybe_private.unwrap();
 		assert_private_room(priv);
 		priv.add_event("event:rpl_away", {

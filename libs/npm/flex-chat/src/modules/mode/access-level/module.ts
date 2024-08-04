@@ -12,16 +12,16 @@ import { is_channel } from "../../../asserts/room";
 import type { ChatStoreInterface } from "../../../store";
 import type { Module } from "../../interface";
 import {
-    AccessLevelAOPCommand,
-    AccessLevelDEAOPCommand,
-    AccessLevelDEHOPCommand,
-    AccessLevelDEOPCommand,
-    AccessLevelDEQOPCommand,
-    AccessLevelDEVIPCommand,
-    AccessLevelHOPCommand,
-    AccessLevelOPCommand,
-    AccessLevelQOPCommand,
-    AccessLevelVIPCommand,
+	AccessLevelAOPCommand,
+	AccessLevelDEAOPCommand,
+	AccessLevelDEHOPCommand,
+	AccessLevelDEOPCommand,
+	AccessLevelDEQOPCommand,
+	AccessLevelDEVIPCommand,
+	AccessLevelHOPCommand,
+	AccessLevelOPCommand,
+	AccessLevelQOPCommand,
+	AccessLevelVIPCommand,
 } from "./command";
 import { ModeAccessLevelHandler } from "./handler";
 
@@ -94,7 +94,9 @@ export class AccessLevelQOPModule implements Module<AccessLevelQOPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -143,7 +145,9 @@ export class AccessLevelAOPModule implements Module<AccessLevelAOPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -192,7 +196,9 @@ export class AccessLevelOPModule implements Module<AccessLevelOPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -241,7 +247,9 @@ export class AccessLevelHOPModule implements Module<AccessLevelHOPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -290,7 +298,9 @@ export class AccessLevelVIPModule implements Module<AccessLevelVIPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -339,7 +349,9 @@ export class AccessLevelDEQOPModule implements Module<AccessLevelDEQOPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -388,7 +400,9 @@ export class AccessLevelDEAOPModule implements Module<AccessLevelDEAOPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -437,7 +451,9 @@ export class AccessLevelDEOPModule implements Module<AccessLevelDEOPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}
@@ -537,7 +553,9 @@ export class AccessLevelDEVIPModule implements Module<AccessLevelDEVIPModule>
 			channel = room_id;
 		}
 
-		if (!channel || !nicknames_r || !is_channel(channel)) return;
+		if (!channel || !nicknames_r || !is_channel(channel)) {
+			return;
+		}
 		let nicknames = nicknames_r.split(",");
 		this.send({ channel, nicknames });
 	}

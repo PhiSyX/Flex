@@ -49,7 +49,9 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 
 	handle_channel(data: GenericReply<"QUIT">, channel: ChannelRoom)
 	{
-		if (!channel.members.has(data.origin.id)) return;
+		if (!channel.members.has(data.origin.id)) {
+			return;
+		}
 
 		channel.add_event("event:quit", { ...data, isCurrentClient: false });
 

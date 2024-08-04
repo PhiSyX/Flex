@@ -37,7 +37,9 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 	handle(data: GenericReply<"PUBMSG">)
 	{
 		let maybe_channel = this.store.room_manager().get(data.channel);
-		if (maybe_channel.is_none()) return;
+		if (maybe_channel.is_none()) {
+			return;
+		}
 		let channel = maybe_channel.unwrap();
 		assert_channel_room(channel);
 		this.handle_message(channel, data);

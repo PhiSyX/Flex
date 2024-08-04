@@ -56,7 +56,9 @@ export class PartModule implements Module<PartModule>
 			channels_r = cast_to_channel_id(room_id);
 		}
 
-		if (!is_channel(channels_r)) return;
+		if (!is_channel(channels_r)) {
+			return;
+		}
 
 		let chans = cast_to_channels_id(channels_r.split(","));
 		let message = words.join(" ");
@@ -104,7 +106,9 @@ export class SapartModule implements Module<SapartModule>
 	) {
 		let nicknames = nicknames_raw?.split(",");
 		let chans = cast_to_channels_id(channels_raw?.split(","));
-		if (!nicknames || !chans) return;
+		if (!nicknames || !chans) {
+			return;
+		}
 		let message = messages.join(" ");
 		this.send({ nicknames, channels: chans, message });
 	}

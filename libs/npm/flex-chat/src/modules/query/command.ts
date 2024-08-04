@@ -23,7 +23,9 @@ export class QueryCommand {
 	handle(room_id: RoomID)
 	{
 		let maybe_user = this.store.user_manager().find_by_nickname(room_id);
-		if (maybe_user.is_none()) return;
+		if (maybe_user.is_none()) {
+			return;
+		}
 		let user = maybe_user.unwrap();
 
 		let room = this.store.room_manager().get_or_insert(user.id, () => {

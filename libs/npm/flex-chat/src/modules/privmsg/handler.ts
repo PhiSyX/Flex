@@ -52,7 +52,9 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 			.find_by_nickname(data.target)
 			.expect(`"L'utilisateur cible ${data.target}."`);
 		let maybe_room = this.store.room_manager().get(user.id);
-		if (maybe_room.is_none()) return;
+		if (maybe_room.is_none()) {
+			return;
+		}
 		let room = maybe_room.unwrap();
 		this.handle_message(room, data);
 	}

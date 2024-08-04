@@ -49,7 +49,9 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 	{
 		if (room_id.startsWith("@")) {
 			let targets = targets_raw?.split(",");
-			if (!targets) return;
+			if (!targets) {
+				return;
+			}
 			let text = words.join(" ");
 			this.send({ targets, text });
 			return;

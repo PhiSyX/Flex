@@ -51,7 +51,9 @@ export class PubmsgModule implements Module<PubmsgModule>
 			let channels = channels_raw?.split(",") as
 				| Array<ChannelID>
 				| undefined;
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let text = words.join(" ");
 			this.send({ channels, text });
 			return;
@@ -61,7 +63,9 @@ export class PubmsgModule implements Module<PubmsgModule>
 			let channels = channels_raw?.split(",") as
 				| Array<ChannelID>
 				| undefined;
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let text = words.join(" ");
 			this.send({ channels, text });
 			return;

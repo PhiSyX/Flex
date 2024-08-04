@@ -11,10 +11,10 @@
 import type { Module } from "../../../modules/interface";
 import type { ChatStoreInterface } from "../../../store";
 import {
-    BanCommand,
-    BanExCommand,
-    UnbanCommand,
-    UnbanExCommand,
+	BanCommand,
+	BanExCommand,
+	UnbanCommand,
+	UnbanExCommand,
 } from "./command";
 import { ModeAccessControlHandler } from "./handler";
 
@@ -82,7 +82,9 @@ export class BanModule implements Module<BanModule>
 	) {
 		if (!room_id?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
@@ -90,7 +92,9 @@ export class BanModule implements Module<BanModule>
 
 		if (channels_raw?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
@@ -142,7 +146,9 @@ export class UnbanModule implements Module<UnbanModule>
 	) {
 		if (!room_id?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
@@ -150,7 +156,9 @@ export class UnbanModule implements Module<UnbanModule>
 
 		if (channels_raw?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
@@ -202,7 +210,9 @@ export class BanExModule implements Module<BanExModule>
 	) {
 		if (!room_id?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
@@ -210,7 +220,9 @@ export class BanExModule implements Module<BanExModule>
 
 		if (channels_raw?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
@@ -262,7 +274,9 @@ export class UnbanExModule implements Module<UnbanExModule>
 	) {
 		if (!room_id?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
@@ -270,7 +284,9 @@ export class UnbanExModule implements Module<UnbanExModule>
 
 		if (channels_raw?.startsWith("#")) {
 			let channels = channels_raw?.split(",");
-			if (!channels) return;
+			if (!channels) {
+				return;
+			}
 			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;

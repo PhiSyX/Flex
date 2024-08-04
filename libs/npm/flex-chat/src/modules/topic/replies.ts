@@ -35,7 +35,9 @@ export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC">
 	handle(data: GenericReply<"RPL_TOPIC">)
 	{
 		let maybe_channel = this.store.room_manager().get(data.channel);
-		if (maybe_channel.is_none()) return;
+		if (maybe_channel.is_none()) {
+			return;
+		}
 		let channel = maybe_channel.unwrap();
 		assert_channel_room(channel);
 		channel.set_topic(data.topic);
@@ -69,7 +71,9 @@ export class ReplyNotopicHandler
 	handle(data: GenericReply<"RPL_NOTOPIC">)
 	{
 		let maybe_channel = this.store.room_manager().get(data.channel);
-		if (maybe_channel.is_none()) return;
+		if (maybe_channel.is_none()) {
+			return;
+		}
 		let channel = maybe_channel.unwrap();
 		assert_channel_room(channel);
 		channel.unset_topic();

@@ -52,7 +52,9 @@ export class TopicModule implements Module<TopicModule>
 			channel_r = room_id;
 		}
 
-		if (!is_channel(channel_r)) return;
+		if (!is_channel(channel_r)) {
+			return;
+		}
 
 		let topic = words.join(" ");
 		this.send({ channel: channel_r, topic });
