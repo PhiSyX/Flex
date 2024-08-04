@@ -8,7 +8,7 @@ import NavigationRoom from "#/sys/navigation_room/NavigationRoom.template.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	active: boolean;
 	connected: boolean;
@@ -23,7 +23,7 @@ interface Props
 // Type //
 // ---- //
 
-export interface Emits 
+export interface Emits
 {
 	(event_name: "change-room", origin: Origin | RoomID): void;
 	(event_name: "close-room", origin: Origin | RoomID): void;
@@ -47,19 +47,19 @@ const open_room_handler = (origin: Origin | RoomID) =>
 const close_room_handler = (origin: Origin | RoomID) =>
 	emit("close-room", origin);
 
-function should_be_listed_in_nav(room: Room) 
+function should_be_listed_in_nav(room: Room)
 {
 	return ["channel", "private", "notice-custom-room"].includes(room.type);
 }
 
-function change_room_handler(evt: Event) 
+function change_room_handler(evt: Event)
 {
 	evt.preventDefault();
 	evt.stopPropagation();
 	open_room_handler(props.id);
 }
 
-function toggle_fold_handler() 
+function toggle_fold_handler()
 {
 	folded.value = !folded.value;
 }
@@ -102,25 +102,25 @@ function toggle_fold_handler()
 		<ul class="[ list:reset }">
 			<template v-for="room in rooms" :key="room.type + ':' + room.name">
 				<NavigationRoom
-					v-if="should_be_listed_in_nav(room) && !room.isClosed()"
+					v-if="should_be_listed_in_nav(room) && !room.is_closed()"
 					:id="room.id()"
-					:active="room.isActive() && !room.isClosed()"
+					:active="room.is_active() && !room.is_closed()"
 					:highlight="room.highlighted"
 					:name="room.name"
 					:folded="containerFolded"
-					:total-unread-events="room.totalUnreadEvents"
-					:total-unread-messages="room.totalUnreadMessages"
+					:total-unread-events="room.total_unread_events"
+					:total-unread-messages="room.total_unread_messages"
 					@open-room="open_room_handler"
 					@close-room="close_room_handler"
 				>
 					<template #icon>
-						<icon-message 
-							v-if="room.type === 'channel'" 
+						<icon-message
+							v-if="room.type === 'channel'"
 							class="[ flex:shrink=0 ]"
 						/>
-						<icon-user 
+						<icon-user
 							v-else-if="room.type === 'private'"
-							class="[ flex:shrink=0 ]" 
+							class="[ flex:shrink=0 ]"
 						/>
 						<icon-notice
 							v-else-if="room.type === 'notice-custom-room'"
@@ -131,9 +131,9 @@ function toggle_fold_handler()
 					<template v-if="room.type === 'private'" #extra>
 						<Match
 							:maybe="
-								room.lastMessage.filter(
+								room.last_message.filter(
 									(message) =>
-										!message.isCurrentClient &&
+										!message.is_current_client &&
 										!message.type.startsWith('event')
 								)
 							"

@@ -15,18 +15,24 @@ import type { CommandInterface } from "../interface";
 // Implémentation //
 // -------------- //
 
-export class JoinCommand implements CommandInterface<"JOIN"> {
-	constructor(private store: ChatStoreInterface) {}
+export class JoinCommand implements CommandInterface<"JOIN">
+{
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	send(payload: Command<"JOIN">): void {
+	send(payload: Command<"JOIN">)
+	{
 		this.store.emit("JOIN", payload);
 	}
 }
 
-export class SajoinCommand implements CommandInterface<"SAJOIN"> {
-	constructor(private store: ChatStoreInterface) {}
+export class SajoinCommand implements CommandInterface<"SAJOIN">
+{
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	send(payload: Command<"SAJOIN">): void {
+	send(payload: Command<"SAJOIN">)
+	{
 		this.store.emit("SAJOIN", payload);
 	}
 }

@@ -10,12 +10,12 @@
 
 import type { App, Plugin } from "vue";
 
-import useFlexUIKit from "@phisyx/flex-vue-uikit";
+import use_flex_uikit from "@phisyx/flex-vue-uikit";
 
 /**
  * Installe notre plugin Flex UI Kit.
  */
 export function install(app: App<Element>)
 {
-	app.use(useFlexUIKit as Plugin);
+	app.use(use_flex_uikit as Plugin);
 }

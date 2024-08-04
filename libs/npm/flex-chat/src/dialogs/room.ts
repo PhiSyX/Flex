@@ -14,7 +14,8 @@ import type { Layer, OverlayerStore } from "../store";
 // Implémentation //
 // -------------- //
 
-export class ChannelJoinDialog {
+export class ChannelJoinDialog
+{
 	// ------ //
 	// Static //
 	// ------ //
@@ -22,42 +23,48 @@ export class ChannelJoinDialog {
 	static ID = "channel-join-layer";
 
 	static create(
-		overlayerStore: OverlayerStore,
+		overlayer_store: OverlayerStore,
 		payload: {
 			event: Event;
 		},
-	) {
-		overlayerStore.create({
+	)
+	{
+		overlayer_store.create({
 			id: ChannelJoinDialog.ID,
 			centered: true,
 			event: payload.event,
 		});
 
-		return new ChannelJoinDialog(overlayerStore);
+		return new ChannelJoinDialog(overlayer_store);
 	}
 
-	static destroy(overlayerStore: OverlayerStore) {
-		overlayerStore.destroy(ChannelJoinDialog.ID);
+	static destroy(overlayer_store: OverlayerStore)
+	{
+		overlayer_store.destroy(ChannelJoinDialog.ID);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayerStore: OverlayerStore) {}
+	constructor(private overlayer_store: OverlayerStore)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy() {
-		this.overlayerStore.destroy(ChannelJoinDialog.ID);
+	destroy()
+	{
+		this.overlayer_store.destroy(ChannelJoinDialog.ID);
 	}
 
-	get(): Layer | undefined {
-		return this.overlayerStore.get(ChannelJoinDialog.ID);
+	get(): Layer | undefined
+	{
+		return this.overlayer_store.get(ChannelJoinDialog.ID);
 	}
 
-	exists(): boolean {
-		return this.overlayerStore.has(ChannelJoinDialog.ID);
+	exists(): boolean
+	{
+		return this.overlayer_store.has(ChannelJoinDialog.ID);
 	}
 }

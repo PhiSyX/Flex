@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { onActivated } from "vue";
+import type { Emits } from "./RoomEditbox.handlers";
+import type { Props } from "./RoomEditbox.state";
+
+import { computed, onActivated as on_activated } from "vue";
 
 import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
-import { type Emits, changeNick, onSubmit } from "./RoomEditbox.handlers";
-import { useAutocompletion, useInputHistory } from "./RoomEditbox.hooks";
-import {
-	$input,
-	type Props,
-	computeFormAction,
-	inputModel,
-} from "./RoomEditbox.state";
+import { change_nick, on_submit } from "./RoomEditbox.handlers";
+import { use_autocompletion, use_input_history } from "./RoomEditbox.hooks";
+import { $input, input_model } from "./RoomEditbox.state";
 
 // --------- //
 // Composant //
@@ -19,41 +17,50 @@ import {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const formAction = computeFormAction(props);
-
-const changeNickHandler = changeNick(emit);
-const { historyKeydownHandler, historySubmitHandler } = useInputHistory(props);
-const {
-	applySuggestionHandler,
-	autocompletionInputHandler,
-	autocompletionKeydownHandler,
-	autocompletionSubmitHandler,
-	suggestionInput,
-} = useAutocompletion(props);
+let form_action = computed(() => {
+	let target_path = props.room.name.startsWith("#")
+		? `%23${props.room.name.slice(1).toLowerCase()}`
+		: props.room.name.toLowerCase();
+	return `/msg/${target_path}`;
+});
 
 // --------- //
 // Lifecycle // -> Hooks
 // --------- //
 
-onActivated(() => {
+const {
+	keydown_handler: history_keydown_handler,
+	submit_handler: history_submit_handler
+} = use_input_history(props);
+const {
+	apply_suggestion_handler,
+	input_handler: autocompletion_input_handler,
+	keydown_handler: autocompletion_keydown_handler,
+	submit_handler: autocompletion_submit_handler,
+	suggestion_input: suggestionInput,
+} = use_autocompletion(props);
+
+on_activated(() => {
 	$input.value?.focus();
 });
 
-// -------- //
-// Fonction //
-// -------- //
+// ------- //
+// Handler //
+// ------- //
 
-function submit_handler() 
+const change_nick_handler = change_nick(emit);
+
+function submit_handler()
 {
-	historySubmitHandler();
-	autocompletionSubmitHandler();
-	onSubmit(emit, props)();
+	history_submit_handler();
+	autocompletion_submit_handler();
+	on_submit(emit, props)();
 }
 </script>
 
 <template>
 	<form
-		:action="formAction"
+		:action="form_action"
 		method="POST"
 		:disabled="disableInput ? 'disabled' : undefined"
 		class="[ p=1 pl=0 ]"
@@ -66,7 +73,7 @@ function submit_handler()
 				variant="primary"
 				class="btn-change-nick [ max-w=12 display-i align-jc:stretch my=1 px=1 py=1 border/radius=1 ... ]"
 				:title="currentClientNickname"
-				@click="changeNickHandler"
+				@click="change_nick_handler"
 			>
 				{{ currentClientNickname }}
 			</UiButton>
@@ -81,22 +88,22 @@ function submit_handler()
 
 				<input
 					ref="$input"
-					v-model="inputModel"
+					v-model="input_model"
 					:disabled="disableInput"
 					:placeholder="placeholder"
 					type="text"
 					class="[ input:reset flex:shrink=0 size:full py=1 ]"
-					@keydown.down="historyKeydownHandler"
-					@keydown.up="historyKeydownHandler"
-					@keydown="autocompletionKeydownHandler"
-					@input="autocompletionInputHandler"
+					@keydown.down="history_keydown_handler"
+					@keydown.up="history_keydown_handler"
+					@keydown="autocompletion_keydown_handler"
+					@input="autocompletion_input_handler"
 				/>
 			</div>
 
 			<UiButton
 				v-if="suggestionInput"
 				class="btn-suggestion"
-				@click="applySuggestionHandler"
+				@click="apply_suggestion_handler"
 			>
 				↹ Tab
 			</UiButton>

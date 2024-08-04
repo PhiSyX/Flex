@@ -14,17 +14,20 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
+export class ReplySilenceHandler implements SocketEventInterface<"SILENCE">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("SILENCE", (data) => this.handle(data));
 	}
 
@@ -32,13 +35,13 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
 	// doublons dans les listes pour Vue (à cause de l'attribut `key`) étant
 	// donnée qu'on se base sur le même ID pour afficher deux messages
 	// différents. Cela n'est pas dérangeant de le redéfinir pour cet événement.
-	handle(data: GenericReply<"SILENCE">) {
-		const currentRoom = this.store.roomManager().active();
+	handle(data: GenericReply<"SILENCE">)
+	{
+		let active_room = this.store.room_manager().active();
 
 		if (data.updated) {
-			const message =
-				"Votre liste des utilisateurs ignorés a été mis à jour";
-			currentRoom.addConnectEvent(
+			let message = "Votre liste des utilisateurs ignorés a été mis à jour";
+			active_room.add_connect_event(
 				{
 					...data,
 					// Voir NOTE ci-haut.
@@ -48,17 +51,17 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
 			);
 		}
 
-		for (const user of data.users) {
+		for (let user of data.users) {
 			if (data.added) {
-				this.store.userManager().addToBlock(user.id);
+				this.store.user_manager().add_to_block(user.id);
 			}
 
 			if (data.removed) {
-				this.store.userManager().removeToBlock(user.id);
+				this.store.user_manager().remove_to_block(user.id);
 			}
 
 			if (data.updated) {
-				currentRoom.addEvent("event:silence", {
+				active_room.add_event("event:silence", {
 					...data,
 					// Voir NOTE ci-haut.
 					tags: { ...data.tags, msgid: `${data.tags.msgid}#2` },

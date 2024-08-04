@@ -14,23 +14,31 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ClearCommand {
-	constructor(private store: ChatStoreInterface) {}
+export class ClearCommand
+{
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	handle(roomName: RoomID) {
-		const maybeRoom = this.store.roomManager().get(roomName);
-		if (maybeRoom.is_none()) return;
-		const room = maybeRoom.unwrap();
-		room.clearMessages();
+	handle(room_id: RoomID)
+	{
+		let maybe_room = this.store.room_manager().get(room_id);
+		if (maybe_room.is_none()) {
+			return;
+		}
+		let room = maybe_room.unwrap();
+		room.clear_messages();
 	}
 }
 
-export class ClearallCommand {
-	constructor(private store: ChatStoreInterface) {}
+export class ClearallCommand
+{
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	handle() {
-		for (const room of this.store.roomManager().rooms()) {
-			room.clearMessages();
+	handle()
+	{
+		for (let room of this.store.room_manager().rooms()) {
+			room.clear_messages();
 		}
 	}
 }

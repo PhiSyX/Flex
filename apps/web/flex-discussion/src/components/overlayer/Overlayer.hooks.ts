@@ -9,46 +9,52 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Layer } from "@phisyx/flex-chat";
-import { onBeforeMount, onBeforeUnmount } from "vue";
 
-import { useOverlayerStore } from "~/store";
+import {
+	onBeforeMount as on_before_mount,
+	onBeforeUnmount as on_before_unmount
+} from "vue";
+
+import { use_overlayer_store } from "~/store";
 
 // ----- //
 // Hooks //
 // ----- //
 
-export function useOverlayer() {
-	const overlayerStore = useOverlayerStore();
+export function use_overlayer()
+{
+	let overlayer_store = use_overlayer_store();
 
-	function destroyHandler(_: Event, id?: Layer["id"]) {
+	function destroy_handler(_: Event, id?: Layer["id"])
+	{
 		if (id) {
-			overlayerStore.destroy(id);
+			overlayer_store.destroy(id);
 		} else {
-			overlayerStore.destroyAll();
+			overlayer_store.destroy_all();
 		}
 	}
 
-	function keydownHandler(evt: KeyboardEvent) {
-		if (evt.code === "Escape") overlayerStore.destroyAll();
+	function keydown_handler(evt: KeyboardEvent)
+	{
+		if (evt.code === "Escape") {
+			overlayer_store.destroy_all();
+		}
 	}
 
-	function resizeHandler() {
-		overlayerStore.updateAll();
+	function resize_handler()
+	{
+		overlayer_store.update_all();
 	}
 
-	onBeforeMount(() => {
-		window.addEventListener("resize", resizeHandler, { passive: true });
-		window.addEventListener("keydown", keydownHandler);
+	on_before_mount(() => {
+		window.addEventListener("resize", resize_handler, { passive: true });
+		window.addEventListener("keydown", keydown_handler);
 	});
 
-	onBeforeUnmount(() => {
-		window.removeEventListener("resize", resizeHandler);
-		window.removeEventListener("keydown", keydownHandler);
+	on_before_unmount(() => {
+		window.removeEventListener("resize", resize_handler);
+		window.removeEventListener("keydown", keydown_handler);
 	});
 
-	return { store: overlayerStore, destroyHandler, resizeHandler };
+	return { store: overlayer_store, destroy_handler, resize_handler };
 }
-
-// -------- //
-// Fonction //
-// -------- //

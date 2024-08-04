@@ -12,9 +12,9 @@ declare interface SocketEventHandler {
 	listen(): void;
 }
 
-declare interface SocketEventInterface<R extends RepliesNames>
-	extends SocketEventHandler {
-	handle(data: GenericReply<R>, ...userData: Array<unknown>): void;
+declare interface SocketEventInterface<R extends RepliesNames> extends SocketEventHandler
+{
+	handle(data: GenericReply<R>, ...user_data: Array<unknown>): void;
 }
 
 declare type ClientToServerEvent = {
@@ -37,28 +37,29 @@ declare type ServerToClientEvent = {
 	) => void;
 };
 
-declare interface TypeSafeSocket {
+declare interface TypeSafeSocket
+{
 	emit<E extends keyof ClientToServerEvent>(
-		eventName: E,
+		event_name: E,
 		...payload: Parameters<ClientToServerEvent[E]>
 	): this;
-	emit(eventName: unknown, ...payload: Array<unknown>): this;
+	emit(event_name: unknown, ...payload: Array<unknown>): this;
 
 	off<K extends keyof ServerToClientEvent>(
-		eventName: K,
+		event_name: K,
 		listener?: ServerToClientEvent[K],
 	): this;
-	off(eventName: unknown, listener?: unknown): this;
+	off(event_name: unknown, listener?: unknown): this;
 
 	on<K extends keyof ServerToClientEvent>(
-		eventName: K,
+		event_name: K,
 		listener: ServerToClientEvent[K],
 	): this;
-	on(eventName: unknown, listener: unknown): this;
+	on(event_name: unknown, listener: unknown): this;
 
 	once<K extends keyof ServerToClientEvent>(
-		eventName: K,
+		event_name: K,
 		listener: ServerToClientEvent[K],
 	): void;
-	once(eventName: unknown, listener: unknown): this;
+	once(event_name: unknown, listener: unknown): this;
 }

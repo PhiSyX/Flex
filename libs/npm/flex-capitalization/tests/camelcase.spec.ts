@@ -10,45 +10,45 @@
 
 import { expect, it } from "vitest";
 
-import { camelCase } from "../index";
+import { camelcase } from "../index";
 
 it("camelCase: vide", () => {
-	expect(camelCase("")).toEqual("");
+	expect(camelcase("")).toEqual("");
 });
 
 it("camelCase: cas basiques", () => {
-	expect(camelCase(" ")).toEqual(" ");
-	expect(camelCase("h")).toEqual("H");
-	expect(camelCase("hello world")).toEqual("Hello World");
-	expect(camelCase("HELLO WORLD")).toEqual("Hello World");
+	expect(camelcase(" ")).toEqual(" ");
+	expect(camelcase("h")).toEqual("H");
+	expect(camelcase("hello world")).toEqual("Hello World");
+	expect(camelcase("HELLO WORLD")).toEqual("Hello World");
 });
 
 it("camelCase: espace en trop", () => {
-	expect(camelCase("hello ")).toEqual("Hello ");
+	expect(camelcase("hello ")).toEqual("Hello ");
 
-	expect(camelCase("hello    ")).toEqual("Hello    ");
-	expect(camelCase("    hello    ")).toEqual("    Hello    ");
+	expect(camelcase("hello    ")).toEqual("Hello    ");
+	expect(camelcase("    hello    ")).toEqual("    Hello    ");
 });
 
 it("camelCase: garde le reste de la chaîne de caractères intacte", () => {
-	expect(camelCase("HeLLo WorLd", { to_lower: false })).toEqual(
+	expect(camelcase("HeLLo WorLd", { to_lower: false })).toEqual(
 		"HeLLo WorLd"
 	);
 });
 
 it("camelCase: exclusion des séparateurs dans le résultat", () => {
-	expect(camelCase("hello ", { includes_separators: false })).toEqual(
+	expect(camelcase("hello ", { includes_separators: false })).toEqual(
 		"Hello"
 	);
 
 	expect(
-		camelCase("hello world", {
+		camelcase("hello world", {
 			includes_separators: false,
 		})
 	).toEqual("HelloWorld");
 
 	expect(
-		camelCase("    hello    ", {
+		camelcase("    hello    ", {
 			includes_separators: false,
 		})
 	).toEqual("Hello");

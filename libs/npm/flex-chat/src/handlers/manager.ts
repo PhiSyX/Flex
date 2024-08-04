@@ -10,46 +10,65 @@
 
 import { Option } from "@phisyx/flex-safety";
 
-export class HandlerManager {
+export class HandlerManager
+{
+	// --------- //
+	// Propriété //
+	// --------- //
+
 	private _sets: Set<() => Promise<unknown>> = new Set();
 	private _maps: Map<string, SocketEventHandler> = new Map();
-
-	get size() {
+	
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+	
+	get size()
+	{
 		return this._sets.size;
 	}
 
-	add(module: () => Promise<unknown>): Set<() => Promise<unknown>> {
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	add(module: () => Promise<unknown>): Set<() => Promise<unknown>>
+	{
 		return this._sets.add(module);
 	}
 
-	extends(record: Record<string, () => Promise<unknown>>): this {
-		for (const moduleKey in record) {
-			this.add(record[moduleKey]);
+	extends(record: Record<string, () => Promise<unknown>>): this
+	{
+		for (let module_key in record) {
+			this.add(record[module_key]);
 		}
 		return this;
 	}
 
-	get<T extends CommandsNames = CommandsNames>(
-		moduleID: T,
-	): Option<SocketEventHandler> {
+	get<T extends CommandsNames = CommandsNames>(module_id: T): Option<SocketEventHandler>
+	{
 		return Option.from(
-			this._maps.get(moduleID) as SocketEventHandler | undefined,
+			this._maps.get(module_id) as SocketEventHandler | undefined,
 		);
 	}
 
-	set(moduleID: string, module: SocketEventHandler) {
-		return this._maps.set(moduleID, module);
+	set(module_id: string, module: SocketEventHandler)
+	{
+		return this._maps.set(module_id, module);
 	}
 
-	free() {
+	free()
+	{
 		this._sets.clear();
 	}
 
-	sets() {
+	sets()
+	{
 		return this._sets;
 	}
 
-	handlers() {
+	handlers()
+	{
 		return this._maps;
 	}
 }

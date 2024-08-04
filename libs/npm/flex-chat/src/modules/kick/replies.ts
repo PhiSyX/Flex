@@ -16,19 +16,22 @@ export class ErrorCannotkickglobopsHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_CANNOTKICKGLOBOPS", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_CANNOTKICKGLOBOPS">): void {
-		const room = this.store.roomManager().active();
-		room.addEvent(
+	handle(data: GenericReply<"ERR_CANNOTKICKGLOBOPS">)
+	{
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"error:err_cannotkickglobops",
 			{ ...data, isCurrentClient: true },
 			data.reason,

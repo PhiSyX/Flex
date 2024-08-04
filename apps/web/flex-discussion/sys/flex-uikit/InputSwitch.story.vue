@@ -2,7 +2,7 @@
 import { InputSwitch, InputSwitchV2 } from "@phisyx/flex-vue-uikit";
 import { ref } from "vue";
 
-const model = ref();
+let model = ref();
 </script>
 
 <template>
@@ -10,8 +10,8 @@ const model = ref();
 		<Variant title="Version 1">
 			<InputSwitch
 				v-model="model"
-				labelN="Non"
-				labelY="Oui"
+				label-n="Non"
+				label-y="Oui"
 				name="remember_me"
 			/>
 		</Variant>

@@ -14,7 +14,8 @@ import { Room } from "../room";
 // Interface //
 // --------- //
 
-export interface ListDataResponse {
+export interface ListDataResponse
+{
 	channel: ChannelID;
 	modes_settings: string;
 	topic: string;
@@ -25,10 +26,8 @@ export interface ListDataResponse {
 // Implémentation //
 // -------------- //
 
-export class ChannelListCustomRoom extends Room<
-	CustomRoomID,
-	"channel-list-custom-room"
-> {
+export class ChannelListCustomRoom extends Room<CustomRoomID, "channel-list-custom-room">
+{
 	/**
 	 * ID de la chambre personnalisée.
 	 */
@@ -38,9 +37,10 @@ export class ChannelListCustomRoom extends Room<
 	// Constructor //
 	// ----------- //
 
-	constructor() {
+	constructor()
+	{
 		super("channel-list-custom-room", "Liste des salons");
-		this.withID(ChannelListCustomRoom.ID);
+		this.with_id(ChannelListCustomRoom.ID);
 	}
 
 	// --------- //
@@ -59,14 +59,16 @@ export class ChannelListCustomRoom extends Room<
 	/**
 	 * Efface tous les salons de l'instance.
 	 */
-	clear() {
+	clear()
+	{
 		this.channels.clear();
 	}
 
 	/**
 	 * Insère un nouveau salon du serveur.
 	 */
-	insert(data: ListDataResponse) {
+	insert(data: ListDataResponse)
+	{
 		this.channels.set(data.channel, data);
 	}
 }

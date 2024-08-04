@@ -17,15 +17,18 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorNotonchannelHandler
 	implements SocketEventInterface<"ERR_NOTONCHANNEL">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_NOTONCHANNEL", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NOTONCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent(
+	handle(data: GenericReply<"ERR_NOTONCHANNEL">)
+	{
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"error:err_notonchannel",
 			{ ...data, isCurrentClient: true },
 			data.reason,

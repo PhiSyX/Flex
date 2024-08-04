@@ -39,7 +39,7 @@ declare type MaskAddr = Opaque<`${string}!${string}@${string}`, "MaskAddr">;
  * 		foobar: boolean;
  * 	}
  *
- *   const params: Optional<Params, "bar"> = { foo: "bar", foobar: true };
+ *   let params: Optional<Params, "bar"> = { foo: "bar", foobar: true };
  *   console.log(params.foo, params.foobar);
  * ```
  *

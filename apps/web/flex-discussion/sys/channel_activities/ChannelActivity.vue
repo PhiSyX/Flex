@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ChannelActivity, isChannelMember } from "@phisyx/flex-chat";
+import { type ChannelActivity, is_channel_member } from "@phisyx/flex-chat";
 
 import ChannelNick from "../channel_nick/ChannelNick.template.vue";
 import Match from "../match/Match.vue";
@@ -8,7 +8,7 @@ import Match from "../match/Match.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	activity: ChannelActivity;
 }
@@ -29,7 +29,7 @@ defineProps<Props>();
 		v-once
 	>
 		<li
-			v-for="previousMessage of activity.previousMessages"
+			v-for="previous_message of activity.previousMessages"
 			class="activities@activity [ flex gap=1 ]"
 		>
 			<div class="[ flex:shrink=0 ]" style="visibility: hidden">
@@ -37,17 +37,17 @@ defineProps<Props>();
 			</div>
 
 			<div class="[ flex:full ]">
-				<Match :maybe="previousMessage.member">
+				<Match :maybe="previous_message.member">
 					<template #some="{ data: member }">
 						<ChannelNick
 							:nickname="member.nickname"
-							:classes="member.className"
-							:symbol="isChannelMember(member) ? member.accessLevel.highest.symbol : undefined"
+							:classes="member.class_name"
+							:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
 						/>
 					</template>
 					<template #none>
 						<ChannelNick
-							:nickname="previousMessage.message.nickname"
+							:nickname="previous_message.message.nickname"
 						/>
 					</template>
 				</Match>
@@ -55,7 +55,7 @@ defineProps<Props>();
 				<span>: </span>
 
 				<p class="[ display-i hyphens ]">
-					{{ previousMessage.message.data.text }}
+					{{ previous_message.message.message }}
 				</p>
 			</div>
 		</li>
@@ -71,8 +71,8 @@ defineProps<Props>();
 				<template #some="{ data: member }">
 					<ChannelNick
 						:nickname="member.nickname"
-						:classes="member.className"
-						:symbol="isChannelMember(member) ? member.accessLevel.highest.symbol : undefined"
+						:classes="member.class_name"
+						:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
 					/>
 				</template>
 				<template #none>

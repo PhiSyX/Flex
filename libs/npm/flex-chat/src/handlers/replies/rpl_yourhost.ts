@@ -17,14 +17,17 @@ import type { ChatStoreInterface } from "../../store";
 export class ReplyYourhostHandler
 	implements SocketEventInterface<"RPL_YOURHOST">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.once("RPL_YOURHOST", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_YOURHOST">) {
-		const networkRoom = this.store.network();
-		networkRoom.addConnectEvent(data, data.message);
+	handle(data: GenericReply<"RPL_YOURHOST">)
+	{
+		let network_room = this.store.network();
+		network_room.add_connect_event(data, data.message);
 	}
 }

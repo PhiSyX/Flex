@@ -17,14 +17,16 @@ import { KillHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class KillModule implements Module<KillModule> {
+export class KillModule implements Module<KillModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "KILL";
 
-	static create(store: ChatStoreInterface): KillModule {
+	static create(store: ChatStoreInterface): KillModule
+	{
 		return new KillModule(new KillCommand(store), new KillHandler(store));
 	}
 
@@ -34,23 +36,29 @@ export class KillModule implements Module<KillModule> {
 	constructor(
 		private command: KillCommand,
 		private handler: KillHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, knick?: string, ...words: Array<string>) {
-		const comment = words.join(" ");
-		if (!knick || !comment) return;
+	input(_: string, knick?: string, ...words: Array<string>)
+	{
+		let comment = words.join(" ");
+		if (!knick || !comment) {
+			return;
+		}
 		this.send({ nickname: knick, comment });
 	}
 
-	send(payload: Command<"KILL">) {
+	send(payload: Command<"KILL">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }

@@ -8,40 +8,50 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../../asserts/room";
 import type { ChatStoreInterface } from "../../../store";
+
+import { assert_channel_room } from "../../../asserts/room";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ModeAccessControlHandler implements SocketEventInterface<"MODE"> {
+export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"MODE">) {
-		if (this.store.isCurrentClient(data.target)) return;
-		this.handleChannel(data);
+	handle(data: GenericReply<"MODE">)
+	{
+		if (this.store.is_current_client(data.target)) {
+			return;
+		}
+		this.handle_channel(data);
 	}
 
-	handleChannel(data: GenericReply<"MODE">) {
-		const maybeRoom = this.store.roomManager().get(data.target);
-		if (maybeRoom.is_none()) return;
+	handle_channel(data: GenericReply<"MODE">)
+	{
+		let maybe_room = this.store.room_manager().get(data.target);
+		if (maybe_room.is_none()) {
+			return;
+		}
 
-		const channel = maybeRoom.unwrap();
-		assertChannelRoom(channel);
+		let channel = maybe_room.unwrap();
+		assert_channel_room(channel);
 
-		function isControlAccessLetter(
+		function is_control_access_letter_allowed(
 			letter: string,
 			// biome-ignore lint/suspicious/noExplicitAny: ?
 			mode: ModeApplyFlag<any>,
@@ -51,36 +61,42 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE"> {
 
 		if (data.added) {
 			for (const [letter, mode] of data.added) {
-				if (!isControlAccessLetter(letter, mode)) {
+				if (!is_control_access_letter_allowed(letter, mode)) {
 					continue;
 				}
 
-				const maskAddr =
-					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
+				let mask_addr = [
+					mode.flag.mask.nick,  "!",
+					mode.flag.mask.ident, "@",
+					mode.flag.mask.host
+				].join("") as MaskAddr;
 
 				if (letter === "b") {
-					channel.accessControl.banlist.set(maskAddr, mode);
+					channel.access_control.banlist.set(mask_addr, mode);
 				}
 				if (letter === "e") {
-					channel.accessControl.banlistException.set(maskAddr, mode);
+					channel.access_control.banlist_exception.set(mask_addr, mode);
 				}
 			}
 		}
 
 		if (data.removed) {
 			for (const [letter, mode] of data.removed) {
-				if (!isControlAccessLetter(letter, mode)) {
+				if (!is_control_access_letter_allowed(letter, mode)) {
 					continue;
 				}
 
-				const maskAddr =
-					`${mode.flag.mask.nick}!${mode.flag.mask.ident}@${mode.flag.mask.host}` as MaskAddr;
+				let mask_addr = [
+					mode.flag.mask.nick,  "!",
+					mode.flag.mask.ident, "@",
+					mode.flag.mask.host
+				].join("") as MaskAddr;
 
 				if (letter === "b") {
-					channel.accessControl.banlist.delete(maskAddr);
+					channel.access_control.banlist.delete(mask_addr);
 				}
 				if (letter === "e") {
-					channel.accessControl.banlistException.delete(maskAddr);
+					channel.access_control.banlist_exception.delete(mask_addr);
 				}
 			}
 		}

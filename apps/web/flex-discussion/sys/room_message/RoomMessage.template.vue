@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 
-import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
+import { camelcase, kebabcase } from "@phisyx/flex-capitalization";
 import {
 	ChannelMember,
 	PrivateParticipant,
-	isChannel,
+	is_channel,
 } from "@phisyx/flex-chat";
 import { None, Some } from "@phisyx/flex-safety";
 
@@ -17,7 +17,7 @@ import PrivateNickComponent from "#/sys/private_nick/PrivateNick.template.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	data: object & { origin: Origin | ChannelOrigin };
 	archived: boolean;
@@ -53,7 +53,7 @@ const emit = defineEmits<Emits>();
 let events_components = inject<Array<string>>("events_components");
 
 let _is_channel = computed(
-	() => props.nickname !== "*" && isChannel(props.target),
+	() => props.nickname !== "*" && is_channel(props.target),
 );
 
 let _is_private = computed(() => props.nickname !== "*" && !_is_channel.value);
@@ -62,7 +62,7 @@ let maybe_channel_member = computed(() => {
 	let member = new ChannelMember(props.data.origin);
 	
 	if ("access_level" in props.data.origin) {
-		member = member.withAccessLevel(props.data.origin.access_level);
+		member = member.with_access_level(props.data.origin.access_level);
 	}
 
 	return _is_channel.value ? Some(member) : None();
@@ -72,7 +72,7 @@ let maybe_private_nick = computed(
 	() => _is_private.value
 		? Some(
 				new PrivateParticipant(props.data.origin)
-					.withIsCurrentClient(props.isCurrentClient),
+					.with_is_current_client(props.isCurrentClient),
 			)
 		: None()
 );
@@ -80,7 +80,7 @@ let maybe_private_nick = computed(
 let is_event = computed(() => props.type.startsWith("event:"));
 
 let component_event_exists = computed(() => {
-	let component_name = camelCase(component_event_name.value, {
+	let component_name = camelcase(component_event_name.value, {
 		includes_separators: false,
 	});
 	return events_components?.includes(component_name) ?? false;
@@ -101,7 +101,7 @@ let is_external_message = computed(() => {
 
 let is_event_or_error = computed(
 	() =>  (
-		props.type.startsWith("error:err_") || 
+		props.type.startsWith("error:err_") ||
 		props.type.startsWith("event:rpl_")
 	)
 );
@@ -151,24 +151,24 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 			</Match>
 			<template v-else>
 				<Match :maybe="maybe_channel_member">
-					<template #some="{ data: channelMember }">
+					<template #some="{ data: cnick }">
 						<ChannelNick
 							tag="span"
-							:nickname="channelMember.nickname"
-							:symbol="channelMember.accessLevel.highest.symbol"
-							:classes="channelMember.className"
-							:is-current-client="channelMember.isCurrentClient"
+							:nickname="cnick.nickname"
+							:symbol="cnick.access_level.highest.symbol"
+							:classes="cnick.class_name"
+							:is-current-client="cnick.is_current_client"
 							prefix="<"
 							suffix=">"
 						/>
 					</template>
 				</Match>
 				<Match :maybe="maybe_private_nick">
-					<template #some="{ data: privateNick }">
+					<template #some="{ data: pnick }">
 						<PrivateNickComponent
 							tag="span"
-							:nickname="privateNick.nickname"
-							:is-current-client="privateNick.isCurrentClient"
+							:nickname="pnick.nickname"
+							:is-current-client="pnick.is_current_client"
 							suffix=" :"
 						/>
 					</template>

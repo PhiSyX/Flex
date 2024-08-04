@@ -3,7 +3,7 @@ import { PrivateRoom } from "@phisyx/flex-chat";
 
 import RoomEditbox from "./RoomEditbox.template.vue";
 
-const room = new PrivateRoom("PhiSyX");
+let room = new PrivateRoom("PhiSyX");
 </script>
 
 <template>

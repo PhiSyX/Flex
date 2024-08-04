@@ -19,19 +19,21 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorChanoprivsneededHandler
 	implements SocketEventInterface<"ERR_CHANOPRIVSNEEDED">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_CHANOPRIVSNEEDED", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_CHANOPRIVSNEEDED">) {
-		const channel = this.store
-			.roomManager()
-			.get(data.channel, { state: "opened:not-kicked" })
+	handle(data: GenericReply<"ERR_CHANOPRIVSNEEDED">)
+	{
+		let channel = this.store.room_manager().get(data.channel, { state: "opened:not-kicked" })
 			.or_else(() => Some(this.store.network()))
 			.unwrap();
-		channel.addEvent(
+
+		channel.add_event(
 			"error:err_chanoprivsneeded",
 			{ ...data, isCurrentClient: true },
 			data.reason,

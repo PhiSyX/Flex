@@ -19,19 +19,22 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorBannedfromchanHandler
 	implements SocketEventInterface<"ERR_BANNEDFROMCHAN">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_BANNEDFROMCHAN", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">) {
-		const room = this.store
-			.roomManager()
+	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">)
+	{
+		let room = this.store
+			.room_manager()
 			.get(data.channel, { state: "opened:not-kicked" })
 			.or_else(() => Some(this.store.network()))
 			.unwrap();
-		room.addEvent(
+		room.add_event(
 			"error:err_bannedfromchan",
 			{ ...data, isCurrentClient: true },
 			data.reason,

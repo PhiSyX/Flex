@@ -8,57 +8,61 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom, assertPrivateRoom } from "../../asserts/room";
+import { assert_channel_room, assert_private_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class NickHandler implements SocketEventInterface<"NICK"> {
+export class NickHandler implements SocketEventInterface<"NICK">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("NICK", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"NICK">) {
+	handle(data: GenericReply<"NICK">)
+	{
 		this.store
-			.userManager()
-			.changeNickname(data.old_nickname, data.new_nickname);
+			.user_manager()
+			.change_nickname(data.old_nickname, data.new_nickname);
 
-		const isCurrentClient = this.store.isCurrentClient(data.origin);
-		if (isCurrentClient) {
-			if (data.tags.user_id) this.store.setClientID(data.tags.user_id);
-			this.store.setClientNickname(data.new_nickname);
+		let is_current_client = this.store.is_current_client(data.origin);
+		if (is_current_client) {
+			if (data.tags.user_id) this.store.set_client_id(data.tags.user_id);
+			this.store.set_client_nickname(data.new_nickname);
 		}
 
-		for (const room of this.store.roomManager().rooms()) {
-			room.addEvent("event:nick", {
+		for (let room of this.store.room_manager().rooms()) {
+			room.add_event("event:nick", {
 				...data,
-				isCurrentClient: isCurrentClient,
+				isCurrentClient: is_current_client,
 			});
 
 			if (room.type === "channel") {
-				assertChannelRoom(room);
+				assert_channel_room(room);
 
-				const user = this.store
-					.userManager()
-					.findByNickname(data.new_nickname)
+				let user = this.store
+					.user_manager()
+					.find_by_nickname(data.new_nickname)
 					.expect(`L'utilisateur ${data.new_nickname}.`);
 
 				if (!room.members.has(user.id)) {
 					continue;
 				}
 
-				room.members.changeNickname(
+				room.members.change_nickname(
 					data.origin.id,
 					data.old_nickname,
 					data.new_nickname,
@@ -68,9 +72,9 @@ export class NickHandler implements SocketEventInterface<"NICK"> {
 					continue;
 				}
 
-				assertPrivateRoom(room);
+				assert_private_room(room);
 
-				room.changeName(data.new_nickname);
+				room.change_name(data.new_nickname);
 			}
 		}
 	}

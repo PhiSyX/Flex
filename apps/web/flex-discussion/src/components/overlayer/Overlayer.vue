@@ -2,22 +2,22 @@
 import type { CSSProperties } from "vue";
 
 import { vTrap } from "~/directives";
-import { useOverlayer } from "./Overlayer.hooks";
+import { use_overlayer } from "./Overlayer.hooks";
 
-const { store, destroyHandler } = useOverlayer();
+const { store, destroy_handler } = use_overlayer();
 </script>
 
 <template>
 	<Transition name="fade">
-		<div v-if="store.hasLayers" id="overlayer">
-			<div class="overlay [ pos-a:full ]" @click="destroyHandler" />
+		<div v-if="store.has_layers" id="overlayer">
+			<div class="overlay [ pos-a:full ]" @click="destroy_handler" />
 
 			<template v-for="[id, layer] of store.layers" :key="`${id}_layer`">
-				<div v-trap:focus="layer.trapFocus">
+				<div v-trap:focus="layer.trap_focus">
 					<div
 						:id="`${id}_layer`"
 						class="layer [ border/radius=1 ]"
-						@keydown.esc="destroyHandler($event, id)"
+						@keydown.esc="destroy_handler($event, id)"
 						:style="(layer.style) as CSSProperties"
 					/>
 

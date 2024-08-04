@@ -17,12 +17,14 @@ import type { ChatStoreInterface } from "../../store";
 export class ReplyWelcomeHandler
 	implements SocketEventInterface<"RPL_WELCOME">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.once("RPL_WELCOME", (data) => {
 			this.handle(data, {
-				channels: this.store.getAutoJoinChannels(),
+				channels: this.store.get_auto_join_channels(),
 			});
 		});
 	}
@@ -31,18 +33,18 @@ export class ReplyWelcomeHandler
 		data: GenericReply<"RPL_WELCOME">,
 		payload: { channels: Array<ChannelID> },
 	) {
-		const { channels } = payload;
+		let { channels } = payload;
 
-		this.store.setClient({
+		this.store.set_client({
 			id: data.tags.client_id,
 			nickname: data.nickname,
 			host: { cloaked: data.host },
 			ident: data.ident,
 		});
 
-		this.store.setConnected(true);
+		this.store.set_connected(true);
 
-		const tokenData = {
+		let token_data = {
 			nick: data.nickname,
 			ident: data.ident,
 			host: data.host,
@@ -56,15 +58,13 @@ export class ReplyWelcomeHandler
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(tokenData),
+			body: JSON.stringify(token_data),
 		});
 
-		const networkRoom = this.store.network();
-		networkRoom.addConnectEvent(data, data.message);
+		let network_room = this.store.network();
+		network_room.add_connect_event(data, data.message);
 
-		const module = this.store
-			.moduleManager()
-			.get("JOIN")
+		let module = this.store.module_manager().get("JOIN")
 			.expect("Récupération du module `JOIN`");
 		module.send({ channels });
 	}

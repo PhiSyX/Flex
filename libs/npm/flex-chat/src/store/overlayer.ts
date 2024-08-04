@@ -20,16 +20,16 @@ export type Layer<D = unknown> = {
 	data?: D;
 	destroyable?: "background" | "manual";
 	event?: Event & { clientX?: number; clientY?: number };
-	DOMElement?: HTMLElement;
+	dom_element?: HTMLElement;
 	style?: {
 		[key: string]: CSSHoudiniUnitValue;
 	};
-	onClose?: () => void;
-	mousePosition?: Partial<{
+	on_close?: () => void;
+	mouse_position?: Partial<{
 		top: CSSHoudiniUnitValue;
 		left: CSSHoudiniUnitValue;
 	}>;
-	trapFocus?: boolean;
+	trap_focus?: boolean;
 };
 
 // -------- //
@@ -48,7 +48,8 @@ const MOUSE_POSITION_PADDING: number = 4;
 // Implémentation //
 // -------------- //
 
-export class OverlayerStore {
+export class OverlayerStore
+{
 	// ------ //
 	// Static //
 	// ------ //
@@ -65,7 +66,8 @@ export class OverlayerStore {
 	// Getter | Setter //
 	// --------------- //
 
-	get hasLayers(): boolean {
+	get has_layers(): boolean
+	{
 		return this.layers.size > 0;
 	}
 
@@ -73,81 +75,87 @@ export class OverlayerStore {
 	// Méthode //
 	// ------- //
 
-	create<D = unknown>(payload: Layer<D>): Layer<D> {
+	create<D = unknown>(payload: Layer<D>): Layer<D>
+	{
 		payload.destroyable ||= "background";
-		payload.trapFocus ??= true;
+		payload.trap_focus ??= true;
 
 		if (!payload.event) {
 			this.layers.set(payload.id, payload);
 			return this.layers.get(payload.id) as Layer<D>;
 		}
 
-		const DOMElement =
-			payload.DOMElement || (payload.event.currentTarget as HTMLElement);
+		let dom_element = payload.dom_element || (payload.event.currentTarget as HTMLElement);
 
 		if (
-			DOMElement.classList.contains(LAYER_HL_CSS_CLASS) ||
-			DOMElement.classList.contains(LAYER_HL_CSS_CLASS_ALT)
+			dom_element.classList.contains(LAYER_HL_CSS_CLASS) ||
+			dom_element.classList.contains(LAYER_HL_CSS_CLASS_ALT)
 		) {
 			return this.layers.get(payload.id) as Layer<D>;
 		}
 
-		const computedStyle = window.getComputedStyle(DOMElement);
-		const CSSPositionElement = computedStyle.position;
+		let computed_style = window.getComputedStyle(dom_element);
+		let css_position_element = computed_style.position;
 
-		let layerCssClasses = LAYER_HL_CSS_CLASS;
+		let layer_css_classes = LAYER_HL_CSS_CLASS;
 
-		if (["absolute", "fixed"].includes(CSSPositionElement)) {
-			layerCssClasses = LAYER_HL_CSS_CLASS_ALT;
+		if (["absolute", "fixed"].includes(css_position_element)) {
+			layer_css_classes = LAYER_HL_CSS_CLASS_ALT;
 		}
 
 		// nextTick(() =>
-		DOMElement.classList.add(layerCssClasses);
+		dom_element.classList.add(layer_css_classes);
 		// );
 
-		const DOMPositionElement = DOMElement.getBoundingClientRect();
-		const style: Layer["style"] = {
-			top: to_px(DOMPositionElement.top - MOUSE_POSITION_PADDING),
-			right: to_px(DOMPositionElement.right + MOUSE_POSITION_PADDING),
-			bottom: to_px(DOMPositionElement.bottom - MOUSE_POSITION_PADDING),
-			left: to_px(DOMPositionElement.left - MOUSE_POSITION_PADDING),
-			width: to_px(DOMPositionElement.width + MOUSE_POSITION_PADDING * 2),
+		let dom_position_element = dom_element.getBoundingClientRect();
+		let style: Layer["style"] = {
+			top: to_px(dom_position_element.top - MOUSE_POSITION_PADDING),
+			right: to_px(dom_position_element.right + MOUSE_POSITION_PADDING),
+			bottom: to_px(dom_position_element.bottom - MOUSE_POSITION_PADDING),
+			left: to_px(dom_position_element.left - MOUSE_POSITION_PADDING),
+			width: to_px(dom_position_element.width + MOUSE_POSITION_PADDING * 2),
 			height: to_px(
-				DOMPositionElement.height + MOUSE_POSITION_PADDING * 2,
+				dom_position_element.height + MOUSE_POSITION_PADDING * 2,
 			),
 		};
 
-		const mousePosition: Layer["mousePosition"] = {};
+		let mouse_position: Layer["mouse_position"] = {};
+
 		if (!payload.centered) {
-			const { clientX: deltaX = 0, clientY: deltaY = 0 } = payload.event;
-			mousePosition.top = to_px(deltaY + MOUSE_POSITION_PADDING);
-			mousePosition.left = to_px(deltaX + MOUSE_POSITION_PADDING);
+			let { clientX: deltaX = 0, clientY: deltaY = 0 } = payload.event;
+			mouse_position.top = to_px(deltaY + MOUSE_POSITION_PADDING);
+			mouse_position.left = to_px(deltaX + MOUSE_POSITION_PADDING);
 		}
 
 		this.layers.set(payload.id, {
 			...payload,
-			DOMElement,
+			dom_element: dom_element,
 			style,
-			mousePosition,
+			mouse_position,
 		});
 
 		return this.layers.get(payload.id) as Layer<D>;
 	}
 
-	destroy(layerID: Layer["id"]) {
-		const layer = this.layers.get(layerID);
-		if (!layer) return;
+	destroy(layer_id: Layer["id"])
+	{
+		let layer = this.layers.get(layer_id);
 
-		layer.DOMElement?.classList?.remove(LAYER_HL_CSS_CLASS);
-		layer.DOMElement?.classList?.remove(LAYER_HL_CSS_CLASS_ALT);
-		layer.DOMElement?.focus();
+		if (!layer) {
+			return;
+		}
 
-		layer.onClose?.call(this);
+		layer.dom_element?.classList?.remove(LAYER_HL_CSS_CLASS);
+		layer.dom_element?.classList?.remove(LAYER_HL_CSS_CLASS_ALT);
+		layer.dom_element?.focus();
 
-		this.layers.delete(layerID);
+		layer.on_close?.call(this);
+
+		this.layers.delete(layer_id);
 	}
 
-	destroyAll(options: { force: boolean } = { force: false }) {
+	destroy_all(options: { force: boolean } = { force: false })
+	{
 		for (const [id, layer] of this.layers) {
 			if (options.force) {
 				this.destroy(id);
@@ -162,43 +170,54 @@ export class OverlayerStore {
 		}
 	}
 
-	get(layerID: Layer["id"]) {
-		return this.layers.get(layerID);
+	get(layer_id: Layer["id"])
+	{
+		return this.layers.get(layer_id);
 	}
 
-	has(layerID: Layer["id"]) {
-		return this.layers.has(layerID);
+	has(layer_id: Layer["id"])
+	{
+		return this.layers.has(layer_id);
 	}
 
-	update(layerID: Layer["id"]) {
-		const layer = this.layers.get(layerID);
+	update(layer_id: Layer["id"])
+	{
+		let layer = this.layers.get(layer_id);
 
-		if (!layer) return;
+		if (!layer) {
+			return;
+		}
 
-		const DOMPositionElement = layer.DOMElement?.getBoundingClientRect();
-		if (!DOMPositionElement) return;
+		let dom_position_element = layer.dom_element?.getBoundingClientRect();
+		if (!dom_position_element) {
+			return;
+		}
 
-		const style: Layer["style"] = {
-			top: to_px(DOMPositionElement.top - MOUSE_POSITION_PADDING),
-			right: to_px(DOMPositionElement.right + MOUSE_POSITION_PADDING),
-			bottom: to_px(DOMPositionElement.bottom - MOUSE_POSITION_PADDING),
-			left: to_px(DOMPositionElement.left - MOUSE_POSITION_PADDING),
-			width: to_px(DOMPositionElement.width + MOUSE_POSITION_PADDING * 2),
+		let style: Layer["style"] = {
+			top: to_px(dom_position_element.top - MOUSE_POSITION_PADDING),
+			right: to_px(dom_position_element.right + MOUSE_POSITION_PADDING),
+			bottom: to_px(dom_position_element.bottom - MOUSE_POSITION_PADDING),
+			left: to_px(dom_position_element.left - MOUSE_POSITION_PADDING),
+			width: to_px(dom_position_element.width + MOUSE_POSITION_PADDING * 2),
 			height: to_px(
-				DOMPositionElement.height + MOUSE_POSITION_PADDING * 2,
+				dom_position_element.height + MOUSE_POSITION_PADDING * 2,
 			),
 		};
 
-		this.layers.set(layerID, { ...layer, style });
+		this.layers.set(layer_id, { ...layer, style });
 	}
 
-	updateData<D = unknown>(layerID: Layer<D>["id"], data: D) {
-		const layer = this.layers.get(layerID);
-		if (!layer) return;
+	update_data<D = unknown>(layer_id: Layer<D>["id"], data: D)
+	{
+		let layer = this.layers.get(layer_id);
+		if (!layer) {
+			return;
+		}
 		layer.data = data;
 	}
 
-	updateAll() {
+	update_all()
+	{
 		for (const [id, _] of this.layers) {
 			this.update(id);
 		}

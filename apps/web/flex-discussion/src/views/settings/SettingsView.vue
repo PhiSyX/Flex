@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { View } from "@phisyx/flex-chat";
+
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
-import { useSettingsStore } from "~/store";
+import { use_settings_store } from "~/store";
 
 import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
 import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
@@ -12,7 +13,7 @@ import SettingsPersonalizationTheme from "./personalization/Theme.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	previousView: View;
 }
@@ -21,16 +22,16 @@ interface Props
 // Composant //
 // --------- //
 
+let settings_store = use_settings_store();
+
 const props = defineProps<Props>();
 let change_view = defineModel<View>("changeView");
-
-let settings_store = useSettingsStore();
 
 // ------- //
 // Handler //
 // ------- //
 
-function save_and_exit_handler() 
+function save_and_exit_handler()
 {
 	settings_store.save();
 	change_view.value = props.previousView;

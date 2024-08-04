@@ -3,7 +3,7 @@
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	isCurrentClient?: boolean;
 	nickname: string;

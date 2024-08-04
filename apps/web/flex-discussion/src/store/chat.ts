@@ -8,6 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type {
+	ChannelMember,
+	ChannelMemberSelected,
+	ChannelRoom,
+	ChatStoreInterfaceExt,
+	CommandInterface,
+	ConnectUserInfo,
+	Module,
+	OverlayerStore,
+	User,
+} from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
+
 import { defineStore as define_store } from "pinia";
 import { io } from "socket.io-client";
 import { reactive } from "vue";
@@ -15,33 +28,26 @@ import { reactive } from "vue";
 import {
 	ChannelAccessLevelFlag,
 	ChannelListCustomRoom,
-	type ChannelMember,
-	type ChannelMemberSelected,
-	type ChannelRoom,
 	ChatStore,
-	type ChatStoreInterfaceExt,
-	type CommandInterface,
-	type ConnectUserInfo,
-	type Module,
-	type OverlayerStore,
 	PrivateParticipant,
 	PrivateRoom,
-	type User,
-	assertChannelRoom,
-	isChannel,
+	assert_channel_room,
+	is_channel,
 } from "@phisyx/flex-chat";
-import { None, type Option } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety";
 
-import { useOverlayerStore } from "./overlayer";
+import { use_overlayer_store } from "./overlayer";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
-	private _overlayer = useOverlayerStore() as unknown as OverlayerStore;
+export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt
+{
+	private _overlayer = use_overlayer_store() as unknown as OverlayerStore;
 
-	static default(): ChatStoreVue {
+	static default(): ChatStoreVue
+	{
 		return reactive(new ChatStoreVue()) as ChatStoreVue;
 	}
 
@@ -52,27 +58,28 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 	/**
 	 * Connexion au serveur de Chat WebSocket.
 	 */
-	connectWebsocket(websocketServerURL: string) {
+	connect_websocket(websocket_server_url: string)
+	{
 		console.info(
 			"Connexion au serveur de WebSocket « %s »",
-			websocketServerURL,
+			websocket_server_url,
 		);
 
-		let clientID = this._clientIDStorage.maybe().unwrap_or("") as
+		let client_id = this._client_id_storage.maybe().unwrap_or("") as
 			| string
 			| null;
-		let userID = this._userID.unwrap_or("") as string | null;
+		let user_id = this._user_id.unwrap_or("") as string | null;
 
-		if (clientID?.length === 0) {
-			clientID = null;
+		if (client_id?.length === 0) {
+			client_id = null;
 		}
 
-		if (userID?.length === 0) {
-			userID = null;
+		if (user_id?.length === 0) {
+			user_id = null;
 		}
 
-		let wsio = <TypeSafeSocket>io(websocketServerURL, {
-			auth: { user_id: userID, client_id: clientID },
+		let wsio = <TypeSafeSocket>io(websocket_server_url, {
+			auth: { user_id: user_id, client_id: client_id },
 			transports: ["websocket"],
 			reconnection: true,
 			reconnectionDelay: 10_000,
@@ -89,17 +96,18 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 	/**
 	 * Déconnexion du client liée à un événement d'erreur.
 	 */
-	disconnectError(comment: GenericReply<"ERROR"> | string) {
+	disconnect_error(comment: GenericReply<"ERROR"> | string)
+	{
 		this._overlayer.create({
 			id: "error-layer",
 			centered: true,
-			onClose: () => {
-				this.clientError = None();
+			on_close: () => {
+				this.client_error = None();
 				window.location.reload();
 			},
 		});
 
-		this.clientError.replace({
+		this.client_error.replace({
 			id: "error-layer",
 			data: comment,
 		});
@@ -108,13 +116,14 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 	/**
 	 * Charge tous les modules du Chat.
 	 */
-	async loadAllModules() {
-		let totalLoaded = this._handlerManager.size + this._moduleManager.size;
+	async load_all_modules()
+	{
+		let total_loaded = this._handler_manager.size + this._module_manager.size;
 		let loaded = 0;
 
 		type LayerData = {
-			moduleName?: string;
-			totalLoaded: number;
+			module_name?: string;
+			total_loaded: number;
 			loaded: number;
 		};
 
@@ -122,39 +131,39 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 			id: "load-all-modules",
 			centered: true,
 			destroyable: "manual",
-			data: { loaded, totalLoaded },
+			data: { loaded, total_loaded },
 		});
 
-		totalLoaded = this._handlerManager.size;
+		total_loaded = this._handler_manager.size;
 
-		for (const handler of this._handlerManager.sets()) {
-			const handlerCtors = (await handler()) as Record<
+		for (let handler of this._handler_manager.sets()) {
+			let handler_constructors = (await handler()) as Record<
 				string,
 				{ new (store: ChatStore): SocketEventHandler }
 			>;
 
-			const handlers = Object.entries(handlerCtors);
-			const handlersSize = handlers.length;
-			if (handlersSize > 1) {
-				totalLoaded += handlersSize - 1;
+			let handlers = Object.entries(handler_constructors);
+			let handlers_size = handlers.length;
+			if (handlers_size > 1) {
+				total_loaded += handlers_size - 1;
 			}
 
-			for (const [handlerName, handlerCtor] of handlers) {
-				this._handlerManager.set(handlerName, new handlerCtor(this));
+			for (let [handler_name, handler_constructor] of handlers) {
+				this._handler_manager.set(handler_name, new handler_constructor(this));
 
 				loaded += 1;
 
-				this._overlayer.updateData<LayerData>("load-all-modules", {
+				this._overlayer.update_data<LayerData>("load-all-modules", {
 					loaded,
-					totalLoaded,
-					moduleName: handlerName,
+					total_loaded: total_loaded,
+					module_name: handler_name,
 				});
 			}
 		}
 
-		totalLoaded += this._moduleManager.size;
-		for (const module of this.moduleManager().sets()) {
-			const moduleCtors = (await module()) as Record<
+		total_loaded += this._module_manager.size;
+		for (let module of this.module_manager().sets()) {
+			let module_constructors = (await module()) as Record<
 				string,
 				{
 					new (): Module & CommandInterface;
@@ -163,51 +172,53 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt {
 				}
 			>;
 
-			const modules = Object.entries(moduleCtors);
-			const modulesSize = modules.length;
-			if (modulesSize > 1) {
-				totalLoaded += modulesSize - 1;
+			let modules = Object.entries(module_constructors);
+			let modules_size = modules.length;
+			if (modules_size > 1) {
+				total_loaded += modules_size - 1;
 			}
 
-			for (const [moduleName, moduleCtor] of modules) {
+			for (let [module_name, module_constructor] of modules) {
 				console.info(
 					"Le module « %s » est maintenant en écoute.",
-					moduleName,
+					module_name,
 				);
-				this.moduleManager().set(
-					moduleCtor.NAME.toUpperCase(),
-					moduleCtor.create(this),
+				this.module_manager().set(
+					module_constructor.NAME.toUpperCase(),
+					module_constructor.create(this),
 				);
 
 				loaded += 1;
 
-				this._overlayer.updateData<LayerData>("load-all-modules", {
+				this._overlayer.update_data<LayerData>("load-all-modules", {
 					loaded,
-					totalLoaded,
-					moduleName,
+					total_loaded,
+					module_name,
 				});
 			}
 		}
 
-		this._handlerManager.free();
-		this._moduleManager.free();
+		this._handler_manager.free();
+		this._module_manager.free();
 		this._overlayer.destroy("load-all-modules");
 	}
 
-	overlayer(): OverlayerStore {
+	overlayer(): OverlayerStore
+	{
 		return this._overlayer;
 	}
 }
 
-export const useChatStore = define_store(ChatStoreVue.NAME, () => {
-	const store = ChatStoreVue.default();
+export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
+	let store = ChatStoreVue.default();
 
 	/**
 	 * Toutes les commandes basées sur les noms de modules.
 	 */
-	function allCommands() {
+	function all_commands()
+	{
 		return Array.from(
-			store.moduleManager().modules().keys(),
+			store.module_manager().modules().keys(),
 			(k) => `/${k.toLowerCase()}`,
 		).sort();
 	}
@@ -215,96 +226,95 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Applique les paramètres d'un salon.
 	 */
-	function applyChannelSettings(
+	function apply_channel_settings(
 		target: string,
-		modesSettings: Command<"MODE">["modes"],
-	) {
-		const module = store
-			.moduleManager()
-			.get("MODE")
+		modes_settings: Command<"MODE">["modes"],
+	)
+	{
+		let module = store.module_manager().get("MODE")
 			.expect("Récupération du module `MODE`");
-		module.send({ target, modes: modesSettings });
+		module.send({ target, modes: modes_settings });
 	}
 
 	/**
 	 * Change le pseudonyme de l'utilisateur actuel.
 	 */
-	function changeNick(newNick: string) {
-		const module = store
-			.moduleManager()
-			.get("NICK")
+	function change_nick(new_nick: string)
+	{
+		let module = store.module_manager().get("NICK")
 			.expect("Récupération du module `NICK`");
-		module.send({ nickname: newNick });
+		module.send({ nickname: new_nick });
 	}
 
 	/**
 	 * Change de chambre.
 	 */
-	function changeRoom(target: Origin | RoomID) {
-		let roomID: RoomID;
+	function change_room(target: Origin | RoomID)
+	{
+		let room_id: RoomID;
 
 		if (typeof target === "string") {
-			roomID = target;
+			room_id = target;
 		} else {
-			roomID = target.id;
+			room_id = target.id;
 		}
 
-		if (!store.roomManager().has(roomID)) {
+		if (!store.room_manager().has(room_id)) {
 			return;
 		}
 
-		store.roomManager().setCurrent(roomID);
+		store.room_manager().set_current(room_id);
 	}
 
 	/**
 	 * Émet la commande /LIST vers le serveur.
 	 */
-	function channelList(channels?: Array<string>) {
-		changeRoom(ChannelListCustomRoom.ID);
-		const module = store
-			.moduleManager()
-			.get("LIST")
+	function channel_list(channels?: Array<string>)
+	{
+		change_room(ChannelListCustomRoom.ID);
+		let module = store.module_manager().get("LIST")
 			.expect("Récupération du module `LIST`");
-		module?.send({ channels });
+		module.send({ channels });
 	}
 
 	/**
 	 * Vérifie qu'un utilisateur est bloqué.
 	 */
-	function checkUserIsBlocked(user: User): boolean {
-		return store.userManager().isBlocked(user.id);
+	function check_user_is_blocked(user: User): boolean
+	{
+		return store.user_manager().is_blocked(user.id);
 	}
 
 	/**
 	 * Ferme une chambre. Dans le cas d'un salon, cette fonction émet la
 	 * commande /PART vers le serveur.
 	 */
-	function closeRoom(target: Origin | RoomID, message?: string) {
-		let roomID: RoomID;
+	function close_room(target: Origin | RoomID, message?: string)
+	{
+		let room_id: RoomID;
 		if (typeof target === "string") {
-			roomID = target;
+			room_id = target;
 		} else {
-			roomID = target.id;
+			room_id = target.id;
 		}
 
-		if (!isChannel(roomID)) {
-			store.roomManager().close(roomID);
+		if (!is_channel(room_id)) {
+			store.room_manager().close(room_id);
 			return;
 		}
 
-		const module = store
-			.moduleManager()
-			.get("PART")
+		let module = store.module_manager().get("PART")
 			.expect("Récupération du module `PART`");
-		module.send({ channels: [roomID], message });
+		module.send({ channels: [room_id], message });
 	}
 
 	/**
 	 * Se connecte au serveur de Chat.
 	 */
-	function connect(connectUserInfo: ConnectUserInfo) {
-		store.setConnectUserInfo(connectUserInfo);
-		store.connectWebsocket(connectUserInfo.websocketServerURL);
+	function connect(connect_user_info: ConnectUserInfo)
+	{
+		store.set_connect_user_info(connect_user_info);
+		store.connect_websocket(connect_user_info.websocket_server_url);
 
 		if (import.meta.env.DEV) {
 			store.websocket().onAnyOutgoing((event_name, ...payload) => {
@@ -323,49 +333,51 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 		}
 
 		store.websocket().once("connect", () => {
-			for (const [_, handler] of store.handlerManager().handlers()) {
+			for (let [_, handler] of store.handler_manager().handlers()) {
 				handler.listen();
 			}
-			for (const [_, module] of store.moduleManager().modules()) {
+			for (let [_, module] of store.module_manager().modules()) {
 				module.listen();
 			}
 
-			if (connectUserInfo.passwordServer) {
+			if (connect_user_info.password_server) {
 				store.emit("PASS", {
-					password: connectUserInfo.passwordServer,
+					password: connect_user_info.password_server,
 				});
 			}
+
 			store.emit("NICK (unregistered)", {
-				nickname: connectUserInfo.nickname,
+				nickname: connect_user_info.nickname,
 			});
+			
 			store.emit("USER", {
-				user: connectUserInfo.nickname,
+				user: connect_user_info.nickname,
 				mode: 1 << 3,
-				realname: connectUserInfo.realname,
+				realname: connect_user_info.realname,
 			});
 
 			store.websocket().once("disconnect", (reason) => {
-				setTimeout(() => store.disconnectError(reason), 1_500);
+				setTimeout(() => store.disconnect_error(reason), 1_500);
 			});
 		});
 	}
 
 	/**
-	 * @see ChatStore#getCurrentSelectedChannelMember
+	 * @see ChatStore#get_current_selected_channel_member
 	 */
-	function getCurrentSelectedChannelMember(
+	function get_current_selected_channel_member(
 		room: ChannelRoom,
-	): Option<ChannelMemberSelected> {
-		return store.getCurrentSelectedChannelMember(room);
+	): Option<ChannelMemberSelected>
+	{
+		return store.get_current_selected_channel_member(room);
 	}
 
 	/**
 	 * Émet la commande /SILENCE +nickname vers le serveur.
 	 */
-	function ignoreUser(nickname: string) {
-		const module = store
-			.moduleManager()
-			.get("SILENCE")
+	function ignore_user(nickname: string)
+	{
+		let module = store.module_manager().get("SILENCE")
 			.expect("Récupération du module `SILENCE`");
 		module.send({ nickname: `+${nickname}` });
 	}
@@ -373,27 +385,25 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Émet la commande /JOIN vers le serveur.
 	 */
-	function joinChannel(channelsRaw: ChannelID, keysRaw?: string) {
-		const module = store
-			.moduleManager()
-			.get("JOIN")
+	function join_channel(channels_raw: ChannelID, keys_raw?: string)
+	{
+		let module = store.module_manager().get("JOIN")
 			.expect("Récupération du module `JOIN`");
-		const channels = channelsRaw.split(",") as Array<ChannelID>;
-		const keys = keysRaw?.split(",");
+		let channels = channels_raw.split(",") as Array<ChannelID>;
+		let keys = keys_raw?.split(",");
 		module.send({ channels, keys });
 	}
 
 	/**
 	 * Émet la commande /KICK vers le serveur.
 	 */
-	function kickChannelMember(
+	function kick_channel_member(
 		channel: ChannelRoom,
 		member: ChannelMember,
 		comment = "Kick.",
-	) {
-		const module = store
-			.moduleManager()
-			.get("KICK")
+	)
+	{
+		let module = store.module_manager().get("KICK")
 			.expect("Récupération du module `KICK`");
 		module.send({
 			channels: [channel.name],
@@ -406,36 +416,37 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	 * Écoute un événement donnée.
 	 */
 	function listen<K extends keyof ServerToClientEvent>(
-		eventName: K,
+		event_name: K,
 		listener: ServerToClientEvent[K],
 		options: { once: boolean } = { once: false },
-	) {
+	)
+	{
 		if (options.once) {
-			store.once(eventName, listener);
+			store.once(event_name, listener);
 		} else {
-			store.on(eventName, listener);
+			store.on(event_name, listener);
 		}
 	}
 
 	/**
 	 * Ouvre un privé ou le crée.
 	 */
-	function openPrivateOrCreate(origin: Origin) {
-		const room = store.roomManager().getOrInsert(origin.id, () => {
-			const priv = new PrivateRoom(origin.nickname).withID(origin.id);
-			priv.addParticipant(
-				new PrivateParticipant(store.client()).withIsCurrentClient(
-					true,
-				),
+	function open_private_or_create(origin: Origin)
+	{
+		let room = store.room_manager().get_or_insert(origin.id, () => {
+			let priv = new PrivateRoom(origin.nickname).with_id(origin.id);
+			priv.add_participant(
+				new PrivateParticipant(store.client())
+					.with_is_current_client(true),
 			);
-			const maybeUser = store.userManager().find(origin.id);
-			maybeUser.then((user) =>
-				priv.addParticipant(new PrivateParticipant(user)),
+			let maybe_user = store.user_manager().find(origin.id);
+			maybe_user.then((user) =>
+				priv.add_participant(new PrivateParticipant(user)),
 			);
 			return priv;
 		});
 
-		store.roomManager().setCurrent(room.id());
+		store.room_manager().set_current(room.id());
 
 		// store.emit("QUERY", { nickname: name });
 	}
@@ -444,104 +455,96 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	 * Ouvre une chambre. Dans le cas d'un salon, cette fonction émet la
 	 * commande /JOIN vers le serveur (sans clés).
 	 */
-	function openRoom(target: Origin | RoomID) {
-		let roomID: RoomID;
+	function open_room(target: Origin | RoomID)
+	{
+		let room_id: RoomID;
 		if (typeof target === "string") {
-			roomID = target;
+			room_id = target;
 		} else {
-			roomID = target.id;
+			room_id = target.id;
 		}
 
-		if (!isChannel(roomID)) {
-			store.roomManager().setCurrent(roomID);
+		if (!is_channel(room_id)) {
+			store.room_manager().set_current(room_id);
 			return;
 		}
 
-		if (store.roomManager().has(roomID)) {
-			const channel = store.roomManager().get(roomID).unwrap();
-			assertChannelRoom(channel);
-			if (!channel.isClosed() && !channel.kicked) {
+		if (store.room_manager().has(room_id)) {
+			let channel = store.room_manager().get(room_id).unwrap();
+			assert_channel_room(channel);
+			if (!channel.is_closed() && !channel.kicked) {
 				return;
 			}
 		}
 
-		const module = store
-			.moduleManager()
-			.get("JOIN")
+		let module = store.module_manager().get("JOIN")
 			.expect("Récupération du module `JOIN`");
-		module.send({ channels: [roomID] });
+		module.send({ channels: [room_id] });
 	}
 
 	/**
 	 * (Dé-)sélectionne un utilisateur d'un salon.
 	 */
-	function toggleSelectChannelMember(room: ChannelRoom, origin: Origin) {
-		const maybeSelectedChannelMember =
-			store.getCurrentSelectedChannelMember(room);
-		if (maybeSelectedChannelMember.is_some()) {
-			const selectedChannelMember = maybeSelectedChannelMember.unwrap();
-			if (selectedChannelMember.member.id === origin.id) {
-				store.unsetSelectedUser(room, origin);
+	function toggle_select_channel_member(room: ChannelRoom, origin: Origin)
+	{
+		let maybe_selected_channel_member = store.get_current_selected_channel_member(room);
+		if (maybe_selected_channel_member.is_some()) {
+			let selected_channel_member = maybe_selected_channel_member.unwrap();
+			if (selected_channel_member.member.id === origin.id) {
+				store.unset_selected_user(room, origin);
 			} else {
-				store.setSelectedUser(room, origin);
+				store.set_selected_user(room, origin);
 			}
 		} else {
-			store.setSelectedUser(room, origin);
+			store.set_selected_user(room, origin);
 		}
 	}
 
 	/**
 	 * Émet les commandes au serveur.
 	 */
-	function sendMessage(name: RoomID, message: string) {
-		const room = store
-			.roomManager()
-			.get(name)
+	function send_message(name: RoomID, message: string)
+	{
+		let room = store.room_manager().get(name)
 			.or_else(() =>
-				store
-					.userManager()
-					.findByNickname(name)
-					.and_then((user) => store.roomManager().get(user.id)),
+				store.user_manager().find_by_nickname(name)
+					.and_then((user) => store.room_manager().get(user.id)),
 			)
 			.unwrap_unchecked();
-		room.addInputHistory(message);
+
+		room.add_input_history(message);
 
 		if (!message.startsWith("/")) {
-			const words = message.split(" ");
+			let words = message.split(" ");
 
 			if (name.startsWith("#")) {
-				const module = store
-					.moduleManager()
-					.get("PUBMSG")
+				let module = store.module_manager().get("PUBMSG")
 					.expect("Récupération du module `PUBMSG`");
 				module.input(name, ...words);
 			} else {
-				const module = store
-					.moduleManager()
-					.get("PRIVMSG")
+				let module = store.module_manager().get("PRIVMSG")
 					.expect("Récupération du module `PRIVMSG`");
 				module.input(name, ...words);
 			}
 			return;
 		}
 
-		const words = message.slice(1).split(" ");
-		const [commandName, ...args] = words;
+		let words = message.slice(1).split(" ");
+		let [command_name, ...args] = words;
 
-		const maybeModule = store
-			.moduleManager()
-			.get(commandName.toUpperCase() as CommandsNames);
+		let command_name_upper = command_name.toUpperCase() as CommandsNames;
+		let maybe_module = store.module_manager().get(command_name_upper);
 
-		if (maybeModule.is_none()) {
+		if (maybe_module.is_none()) {
 			console.error(
 				"[%s]: le module « %s » n'a pas été trouvé.",
 				ChatStore.NAME,
-				commandName,
+				command_name,
 			);
 			return;
 		}
 
-		const module = maybeModule.unwrap();
+		let module = maybe_module.unwrap();
 
 		module.input(name, ...args);
 	}
@@ -549,35 +552,36 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Émet les commandes liées aux niveaux d'accès vers le serveur.
 	 */
-	function sendSetAccessLevel(
+	function send_set_access_level(
 		channel: ChannelRoom,
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
-	) {
-		const payload = { channel: channel.name, nicknames: [member.nickname] };
+		access_level: ChannelAccessLevelFlag,
+	)
+	{
+		let payload = { channel: channel.name, nicknames: [member.nickname] };
 
-		let maybeModule: Option<CommandInterface<"OP">> = None();
+		let maybe_module: Option<CommandInterface<"OP">> = None();
 
-		switch (accessLevel) {
+		switch (access_level) {
 			case ChannelAccessLevelFlag.Owner:
-				maybeModule = store.moduleManager().get("QOP");
+				maybe_module = store.module_manager().get("QOP");
 				break;
 			case ChannelAccessLevelFlag.AdminOperator:
-				maybeModule = store.moduleManager().get("AOP");
+				maybe_module = store.module_manager().get("AOP");
 				break;
 			case ChannelAccessLevelFlag.Operator:
-				maybeModule = store.moduleManager().get("OP");
+				maybe_module = store.module_manager().get("OP");
 				break;
 			case ChannelAccessLevelFlag.HalfOperator:
-				maybeModule = store.moduleManager().get("HOP");
+				maybe_module = store.module_manager().get("HOP");
 				break;
 			case ChannelAccessLevelFlag.Vip:
-				maybeModule = store.moduleManager().get("VIP");
+				maybe_module = store.module_manager().get("VIP");
 				break;
 		}
 
-		const module = maybeModule.expect(
-			`Récupération du module \`AccessLevel (${accessLevel})\``,
+		let module = maybe_module.expect(
+			`Récupération du module \`AccessLevel (${access_level})\``,
 		);
 
 		module.send(payload);
@@ -586,35 +590,36 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Émet les commandes liées aux niveaux d'accès vers le serveur.
 	 */
-	function sendUnsetAccessLevel(
+	function send_unset_access_level(
 		channel: ChannelRoom,
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
-	) {
-		const payload = { channel: channel.name, nicknames: [member.nickname] };
+		access_level: ChannelAccessLevelFlag,
+	)
+	{
+		let payload = { channel: channel.name, nicknames: [member.nickname] };
 
-		let maybeModule: Option<CommandInterface<"OP">> = None();
+		let maybe_module: Option<CommandInterface<"OP">> = None();
 
-		switch (accessLevel) {
+		switch (access_level) {
 			case ChannelAccessLevelFlag.Owner:
-				maybeModule = store.moduleManager().get("DEQOP");
+				maybe_module = store.module_manager().get("DEQOP");
 				break;
 			case ChannelAccessLevelFlag.AdminOperator:
-				maybeModule = store.moduleManager().get("DEAOP");
+				maybe_module = store.module_manager().get("DEAOP");
 				break;
 			case ChannelAccessLevelFlag.Operator:
-				maybeModule = store.moduleManager().get("DEOP");
+				maybe_module = store.module_manager().get("DEOP");
 				break;
 			case ChannelAccessLevelFlag.HalfOperator:
-				maybeModule = store.moduleManager().get("DEHOP");
+				maybe_module = store.module_manager().get("DEHOP");
 				break;
 			case ChannelAccessLevelFlag.Vip:
-				maybeModule = store.moduleManager().get("DEVIP");
+				maybe_module = store.module_manager().get("DEVIP");
 				break;
 		}
 
-		const module = maybeModule.expect(
-			`Récupération du module \`AccessLevel (${accessLevel})\``,
+		let module = maybe_module.expect(
+			`Récupération du module \`AccessLevel (${access_level})\``,
 		);
 
 		module?.send(payload);
@@ -623,10 +628,9 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Émet la commande /SILENCE - vers le serveur.
 	 */
-	function unignoreUser(nickname: string) {
-		const module = store
-			.moduleManager()
-			.get("SILENCE")
+	function unignore_user(nickname: string)
+	{
+		let module = store.module_manager().get("SILENCE")
 			.expect("Récupération du module `SILENCE`");
 		module.send({ nickname: `-${nickname}` });
 	}
@@ -634,21 +638,19 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Émet la commande /TOPIC vers le serveur.
 	 */
-	function updateTopic(channelName: ChannelID, topic?: string) {
-		const module = store
-			.moduleManager()
-			.get("TOPIC")
+	function update_topic(channel_name: ChannelID, topic?: string)
+	{
+		let module = store.module_manager().get("TOPIC")
 			.expect("Récupération du module `TOPIC`");
-		module.send({ channel: channelName, topic });
+		module.send({ channel: channel_name, topic });
 	}
 
 	/**
 	 * Émet la commande /BAN vers le serveur.
 	 */
-	function banChannelMemberMask(channel: ChannelRoom, mask: MaskAddr) {
-		const module = store
-			.moduleManager()
-			.get("BAN")
+	function ban_channel_member_mask(channel: ChannelRoom, mask: MaskAddr)
+	{
+		let module = store.module_manager().get("BAN")
 			.expect("Récupération du module `BAN`");
 		module.send({ channels: [channel.name], masks: [mask] });
 	}
@@ -656,10 +658,9 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Émet la commande /UNBAN vers le serveur.
 	 */
-	function unbanChannelMemberMask(channel: ChannelRoom, mask: MaskAddr) {
-		const module = store
-			.moduleManager()
-			.get("UNBAN")
+	function unban_channel_member_mask(channel: ChannelRoom, mask: MaskAddr)
+	{
+		let module = store.module_manager().get("UNBAN")
 			.expect("Récupération du module `UNBAN`");
 		module.send({ channels: [channel.name], masks: [mask] });
 	}
@@ -667,28 +668,28 @@ export const useChatStore = define_store(ChatStoreVue.NAME, () => {
 	return {
 		store,
 
-		allCommands,
-		applyChannelSettings,
-		banChannelMemberMask,
-		changeNick,
-		changeRoom,
-		channelList,
-		checkUserIsBlocked,
-		closeRoom,
+		all_commands,
+		apply_channel_settings,
+		ban_channel_member_mask,
+		change_nick,
+		change_room,
+		channel_list,
+		check_user_is_blocked,
+		close_room,
 		connect,
-		getCurrentSelectedChannelMember,
-		ignoreUser,
-		joinChannel,
-		kickChannelMember,
+		get_current_selected_channel_member,
+		ignore_user,
+		join_channel,
+		kick_channel_member,
 		listen,
-		openPrivateOrCreate,
-		openRoom,
-		sendMessage,
-		sendSetAccessLevel,
-		sendUnsetAccessLevel,
-		toggleSelectChannelMember,
-		unbanChannelMemberMask,
-		unignoreUser,
-		updateTopic,
+		open_private_or_create,
+		open_room,
+		send_message,
+		send_set_access_level,
+		send_unset_access_level,
+		toggle_select_channel_member,
+		unban_channel_member_mask,
+		unignore_user,
+		update_topic,
 	};
 });

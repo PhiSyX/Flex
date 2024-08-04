@@ -2,7 +2,7 @@
 import { ChannelSettingsDialog } from "@phisyx/flex-chat";
 import { computed } from "vue";
 
-import { useChatStore, useOverlayerStore } from "~/store";
+import { use_chat_store, use_overlayer_store } from "~/store";
 
 import ChannelSettingsDialogComponent from "#/sys/channel_settings_dialog/ChannelSettingsDialog.template.vue";
 
@@ -16,12 +16,12 @@ const LAYER_NAME: string = ChannelSettingsDialog.ID;
 // Composant //
 // --------- //
 
-let chatStore = useChatStore();
-let overlayerStore = useOverlayerStore();
+let chat_store = use_chat_store();
+let overlayer_store = use_overlayer_store();
 
-let dialog = computed(() => new ChannelSettingsDialog(overlayerStore.store));
-let hasLayer = computed(() => dialog.value.exists());
-let layer = computed(() => dialog.value.getUnchecked());
+let dialog = computed(() => new ChannelSettingsDialog(overlayer_store.store));
+let has_layer = computed(() => dialog.value.exists());
+let layer = computed(() => dialog.value.get_unchecked());
 
 // ------- //
 // Handler //
@@ -30,37 +30,43 @@ let layer = computed(() => dialog.value.getUnchecked());
 /**
  * Soumission du formulaire.
  */
-function submit_form_data_handler(modesSettings: Partial<Command<"MODE">["modes"]>) 
+function submit_form_data_handler(modes_settings: Partial<Command<"MODE">["modes"]>)
 {
 	if (!layer.value.data) {
 		return;
 	}
 
-	chatStore.applyChannelSettings(
+	chat_store.apply_channel_settings(
 		layer.value.data.room.name,
-		modesSettings as Command<"MODE">["modes"],
+		modes_settings as Command<"MODE">["modes"],
 	);
 }
 
 /**
  * Mise à jour du sujet.
  */
-function update_topic_handler(topic?: string) 
+function update_topic_handler(topic?: string)
 {
 	if (!layer.value.data || layer.value.data.room.topic.get() === topic) {
 		return;
 	}
 
-	chatStore.updateTopic(layer.value.data.room.name, topic);
+	chat_store.update_topic(layer.value.data.room.name, topic);
+}
+
+function close_layer_handler()
+{
+	dialog.value.destroy();
 }
 </script>
 
 <template>
-	<Teleport v-if="hasLayer && layer.data" :to="`#${LAYER_NAME}_teleport`">
+	<Teleport v-if="has_layer && layer.data" :to="`#${LAYER_NAME}_teleport`">
 		<ChannelSettingsDialogComponent
-			:layer-name="LAYER_NAME"
 			v-bind="layer.data"
-			@close="dialog.destroy()"
+			:layer-name="LAYER_NAME"
+			:current-client-channel-member="layer.data.current_client_channel_member"
+			@close="close_layer_handler"
 			@submit="submit_form_data_handler"
 			@update-topic="update_topic_handler"
 		/>

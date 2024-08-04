@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom, isChannel } from "../../asserts/room";
+import { assert_channel_room, is_channel } from "../../asserts/room";
 import type { ChannelRoom } from "../../channel/room";
 import { NoticeCustomRoom } from "../../custom_room/notice";
 import type { RoomMessage } from "../../room/message";
@@ -18,65 +18,71 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class NoticeHandler implements SocketEventInterface<"NOTICE"> {
+export class NoticeHandler implements SocketEventInterface<"NOTICE">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("NOTICE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"NOTICE">) {
-		const isCurrentClient = this.store.isCurrentClient(data.origin);
-		const activeRoom = this.store.roomManager().active();
+	handle(data: GenericReply<"NOTICE">)
+	{
+		let is_current_client = this.store.is_current_client(data.origin);
+		let active_room = this.store.room_manager().active();
 
-		const payload = { ...data, isCurrentClient };
-		const message = activeRoom.addEvent(
+		let payload = { ...data, isCurrentClient: is_current_client };
+		let message = active_room.add_event(
 			"event:notice",
 			payload,
 			payload.text,
 		);
 
 		if (
-			!isCurrentClient ||
-			(isCurrentClient && isChannel(payload.target))
+			!is_current_client ||
+			(is_current_client && is_channel(payload.target))
 		) {
-			const noticeRoom = this.store
-				.roomManager()
-				.getOrInsert(NoticeCustomRoom.ID, () => new NoticeCustomRoom());
+			let notice_room = this.store.room_manager().get_or_insert(
+				NoticeCustomRoom.ID,
+				() => new NoticeCustomRoom(),
+			);
 
-			if (activeRoom.id() !== NoticeCustomRoom.ID) {
-				noticeRoom.addEvent("event:notice", payload, payload.text);
+			if (active_room.id() !== NoticeCustomRoom.ID) {
+				notice_room.add_event("event:notice", payload, payload.text);
 			}
 		}
 
 		// NOTE: envoie la notice dans le panel d'activité du salon.
-		if (!isCurrentClient && isChannel(payload.target)) {
-			const maybeChannel = this.store.roomManager().get(payload.target);
+		if (!is_current_client && is_channel(payload.target)) {
+			let maybe_channel = this.store.room_manager().get(payload.target);
 
-			if (maybeChannel.is_some()) {
-				const channel = maybeChannel.unwrap();
-				assertChannelRoom(channel);
-				this.handleChannel(channel, payload, message);
+			if (maybe_channel.is_some()) {
+				let channel = maybe_channel.unwrap();
+				assert_channel_room(channel);
+				this.handle_channel(channel, payload, message);
 			}
 		}
 	}
 
-	handleChannel(
+	handle_channel(
 		channel: ChannelRoom,
 		payload: GenericReply<"NOTICE"> & { isCurrentClient: boolean },
 		message: RoomMessage,
-	) {
+	)
+	{
 		channel.activities.upsert("notice", {
-			channelID: channel.id(),
+			channel_id: channel.id(),
 			nickname: payload.origin.nickname,
-			messageID: message.id,
+			message_id: message.id,
 		});
 	}
 }

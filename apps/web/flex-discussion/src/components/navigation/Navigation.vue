@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useChatStore, useSettingsStore } from "~/store";
+import { use_chat_store, use_settings_store } from "~/store";
 
 import NavigationArea from "#/sys/navigation_area/NavigationArea.template.vue";
 
@@ -9,7 +9,7 @@ import NavigationArea from "#/sys/navigation_area/NavigationArea.template.vue";
 // Type //
 // ---- //
 
-interface Emits 
+interface Emits
 {
 	// biome-ignore lint/style/useShorthandFunctionType: ?
 	(event_name: "open-settings-view"): void;
@@ -19,25 +19,25 @@ interface Emits
 // Composant //
 // --------- //
 
-let chat_store = useChatStore();
-let settings_store = useSettingsStore();
+let chat_store = use_chat_store();
+let settings_store = use_settings_store();
 
 const emit = defineEmits<Emits>();
 
-let navigationBarPosition = computed(
-	() => settings_store.layout.navigationBarPosition,
+let navigation_bar_position = computed(
+	() => settings_store.layout.navigation_bar_position,
 );
 
 let servers = computed(() => {
 	let network = chat_store.store.network();
 	return [
 		{
-			active: network.isActive(),
-			connected: network.isConnected(),
+			active: network.is_active(),
+			connected: network.is_connected(),
 			folded: false,
 			id: network.id(),
 			name: network.name,
-			rooms: chat_store.store.roomManager().rooms(),
+			rooms: chat_store.store.room_manager().rooms(),
 		},
 	];
 });
@@ -48,19 +48,19 @@ let servers = computed(() => {
 
 const open_settings_view_handler = () => ("open-settings-view");
 
-function change_room_handler(origin: Origin | RoomID) 
+function change_room_handler(origin: Origin | RoomID)
 {
-	chat_store.changeRoom(origin);
+	chat_store.change_room(origin);
 }
 
-function close_room_handler(origin: Origin | RoomID) 
+function close_room_handler(origin: Origin | RoomID)
 {
-	chat_store.closeRoom(origin);
+	chat_store.close_room(origin);
 }
 
-function open_channel_list_handler() 
+function open_channel_list_handler()
 {
-	chat_store.channelList();
+	chat_store.channel_list();
 }
 </script>
 
@@ -71,9 +71,9 @@ function open_channel_list_handler()
 		@close-room="close_room_handler"
 		@open-channel-list="open_channel_list_handler"
 		@open-settings-view="open_settings_view_handler"
-		:dir="navigationBarPosition === 'left' ? 'ltl' : 'rtl'"
+		:dir="navigation_bar_position === 'left' ? 'ltl' : 'rtl'"
 		:style="{
-			'--navigation-area-order': navigationBarPosition === 'right' && '1'
+			'--navigation-area-order': navigation_bar_position === 'right' && '1'
 		}"
 	/>
 </template>

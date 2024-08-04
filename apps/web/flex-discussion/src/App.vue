@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import type { UserSession } from "@phisyx/flex-chat";
 
-import { defineAsyncComponent, onMounted, ref, watch } from "vue";
+import {
+	defineAsyncComponent as define_async_component,
+	onMounted as on_mounted,
+	ref,
+	watch,
+} from "vue";
 
 import { View } from "@phisyx/flex-chat";
 import { None, type Option } from "@phisyx/flex-safety";
@@ -15,24 +20,16 @@ import { use_theme } from "./theme";
 
 defineOptions({
 	components: {
-		[View.Chat]: defineAsyncComponent(
-			() => import("./views/chat/ChatView.vue"),
-		),
-		[View.DirectAccess]: defineAsyncComponent(
-			() => import("./views/direct-access/DirectAccessView.vue"),
-		),
-		[View.Login]: defineAsyncComponent(
-			() => import("./views/login/LoginView.vue"),
-		),
-		[View.Settings]: defineAsyncComponent(
-			() => import("./views/settings/SettingsView.vue"),
-		),
+		[View.Chat]: define_async_component(() => import("./views/chat/ChatView.vue")),
+		[View.DirectAccess]: define_async_component(() => import("./views/direct-access/DirectAccessView.vue")),
+		[View.Login]: define_async_component(() => import("./views/login/LoginView.vue")),
+		[View.Settings]: define_async_component(() => import("./views/settings/SettingsView.vue")),
 	},
 });
 
-const previous_view = ref();
-const view = ref(View.Login);
-const user = ref(None() as Option<UserSession>);
+let previous_view = ref();
+let view = ref(View.Login);
+let user = ref(None() as Option<UserSession>);
 
 // --------- //
 // Lifecycle // -> Hooks
@@ -40,14 +37,14 @@ const user = ref(None() as Option<UserSession>);
 
 use_theme();
 
-watch(view, (_, oldView) => {
-	previous_view.value = oldView;
+watch(view, (_, old_view) => {
+	previous_view.value = old_view;
 });
 
-onMounted(() => {
-	const fetchOpts: RequestInit = { credentials: "same-origin" };
+on_mounted(() => {
+	let fetch_options: RequestInit = { credentials: "same-origin" };
 
-	fetch("/api/v1/users/@me", fetchOpts)
+	fetch("/api/v1/users/@me", fetch_options)
 		.then(async (res) => {
 			if (res.ok) {
 				return res.json();
@@ -59,9 +56,9 @@ onMounted(() => {
 
 			return Promise.reject(res);
 		})
-		.then((currentUser: UserSession) => {
+		.then((current_user: UserSession) => {
 			view.value = View.DirectAccess;
-			user.value.replace(currentUser);
+			user.value.replace(current_user);
 		});
 });
 </script>

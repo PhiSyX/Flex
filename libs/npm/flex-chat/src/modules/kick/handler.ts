@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../asserts/room";
+import { assert_channel_room } from "../../asserts/room";
 import type { ChannelRoom } from "../../channel/room";
 import type { ChatStoreInterface } from "../../store";
 
@@ -16,45 +16,53 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class KickHandler implements SocketEventInterface<"KICK"> {
+export class KickHandler implements SocketEventInterface<"KICK">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("KICK", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"KICK">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-		if (this.store.isCurrentClient(data.knick)) {
-			this.handleClientItself(data, channel);
+	handle(data: GenericReply<"KICK">)
+	{
+		let maybe_channel = this.store.room_manager().get(data.channel);
+		if (maybe_channel.is_none()) {
 			return;
 		}
-		this.handleUser(data, channel);
+		let channel = maybe_channel.unwrap();
+		assert_channel_room(channel);
+		if (this.store.is_current_client(data.knick)) {
+			this.handle_client_itself(data, channel);
+			return;
+		}
+		this.handle_user(data, channel);
 	}
 
-	handleClientItself(data: GenericReply<"KICK">, channel: ChannelRoom) {
+	handle_client_itself(data: GenericReply<"KICK">, channel: ChannelRoom)
+	{
 		this.store
 			.network()
-			.addEvent("event:kick", { ...data, isCurrentClient: true });
-		channel.addEvent("event:kick", { ...data, isCurrentClient: true });
-		channel.removeMember(data.knick.id);
-		channel.setKicked(true);
-		this.store.userManager().removeChannel(data.knick.id, data.channel);
+			.add_event("event:kick", { ...data, isCurrentClient: true });
+		channel.add_event("event:kick", { ...data, isCurrentClient: true });
+		channel.remove_member(data.knick.id);
+		channel.set_kicked(true);
+		this.store.user_manager().remove_channel(data.knick.id, data.channel);
 	}
 
-	handleUser(data: GenericReply<"KICK">, channel: ChannelRoom) {
-		channel.addEvent("event:kick", { ...data, isCurrentClient: false });
-		channel.removeMember(data.knick.id);
-		this.store.userManager().removeChannel(data.knick.id, data.channel);
+	handle_user(data: GenericReply<"KICK">, channel: ChannelRoom)
+	{
+		channel.add_event("event:kick", { ...data, isCurrentClient: false });
+		channel.remove_member(data.knick.id);
+		this.store.user_manager().remove_channel(data.knick.id, data.channel);
 	}
 }

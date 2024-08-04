@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../asserts/room";
+import { assert_channel_room } from "../../asserts/room";
 import { ChannelMember } from "../../channel/member";
 import { ChannelRoom } from "../../channel/room";
 import type { ChatStoreInterface } from "../../store";
@@ -18,64 +18,69 @@ import { User } from "../../user";
 // Implémentation //
 // -------------- //
 
-export class JoinHandler implements SocketEventInterface<"JOIN"> {
+export class JoinHandler implements SocketEventInterface<"JOIN">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("JOIN", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"JOIN">) {
-		if (this.store.isCurrentClient(data.origin)) {
-			this.handleClientItself(data);
+	handle(data: GenericReply<"JOIN">)
+	{
+		if (this.store.is_current_client(data.origin)) {
+			this.handle_client_itself(data);
 			return;
 		}
 
-		this.handleUser(data);
+		this.handle_user(data);
 	}
 
-	handleClientItself(data: GenericReply<"JOIN">) {
-		const user = new User(data.origin);
+	handle_client_itself(data: GenericReply<"JOIN">)
+	{
+		let user = new User(data.origin);
 
-		const channel = this.store
-			.roomManager()
-			.getOrInsert(data.channel, () =>
-				ChannelRoom.createWithOwner(data.channel, user),
+		let channel = this.store
+			.room_manager()
+			.get_or_insert(data.channel, () =>
+				ChannelRoom.create_with_owner(data.channel, user),
 			);
 
-		assertChannelRoom(channel);
+		assert_channel_room(channel);
 
-		channel.setKicked(false);
+		channel.set_kicked(false);
 
 		if (!data.forced) {
-			this.store.roomManager().setCurrent(data.channel);
+			this.store.room_manager().set_current(data.channel);
 		}
 
-		channel.addEvent("event:join", { ...data, isCurrentClient: true });
+		channel.add_event("event:join", { ...data, isCurrentClient: true });
 	}
 
-	handleUser(data: GenericReply<"JOIN">) {
-		const user = this.store
-			.userManager()
-			.add(data.origin)
-			.withChannel(data.channel);
+	handle_user(data: GenericReply<"JOIN">)
+	{
+		let user = this.store.user_manager().add(data.origin).with_channel(data.channel);
 
-		const maybeChannel = this.store.roomManager().get(data.channel);
+		let maybe_channel = this.store.room_manager().get(data.channel);
 
-		if (maybeChannel.is_none()) return;
+		if (maybe_channel.is_none()) {
+			return;
+		}
 
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-		const newMember = new ChannelMember(user);
-		channel.addMember(newMember);
+		let channel = maybe_channel.unwrap();
+		assert_channel_room(channel);
+		let new_member = new ChannelMember(user);
+		channel.add_member(new_member);
 
-		channel.addEvent("event:join", { ...data, isCurrentClient: false });
+		channel.add_event("event:join", { ...data, isCurrentClient: false });
 	}
 }

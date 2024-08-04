@@ -3,7 +3,14 @@ import type { ModelRef } from "vue";
 
 import { reactive, ref } from "vue";
 
-import { RememberMeStorage, View, channelID } from "@phisyx/flex-chat";
+import {
+	MAXLENGTH_NICKNAME,
+	PLACEHOLDER_NICKNAME,
+	RememberMeStorage,
+	VALIDATION_NICKNAME_INFO,
+	View,
+	cast_to_channel_id
+} from "@phisyx/flex-chat";
 import {
 	ButtonIcon,
 	InputSwitch,
@@ -11,75 +18,33 @@ import {
 	UiButton,
 } from "@phisyx/flex-vue-uikit";
 
-import { useChatStore } from "~/store";
+import { use_chat_store } from "~/store";
 
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props 
-{
-	changeView: View;
-}
-
-// -------- //
-// Constant //
-// -------- //
-
-/**
- * Attribut `title` de l'élément `<input name="nickname">`.
- *
- * Utilisé pour indiquer à l'utilisateur la valeur attendue pour un pseudonyme.
- */
- const VALIDATION_NICKNAME_INFO: string = `
-Pour qu'un pseudonyme soit considéré comme valide, ses caractères doivent
-respecter, un format précis, les conditions suivantes :
-	- Il ne doit pas commencer par le caractère '-' ou par un caractère
-	  numérique '0..9' ;
-	- Il peut contenir les caractères: alphanumériques, 'A..Z', 'a..z',
-	  '0..9'. Les caractères alphabétiques des langues étrangères sont
-	  considérés comme valides. Par exemple: le russe, le japonais, etc.
-	- Il peut contenir les caractères spéciaux suivants: []\`_^{|}
-`.trim();
-
-/**
- * Attribut `maxlength` de l'élément `<input name="nickname">`.
- *
- * Taille maximale d'un pseudonyme.
- */
-const MAXLENGTH_NICKNAME: number = 30;
-
-/**
- * Attribut `placeholder` de l'élément `<input name="nickname">`.
- */
-const PLACEHOLDER_NICKNAME: string = `Pseudonyme (max. ${MAXLENGTH_NICKNAME} caractères)`;
 
 // --------- //
 // Composant //
 // --------- //
 
-defineProps<Props>();
-let changeView = defineModel<View>("changeView");
+let change_view = defineModel<View>("changeView");
 
-let chat_store = useChatStore();
+let chat_store = use_chat_store();
 
 let advanced_info = ref(false);
 let login_form_data = reactive({
-	alternativeNickname: import.meta.env.VITE_APP_NICKNAME
+	alternative_nickname: import.meta.env.VITE_APP_NICKNAME
 		? `${import.meta.env.VITE_APP_NICKNAME}_`
 		: "",
-	channels: import.meta.env.VITE_APP_CHANNELS || channelID(""),
+	channels: import.meta.env.VITE_APP_CHANNELS || cast_to_channel_id(""),
 	nickname: import.meta.env.VITE_APP_NICKNAME || "",
 	realname: import.meta.env.VITE_APP_REALNAME || "Flex Web App",
-	rememberMe: new RememberMeStorage(),
-	passwordServer: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
-	websocketServerURL: import.meta.env.VITE_APP_WEBSOCKET_URL,
+	remember_me: new RememberMeStorage(),
+	password_server: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
+	websocket_server_url: import.meta.env.VITE_APP_WEBSOCKET_URL,
 });
 let errors = reactive({
 	nickname: null as string | null,
-	alternativeNickname: null as string | null,
+	alternative_nickname: null as string | null,
 });
 let loader = ref(false);
 
@@ -87,12 +52,12 @@ let loader = ref(false);
 // Handler //
 // ------- //
 
-const submit_handler = connect_submit(changeView);
+const submit_handler = connect_submit(change_view);
 
 /**
  * Affiche les informations de connexion avancées.
  */
-function display_advanced_info_handler() 
+function display_advanced_info_handler()
 {
 	advanced_info.value = true;
 }
@@ -100,21 +65,21 @@ function display_advanced_info_handler()
 /**
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
-function connect_submit(changeViewModel: ModelRef<View | undefined, string>) 
+function connect_submit(change_view_model: ModelRef<View | undefined, string>)
 {
-	async function connect_submit_handler(evt: Event) 
+	async function connect_submit_handler(evt: Event)
 	{
 		evt.preventDefault();
 
 		loader.value = true;
 
-		await chat_store.store.loadAllModules();
+		await chat_store.store.load_all_modules();
 
 		chat_store.connect(login_form_data);
 
 		chat_store.listen(
 			"RPL_WELCOME",
-			() => reply_welcome_handler(changeViewModel),
+			() => reply_welcome_handler(change_view_model),
 			{
 				once: true,
 			},
@@ -131,20 +96,20 @@ function connect_submit(changeViewModel: ModelRef<View | undefined, string>)
 /**
  * Écoute de l'événement `RPL_WELCOME`.
  */
-function reply_welcome_handler(changeViewModel: ModelRef<View | undefined, string>) 
+function reply_welcome_handler(change_view_model: ModelRef<View | undefined, string>)
 {
 	loader.value = false;
-	changeViewModel.value = View.Chat;
+	change_view_model.value = View.Chat;
 }
 
 /**
  * Écoute de l'événement `ERR_NICKNAMEINUSE`.
  */
-function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">) 
+function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">)
 {
-	if (data.nickname === login_form_data.alternativeNickname) {
-		errors.alternativeNickname = data.reason.slice(
-			login_form_data.alternativeNickname.length + 2,
+	if (data.nickname === login_form_data.alternative_nickname) {
+		errors.alternative_nickname = data.reason.slice(
+			login_form_data.alternative_nickname.length + 2,
 		);
 	} else {
 		errors.nickname = data.reason.slice(login_form_data.nickname.length + 2);
@@ -153,9 +118,9 @@ function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">)
 	loader.value = false;
 }
 
-function to_settings_view_handler() 
+function to_settings_view_handler()
 {
-	changeView.value = View.Settings;
+	change_view.value = View.Settings;
 }
 </script>
 
@@ -173,7 +138,7 @@ function to_settings_view_handler()
 			>
 				<TextInput
 					v-show="advanced_info"
-					v-model="login_form_data.websocketServerURL"
+					v-model="login_form_data.websocket_server_url"
 					label="url"
 					name="server"
 					placeholder="URL WebSocket du serveur de Chat"
@@ -182,7 +147,7 @@ function to_settings_view_handler()
 
 				<TextInput
 					v-show="advanced_info"
-					v-model="login_form_data.passwordServer"
+					v-model="login_form_data.password_server"
 					label="password"
 					name="password_server"
 					placeholder="Mot de passe du serveur de Chat"
@@ -201,10 +166,10 @@ function to_settings_view_handler()
 
 				<TextInput
 					v-show="advanced_info"
-					v-model="login_form_data.alternativeNickname"
+					v-model="login_form_data.alternative_nickname"
 					label="user"
 					name="alternative_nickname"
-					:error="errors.alternativeNickname"
+					:error="errors.alternative_nickname"
 					placeholder="Pseudonyme alternatif"
 					:maxlength="MAXLENGTH_NICKNAME"
 					:title="VALIDATION_NICKNAME_INFO"
@@ -239,9 +204,9 @@ function to_settings_view_handler()
 				</label>
 
 				<InputSwitch
-					v-model="login_form_data.rememberMe.value"
-					labelN="Non"
-					labelY="Oui"
+					v-model="login_form_data.remember_me.value"
+					label-n="Non"
+					label-y="Oui"
 					name="remember_me"
 				/>
 			</div>

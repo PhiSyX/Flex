@@ -8,52 +8,60 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../asserts/room";
+import { assert_channel_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ModeHandler implements SocketEventInterface<"MODE"> {
+export class ModeHandler implements SocketEventInterface<"MODE">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"MODE">) {
-		if (this.store.isCurrentClient(data.target)) {
-			this.handleClientItself(data);
+	handle(data: GenericReply<"MODE">)
+	{
+		if (this.store.is_current_client(data.target)) {
+			this.handle_client_itself(data);
 			return;
 		}
 
-		this.handleChannel(data);
+		this.handle_channel(data);
 	}
 
-	handleClientItself(data: GenericReply<"MODE">) {
-		const network = this.store.network();
-		network.addEvent("event:mode", { ...data, isCurrentClient: true });
+	handle_client_itself(data: GenericReply<"MODE">)
+	{
+		let network = this.store.network();
+		network.add_event("event:mode", { ...data, isCurrentClient: true });
 	}
 
-	handleChannel(data: GenericReply<"MODE">) {
-		const maybeRoom = this.store.roomManager().get(data.target);
-		if (maybeRoom.is_none()) return;
+	handle_channel(data: GenericReply<"MODE">)
+	{
+		let maybe_room = this.store.room_manager().get(data.target);
+		if (maybe_room.is_none()) {
+			return;
+		}
 
-		const channel = maybeRoom.unwrap();
-		assertChannelRoom(channel);
+		let channel = maybe_room.unwrap();
+		assert_channel_room(channel);
 
 		if (data.updated) {
-			channel.addEvent("event:mode", {
+			channel.add_event("event:mode", {
 				...data,
-				isCurrentClient: this.store.isCurrentClient(data.origin),
+				isCurrentClient: this.store.is_current_client(data.origin),
 			});
 		}
 	}

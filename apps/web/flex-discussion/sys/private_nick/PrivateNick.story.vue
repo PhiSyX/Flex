@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import PrivateNick from "./PrivateNick.template.vue";
 
-function initState() {
+function init_state()
+{
 	return {
 		nickname: "PhiSyX",
 	};
@@ -14,25 +15,25 @@ function initState() {
 		:layout="{ type: 'grid' }"
 		responsive-disabled
 	>
-		<Variant title="Default" :init-state="initState">
+		<Variant title="Default" :init-state="init_state">
 			<template #default="{ state }">
 				<PrivateNick tag="span" :nickname="state.nickname" />
 			</template>
 		</Variant>
 
-		<Variant title="Prefix" :init-state="initState">
+		<Variant title="Prefix" :init-state="init_state">
 			<template #default="{ state }">
 				<PrivateNick tag="span" :nickname="state.nickname" prefix="*" />
 			</template>
 		</Variant>
 
-		<Variant title="Suffix" :init-state="initState">
+		<Variant title="Suffix" :init-state="init_state">
 			<template #default="{ state }">
 				<PrivateNick tag="span" :nickname="state.nickname" suffix=":" />
 			</template>
 		</Variant>
 
-		<Variant title="Prefix/Suffix" :init-state="initState">
+		<Variant title="Prefix/Suffix" :init-state="init_state">
 			<template #default="{ state }">
 				<PrivateNick
 					tag="span"
@@ -43,7 +44,7 @@ function initState() {
 			</template>
 		</Variant>
 
-		<Variant title="Myself" :init-state="initState">
+		<Variant title="Myself" :init-state="init_state">
 			<template #default="{ state }">
 				<PrivateNick
 					tag="span"

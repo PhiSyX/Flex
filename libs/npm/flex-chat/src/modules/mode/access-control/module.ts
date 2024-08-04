@@ -11,10 +11,10 @@
 import type { Module } from "../../../modules/interface";
 import type { ChatStoreInterface } from "../../../store";
 import {
-	BanCommand,
-	BanExCommand,
-	UnbanCommand,
-	UnbanExCommand,
+    BanCommand,
+    BanExCommand,
+    UnbanCommand,
+    UnbanExCommand,
 } from "./command";
 import { ModeAccessControlHandler } from "./handler";
 
@@ -38,18 +38,23 @@ export class ModeAccessControlModule
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private handler: ModeAccessControlHandler) {}
+	constructor(private handler: ModeAccessControlHandler)
+	{}
 
-	input() {}
+	input()
+	{}
 
-	send() {}
+	send()
+	{}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }
 
-export class BanModule implements Module<BanModule> {
+export class BanModule implements Module<BanModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -63,49 +68,53 @@ export class BanModule implements Module<BanModule> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: BanCommand) {}
+	constructor(private command: BanCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	input(
-		roomName?: string,
-		channelsRaw?: ChannelID,
-		...masksRaw: Array<string>
+		room_id?: RoomID,
+		channels_raw?: ChannelID,
+		...masks_raw: Array<string>
 	) {
-		if (!roomName?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (!room_id?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		if (channelsRaw?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (channels_raw?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		const channels = [roomName];
-		if (channelsRaw) {
-			masksRaw.unshift(channelsRaw);
+		let channels = [room_id];
+		if (channels_raw) {
+			masks_raw.unshift(channels_raw);
 		}
-		const masks = masksRaw as Array<MaskAddr>;
+		let masks = masks_raw as Array<MaskAddr>;
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"BAN">) {
+	send(payload: Command<"BAN">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }
 
-export class UnbanModule implements Module<UnbanModule> {
+export class UnbanModule implements Module<UnbanModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -119,49 +128,53 @@ export class UnbanModule implements Module<UnbanModule> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: UnbanCommand) {}
+	constructor(private command: UnbanCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	input(
-		roomName?: string,
-		channelsRaw?: ChannelID,
-		...masksRaw: Array<string>
+		room_id?: RoomID,
+		channels_raw?: ChannelID,
+		...masks_raw: Array<string>
 	) {
-		if (!roomName?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (!room_id?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		if (channelsRaw?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (channels_raw?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		const channels = [roomName];
-		if (channelsRaw) {
-			masksRaw.unshift(channelsRaw);
+		let channels = [room_id];
+		if (channels_raw) {
+			masks_raw.unshift(channels_raw);
 		}
-		const masks = masksRaw as Array<MaskAddr>;
+		let masks = masks_raw as Array<MaskAddr>;
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"UNBAN">) {
+	send(payload: Command<"UNBAN">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }
 
-export class BanExModule implements Module<BanExModule> {
+export class BanExModule implements Module<BanExModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -175,49 +188,53 @@ export class BanExModule implements Module<BanExModule> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: BanExCommand) {}
+	constructor(private command: BanExCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	input(
-		roomName?: string,
-		channelsRaw?: ChannelID,
-		...masksRaw: Array<string>
+		room_id?: RoomID,
+		channels_raw?: ChannelID,
+		...masks_raw: Array<string>
 	) {
-		if (!roomName?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (!room_id?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		if (channelsRaw?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (channels_raw?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		const channels = [roomName];
-		if (channelsRaw) {
-			masksRaw.unshift(channelsRaw);
+		let channels = [room_id];
+		if (channels_raw) {
+			masks_raw.unshift(channels_raw);
 		}
-		const masks = masksRaw as Array<MaskAddr>;
+		let masks = masks_raw as Array<MaskAddr>;
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"BANEX">) {
+	send(payload: Command<"BANEX">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }
 
-export class UnbanExModule implements Module<UnbanExModule> {
+export class UnbanExModule implements Module<UnbanExModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -231,44 +248,47 @@ export class UnbanExModule implements Module<UnbanExModule> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: UnbanExCommand) {}
+	constructor(private command: UnbanExCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
 	input(
-		roomName?: string,
-		channelsRaw?: ChannelID,
-		...masksRaw: Array<string>
+		room_id?: RoomID,
+		channels_raw?: ChannelID,
+		...masks_raw: Array<string>
 	) {
-		if (!roomName?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (!room_id?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		if (channelsRaw?.startsWith("#")) {
-			const channels = channelsRaw?.split(",");
+		if (channels_raw?.startsWith("#")) {
+			let channels = channels_raw?.split(",");
 			if (!channels) return;
-			const masks = masksRaw as Array<MaskAddr>;
+			let masks = masks_raw as Array<MaskAddr>;
 			this.send({ channels, masks });
 			return;
 		}
 
-		const channels = [roomName];
-		if (channelsRaw) {
-			masksRaw.unshift(channelsRaw);
+		let channels = [room_id];
+		if (channels_raw) {
+			masks_raw.unshift(channels_raw);
 		}
-		const masks = masksRaw as Array<MaskAddr>;
+		let masks = masks_raw as Array<MaskAddr>;
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"UNBANEX">) {
+	send(payload: Command<"UNBANEX">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }

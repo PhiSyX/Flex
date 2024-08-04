@@ -12,11 +12,11 @@ import type { Theme, ThemeRecord } from "@phisyx/flex-chat";
 
 import { onMounted as on_mounted } from "vue";
 
-import { useSettingsStore } from "~/store";
-import themeDarkImage from "#/assets/img/theme-dark.jpg";
-import themeIceImage from "#/assets/img/theme-ice.jpg";
-import themeLightImage from "#/assets/img/theme-light.jpg";
-import themeSystemImage from "#/assets/img/theme-system.jpg";
+import { use_settings_store } from "~/store";
+import theme_dark_image from "#/assets/img/theme-dark.jpg";
+import theme_ice_image from "#/assets/img/theme-ice.jpg";
+import theme_light_image from "#/assets/img/theme-light.jpg";
+import theme_system_image from "#/assets/img/theme-system.jpg";
 
 export type { Theme, ThemeRecord };
 
@@ -25,10 +25,10 @@ export type { Theme, ThemeRecord };
 // -------- //
 
 export const THEMES: Theme = {
-	dark: themeDarkImage,
-	light: themeLightImage,
-	system: themeSystemImage,
-	ice: themeIceImage,
+	dark: theme_dark_image,
+	light: theme_light_image,
+	system: theme_system_image,
+	ice: theme_ice_image,
 };
 
 const DEFAULT_THEME: keyof Theme = "ice";
@@ -37,36 +37,39 @@ const DEFAULT_THEME: keyof Theme = "ice";
 // Fonction //
 // -------- //
 
-export function find_theme(fallbackTheme = DEFAULT_THEME): ThemeRecord 
+export function find_theme(fallback_theme = DEFAULT_THEME): ThemeRecord
 {
-	let settingsStore = useSettingsStore();
+	let settings_store = use_settings_store();
 
-	let themeLS = settingsStore.personalization.theme || fallbackTheme;
-	let themeFound = THEMES[themeLS];
+	let theme_ls = settings_store.personalization.theme || fallback_theme;
+	let theme_found = THEMES[theme_ls];
 
-	if (!themeFound) {
+	if (!theme_found) {
 		return {
-			name: fallbackTheme,
-			src: THEMES[fallbackTheme],
+			name: fallback_theme,
+			src: THEMES[fallback_theme],
 		};
 	}
 
 	return {
-		name: themeLS,
-		src: themeFound,
+		name: theme_ls,
+		src: theme_found,
 	};
 }
 
-export function set_theme_ls(name: keyof Theme) {
-	const settingsStore = useSettingsStore();
+export function set_theme_ls(name: keyof Theme)
+{
+	let settings_store = use_settings_store();
 	document.documentElement.dataset["scheme"] = name;
-	settingsStore.personalization.theme = name;
+	settings_store.personalization.theme = name;
 }
 
-export function find_theme_name(fallbackTheme = DEFAULT_THEME) {
-	return find_theme(fallbackTheme).name;
+export function find_theme_name(fallback_theme = DEFAULT_THEME)
+{
+	return find_theme(fallback_theme).name;
 }
 
-export function use_theme() {
+export function use_theme()
+{
 	on_mounted(() => set_theme_ls(find_theme_name()));
 }

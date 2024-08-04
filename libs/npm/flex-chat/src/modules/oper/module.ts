@@ -17,7 +17,8 @@ import { OperHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class OperModule implements Module<OperModule> {
+export class OperModule implements Module<OperModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -34,13 +35,15 @@ export class OperModule implements Module<OperModule> {
 	constructor(
 		private command: OperCommand,
 		private handler: OperHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, name?: string, password?: string) {
+	input(_: string, name?: string, password?: string)
+	{
 		if (!name || !password) {
 			return;
 		}
@@ -48,11 +51,13 @@ export class OperModule implements Module<OperModule> {
 		this.send({ name, password });
 	}
 
-	send(payload: Command<"OPER">) {
+	send(payload: Command<"OPER">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }

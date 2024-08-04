@@ -13,7 +13,7 @@ import ChannelActivityGroup from "./ChannelActivityGroup.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	activities: ChannelActivitiesView;
 	currentClientMember: Option<ChannelMember>;
@@ -35,12 +35,12 @@ provide("room", props.room);
 
 let expanded = defineModel<boolean>("expanded", { required: true });
 
-function expand_panel_handler() 
+function expand_panel_handler()
 {
 	expanded.value = true;
 }
 
-function shrink_panel_handler() 
+function shrink_panel_handler()
 {
 	expanded.value = false;
 }

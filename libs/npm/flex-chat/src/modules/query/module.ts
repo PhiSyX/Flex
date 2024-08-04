@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { roomID } from "../../asserts/room";
+import { cast_to_room_id } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 import type { Module } from "../interface";
 import { QueryCommand } from "./command";
@@ -17,33 +17,39 @@ import { QueryCommand } from "./command";
 // Implémentation //
 // -------------- //
 
-export class QueryModule implements Module<QueryModule> {
+export class QueryModule implements Module<QueryModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "QUERY";
 
-	static create(store: ChatStoreInterface): QueryModule {
+	static create(store: ChatStoreInterface): QueryModule
+	{
 		return new QueryModule(new QueryCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: QueryCommand) {}
+	constructor(private command: QueryCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(__: string, nicknamesRaw?: RoomID) {
-		for (const nickname of nicknamesRaw?.split(",") || []) {
-			this.command.handle(roomID(nickname));
+	input(_: string, nicknames_raw?: RoomID)
+	{
+		for (let nickname of nicknames_raw?.split(",") || []) {
+			this.command.handle(cast_to_room_id(nickname));
 		}
 	}
 
-	send() {}
+	send()
+	{}
 
-	listen() {}
+	listen()
+	{}
 }

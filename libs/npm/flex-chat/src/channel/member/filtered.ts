@@ -16,8 +16,9 @@ import { ChannelMember } from "../member";
 // Type //
 // ---- //
 
-export interface ChannelMemberSearchHits {
-	isSymbol: boolean;
+export interface ChannelMemberSearchHits
+{
+	is_symbol: boolean;
 	type: FuzzySearchType;
 	word: string;
 }
@@ -26,7 +27,8 @@ export interface ChannelMemberSearchHits {
 // Implémentation //
 // -------------- //
 
-export class ChannelMemberFiltered extends ChannelMember {
+export class ChannelMemberFiltered extends ChannelMember
+{
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -34,43 +36,47 @@ export class ChannelMemberFiltered extends ChannelMember {
 	/**
 	 * Résultat du filtre de recherche.
 	 */
-	searchHits: Array<ChannelMemberSearchHits> = [];
+	search_hits: Array<ChannelMemberSearchHits> = [];
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
 	constructor(
 		member: ChannelMember,
-		searchHits: Array<ChannelMemberSearchHits>,
-	) {
+		search_hits: Array<ChannelMemberSearchHits>,
+	)
+	{
 		super(member);
 
-		this.accessLevel = member.accessLevel;
-		this.isCurrentClient = member.isCurrentClient;
+		this.access_level = member.access_level;
+		this.is_current_client = member.is_current_client;
 
-		this.searchHits = searchHits;
+		this.search_hits = search_hits;
 	}
 }
 
-export class ChannelMemberUnfiltered extends ChannelMember {
+export class ChannelMemberUnfiltered extends ChannelMember
+{
 	// --------- //
 	// Propriété //
 	// --------- //
 
-	searchHits: Array<ChannelMemberSearchHits> = [];
+	search_hits: Array<ChannelMemberSearchHits> = [];
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(member: ChannelMember) {
+	constructor(member: ChannelMember)
+	{
 		super(member);
 
-		this.accessLevel = member.accessLevel;
-		this.isCurrentClient = member.isCurrentClient;
+		this.access_level = member.access_level;
+		this.is_current_client = member.is_current_client;
 	}
 
-	get className() {
-		let cls = super.className;
+	get class_name()
+	{
+		let cls = super.class_name;
 		cls += " opacity=0.75";
 		return cls;
 	}

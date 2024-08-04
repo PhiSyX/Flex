@@ -10,12 +10,12 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	room: ChannelListCustomRoom;
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "join-channel", name: ChannelID): void;
 	(event_name: "create-channel-dialog", event: MouseEvent): void;
@@ -45,17 +45,17 @@ let filtered_channels = computed(() => {
 // Handlers //
 // -------- //
 
-function join_selected_channels() 
+function join_selected_channels()
 {
-	for (const channel of selected_channels.value) {
-		join_channel(channel);
+	for (let channel of selected_channels.value) {
+		join_channel_handler(channel);
 	}
 
 	selected_channels.value.clear();
 }
 
-const join_channel 			= (name: ChannelID) 	=> emit("join-channel", name);
-const create_channel_dialog = (event: MouseEvent) 	=> emit("create-channel-dialog", event);
+const join_channel_handler = (name: ChannelID) 	=> emit("join-channel", name);
+const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-channel-dialog", event);
 </script>
 
 <template>
@@ -74,7 +74,7 @@ const create_channel_dialog = (event: MouseEvent) 	=> emit("create-channel-dialo
 				id="channel-join-layer_btn"
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
-				@click="create_channel_dialog"
+				@click="create_channel_dialog_handler"
 			>
 				Créer un salon
 			</UiButton>
@@ -100,7 +100,7 @@ const create_channel_dialog = (event: MouseEvent) 	=> emit("create-channel-dialo
 
 			<div
 				class="tbody"
-				v-for="([_, channelData], idx) of filtered_channels"
+				v-for="([_, channel_data], idx) of filtered_channels"
 			>
 				<span>#</span>
 				<span>Nom du salon</span>
@@ -111,19 +111,19 @@ const create_channel_dialog = (event: MouseEvent) 	=> emit("create-channel-dialo
 				<div>
 					<label
 						:for="`chan-${idx}`"
-						@dblclick="join_channel(channelData.channel)"
+						@dblclick="join_channel_handler(channel_data.channel)"
 					/>
 					<input
 						:id="`chan-${idx}`"
 						type="checkbox"
 						v-model="selected_channels"
-						:value="channelData.channel"
+						:value="channel_data.channel"
 					/>
 				</div>
-				<div>{{ channelData.channel }}</div>
-				<div>+{{ channelData.modes_settings }}</div>
-				<div class="channel/list:topic">{{ channelData.topic }}</div>
-				<div>{{ channelData.total_members }}</div>
+				<div>{{ channel_data.channel }}</div>
+				<div>+{{ channel_data.modes_settings }}</div>
+				<div class="channel/list:topic">{{ channel_data.topic }}</div>
+				<div>{{ channel_data.total_members }}</div>
 			</div>
 
 			<div class="tbody" v-if="room.channels.size === 0">

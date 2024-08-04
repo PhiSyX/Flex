@@ -8,11 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { User } from "../user";
+
 import { Option } from "@phisyx/flex-safety";
 
 import { Room } from "../room";
-import type { User } from "../user";
-
 import { ChannelAccessControl } from "./access_control";
 import { ChannelAccessLevelFlag } from "./access_level";
 import { ChannelActivities } from "./activity";
@@ -24,7 +24,8 @@ import { ChannelTopic } from "./topic";
 // Implémentation //
 // -------------- //
 
-export class ChannelRoom extends Room<ChannelID, "channel"> {
+export class ChannelRoom extends Room<ChannelID, "channel">
+{
 	// ------ //
 	// Static //
 	// ------ //
@@ -32,14 +33,16 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	/**
 	 * Crée un salon avec un propriétaire.
 	 */
-	static createWithOwner(name: ChannelID, user: User): ChannelRoom {
-		return new ChannelRoom(name).withID(name).withOwner(user);
+	static create_with_owner(name: ChannelID, user: User): ChannelRoom
+	{
+		return new ChannelRoom(name).with_id(name).with_owner(user);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(name: ChannelID) {
+	constructor(name: ChannelID)
+	{
 		super("channel", name);
 	}
 
@@ -50,7 +53,7 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	/**
 	 * Control d'accès
 	 */
-	accessControl = new ChannelAccessControl();
+	access_control = new ChannelAccessControl();
 
 	/**
 	 * Activités du salon
@@ -84,33 +87,32 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	/**
 	 * Ajoute un membre à la liste des membres.
 	 */
-	addMember(member: ChannelMember) {
+	add_member(member: ChannelMember)
+	{
 		this.members.add(member);
 	}
 
 	/**
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
-	canEditTopic(member: ChannelMember): boolean {
+	can_edit_topic(member: ChannelMember): boolean
+	{
 		return (
-			this.topic.isEditable() ||
-			member.isGlobalOperator() ||
-			member.isChanOperator()
+			this.topic.is_editable() ||
+			member.is_global_operator() ||
+			member.is_channel_operator()
 		);
 	}
 
 	/**
 	 * Cherche si membre se trouve dans la liste des bans.
 	 */
-	findBan(
-		member: ChannelMember,
-	): Option<[MaskAddr, AccessControlMode["mask"]]> {
-		const banList = this.accessControl.banlist;
+	find_ban(member: ChannelMember): Option<[MaskAddr, AccessControlMode["mask"]]>
+	{
+		let ban_list = this.access_control.banlist;
 
-		const get = (
-			addr: MaskAddr,
-		): Option<[MaskAddr, AccessControlMode["mask"]]> => {
-			return Option.from(banList.get(addr)).map((mode) => [
+		let get = (addr: MaskAddr): Option<[MaskAddr, AccessControlMode["mask"]]> => {
+			return Option.from(ban_list.get(addr)).map((mode) => [
 				addr,
 				mode.flag.mask,
 			]);
@@ -133,76 +135,85 @@ export class ChannelRoom extends Room<ChannelID, "channel"> {
 	/**
 	 * Récupère un utilisateur du salon de son ID.
 	 */
-	getMember(id: UserID): Option<ChannelMember> {
+	get_member(id: UserID): Option<ChannelMember>
+	{
 		return this.members.get(id);
 	}
 
 	/**
 	 * Récupère un utilisateur du salon en fonction de son pseudo.
 	 */
-	getMemberByNickname(nickname: string): Option<ChannelMember> {
-		return this.members.getByNickname(nickname);
+	get_member_by_nickname(nickname: string): Option<ChannelMember>
+	{
+		return this.members.get_by_nickname(nickname);
 	}
 
 	/**
 	 * Supprime un utilisateur du salon.
 	 */
-	removeMember(id: UserID): boolean {
+	remove_member(id: UserID): boolean
+	{
 		return this.members.remove(id).is_some();
 	}
 
 	/**
 	 * Définit (ou non) le salon comme étant en sanctionné.
 	 */
-	setKicked(bool: boolean) {
+	set_kicked(bool: boolean)
+	{
 		this.kicked = bool;
 	}
 
 	/**
 	 * Définit un paramètre de salon.
 	 */
-	setSettingMode(mode: string) {
+	set_setting_mode(mode: string)
+	{
 		this.settings.add(mode);
 	}
 
 	/**
 	 * Définit le sujet d'un salon.
 	 */
-	setTopic(topic: string) {
+	set_topic(topic: string)
+	{
 		this.topic.set(topic, { force: true });
 	}
 
 	/**
 	 * Définit un sujet vide pour le salon.
 	 */
-	unsetTopic() {
+	unset_topic()
+	{
 		this.topic.unset({ force: true });
 	}
 
 	/**
 	 * Met à jour un utilisateur.
 	 */
-	upgradeMember(oldNick: ChannelMember, newNick: ChannelMember) {
-		this.members.remove(oldNick.id);
-		newNick.accessLevel.highest;
-		this.members.add(newNick);
+	upgrade_member(old_member: ChannelMember, new_member: ChannelMember)
+	{
+		this.members.remove(old_member.id);
+		new_member.access_level.highest; // NOTE: compute access level
+		this.members.add(new_member);
 	}
 
 	/**
 	 * Retire un paramètre de salon.
 	 */
-	unsetSettingMode(mode: string) {
+	unset_setting_mode(mode: string)
+	{
 		this.settings.delete(mode);
 	}
 
 	/**
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
-	withOwner(user: User): this {
-		this.addMember(
-			new ChannelMember(user).withAccessLevel(
-				ChannelAccessLevelFlag.Owner,
-			),
+	with_owner(user: User): this
+	{
+		this.add_member(
+			new ChannelMember(user)
+				.with_access_level(ChannelAccessLevelFlag.Owner),
 		);
 		return this;
 	}

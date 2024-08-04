@@ -16,33 +16,39 @@ import { ListCommand } from "./command";
 // Implémentation //
 // -------------- //
 
-export class ListModule implements Module<ListModule> {
+export class ListModule implements Module<ListModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "LIST";
 
-	static create(store: ChatStoreInterface): ListModule {
+	static create(store: ChatStoreInterface): ListModule
+	{
 		return new ListModule(new ListCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: ListCommand) {}
+	constructor(private command: ListCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input() {
+	input()
+	{
 		this.command.send({});
 	}
 
-	send(payload: Command<"LIST">) {
+	send(payload: Command<"LIST">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }

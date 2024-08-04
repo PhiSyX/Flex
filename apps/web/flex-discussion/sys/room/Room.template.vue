@@ -11,7 +11,7 @@ import RoomTopic from "#/sys/room_topic/RoomTopic.template.vue";
 // Type //
 // ---- //
 
-export interface Props 
+export interface Props
 {
 	completionList?: Array<string>;
 	displayInput?: boolean;
@@ -20,7 +20,7 @@ export interface Props
 	currentClientNickname?: string;
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "dblclick-main", event: MouseEvent): void;
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-let inputPlaceholder = computed(
+let input_placeholder = computed(
 	() => props.disableInput
 		? `La chambre « ${props.room.name} » est en mode lecture uniquement.`
 		: "Commencez à taper / pour obtenir la liste des commandes disponibles..."
@@ -89,7 +89,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 			:completion-list="completionList"
 			:disable-input="disableInput"
 			:current-client-nickname="currentClientNickname"
-			:placeholder="inputPlaceholder"
+			:placeholder="input_placeholder"
 			:room="room"
 			@change-nickname="change_nick_handler"
 			@submit="send_message_handler"

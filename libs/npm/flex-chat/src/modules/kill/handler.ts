@@ -14,21 +14,25 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class KillHandler implements SocketEventInterface<"KILL"> {
+export class KillHandler implements SocketEventInterface<"KILL">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("KILL", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"KILL">) {
+	handle(data: GenericReply<"KILL">)
+	{
 		console.log("KILL Handler", data);
 	}
 }

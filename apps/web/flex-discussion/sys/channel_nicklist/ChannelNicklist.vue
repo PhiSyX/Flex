@@ -11,7 +11,7 @@ import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.template.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	filterInput: string;
 	moderators: {
@@ -28,7 +28,7 @@ interface Props
 	};
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "select-member", origin: Origin): void;
@@ -121,15 +121,15 @@ const select_user_handler  = (member: ChannelMember) => emit("select-member", me
 					tag="li"
 					v-for="filtered_member in moderators_list"
 					:key="filtered_member.id"
-					:classes="filtered_member.className"
+					:classes="filtered_member.class_name"
 					:hits="
-						'searchHits' in filtered_member
-							? filtered_member.searchHits
+						'search_hits' in filtered_member
+							? filtered_member.search_hits
 							: []
 					"
-					:is-current-client="filtered_member.isCurrentClient"
+					:is-current-client="filtered_member.is_current_client"
 					:nickname="filtered_member.nickname"
-					:symbol="filtered_member.accessLevel.highest.symbol"
+					:symbol="filtered_member.access_level.highest.symbol"
 					class="channel/nick"
 					@dblclick="open_private_handler(filtered_member)"
 					@click="select_user_handler(filtered_member)"
@@ -146,15 +146,15 @@ const select_user_handler  = (member: ChannelMember) => emit("select-member", me
 					tag="li"
 					v-for="filtered_member in vips_list"
 					:key="filtered_member.id"
-					:classes="filtered_member.className"
+					:classes="filtered_member.class_name"
 					:hits="
-						'searchHits' in filtered_member
-							? filtered_member.searchHits
+						'search_hits' in filtered_member
+							? filtered_member.search_hits
 							: []
 					"
-					:is-current-client="filtered_member.isCurrentClient"
+					:is-current-client="filtered_member.is_current_client"
 					:nickname="filtered_member.nickname"
-					:symbol="filtered_member.accessLevel.highest.symbol"
+					:symbol="filtered_member.access_level.highest.symbol"
 					class="channel/nick"
 					@dblclick="open_private_handler(filtered_member)"
 					@click="select_user_handler(filtered_member)"
@@ -170,15 +170,15 @@ const select_user_handler  = (member: ChannelMember) => emit("select-member", me
 					tag="li"
 					v-for="filtered_member in users_list"
 					:key="filtered_member.id"
-					:classes="filtered_member.className"
+					:classes="filtered_member.class_name"
 					:hits="
-						'searchHits' in filtered_member
-							? filtered_member.searchHits
+						'search_hits' in filtered_member
+							? filtered_member.search_hits
 							: []
 					"
-					:is-current-client="filtered_member.isCurrentClient"
+					:is-current-client="filtered_member.is_current_client"
 					:nickname="filtered_member.nickname"
-					:symbol="filtered_member.accessLevel.highest.symbol"
+					:symbol="filtered_member.access_level.highest.symbol"
 					class="channel/nick"
 					@dblclick="open_private_handler(filtered_member)"
 					@click="select_user_handler(filtered_member)"

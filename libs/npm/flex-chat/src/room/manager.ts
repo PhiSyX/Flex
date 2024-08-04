@@ -12,15 +12,16 @@ import { None, Option, Some } from "@phisyx/flex-safety";
 
 import type { Room } from "./index";
 
-import { assertChannelRoom, roomID } from "../asserts/room";
+import { assert_channel_room, cast_to_room_id } from "../asserts/room";
 import { ServerCustomRoom } from "../custom_room/server";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RoomManager {
-	_currentRoom: Option<RoomID> = None();
+export class RoomManager
+{
+	_current_room: Option<RoomID> = None();
 	_rooms: Map<RoomID, Room> = new Map();
 
 	/**
@@ -32,17 +33,19 @@ export class RoomManager {
 		options: {
 			state: "opened" | "closed" | "opened:not-kicked";
 		} = { state: "opened" },
-	): Room {
-		return this._currentRoom
-			.and_then((currentRoom) => this.get(currentRoom))
+	): Room
+	{
+		return this._current_room
+			.and_then((current_room) => this.get(current_room))
 			.filter_map((room) => {
 				if (room.type === "channel-list-custom-room") {
 					return this.get(ServerCustomRoom.ID);
 				}
+
 				if (room.type === "channel") {
 					if (options.state === "opened:not-kicked") {
-						assertChannelRoom(room);
-						if (!room.isClosed() && room.kicked) {
+						assert_channel_room(room);
+						if (!room.is_closed() && room.kicked) {
 							return this.get(ServerCustomRoom.ID);
 						}
 					}
@@ -55,15 +58,18 @@ export class RoomManager {
 	/**
 	 * Change un ID par un nouveau.
 	 */
-	changeId(oldRoomID: RoomID, newRoomID: RoomID): void {
-		const isCurrentRoom = this.current().id() === oldRoomID;
-		const maybeRoom = this.remove(oldRoomID);
-		if (maybeRoom.is_none()) return;
-		const room = maybeRoom.unwrap();
-		room.withID(newRoomID);
-		this.insert(newRoomID, room);
-		if (isCurrentRoom) {
-			this.setCurrent(newRoomID);
+	change_id(old_room_id: RoomID, new_room_id: RoomID): void
+	{
+		let is_current_room = this.current().id() === old_room_id;
+		let maybe_room = this.remove(old_room_id);
+		if (maybe_room.is_none()) {
+			return;
+		}
+		let room = maybe_room.unwrap();
+		room.with_id(new_room_id);
+		this.insert(new_room_id, room);
+		if (is_current_room) {
+			this.set_current(new_room_id);
 		}
 	}
 
@@ -71,25 +77,26 @@ export class RoomManager {
 	 * Ferme une chambre à partir de son ID.
 	 */
 	close(
-		roomID: RoomID,
+		room_id: RoomID,
 		options?: { state: "opened" | "closed" },
-	): Option<Room> {
-		if (this._currentRoom.is_some()) {
-			if (this.current().eq(roomID)) {
-				this.unsetCurrent();
+	): Option<Room>
+	{
+		if (this._current_room.is_some()) {
+			if (this.current().eq(room_id)) {
+				this.unset_current();
 			}
 		}
-		const maybeRoom = this.get(roomID, options);
-		if (maybeRoom.is_some()) {
-			const room = maybeRoom.unwrap();
-			room.marksAsClosed();
+		let maybe_room = this.get(room_id, options);
+		if (maybe_room.is_some()) {
+			let room = maybe_room.unwrap();
+			room.marks_as_closed();
 		}
-		if (this._currentRoom.is_none()) {
-			this.setCurrentToLast();
+		if (this._current_room.is_none()) {
+			this.set_current_to_last();
 		}
 
-		if (maybeRoom.is_some()) {
-			return Some(maybeRoom.unwrap());
+		if (maybe_room.is_some()) {
+			return Some(maybe_room.unwrap());
 		}
 
 		return None();
@@ -98,18 +105,20 @@ export class RoomManager {
 	/**
 	 * Définit les rooms de la classe à partir d'un itérable.
 	 */
-	extends(rooms: Iterable<[RoomID, Room]>) {
-		for (const [currentRoomID, r00m] of rooms) {
-			this._rooms.set(roomID(currentRoomID.toLowerCase()), r00m);
+	extends(rooms: Iterable<[RoomID, Room]>)
+	{
+		for (let [current_room_id, r00m] of rooms) {
+			this._rooms.set(cast_to_room_id(current_room_id.toLowerCase()), r00m);
 		}
 	}
 
 	/**
 	 * Chambre courante
 	 */
-	current(): Room {
-		return this._currentRoom
-			.and_then((currentRoom) => this.get(currentRoom))
+	current(): Room
+	{
+		return this._current_room
+			.and_then((current_room) => this.get(current_room))
 			.expect("La chambre courante");
 	}
 
@@ -117,27 +126,28 @@ export class RoomManager {
 	 * Récupère un chambre ouverte à partir de son ID.
 	 */
 	get(
-		currentRoomID: RoomID,
+		room_id: RoomID,
 		options: {
 			state: "opened" | "closed" | "opened:not-kicked";
 		} = { state: "opened" },
-	): Option<Room> {
-		const maybeRoom = Option.from(
-			this._rooms.get(roomID(currentRoomID.toLowerCase())),
+	): Option<Room>
+	{
+		let maybe_room = Option.from(
+			this._rooms.get(cast_to_room_id(room_id.toLowerCase())),
 		);
 
 		if (options) {
 			switch (options.state) {
 				case "closed":
-					return maybeRoom.filter((room) => room.isClosed());
+					return maybe_room.filter((room) => room.is_closed());
 
 				case "opened":
-					return maybeRoom.filter((room) => !room.isClosed());
+					return maybe_room.filter((room) => !room.is_closed());
 
 				case "opened:not-kicked":
-					return maybeRoom.filter((room) => {
+					return maybe_room.filter((room) => {
 						if (room.type === "channel") {
-							assertChannelRoom(room);
+							assert_channel_room(room);
 							return !room.kicked;
 						}
 						return true;
@@ -145,90 +155,98 @@ export class RoomManager {
 			}
 		}
 
-		return maybeRoom;
+		return maybe_room;
 	}
 
 	/**
 	 * Récupère une chambre en fonction de son ID ou insère une nouvelle chambre
 	 * si la chambre demandée n'existe pas.
 	 */
-	getOrInsert(roomID: RoomID, fallback: () => Room): Room {
-		return this.get(roomID)
+	get_or_insert(room_id: RoomID, fallback: () => Room): Room
+	{
+		return this.get(room_id)
 			.or_else(() => {
-				const room = fallback();
-				this.insert(roomID, room);
+				let room = fallback();
+				this.insert(room_id, room);
 				return Some(room);
 			})
 			.unwrap()
-			.marksAsOpen();
+			.marks_as_opened();
 	}
 
 	/**
 	 * Vérifie qu'une chambre existe.
 	 */
-	has(roomID: RoomID, options?: { state: "opened" | "closed" }): boolean {
-		return this.get(roomID, options).is_some();
+	has(room_id: RoomID, options?: { state: "opened" | "closed" }): boolean
+	{
+		return this.get(room_id, options).is_some();
 	}
 
 	/**
 	 * Ajoute une nouvelle chambre.
 	 */
-	insert(newRoomID: RoomID, newRoom: Room): Room {
-		this._rooms.set(roomID(newRoomID.toLowerCase()), newRoom);
-		return newRoom;
+	insert(new_room_id: RoomID, new_room: Room): Room
+	{
+		this._rooms.set(cast_to_room_id(new_room_id.toLowerCase()), new_room);
+		return new_room;
 	}
 
 	/**
 	 * Supprime une chambre à partir de son ID.
 	 */
 	remove(
-		roomId: RoomID,
+		room_id: RoomID,
 		options?: { state: "opened" | "closed" },
-	): Option<Room> {
-		const maybeRoom = this.get(roomId, options);
-		maybeRoom.then(() => this._rooms.delete(roomID(roomId.toLowerCase())));
-		return maybeRoom;
+	): Option<Room>
+	{
+		let maybe_room = this.get(room_id, options);
+		maybe_room.then(() => this._rooms.delete(cast_to_room_id(room_id.toLowerCase())));
+		return maybe_room;
 	}
 
 	/**
 	 * Toutes les chambres.
 	 */
-	rooms(): Array<Room> {
+	rooms(): Array<Room>
+	{
 		return Array.from(this._rooms.values());
 	}
 
 	/**
 	 * Définit une chambre courante.
 	 */
-	setCurrent(currentRoomID: RoomID) {
-		if (this._currentRoom.is_some()) {
-			this.current().setActive(false);
-			this.current().setHighlighted(false);
-			this.current().unsetTotalUnreadEvents();
-			this.current().unsetTotalUnreadMessages();
+	set_current(room_id: RoomID)
+	{
+		if (this._current_room.is_some()) {
+			this.current().set_active(false);
+			this.current().set_highlighted(false);
+			this.current().unset_total_unread_events();
+			this.current().unset_total_unread_messages();
 		}
 
-		this._currentRoom.replace(roomID(currentRoomID.toLowerCase()));
+		this._current_room.replace(cast_to_room_id(room_id.toLowerCase()));
 
-		this.current().setActive(true);
-		this.current().setHighlighted(false);
-		this.current().unsetTotalUnreadEvents();
-		this.current().unsetTotalUnreadMessages();
+		this.current().set_active(true);
+		this.current().set_highlighted(false);
+		this.current().unset_total_unread_events();
+		this.current().unset_total_unread_messages();
 	}
 
 	/**
 	 * Définit la chambre courante à la dernière chambre.
 	 */
-	setCurrentToLast() {
-		const rooms = this.rooms().filter((room) => !room.isClosed());
-		const maybeLastRoomID = Option.from(rooms.at(-1));
-		maybeLastRoomID.then((room) => this.setCurrent(room.id()));
+	set_current_to_last()
+	{
+		let rooms = this.rooms().filter((room) => !room.is_closed());
+		let maybe_last_room_id = Option.from(rooms.at(-1));
+		maybe_last_room_id.then((room) => this.set_current(room.id()));
 	}
 
 	/**
 	 * Définit la chambre courante comme vide.
 	 */
-	unsetCurrent() {
-		this._currentRoom = None();
+	unset_current()
+	{
+		this._current_room = None();
 	}
 }

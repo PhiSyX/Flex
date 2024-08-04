@@ -11,8 +11,7 @@ import { computed } from "vue";
 
 import { ChannelJoinDialog, View } from "@phisyx/flex-chat";
 
-import { useChatStore } from "~/store";
-import { useOverlayerStore } from "~/store";
+import { use_chat_store, use_overlayer_store } from "~/store";
 
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
@@ -29,33 +28,33 @@ import CustomRoomNotice from "#/sys/custom_room_notice/CustomRoomNotice.template
 // Composant //
 // --------- //
 
-let chat_store = useChatStore();
-let overlayer_store = useOverlayerStore();
+let chat_store = use_chat_store();
+let overlayer_store = use_overlayer_store();
 
 let change_view = defineModel<View>("changeView");
-let rooms = computed(() => chat_store.store.roomManager().rooms());
+let rooms = computed(() => chat_store.store.room_manager().rooms());
 
 // ------- //
 // Handler //
 // ------- //
 
-function join_channel_handler(name: ChannelID) 
+function join_channel_handler(name: ChannelID)
 {
-	chat_store.joinChannel(name);
-	chat_store.changeRoom(name);
+	chat_store.join_channel(name);
+	chat_store.change_room(name);
 }
 
-function close_room_handler(name: RoomID) 
+function close_room_handler(name: RoomID)
 {
-	chat_store.closeRoom(name);
+	chat_store.close_room(name);
 }
 
-function open_join_channel_dialog_handler(event: Event) 
+function open_join_channel_dialog_handler(event: Event)
 {
 	ChannelJoinDialog.create(overlayer_store.store, { event });
 }
 
-function open_settings_view_handler() 
+function open_settings_view_handler()
 {
 	change_view.value = View.Settings;
 }
@@ -84,7 +83,7 @@ function open_settings_view_handler()
 				>
 					<KeepAlive :key="room.type + ':' + room.name">
 						<ChannelRoomComponent
-							v-if="room.isActive() && !room.isClosed()"
+							v-if="room.is_active() && !room.is_closed()"
 							:room="(room as ChannelRoom)"
 							class="[ flex:full ]"
 						/>
@@ -96,7 +95,7 @@ function open_settings_view_handler()
 				>
 					<KeepAlive :key="room.type + '/' + room.name">
 						<PrivateRoomComponent
-							v-if="room.isActive() && !room.isClosed()"
+							v-if="room.is_active() && !room.is_closed()"
 							:room="(room as PrivateRoom)"
 							class="[ flex:full ]"
 						/>
@@ -108,7 +107,7 @@ function open_settings_view_handler()
 				>
 					<KeepAlive :key="room.type + '@b' + room.name">
 						<ChannelList
-							v-if="room.isActive() && !room.isClosed()"
+							v-if="room.is_active() && !room.is_closed()"
 							:room="(room as ChannelListCustomRoom)"
 							class="[ flex:full ]"
 							@join-channel="join_channel_handler"
@@ -122,7 +121,7 @@ function open_settings_view_handler()
 				>
 					<KeepAlive :key="room.type + '@c' + room.name">
 						<CustomRoomNotice
-							v-if="room.isActive() && !room.isClosed()"
+							v-if="room.is_active() && !room.is_closed()"
 							:room="(room as NoticeCustomRoom)"
 							class="[ flex:full ]"
 							@close="() => close_room_handler(room.id())"

@@ -8,30 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { CommonServerOptions } from "vite";
+import type { ServerSettings } from "./server.config";
+
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { type CommonServerOptions, defineConfig as define_config } from "vite";
-
 import vue from "@vitejs/plugin-vue";
+import { defineConfig as define_config } from "vite";
 import yaml from "yaml";
-
-import type { ServerSettings } from "./server.config";
 
 /**
  * Résout les chemins à partir de la racine du projet.
  */
-function resolve_paths_from_flex(...paths: Array<string>) {
+function resolve_paths_from_flex(...paths: Array<string>) 
+{
 	return path.resolve("..", "..", "..", ...paths);
 }
 
 /**
  * Récupère les paramètres du serveur backend.
  */
-async function get_flex_server_settings(): Promise<ServerSettings> {
+async function get_flex_server_settings(): Promise<ServerSettings> 
+{
 	let filepath = resolve_paths_from_flex("config", "flex", "server.yml");
-	let rawContent = await fs.readFile(filepath);
-	let settings = yaml.parse(rawContent.toString("utf8"));
+	let raw_content = await fs.readFile(filepath);
+	let settings = yaml.parse(raw_content.toString("utf8"));
 	return settings satisfies ServerSettings;
 }
 

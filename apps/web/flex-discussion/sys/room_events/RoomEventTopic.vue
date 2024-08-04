@@ -11,7 +11,7 @@ import type { Props } from "./RoomEvent.state";
 defineOptions({ inheritAttrs: false });
 const props = defineProps<Props<"RPL_TOPIC">>();
 
-const updatedAt = computed(() => {
+const updated_at = computed(() => {
 	return format_date("d/m/Y à H:i:s", new Date(props.data.updated_at));
 });
 </script>
@@ -33,7 +33,7 @@ const updatedAt = computed(() => {
 	<p v-else>
 		* Topic: <q>{{ data.topic }}</q> par
 		<span>{{ data.updated_by }}</span> le
-		<time :datetime="time.datetime">{{ updatedAt }}</time>
+		<time :datetime="time.datetime">{{ updated_at }}</time>
 	</p>
 </template>
 

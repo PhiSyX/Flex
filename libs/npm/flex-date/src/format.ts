@@ -417,10 +417,8 @@ function format_date(format = "[H:i:s]", time: Date = new Date()): string {
 	);
 }
 
-const formatDate = format_date;
-
 // ------ //
 // Export //
 // ------ //
 
-export { format_date, formatDate };
+export { format_date };

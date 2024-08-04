@@ -40,7 +40,7 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Nom personnalisé de la fenêtre.
 	 */
-	private customName: Option<R> = None();
+	private custom_name: Option<R> = None();
 
 	/**
 	 * Chambre marqué comme étant "Highlight". Cela signifie que le client
@@ -51,7 +51,7 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Historique des champs de saisie de l'utilisateur.
 	 */
-	inputHistory: Array<string> = [];
+	input_history: Array<string> = [];
 
 	/**
 	 * Les messages liées à la fenêtre.
@@ -64,12 +64,12 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Le total des événements reçus.
 	 */
-	totalUnreadEvents = 0;
+	total_unread_events = 0;
 
 	/**
 	 * Le total des messages reçus.
 	 */
-	totalUnreadMessages = 0;
+	total_unread_messages = 0;
 
 	// ----------- //
 	// Constructor //
@@ -78,18 +78,21 @@ export class Room<R = RoomID, Type extends string = string> {
 	constructor(
 		public type: Type,
 		protected _name: R | string,
-	) {}
+	)
+	{}
 
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
 
-	get lastMessage(): Option<RoomMessage> {
+	get last_message(): Option<RoomMessage>
+	{
 		return Option.from(this.messages.at(-1));
 	}
 
-	get name(): R {
-		return this.customName.unwrap_or(this._name as NonNullable<R>);
+	get name(): R
+	{
+		return this.custom_name.unwrap_or(this._name as NonNullable<R>);
 	}
 
 	// ------- //
@@ -99,88 +102,92 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Ajoute un événement de connexion au tableau de messages.
 	 */
-	addConnectEvent(
+	add_connect_event(
 		payload: {
 			origin: Origin;
 			tags: { msgid: string };
 		},
-		messageText: string,
-	) {
-		const message = new RoomMessage()
-			.withID(payload.tags.msgid)
-			.withType("event:connect")
+		message_text: string,
+	): RoomMessage
+	{
+		let message = new RoomMessage()
+			.with_id(payload.tags.msgid)
+			.with_type("event:connect")
 			// NOTE(phisyx): Les événements de connexions n'ont pas besoin
 			// d'être annotés d'un pseudonyme.
-			.withNickname("*")
-			.withMessage(messageText)
-			.withTarget(this._name)
-			.withTime(new Date())
-			.withData(payload);
-		this.addMessage(message);
+			.with_nickname("*")
+			.with_message(message_text)
+			.with_target(this._name)
+			.with_time(new Date())
+			.with_data(payload);
+		return this.add_message(message);
 	}
 
 	/**
 	 * Ajoute un événement d'erreur au tableau de messages.
 	 */
-	addErrorEvent(
+	add_error_event(
 		payload: {
 			origin: Origin;
 			tags: { msgid: string };
 		},
-		messageText: string,
-	) {
-		const message = new RoomMessage()
-			.withID(payload.tags.msgid)
-			.withType("event:error")
-			.withNickname("*")
-			.withMessage(messageText)
-			.withTarget(this._name)
-			.withTime(new Date())
-			.withData(payload);
-		this.addMessage(message);
+		message_text: string,
+	): RoomMessage
+	{
+		let message = new RoomMessage()
+			.with_id(payload.tags.msgid)
+			.with_type("event:error")
+			.with_nickname("*")
+			.with_message(message_text)
+			.with_target(this._name)
+			.with_time(new Date())
+			.with_data(payload);
+		return this.add_message(message);
 	}
 
 	/**
 	 * Ajoute un événement au tableau de messages.
 	 */
-	addEvent<R extends RepliesNames>(
-		evtName:
+	add_event<R extends RepliesNames>(
+		event_name:
 			| `error:${Lowercase<R>}`
 			| `event:${Lowercase<R>}`
 			| `error:${Uppercase<R>}`
 			| `event:${Uppercase<R>}`,
 		payload: GenericReply<Uppercase<R>> & { isCurrentClient: boolean },
-		messageText?: string,
-	): RoomMessage {
-		const msg = new RoomMessage()
-			.withData(payload)
-			.withID(payload.tags.msgid)
-			.withMessage(messageText || evtName)
-			.withNickname(payload.origin.nickname)
-			.withTarget(this.id())
-			.withTime(new Date())
-			.withType(evtName)
-			.withIsCurrentClient(payload.isCurrentClient);
-		this.addMessage(msg);
-		return msg;
+		message_text?: string,
+	): RoomMessage
+	{
+		let message = new RoomMessage()
+			.with_data(payload)
+			.with_id(payload.tags.msgid)
+			.with_message(message_text || event_name)
+			.with_nickname(payload.origin.nickname)
+			.with_target(this.id())
+			.with_time(new Date())
+			.with_type(event_name)
+			.with_is_current_client(payload.isCurrentClient);
+		this.add_message(message);
+		return message;
 	}
 
 	/**
 	 * Ajoute une entrée utilisateur dans l'historique des entrées.
 	 */
-	addInputHistory(input: string) {
-		const inputHistorySize = this.inputHistory.length;
+	add_input_history(input: string)
+	{
+		let input_history_size = this.input_history.length;
 
-		if (inputHistorySize === INPUT_HISTORY_LIMIT) {
-			this.inputHistory.shift();
+		if (input_history_size === INPUT_HISTORY_LIMIT) {
+			this.input_history.shift();
 		}
 
-		if (inputHistorySize === 0) {
-			this.inputHistory.push(input, "");
+		if (input_history_size === 0) {
+			this.input_history.push(input, "");
 		} else {
-			if (this.inputHistory[inputHistorySize - 2] !== input) {
-				this.inputHistory[inputHistorySize - 1] = input;
-				this.inputHistory.push("");
+			if (this.input_history[input_history_size - 2] !== input) {
+				this.input_history[input_history_size - 1] = input;
+				this.input_history.push("");
 			}
 		}
 	}
@@ -188,7 +195,8 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Ajoute un message au tableau de messages.
 	 */
-	addMessage(message: RoomMessage) {
+	add_message(message: RoomMessage): RoomMessage
+	{
 		if (this.messages.length === MESSAGES_LIMIT) {
 			this.messages.shift();
 		}
@@ -197,9 +205,9 @@ export class Room<R = RoomID, Type extends string = string> {
 
 		if (!this.active) {
 			if (message.type.startsWith("event")) {
-				this.totalUnreadEvents += 1;
+				this.total_unread_events += 1;
 			} else {
-				this.totalUnreadMessages += 1;
+				this.total_unread_messages += 1;
 			}
 		}
 
@@ -209,18 +217,21 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Définit un nom.
 	 */
-	changeName(name: string) {
+	change_name(name: string)
+	{
 		this._name = name;
 	}
 
 	/**
 	 * Efface tous les messages
 	 */
-	clearMessages() {
+	clear_messages()
+	{
 		this.messages = [];
 	}
 
-	eq($1: string | this): boolean {
+	eq($1: string | this): boolean
+	{
 		if (typeof $1 === "string") {
 			return (
 				this.id() === $1 ||
@@ -233,16 +244,18 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * ID de la chambre.
 	 */
-	id(): R {
+	id(): R
+	{
 		return this._id;
 	}
 
 	/**
 	 * Retourne un message parmi la liste des messages en fonction d'un ID.
 	 */
-	getMessageFrom<D extends object>(
+	get_message<D extends object>(
 		id: RoomMessage<R, D>["id"],
-	): Option<RoomMessage<R, D>> {
+	): Option<RoomMessage<R, D>>
+	{
 		return Option.from(this.messages.find((msg) => msg.id === id)).as<
 			RoomMessage<R, D>
 		>();
@@ -251,7 +264,8 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Définit un ID de chambre.
 	 */
-	withID(id: R): this {
+	with_id(id: R): this
+	{
 		this._id = id;
 		return this;
 	}
@@ -259,25 +273,28 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Est-ce que la chambre est active?
 	 */
-	isActive(): boolean {
+	is_active(): boolean
+	{
 		return this.active;
 	}
 
 	/**
 	 * Est-ce que la chambre est fermée?
 	 */
-	isClosed(): boolean {
+	is_closed(): boolean
+	{
 		return this.closed;
 	}
 
 	/**
 	 * Marque la chambre comme étant fermée.
 	 */
-	marksAsClosed(): this {
+	marks_as_closed(): this
+	{
 		this.closed = true;
 		this.active = false;
-		for (const message of this.messages) {
-			message.markAsArchived();
+		for (let message of this.messages) {
+			message.mark_as_archived();
 		}
 		return this;
 	}
@@ -285,7 +302,8 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Marque la chambre comme étant ouverture.
 	 */
-	marksAsOpen(): this {
+	marks_as_opened(): this
+	{
 		this.closed = false;
 		return this;
 	}
@@ -293,35 +311,40 @@ export class Room<R = RoomID, Type extends string = string> {
 	/**
 	 * Définit la chambre comme étant active.
 	 */
-	setActive(b: boolean) {
+	set_active(b: boolean)
+	{
 		this.active = b;
 	}
 
 	/**
 	 * Définit un nom personnalisé pour la chambre.
 	 */
-	setCustomName(name: NonNullable<R>) {
-		this.customName.replace(name);
+	set_custom_name(name: NonNullable<R>)
+	{
+		this.custom_name.replace(name);
 	}
 
 	/**
 	 * Définit la chambre comme étant "highlight".
 	 */
-	setHighlighted(bool: boolean) {
+	set_highlighted(bool: boolean)
+	{
 		this.highlighted = bool;
 	}
 
 	/**
 	 * Définit le total des événements reçus à 0.
 	 */
-	unsetTotalUnreadEvents() {
-		this.totalUnreadEvents = 0;
+	unset_total_unread_events()
+	{
+		this.total_unread_events = 0;
 	}
 
 	/**
 	 * Définit le total des messages reçus à 0.
 	 */
-	unsetTotalUnreadMessages() {
-		this.totalUnreadMessages = 0;
+	unset_total_unread_messages()
+	{
+		this.total_unread_messages = 0;
 	}
 }

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isChannel } from "../../asserts/room";
+import { is_channel } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 import type { Module } from "../interface";
 import { TopicCommand } from "./command";
@@ -17,7 +17,8 @@ import { TopicCommand } from "./command";
 // Implémentation //
 // -------------- //
 
-export class TopicModule implements Module<TopicModule> {
+export class TopicModule implements Module<TopicModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -31,33 +32,37 @@ export class TopicModule implements Module<TopicModule> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: TopicCommand) {}
+	constructor(private command: TopicCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(roomName: RoomID, channelRaw?: string, ...words: Array<string>) {
-		let channelR = channelRaw;
+	input(room_id: RoomID, channel_raw?: string, ...words: Array<string>)
+	{
+		let channel_r = channel_raw;
 
-		if (channelR) {
-			if (!channelR.startsWith("#") && roomName.startsWith("#")) {
-				words.unshift(channelR);
-				channelR = roomName;
+		if (channel_r) {
+			if (!channel_r.startsWith("#") && room_id.startsWith("#")) {
+				words.unshift(channel_r);
+				channel_r = room_id;
 			}
-		} else if (roomName.startsWith("#")) {
-			channelR = roomName;
+		} else if (room_id.startsWith("#")) {
+			channel_r = room_id;
 		}
 
-		if (!isChannel(channelR)) return;
+		if (!is_channel(channel_r)) return;
 
-		const topic = words.join(" ");
-		this.send({ channel: channelR, topic });
+		let topic = words.join(" ");
+		this.send({ channel: channel_r, topic });
 	}
 
-	send(payload: Command<"TOPIC">) {
+	send(payload: Command<"TOPIC">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }

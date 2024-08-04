@@ -1,38 +1,40 @@
 <script lang="ts" setup>
+import type { ChannelActivitiesView } from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
+
 import {
-	type ChannelActivitiesView,
 	ChannelMember,
 	ChannelRoom,
 	RoomMessage,
 } from "@phisyx/flex-chat";
-import { formatDate } from "@phisyx/flex-date";
-import { None, type Option, Some } from "@phisyx/flex-safety";
+import { format_date } from "@phisyx/flex-date";
+import { None, Some } from "@phisyx/flex-safety";
 
 import ChannelActivities from "./ChannelActivities.template.vue";
 
-const channel = new ChannelRoom("#iBug" as ChannelID);
+let channel = new ChannelRoom("#iBug" as ChannelID);
 
-const user = new ChannelMember({
+let user = new ChannelMember({
 	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "PhiSyX",
 });
 
-channel.addMember(user);
+channel.add_member(user);
 
-const member = channel.getMemberByNickname("PhiSyX");
+let member = channel.get_member_by_nickname("PhiSyX");
 
-const msgid = "0000-0000-0000-0000-0000";
-channel.addMessage(
+let msgid = "0000-0000-0000-0000-0000";
+channel.add_message(
 	new RoomMessage<"channel", { text: string }>()
-		.withType("privmsg")
-		.withMessage("hello world")
-		.withID(msgid),
+		.with_type("privmsg")
+		.with_message("hello world")
+		.with_id(msgid),
 );
-const message = channel.getMessageFrom<{ text: string }>(msgid).unwrap();
+let message = channel.get_message<{ text: string }>(msgid).unwrap();
 
-const activities: ChannelActivitiesView = {
+let activities: ChannelActivitiesView = {
 	groups: [
 		{
 			activities: [
@@ -43,14 +45,14 @@ const activities: ChannelActivitiesView = {
 					previousMessages: [],
 				},
 			],
-			createdAt: formatDate("D/m/y H:i:s", new Date()),
+			createdAt: format_date("D/m/y H:i:s", new Date()),
 			updatedAt: None(),
 			name: "notice",
 		},
 	],
 };
 
-const currentClientMember: Option<ChannelMember> = Some(user);
+let current_client_member: Option<ChannelMember> = Some(user);
 </script>
 
 <template>
@@ -58,7 +60,7 @@ const currentClientMember: Option<ChannelMember> = Some(user);
 		<Variant title="Default">
 			<ChannelActivities
 				:activities="activities"
-				:current-client-member="currentClientMember"
+				:current-client-member="current_client_member"
 				:room="channel"
 				:expanded="false"
 			/>
@@ -67,7 +69,7 @@ const currentClientMember: Option<ChannelMember> = Some(user);
 		<Variant title="Expanded">
 			<ChannelActivities
 				:activities="activities"
-				:current-client-member="currentClientMember"
+				:current-client-member="current_client_member"
 				:room="channel"
 				:expanded="true"
 			/>

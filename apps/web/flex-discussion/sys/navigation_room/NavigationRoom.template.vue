@@ -7,7 +7,7 @@ import { Badge, ButtonIcon } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	active: boolean;
 	id: RoomID;
@@ -18,7 +18,7 @@ interface Props
 	totalUnreadMessages?: number;
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "open-room", origin: Origin | RoomID): void;
 	(event_name: "close-room", origin: Origin | RoomID): void;
@@ -57,7 +57,7 @@ let name_title_attribute = computed(() => {
 	}
 
 	title += "· Fermer la chambre avec :\n";
-	title += "  - la touche du clavier ESC (échap)\n";
+	title += "  - la touche du clavier ESC (échappe)\n";
 	title += "  - le bouton du milieu de votre souris\n";
 
 	if (props.name.startsWith("#")) {

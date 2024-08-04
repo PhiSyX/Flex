@@ -14,7 +14,8 @@ import type { Layer, OverlayerStore } from "../store";
 // Implémentation //
 // -------------- //
 
-export class ChannelTopicLayer {
+export class ChannelTopicLayer
+{
 	// ------ //
 	// Static //
 	// ------ //
@@ -22,45 +23,51 @@ export class ChannelTopicLayer {
 	static ID = "channel-topic-layer";
 
 	static create(
-		overlayerStore: OverlayerStore,
+		overlayer_store: OverlayerStore,
 		payload: {
 			event: Event;
-			linkedElement: HTMLElement | undefined;
+			linked_element: HTMLElement | undefined;
 		},
-	) {
-		overlayerStore.create({
+	)
+	{
+		overlayer_store.create({
 			id: ChannelTopicLayer.ID,
 			destroyable: "manual",
 			event: payload.event,
-			DOMElement: payload.linkedElement,
-			trapFocus: false,
+			dom_element: payload.linked_element,
+			trap_focus: false,
 		});
 
-		return new ChannelTopicLayer(overlayerStore);
+		return new ChannelTopicLayer(overlayer_store);
 	}
 
-	static destroy(overlayerStore: OverlayerStore) {
-		overlayerStore.destroy(ChannelTopicLayer.ID);
+	static destroy(overlayer_store: OverlayerStore)
+	{
+		overlayer_store.destroy(ChannelTopicLayer.ID);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayerStore: OverlayerStore) {}
+	constructor(private overlayer_store: OverlayerStore)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy() {
-		this.overlayerStore.destroy(ChannelTopicLayer.ID);
+	destroy()
+	{
+		this.overlayer_store.destroy(ChannelTopicLayer.ID);
 	}
 
-	get(): Layer | undefined {
-		return this.overlayerStore.get(ChannelTopicLayer.ID);
+	get(): Layer | undefined
+	{
+		return this.overlayer_store.get(ChannelTopicLayer.ID);
 	}
 
-	exists(): boolean {
-		return this.overlayerStore.has(ChannelTopicLayer.ID);
+	exists(): boolean
+	{
+		return this.overlayer_store.has(ChannelTopicLayer.ID);
 	}
 }

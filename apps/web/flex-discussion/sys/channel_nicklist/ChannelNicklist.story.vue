@@ -8,57 +8,53 @@ import {
 
 import ChannelNicklist from "./ChannelNicklist.vue";
 
-const origin1: User = new User({
+let origin1: User = new User({
 	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 });
-const origin2: User = new User({
+let origin2: User = new User({
 	id: "f-g-h-i-j" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
 });
-const origin3: User = new User({
+let origin3: User = new User({
 	id: "k-l-m-n-o" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",
 });
 
-const moderatorsOriginal = [
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner),
-	new ChannelMember(origin1).withAccessLevel(
-		ChannelAccessLevelFlag.AdminOperator,
-	),
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Operator),
-	new ChannelMember(origin1).withAccessLevel(
-		ChannelAccessLevelFlag.HalfOperator,
-	),
+let moderators_original = [
+	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.Owner),
+	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.AdminOperator),
+	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.Operator),
+	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.HalfOperator),
 ];
-const moderators = {
-	original: moderatorsOriginal,
-	filtered: moderatorsOriginal.map(
+let moderators = {
+	original: moderators_original,
+	filtered: moderators_original.map(
 		(member) => new ChannelMemberFiltered(member, []),
 	),
 };
 
-const vipsOriginal = [
-	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip),
+let vips_original = [
+	new ChannelMember(origin2).with_access_level(ChannelAccessLevelFlag.Vip),
 ];
-const vips = {
-	original: vipsOriginal,
-	filtered: vipsOriginal.map(
+let vips = {
+	original: vips_original,
+	filtered: vips_original.map(
 		(member) => new ChannelMemberFiltered(member, []),
 	),
 };
-const usersOriginal = [
-	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User),
+let users_original = [
+	new ChannelMember(origin3).with_access_level(ChannelAccessLevelFlag.User),
 ];
-const users = {
-	original: usersOriginal,
-	filtered: usersOriginal.map(
+let users = {
+	original: users_original,
+	filtered: users_original.map(
 		(member) => new ChannelMemberFiltered(member, []),
 	),
 };

@@ -5,7 +5,7 @@ import type { ChannelMemberSearchHits } from "@phisyx/flex-chat";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	classes?: string;
 	hits?: Array<ChannelMemberSearchHits>;
@@ -32,7 +32,7 @@ withDefaults(defineProps<Props>(), { tag: "bdo" });
 			<template v-for="(substring, idx) of hits" :key="idx">
 				<mark
 					:key="idx + '!'"
-					v-if="!substring.isSymbol"
+					v-if="!substring.is_symbol"
 					:class="[{ hit: substring.type === 'HIT' }]"
 				>
 					{{ substring.word }}

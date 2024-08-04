@@ -10,7 +10,7 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	disabled?: boolean;
 	isSameMember: boolean;
@@ -18,7 +18,7 @@ interface Props
 	selectedMember: ChannelMemberSelected;
 }
 
-interface Emits 
+interface Emits
 {
 	(
 		event_name: "set-access-level",
@@ -40,41 +40,41 @@ const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
 let is_current_client_member_global_operator = computed(() =>
-	props.currentClientMember.isGlobalOperator(),
+	props.currentClientMember.is_global_operator(),
 );
 
 let is_current_client_member_half_operator = computed(() =>
-	props.currentClientMember.accessLevel.eq(
+	props.currentClientMember.access_level.eq(
 		ChannelAccessLevelFlag.HalfOperator,
 	),
 );
 
 let is_current_client_member_have_operator_rights = computed(() =>
-	props.currentClientMember.accessLevel.ge(ChannelAccessLevelFlag.Operator),
+	props.currentClientMember.access_level.ge(ChannelAccessLevelFlag.Operator),
 );
 let is_current_client_member_have_half_operator_rights = computed(() =>
-	props.currentClientMember.accessLevel.ge(
+	props.currentClientMember.access_level.ge(
 		ChannelAccessLevelFlag.HalfOperator,
 	),
 );
 
 let is_selected_member_half_operator = computed(() =>
-	props.selectedMember.member.accessLevel.eq(
+	props.selectedMember.member.access_level.eq(
 		ChannelAccessLevelFlag.HalfOperator,
 	),
 );
 let is_selected_member_vip_rights = computed(() =>
-	props.selectedMember.member.accessLevel.eq(ChannelAccessLevelFlag.Vip),
+	props.selectedMember.member.access_level.eq(ChannelAccessLevelFlag.Vip),
 );
 
 // ------- //
 // Handler //
 // ------- //
 
-const set_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
-	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unset_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
-	emit("unset-access-level", props.selectedMember.member, accessLevel);
+const set_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
+	emit("set-access-level", props.selectedMember.member, access_level);
+const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
+	emit("unset-access-level", props.selectedMember.member, access_level);
 </script>
 
 <template>

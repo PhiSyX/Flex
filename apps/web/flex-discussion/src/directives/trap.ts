@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { FocusTrap } from "focus-trap";
 import type { Directive } from "vue";
 
-import { type FocusTrap, createFocusTrap } from "focus-trap";
+import { createFocusTrap as create_focus_trap } from "focus-trap";
 
 type DirectiveTrap = Directive<
 	HTMLElement & { trap?: FocusTrap },
@@ -21,9 +22,10 @@ type DirectiveTrap = Directive<
 ///
 /// Utilise la librairie [focus-trap]
 const trap: DirectiveTrap = {
-	mounted(el, binding, _vnode, _pnode) {
+	mounted(el, binding, _vnode, _pnode)
+	{
 		if (binding.value) {
-			el.trap = createFocusTrap(el, {
+			el.trap = create_focus_trap(el, {
 				escapeDeactivates: false,
 				clickOutsideDeactivates: true,
 			});
@@ -31,7 +33,8 @@ const trap: DirectiveTrap = {
 		}
 	},
 
-	unmounted(el) {
+	unmounted(el)
+	{
 		el.trap?.deactivate();
 		el.trap = undefined;
 	},

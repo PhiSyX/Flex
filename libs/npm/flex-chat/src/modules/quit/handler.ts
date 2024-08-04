@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../asserts/room";
+import { assert_channel_room } from "../../asserts/room";
 import type { ChannelRoom } from "../../channel/room";
 import type { ChatStoreInterface } from "../../store";
 
@@ -16,38 +16,43 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class QuitHandler implements SocketEventInterface<"QUIT"> {
+export class QuitHandler implements SocketEventInterface<"QUIT">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("QUIT", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"QUIT">) {
-		if (this.store.isCurrentClient(data.origin)) {
+	handle(data: GenericReply<"QUIT">)
+	{
+		if (this.store.is_current_client(data.origin)) {
 			return;
 		}
 
-		for (const room of this.store.roomManager().rooms()) {
+		for (let room of this.store.room_manager().rooms()) {
 			if (room.type === "channel") {
-				assertChannelRoom(room);
-				this.handleChannel(data, room);
+				assert_channel_room(room);
+				this.handle_channel(data, room);
 			}
 		}
 	}
 
-	handleChannel(data: GenericReply<"QUIT">, channel: ChannelRoom) {
+	handle_channel(data: GenericReply<"QUIT">, channel: ChannelRoom)
+	{
 		if (!channel.members.has(data.origin.id)) return;
 
-		channel.addEvent("event:quit", { ...data, isCurrentClient: false });
+		channel.add_event("event:quit", { ...data, isCurrentClient: false });
 
-		channel.removeMember(data.origin.id);
+		channel.remove_member(data.origin.id);
 	}
 }

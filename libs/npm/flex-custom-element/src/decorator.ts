@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { camelCase, kebabcase } from "@phisyx/flex-capitalization";
+import { camelcase, kebabcase } from "@phisyx/flex-capitalization";
 import { isSignal } from "@phisyx/flex-signal";
 
 import { type AttachShadowMode, GlobalCustomElement } from "./global";
@@ -40,7 +40,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 		UCEInstance extends CustomElementInterface,
 	>(UserCustomElement: UCE) {
 		function customEventName(name: string): `handle${string}Event` {
-			let capitalized = camelCase(name, {
+			let capitalized = camelcase(name, {
 				includes_separators: false,
 			});
 			return `handle${capitalized}Event`;

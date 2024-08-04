@@ -18,97 +18,101 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
+export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("PRIVMSG", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"PRIVMSG">) {
-		if (this.store.isCurrentClient(data.origin)) {
-			this.handleClientItself(data);
+	handle(data: GenericReply<"PRIVMSG">)
+	{
+		if (this.store.is_current_client(data.origin)) {
+			this.handle_client_itself(data);
 			return;
 		}
 
-		this.handleUser(data);
+		this.handle_user(data);
 	}
 
-	handleClientItself(data: GenericReply<"PRIVMSG">) {
-		const user = this.store
-			.userManager()
-			.findByNickname(data.target)
+	handle_client_itself(data: GenericReply<"PRIVMSG">)
+	{
+		let user = this.store
+			.user_manager()
+			.find_by_nickname(data.target)
 			.expect(`"L'utilisateur cible ${data.target}."`);
-		const maybeRoom = this.store.roomManager().get(user.id);
-		if (maybeRoom.is_none()) return;
-		const room = maybeRoom.unwrap();
-		this.handleMessage(room, data);
+		let maybe_room = this.store.room_manager().get(user.id);
+		if (maybe_room.is_none()) return;
+		let room = maybe_room.unwrap();
+		this.handle_message(room, data);
 	}
 
-	handleUser(data: GenericReply<"PRIVMSG">) {
-		const priv = this.store
-			.roomManager()
-			.getOrInsert(data.origin.id, () => {
+	handle_user(data: GenericReply<"PRIVMSG">)
+	{
+		let priv = this.store
+			.room_manager()
+			.get_or_insert(data.origin.id, () => {
 				this.store
-					.roomManager()
+					.room_manager()
 					.active()
 					// @ts-expect-error : type à corriger
-					.addEvent("event:query", {
+					.add_event("event:query", {
 						...data,
 						isCurrentClient: false,
 					});
-				const room = new PrivateRoom(data.origin.nickname).withID(
+				let room = new PrivateRoom(data.origin.nickname).with_id(
 					data.origin.id,
 				);
-				room.addParticipant(new PrivateParticipant(data.origin));
-				room.addParticipant(
+				room.add_participant(new PrivateParticipant(data.origin));
+				room.add_participant(
 					new PrivateParticipant(
 						this.store.client(),
-					).withIsCurrentClient(true),
+					).with_is_current_client(true),
 				);
 				return room;
 			});
 
-		this.handleMessage(priv, data);
+		this.handle_message(priv, data);
 	}
 
-	handleMessage(room: Room, data: GenericReply<"PRIVMSG">) {
-		const isCurrentClient = this.store.isCurrentClient(data.origin);
-		if (!isCurrentClient && !room.isActive()) {
+	handle_message(room: Room, data: GenericReply<"PRIVMSG">)
+	{
+		let is_current_client = this.store.is_current_client(data.origin);
+		if (!is_current_client && !room.is_active()) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
 			// message.
-			const currentClientNickname = this.store.nickname();
-			if (
-				data.text
-					.toLowerCase()
-					.indexOf(currentClientNickname.toLowerCase()) >= 0
-			) {
-				room.setHighlighted(true);
+			let current_client_nickname = this.store.nickname();
+			if (data.text.toLowerCase()
+					.indexOf(current_client_nickname.toLowerCase()) >= 0) {
+				room.set_highlighted(true);
 			}
 		}
 
-		const nickname =
+		let nickname =
 			room.type === "channel" || room.type === "private"
 				? data.origin.nickname
 				: "*";
 
-		room.addMessage(
+		room.add_message(
 			new RoomMessage()
-				.withID(data.tags.msgid)
-				.withMessage(data.text)
-				.withNickname(nickname)
-				.withTarget(data.target)
-				.withTime(new Date())
-				.withType("privmsg")
-				.withData(data)
-				.withIsCurrentClient(isCurrentClient),
+				.with_id(data.tags.msgid)
+				.with_message(data.text)
+				.with_nickname(nickname)
+				.with_target(data.target)
+				.with_time(new Date())
+				.with_type("privmsg")
+				.with_data(data)
+				.with_is_current_client(is_current_client),
 		);
 	}
 }

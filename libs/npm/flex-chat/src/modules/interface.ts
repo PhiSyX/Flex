@@ -8,7 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export interface ModuleInterface extends SocketEventHandler {
+export interface ModuleInterface extends SocketEventHandler
+{
 	input(...args: unknown[]): void;
 }
 

@@ -8,15 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { computed, ref } from "vue";
-
 import type { Room } from "@phisyx/flex-chat";
+
+import { ref } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface Props {
+export interface Props
+{
 	completionList?: Array<string>;
 	currentClientNickname?: string;
 	disableInput?: boolean;
@@ -31,13 +32,5 @@ export interface Props {
 // Local State //
 // ----------- //
 
-export const $input = ref<HTMLInputElement>();
-export const inputModel = ref("");
-
-export const computeFormAction = (props: Props) =>
-	computed(() => {
-		const targetPath = props.room.name.startsWith("#")
-			? `%23${props.room.name.slice(1).toLowerCase()}`
-			: props.room.name.toLowerCase();
-		return `/msg/${targetPath}`;
-	});
+export let $input = ref<HTMLInputElement>();
+export let input_model = ref("");

@@ -3,7 +3,7 @@ import { computed } from "vue";
 
 import { Alert } from "@phisyx/flex-vue-uikit";
 
-import { useChatStore } from "~/store";
+import { use_chat_store } from "~/store";
 
 import Match from "#/sys/match/Match.vue";
 
@@ -11,9 +11,9 @@ import Match from "#/sys/match/Match.vue";
 // Composant //
 // --------- //
 
-let chat_store = useChatStore();
+let chat_store = use_chat_store();
 
-let client_error = computed(() => chat_store.store.clientError);
+let client_error = computed(() => chat_store.store.client_error);
 </script>
 
 <template>

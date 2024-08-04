@@ -13,6 +13,7 @@ import { User } from "../user";
 /**
  * Certifie que la donnée passée en argument est un utilisateur.
  */
-export function isUser(user: unknown): user is User {
+export function is_user(user: unknown): user is User
+{
 	return user instanceof User;
 }

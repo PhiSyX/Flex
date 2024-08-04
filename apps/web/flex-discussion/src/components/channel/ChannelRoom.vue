@@ -22,7 +22,7 @@ import {
 } from "@phisyx/flex-chat";
 import { format_date } from "@phisyx/flex-date";
 
-import { useChatStore, useOverlayerStore, useSettingsStore } from "~/store";
+import { use_chat_store, use_overlayer_store, use_settings_store } from "~/store";
 
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.template.vue";
 import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
@@ -31,7 +31,7 @@ import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	// Le salon actif.
 	room: ChannelRoom;
@@ -41,9 +41,9 @@ interface Props
 // Composant //
 // --------- //
 
-let chat_store = useChatStore();
-let overlayer_store = useOverlayerStore();
-let settings_store = useSettingsStore();
+let chat_store = use_chat_store();
+let overlayer_store = use_overlayer_store();
+let settings_store = use_settings_store();
 
 const props = defineProps<Props>();
 
@@ -58,40 +58,40 @@ let current_client_nickname = computed(() => current_client.value.nickname);
 // NOTE: l'utilisateur courant PEUT être sanctionné à tout moment, c'est
 //       pourquoi l'on évitera de .unwrap() le retour de la fonction `getUser`.
 let current_client_member = computed(() =>
-	props.room.getMember(current_client.value.id),
+	props.room.get_member(current_client.value.id),
 );
 
 // Membre du salon actuellement sélectionné par le client courant.
 let selected_member = computed(() =>
-	chat_store.getCurrentSelectedChannelMember(props.room),
+	chat_store.get_current_selected_channel_member(props.room),
 );
 
 // Les activités liées au salon courant (room).
 let channel_activities = computed(() => {
 	function make_activity(
 		room: Room,
-		activity: Optional<ChannelActivityRef, "channelID">,
-	): ChannelActivity 
+		activity: Optional<ChannelActivityRef, "channel_id">,
+	): ChannelActivity
 	{
 		let member = props.room
-			.getMemberByNickname(activity.nickname)
+			.get_member_by_nickname(activity.nickname)
 			.as<ChannelMember | User>()
 			.or_else(() => {
 				return chat_store.store
-					.userManager()
-					.findByNickname(activity.nickname);
+					.user_manager()
+					.find_by_nickname(activity.nickname);
 			});
 
 		// @ts-expect-error : type à corriger.
 		let message: Option<RoomMessage<ChannelID, { text: string }>> =
-			room.getMessageFrom<{ text: string }>(activity.messageID);
+			room.get_message<{ text: string }>(activity.message_id);
 
-		let previous_messages = activity.previousMessageIDs.map((msgid) => {
-			let message = room.getMessageFrom(msgid).unwrap();
+		let previous_messages = activity.previous_messages_ids.map((msgid) => {
+			let message = room.get_message(msgid).unwrap();
 			return make_activity(room, {
-				messageID: msgid,
+				message_id: msgid,
 				nickname: message.nickname,
-				previousMessageIDs: [],
+				previous_messages_ids: [],
 			});
 		});
 
@@ -105,9 +105,9 @@ let channel_activities = computed(() => {
 
 	return {
 		groups: props.room.activities.groups.map(([name, groups]) => {
-			let createdAt = format_date("d.m.Y - H:i:s", groups.createdAt);
+			let created_at = format_date("d.m.Y - H:i:s", groups.created_at);
 
-			let updatedAt = groups.updatedAt.map((date) =>
+			let updated_at = groups.updated_at.map((date) =>
 				format_date("H:i:s", date),
 			);
 
@@ -116,7 +116,7 @@ let channel_activities = computed(() => {
 					case "notice": {
 						return make_activity(
 							chat_store.store
-								.roomManager()
+								.room_manager()
 								.get(NoticeCustomRoom.ID)
 								.unwrap_or(props.room),
 							activity,
@@ -131,8 +131,8 @@ let channel_activities = computed(() => {
 
 			return {
 				name,
-				createdAt,
-				updatedAt,
+				createdAt: created_at,
+				updatedAt: updated_at,
 				activities,
 			};
 		}),
@@ -147,17 +147,17 @@ let channel_activities = computed(() => {
 let completion_list = computed(() => [
 	props.room.name,
 	...props.room.members.all.map((user) => user.nickname),
-	...chat_store.allCommands(),
+	...chat_store.all_commands(),
 ]);
 
 /// Affichage de la liste des utilisateurs
 let userlist_display = computed(
-	() => settings_store.layout.channelUserlistDisplay as boolean,
+	() => settings_store.layout.channel_userlist_display as boolean,
 );
 
 /// Position de la liste des utilisateurs
 let userlist_position = computed(
-	() => settings_store.layout.channelUserlistPosition,
+	() => settings_store.layout.channel_userlist_position,
 );
 
 // ------- //
@@ -167,9 +167,9 @@ let userlist_position = computed(
 /**
  * Ferme le salon actif.
  */
-function close_channel_handler() 
+function close_channel_handler()
 {
-	chat_store.closeRoom(props.room.name);
+	chat_store.close_room(props.room.name);
 }
 
 /**
@@ -177,9 +177,9 @@ function close_channel_handler()
  */
 function create_topic_layer_handler(payload: {
 	event: Event;
-	linkedElement: HTMLInputElement | undefined;
+	linked_element: HTMLInputElement | undefined;
 	mode: boolean;
-}) 
+})
 {
 	if (payload.mode) {
 		ChannelTopicLayer.create(overlayer_store.store, payload);
@@ -191,34 +191,34 @@ function create_topic_layer_handler(payload: {
 /**
  * Envoie les commandes liées aux niveaux d'accès.
  */
-const send_access_level_handler = (applyState: "+" | "-") => (
-	member: ChannelMember, 
+const send_access_level_handler = (apply_state: "+" | "-") => (
+	member: ChannelMember,
 	access_level_flag: ChannelAccessLevelFlag
 ) => {
-	if (applyState === "+") {
-		chat_store.sendSetAccessLevel(props.room, member, access_level_flag);
+	if (apply_state === "+") {
+		chat_store.send_set_access_level(props.room, member, access_level_flag);
 	} else {
-		chat_store.sendUnsetAccessLevel(props.room, member, access_level_flag);
+		chat_store.send_unset_access_level(props.room, member, access_level_flag);
 	}
 };
 
 /**
  * Envoie de la commande /SILENCE.
  */
-const send_silence_user_command_handler = (applyState: "+" | "-") => (
+const send_silence_user_command_handler = (apply_state: "+" | "-") => (
 	origin: Origin
 ) => {
-	if (applyState === "+") {
-		chat_store.ignoreUser(origin.nickname);
+	if (apply_state === "+") {
+		chat_store.ignore_user(origin.nickname);
 	} else {
-		chat_store.unignoreUser(origin.nickname);
+		chat_store.unignore_user(origin.nickname);
 	}
 };
 
 /**
  * Ouvre la boite de dialogue de changement de pseudonyme.
  */
-function open_change_nickname_dialog_handler(event: MouseEvent) 
+function open_change_nickname_dialog_handler(event: MouseEvent)
 {
 	UserChangeNicknameDialog.create(overlayer_store.store, { event });
 }
@@ -226,37 +226,37 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
 /**
  * Ouvre la boite de dialogue du centre de contrôle du salon actif.
  */
-function open_channel_settings_dialog_handler(_: Event) 
+function open_channel_settings_dialog_handler(_: Event)
 {
 	ChannelSettingsDialog.create(overlayer_store.store, {
 		room: props.room,
-		currentClientChannelMember: current_client_member.value.unwrap(),
+		current_client_channel_member: current_client_member.value.unwrap(),
 	});
 }
 
 /**
  * Ouvre une chambre.
  */
-function open_room_handler(room_id: RoomID) 
+function open_room_handler(room_id: RoomID)
 {
-	chat_store.openRoom(room_id);
+	chat_store.open_room(room_id);
 }
 
 /**
  * Ouvre une chambre privé d'un utilisateur.
  */
-function open_private_handler(origin: Origin) 
+function open_private_handler(origin: Origin)
 {
-	chat_store.openPrivateOrCreate(origin);
+	chat_store.open_private_or_create(origin);
 }
 
 /**
  * Le client courant, membre du salon et opérateur du salon, envoie la commande
  * de sanction BAN à un autre membre du salon.
  */
-function send_ban_member_command(member: ChannelMember) 
+function send_ban_member_command(member: ChannelMember)
 {
-	chat_store.banChannelMemberMask(
+	chat_store.ban_channel_member_mask(
 		props.room,
 		member.address("*!ident@hostname"),
 	);
@@ -266,70 +266,70 @@ function send_ban_member_command(member: ChannelMember)
  * Le client courant, membre du salon et opérateur du salon, envoie la commande
  * de sanction BAN à un autre membre du salon.
  */
-function send_ban_member_nick_command(member: ChannelMember) 
+function send_ban_member_nick_command(member: ChannelMember)
 {
-	chat_store.banChannelMemberMask(props.room, member.address("nick!*@*"));
+	chat_store.ban_channel_member_mask(props.room, member.address("nick!*@*"));
 }
 
 /**
  * Le client courant, membre du salon et opérateur du salon, envoie la commande
  * de sanction KICK à un autre membre du salon.
  */
-function send_kick_member_command(member: ChannelMember) 
+function send_kick_member_command(member: ChannelMember)
 {
-	chat_store.kickChannelMember(props.room, member);
+	chat_store.kick_channel_member(props.room, member);
 }
 
 /**
  * Envoie de la commande /JOIN.
  */
-function send_join_channel_command() 
+function send_join_channel_command()
 {
-	chat_store.joinChannel(props.room.name);
+	chat_store.join_channel(props.room.name);
 }
 
 /**
  * Envoie du message au salon actif.
  */
-function send_message_handler(message: string) 
+function send_message_handler(message: string)
 {
-	chat_store.sendMessage(props.room.name, message);
+	chat_store.send_message(props.room.name, message);
 }
 
 /**
  * Le client courant, membre du salon et opérateur du salon, envoie la commande
  * de sanction UNBAN à un autre membre du salon.
  */
-function send_unban_member_command_handler(member: ChannelMemberSelected) 
+function send_unban_member_command_handler(member: ChannelMemberSelected)
 {
 	let [mask] = member.banned.expect("Banmask du membre");
-	chat_store.unbanChannelMemberMask(props.room, mask);
+	chat_store.unban_channel_member_mask(props.room, mask);
 }
 
 /**
  * Le client courant, membre du salon et opérateur du salon, envoie la commande
  * de sanction UNBAN à un autre membre du salon.
  */
-function send_unban_member_nick_command_handler(member: ChannelMemberSelected) 
+function send_unban_member_nick_command_handler(member: ChannelMemberSelected)
 {
 	let [mask] = member.banned.expect("Banmask du membre");
-	chat_store.unbanChannelMemberMask(props.room, mask);
+	chat_store.unban_channel_member_mask(props.room, mask);
 }
 
 /**
  * Envoie la commande de mise à jour du salon.
  */
-function send_update_topic_handler(topic: string) 
+function send_update_topic_handler(topic: string)
 {
-	chat_store.updateTopic(props.room.name, topic);
+	chat_store.update_topic(props.room.name, topic);
 }
 
 /**
  * (Dé-)Sélectionne un membre du salon.
  */
-function toggle_select_channel_member_handler(origin: Origin) 
+function toggle_select_channel_member_handler(origin: Origin)
 {
-	chat_store.toggleSelectChannelMember(props.room, origin);
+	chat_store.toggle_select_channel_member(props.room, origin);
 }
 </script>
 
@@ -366,7 +366,7 @@ function toggle_select_channel_member_handler(origin: Origin)
 	>
 		<template v-if="room.kicked" #history>
 			<ChannelRoomKicked
-				:last-message="room.lastMessage.unwrap()"
+				:last-message="room.last_message.unwrap()"
 				@join-channel="send_join_channel_command"
 			/>
 		</template>

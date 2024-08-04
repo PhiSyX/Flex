@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import type { Props } from "./RoomEvent.state";
+
+import { computed } from "vue";
 
 // --------- //
 // Composant //
@@ -10,19 +10,19 @@ import type { Props } from "./RoomEvent.state";
 defineOptions({ inheritAttrs: false });
 const props = defineProps<Props<"MODE">>();
 
-const addedModesKeys = computed(() => Object.keys(props.data.added));
-const hasAddedModes = computed(() => addedModesKeys.value.length > 0);
+let added_modes_keys = computed(() => Object.keys(props.data.added));
+let has_added_modes = computed(() => added_modes_keys.value.length > 0);
 
-const removedModesKeys = computed(() => Object.keys(props.data.removed));
-const hasRemovedModes = computed(() => removedModesKeys.value.length > 0);
+let removed_modes_keys = computed(() => Object.keys(props.data.removed));
+let has_removed_modes = computed(() => removed_modes_keys.value.length > 0);
 
-const updatedBy = computed(() => {
-	const x = Object.values(props.data.added).at(-1)?.[1].updated_by;
-	const y = Object.values(props.data.removed).at(-1)?.[1].updated_by;
+let updated_by = computed(() => {
+	let x = Object.values(props.data.added).at(-1)?.[1].updated_by;
+	let y = Object.values(props.data.removed).at(-1)?.[1].updated_by;
 	return x || y;
 });
 
-const settingsWord = computed(() =>
+let settings_word = computed(() =>
 	props.data.target.startsWith("#")
 		? "Paramètres du salon"
 		: "Modes utilisateur",
@@ -34,19 +34,19 @@ const settingsWord = computed(() =>
 		{{ time.formattedTime }}
 	</time>
 	<p>
-		<template v-if="!data.updated">* {{ settingsWord }}: </template>
+		<template v-if="!data.updated">* {{ settings_word }}: </template>
 		<template v-else>
 			*
-			<bdo>{{ updatedBy }}</bdo>
+			<bdo>{{ updated_by }}</bdo>
 			a défini les modes:
 		</template>
 
-		<output v-if="hasAddedModes">+</output>
+		<output v-if="has_added_modes">+</output>
 		<output v-for="[letter, _] of data.added">
 			{{ letter }}
 		</output>
 
-		<output v-if="hasRemovedModes">-</output>
+		<output v-if="has_removed_modes">-</output>
 		<output v-for="[letter, _] of data.removed">
 			{{ letter }}
 		</output>

@@ -16,19 +16,22 @@ export class ErrorNooperhostHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_NOOPERHOST", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NOOPERHOST">) {
-		const currentRoom = this.store.roomManager().active();
-		currentRoom.addEvent(
+	handle(data: GenericReply<"ERR_NOOPERHOST">)
+	{
+		let active_room = this.store.room_manager().active();
+		active_room.add_event(
 			"error:err_nooperhost",
 			{ ...data, isCurrentClient: false },
 			data.reason,
@@ -42,19 +45,22 @@ export class ErrorPasswdmismatchHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_PASSWDMISMATCH", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_PASSWDMISMATCH">) {
-		const currentRoom = this.store.roomManager().active();
-		currentRoom.addEvent(
+	handle(data: GenericReply<"ERR_PASSWDMISMATCH">)
+	{
+		let active_room = this.store.room_manager().active();
+		active_room.add_event(
 			"error:err_passwdmismatch",
 			{ ...data, isCurrentClient: false },
 			data.reason,
@@ -68,19 +74,22 @@ export class ErrorOperonlyHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_OPERONLY", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_OPERONLY">) {
-		const currentRoom = this.store.roomManager().active();
-		currentRoom.addEvent(
+	handle(data: GenericReply<"ERR_OPERONLY">)
+	{
+		let active_room = this.store.room_manager().active();
+		active_room.add_event(
 			"error:err_operonly",
 			{ ...data, isCurrentClient: false },
 			data.reason,

@@ -14,14 +14,14 @@ import { AppLocalStorage } from "./storage";
 /**
  * Clé localStorage paramètres "Personalization".
  */
-export const STORAGE_SETTINGS_PERSONALIZATION_KEY =
-	"flex.settings.personalization";
+export const STORAGE_SETTINGS_PERSONALIZATION_KEY = "flex.settings.personalization";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface PersonalizationData {
+export interface PersonalizationData
+{
 	theme?: keyof Theme;
 }
 
@@ -29,14 +29,16 @@ export interface PersonalizationData {
 // Implémentation //
 // -------------- //
 
-export class PersonalizationStorage extends AppLocalStorage<PersonalizationData> {
+export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
+{
 	// ------ //
 	// Static //
 	// ------ //
 
 	static readonly KEY = STORAGE_SETTINGS_PERSONALIZATION_KEY;
 
-	static default(): PersonalizationData {
+	static default(): PersonalizationData
+	{
 		return {
 			theme: "ice",
 		};
@@ -45,11 +47,18 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): unknown | undefined {
+	static fromJSON(key: string, value: string): unknown | undefined
+	{
 		if (key !== "") {
 			let keys = ["theme"];
-			if (!keys.includes(key)) return;
-			if (!["dark", "ice", "light", "system"].includes(value)) return;
+
+			if (!keys.includes(key)) {
+				return;
+			}
+
+			if (!["dark", "ice", "light", "system"].includes(value)) {
+				return;
+			}
 		}
 
 		if (value == null) {
@@ -63,7 +72,8 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 	// Constructor //
 	// ----------- //
 
-	constructor() {
+	constructor()
+	{
 		super(
 			PersonalizationStorage.KEY,
 			PersonalizationStorage.fromJSON,

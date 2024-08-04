@@ -8,37 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { type Props, inputModel } from "./RoomEditbox.state";
+import type { Props } from "./RoomEditbox.state";
+
+import { input_model } from "./RoomEditbox.state";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface Emits 
+export interface Emits
 {
 	(event_name: "change-nickname", event: MouseEvent): void;
-	(event_name: "submit", inputModel: string): void;
+	(event_name: "submit", model: string): void;
 }
 
 // -------- //
 // Handlers //
 // -------- //
 
-export const onSubmit = (emit: Emits, props: Props) => {
-	function onSubmitHandler() {
-		if (props.disableInput || inputModel.value.length === 0) {
+export const on_submit = (emit: Emits, props: Props) =>
+{
+	function submit_handler()
+	{
+		if (props.disableInput || input_model.value.length === 0) {
 			return;
 		}
-		emit("submit", inputModel.value);
-		inputModel.value = "";
+		emit("submit", input_model.value);
+		input_model.value = "";
 	}
 
-	return onSubmitHandler;
+	return submit_handler;
 };
 
-export function changeNick(emit: Emits) {
-	function changeNickHandler(event: MouseEvent) {
-		emit("change-nickname", event);
-	}
-	return changeNickHandler;
+export function change_nick(emit: Emits)
+{
+	return (event: MouseEvent) => emit("change-nickname", event);
 }

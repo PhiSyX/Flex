@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type {
-	ChannelAccessLevelFlag,
-	ChannelActivitiesView,
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelRoom,
+    ChannelAccessLevelFlag,
+    ChannelActivitiesView,
+    ChannelMember,
+    ChannelMemberSelected,
+    ChannelRoom,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
@@ -12,7 +12,7 @@ import { computed, ref } from "vue";
 
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
-import { useChannelTopic } from "./ChannelRoom.hooks";
+import { use_channel_topic } from "./ChannelRoom.hooks";
 
 import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
 import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue";
@@ -24,7 +24,7 @@ import Room from "#/sys/room/Room.template.vue";
 // Type //
 // ---- //
 
-export interface Props 
+export interface Props
 {
 	activities?: ChannelActivitiesView;
 	completionList?: Array<string>;
@@ -35,7 +35,7 @@ export interface Props
 	selectedMember: Option<ChannelMemberSelected>;
 }
 
-export interface Emits 
+export interface Emits
 {
 	(event_name: "ban-member", member: ChannelMember): void;
 	(event_name: "ban-nick", member: ChannelMember): void;
@@ -45,7 +45,7 @@ export interface Emits
 		event_name: "create-topic-layer",
 		payload: {
 			event: Event;
-			linkedElement: HTMLInputElement | undefined;
+			linked_element: HTMLInputElement | undefined;
 			mode: boolean;
 		},
 	): void;
@@ -53,13 +53,13 @@ export interface Emits
 	(event_name: "kick-member", member: ChannelMember): void;
 	(event_name: "open-channel-settings", event: Event): void;
 	(event_name: "open-private", origin: Origin): void;
-	(event_name: "open-room", roomName: RoomID): void;
+	(event_name: "open-room", room_id: RoomID): void;
 	(event_name: "select-member", origin: Origin): void;
 	(event_name: "send-message", message: string): void;
 	(
 		event_name: "set-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(event_name: "unban-member", member: ChannelMemberSelected): void;
 	(event_name: "unban-nick", member: ChannelMemberSelected): void;
@@ -67,7 +67,7 @@ export interface Emits
 	(
 		event_name: "unset-access-level",
 		member: ChannelMember,
-		accessLevel: ChannelAccessLevelFlag,
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(event_name: "update-topic", topic: string): void;
 }
@@ -81,12 +81,12 @@ const emit = defineEmits<Emits>();
 
 let {
 	$topic,
-	currentClientMemberCanEditTopic,
-	enableTopicEditModeHandler,
-	submitTopicHandler,
-	topicEditMode,
-	topicInput,
-} = useChannelTopic(props, emit);
+	current_client_member_can_edit_topic,
+	enable_topic_edit_mode_handler,
+	submit_topic_handler,
+	topic_edit_mode,
+	topic_input,
+} = use_channel_topic(props, emit);
 
 let display_userlist = ref(props.userlistDisplayedByDefault);
 
@@ -140,30 +140,30 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 		>
 			<template #topic>
 				<input
-					v-if="topicEditMode"
+					v-if="topic_edit_mode"
 					ref="$topic"
-					v-model="topicInput"
+					v-model="topic_input"
 					class="[ input:reset size:full ]"
 					type="text"
-					@blur="submitTopicHandler"
-					@keydown.enter="submitTopicHandler"
-					@keydown.esc="submitTopicHandler"
+					@blur="submit_topic_handler"
+					@keydown.enter="submit_topic_handler"
+					@keydown.esc="submit_topic_handler"
 				/>
 				<output
 					v-else-if="room.topic.get().length > 0"
 					class="[ display-ib size:full p=1 select:none cursor:default ]"
 					:class="{
-						'cursor:pointer': currentClientMemberCanEditTopic,
+						'cursor:pointer': current_client_member_can_edit_topic,
 					}"
-					@dblclick="enableTopicEditModeHandler"
+					@dblclick="enable_topic_edit_mode_handler"
 				>
 					{{ room.topic.get() }}
 				</output>
 
 				<p
-					v-else-if="currentClientMemberCanEditTopic"
+					v-else-if="current_client_member_can_edit_topic"
 					class="[ flex flex/center:full h:full my=0 select:none cursor:pointer ]"
-					@dblclick="enableTopicEditModeHandler"
+					@dblclick="enable_topic_edit_mode_handler"
 				>
 					Appuyez deux fois sur cette section pour mettre à jour le
 					sujet.

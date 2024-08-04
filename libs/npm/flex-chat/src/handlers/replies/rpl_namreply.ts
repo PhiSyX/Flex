@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../asserts/room";
-import { ChannelMember } from "../../channel/member";
 import type { ChatStoreInterface } from "../../store";
+
+import { assert_channel_room } from "../../asserts/room";
+import { ChannelMember } from "../../channel/member";
 
 // -------------- //
 // Implémentation //
@@ -19,35 +20,40 @@ import type { ChatStoreInterface } from "../../store";
 export class ReplyNamreplyHandler
 	implements SocketEventInterface<"RPL_NAMREPLY">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_NAMREPLY", (data) => this.handle(data));
 		// this.store.on("RPL_ENDOFNAMES", (_data) => {});
 	}
 
-	handle(data: GenericReply<"RPL_NAMREPLY">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
+	handle(data: GenericReply<"RPL_NAMREPLY">)
+	{
+		let maybe_channel = this.store.room_manager().get(data.channel);
+		if (maybe_channel.is_none()) {
+			return;
+		}
 
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
+		let channel = maybe_channel.unwrap();
+		assert_channel_room(channel);
 
-		for (const userOrigin of data.users) {
-			const user = this.store
-				.userManager()
-				.add(userOrigin)
-				.withChannel(channel.id());
+		for (let user_origin of data.users) {
+			let user = this.store
+				.user_manager()
+				.add(user_origin)
+				.with_channel(channel.id());
 
-			const newMember = new ChannelMember(user)
-				.withIsCurrentClient(this.store.isCurrentClient(user))
-				.withAccessLevel(userOrigin.access_level);
+			let new_member = new ChannelMember(user)
+				.with_is_current_client(this.store.is_current_client(user))
+				.with_access_level(user_origin.access_level);
 
-			const maybeChannelMember = channel.getMember(user.id);
-			if (maybeChannelMember.is_some()) {
-				channel.upgradeMember(maybeChannelMember.unwrap(), newMember);
+			let maybe_channel_member = channel.get_member(user.id);
+			if (maybe_channel_member.is_some()) {
+				channel.upgrade_member(maybe_channel_member.unwrap(), new_member);
 			} else {
-				channel.addMember(newMember);
+				channel.add_member(new_member);
 			}
 		}
 	}

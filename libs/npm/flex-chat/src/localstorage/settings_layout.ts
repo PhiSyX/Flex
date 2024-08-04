@@ -19,43 +19,53 @@ export const STORAGE_SETTINGS_LAYOUT_KEY = "flex.settings.layout";
 // Type //
 // ---- //
 
-export interface LayoutData {
-	channelUserlistDisplay?: boolean;
-	channelUserlistPosition?: "left" | "right";
-	navigationBarPosition?: "left" | "right";
+export interface LayoutData
+{
+	channel_userlist_display?: boolean;
+	channel_userlist_position?: "left" | "right";
+	navigation_bar_position?: "left" | "right";
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class LayoutStorage extends AppLocalStorage<LayoutData> {
+export class LayoutStorage extends AppLocalStorage<LayoutData>
+{
 	// ------ //
 	// Static //
 	// ------ //
 
 	static readonly KEY = STORAGE_SETTINGS_LAYOUT_KEY;
 
-	static default(): LayoutData {
+	static default(): LayoutData
+	{
 		return {
-			channelUserlistDisplay: true,
-			channelUserlistPosition: "right",
-			navigationBarPosition: "left",
+			channel_userlist_display: true,
+			channel_userlist_position: "right",
+			navigation_bar_position: "left",
 		};
 	}
 
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): unknown | undefined {
+	static fromJSON(key: string, value: string): unknown | undefined
+	{
 		if (key !== "") {
 			let keys = [
-				"channelUserlistDisplay",
-				"channelUserlistPosition",
-				"navigationBarPosition",
+				"channel_userlist_display",
+				"channel_userlist_position",
+				"navigation_bar_position",
 			];
-			if (!keys.includes(key)) return;
-			if (![true, false, "left", "right"].includes(value)) return;
+			
+			if (!keys.includes(key)) {
+				return;
+			}
+
+			if (![true, false, "left", "right"].includes(value)) {
+				return;
+			}
 		}
 
 		if (value == null) {
@@ -69,7 +79,8 @@ export class LayoutStorage extends AppLocalStorage<LayoutData> {
 	// Constructor //
 	// ----------- //
 
-	constructor() {
+	constructor()
+	{
 		super(
 			LayoutStorage.KEY,
 			LayoutStorage.fromJSON,

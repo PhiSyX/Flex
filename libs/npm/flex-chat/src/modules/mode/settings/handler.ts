@@ -8,40 +8,45 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../../asserts/room";
+import { assert_channel_room } from "../../../asserts/room";
 import type { ChatStoreInterface } from "../../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ModeSettingsHandler implements SocketEventInterface<"MODE"> {
+export class ModeSettingsHandler implements SocketEventInterface<"MODE">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"MODE">) {
-		if (this.store.isCurrentClient(data.target)) return;
-		this.handleChannel(data);
+	handle(data: GenericReply<"MODE">)
+	{
+		if (this.store.is_current_client(data.target)) return;
+		this.handle_channel(data);
 	}
 
-	handleChannel(data: GenericReply<"MODE">) {
-		const maybeRoom = this.store.roomManager().get(data.target);
-		if (maybeRoom.is_none()) return;
+	handle_channel(data: GenericReply<"MODE">)
+	{
+		let maybe_room = this.store.room_manager().get(data.target);
+		if (maybe_room.is_none()) return;
 
-		const channel = maybeRoom.unwrap();
-		assertChannelRoom(channel);
+		let channel = maybe_room.unwrap();
+		assert_channel_room(channel);
 
-		function isChannelSettings(
+		function is_channel_settings_letter_allowed(
 			letter: string,
 			_: ModeApplyFlag<unknown>,
 		): _ is ModeApplyFlag<AccessControlMode> {
@@ -50,22 +55,22 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE"> {
 
 		if (data.added) {
 			for (const [letter, mode] of data.added) {
-				if (!isChannelSettings(letter, mode)) continue;
+				if (!is_channel_settings_letter_allowed(letter, mode)) continue;
 
-				channel.setSettingMode(letter);
+				channel.set_setting_mode(letter);
 				if (letter === "t") {
-					channel.topic.setEditable(false);
+					channel.topic.set_editable(false);
 				}
 			}
 		}
 
 		if (data.removed) {
 			for (const [letter, mode] of data.removed) {
-				if (!isChannelSettings(letter, mode)) continue;
+				if (!is_channel_settings_letter_allowed(letter, mode)) continue;
 
-				channel.unsetSettingMode(letter);
+				channel.unset_setting_mode(letter);
 				if (letter === "t") {
-					channel.topic.setEditable(true);
+					channel.topic.set_editable(true);
 				}
 			}
 		}

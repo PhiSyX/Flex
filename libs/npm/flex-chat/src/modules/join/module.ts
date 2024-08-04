@@ -10,6 +10,7 @@
 
 import type { ChatStoreInterface } from "../../store";
 import type { Module } from "../interface";
+
 import { JoinCommand, SajoinCommand } from "./command";
 import { JoinHandler } from "./handler";
 
@@ -17,14 +18,16 @@ import { JoinHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class JoinModule implements Module<JoinModule> {
+export class JoinModule implements Module<JoinModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "JOIN";
 
-	static create(store: ChatStoreInterface): JoinModule {
+	static create(store: ChatStoreInterface): JoinModule
+	{
 		return new JoinModule(new JoinCommand(store), new JoinHandler(store));
 	}
 
@@ -34,58 +37,72 @@ export class JoinModule implements Module<JoinModule> {
 	constructor(
 		private command: JoinCommand,
 		private handler: JoinHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, channelsRaw?: ChannelID, keysRaw?: string) {
-		const channels = channelsRaw?.split(",") as Array<ChannelID>;
-		if (!channels) return;
-		const keys = keysRaw?.split(",");
+	input(_: string, channels_raw?: ChannelID, keys_raw?: string)
+	{
+		let channels = channels_raw?.split(",") as Array<ChannelID>;
+		if (!channels) {
+			return;
+		}
+		let keys = keys_raw?.split(",");
 		this.send({ channels, keys });
 	}
 
-	send(payload: Command<"JOIN">) {
+	send(payload: Command<"JOIN">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }
 
-export class SajoinModule implements Module<SajoinModule> {
+export class SajoinModule implements Module<SajoinModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "SAJOIN";
 
-	static create(store: ChatStoreInterface): SajoinModule {
+	static create(store: ChatStoreInterface): SajoinModule
+	{
 		return new SajoinModule(new SajoinCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: SajoinCommand) {}
+	constructor(private command: SajoinCommand)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, nicknamesRaw?: string, channelsRaw?: ChannelID) {
-		const nicknames = nicknamesRaw?.split(",");
-		const channels = channelsRaw?.split(",") as Array<ChannelID>;
-		if (!nicknames || !channels) return;
+	input(_: string, nicknames_raw?: string, channels_raw?: ChannelID)
+	{
+		let nicknames = nicknames_raw?.split(",");
+		let channels = channels_raw?.split(",") as Array<ChannelID>;
+		if (!nicknames || !channels) {
+			return;
+		}
 		this.send({ nicknames, channels });
 	}
 
-	send(payload: Command<"SAJOIN">) {
+	send(payload: Command<"SAJOIN">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }

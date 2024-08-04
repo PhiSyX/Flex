@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type {
-	ChannelActivitiesView,
-	ChannelMember,
-	ChannelRoom,
+    ChannelActivitiesView,
+    ChannelMember,
+    ChannelRoom,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
 import { computed, inject } from "vue";
 
-import { camelCase } from "@phisyx/flex-capitalization";
+import { camelcase } from "@phisyx/flex-capitalization";
 
 import ChannelName from "../channel_name/ChannelName.template.vue";
 import Match from "../match/Match.vue";
@@ -18,7 +18,7 @@ import ChannelActivity from "./ChannelActivity.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	name: ChannelActivitiesView["groups"][number]["name"];
 	group: ChannelActivitiesView["groups"][number];
@@ -36,7 +36,7 @@ let current_client_member = inject<Option<ChannelMember>>(
 )!;
 let room = inject<ChannelRoom>("room");
 
-let activity_group_name = computed(() => camelCase(`${props.name}s`));
+let activity_group_name = computed(() => camelcase(`${props.name}s`));
 </script>
 
 <template>
@@ -51,11 +51,11 @@ let activity_group_name = computed(() => camelCase(`${props.name}s`));
 				<Match :maybe="current_client_member">
 					<template #some="{ data: member }">
 						sur
-						<ChannelName 
+						<ChannelName
 							v-if="room"
-							:name="room.name" 
-							:classes="member.accessLevel.highest.className"
-							:symbol="member.accessLevel.highest.symbol"
+							:name="room.name"
+							:classes="member.access_level.highest.class_name"
+							:symbol="member.access_level.highest.symbol"
 						/>
 					</template>
 				</Match>

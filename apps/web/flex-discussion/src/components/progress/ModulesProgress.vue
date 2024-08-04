@@ -3,13 +3,13 @@ import type { Layer } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
-import { useOverlayerStore } from "~/store";
+import { use_overlayer_store } from "~/store";
 
 // --------- //
 // Composant //
 // --------- //
 
-let overlayer_store = useOverlayerStore();
+let overlayer_store = use_overlayer_store();
 
 let has_load_all_modules_layer = computed(() =>
 	overlayer_store.layers.has("load-all-modules"),
@@ -17,8 +17,8 @@ let has_load_all_modules_layer = computed(() =>
 
 let load_all_modulesLayer = computed(() => {
 	return overlayer_store.get("load-all-modules") as Layer<{
-		moduleName?: string;
-		totalLoaded: number;
+		module_name?: string;
+		total_loaded: number;
 		loaded: number;
 	}>;
 });
@@ -31,13 +31,13 @@ let load_all_modulesLayer = computed(() => {
 		>
 			<p>
 				Chargement des modules
-				<output v-if="load_all_modulesLayer.data.moduleName">
-					: {{ load_all_modulesLayer.data.moduleName }}
+				<output v-if="load_all_modulesLayer.data.module_name">
+					: {{ load_all_modulesLayer.data.module_name }}
 				</output>
 			</p>
 
 			<progress
-				:max="load_all_modulesLayer.data.totalLoaded"
+				:max="load_all_modulesLayer.data.total_loaded"
 				:value="load_all_modulesLayer.data.loaded"
 				class="m:a"
 			>

@@ -8,7 +8,7 @@ import type { Props } from "./RoomEvent.state";
 interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
-	(event_name: "open-room", roomName: string): void;
+	(event_name: "open-room", room_name: string): void;
 }
 
 // --------- //
@@ -19,9 +19,11 @@ defineOptions({ inheritAttrs: false });
 const props = defineProps<Props<"INVITE">>();
 const emit = defineEmits<Emits>();
 
-function openChannel() {
-	emit("open-room", props.data.channel);
-}
+// ------- //
+// Handler //
+// ------- //
+
+const open_channel_handler = () => emit("open-room", props.data.channel);
 </script>
 
 <template>
@@ -34,7 +36,7 @@ function openChannel() {
 	</p>
 	<p v-else>
 		<bdo>{{ data.nick }}</bdo> a été invité à rejoindre le salon
-		<span @dblclick="openChannel">{{ data.channel }}</span>
+		<span @dblclick="open_channel_handler">{{ data.channel }}</span>
 	</p>
 </template>
 

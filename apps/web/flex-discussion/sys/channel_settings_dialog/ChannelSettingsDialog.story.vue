@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ChannelMember, ChannelRoom, User, channelID } from "@phisyx/flex-chat";
+import { ChannelMember, ChannelRoom, User, cast_to_channel_id } from "@phisyx/flex-chat";
 
 import ChannelSettingsDialog from "./ChannelSettingsDialog.template.vue";
 
-const channel1 = new ChannelRoom(channelID("#chan1"));
-channel1.setSettingMode("s");
-channel1.setSettingMode("m");
-const currentClientChannelMember = new ChannelMember(
+let channel1 = new ChannelRoom(cast_to_channel_id("#chan1"));
+channel1.set_setting_mode("s");
+channel1.set_setting_mode("m");
+let current_client_channel_member = new ChannelMember(
 	new User({
 		host: { cloaked: "*" },
 		id: "uuid" as UserID,
@@ -15,9 +15,9 @@ const currentClientChannelMember = new ChannelMember(
 	}),
 );
 
-const channel2 = new ChannelRoom(channelID("#chan2"));
-channel2.setSettingMode("n");
-channel2.setSettingMode("t");
+let channel2 = new ChannelRoom(cast_to_channel_id("#chan2"));
+channel2.set_setting_mode("n");
+channel2.set_setting_mode("t");
 </script>
 
 <template>
@@ -26,7 +26,7 @@ channel2.setSettingMode("t");
 			<ChannelSettingsDialog
 				layer-name="layer"
 				:room="channel1"
-				:current-client-channel-member="currentClientChannelMember"
+				:current-client-channel-member="current_client_channel_member"
 			/>
 		</Variant>
 
@@ -34,7 +34,7 @@ channel2.setSettingMode("t");
 			<ChannelSettingsDialog
 				layer-name="layer"
 				:room="channel2"
-				:current-client-channel-member="currentClientChannelMember"
+				:current-client-channel-member="current_client_channel_member"
 			/>
 		</Variant>
 	</Story>

@@ -17,15 +17,18 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorUsernotinchannelHandler
 	implements SocketEventInterface<"ERR_USERNOTINCHANNEL">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_USERNOTINCHANNEL", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_USERNOTINCHANNEL">) {
-		const room = this.store.roomManager().active();
-		room.addEvent(
+	handle(data: GenericReply<"ERR_USERNOTINCHANNEL">)
+	{
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"error:err_usernotinchannel",
 			{ ...data, isCurrentClient: true },
 			data.reason,

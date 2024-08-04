@@ -14,9 +14,11 @@ import type { Layer, OverlayerStore } from "../store";
 // Type //
 // ---- //
 
-export interface UserChangeNicknameRecordDialog {}
+export interface UserChangeNicknameRecordDialog
+{}
 
-export class UserChangeNicknameDialog {
+export class UserChangeNicknameDialog
+{
 	// ------ //
 	// Static //
 	// ------ //
@@ -24,47 +26,54 @@ export class UserChangeNicknameDialog {
 	static ID = "user-change-nickname-dialog";
 
 	static create(
-		overlayerStore: OverlayerStore,
+		overlayer_store: OverlayerStore,
 		{ event }: { event: MouseEvent },
-	) {
-		overlayerStore.create({
+	)
+	{
+		overlayer_store.create({
 			id: UserChangeNicknameDialog.ID,
 			centered: true,
 			event,
 		});
-		return new UserChangeNicknameDialog(overlayerStore);
+		return new UserChangeNicknameDialog(overlayer_store);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayerStore: OverlayerStore) {}
+	constructor(private overlayer_store: OverlayerStore)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy() {
-		this.overlayerStore.destroy(UserChangeNicknameDialog.ID);
+	destroy()
+	{
+		this.overlayer_store.destroy(UserChangeNicknameDialog.ID);
 	}
 
-	get(): Layer<UserChangeNicknameRecordDialog> | undefined {
-		return this.overlayerStore.get(UserChangeNicknameDialog.ID) as
+	get(): Layer<UserChangeNicknameRecordDialog> | undefined
+	{
+		return this.overlayer_store.get(UserChangeNicknameDialog.ID) as
 			| Layer<UserChangeNicknameRecordDialog>
 			| undefined;
 	}
 
-	getUnchecked(): Layer<UserChangeNicknameRecordDialog> {
-		return this.overlayerStore.get(
+	get_unchecked(): Layer<UserChangeNicknameRecordDialog>
+	{
+		return this.overlayer_store.get(
 			UserChangeNicknameDialog.ID,
 		) as Layer<UserChangeNicknameRecordDialog>;
 	}
 
-	exists(): boolean {
-		return this.overlayerStore.has(UserChangeNicknameDialog.ID);
+	exists(): boolean
+	{
+		return this.overlayer_store.has(UserChangeNicknameDialog.ID);
 	}
 
-	withData(data: UserChangeNicknameRecordDialog) {
-		this.overlayerStore.updateData(UserChangeNicknameDialog.ID, data);
+	with_data(data: UserChangeNicknameRecordDialog)
+	{
+		this.overlayer_store.update_data(UserChangeNicknameDialog.ID, data);
 	}
 }

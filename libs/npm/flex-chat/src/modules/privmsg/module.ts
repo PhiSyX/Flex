@@ -17,7 +17,8 @@ import { PrivmsgHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class PrivmsgModule implements Module<PrivmsgModule> {
+export class PrivmsgModule implements Module<PrivmsgModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -37,34 +38,38 @@ export class PrivmsgModule implements Module<PrivmsgModule> {
 	constructor(
 		private command: PrivmsgCommand,
 		private handler: PrivmsgHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(roomMessage: string, targetsRaw?: string, ...words: Array<string>) {
-		if (roomMessage.startsWith("@")) {
-			const targets = targetsRaw?.split(",");
+	input(room_id: RoomID, targets_raw?: string, ...words: Array<string>)
+	{
+		if (room_id.startsWith("@")) {
+			let targets = targets_raw?.split(",");
 			if (!targets) return;
-			const text = words.join(" ");
+			let text = words.join(" ");
 			this.send({ targets, text });
 			return;
 		}
 
-		const targets = [roomMessage];
-		if (targetsRaw) {
-			words.unshift(targetsRaw);
+		let targets = [room_id];
+		if (targets_raw) {
+			words.unshift(targets_raw);
 		}
-		const text = words.join(" ");
+		let text = words.join(" ");
 		this.send({ targets, text });
 	}
 
-	send(payload: Command<"PRIVMSG">) {
+	send(payload: Command<"PRIVMSG">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-interface Props 
+interface Props
 {
 	selected: { name: string; src: string };
 	list: Array<[name: string, src: string]>;
 }
 
-interface Emits 
+interface Emits
 {
 	// biome-ignore lint/style/useShorthandFunctionType: ?
 	(event_name: "update", name: string): void;

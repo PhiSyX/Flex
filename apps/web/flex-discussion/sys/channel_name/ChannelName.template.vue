@@ -3,7 +3,7 @@
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	classes?: string;
 	name: string;

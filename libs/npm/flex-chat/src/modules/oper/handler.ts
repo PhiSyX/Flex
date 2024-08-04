@@ -14,27 +14,31 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER"> {
+export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_YOUREOPER", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_YOUREOPER">) {
+	handle(data: GenericReply<"RPL_YOUREOPER">)
+	{
 		this.store
-			.userManager()
+			.user_manager()
 			.upsert(data.origin)
-			.withOperatorFlag(data.oper_type);
-		const currentRoom = this.store.roomManager().active();
-		currentRoom.addEvent(
+			.with_operator_flag(data.oper_type);
+		let active_room = this.store.room_manager().active();
+		active_room.add_event(
 			"event:rpl_youreoper",
 			{ ...data, isCurrentClient: true },
 			data.message.slice(1),

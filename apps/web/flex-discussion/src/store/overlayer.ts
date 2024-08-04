@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { defineStore } from "pinia";
+import { defineStore as define_store } from "pinia";
 import { computed, reactive } from "vue";
 
 import { OverlayerStore } from "@phisyx/flex-chat";
@@ -17,23 +17,23 @@ import { OverlayerStore } from "@phisyx/flex-chat";
 // Store //
 // ----- //
 
-export const useOverlayerStore = defineStore(OverlayerStore.ID, () => {
+export const use_overlayer_store = define_store(OverlayerStore.ID, () => {
 	let store = reactive(new OverlayerStore()) as OverlayerStore;
 
 	let layers = computed(() => store.layers);
-	let hasLayers = computed(() => store.hasLayers);
+	let has_layers = computed(() => store.has_layers);
 
 	return {
 		create: store.create.bind(store),
 		destroy: store.destroy.bind(store),
-		destroyAll: store.destroyAll.bind(store),
+		destroy_all: store.destroy_all.bind(store),
 		get: store.get.bind(store),
 		has: store.has.bind(store),
-		hasLayers,
+		has_layers,
 		layers,
 		store,
 		update: store.update.bind(store),
-		updateAll: store.updateAll.bind(store),
-		updateData: store.updateData.bind(store),
+		update_all: store.update_all.bind(store),
+		update_data: store.update_data.bind(store),
 	};
 });

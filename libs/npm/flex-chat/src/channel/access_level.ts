@@ -13,7 +13,7 @@
 // ---- //
 
 export type HighestAccessLevelOutput = {
-	className: ChannelAccessLevelClassName;
+	class_name: ChannelAccessLevelClassName;
 	letter: ChannelAccessLevelLetter;
 	level: ChannelAccessLevelFlag;
 	symbol: ChannelAccessLevelSymbol;
@@ -22,9 +22,9 @@ export type HighestAccessLevelOutput = {
 
 export type ChannelAccessLevelGroup =
 	| "owners"
-	| "adminOperators"
+	| "admin_operators"
 	| "operators"
-	| "halfOperators"
+	| "half_operators"
 	| "vips"
 	| "users";
 
@@ -84,11 +84,9 @@ export enum ChannelAccessLevelClassName {
 
 const CHANNEL_ACCESS_LEVEL_SYMBOLS = {
 	[ChannelAccessLevelFlag.Owner]: ChannelAccessLevelSymbol.Owner,
-	[ChannelAccessLevelFlag.AdminOperator]:
-		ChannelAccessLevelSymbol.AdminOperator,
+	[ChannelAccessLevelFlag.AdminOperator]: ChannelAccessLevelSymbol.AdminOperator,
 	[ChannelAccessLevelFlag.Operator]: ChannelAccessLevelSymbol.Operator,
-	[ChannelAccessLevelFlag.HalfOperator]:
-		ChannelAccessLevelSymbol.HalfOperator,
+	[ChannelAccessLevelFlag.HalfOperator]: ChannelAccessLevelSymbol.HalfOperator,
 	[ChannelAccessLevelFlag.Vip]: ChannelAccessLevelSymbol.Vip,
 	[ChannelAccessLevelFlag.User]: ChannelAccessLevelSymbol.User,
 } as const;
@@ -104,30 +102,27 @@ const CHANNEL_ACCESS_LEVEL_SYMBOLS = {
 
 const CHANNEL_ACCESS_LEVEL_SYMBOLS_LETTERS = {
 	[ChannelAccessLevelSymbol.Owner]: ChannelAccessLevelLetter.Owner,
-	[ChannelAccessLevelSymbol.AdminOperator]:
-		ChannelAccessLevelLetter.AdminOperator,
+	[ChannelAccessLevelSymbol.AdminOperator]: ChannelAccessLevelLetter.AdminOperator,
 	[ChannelAccessLevelSymbol.Operator]: ChannelAccessLevelLetter.Operator,
-	[ChannelAccessLevelSymbol.HalfOperator]:
-		ChannelAccessLevelLetter.HalfOperator,
+	[ChannelAccessLevelSymbol.HalfOperator]: ChannelAccessLevelLetter.HalfOperator,
 	[ChannelAccessLevelSymbol.Vip]: ChannelAccessLevelLetter.Vip,
 	[ChannelAccessLevelSymbol.User]: ChannelAccessLevelLetter.User,
 } as const;
 
 const CHANNEL_ACCESS_LEVEL_SYMBOLS_CLASSNAMES = {
 	[ChannelAccessLevelSymbol.Owner]: ChannelAccessLevelClassName.Owner,
-	[ChannelAccessLevelSymbol.AdminOperator]:
-		ChannelAccessLevelClassName.AdminOperator,
+	[ChannelAccessLevelSymbol.AdminOperator]: ChannelAccessLevelClassName.AdminOperator,
 	[ChannelAccessLevelSymbol.Operator]: ChannelAccessLevelClassName.Operator,
-	[ChannelAccessLevelSymbol.HalfOperator]:
-		ChannelAccessLevelClassName.HalfOperator,
+	[ChannelAccessLevelSymbol.HalfOperator]: ChannelAccessLevelClassName.HalfOperator,
 	[ChannelAccessLevelSymbol.Vip]: ChannelAccessLevelClassName.Vip,
 	[ChannelAccessLevelSymbol.User]: ChannelAccessLevelClassName.User,
 } as const;
+
 const CHANNEL_ACCESS_LEVEL_GROUPS = {
 	[ChannelAccessLevelFlag.Owner]: "owners",
-	[ChannelAccessLevelFlag.AdminOperator]: "adminOperators",
+	[ChannelAccessLevelFlag.AdminOperator]: "admin_operators",
 	[ChannelAccessLevelFlag.Operator]: "operators",
-	[ChannelAccessLevelFlag.HalfOperator]: "halfOperators",
+	[ChannelAccessLevelFlag.HalfOperator]: "half_operators",
 	[ChannelAccessLevelFlag.Vip]: "vips",
 	[ChannelAccessLevelFlag.User]: "users",
 } as const;
@@ -136,7 +131,8 @@ const CHANNEL_ACCESS_LEVEL_GROUPS = {
 // Implémentation //
 // -------------- //
 
-export class ChannelAccessLevel {
+export class ChannelAccessLevel
+{
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -152,9 +148,10 @@ export class ChannelAccessLevel {
 	/**
 	 * Niveau d'accès du pseudo le plus haut gradé.
 	 */
-	get highest() {
+	get highest()
+	{
 		if (!this._highest) {
-			this._highest = this.highestAccessLevel();
+			this._highest = this.highest_access_level();
 		}
 		return this._highest;
 	}
@@ -166,7 +163,8 @@ export class ChannelAccessLevel {
 	/**
 	 * Ajoute un niveau d'accès aux modes d'accès.
 	 */
-	add(level: ChannelAccessLevelFlag) {
+	add(level: ChannelAccessLevelFlag)
+	{
 		this.modes.add(level);
 	}
 
@@ -174,7 +172,8 @@ export class ChannelAccessLevel {
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * donné.
 	 */
-	eq(level: ChannelAccessLevelFlag): boolean {
+	eq(level: ChannelAccessLevelFlag): boolean
+	{
 		return this.modes.has(level);
 	}
 
@@ -182,7 +181,8 @@ export class ChannelAccessLevel {
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * minimal donné.
 	 */
-	ge(level: ChannelAccessLevelFlag): boolean {
+	ge(level: ChannelAccessLevelFlag): boolean
+	{
 		return this.highest.level >= level;
 	}
 
@@ -190,17 +190,19 @@ export class ChannelAccessLevel {
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * minimal donné.
 	 */
-	gt(level: ChannelAccessLevelFlag): boolean {
+	gt(level: ChannelAccessLevelFlag): boolean
+	{
 		return this.highest.level > level;
 	}
 
 	/**
 	 * Récupère le mode le plus haut gradé d'un pseudo.
 	 */
-	highestAccessLevel(): HighestAccessLevelOutput {
+	highest_access_level(): HighestAccessLevelOutput
+	{
 		if (this.modes.size === 0) {
 			return {
-				className: ChannelAccessLevelClassName.User,
+				class_name: ChannelAccessLevelClassName.User,
 				letter: ChannelAccessLevelLetter.User,
 				level: ChannelAccessLevelFlag.User,
 				symbol: ChannelAccessLevelSymbol.User,
@@ -208,30 +210,32 @@ export class ChannelAccessLevel {
 			};
 		}
 
-		const level = Array.from(this.modes).reduce((acc, mode) => {
+		let level = Array.from(this.modes).reduce((acc, mode) => {
 			if (mode > acc) return mode;
 			return acc;
 		}, ChannelAccessLevelFlag.User);
 
-		const symbol = CHANNEL_ACCESS_LEVEL_SYMBOLS[level];
-		const letter = CHANNEL_ACCESS_LEVEL_SYMBOLS_LETTERS[symbol];
-		const className = CHANNEL_ACCESS_LEVEL_SYMBOLS_CLASSNAMES[symbol];
-		const group = CHANNEL_ACCESS_LEVEL_GROUPS[level];
+		let symbol = CHANNEL_ACCESS_LEVEL_SYMBOLS[level];
+		let letter = CHANNEL_ACCESS_LEVEL_SYMBOLS_LETTERS[symbol];
+		let class_name = CHANNEL_ACCESS_LEVEL_SYMBOLS_CLASSNAMES[symbol];
+		let group = CHANNEL_ACCESS_LEVEL_GROUPS[level];
 
-		return { letter, symbol, className, level, group };
+		return { letter, symbol, class_name, level, group };
 	}
 
 	/**
 	 * Analyse les niveaux d'access d'un pseudo.
 	 */
-	parse(levels: Array<string>): Array<ChannelAccessLevelFlag> {
-		return levels.map(this.parseOne);
+	parse(levels: Array<string>): Array<ChannelAccessLevelFlag>
+	{
+		return levels.map(this.parse_one);
 	}
 
 	/**
 	 * Analyse un niveau d'accès.
 	 */
-	parseOne(level: string): ChannelAccessLevelFlag {
+	parse_one(level: string): ChannelAccessLevelFlag
+	{
 		switch (level.toLowerCase()) {
 			case "~":
 			case "q":

@@ -13,8 +13,8 @@ import { reactive } from "vue";
 
 import { SettingsStore } from "@phisyx/flex-chat";
 
-export const useSettingsStore = define_store(SettingsStore.NAME, () => {
-	const store = reactive(new SettingsStore()) as SettingsStore;
+export const use_settings_store = define_store(SettingsStore.NAME, () => {
+	let store = reactive(new SettingsStore()) as SettingsStore;
 	return {
 		...store,
 		save: store.save.bind(store),

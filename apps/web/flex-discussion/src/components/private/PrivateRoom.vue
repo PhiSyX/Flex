@@ -3,9 +3,9 @@ import type { PrivateRoom } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
-import { UserChangeNicknameDialog, roomID } from "@phisyx/flex-chat";
+import { UserChangeNicknameDialog, cast_to_room_id } from "@phisyx/flex-chat";
 
-import { useChatStore, useOverlayerStore } from "~/store";
+import { use_chat_store, use_overlayer_store } from "~/store";
 
 import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
 
@@ -13,7 +13,7 @@ import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	// Chambre privée.
 	room: PrivateRoom;
@@ -23,39 +23,40 @@ interface Props
 // Composant //
 // --------- //
 
-let chatStore = useChatStore();
-let overlayerStore = useOverlayerStore();
+let chat_store = use_chat_store();
+let overlayer_store = use_overlayer_store();
 
 const props = defineProps<Props>();
 
 // Client courant.
-let currentClient = computed(() => chatStore.store.client());
+let current_client = computed(() => chat_store.store.client());
 // Pseudo du client courant.
-let currentClientNickname = computed(() => currentClient.value.nickname);
+let current_client_nickname = computed(() => current_client.value.nickname);
 
 // Client courant, qui est un participant de la chambre privée.
-let currentClientUser = computed(() =>
-	props.room.getParticipant(currentClient.value.id).unwrap(),
+let current_client_user = computed(() =>
+	props.room.get_participant(current_client.value.id).unwrap(),
 );
 
 // Participant de la chambre.
 let recipient = computed(() =>
-	props.room.getParticipant(props.room.id()).unwrap(),
+	props.room.get_participant(props.room.id()).unwrap(),
 );
 
 // Est-ce que le participant est bloqué?
-let isRecipientBlocked = computed(() =>
-	chatStore.checkUserIsBlocked(recipient.value),
+let is_recipient_blocked = computed(() =>
+	// @ts-expect-error : à corriger.
+	chat_store.check_user_is_blocked(recipient.value),
 );
 
 // La liste de la complétion de la boite de saisie, il y contient:
 //
 // 1. Les participants.
 // 2. Toutes les commandes.
-let completionList = computed(() => [
-	currentClientUser.value.nickname,
+let completion_list = computed(() => [
+	current_client_user.value.nickname,
 	recipient.value.nickname,
-	...chatStore.allCommands(),
+	...chat_store.all_commands(),
 ]);
 
 // ------- //
@@ -65,55 +66,55 @@ let completionList = computed(() => [
 /**
  * Ouvre la boite de dialogue de changement de pseudonyme.
  */
-function open_change_nickname_dialog_handler(event: MouseEvent) 
+function open_change_nickname_dialog_handler(event: MouseEvent)
 {
-	UserChangeNicknameDialog.create(overlayerStore.store, { event });
+	UserChangeNicknameDialog.create(overlayer_store.store, { event });
 }
 
 /**
  * Ferme la chambre privée.
  */
-function close_private_handler() 
+function close_private_handler()
 {
-	chatStore.closeRoom(recipient.value.id);
+	chat_store.close_room(recipient.value.id);
 }
 
 /**
  * Ouvre une chambre.
  */
-function open_room_handler(roomName: RoomID) 
+function open_room_handler(room_id: RoomID)
 {
-	chatStore.openRoom(roomName);
+	chat_store.open_room(room_id);
 }
 
 /**
  * Envoie du message au destinataire.
  */
-function send_message_handler(message: string) 
+function send_message_handler(message: string)
 {
-	chatStore.sendMessage(roomID(recipient.value.nickname), message);
+	chat_store.send_message(cast_to_room_id(recipient.value.nickname), message);
 }
 
 /**
  * Envoie de la commande /SILENCE.
  */
-const send_silence_user_command_handler = (applyState: "+" | "-") => (
+const send_silence_user_command_handler = (apply_state: "+" | "-") => (
 	nickname: string
 ) => {
-	if (applyState === "+") {
-		chatStore.ignoreUser(nickname);
+	if (apply_state === "+") {
+		chat_store.ignore_user(nickname);
 	} else {
-		chatStore.unignoreUser(nickname);
+		chat_store.unignore_user(nickname);
 	}
 };
 </script>
 
 <template>
 	<PrivateRoomComponent
-		:completion-list="completionList"
-		:current-client-user="currentClientUser"
-		:current-nickname="currentClientNickname"
-		:is-recipient-blocked="isRecipientBlocked"
+		:completion-list="completion_list"
+		:current-client-user="current_client_user"
+		:current-nickname="current_client_nickname"
+		:is-recipient-blocked="is_recipient_blocked"
 		:recipient="recipient"
 		:room="room"
 		@change-nickname="open_change_nickname_dialog_handler"

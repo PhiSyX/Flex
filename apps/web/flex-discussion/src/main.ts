@@ -17,7 +17,7 @@ import {
 
 import AppComponent from "./App.vue";
 
-const app = create_app(AppComponent);
+let app = create_app(AppComponent);
 
 // 1. Setup
 const plugins = import.meta.glob<{ install: VuePluginInstall }>(
@@ -25,7 +25,7 @@ const plugins = import.meta.glob<{ install: VuePluginInstall }>(
 	{ eager: true },
 );
 
-for (const plugin of Object.values(plugins)) {
+for (let plugin of Object.values(plugins)) {
 	plugin.install(app);
 }
 
@@ -35,13 +35,13 @@ const events_components_imports = import.meta.glob<{ default: unknown }>(
 	"../sys/room_events/RoomEvent*.vue",
 );
 
-const events_components_entries = Object.entries(events_components_imports).map(
-	([eventFilepath, eventComponent]) => {
-		const componentName = eventFilepath.slice(
+let events_components_entries = Object.entries(events_components_imports).map(
+	([event_filepath, event_component]) => {
+		let component_name = event_filepath.slice(
 			"../sys/room_events/".length,
 			0 - ".vue".length,
 		);
-		return [componentName, eventComponent] as [
+		return [component_name, event_component] as [
 			string,
 			() => Promise<{ default: unknown }>,
 		];
@@ -53,7 +53,7 @@ app.provide(
 	events_components_entries.map(([key]) => key),
 );
 
-for (const [component_name, event_component] of events_components_entries) {
+for (let [component_name, event_component] of events_components_entries) {
 	app.component(component_name, define_async_component(event_component));
 }
 

@@ -3,25 +3,25 @@ import { PrivateParticipant, PrivateRoom, User } from "@phisyx/flex-chat";
 
 import PrivateRoomComponent from "./PrivateRoom.template.vue";
 
-const origin: User = new User({
+let origin: User = new User({
 	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "PhiSyX",
 });
 
-const privateRoom = new PrivateRoom(origin.nickname);
+let private_room = new PrivateRoom(origin.nickname);
 
-const origin1: User = new User({
+let origin1: User = new User({
 	id: "k-l-m-n-o" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "User",
 });
 
-const disableInput = false;
-const me: PrivateParticipant = new PrivateParticipant(origin);
-const recipient: PrivateParticipant = new PrivateParticipant(origin1);
+let disable_input = false;
+let me: PrivateParticipant = new PrivateParticipant(origin);
+let recipient: PrivateParticipant = new PrivateParticipant(origin1);
 </script>
 
 <template>
@@ -29,30 +29,30 @@ const recipient: PrivateParticipant = new PrivateParticipant(origin1);
 		<Variant title="Me">
 			<PrivateRoomComponent
 				:current-nickname="origin.nickname"
-				:is-recipient-blocked="disableInput"
+				:is-recipient-blocked="disable_input"
 				:current-client-user="me"
 				:recipient="me"
-				:room="privateRoom"
+				:room="private_room"
 			/>
 		</Variant>
 
 		<Variant title="User">
 			<PrivateRoomComponent
 				:current-nickname="origin.nickname"
-				:is-recipient-blocked="disableInput"
+				:is-recipient-blocked="disable_input"
 				:current-client-user="me"
 				:recipient="recipient"
-				:room="privateRoom"
+				:room="private_room"
 			/>
 		</Variant>
 
 		<Variant title="User blocked">
 			<PrivateRoomComponent
 				:current-nickname="origin.nickname"
-				:is-recipient-blocked="!disableInput"
+				:is-recipient-blocked="!disable_input"
 				:current-client-user="me"
 				:recipient="recipient"
-				:room="privateRoom"
+				:room="private_room"
 			/>
 		</Variant>
 	</Story>

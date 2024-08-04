@@ -15,7 +15,8 @@ export class ModuleManager {
 	private _sets: Set<() => Promise<unknown>> = new Set();
 	private _maps: Map<string, { listen(): void }> = new Map();
 
-	get size() {
+	get size()
+	{
 		return this._sets.size;
 	}
 
@@ -24,34 +25,38 @@ export class ModuleManager {
 	}
 
 	extends(record: Record<string, () => Promise<unknown>>): this {
-		for (const moduleKey in record) {
-			this.add(record[moduleKey]);
+		for (let module_key in record) {
+			this.add(record[module_key]);
 		}
 		return this;
 	}
 
 	get<T extends CommandsNames = CommandsNames>(
-		moduleID: T,
+		module_id: T,
 	): Option<ModuleInterface & CommandInterface<T>> {
-		let maybe_module = this._maps.get(moduleID) as
+		let maybe_module = this._maps.get(module_id) as
 			| (ModuleInterface & CommandInterface<T>)
 			| undefined;
 		return Option.from(maybe_module);
 	}
 
-	set(moduleID: string, module: ModuleInterface & CommandInterface) {
-		return this._maps.set(moduleID, module);
+	set(module_id: string, module: ModuleInterface & CommandInterface)
+	{
+		return this._maps.set(module_id, module);
 	}
 
-	free() {
+	free()
+	{
 		this._sets.clear();
 	}
 
-	sets() {
+	sets()
+	{
 		return this._sets;
 	}
 
-	modules() {
+	modules()
+	{
 		return this._maps;
 	}
 }

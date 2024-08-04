@@ -20,19 +20,22 @@ export class ReplyInvitingHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_INVITING", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_INVITING">) {
-		const networkRoom = this.store.network();
-		networkRoom.addConnectEvent(
+	handle(data: GenericReply<"RPL_INVITING">)
+	{
+		let network_room = this.store.network();
+		network_room.add_connect_event(
 			data,
 			`* ${data.nick} a été invité sur ${data.channel}`,
 		);
@@ -45,19 +48,22 @@ export class ErrorInviteonlychanHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_INVITEONLYCHAN", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_INVITEONLYCHAN">) {
-		const networkRoom = this.store.roomManager().active();
-		networkRoom.addEvent(
+	handle(data: GenericReply<"ERR_INVITEONLYCHAN">)
+	{
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"error:err_inviteonlychan",
 			{ ...data, isCurrentClient: true },
 			data.reason,

@@ -7,12 +7,12 @@ import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	layerName: string;
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "close"): void;
 	(event_name: "submit", nickname: string): void;
@@ -27,7 +27,11 @@ const emit = defineEmits<Emits>();
 
 let new_nickname_request = ref("");
 
-function change_nickname_handler() 
+// ------- //
+// Handler //
+// ------- //
+
+function change_nickname_handler()
 {
 	if (!new_nickname_request.value) {
 		return;

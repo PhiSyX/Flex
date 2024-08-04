@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../asserts/room";
+import { assert_channel_room } from "../../asserts/room";
 import type { ChannelRoom } from "../../channel/room";
 import { RoomMessage } from "../../room/message";
 import type { ChatStoreInterface } from "../../store";
@@ -17,74 +17,78 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
+export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("PUBMSG", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"PUBMSG">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-		this.handleMessage(channel, data);
+	handle(data: GenericReply<"PUBMSG">)
+	{
+		let maybe_channel = this.store.room_manager().get(data.channel);
+		if (maybe_channel.is_none()) return;
+		let channel = maybe_channel.unwrap();
+		assert_channel_room(channel);
+		this.handle_message(channel, data);
 	}
 
-	handleMessage(room: ChannelRoom, data: GenericReply<"PUBMSG">) {
-		let hasMention = false;
+	handle_message(room: ChannelRoom, data: GenericReply<"PUBMSG">)
+	{
+		let has_mention = false;
 
-		const isCurrentClient = this.store.isCurrentClient(data.origin);
+		let is_current_client = this.store.is_current_client(data.origin);
 
-		if (!isCurrentClient) {
+		if (!is_current_client) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
 			// message.
-			const currentClientNickname = this.store.nickname();
+			let current_client_nickname = this.store.nickname();
 			if (
-				data.text
-					.toLowerCase()
-					.indexOf(currentClientNickname.toLowerCase()) >= 0
+				data.text.toLowerCase()
+					.indexOf(current_client_nickname.toLowerCase()) >= 0
 			) {
-				hasMention = true;
+				has_mention = true;
 
-				if (!room.isActive()) {
-					room.setHighlighted(hasMention);
+				if (!room.is_active()) {
+					room.set_highlighted(has_mention);
 				}
 			}
 		}
 
-		let previousMsgs = room.messages
-			.filter((msg) => !msg.isEventType)
+		let previous_messages_ids = room.messages
+			.filter((msg) => !msg.is_event_type)
 			.slice(-2)
 			.map((msg) => msg.id);
 
-		let msg = room.addMessage(
+		let msg = room.add_message(
 			new RoomMessage()
-				.withID(data.tags.msgid)
-				.withMessage(data.text)
-				.withNickname(data.origin.nickname)
-				.withTarget(data.channel)
-				.withTime(new Date())
-				.withType("pubmsg")
-				.withData(data)
-				.withIsCurrentClient(isCurrentClient)
-				.withMention(hasMention),
+				.with_id(data.tags.msgid)
+				.with_message(data.text)
+				.with_nickname(data.origin.nickname)
+				.with_target(data.channel)
+				.with_time(new Date())
+				.with_type("pubmsg")
+				.with_data(data)
+				.with_is_current_client(is_current_client)
+				.with_mention(has_mention),
 		);
 
-		if (hasMention && !isCurrentClient) {
+		if (has_mention && !is_current_client) {
 			room.activities.upsert("mention", {
-				channelID: room.id(),
-				messageID: msg.id,
+				channel_id: room.id(),
+				message_id: msg.id,
 				nickname: msg.nickname,
-				previousMessageIDs: previousMsgs,
+				previous_messages_ids,
 			});
 		}
 	}

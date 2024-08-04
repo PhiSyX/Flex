@@ -10,7 +10,8 @@
 
 import { Room } from "../room";
 
-export class NoticeCustomRoom extends Room<CustomRoomID, "notice-custom-room"> {
+export class NoticeCustomRoom extends Room<CustomRoomID, "notice-custom-room">
+{
 	/**
 	 * ID de la chambre personnalisée.
 	 */
@@ -21,8 +22,9 @@ export class NoticeCustomRoom extends Room<CustomRoomID, "notice-custom-room"> {
 	// Constructor //
 	// ----------- //
 
-	constructor() {
+	constructor()
+	{
 		super("notice-custom-room", NoticeCustomRoom.NAME);
-		this.withID(NoticeCustomRoom.ID);
+		this.with_id(NoticeCustomRoom.ID);
 	}
 }

@@ -8,106 +8,120 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ref, watchEffect } from "vue";
-import { $input, type Props, inputModel } from "./RoomEditbox.state";
+import type { Props } from "./RoomEditbox.state";
+
+import { ref, watchEffect as watch_effect } from "vue";
+
+import { $input, input_model } from "./RoomEditbox.state";
 
 // ----- //
 // Hooks //
 // ----- //
 
-export function useAutocompletion(props: Props) {
-	const positionSuggestion = ref(-1);
-	const positionWord = ref(0);
-	const suggestions = ref([] as Array<string>);
-	const suggestionInput = ref("");
+export function use_autocompletion(props: Props)
+{
+	let position_suggestion = ref(-1);
+	let position_word = ref(0);
+	let suggestions = ref([] as Array<string>);
+	let suggestion_input = ref("");
 
-	function applySuggestionHandler() {
-		inputModel.value = suggestionInput.value;
-		suggestionInput.value = "";
+	function apply_suggestion_handler()
+	{
+		input_model.value = suggestion_input.value;
+		suggestion_input.value = "";
 		$input.value?.focus();
 	}
 
-	function inputHandler(evt: Event) {
-		const el = evt.target as HTMLInputElement;
-		const word = getWordByPositionCursor(el);
+	function input_handler(evt: Event)
+	{
+		let el = evt.target as HTMLInputElement;
+		let word = get_word_by_position_cursor(el);
 
 		if (word.length === 0) {
-			inputCompleter();
+			input_completer();
 			return;
 		}
 
-		suggestions.value = wordCompleter(props.completionList || [], word);
+		suggestions.value = word_completer(props.completionList || [], word);
 
 		if (
 			word.length >= 1 &&
-			inputModel.value.slice(-1) !== " " &&
+			input_model.value.slice(-1) !== " " &&
 			suggestions.value.length > 0
 		) {
-			inputCompleter(suggestions.value[0]);
+			input_completer(suggestions.value[0]);
 		} else {
-			inputCompleter();
+			input_completer();
 		}
 	}
 
-	function keydownHandler(evt: KeyboardEvent) {
-		if (inputModel.value.length === 0) return;
+	function keydown_handler(evt: KeyboardEvent)
+	{
+		if (input_model.value.length === 0) {
+			return;
+		}
 
 		if (["ArrowDown", "ArrowUp"].includes(evt.key)) {
-			suggestionInput.value = "";
+			suggestion_input.value = "";
 			return;
 		}
 
 		if (evt.key !== "Tab") {
-			positionSuggestion.value = -1;
+			position_suggestion.value = -1;
 			return;
 		}
 
-		const lastSpaceChar = inputModel.value.slice(-1) === " ";
+		let last_space_char = input_model.value.slice(-1) === " ";
 
-		if (lastSpaceChar) return;
+		if (last_space_char) {
+			return;
+		}
 
 		if (evt.shiftKey) {
-			positionSuggestion.value--;
+			position_suggestion.value--;
 		} else {
-			positionSuggestion.value++;
+			position_suggestion.value++;
 		}
 
-		const ls = suggestions.value.length;
+		let ls = suggestions.value.length;
 
-		if (positionSuggestion.value <= -1) {
-			positionSuggestion.value = ls - 1;
+		if (position_suggestion.value <= -1) {
+			position_suggestion.value = ls - 1;
 		}
 
-		if (positionSuggestion.value >= ls) {
-			positionSuggestion.value = 0;
+		if (position_suggestion.value >= ls) {
+			position_suggestion.value = 0;
 		}
 
 		if (suggestions.value.length > 0) {
 			evt.preventDefault();
 		}
 
-		const ps = positionSuggestion.value;
-		const ds = ps % ls;
-		const found = suggestions.value[ds];
+		let ps = position_suggestion.value;
+		let ds = ps % ls;
+		let found = suggestions.value[ds];
 
-		if (!found) return;
+		if (!found) {
+			return;
+		}
 
-		inputCompleter(found, evt.shiftKey ? "ShiftTab" : "Tab");
+		input_completer(found, evt.shiftKey ? "ShiftTab" : "Tab");
 	}
 
-	function getWordByPositionCursor(el: HTMLInputElement) {
-		const cursor = el.selectionStart || 0;
-		const words = inputModel.value.split(/\s/);
+	function get_word_by_position_cursor(el: HTMLInputElement)
+	{
+		let cursor = el.selectionStart || 0;
+		let words = input_model.value.split(/\s/);
 
 		let word = "";
 
 		for (let idx = 0, count = 0; idx < words.length; idx++) {
-			const temp = words[idx];
+			let temp = words[idx];
 
 			count += temp.length + 1;
 
 			if (count >= cursor) {
-				positionWord.value = idx;
+				position_word.value = idx;
 				word = temp;
 			}
 		}
@@ -115,95 +129,107 @@ export function useAutocompletion(props: Props) {
 		return word;
 	}
 
-	function inputCompleter(suggest = "", type = "input") {
-		const words = inputModel.value.split(/\s/);
-		const parts = inputModel.value.split(/\s/);
-		const word = parts[positionWord.value] || "";
+	function input_completer(suggest = "", type = "input")
+	{
+		let words = input_model.value.split(/\s/);
+		let parts = input_model.value.split(/\s/);
+		let word = parts[position_word.value] || "";
 
-		words[positionWord.value] = word + suggest.slice(word.length);
+		words[position_word.value] = word + suggest.slice(word.length);
 		if (suggestions.value.length > 0) {
-			suggestionInput.value = words.join(" ");
+			suggestion_input.value = words.join(" ");
 		}
 
 		if (suggest === "") {
-			suggestionInput.value = "";
+			suggestion_input.value = "";
 		}
 
-		const last = words.at(-1);
+		let last = words.at(-1);
 
 		if (["Tab", "ShiftTab"].includes(type) && last) {
-			const newPositionWord = words
-				.slice(0, positionWord.value + 1)
+			let new_position_word = words
+				.slice(0, position_word.value + 1)
 				.join(" ").length;
-			const newValueInput =
-				words.join(" ").slice(0, newPositionWord - last.length) +
+			let new_value_input =
+				words.join(" ").slice(0, new_position_word - last.length) +
 				suggest;
-			inputModel.value = newValueInput;
-			suggestionInput.value = "";
+			input_model.value = new_value_input;
+			suggestion_input.value = "";
 		}
 	}
 
-	function wordCompleter(completionList: Array<string>, word: string) {
-		return completionList.filter(
+	function word_completer(completion_list: Array<string>, word: string)
+	{
+		return completion_list.filter(
 			(item) => !item.toLowerCase().indexOf(word.toLowerCase()),
 		);
 	}
 
-	function submitHandler() {
-		positionSuggestion.value = -1;
-		positionWord.value = 0;
+	function submit_handler()
+	{
+		position_suggestion.value = -1;
+		position_word.value = 0;
 		suggestions.value = [];
-		suggestionInput.value = "";
+		suggestion_input.value = "";
 	}
 
 	return {
-		applySuggestionHandler,
-		autocompletionInputHandler: inputHandler,
-		autocompletionKeydownHandler: keydownHandler,
-		autocompletionSubmitHandler: submitHandler,
-		suggestionInput,
+		apply_suggestion_handler,
+		input_handler,
+		keydown_handler,
+		submit_handler,
+		suggestion_input: suggestion_input,
 	};
 }
 
-export function useInputHistory(props: Props) {
-	const positionArrow = ref(0);
+export function use_input_history(props: Props)
+{
+	let position_arrow = ref(0);
 
-	function keydownHandler(evt: KeyboardEvent) {
-		if (!props.room.inputHistory) return;
+	function keydown_handler(evt: KeyboardEvent)
+	{
+		if (!props.room.input_history) {
+			return;
+		}
 
-		const history = props.room.inputHistory;
+		let history = props.room.input_history;
 
 		evt.preventDefault();
 
 		if (evt.code === "ArrowDown") {
-			positionArrow.value -= 1;
+			position_arrow.value -= 1;
 		} else {
-			positionArrow.value += 1;
+			position_arrow.value += 1;
 		}
 
-		const v = history[history.length - 1 - positionArrow.value];
-		if (v == null) return;
-		inputModel.value = v;
+		let v = history[history.length - 1 - position_arrow.value];
+		if (v == null) {
+			return;
+		}
+		input_model.value = v;
 	}
 
-	function submitHandler() {
-		positionArrow.value = 0;
+	function submit_handler()
+	{
+		position_arrow.value = 0;
 	}
 
-	watchEffect(() => {
-		if (!history) return;
-
-		if (positionArrow.value <= -1) {
-			positionArrow.value = 0;
+	watch_effect(() => {
+		if (!history) {
+			return;
 		}
 
-		if (positionArrow.value >= history.length - 1) {
-			positionArrow.value = history.length - 1;
+		if (position_arrow.value <= -1) {
+			position_arrow.value = 0;
+		}
+
+		if (position_arrow.value >= history.length - 1) {
+			position_arrow.value = history.length - 1;
 		}
 	});
 
 	return {
-		historyKeydownHandler: keydownHandler,
-		historySubmitHandler: submitHandler,
+		keydown_handler,
+		submit_handler,
 	};
 }

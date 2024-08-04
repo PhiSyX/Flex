@@ -14,23 +14,27 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
+export class ReplyListHandler implements SocketEventInterface<"RPL_LIST">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_LIST", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_LIST">) {
-		const channelList = this.store.channelList();
-		channelList.insert(data);
+	handle(data: GenericReply<"RPL_LIST">)
+	{
+		let channel_list = this.store.channel_list();
+		channel_list.insert(data);
 	}
 }
 
@@ -40,20 +44,23 @@ export class ReplyListstartHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
 	}
 
-	handle(_: GenericReply<"RPL_LISTSTART">) {
-		const channelList = this.store.channelList();
-		this.store.roomManager().setCurrent(channelList.id());
-		channelList.clear();
+	handle(_: GenericReply<"RPL_LISTSTART">)
+	{
+		let channel_list = this.store.channel_list();
+		this.store.room_manager().set_current(channel_list.id());
+		channel_list.clear();
 	}
 }
 
@@ -63,15 +70,18 @@ export class ReplyListendHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_LISTEND", (data) => this.handle(data));
 	}
 
-	handle(_: GenericReply<"RPL_LISTEND">) {}
+	handle(_: GenericReply<"RPL_LISTEND">)
+	{}
 }

@@ -19,19 +19,21 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorBadchannelkeyHandler
 	implements SocketEventInterface<"ERR_BADCHANNELKEY">
 {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERR_BADCHANNELKEY", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_BADCHANNELKEY">) {
-		const room = this.store
-			.roomManager()
-			.get(data.channel, { state: "opened:not-kicked" })
+	handle(data: GenericReply<"ERR_BADCHANNELKEY">)
+	{
+		let room = this.store.room_manager().get(data.channel, { state: "opened:not-kicked" })
 			.or_else(() => Some(this.store.network()))
 			.unwrap();
-		room.addEvent(
+
+		room.add_event(
 			"error:err_badchannelkey",
 			{ ...data, isCurrentClient: true },
 			data.reason,

@@ -24,7 +24,8 @@ export type Participants = Map<string, PrivateParticipant>;
 // Implémentation //
 // -------------- //
 
-export class PrivateRoom extends Room<UserID, "private"> {
+export class PrivateRoom extends Room<UserID, "private">
+{
 	/**
 	 * Liste des participant de la chambre privé.
 	 */
@@ -33,7 +34,8 @@ export class PrivateRoom extends Room<UserID, "private"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(name: string) {
+	constructor(name: string)
+	{
 		super("private", name);
 	}
 
@@ -44,14 +46,16 @@ export class PrivateRoom extends Room<UserID, "private"> {
 	/**
 	 * Ajoute un participant à la chambre privé.
 	 */
-	addParticipant(participant: PrivateParticipant) {
+	add_participant(participant: PrivateParticipant)
+	{
 		this.participants.set(participant.id, participant);
 	}
 
 	/**
 	 * Récupère un participant de la chambre privé.
 	 */
-	getParticipant(id: string): Option<PrivateParticipant> {
+	get_participant(id: string): Option<PrivateParticipant>
+	{
 		return Option.from(this.participants.get(id));
 	}
 }

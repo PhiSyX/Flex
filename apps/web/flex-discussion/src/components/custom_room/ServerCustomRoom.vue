@@ -5,7 +5,7 @@ import { computed } from "vue";
 
 import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
-import { useChatStore, useOverlayerStore } from "~/store";
+import { use_chat_store, use_overlayer_store } from "~/store";
 
 import CustomRoomServer from "#/sys/custom_room_server/CustomRoomServer.template.vue";
 
@@ -13,7 +13,7 @@ import CustomRoomServer from "#/sys/custom_room_server/CustomRoomServer.template
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	// La chambre du serveur.
 	room: ServerCustomRoom;
@@ -23,8 +23,8 @@ interface Props
 // Composant //
 // --------- //
 
-let chat_store = useChatStore();
-let overlayer_store = useOverlayerStore();
+let chat_store = use_chat_store();
+let overlayer_store = use_overlayer_store();
 
 const props = defineProps<Props>();
 
@@ -46,7 +46,7 @@ let vademecum_url = import.meta.env.VITE_APP_VADEMECUM_URL || "#";
 /**
  * Ouvre la boite de dialogue de changement de pseudonyme.
  */
-function open_change_nickname_dialog_handler(event: MouseEvent) 
+function open_change_nickname_dialog_handler(event: MouseEvent)
 {
 	UserChangeNicknameDialog.create(overlayer_store.store, { event });
 }
@@ -54,23 +54,23 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
 /**
  * Ouvre une chambre.
  */
-function open_room_handler(room_id: RoomID) 
+function open_room_handler(room_id: RoomID)
 {
-	chat_store.openRoom(room_id);
+	chat_store.open_room(room_id);
 }
 
 /**
  * Envoie un message à la chambre active.
  */
-function send_message_handler(message: string) 
+function send_message_handler(message: string)
 {
-	chat_store.sendMessage(props.room.id(), message);
+	chat_store.send_message(props.room.id(), message);
 }
 </script>
 
 <template>
 	<CustomRoomServer
-		v-if="room.isActive() && !room.isClosed()"
+		v-if="room.is_active() && !room.is_closed()"
 		:forum-url="forum_url"
 		:vademecum-url="vademecum_url"
 		:current-nickname="current_client_nickname"

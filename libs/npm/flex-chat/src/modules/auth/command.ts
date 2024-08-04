@@ -18,8 +18,10 @@ import { AuthSubCommand } from "./subcommand";
 // Implémentation //
 // -------------- //
 
-export class AuthCommand {
-	static from_str(value: string): Result<AuthSubCommand, Error> {
+export class AuthCommand
+{
+	static from_str(value: string): Result<AuthSubCommand, Error>
+	{
 		switch (value) {
 			case "id":
 			case "ident":
@@ -30,7 +32,8 @@ export class AuthCommand {
 			case "register":
 				return Ok(AuthSubCommand.REGISTER);
 
-			default: {
+			default:
+			{
 				let err = new Error(
 					`La commande "${value}" n'est pas valide pour le module AUTH`,
 				);
@@ -44,69 +47,74 @@ export class AuthCommand {
 	// ----------- //
 	constructor(
 		private store: ChatStoreInterface & ChatStoreInterfaceExt,
-		private authApiHttpClient: AuthApiHTTPClient,
-	) {}
+		private auth_api_http_client: AuthApiHTTPClient,
+	)
+	{}
 
-	sendIdentify(payload: AuthIdentifyFormData) {
+	send_identify(payload: AuthIdentifyFormData)
+	{
 		payload.remember_me ??= false;
 
-		const onSuccess = (response: AuthIdentifyHttpResponse) => {
+		let on_success = (response: AuthIdentifyHttpResponse) => {
 			this.store.emit("AUTH IDENTIFY", response);
 
-			const message = "-AuthServ:IDENTIFY- Connexion réussie";
-			const connectData = {
+			let message = "-AuthServ:IDENTIFY- Connexion réussie";
+			let connect_data = {
 				origin: this.store.client(),
 				tags: { msgid: response.id },
 			};
+
 			this.store
-				.roomManager()
+				.room_manager()
 				.active()
-				.addConnectEvent(connectData, message);
+				.add_connect_event(connect_data, message);
 		};
 
-		const onFailure = async (problem: HttpProblemErrorResponse) => {
-			const detail = problem.detail;
-			const message = `-AuthServ:IDENTIFY- ${detail}`;
-			const connectData = {
+		let on_failure = async (problem: HttpProblemErrorResponse) => {
+			let detail = problem.detail;
+			let message = `-AuthServ:IDENTIFY- ${detail}`;
+			let connect_data = {
 				origin: this.store.client(),
 				tags: { msgid: new Date().toISOString() },
 			};
+
 			this.store
-				.roomManager()
+				.room_manager()
 				.active()
-				.addErrorEvent(connectData, message);
+				.add_error_event(connect_data, message);
 		};
 
-		this.authApiHttpClient
+		this.auth_api_http_client
 			.identify(payload)
-			.then(onSuccess)
-			.catch(onFailure);
+			.then(on_success)
+			.catch(on_failure);
 	}
 
-	sendRegister(payload: AuthRegisterFormData) {
-		const onSuccess = (response: AuthRegisterHttpResponse) => {
-			const connectData = {
+	send_register(payload: AuthRegisterFormData)
+	{
+		let on_success = (response: AuthRegisterHttpResponse) => {
+			let connect_data = {
 				origin: this.store.client(),
 				tags: { msgid: response.id },
 			};
-			const message = `-AuthServ:REGISTER- ${response.message}`;
+			let message = `-AuthServ:REGISTER- ${response.message}`;
 
 			this.store
-				.roomManager()
+				.room_manager()
 				.active()
-				.addConnectEvent(connectData, message);
+				.add_connect_event(connect_data, message);
 		};
 
-		const onFailure = (problem: HttpProblemErrorResponse) => {
-			this.store.overlayer.create({
+		let on_failure = (problem: HttpProblemErrorResponse) => {
+			this.store.overlayer().create({
 				id: "authserv-register-error",
 				centered: true,
-				onClose: () => {
-					this.store.clientError = None();
+				on_close: () => {
+					this.store.client_error = None();
 				},
 			});
 
-			function filterObject<T extends object>(
+			function filter_object<T extends object>(
 				obj: T,
 				keys: Array<string>,
 			): Partial<T> {
@@ -116,37 +124,37 @@ export class AuthCommand {
 				return Object.fromEntries(filtered) as Partial<T>;
 			}
 
-			const filteredPayload = filterObject(
+			let filtered_payload = filter_object(
 				payload,
 				(problem.errors || []).flatMap((err) =>
 					err.pointer.slice(2).split("/"),
 				),
 			);
 
-			this.store.clientError.replace({
+			this.store.client_error.replace({
 				id: "authserv-register-error",
 				title: "L'inscription est impossible",
 				subtitle: problem.title,
 				problems: problem.errors || [],
 				detail: problem.detail,
-				data: filteredPayload,
+				data: filtered_payload,
 			});
 
-			const connectData = {
+			let connect_data = {
 				origin: this.store.client(),
 				tags: { msgid: new Date().toISOString() },
 			};
-			const message = `-AuthServ:REGISTER- ${problem.title}`;
+			let message = `-AuthServ:REGISTER- ${problem.title}`;
 
 			this.store
-				.roomManager()
+				.room_manager()
 				.active()
-				.addErrorEvent(connectData, message);
+				.add_error_event(connect_data, message);
 		};
 
-		this.authApiHttpClient
+		this.auth_api_http_client
 			.register(payload)
-			.then(onSuccess)
-			.catch(onFailure);
+			.then(on_success)
+			.catch(on_failure);
 	}
 }

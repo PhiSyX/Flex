@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { channelID, channelsID, isChannel } from "../../asserts/room";
+import { cast_to_channel_id, cast_to_channels_id, is_channel } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 import type { Module } from "../interface";
 import { PartCommand, SapartCommand } from "./command";
@@ -18,7 +18,8 @@ import { PartHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class PartModule implements Module<PartModule> {
+export class PartModule implements Module<PartModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -35,41 +36,46 @@ export class PartModule implements Module<PartModule> {
 	constructor(
 		private command: PartCommand,
 		private handler: PartHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(roomName: RoomID, channelsRaw?: ChannelID, ...words: Array<string>) {
-		let channelsR = channelsRaw;
+	input(room_id: RoomID, channels_raw?: ChannelID, ...words: Array<string>)
+	{
+		let channels_r = channels_raw;
 
-		if (channelsR) {
-			if (!channelsR.startsWith("#") && roomName.startsWith("#")) {
-				words.unshift(channelsR);
-				channelsR = channelID(roomName);
+		if (channels_r) {
+			if (!channels_r.startsWith("#") && room_id.startsWith("#")) {
+				words.unshift(channels_r);
+				channels_r = cast_to_channel_id(room_id);
 			}
-		} else if (roomName.startsWith("#")) {
-			channelsR = channelID(roomName);
+		} else if (room_id.startsWith("#")) {
+			channels_r = cast_to_channel_id(room_id);
 		}
 
-		if (!isChannel(channelsR)) return;
+		if (!is_channel(channels_r)) return;
 
-		const chans = channelsID(channelsR.split(","));
-		const message = words.join(" ");
+		let chans = cast_to_channels_id(channels_r.split(","));
+		let message = words.join(" ");
 		this.send({ channels: chans, message });
 	}
 
-	send(payload: Command<"PART">) {
+	send(payload: Command<"PART">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }
 
-export class SapartModule implements Module<SapartModule> {
+export class SapartModule implements Module<SapartModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -83,7 +89,8 @@ export class SapartModule implements Module<SapartModule> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: SapartCommand) {}
+	constructor(private command: SapartCommand)
+	{}
 
 	// ------- //
 	// Méthode //
@@ -91,20 +98,22 @@ export class SapartModule implements Module<SapartModule> {
 
 	input(
 		_: string,
-		nicknamesRaw?: string,
-		channelsRaw?: ChannelID,
+		nicknames_raw?: string,
+		channels_raw?: ChannelID,
 		...messages: Array<string>
 	) {
-		const nicknames = nicknamesRaw?.split(",");
-		const chans = channelsID(channelsRaw?.split(","));
+		let nicknames = nicknames_raw?.split(",");
+		let chans = cast_to_channels_id(channels_raw?.split(","));
 		if (!nicknames || !chans) return;
-		const message = messages.join(" ");
+		let message = messages.join(" ");
 		this.send({ nicknames, channels: chans, message });
 	}
 
-	send(payload: Command<"SAPART">) {
+	send(payload: Command<"SAPART">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {}
+	listen()
+	{}
 }

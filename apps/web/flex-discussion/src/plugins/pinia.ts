@@ -10,12 +10,12 @@
 
 import type { App } from "vue";
 
-import { createPinia } from "pinia";
+import { createPinia as create_pinia } from "pinia";
 
 /**
  * Installe le plugin Pinia.
  */
 export function install(app: App<Element>)
 {
-	app.use(createPinia());
+	app.use(create_pinia());
 }

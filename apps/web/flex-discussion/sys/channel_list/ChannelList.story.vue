@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { ChannelListCustomRoom, channelID } from "@phisyx/flex-chat";
+import { ChannelListCustomRoom, cast_to_channel_id } from "@phisyx/flex-chat";
 
 import ChannelList from "./ChannelList.template.vue";
 
-const emptyRoom = new ChannelListCustomRoom();
+let empty_room = new ChannelListCustomRoom();
 
-const room = new ChannelListCustomRoom();
+let room = new ChannelListCustomRoom();
 room.insert({
-	channel: channelID("#chan"),
+	channel: cast_to_channel_id("#chan"),
 	modes_settings: "nt",
 	topic: "Mon super topic",
 	total_members: 42,
@@ -21,7 +21,7 @@ room.insert({
 		</Variant>
 
 		<Variant title="Empty">
-			<ChannelList :room="emptyRoom" />
+			<ChannelList :room="empty_room" />
 		</Variant>
 	</Story>
 </template>

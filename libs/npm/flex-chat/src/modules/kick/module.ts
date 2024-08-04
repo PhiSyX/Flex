@@ -17,14 +17,16 @@ import { KickHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class KickModule implements Module<KickModule> {
+export class KickModule implements Module<KickModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "KICK";
 
-	static create(store: ChatStoreInterface): KickModule {
+	static create(store: ChatStoreInterface): KickModule
+	{
 		return new KickModule(new KickCommand(store), new KickHandler(store));
 	}
 
@@ -34,7 +36,8 @@ export class KickModule implements Module<KickModule> {
 	constructor(
 		private command: KickCommand,
 		private handler: KickHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
@@ -42,22 +45,26 @@ export class KickModule implements Module<KickModule> {
 
 	input(
 		_: string,
-		channelsRaw?: ChannelID,
-		knicksRaw?: string,
+		channels_raw?: ChannelID,
+		knicks_raw?: string,
 		...words: Array<string>
 	) {
-		const channels = channelsRaw?.split(",");
-		const knicks = knicksRaw?.split(",");
-		if (!channels || !knicks) return;
-		const comment = words.join(" ") || "Kick.";
+		let channels = channels_raw?.split(",");
+		let knicks = knicks_raw?.split(",");
+		if (!channels || !knicks) {
+			return;
+		}
+		let comment = words.join(" ") || "Kick.";
 		this.send({ channels, knicks, comment });
 	}
 
-	send(payload: Command<"KICK">) {
+	send(payload: Command<"KICK">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }

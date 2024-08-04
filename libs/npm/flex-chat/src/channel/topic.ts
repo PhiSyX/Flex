@@ -14,7 +14,8 @@ import { None, type Option } from "@phisyx/flex-safety";
 // Implémentation //
 // -------------- //
 
-export class ChannelTopic {
+export class ChannelTopic
+{
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -41,21 +42,24 @@ export class ChannelTopic {
 	/**
 	 * Est-ce que le sujet du salon est éditable.
 	 */
-	isEditable(): boolean {
+	is_editable(): boolean
+	{
 		return this.editable;
 	}
 
 	/**
 	 * Sujet du salon.
 	 */
-	get(): string {
+	get(): string
+	{
 		return this.text.unwrap_or("");
 	}
 
 	/**
 	 * Définit le sujet du salon.
 	 */
-	set(topic: string, options?: { force: boolean }) {
+	set(topic: string, options?: { force: boolean })
+	{
 		if (this.editable || options?.force) {
 			this.history.delete(topic);
 			this.history.add(topic);
@@ -66,14 +70,16 @@ export class ChannelTopic {
 	/**
 	 * Définit l'état d'édition.
 	 */
-	setEditable(b: boolean) {
+	set_editable(b: boolean)
+	{
 		this.editable = b;
 	}
 
 	/**
 	 * Définit le sujet du salon à du vide.
 	 */
-	unset(options?: { force: boolean }) {
+	unset(options?: { force: boolean })
+	{
 		if (this.editable || options?.force) {
 			this.text = None();
 		}

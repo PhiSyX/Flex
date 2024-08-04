@@ -19,7 +19,8 @@ export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
 // Implémentation //
 // -------------- //
 
-export class ClientIDStorage extends AppLocalStorage<string> {
+export class ClientIDStorage extends AppLocalStorage<string>
+{
 	// ------ //
 	// Static //
 	// ------ //
@@ -30,7 +31,8 @@ export class ClientIDStorage extends AppLocalStorage<string> {
 	// Constructor //
 	// ----------- //
 
-	constructor() {
+	constructor()
+	{
 		super(ClientIDStorage.KEY);
 	}
 }

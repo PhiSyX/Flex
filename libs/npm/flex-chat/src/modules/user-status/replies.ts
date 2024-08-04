@@ -8,35 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertPrivateRoom } from "../../asserts/room";
+import { assert_private_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyAwayHandler implements SocketEventInterface<"RPL_AWAY"> {
+export class ReplyAwayHandler implements SocketEventInterface<"RPL_AWAY">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_AWAY", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_AWAY">) {
-		const maybePriv = this.store.roomManager().get(data.origin.id);
-		if (maybePriv.is_none()) return;
-		const priv = maybePriv.unwrap();
-		assertPrivateRoom(priv);
-		priv.addEvent("event:rpl_away", {
+	handle(data: GenericReply<"RPL_AWAY">)
+	{
+		let maybe_private = this.store.room_manager().get(data.origin.id);
+		if (maybe_private.is_none()) return;
+		let priv = maybe_private.unwrap();
+		assert_private_room(priv);
+		priv.add_event("event:rpl_away", {
 			...data,
-			isCurrentClient: this.store.isCurrentClient(data.origin),
+			isCurrentClient: this.store.is_current_client(data.origin),
 		});
 	}
 }
@@ -47,48 +51,55 @@ export class ReplyNowawayHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_NOWAWAY", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_NOWAWAY">) {
-		const room = this.store.network();
-		room.addConnectEvent(data, data.message.slice(1));
-		const user = this.store
-			.userManager()
-			.find(this.store.clientID())
+	handle(data: GenericReply<"RPL_NOWAWAY">)
+	{
+		let room = this.store.network();
+		room.add_connect_event(data, data.message.slice(1));
+		let user = this.store
+			.user_manager()
+			.find(this.store.client_id())
 			.unwrap();
-		user.marksAsAway();
+		user.marks_as_away();
 	}
 }
 
-export class ReplyUnawayHandler implements SocketEventInterface<"RPL_UNAWAY"> {
+export class ReplyUnawayHandler implements SocketEventInterface<"RPL_UNAWAY">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_UNAWAY", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_UNAWAY">) {
-		const room = this.store.network();
-		room.addConnectEvent(data, data.message.slice(1));
-		const user = this.store
-			.userManager()
-			.find(this.store.clientID())
+	handle(data: GenericReply<"RPL_UNAWAY">)
+	{
+		let room = this.store.network();
+		room.add_connect_event(data, data.message.slice(1));
+		let user = this.store
+			.user_manager()
+			.find(this.store.client_id())
 			.unwrap();
-		user.marksAsNoLongerAway();
+		user.marks_as_no_longer_away();
 	}
 }

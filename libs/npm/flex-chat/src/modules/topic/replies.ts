@@ -8,38 +8,42 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom } from "../../asserts/room";
+import { assert_channel_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
+export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_TOPIC", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_TOPIC">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-		channel.setTopic(data.topic);
+	handle(data: GenericReply<"RPL_TOPIC">)
+	{
+		let maybe_channel = this.store.room_manager().get(data.channel);
+		if (maybe_channel.is_none()) return;
+		let channel = maybe_channel.unwrap();
+		assert_channel_room(channel);
+		channel.set_topic(data.topic);
 
 		// @ts-expect-error : type à corriger
-		channel.addEvent("event:topic", {
+		channel.add_event("event:topic", {
 			...data,
-			isCurrentClient: this.store.isCurrentClient(data.origin),
+			isCurrentClient: this.store.is_current_client(data.origin),
 		});
 	}
 }
@@ -50,21 +54,24 @@ export class ReplyNotopicHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("RPL_NOTOPIC", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_NOTOPIC">) {
-		const maybeChannel = this.store.roomManager().get(data.channel);
-		if (maybeChannel.is_none()) return;
-		const channel = maybeChannel.unwrap();
-		assertChannelRoom(channel);
-		channel.unsetTopic();
+	handle(data: GenericReply<"RPL_NOTOPIC">)
+	{
+		let maybe_channel = this.store.room_manager().get(data.channel);
+		if (maybe_channel.is_none()) return;
+		let channel = maybe_channel.unwrap();
+		assert_channel_room(channel);
+		channel.unset_topic();
 	}
 }

@@ -14,7 +14,8 @@ import { None, type Option } from "@phisyx/flex-safety";
 // Implémentation //
 // -------------- //
 
-export class AppLocalStorage<T> {
+export class AppLocalStorage<T>
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -23,14 +24,15 @@ export class AppLocalStorage<T> {
 		protected key: string,
 		// biome-ignore lint/suspicious/noExplicitAny: ?
 		reviver?: (a: string, b: string) => any | undefined,
-		private withDefaults?: T,
-	) {
-		if (withDefaults) {
-			this.value = withDefaults;
+		private with_defaults?: T,
+	)
+	{
+		if (with_defaults) {
+			this.value = with_defaults;
 		}
 
 		try {
-			const item = localStorage.getItem(key);
+			let item = localStorage.getItem(key);
 			if (reviver) {
 				if (item) {
 					this.value = JSON.parse(item, reviver);
@@ -39,8 +41,8 @@ export class AppLocalStorage<T> {
 				this.value = JSON.parse(item as NonNullable<string>);
 			}
 		} catch {
-			if (withDefaults) {
-				this.value = withDefaults;
+			if (with_defaults) {
+				this.value = with_defaults;
 			}
 		}
 	}
@@ -55,11 +57,13 @@ export class AppLocalStorage<T> {
 	// Getter | Setter //
 	// --------------- //
 
-	get value(): T {
+	get value(): T
+	{
 		return this.get();
 	}
 
-	set value($1: NonNullable<T>) {
+	set value($1: NonNullable<T>)
+	{
 		this.set($1);
 	}
 
@@ -67,13 +71,15 @@ export class AppLocalStorage<T> {
 	// Méthode //
 	// ------- //
 
-	maybe() {
+	maybe()
+	{
 		return this.item;
 	}
 
-	get() {
-		if (this.withDefaults) {
-			return this.item.unwrap_or(this.withDefaults);
+	get()
+	{
+		if (this.with_defaults) {
+			return this.item.unwrap_or(this.with_defaults);
 		}
 
 		return this.item.expect(
@@ -81,15 +87,17 @@ export class AppLocalStorage<T> {
 		);
 	}
 
-	save() {
+	save()
+	{
 		try {
 			localStorage.setItem(this.key, JSON.stringify(this.toString()));
 		} catch {}
 	}
 
-	set($1: NonNullable<T>) {
-		if (this.withDefaults && $1 == null) {
-			this.item.replace(this.withDefaults);
+	set($1: NonNullable<T>)
+	{
+		if (this.with_defaults && $1 == null) {
+			this.item.replace(this.with_defaults);
 		} else {
 			this.item.replace($1);
 		}

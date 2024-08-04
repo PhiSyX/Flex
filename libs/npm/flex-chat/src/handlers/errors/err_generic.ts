@@ -14,14 +14,18 @@ import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ErrorGeneralHandler implements SocketEventInterface<"ERROR"> {
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
+export class ErrorGeneralHandler implements SocketEventInterface<"ERROR">
+{
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
+	{}
 
-	listen() {
+	listen()
+	{
 		this.store.on("ERROR", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERROR">) {
-		this.store.disconnectError(data);
+	handle(data: GenericReply<"ERROR">)
+	{
+		this.store.disconnect_error(data);
 	}
 }

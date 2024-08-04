@@ -8,22 +8,22 @@ import {
 
 import ChannelUserlist from "./ChannelUserlist.template.vue";
 
-const channelName = "#channel";
-const users = new ChannelMembers();
+let channel_name = "#channel";
+let users = new ChannelMembers();
 
-const origin1: User = new User({
+let origin1: User = new User({
 	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "ModeratorUser",
 });
-const origin2: User = new User({
+let origin2: User = new User({
 	id: "f-g-h-i-j" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
 });
-const origin3: User = new User({
+let origin3: User = new User({
 	id: "k-l-m-n-o" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
@@ -31,20 +31,20 @@ const origin3: User = new User({
 });
 
 users.add(
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner),
+	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.Owner),
 );
 users.add(
-	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip),
+	new ChannelMember(origin2).with_access_level(ChannelAccessLevelFlag.Vip),
 );
 users.add(
-	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User),
+	new ChannelMember(origin3).with_access_level(ChannelAccessLevelFlag.User),
 );
 </script>
 
 <template>
 	<Story title="Molecules/ChannelUserlist" responsive-disabled>
 		<Variant title="Default">
-			<ChannelUserlist :name="channelName" :members="users" />
+			<ChannelUserlist :name="channel_name" :members="users" />
 		</Variant>
 	</Story>
 </template>

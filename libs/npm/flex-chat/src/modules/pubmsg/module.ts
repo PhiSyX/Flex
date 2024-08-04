@@ -17,7 +17,8 @@ import { PubmsgHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class PubmsgModule implements Module<PubmsgModule> {
+export class PubmsgModule implements Module<PubmsgModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -37,50 +38,50 @@ export class PubmsgModule implements Module<PubmsgModule> {
 	constructor(
 		private command: PubmsgCommand,
 		private handler: PubmsgHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(
-		roomMessage: RoomID,
-		channelsRaw?: ChannelID,
-		...words: Array<string>
-	) {
-		if (!roomMessage.startsWith("#")) {
-			const channels = channelsRaw?.split(",") as
+	input(room_id: RoomID, channels_raw?: ChannelID, ...words: Array<string>)
+	{
+		if (!room_id.startsWith("#")) {
+			let channels = channels_raw?.split(",") as
 				| Array<ChannelID>
 				| undefined;
 			if (!channels) return;
-			const text = words.join(" ");
+			let text = words.join(" ");
 			this.send({ channels, text });
 			return;
 		}
 
-		if (channelsRaw?.startsWith("#")) {
-			const channels = channelsRaw?.split(",") as
+		if (channels_raw?.startsWith("#")) {
+			let channels = channels_raw?.split(",") as
 				| Array<ChannelID>
 				| undefined;
 			if (!channels) return;
-			const text = words.join(" ");
+			let text = words.join(" ");
 			this.send({ channels, text });
 			return;
 		}
 
-		const channels = [roomMessage] as Array<ChannelID>;
-		if (channelsRaw) {
-			words.unshift(channelsRaw);
+		let channels = [room_id] as Array<ChannelID>;
+		if (channels_raw) {
+			words.unshift(channels_raw);
 		}
-		const text = words.join(" ");
+		let text = words.join(" ");
 		this.send({ channels, text });
 	}
 
-	send(payload: Command<"PUBMSG">) {
+	send(payload: Command<"PUBMSG">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }

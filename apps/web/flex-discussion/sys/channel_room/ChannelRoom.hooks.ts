@@ -8,129 +8,139 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import {
-	type ComputedRef,
-	type Ref,
-	computed,
-	nextTick,
-	ref,
-	watchEffect,
-} from "vue";
-
+import type { ComputedRef, Ref } from "vue";
 import type { Emits, Props } from "./ChannelRoom.template.vue";
 
-function submitTopic(
+import {
+	computed,
+	nextTick as next_tick,
+	ref,
+	watchEffect as watch_effect,
+} from "vue";
+
+// -------- //
+// Fonction //
+// -------- //
+
+function submit_topic(
 	emit: Emits,
 	props: Props,
 	{
 		$input,
-		topicEditMode,
-		topicInput,
-		currentClientMemberCanEditTopic,
+		topic_edit_mode,
+		topic_input,
+		current_client_member_can_edit_topic,
 	}: {
 		$input: Ref<HTMLInputElement | undefined>;
-		topicEditMode: Ref<boolean>;
-		topicInput: Ref<string>;
-		currentClientMemberCanEditTopic: ComputedRef<boolean>;
+		topic_edit_mode: Ref<boolean>;
+		topic_input: Ref<string>;
+		current_client_member_can_edit_topic: ComputedRef<boolean>;
 	},
-) {
-	function submitTopicHandler(evt: Event) {
-		topicEditMode.value = false;
+)
+{
+	function submit_topic_handler(evt: Event)
+	{
+		topic_edit_mode.value = false;
+
 		emit("create-topic-layer", {
 			event: evt,
-			linkedElement: $input.value,
-			mode: topicEditMode.value,
+			linked_element: $input.value,
+			mode: topic_edit_mode.value,
 		});
 
 		evt.preventDefault();
 
-		if (!currentClientMemberCanEditTopic.value) {
+		if (!current_client_member_can_edit_topic.value) {
 			return;
 		}
 
-		if (topicInput.value === props.room.topic.get()) {
+		if (topic_input.value === props.room.topic.get()) {
 			return;
 		}
 
-		emit("update-topic", topicInput.value);
+		emit("update-topic", topic_input.value);
 	}
-	return submitTopicHandler;
+
+	return submit_topic_handler;
 }
 
-function enableTopicEditMode(
+function enable_topic_edit_mode(
 	_props: Props,
 	emit: Emits,
 	{
 		$topic,
-		topicEditMode,
-		currentClientMemberCanEditTopic,
+		topic_edit_mode,
+		current_client_member_can_edit_topic,
 	}: {
 		$topic: Ref<HTMLInputElement | undefined>;
-		topicEditMode: Ref<boolean>;
-		currentClientMemberCanEditTopic: ComputedRef<boolean>;
+		topic_edit_mode: Ref<boolean>;
+		current_client_member_can_edit_topic: ComputedRef<boolean>;
 	},
-) {
-	function enableTopicEditModeHandler(evt: Event) {
-		if (!currentClientMemberCanEditTopic.value) {
+)
+{
+	function enable_topic_edit_mode_handler(evt: Event)
+	{
+		if (!current_client_member_can_edit_topic.value) {
 			return;
 		}
 
-		topicEditMode.value = true;
+		topic_edit_mode.value = true;
 
-		nextTick(() => {
+		next_tick(() => {
 			$topic.value?.focus();
 			emit("create-topic-layer", {
 				event: evt,
-				linkedElement: $topic.value,
-				mode: topicEditMode.value,
+				linked_element: $topic.value,
+				mode: topic_edit_mode.value,
 			});
 		});
 	}
-	return enableTopicEditModeHandler;
+
+	return enable_topic_edit_mode_handler;
 }
 
 // ----- //
 // Hooks //
 // ----- //
 
-export function useChannelTopic(props: Props, emit: Emits) {
-	const $topic = ref<HTMLInputElement>();
-	const topicEditMode = ref(false);
-	const topicInput = ref("");
+export function use_channel_topic(props: Props, emit: Emits)
+{
+	let $topic = ref<HTMLInputElement>();
+	let topic_edit_mode = ref(false);
+	let topic_input = ref("");
 
 	// Est-ce que le client courant peut éditer le sujet.
-	const currentClientMemberCanEditTopic = computed(() =>
-		props.currentClientMember
-			.map((member) => props.room.canEditTopic(member))
+	let current_client_member_can_edit_topic = computed(
+		() => props.currentClientMember
+			.map((member) => props.room.can_edit_topic(member))
 			.unwrap_or(false),
 	);
 
-	const submitTopicHandler = submitTopic(emit, props, {
+	let submit_topic_handler = submit_topic(emit, props, {
 		$input: $topic,
-		topicEditMode,
-		topicInput,
-		currentClientMemberCanEditTopic,
+		topic_edit_mode,
+		topic_input,
+		current_client_member_can_edit_topic,
 	});
 
-	const enableTopicEditModeHandler = enableTopicEditMode(props, emit, {
+	let enable_topic_edit_mode_handler = enable_topic_edit_mode(props, emit, {
 		$topic,
-		topicEditMode,
-		currentClientMemberCanEditTopic,
+		topic_edit_mode,
+		current_client_member_can_edit_topic,
 	});
 
-	watchEffect(() => {
-		if (topicEditMode.value === false) {
-			topicInput.value = props.room.topic.get();
+	watch_effect(() => {
+		if (topic_edit_mode.value === false) {
+			topic_input.value = props.room.topic.get();
 		}
 	});
 
 	return {
 		$topic,
-		topicEditMode,
-		topicInput,
-
-		currentClientMemberCanEditTopic,
-		enableTopicEditModeHandler,
-		submitTopicHandler,
+		topic_edit_mode,
+		topic_input,
+		current_client_member_can_edit_topic,
+		enable_topic_edit_mode_handler,
+		submit_topic_handler,
 	};
 }

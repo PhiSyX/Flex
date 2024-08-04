@@ -24,25 +24,29 @@ const DEFAULT_FETCH_OPTIONS: RequestInit = {
 // Implémentation // -> Interface
 // -------------- //
 
-class HTTPClient {
-	fetch<T>(endpoint: string, options: RequestInit): Promise<T> {
-		const fetchOpts: RequestInit = {
+class HTTPClient
+{
+	fetch<T>(endpoint: string, options: RequestInit): Promise<T>
+	{
+		let fetch_options: RequestInit = {
 			...DEFAULT_FETCH_OPTIONS,
 			...options,
 		};
 
-		return fetch(endpoint, fetchOpts).then(async (res) => {
-			const contentType = res.headers.get("Content-Type");
-			const isJsonContentType = (contentType?.indexOf("json") ?? -1) > 0;
+		return fetch(endpoint, fetch_options).then(async (res) => {
+			let content_type = res.headers.get("Content-Type");
+			let is_json_content_type = (content_type?.indexOf("json") ?? -1) > 0;
 
 			if (res.ok) {
-				if (isJsonContentType) return res.json();
+				if (is_json_content_type) {
+					return res.json();
+				}
 				return res.text();
 			}
 
-			const isError = res.status >= 400 && res.status < 600;
+			let is_error = res.status >= 400 && res.status < 600;
 
-			if (isJsonContentType || isError) {
+			if (is_json_content_type || is_error) {
 				return Promise.reject(await res.json());
 			}
 
@@ -50,7 +54,8 @@ class HTTPClient {
 		});
 	}
 
-	post<T>(endpoint: string, data: object): Promise<T> {
+	post<T>(endpoint: string, data: object): Promise<T>
+	{
 		return this.fetch(endpoint, {
 			method: "POST",
 			body: JSON.stringify(data),
@@ -58,15 +63,18 @@ class HTTPClient {
 	}
 }
 
-export class AuthApiHTTPClient extends HTTPClient {
+export class AuthApiHTTPClient extends HTTPClient
+{
 	static AUTH_IDENTIFY_ENDPOINT = "/api/v1/auth/identify";
 	static AUTH_REGISTER_ENDPOINT = "/api/v1/auth/register";
 
-	identify(payload: AuthIdentifyFormData): Promise<AuthIdentifyHttpResponse> {
+	identify(payload: AuthIdentifyFormData): Promise<AuthIdentifyHttpResponse>
+	{
 		return this.post(AuthApiHTTPClient.AUTH_IDENTIFY_ENDPOINT, payload);
 	}
 
-	register(payload: AuthRegisterFormData): Promise<AuthRegisterHttpResponse> {
+	register(payload: AuthRegisterFormData): Promise<AuthRegisterHttpResponse>
+	{
 		return this.post(AuthApiHTTPClient.AUTH_REGISTER_ENDPOINT, payload);
 	}
 }

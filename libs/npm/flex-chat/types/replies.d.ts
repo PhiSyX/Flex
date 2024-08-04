@@ -18,7 +18,8 @@ declare interface Origin {
 	};
 }
 
-declare interface ChannelOrigin extends Origin {
+declare interface ChannelOrigin extends Origin
+{
 	access_level: Array<string>;
 }
 

@@ -38,15 +38,15 @@ const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
 let is_current_client_member_global_operator = computed(
-	() => props.currentClientMember.isGlobalOperator()
+	() => props.currentClientMember.is_global_operator()
 );
 let is_current_client_member_owner = computed(
-	() => props.currentClientMember.accessLevel.eq(
+	() => props.currentClientMember.access_level.eq(
 		ChannelAccessLevelFlag.Owner
 	)
 );
 let is_selected_member_owner = computed(
-	() => props.selectedMember.member.accessLevel.eq(
+	() => props.selectedMember.member.access_level.eq(
 		ChannelAccessLevelFlag.Owner
 	)
 );
@@ -55,10 +55,10 @@ let is_selected_member_owner = computed(
 // Handler //
 // ------- //
 
-const set_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
-	emit("set-access-level", props.selectedMember.member, accessLevel);
-const unset_access_level_handler = (accessLevel: ChannelAccessLevelFlag) =>
-	emit("unset-access-level", props.selectedMember.member, accessLevel);
+const set_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
+	emit("set-access-level", props.selectedMember.member, access_level);
+const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
+	emit("unset-access-level", props.selectedMember.member, access_level);
 </script>
 
 <template>

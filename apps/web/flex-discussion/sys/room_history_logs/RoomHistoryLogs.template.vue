@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onActivated, ref } from "vue";
-
 import type { RoomMessage } from "@phisyx/flex-chat";
+
+import { onActivated as on_activated, ref } from "vue";
 
 import RoomMessageComponent from "#/sys/room_message/RoomMessage.template.vue";
 
@@ -9,12 +9,12 @@ import RoomMessageComponent from "#/sys/room_message/RoomMessage.template.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	messages: Array<RoomMessage>;
 }
 
-interface Emits 
+interface Emits
 {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
@@ -35,34 +35,34 @@ let container_needs_scroll = ref(true);
 // Lifecycle // -> Hooks
 // --------- //
 
-onActivated(() => scroll());
+on_activated(() => scroll());
 
 // ------- //
 // Handler //
 // ------- //
 
-const openRoom = (room_id: RoomID) => emit("open-room", room_id);
+const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 
-function scroll_handler() 
+function scroll_handler()
 {
 	if (!$root.value) {
 		return;
 	}
 
-	container_needs_scroll.value = $root.value.clientHeight 
+	container_needs_scroll.value = $root.value.clientHeight
 								 + $root.value.scrollTop + 150 >= $root.value.scrollHeight;
 
 	scroll_to_bottom();
 }
 
-function scroll_to_bottom() 
+function scroll_to_bottom()
 {
 	if (container_needs_scroll.value) {
 		scroll();
 	}
 }
 
-function scroll() 
+function scroll()
 {
 	if (!$root.value) {
 		return;
@@ -79,8 +79,13 @@ function scroll()
 				v-for="message in messages"
 				:key="message.id"
 				v-bind="message"
+				:is-current-client="message.is_current_client"
+				:time="{
+					datetime: message.time.datetime,
+					formattedTime: message.time.formatted_time
+				}"
 				@vue:mounted="scroll_handler"
-				@open-room="openRoom"
+				@open-room="open_room_handler"
 			/>
 		</ul>
 	</div>

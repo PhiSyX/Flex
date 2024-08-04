@@ -17,24 +17,26 @@ import type { ChatStoreInterface } from "../../store";
 // -------------- //
 
 export class QueryCommand {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
-	handle(roomName: RoomID) {
-		const maybeUser = this.store.userManager().findByNickname(roomName);
-		if (maybeUser.is_none()) return;
-		const user = maybeUser.unwrap();
+	handle(room_id: RoomID)
+	{
+		let maybe_user = this.store.user_manager().find_by_nickname(room_id);
+		if (maybe_user.is_none()) return;
+		let user = maybe_user.unwrap();
 
-		const room = this.store.roomManager().getOrInsert(user.id, () => {
-			const priv = new PrivateRoom(user.nickname).withID(user.id);
-			priv.addParticipant(
-				new PrivateParticipant(this.store.client()).withIsCurrentClient(
+		let room = this.store.room_manager().get_or_insert(user.id, () => {
+			let priv = new PrivateRoom(user.nickname).with_id(user.id);
+			priv.add_participant(
+				new PrivateParticipant(this.store.client()).with_is_current_client(
 					true,
 				),
 			);
-			priv.addParticipant(new PrivateParticipant(user));
+			priv.add_participant(new PrivateParticipant(user));
 			return priv;
 		});
 
-		this.store.roomManager().setCurrent(room.id());
+		this.store.room_manager().set_current(room.id());
 	}
 }

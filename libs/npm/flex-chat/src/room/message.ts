@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { formatDate } from "@phisyx/flex-date";
+import { format_date } from "@phisyx/flex-date";
 
 // ---- //
 // Type //
@@ -20,12 +20,12 @@ type MessageProperties<T = any, D = object> = {
 	id: string;
 	archived: boolean;
 	message: string;
-	isCurrentClient: boolean;
+	is_current_client: boolean;
 	nickname: string;
 	target: T;
 	time: {
 		datetime: string;
-		formattedTime: string;
+		formatted_time: string;
 	};
 	type:
 		| "action"
@@ -46,78 +46,99 @@ export const MESSAGES_LIMIT: number = 250;
 // Implémentation //
 // -------------- //
 
-export class RoomMessage<T = unknown, D = object> {
+export class RoomMessage<T = unknown, D = object>
+{
 	archived = false;
 	data!: MessageProperties<T, D>["data"];
 	id!: MessageProperties["id"];
+	is_current_client: MessageProperties["is_current_client"] = false;
+	mention = false;
 	message!: MessageProperties["message"];
-	isCurrentClient: MessageProperties["isCurrentClient"] = false;
 	nickname!: MessageProperties["nickname"];
 	target!: MessageProperties<T>["target"];
 	time!: MessageProperties["time"];
 	type!: MessageProperties["type"];
 
-	mention = false;
 
-	get isEventType(): boolean {
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get is_event_type(): boolean
+	{
 		return this.type.startsWith("event");
 	}
 
-	markAsArchived() {
+	// ------- //
+	// Méthode // -> API Publique
+	// ------- //
+
+	mark_as_archived()
+	{
 		this.archived = true;
 	}
 
-	withData(data: this["data"]): this {
+	with_data(data: this["data"]): this
+	{
 		this.data = data;
 		return this;
 	}
 
-	withID(id: this["id"]): this {
+	with_id(id: this["id"]): this
+	{
 		this.id = id;
 		return this;
 	}
 
-	withIsCurrentClient(bool: boolean): this {
-		this.isCurrentClient = bool;
+	with_is_current_client(bool: boolean): this
+	{
+		this.is_current_client = bool;
 		return this;
 	}
 
-	withMention(bool: boolean): this {
+	with_mention(bool: boolean): this
+	{
 		this.mention = bool;
 		return this;
 	}
 
-	withMessage(message: this["message"]): this {
+	with_message(message: this["message"]): this
+	{
 		this.message = message;
 		return this;
 	}
 
-	withNickname(nickname: this["nickname"]): this {
+	with_nickname(nickname: this["nickname"]): this
+	{
 		this.nickname = nickname;
 		return this;
 	}
 
-	withTarget(target: this["target"]): this {
+	with_target(target: this["target"]): this
+	{
 		this.target = target;
 		return this;
 	}
 
-	withType(ty: this["type"]): this {
+	with_type(ty: this["type"]): this
+	{
 		this.type = ty;
 		return this;
 	}
 
-	withTime(date: Date): this {
-		const time = {
+	with_time(date: Date): this
+	{
+		let time = {
 			datetime: date.toISOString(),
-			formattedTime: formatDate("`H:i:s`", date),
+			formatted_time: format_date("`H:i:s`", date),
 		};
 
 		this.time = time;
 		return this;
 	}
 
-	toString() {
+	toString()
+	{
 		return this.message;
 	}
 }

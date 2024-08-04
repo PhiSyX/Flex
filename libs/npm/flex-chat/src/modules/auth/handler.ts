@@ -8,33 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assertChannelRoom, assertPrivateRoom } from "../../asserts/room";
+import { assert_channel_room, assert_private_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export default class UpgradeUserHandler
+class UpgradeUserHandler
 	implements SocketEventInterface<"UPGRADE_USER">
 {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("UPGRADE_USER", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"UPGRADE_USER">) {
-		if (this.store.isCurrentClient(data.old_client_id)) {
+	handle(data: GenericReply<"UPGRADE_USER">)
+	{
+		if (this.store.is_current_client(data.old_client_id)) {
 			let client = this.store.client();
-			this.store.setClient({
+			this.store.set_client({
 				id: data.new_client_id,
 				nickname: data.new_nickname,
 				host: client.host,
@@ -43,24 +46,26 @@ export default class UpgradeUserHandler
 		}
 
 		this.store
-			.userManager()
-			.changeId(data.old_client_id, data.new_client_id);
+			.user_manager()
+			.change_id(data.old_client_id, data.new_client_id);
 
 		this.store
-			.userManager()
-			.changeNickname(data.old_nickname, data.new_nickname);
+			.user_manager()
+			.change_nickname(data.old_nickname, data.new_nickname);
 
-		for (const room of this.store.roomManager().rooms()) {
+		for (let room of this.store.room_manager().rooms()) {
 			if (room.type === "channel") {
-				assertChannelRoom(room);
-				const maybeMember = room.members.remove(data.old_client_id);
-				if (maybeMember.is_none()) continue;
-				const member = maybeMember.unwrap();
+				assert_channel_room(room);
+				let maybe_member = room.members.remove(data.old_client_id);
+				if (maybe_member.is_none()) {
+					continue;
+				}
+				let member = maybe_member.unwrap();
 				member.id = data.new_client_id;
 				room.members.add(member);
 			} else if (room.type === "private") {
-				assertPrivateRoom(room);
-				const participant = room.participants.get(data.old_client_id);
+				assert_private_room(room);
+				let participant = room.participants.get(data.old_client_id);
 				if (participant) {
 					room.participants.delete(data.old_client_id);
 					participant.id = data.new_client_id;
@@ -70,7 +75,9 @@ export default class UpgradeUserHandler
 		}
 
 		this.store
-			.roomManager()
-			.changeId(data.old_client_id, data.new_client_id);
+			.room_manager()
+			.change_id(data.old_client_id, data.new_client_id);
 	}
 }
+
+export default UpgradeUserHandler;

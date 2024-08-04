@@ -9,17 +9,17 @@ import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	layerName: string;
 	room: ChannelRoom;
 	currentClientChannelMember: ChannelMember;
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "close"): void;
-	(event_name: "submit", modesSettings: Partial<Command<"MODE">["modes"]>): void;
+	(event_name: "submit", modes_settings: Partial<Command<"MODE">["modes"]>): void;
 	(event_name: "update-topic", topic?: string): void;
 }
 
@@ -41,50 +41,50 @@ const emit = defineEmits<Emits>();
 
 // Est-ce que le client courant a les droits d'édition du sujet?
 let is_current_client_channel_member_can_edit_topic = computed(
-	() => props.room.canEditTopic(props.currentClientChannelMember)
+	() => props.room.can_edit_topic(props.currentClientChannelMember)
 );
 
 // Est-ce que le client courant est opérateur global?
 let is_current_client_global_operator = computed(
-	() => props.currentClientChannelMember.isGlobalOperator()
+	() => props.currentClientChannelMember.is_global_operator()
 );
 
 // Est-ce que le client courant opérateur du salon?
 let is_current_client_channel_member_channel_operator = computed(
-	() => props.currentClientChannelMember.isChanOperator()
+	() => props.currentClientChannelMember.is_channel_operator()
 );
 
 // Les paramètres du salon.
 let settings = computed(() => Array.from(props.room.settings));
-let settingsToString = computed(() => settings.value.join(""));
-let inviteOnlySettings = ref<boolean>();
-let moderateSettings = ref<boolean>();
-let operatorsOnlySettings = ref<boolean>();
-let noExternalMessagesSettings = ref<boolean>();
-let secretSettings = ref<boolean>();
-let topicSettings = ref<boolean>();
+let settings_str = computed(() => settings.value.join(""));
+let invite_only_settings = ref<boolean>();
+let moderate_settings = ref<boolean>();
+let operators_only_settings = ref<boolean>();
+let no_external_messages_settings = ref<boolean>();
+let secret_settings = ref<boolean>();
+let topic_settings = ref<boolean>();
 
-let enabledKeySettings = props.room.settings.has("k") ? ref(true) : ref();
-let keySettings = props.room.settings.has("k") ? ref("") : ref();
+let enabled_key_settings = props.room.settings.has("k") ? ref(true) : ref();
+let key_settings = props.room.settings.has("k") ? ref("") : ref();
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
-let topicModel = ref(Array.from(props.room.topic.history).at(-1));
+let topic_model = ref(Array.from(props.room.topic.history).at(-1));
 
-let selectedAccessControlList = ref<Array<string>>([]);
+let selected_access_control_list = ref<Array<string>>([]);
 
-let activeAccessControl = ref(AccessControl.BanList);
-let activeAccessControlList = computed(() => {
-	switch (activeAccessControl.value) {
+let active_access_control = ref(AccessControl.BanList);
+let active_access_control_list = computed(() => {
+	switch (active_access_control.value) {
 		case AccessControl.BanList:
-			return props.room.accessControl.banlist;
+			return props.room.access_control.banlist;
 		case AccessControl.BanListException:
-			return props.room.accessControl.banlistException;
+			return props.room.access_control.banlist_exception;
 	}
 });
 
 // Titre courant du type de contrôles d'accès
-let activeTitleAccessControl = computed(() => {
-	switch (activeAccessControl.value) {
+let active_title_access_control = computed(() => {
+	switch (active_access_control.value) {
 		case AccessControl.BanList:
 			return "Liste des bannissements";
 		case AccessControl.BanListException:
@@ -96,18 +96,18 @@ let activeTitleAccessControl = computed(() => {
 // Lifecycle // -> Hooks
 // --------- //
 
-watch(activeAccessControl, () => {
-	selectedAccessControlList.value = [];
+watch(active_access_control, () => {
+	selected_access_control_list.value = [];
 });
 
 // ------- //
 // Handler //
 // ------- //
 
-function submit_handler() 
+function submit_handler()
 {
 	if (is_current_client_channel_member_can_edit_topic.value) {
-		emit("update-topic", topicModel.value);
+		emit("update-topic", topic_model.value);
 	}
 
 	if (
@@ -119,18 +119,19 @@ function submit_handler()
 	}
 
 	emit("submit", {
-		i: inviteOnlySettings.value,
-		k: keySettings.value,
-		m: moderateSettings.value,
-		n: noExternalMessagesSettings.value,
-		s: secretSettings.value,
-		t: topicSettings.value,
-		O: operatorsOnlySettings.value,
+		i: invite_only_settings.value,
+		k: key_settings.value,
+		m: moderate_settings.value,
+		n: no_external_messages_settings.value,
+		s: secret_settings.value,
+		t: topic_settings.value,
+		O: operators_only_settings.value,
 	});
 	emit("close");
 }
 
-function delete_selected_masks_handler() {
+function delete_selected_masks_handler()
+{
 	if (
 		!is_current_client_channel_member_channel_operator.value &&
 		!is_current_client_global_operator.value
@@ -141,7 +142,7 @@ function delete_selected_masks_handler() {
 
 	let list: "b" | "e";
 
-	switch (activeAccessControl.value) {
+	switch (active_access_control.value) {
 		case AccessControl.BanList:
 		{
 			list = "b";
@@ -154,7 +155,7 @@ function delete_selected_masks_handler() {
 	}
 
 	emit("submit", {
-		[list]: selectedAccessControlList.value,
+		[list]: selected_access_control_list.value,
 	});
 }
 </script>
@@ -163,8 +164,8 @@ function delete_selected_masks_handler() {
 	<Dialog :without-close="true">
 		<template #label>
 			Paramètres {{ room.name
-			}}<span v-if="settingsToString"
-				>: (modes: +{{ settingsToString }})</span
+			}}<span v-if="settings_str"
+				>: (modes: +{{ settings_str }})</span
 			>
 		</template>
 
@@ -199,7 +200,7 @@ function delete_selected_masks_handler() {
 			<h2 class="[ mt=0 ]">Historique des sujets</h2>
 
 			<input
-				v-model="topicModel"
+				v-model="topic_model"
 				list="topics"
 				type="text"
 				class="[ w:full ]"
@@ -209,15 +210,15 @@ function delete_selected_masks_handler() {
 				<option v-for="topic in room.topic.history" :value="topic" />
 			</datalist>
 
-			<h2>{{ activeTitleAccessControl }}</h2>
+			<h2>{{ active_title_access_control }}</h2>
 
 			<select
 				multiple
 				class="[ w:full min-h=10 max-w=44 ]"
-				v-model="selectedAccessControlList"
+				v-model="selected_access_control_list"
 			>
 				<option
-					v-for="[addr, mode] of activeAccessControlList"
+					v-for="[addr, mode] of active_access_control_list"
 					:disabled="
 						!is_current_client_channel_member_channel_operator &&
 						!is_current_client_global_operator
@@ -233,7 +234,7 @@ function delete_selected_masks_handler() {
 				<UiButton
 					type="button"
 					variant="secondary"
-					v-model:selected="activeAccessControl"
+					v-model:selected="active_access_control"
 					:value="AccessControl.BanList"
 				>
 					Bans
@@ -242,7 +243,7 @@ function delete_selected_masks_handler() {
 				<UiButton
 					type="button"
 					variant="secondary"
-					v-model:selected="activeAccessControl"
+					v-model:selected="active_access_control"
 					:value="AccessControl.BanListException"
 				>
 					Bans Excepts
@@ -251,7 +252,7 @@ function delete_selected_masks_handler() {
 				<UiButton
 					type="button"
 					variant="secondary"
-					:disabled="selectedAccessControlList.length === 0"
+					:disabled="selected_access_control_list.length === 0"
 					@click="delete_selected_masks_handler"
 				>
 					Supprimer
@@ -263,7 +264,7 @@ function delete_selected_masks_handler() {
 			<ul class="[ list:reset flex! gap=2 px=1 ]">
 				<li>
 					<InputSwitchV2
-						v-model="inviteOnlySettings"
+						v-model="invite_only_settings"
 						name="invite-only-settings"
 						:checked="room.settings.has('i')"
 						:disabled="
@@ -277,7 +278,7 @@ function delete_selected_masks_handler() {
 
 				<li>
 					<InputSwitchV2
-						v-model="enabledKeySettings"
+						v-model="enabled_key_settings"
 						name="key-settings"
 						:checked="room.settings.has('k')"
 						:disabled="
@@ -289,8 +290,8 @@ function delete_selected_masks_handler() {
 					</InputSwitchV2>
 
 					<input
-						v-if="enabledKeySettings"
-						v-model="keySettings"
+						v-if="enabled_key_settings"
+						v-model="key_settings"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -304,7 +305,7 @@ function delete_selected_masks_handler() {
 
 				<li>
 					<InputSwitchV2
-						v-model="moderateSettings"
+						v-model="moderate_settings"
 						name="moderate-settings"
 						:checked="room.settings.has('m')"
 						:disabled="
@@ -318,7 +319,7 @@ function delete_selected_masks_handler() {
 
 				<li>
 					<InputSwitchV2
-						v-model="noExternalMessagesSettings"
+						v-model="no_external_messages_settings"
 						name="no-external-messages-settings"
 						:checked="room.settings.has('n')"
 						:disabled="
@@ -332,7 +333,7 @@ function delete_selected_masks_handler() {
 
 				<li>
 					<InputSwitchV2
-						v-model="secretSettings"
+						v-model="secret_settings"
 						name="secret-settings"
 						:checked="room.settings.has('s')"
 						:disabled="
@@ -346,7 +347,7 @@ function delete_selected_masks_handler() {
 
 				<li>
 					<InputSwitchV2
-						v-model="topicSettings"
+						v-model="topic_settings"
 						name="topic-settings"
 						:checked="room.settings.has('t')"
 						:disabled="
@@ -360,7 +361,7 @@ function delete_selected_masks_handler() {
 
 				<li v-if="is_current_client_global_operator">
 					<InputSwitchV2
-						v-model="operatorsOnlySettings"
+						v-model="operators_only_settings"
 						name="operators-only-settings"
 						:checked="room.settings.has('O')"
 						:disabled="

@@ -3,24 +3,24 @@ import { ChannelMember, ChannelMemberSelected, User } from "@phisyx/flex-chat";
 
 import ChannelUserlistMenu from "./ChannelUserlistMenu.template.vue";
 
-const origin: User = new User({
+let origin: User = new User({
 	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "localhost" },
 	ident: "PhiSyX",
 	nickname: "PhiSyX",
 });
 
-const origin1: User = new User({
+let origin1: User = new User({
 	id: "f-g-h-i-j" as UserID,
 	host: { cloaked: "localhost" },
 	ident: "Ident",
 	nickname: "Nick",
 });
 
-const me = new ChannelMember(origin);
+let me = new ChannelMember(origin);
 
-const user1 = new ChannelMemberSelected(new ChannelMember(origin1), false);
-const user2 = new ChannelMemberSelected(new ChannelMember(origin), false);
+let user1 = new ChannelMemberSelected(new ChannelMember(origin1), false);
+let user2 = new ChannelMemberSelected(new ChannelMember(origin), false);
 </script>
 
 <template>

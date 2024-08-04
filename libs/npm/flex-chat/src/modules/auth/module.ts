@@ -19,7 +19,8 @@ import { AuthSubCommand } from "./subcommand";
 // Implémentation //
 // -------------- //
 
-export class AuthModule implements Module<AuthModule> {
+export class AuthModule implements Module<AuthModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -28,7 +29,8 @@ export class AuthModule implements Module<AuthModule> {
 
 	static create(
 		store: ChatStoreInterface & ChatStoreInterfaceExt,
-	): AuthModule {
+	): AuthModule
+	{
 		return new AuthModule(
 			new AuthCommand(store, new AuthApiHTTPClient()),
 			new UpgradeUserHandler(store),
@@ -40,50 +42,61 @@ export class AuthModule implements Module<AuthModule> {
 	// ----------- //
 	constructor(
 		private command: AuthCommand,
-		private upgradeUserHandler: UpgradeUserHandler,
-	) {}
+		private upgrade_user_handler: UpgradeUserHandler,
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_roomName: RoomID, ...args: Array<string>) {
-		const size = args.length;
-		if (size < 1) return;
+	input(_roomName: RoomID, ...args: Array<string>)
+	{
+		let size = args.length;
+		if (size < 1) {
+			return;
+		}
 
 		// SAFETY(type): le type ne peut pas être `undefined`, grâce à la
 		//               condition ci-haut.
-		const subCommandStr = args.shift() as string;
+		let sub_command_str = args.shift() as string;
 
-		const maybeSubCommand = AuthCommand.from_str(subCommandStr);
-		if (maybeSubCommand.is_err()) return;
-		const subCommand = maybeSubCommand.unwrap();
+		let maybe_sub_command = AuthCommand.from_str(sub_command_str);
+		if (maybe_sub_command.is_err()) {
+			return;
+		}
+		let sub_command = maybe_sub_command.unwrap();
 
-		switch (subCommand) {
+		switch (sub_command) {
 			case AuthSubCommand.IDENTIFY:
-				{
-					if (size < 3) return;
-					const [identifier, password] = args;
-					this.command.sendIdentify({ identifier, password });
+			{
+				if (size < 3) {
+					return;
 				}
-				break;
+
+				let [identifier, password] = args;
+				this.command.send_identify({ identifier, password });
+			} break;
 
 			case AuthSubCommand.REGISTER:
-				{
-					if (size < 4) return;
-					const [username, password, email_address] = args;
-					this.command.sendRegister({
-						username,
-						email_address,
-						password,
-						password_confirmation: password,
-					});
+			{
+				if (size < 4) {
+					return;
 				}
-				break;
+
+				let [username, password, email_address] = args;
+				this.command.send_register({
+					username,
+					email_address,
+					password,
+					password_confirmation: password,
+				});
+			} break;
 		}
 	}
 
-	listen() {
-		this.upgradeUserHandler.listen();
+	listen()
+	{
+		this.upgrade_user_handler.listen();
 	}
 }

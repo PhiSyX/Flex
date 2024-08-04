@@ -8,16 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, type Option, Some } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety";
 
 import type { ChannelAccessLevelGroup } from "../access_level";
 import type { ChannelMember } from "../member";
+
+import { None, Some } from "@phisyx/flex-safety";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelMembers {
+export class ChannelMembers
+{
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -30,9 +33,9 @@ export class ChannelMembers {
 		Map<UserID, ChannelMember>
 	> = {
 		owners: new Map(),
-		adminOperators: new Map(),
+		admin_operators: new Map(),
 		operators: new Map(),
-		halfOperators: new Map(),
+		half_operators: new Map(),
 		vips: new Map(),
 		users: new Map(),
 	};
@@ -49,12 +52,13 @@ export class ChannelMembers {
 	/**
 	 * Le nombre total de membres.
 	 */
-	get size(): number {
+	get size(): number
+	{
 		return (
 			this.members.owners.size +
-			this.members.adminOperators.size +
+			this.members.admin_operators.size +
 			this.members.operators.size +
-			this.members.halfOperators.size +
+			this.members.half_operators.size +
 			this.members.vips.size +
 			this.members.users.size
 		);
@@ -63,38 +67,38 @@ export class ChannelMembers {
 	/**
 	 * Tous les membres du salon.
 	 */
-	get all() {
+	get all()
+	{
 		return [...this.moderators, ...this.vips, ...this.users];
 	}
 
 	/**
 	 * Les modérateurs de la liste des membres.
 	 */
-	get moderators() {
-		const owners = sort(Array.from(this.members.owners.values()));
-		const adminOperators = sort(
-			Array.from(this.members.adminOperators.values()),
-		);
-		const operators = Array.from(this.members.operators.values());
-		const halfOperators = sort(
-			Array.from(this.members.halfOperators.values()),
-		);
-		return [...owners, ...adminOperators, ...operators, ...halfOperators];
+	get moderators()
+	{
+		let owners = sort(Array.from(this.members.owners.values()));
+		let admin_operators = sort(Array.from(this.members.admin_operators.values()));
+		let operators = Array.from(this.members.operators.values());
+		let half_operators = sort(Array.from(this.members.half_operators.values()));
+		return [...owners, ...admin_operators, ...operators, ...half_operators];
 	}
 
 	/**
 	 * Les VIP's de la liste des membres.
 	 */
-	get vips() {
-		const vips = sort(Array.from(this.members.vips.values()));
+	get vips()
+	{
+		let vips = sort(Array.from(this.members.vips.values()));
 		return vips;
 	}
 
 	/**
 	 * Les utilisateurs de la liste des membres.
 	 */
-	get users() {
-		const users = sort(Array.from(this.members.users.values()));
+	get users()
+	{
+		let users = sort(Array.from(this.members.users.values()));
 		return users;
 	}
 
@@ -105,26 +109,29 @@ export class ChannelMembers {
 	/**
 	 * Ajoute un pseudo de salon dans la liste des membres du salon.
 	 */
-	add(member: ChannelMember) {
-		const group = this.members[member.accessLevel.highest.group];
+	add(member: ChannelMember)
+	{
+		let group = this.members[member.access_level.highest.group];
 		group.set(member.id, member);
 	}
 
 	/**
 	 * Change le pseudonyme d'un membre par un nouveau pseudonyme.
 	 */
-	changeNickname(id: UserID, _oldNickname: string, newNickname: string) {
-		this.get(id).then((oldChannelMember) => {
-			oldChannelMember.setNickname(newNickname);
+	change_nickname(id: UserID, _old_nickname: string, new_nickname: string)
+	{
+		this.get(id).then((old_channel_member) => {
+			old_channel_member.set_nickname(new_nickname);
 		});
 	}
 
 	/**
 	 * Récupère le pseudo du salon en fonction d'un ID donné, s'il existe.
 	 */
-	get(id: UserID): Option<ChannelMember> {
-		for (const map of Object.values(this.members)) {
-			const member = map.get(id);
+	get(id: UserID): Option<ChannelMember>
+	{
+		for (let map of Object.values(this.members)) {
+			let member = map.get(id);
 			if (member) return Some(member);
 		}
 		return None();
@@ -134,10 +141,11 @@ export class ChannelMembers {
 	 * Récupère le pseudo du salon en fonction d'un pseudonyme donné, s'il
 	 * existe.
 	 */
-	getByNickname(nickname: string): Option<ChannelMember> {
-		for (const map of Object.values(this.members)) {
-			const members = new Set(map.values());
-			for (const member of members) {
+	get_by_nickname(nickname: string): Option<ChannelMember>
+	{
+		for (let map of Object.values(this.members)) {
+			let members = new Set(map.values());
+			for (let member of members) {
 				if (member.eq(nickname)) {
 					return Some(member);
 				}
@@ -149,7 +157,8 @@ export class ChannelMembers {
 	/**
 	 * Est-ce que la liste des membres contient le pseudonyme donné.
 	 */
-	has(id: UserID): boolean {
+	has(id: UserID): boolean
+	{
 		return Object.values(this.members).some((map) => map.has(id));
 	}
 
@@ -157,37 +166,41 @@ export class ChannelMembers {
 	 * Supprime un pseudo de la liste des membres, en fonction d'un pseudonyme
 	 * donné, s'il existe.
 	 */
-	remove(id: UserID): Option<ChannelMember> {
-		const foundMember: Option<ChannelMember> = None();
-		for (const map of Object.values(this.members)) {
-			const member = map.get(id);
+	remove(id: UserID): Option<ChannelMember>
+	{
+		let maybe_found_member: Option<ChannelMember> = None();
+		for (let map of Object.values(this.members)) {
+			let member = map.get(id);
 			if (member) {
-				foundMember.replace(member);
+				maybe_found_member.replace(member);
 				map.delete(id);
 				break;
 			}
 		}
-		return foundMember;
+		return maybe_found_member;
 	}
 
 	/**
 	 * Définit un membre du salon comme étant sélectionné.
 	 */
-	select(userID: UserID) {
-		this._selected.replace(userID);
+	select(user_id: UserID)
+	{
+		this._selected.replace(user_id);
 	}
 
 	/**
 	 * Membre du salon sélectionné.
 	 */
-	selected(): Option<ChannelMember> {
-		return this._selected.and_then((userID) => this.get(userID));
+	selected(): Option<ChannelMember>
+	{
+		return this._selected.and_then((user_id) => this.get(user_id));
 	}
 
 	/**
 	 * Désélectionne un membre du salon sélectionné.
 	 */
-	unselect(_userID: UserID) {
+	unselect(_userID: UserID)
+	{
 		this._selected = None();
 	}
 }
@@ -196,7 +209,8 @@ export class ChannelMembers {
 // Fonction //
 // -------- //
 
-function sort(list: Array<ChannelMember>): Array<ChannelMember> {
+function sort(list: Array<ChannelMember>): Array<ChannelMember>
+{
 	list.sort((l, r) => {
 		return l.nickname.toLowerCase() < r.nickname.toLowerCase() ? -1 : 1;
 	});

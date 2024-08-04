@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { UiButton } from "@phisyx/flex-vue-uikit";
-
 import type { ChannelMembers } from "@phisyx/flex-chat";
 
+import { UiButton } from "@phisyx/flex-vue-uikit";
+
 import {
-	UserlistModeView,
-	useFilterView,
-	useInputFilterUserlist,
+    UserlistModeView,
+    use_filter_view,
+    use_inputfilter_userlist,
 } from "./ChannelUserlist.hooks";
 
 // ---- //
@@ -19,7 +19,7 @@ export interface Props
 	members: ChannelMembers;
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "select-member", origin: Origin): void;
@@ -32,10 +32,14 @@ interface Emits
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const { filterNick, moderatorsFiltered, vipsFiltered, usersFiltered } =
-	useInputFilterUserlist(props);
+const {
+	filter_nick,
+	moderators_filtered,
+	vips_filtered,
+	users_filtered
+} = use_inputfilter_userlist(props);
 
-const { filterView, view } = useFilterView();
+const { filter_view, view } = use_filter_view();
 
 // ------- //
 // Handler //
@@ -48,7 +52,7 @@ const select_channel_member_handler = (origin: Origin) => emit("select-member", 
 <template>
 	<div class="room/userlist [ flex! gap=1 ]">
 		<input
-			v-model="filterNick"
+			v-model="filter_nick"
 			:placeholder="`${name} &ndash; filtrer les ${members.size} utilisateurs`"
 			class="[ input:reset mx=1 p=1 ]"
 			maxlength="30"
@@ -56,7 +60,7 @@ const select_channel_member_handler = (origin: Origin) => emit("select-member", 
 
 		<div class="room/userlist:filter-view [ flex flex/center:full gap=1 ]">
 			<UiButton
-				v-model:selected="filterView"
+				v-model:selected="filter_view"
 				:value="UserlistModeView.Default"
 				icon="view-list"
 			/>
@@ -65,18 +69,18 @@ const select_channel_member_handler = (origin: Origin) => emit("select-member", 
 		<KeepAlive>
 			<component
 				:is="view"
-				:filter-input="filterNick"
+				:filter-input="filter_nick"
 				:moderators="{
 					original: members.moderators,
-					filtered: moderatorsFiltered,
+					filtered: moderators_filtered,
 				}"
 				:vips="{
 					original: members.vips,
-					filtered: vipsFiltered,
+					filtered: vips_filtered,
 				}"
 				:users="{
 					original: members.users,
-					filtered: usersFiltered,
+					filtered: users_filtered,
 				}"
 				@open-private="open_private_handler"
 				@select-member="select_channel_member_handler"

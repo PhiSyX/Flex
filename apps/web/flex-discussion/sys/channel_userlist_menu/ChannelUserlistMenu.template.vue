@@ -15,14 +15,14 @@ import ChannelUserlistOwnerMenu from "./ChannelUserlistAccessLevelQOPMenu.vue";
 // Type //
 // ---- //
 
-export interface Props 
+export interface Props
 {
 	disabled?: boolean;
 	currentClientMember: ChannelMember;
 	selectedMember: ChannelMemberSelected;
 }
 
-export interface Emits 
+export interface Emits
 {
 	(event_name: "ban-member", member: ChannelMember): void;
 	(event_name: "ban-nick", member: ChannelMember): void;
@@ -52,15 +52,15 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 let is_same_member = computed(() =>
-	props.currentClientMember.partialEq(props.selectedMember.member),
+	props.currentClientMember.partial_eq(props.selectedMember.member),
 );
 
 let is_current_client_member_global_operator = computed(() =>
-	props.currentClientMember.isGlobalOperator(),
+	props.currentClientMember.is_global_operator(),
 );
 
 let is_current_client_member_have_vip = computed(() =>
-	props.currentClientMember.accessLevel.gt(ChannelAccessLevelFlag.Vip),
+	props.currentClientMember.access_level.gt(ChannelAccessLevelFlag.Vip),
 );
 
 // ------- //
@@ -110,7 +110,7 @@ const unset_access_level_handler = (
 		</li>
 		<li v-if="!is_same_member">
 			<UiButton
-				v-if="!selectedMember.isBlocked"
+				v-if="!selectedMember.is_blocked"
 				icon="user-block"
 				position="right"
 				title="Commande /ignore <nickname>"
@@ -125,7 +125,7 @@ const unset_access_level_handler = (
 				position="right"
 				title="Commande /unignore <nickname>"
 				variant="primary"
-				:selected="selectedMember.isBlocked"
+				:selected="selectedMember.is_blocked"
 				:true-value="true"
 				:false-value="false"
 				@click="unignore_user_handler"
@@ -151,7 +151,7 @@ const unset_access_level_handler = (
 			</UiButton>
 
 			<UiButton
-				v-if="!selectedMember.isBanned"
+				v-if="!selectedMember.is_banned"
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /ban"
@@ -170,7 +170,7 @@ const unset_access_level_handler = (
 			</UiButton>
 
 			<UiButton
-				v-if="!selectedMember.isNickBanned"
+				v-if="!selectedMember.is_nick_banned"
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /bannick"

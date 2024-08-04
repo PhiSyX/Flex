@@ -15,7 +15,8 @@ import type { ChannelMember } from "../member";
 // Implémentation //
 // -------------- //
 
-export class ChannelMemberSelected {
+export class ChannelMemberSelected
+{
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -33,27 +34,33 @@ export class ChannelMemberSelected {
 	/**
 	 * Est-ce que le membre sélectionné est bloqué?
 	 */
-	isBlocked: boolean;
+	is_blocked: boolean;
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(member: ChannelMember, isBlocked: boolean) {
+	constructor(
+		member: ChannelMemberSelected["member"],
+		is_blocked: ChannelMemberSelected["is_blocked"]
+	)
+	{
 		this.member = member;
-		this.isBlocked = isBlocked;
+		this.is_blocked = is_blocked;
 	}
 
 	/**
 	 * Est-ce que le membre sélectionné est banni du salon?
 	 */
-	get isBanned() {
+	get is_banned()
+	{
 		return this.banned.is_some();
 	}
 
 	/**
 	 * Est-ce que le pseudo du membre sélectionné est banni du salon?
 	 */
-	get isNickBanned() {
+	get is_nick_banned()
+	{
 		return this.banned
 			.filter(([_, { host, ident, nick }]) => {
 				return nick !== "*" && ident === "*" && host === "*";
@@ -61,7 +68,8 @@ export class ChannelMemberSelected {
 			.is_some();
 	}
 
-	withBanned(mask: this["banned"]) {
+	with_banned(mask: this["banned"])
+	{
 		this.banned = mask;
 		return this;
 	}

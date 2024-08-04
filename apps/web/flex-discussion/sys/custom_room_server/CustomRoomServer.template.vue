@@ -7,7 +7,7 @@ import Room from "#/sys/room/Room.template.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	forumUrl: string;
 	vademecumUrl: string;
@@ -15,7 +15,7 @@ interface Props
 	room: ServerCustomRoom;
 }
 
-interface Emits 
+interface Emits
 {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "open-room", room_id: RoomID): void;

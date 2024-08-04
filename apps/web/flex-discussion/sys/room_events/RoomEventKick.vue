@@ -20,7 +20,7 @@ const props = defineProps<Props<"KICK">>();
 
 const emit = defineEmits<Emits>();
 
-const openChannel = () => emit("open-room", props.data.channel);
+const open_channel_handler = () => emit("open-room", props.data.channel);
 </script>
 
 <template>
@@ -35,7 +35,7 @@ const openChannel = () => emit("open-room", props.data.channel);
 		(Raison: <q>{{ data.reason }}</q
 		>)
 	</p>
-	<span v-if="isCurrentClient" @dblclick="openChannel"
+	<span v-if="isCurrentClient" @dblclick="open_channel_handler"
 		>({{ data.channel }})</span
 	>
 </template>

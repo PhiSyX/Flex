@@ -8,10 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { ChannelMember } from "../channel/member";
-import { ChannelRoom } from "../channel/room";
 import type { PrivateRoom } from "../private/room";
 import type { Room } from "../room";
+
+import { ChannelMember } from "../channel/member";
+import { ChannelRoom } from "../channel/room";
 
 // -------- //
 // Fonction //
@@ -20,9 +21,8 @@ import type { Room } from "../room";
 /**
  * Certifie que l'argument donné est une chambre de type [ChannelRoom].
  */
-export function assertChannelRoom(room?: {
-	type: string;
-}): asserts room is ChannelRoom {
+export function assert_channel_room(room?: { type: string; }): asserts room is ChannelRoom
+{
 	if (room?.type !== "channel") {
 		throw new Error(
 			`« ${room} » n'est pas une chambre de type « channel »`,
@@ -33,9 +33,8 @@ export function assertChannelRoom(room?: {
 /**
  * Certifie que l'argument donné est une chambre de type [PrivateRoom].
  */
-export function assertPrivateRoom(room: {
-	type: string;
-}): asserts room is PrivateRoom {
+export function assert_private_room(room: { type: string; }): asserts room is PrivateRoom
+{
 	if (room.type !== "private") {
 		throw new Error(
 			`« ${room} » n'est pas une chambre de type « private »`,
@@ -46,41 +45,47 @@ export function assertPrivateRoom(room: {
 /**
  * Certifie que la chambre passée en argument est un salon.
  */
-export function isChannel(room: unknown): room is ChannelID {
+export function is_channel(room: unknown): room is ChannelID
+{
 	return (typeof room === "string" && room.startsWith("#")) ?? false;
 }
 
 /**
  * Certifie que la chambre passée en argument est un salon.
  */
-export function isChannelRoom(room?: Room): room is ChannelRoom {
+export function is_channel_room(room?: Room): room is ChannelRoom
+{
 	return room instanceof ChannelRoom;
 }
 
 /**
  * Certifie que la valeur donnée s'agit d'une instance d'un membre de salon.
  */
-export function isChannelMember(member: unknown): member is ChannelMember {
+export function is_channel_member(member: unknown): member is ChannelMember
+{
 	return member instanceof ChannelMember;
 }
 
 /**
  * @type ChannelID
  */
-export function channelID(channelRaw?: string): ChannelID {
-	return channelRaw as ChannelID;
+export function cast_to_channel_id(channel_raw?: string): ChannelID
+{
+	return channel_raw as ChannelID;
 }
 
 /**
  * @type Array<ChannelID>
  */
-export function channelsID(channelRaw?: Array<string>): Array<ChannelID> {
-	return channelRaw as Array<ChannelID>;
+export function cast_to_channels_id(channels_raw?: Array<string>): Array<ChannelID>
+{
+	return channels_raw as Array<ChannelID>;
 }
 
 /**
  * @type RoomID
  */
-export function roomID(roomID?: string): RoomID {
-	return roomID as RoomID;
+export function cast_to_room_id(room_id?: string): RoomID
+{
+	return room_id as RoomID;
 }

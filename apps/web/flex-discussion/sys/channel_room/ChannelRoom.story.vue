@@ -7,18 +7,18 @@ import {
 	ChannelRoom,
 	RoomMessage,
 	User,
-	channelID,
+	cast_to_channel_id,
 } from "@phisyx/flex-chat";
 
 import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
 import ChannelRoomComponent from "./ChannelRoom.template.vue";
 
-const channelName = channelID("#channel");
+let channel_name = cast_to_channel_id("#channel");
 
-const chan = new ChannelRoom(channelName);
+let chan = new ChannelRoom(channel_name);
 chan.topic.set("Mon super topic");
 
-const origin1: User = new User({
+let origin1: User = new User({
 	access_level: ["Owner"],
 	id: "a-b-c-d-e" as UserID,
 	host: { cloaked: "*" },
@@ -26,44 +26,44 @@ const origin1: User = new User({
 	nickname: "ModeratorUser",
 } as ChannelOrigin);
 
-const origin2: User = new User({
+let origin2: User = new User({
 	id: "f-g-h-i-j" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
 	nickname: "VipUser",
 });
 
-const me = Some(new ChannelMember(origin1));
+let me = Some(new ChannelMember(origin1));
 
 chan.messages.push(
 	new RoomMessage()
-		.withData({ origin: origin1 })
-		.withID("id")
-		.withIsCurrentClient(false)
-		.withMessage("Hello World")
-		.withNickname("ModeratorUser")
-		.withTarget(channelName)
-		.withTime(new Date())
-		.withType("pubmsg"),
+		.with_data({ origin: origin1 })
+		.with_id("id")
+		.with_is_current_client(false)
+		.with_message("Hello World")
+		.with_nickname("ModeratorUser")
+		.with_target(channel_name)
+		.with_time(new Date())
+		.with_type("pubmsg"),
 	new RoomMessage()
-		.withData({
+		.with_data({
 			origin: origin1,
-			channel: channelID("#channel"),
+			channel: cast_to_channel_id("#channel"),
 			knick: origin2,
 			name: "KICK",
 			reason: "Dehors !",
 			tags: { msgid: "id" },
 		} as GenericReply<"KICK">)
-		.withID("id2")
-		.withIsCurrentClient(false)
-		.withMessage("Hello World")
-		.withNickname("ModeratorUser")
-		.withTarget(channelName)
-		.withTime(new Date())
-		.withType("event:kick"),
+		.with_id("id2")
+		.with_is_current_client(false)
+		.with_message("Hello World")
+		.with_nickname("ModeratorUser")
+		.with_target(channel_name)
+		.with_time(new Date())
+		.with_type("event:kick"),
 );
 
-const origin3: User = new User({
+let origin3: User = new User({
 	id: "k-l-m-n-o" as UserID,
 	host: { cloaked: "*" },
 	ident: "ident",
@@ -71,13 +71,13 @@ const origin3: User = new User({
 });
 
 chan.members.add(
-	new ChannelMember(origin1).withAccessLevel(ChannelAccessLevelFlag.Owner),
+	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.Owner),
 );
 chan.members.add(
-	new ChannelMember(origin2).withAccessLevel(ChannelAccessLevelFlag.Vip),
+	new ChannelMember(origin2).with_access_level(ChannelAccessLevelFlag.Vip),
 );
 chan.members.add(
-	new ChannelMember(origin3).withAccessLevel(ChannelAccessLevelFlag.User),
+	new ChannelMember(origin3).with_access_level(ChannelAccessLevelFlag.User),
 );
 </script>
 
@@ -98,7 +98,7 @@ chan.members.add(
 			<ChannelRoomComponent
 				:current-nickname="origin3.nickname"
 				:current-client-member="me"
-				:name="channelName"
+				:name="channel_name"
 				:selected-member="None()"
 				:room="chan"
 				:userlist-displayed-by-default="true"

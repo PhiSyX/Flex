@@ -16,36 +16,40 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class InviteHandler implements SocketEventInterface<"INVITE"> {
+export class InviteHandler implements SocketEventInterface<"INVITE">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen() {
+	listen()
+	{
 		this.store.on("INVITE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"INVITE">) {
-		const room = this.store
-			.roomManager()
+	handle(data: GenericReply<"INVITE">)
+	{
+		let room = this.store
+			.room_manager()
 			.get(data.channel, { state: "opened:not-kicked" })
 			.or_else(() =>
 				Some(
 					this.store
-						.roomManager()
+						.room_manager()
 						.active({ state: "opened:not-kicked" }),
 				),
 			)
 			.unwrap();
 
-		room.addEvent("event:invite", {
+		room.add_event("event:invite", {
 			...data,
-			isCurrentClient: this.store.isCurrentClient(data.origin),
+			isCurrentClient: this.store.is_current_client(data.origin),
 		});
 	}
 }

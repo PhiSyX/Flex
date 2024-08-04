@@ -7,16 +7,16 @@ import { computed, ref, toRaw } from "vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	lastMessage: RoomMessage;
 }
 
-interface Emits 
+interface Emits
 {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
-	(event_name: "join-channel", channelName: string): void;
+	(event_name: "join-channel", channel_name: string): void;
 }
 
 // --------- //

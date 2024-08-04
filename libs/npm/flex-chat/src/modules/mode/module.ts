@@ -17,7 +17,8 @@ import { ModeHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class ModeModule implements Module<ModeModule> {
+export class ModeModule implements Module<ModeModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -34,19 +35,23 @@ export class ModeModule implements Module<ModeModule> {
 	constructor(
 		private command: ModeCommand,
 		private handler: ModeHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input() {}
+	input()
+	{}
 
-	send(payload: Command<"MODE">) {
+	send(payload: Command<"MODE">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }

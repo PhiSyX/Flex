@@ -17,7 +17,8 @@ import { NoticeHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class NoticeModule implements Module<NoticeModule> {
+export class NoticeModule implements Module<NoticeModule>
+{
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -37,23 +38,27 @@ export class NoticeModule implements Module<NoticeModule> {
 	constructor(
 		private command: NoticeCommand,
 		private handler: NoticeHandler,
-	) {}
+	)
+	{}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, targetsRaw?: string, ...words: Array<string>) {
-		const targets: Array<string> = targetsRaw?.split(",") || [];
-		const text = words.join(" ");
+	input(_: string, targets_raw?: string, ...words: Array<string>)
+	{
+		let targets: Array<string> = targets_raw?.split(",") || [];
+		let text = words.join(" ");
 		this.send({ targets, text });
 	}
 
-	send(payload: Command<"NOTICE">) {
+	send(payload: Command<"NOTICE">)
+	{
 		this.command.send(payload);
 	}
 
-	listen() {
+	listen()
+	{
 		this.handler.listen();
 	}
 }

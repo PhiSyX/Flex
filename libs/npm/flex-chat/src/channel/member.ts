@@ -15,11 +15,12 @@ import { ChannelAccessLevel, ChannelAccessLevelFlag } from "./access_level";
 // Implémentation //
 // -------------- //
 
-export class ChannelMember extends User {
+export class ChannelMember extends User
+{
 	/**
 	 * Les niveaux d'accès du pseudo.
 	 */
-	accessLevel: ChannelAccessLevel = new ChannelAccessLevel();
+	access_level: ChannelAccessLevel = new ChannelAccessLevel();
 
 	// --------------- //
 	// Getter | Setter //
@@ -28,8 +29,9 @@ export class ChannelMember extends User {
 	/**
 	 * Les classes CSS qu'il faut appliquer aux éléments de pseudo de salon.
 	 */
-	get className(): string {
-		return `${super.className} ${this.accessLevel.highest.className}`;
+	get class_name(): string
+	{
+		return `${super.class_name} ${this.access_level.highest.class_name}`;
 	}
 
 	// ------- //
@@ -40,33 +42,36 @@ export class ChannelMember extends User {
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * minimal donné.
 	 */
-	geAccessLevel(level: ChannelAccessLevelFlag): boolean {
-		return this.accessLevel.ge(level);
+	ge_access_level(level: ChannelAccessLevelFlag): boolean
+	{
+		return this.access_level.ge(level);
 	}
 
 	/**
 	 * Est-ce que le membre est opérateur du salon avec le niveau d'accès
 	 * minimal à demi-opérateur.
 	 */
-	isChanOperator(): boolean {
-		return this.geAccessLevel(ChannelAccessLevelFlag.HalfOperator);
+	is_channel_operator(): boolean
+	{
+		return this.ge_access_level(ChannelAccessLevelFlag.HalfOperator);
 	}
 
 	/**
 	 * Définit le niveau d'accès du pseudo.
 	 */
-	withAccessLevel(level: ChannelAccessLevelFlag | Array<string>): this {
+	with_access_level(level: ChannelAccessLevelFlag | Array<string>): this
+	{
 		if (Array.isArray(level)) {
-			const levels = this.accessLevel.parse(level);
+			let levels = this.access_level.parse(level);
 
-			for (const level of levels) {
-				this.accessLevel.add(level);
+			for (let level of levels) {
+				this.access_level.add(level);
 			}
 
 			return this;
 		}
 
-		this.accessLevel.add(level);
+		this.access_level.add(level);
 		return this;
 	}
 }

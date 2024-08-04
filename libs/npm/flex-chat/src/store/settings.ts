@@ -27,7 +27,8 @@ export class SettingsStore {
 	personalization: PersonalizationSettings = new PersonalizationSettings();
 	layout: LayoutSettings = new LayoutSettings();
 
-	save() {
+	save()
+	{
 		this.personalization.persist();
 		this.layout.persist();
 	}
@@ -36,15 +37,18 @@ export class SettingsStore {
 export class PersonalizationSettings {
 	storage = new PersonalizationStorage();
 
-	get theme() {
+	get theme()
+	{
 		return this.storage.get().theme;
 	}
 
-	set theme(value: PersonalizationData["theme"]) {
+	set theme(value: PersonalizationData["theme"])
+	{
 		this.storage.set({ ...this.storage.value, theme: value });
 	}
 
-	persist() {
+	persist()
+	{
 		this.storage.save();
 	}
 }
@@ -52,40 +56,47 @@ export class PersonalizationSettings {
 export class LayoutSettings {
 	storage = new LayoutStorage();
 
-	get channelUserlistDisplay() {
-		return this.storage.get().channelUserlistDisplay;
+	get channel_userlist_display()
+	{
+		return this.storage.get().channel_userlist_display;
 	}
 
-	set channelUserlistDisplay(value: LayoutData["channelUserlistDisplay"]) {
+	set channel_userlist_display(value: LayoutData["channel_userlist_display"])
+	{
 		this.storage.set({
 			...this.storage.value,
-			channelUserlistDisplay: value,
+			channel_userlist_display: value,
 		});
 	}
 
-	get channelUserlistPosition() {
-		return this.storage.get().channelUserlistPosition;
+	get channel_userlist_position()
+	{
+		return this.storage.get().channel_userlist_position;
 	}
 
-	set channelUserlistPosition(value: LayoutData["channelUserlistPosition"]) {
+	set channel_userlist_position(value: LayoutData["channel_userlist_position"])
+	{
 		this.storage.set({
 			...this.storage.value,
-			channelUserlistPosition: value,
+			channel_userlist_position: value,
 		});
 	}
 
-	get navigationBarPosition() {
-		return this.storage.get().navigationBarPosition;
+	get navigation_bar_position()
+	{
+		return this.storage.get().navigation_bar_position;
 	}
 
-	set navigationBarPosition(value: LayoutData["navigationBarPosition"]) {
+	set navigation_bar_position(value: LayoutData["navigation_bar_position"])
+	{
 		this.storage.set({
 			...this.storage.value,
-			navigationBarPosition: value,
+			navigation_bar_position: value,
 		});
 	}
 
-	persist() {
+	persist()
+	{
 		this.storage.save();
 	}
 }
