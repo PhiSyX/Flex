@@ -10,16 +10,17 @@
 
 import type { Signal } from "./signal";
 
-// --------- //
-// Interface //
-// --------- //
+// ---- //
+// Type //
+// ---- //
 
 // biome-ignore lint/suspicious/noExplicitAny: fait par un professionnel (ou pas) ;-).
 type FIXME = any;
 
 type ComputedWatchCallback<R = FIXME, T = FIXME> = (_: T) => R;
 
-export type ComputedWatchFnOptions = {
+export interface ComputedWatchFnOptions
+{
 	immediate?: boolean;
 };
 
@@ -27,29 +28,37 @@ export type ComputedWatchFnOptions = {
 // Implémentation //
 // -------------- //
 
-export class Computed<R = FIXME> {
-	#returnFn: ComputedWatchCallback<R>;
+export class Computed<R = FIXME> 
+{
+	#return_fn: ComputedWatchCallback<R>;
 
 	constructor(
 		public signal: Signal,
-		returnFn: ComputedWatchCallback<R>,
-	) {
-		this.#returnFn = returnFn;
+		return_fn: ComputedWatchCallback<R>,
+	)
+	{
+		this.#return_fn = return_fn;
 	}
 
-	valueOf(): R {
-		return this.#returnFn(this.signal.valueOf());
+	valueOf(): R
+	{
+		return this.#return_fn(this.signal.valueOf());
 	}
 
 	watch(
-		callback: (value: FIXME, oldValue: FIXME) => void,
+		callback: (value: FIXME, old_value: FIXME) => void,
 		options?: ComputedWatchFnOptions,
-	) {
-		this.signal.addCallback((oldValue, newValue) => {
-			if (oldValue !== newValue)
-				callback(this.#returnFn(newValue), oldValue);
+	)
+	{
+		this.signal.add_callback((old_value, new_value) => {
+			if (old_value !== new_value) {
+				callback(this.#return_fn(new_value), old_value);
+			}
 		});
-		if (options?.immediate) callback(this.valueOf(), null);
+
+		if (options?.immediate) {
+			callback(this.valueOf(), null);
+		}
 	}
 }
 
@@ -57,6 +66,7 @@ export class Computed<R = FIXME> {
 // Fonction //
 // -------- //
 
-export function isComputed(value: unknown): value is Computed {
+export function is_computed(value: unknown): value is Computed 
+{
 	return value instanceof Computed;
 }

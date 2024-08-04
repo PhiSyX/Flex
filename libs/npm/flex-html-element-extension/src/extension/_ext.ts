@@ -25,7 +25,7 @@ import {
 import { kebabcase } from "@phisyx/flex-capitalization";
 import { noop_bool } from "@phisyx/flex-helpers";
 import { is_option, strip_tags } from "@phisyx/flex-safety";
-import { isComputed, isSignal } from "@phisyx/flex-signal";
+import { isSignal, is_computed } from "@phisyx/flex-signal";
 
 // --------- //
 // Interface //
@@ -177,7 +177,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	};
 
 	#handleArgs(args: ElementExtension.Args = this.#args) {
-		for (const arg of args) {
+		for (let arg of args) {
 			let createElement = this.#createElementByTypes[typeof arg];
 			createElement.call(this, arg);
 		}
@@ -187,13 +187,13 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		arg: ElementExtension.Primitives,
 		replace?: boolean,
 	): boolean {
-		const str = arg.toString();
+		let str = arg.toString();
 
 		if (str.startsWith("&") && str.endsWith(";")) {
 			let $temp = document.createElement("span");
 			$temp.innerHTML = strip_tags(str);
 
-			const firstChild = $temp.firstChild as ChildNode;
+			let firstChild = $temp.firstChild as ChildNode;
 			this.nativeElement.append(firstChild);
 		} else {
 			if (replace) {
@@ -207,7 +207,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	#createElementFromObject(obj: object): boolean {
-		if (isComputed(obj)) {
+		if (is_computed(obj)) {
 			return this.#handleComputed(obj);
 		}
 
@@ -237,7 +237,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			return true;
 		}
 
-		for (const [attr, value] of Object.entries(obj)) {
+		for (let [attr, value] of Object.entries(obj)) {
 			if (is_primitive(value)) {
 				this.nativeElement.setAttribute(kebabcase(attr), value);
 			} else {
@@ -252,7 +252,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	#handleComputed(arg: Computed): boolean {
-		const value = arg.valueOf();
+		let value = arg.valueOf();
 
 		if (isElementExtension(value)) {
 			this.nativeElement.append(value.node());
@@ -266,7 +266,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 
 		this.nativeElement.append($ext.node());
 
-		const updateDOM = (value: { toString(): string }) =>
+		let updateDOM = (value: { toString(): string }) =>
 			$ext.replaceText(value);
 		arg.watch(updateDOM);
 
@@ -282,10 +282,10 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		let value = signal.valueOf();
 
 		if (is_primitive(value)) {
-			signal.addTriggerElement(document.createTextNode(value.toString()));
+			signal.add_trigger_element(document.createTextNode(value.toString()));
 		}
 
-		this.nativeElement.append(signal.lastTriggerElement());
+		this.nativeElement.append(signal.last_triggered_element());
 
 		return true;
 	}
@@ -307,7 +307,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	#createElementFromFunction(argFunction: () => unknown): boolean {
-		const arg = argFunction();
+		let arg = argFunction();
 		let createElement = this.#createElementByTypes[typeof arg];
 		return createElement.call(this, arg);
 	}
@@ -315,8 +315,8 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	defineEventsOnCustomElements(events: Array<string>) {
 		this.#events = events;
 
-		for (const evtName of this.#events) {
-			for (const children of this.#children_CE) {
+		for (let evtName of this.#events) {
+			for (let children of this.#children_CE) {
 				// @ts-expect-error CustomEvent.
 				children.addEventListener(evtName, (evt: CustomEvent) => {
 					this.nativeElement.dispatchEvent(
@@ -351,7 +351,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	displayWhen(sig: Computed<boolean>): this;
 	displayWhen(sig: boolean): this;
 	displayWhen(sig: unknown): this {
-		const updateDisplay = (when: boolean) => {
+		let updateDisplay = (when: boolean) => {
 			if (when) {
 				this.nativeElement.style.display = "block";
 			} else {
@@ -360,12 +360,12 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		};
 
 		if (isSignal<boolean>(sig)) {
-			sig.addCallback((_, newValue) => {
+			sig.add_callback((_, newValue) => {
 				updateDisplay(newValue);
 			});
 
 			updateDisplay(sig.valueOf());
-		} else if (isComputed(sig)) {
+		} else if (is_computed(sig)) {
 			sig.watch((a) => updateDisplay(a), { immediate: true });
 		} else if (is_boolean(sig)) {
 			updateDisplay(sig);
@@ -375,9 +375,9 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	extendsAttrs(attrs: NamedNodeMap): this {
-		const excludesAttributes = ["model", "style"];
+		let excludesAttributes = ["model", "style"];
 
-		for (const attr of attrs) {
+		for (let attr of attrs) {
 			if (excludesAttributes.includes(attr.name)) continue;
 			this.nativeElement.setAttribute(kebabcase(attr.name), attr.value);
 		}
@@ -387,7 +387,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 
 	class(rawClassName: string | Record<PropertyKey, unknown>): this {
 		if (is_string(rawClassName)) {
-			const classNames = rawClassName.split(" ");
+			let classNames = rawClassName.split(" ");
 			this.nativeElement.classList.add(...classNames);
 		} else {
 			let temp: unknown;
@@ -406,7 +406,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	data(dataset: Record<string, string | Option<string>>): this {
-		for (const [key, value] of Object.entries(dataset)) {
+		for (let [key, value] of Object.entries(dataset)) {
 			if (is_option(value)) {
 				if (value.is_some()) {
 					this.nativeElement.dataset[key] = value.unwrap();

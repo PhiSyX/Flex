@@ -8,8 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isDOMInput } from "@phisyx/flex-asserts";
-import { Computed, type ComputedWatchFnOptions } from "./computed";
+import type { ComputedWatchFnOptions } from "./computed";
+
+import { is_dom_input } from "@phisyx/flex-asserts";
+
+import { Computed } from "./computed";
 
 // --------- //
 // Interface //
@@ -18,86 +21,100 @@ import { Computed, type ComputedWatchFnOptions } from "./computed";
 // biome-ignore lint/suspicious/noExplicitAny: fait par un professionnel (ou pas) ;-).
 type FIXME = any;
 
-type SignalOptions<T> = {
-	watch?: (newValue: T, oldValue: T) => void;
+interface SignalOptions<T>
+{
+	watch?: (new_value: T, old_value: T) => void;
 	parser?: (_: unknown) => T;
 };
 
-type WatchCallback<R = FIXME, T = FIXME> = (oldValue: T, newValue: T) => R;
+type WatchCallback<R = FIXME, T = FIXME> = (old_value: T, new_value: T) => R;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class Signal<T = FIXME> {
-	#triggerElements: Array<HTMLElement | Node | Text> = [];
-	#watchCallbacks: Array<WatchCallback<FIXME, T>> = [];
+export class Signal<T = FIXME>
+{
+	#trigger_elements: Array<HTMLElement | Node | Text> = [];
+	#watch_callbacks: Array<WatchCallback<FIXME, T>> = [];
 
 	#value!: T;
 	#options: SignalOptions<T> = {
 		parser: (v: unknown) => v as T,
 	};
 
-	constructor(value: T, options?: SignalOptions<T>) {
+	constructor(value: T, options?: SignalOptions<T>)
+	{
 		this.#value = value;
 		this.#options = options || this.#options;
 	}
 
-	addCallback(cb: WatchCallback<FIXME, T>) {
-		this.#watchCallbacks.push(cb);
+	add_callback(cb: WatchCallback<FIXME, T>)
+	{
+		this.#watch_callbacks.push(cb);
 	}
 
-	addTriggerElement(el: HTMLElement | Node | Text) {
-		this.#triggerElements.push(el);
+	add_trigger_element(el: HTMLElement | Node | Text)
+	{
+		this.#trigger_elements.push(el);
 	}
 
-	removeLastTriggerElement() {
-		this.#triggerElements.pop();
+	remove_last_triggered_element()
+	{
+		this.#trigger_elements.pop();
 	}
 
-	lastTriggerElement(): HTMLElement | Node | Text {
-		return this.#triggerElements[this.#triggerElements.length - 1];
+	last_triggered_element(): HTMLElement | Node | Text
+	{
+		return this.#trigger_elements[this.#trigger_elements.length - 1];
 	}
 
-	computed<R>(fn: (_: T) => R): Computed<R> {
+	computed<R>(fn: (_: T) => R): Computed<R>
+	{
 		return new Computed(this, fn);
 	}
 
-	replace(newValue: T | ((value: T) => T)) {
-		const isFn = (value: unknown): value is (value: T) => T => {
+	replace(new_value: T | ((value: T) => T))
+	{
+		let is_fn = (value: unknown): value is (value: T) => T => {
 			return typeof value === "function";
 		};
 
-		if (isFn(newValue)) {
-			this.set(newValue(this.valueOf()));
+		if (is_fn(new_value)) {
+			this.set(new_value(this.valueOf()));
 		} else {
-			this.set(this.#options.parser?.(newValue) ?? newValue);
+			this.set(this.#options.parser?.(new_value) ?? new_value);
 		}
 	}
 
-	set(newValue: T) {
-		const oldValue = this.#value;
-		this.#value = newValue;
-		this.#notify(oldValue, this.#value);
+	set(new_value: T)
+	{
+		let old_value = this.#value;
+		this.#value = new_value;
+		this.#notify(old_value, this.#value);
 	}
 
-	#notify(oldValue: T, newValue: T) {
-		if (oldValue === newValue) return;
+	#notify(old_value: T, new_value: T)
+	{
+		if (old_value === new_value) {
+			return;
+		}
 
-		this.#options.watch?.(newValue, oldValue);
+		this.#options.watch?.(new_value, old_value);
 
-		this.updateElements();
+		this.update_elements();
 
-		for (const watchFn of this.#watchCallbacks) {
-			watchFn(oldValue, newValue);
+		for (let watch_fn of this.#watch_callbacks) {
+			watch_fn(old_value, new_value);
 		}
 	}
 
-	updateElements() {
-		for (const $trigger of this.#triggerElements) {
+	update_elements()
+	{
+		for (let $trigger of this.#trigger_elements) {
 			if ($trigger instanceof Text) {
 				$trigger.textContent = this.toString();
-			} else if (isDOMInput($trigger)) {
+			} else if (is_dom_input($trigger)) {
 				$trigger.value = this.toString();
 			} else {
 				$trigger.textContent = this.toString();
@@ -105,15 +122,18 @@ export class Signal<T = FIXME> {
 		}
 	}
 
-	valueOf(): T {
+	valueOf(): T
+	{
 		return this.#options.parser?.(this.#value) ?? this.#value;
 	}
 
-	toString(): string {
+	toString(): string
+	{
 		return (this.valueOf() as { toString(): string }).toString();
 	}
 
-	watch<R>(fn: (_: this) => R, options?: ComputedWatchFnOptions) {
+	watch<R>(fn: (_: this) => R, options?: ComputedWatchFnOptions)
+	{
 		let computed = new Computed(this, () => this);
 		computed.watch(fn, options);
 	}
@@ -123,10 +143,12 @@ export class Signal<T = FIXME> {
 // Fonction //
 // -------- //
 
-export function signal<T>(data: T, options?: SignalOptions<T>): Signal<T> {
+export function signal<T>(data: T, options?: SignalOptions<T>): Signal<T>
+{
 	return new Signal(data, options);
 }
 
-export function isSignal<T>(value: unknown): value is Signal<T> {
+export function isSignal<T>(value: unknown): value is Signal<T>
+{
 	return value instanceof Signal;
 }
