@@ -8,21 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { GlobalCustomElement } from "./global";
-
 import type {
 	HTMLElementExtension,
 	SVGElementExtension,
 } from "@phisyx/flex-html-element-extension";
 
+import type { GlobalCustomElement } from "./global";
+
 // --------- //
 // Interface //
 // --------- //
 
-export interface CustomElementConstructor<
-	Instance extends CustomElementInterface,
-> {
-	new (_: GlobalCustomElement): Instance;
+export interface CustomElementConstructor<I extends CustomElementInterface>
+{
+	new (_: GlobalCustomElement): I;
 
 	/**
 	 * Dynamic attributes (aka. observedAttributes)
@@ -35,7 +34,8 @@ export interface CustomElementConstructor<
 	events?: Array<string>;
 }
 
-export interface CustomElementInterface {
+export interface CustomElementInterface
+{
 	customElement?: GlobalCustomElement;
 
 	mounted?: () => void;
@@ -46,9 +46,9 @@ export interface CustomElementInterface {
 	 * be indicated in the static `observedAttributes` array.
 	 */
 	updatedAttribute?: (
-		attributeName: string,
-		attributeOldValue: string | null,
-		attributeNewValue: string | null,
+		attribute_name: string,
+		attribute_old_value: string | null,
+		attribute_new_value: string | null,
 	) => void;
 
 	/**

@@ -8,16 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { camelcase, kebabcase } from "@phisyx/flex-capitalization";
-import { isSignal } from "@phisyx/flex-signal";
-
-import { type AttachShadowMode, GlobalCustomElement } from "./global";
+import type { AttachShadowMode } from "./global";
 import type { CustomElementConstructor, CustomElementInterface } from "./type";
+
+import { camelcase, kebabcase } from "@phisyx/flex-capitalization";
+import { is_signal } from "@phisyx/flex-signal";
+
+import { GlobalCustomElement } from "./global";
+
+// ---- //
+// Type //
+// ---- //
 
 // biome-ignore lint/suspicious/noExplicitAny: ;-)
 type FIXME = any;
 
-type CustomElementDecoratorOptions = {
+interface CustomElementDecoratorOptions
+{
 	/**
 	 * Name of an native HTML element to be extended.
 	 */
@@ -32,34 +39,42 @@ type CustomElementDecoratorOptions = {
 	styles?: Array<string>;
 };
 
-function assertShadowRoot(_: FIXME): asserts _ is ShadowRoot {}
+function assert_shadow_root(_: FIXME): asserts _ is ShadowRoot
+{}
 
-export function customElement(options?: CustomElementDecoratorOptions) {
+export function customElement(options?: CustomElementDecoratorOptions)
+{
 	function Ctor<
 		UCE extends CustomElementConstructor<UCEInstance>,
 		UCEInstance extends CustomElementInterface,
-	>(UserCustomElement: UCE) {
-		function customEventName(name: string): `handle${string}Event` {
+	>(UserCustomElement: UCE)
+	{
+		function custom_event_name(name: string): `handle${string}Event`
+		{
 			let capitalized = camelcase(name, {
 				includes_separators: false,
 			});
 			return `handle${capitalized}Event`;
 		}
 
-		return class LocalCustomElement extends GlobalCustomElement {
+		return class LocalCustomElement extends GlobalCustomElement
+		{
 			public static options: ElementDefinitionOptions | undefined = {
 				extends: options?.extends,
 			};
 
-			static get observedAttributes(): Array<string> {
+			static get observedAttributes(): Array<string>
+			{
 				return UserCustomElement.props || [];
 			}
 
-			static get name() {
+			static get name()
+			{
 				return UserCustomElement.name;
 			}
 
-			static get TAG_NAME() {
+			static get TAG_NAME()
+			{
 				return kebabcase(UserCustomElement.name);
 			}
 
@@ -67,17 +82,18 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 
 			static STYLESHEETS: Map<string, CSSStyleSheet> = new Map();
 
-			constructor() {
+			constructor()
+			{
 				super(options?.mode || "closed");
 
 				this.element = new UserCustomElement(this);
 				this.element.customElement = this;
 
-				const applyStylesheets = (doc: {
+				let apply_stylesheets = (doc: {
 					adoptedStyleSheets: Array<CSSStyleSheet>;
 				}) => {
 					// @ts-expect-error ;)
-					for (const stylesheet of options.styles) {
+					for (let stylesheet of options.styles) {
 						if (
 							this.mode === "open" &&
 							LocalCustomElement.STYLESHEETS.has(stylesheet)
@@ -93,7 +109,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 							stylesheet.indexOf(".css") >= 0 ||
 							stylesheet.indexOf(".scss") >= 0
 						) {
-							const sheet = new CSSStyleSheet();
+							let sheet = new CSSStyleSheet();
 							LocalCustomElement.STYLESHEETS.set(
 								stylesheet,
 								sheet,
@@ -107,7 +123,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 
 							doc.adoptedStyleSheets.push(sheet);
 						} else {
-							const sheet = new CSSStyleSheet();
+							let sheet = new CSSStyleSheet();
 							sheet.replaceSync(stylesheet);
 							doc.adoptedStyleSheets.push(sheet);
 						}
@@ -116,21 +132,23 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 
 				if (options?.styles) {
 					if (this.mode === "open") {
-						assertShadowRoot(this.root);
-						applyStylesheets(this.root);
+						assert_shadow_root(this.root);
+						apply_stylesheets(this.root);
 					} else {
-						applyStylesheets(document);
+						apply_stylesheets(document);
 					}
 				}
 			}
 
-			render() {
+			render()
+			{
 				let $extension = this.element.render();
 				this.root.appendChild($extension.node());
 				return $extension;
 			}
 
-			update() {
+			update()
+			{
 				super.update();
 
 				if (this.root.firstChild) {
@@ -139,7 +157,8 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 				}
 			}
 
-			connectedCallback() {
+			connectedCallback()
+			{
 				this.element.mounted?.();
 
 				let $extension = this.render();
@@ -148,7 +167,7 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 				$extension.defineEventsOnCustomElements(events);
 
 				for (let evtName of events) {
-					let methodName = customEventName(evtName);
+					let methodName = custom_event_name(evtName);
 
 					// @ts-expect-error : TODO
 					if (!this.element[methodName]) {
@@ -176,35 +195,39 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 			}
 
 			attributeChangedCallback(
-				attributeName: string,
-				attributeOldValue: string | null,
-				attributeNewValue: string | null,
-			) {
-				if (UserCustomElement.props?.includes(attributeName)) {
-					let prop = (this.element as FIXME)[attributeName];
+				attribute_name: string,
+				attribute_old_value: string | null,
+				attribute_new_value: string | null,
+			)
+			{
+				if (UserCustomElement.props?.includes(attribute_name)) {
+					let prop = (this.element as FIXME)[attribute_name];
 
-					if (!prop) return;
+					if (!prop) {
+						return;
+					}
 
-					if (!isSignal(prop)) {
+					if (!is_signal(prop)) {
 						// FIXME: améliorer cette partie.
-						(this.element as FIXME)[attributeName] = JSON.parse(
+						(this.element as FIXME)[attribute_name] = JSON.parse(
 							// biome-ignore lint/style/noNonNullAssertion: ;-)
-							attributeNewValue!,
+							attribute_new_value!,
 						);
 						this.update();
 					} else {
-						prop.set(attributeNewValue || "");
+						prop.set(attribute_new_value || "");
 					}
 				}
 
 				this.element.updatedAttribute?.(
-					attributeName,
-					attributeOldValue,
-					attributeNewValue,
+					attribute_name,
+					attribute_old_value,
+					attribute_new_value,
 				);
 			}
 
-			disconnectedCallback() {
+			disconnectedCallback()
+			{
 				this.element.unmounted?.();
 			}
 		} as unknown as UCE;
@@ -213,7 +236,8 @@ export function customElement(options?: CustomElementDecoratorOptions) {
 	return Ctor;
 }
 
-type AttrDecoratorOptions = {
+interface AttrDecoratorOptions
+{
 	parser?:
 		| (<T>(...args: FIXME[]) => T)
 		| BooleanConstructor
@@ -223,16 +247,17 @@ type AttrDecoratorOptions = {
 
 export function attr<T extends CustomElementInterface>(
 	options?: AttrDecoratorOptions,
-) {
-	const defaultParser = (v: unknown) => v;
-	const parser = options?.parser || defaultParser;
-	return (_: T, propertyName: string, descriptor: PropertyDescriptor) => {
-		const propertyNameKb = kebabcase(propertyName);
-		const originGetter = descriptor.get;
+)
+{
+	let default_parser = (v: unknown) => v;
+	let parser = options?.parser || default_parser;
+	return (_: T, property_name: string, descriptor: PropertyDescriptor) => {
+		let property_name_kb = kebabcase(property_name);
+		let origin_getter = descriptor.get;
 		descriptor.get = function (this: T) {
 			return parser(
-				this.customElement?.getAttribute(propertyNameKb) ??
-					originGetter?.call(this),
+				this.customElement?.getAttribute(property_name_kb) ??
+					origin_getter?.call(this),
 			);
 		};
 	};
