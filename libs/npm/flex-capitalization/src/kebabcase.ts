@@ -48,15 +48,16 @@ const Default: Options = {
 // -------- //
 
 /// Transforme une chaîne de caractère en kebab-case.
-function kebabcase(text: string, user_options: Options = Default): string {
-	const options: Options = { ...Default, ...user_options };
+function kebabcase(text: string, user_options: Options = Default): string
+{
+	let options: Options = { ...Default, ...user_options };
 
-	const algo = (ch: string[number] /* char */, idx: number) => {
+	let algo = (ch: string[number] /* char */, idx: number) => {
 		if (ch === "-" || ch !== ch.toUpperCase()) {
 			return ch;
 		}
 
-		const prefix = idx !== 0 ? "-" : "";
+		let prefix = idx !== 0 ? "-" : "";
 
 		if (options.includes_dash_before_number) {
 			if (/\d/.test(ch)) {
@@ -81,7 +82,7 @@ function kebabcase(text: string, user_options: Options = Default): string {
 		return prefix;
 	};
 
-	const output = text.split("").map(algo).join("");
+	let output = text.split("").map(algo).join("");
 
 	if (options.reduce_cumulative_hyphens_into_one) {
 		return output.replace(/-{2,}/g, "-");

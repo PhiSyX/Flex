@@ -47,17 +47,18 @@ const Default: Options = {
 // Fonction //
 // -------- //
 
-/// Transforme une chaîne de caractère en snake_case.
-function snake_case(text: string, user_options: Options = Default): string {
-	const options: Options = { ...Default, ...user_options };
+/// Transforme une chaîne de caractère en snakecase.
+function snakecase(text: string, user_options: Options = Default): string
+{
+	let options: Options = { ...Default, ...user_options };
 
-	const algo = (ch: string[number] /* char */, idx: number) => {
+	let algo = (ch: string[number] /* char */, idx: number) => {
 		if (ch === "_") {
 			return ch;
 		}
 
 		if (ch === ch.toUpperCase()) {
-			const prefix = idx !== 0 ? "_" : "";
+			let prefix = idx !== 0 ? "_" : "";
 
 			if (options.includes_underscore_before_number) {
 				if (/\d/.test(ch)) {
@@ -85,7 +86,7 @@ function snake_case(text: string, user_options: Options = Default): string {
 		return ch;
 	};
 
-	const output = text.split("").map(algo).join("");
+	let output = text.split("").map(algo).join("");
 	if (options.reduce_cumulative_underscores_into_one) {
 		return output.replace(/_{2,}/g, "_");
 	}
@@ -96,4 +97,4 @@ function snake_case(text: string, user_options: Options = Default): string {
 // Export //
 // ------ //
 
-export { snake_case };
+export { snakecase };
