@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { watchEffect } from "vue";
+import { watchEffect as watch_effect } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props
+{
 	name: string;
 	checked?: boolean;
 	disabled?: boolean;
 }
 
-interface Emits {
+interface Emits
+{
 	(event_name: "on"): void;
 	(event_name: "off"): void;
 }
@@ -22,9 +24,13 @@ interface Emits {
 
 defineProps<Props>();
 const emit = defineEmits<Emits>();
-const inputModel = defineModel();
+let inputModel = defineModel();
 
-watchEffect(() => {
+// --------- //
+// Lifecycle //
+// --------- //
+
+watch_effect(() => {
 	if (inputModel.value) {
 		emit("on");
 	} else {

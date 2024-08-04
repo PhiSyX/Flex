@@ -8,20 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { type App, defineAsyncComponent } from "vue";
+import type { App } from "vue";
+
+import { defineAsyncComponent as define_async_component } from "vue";
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const iconsImports = import.meta.glob<{ default: any }>(
+const icons_imports = import.meta.glob<{ default: any }>(
 	"./src/icons/Icon*.vue",
 );
 
-const iconsComponents = Object.entries(iconsImports).map(
-	([iconComponentFilepath, iconComponent]) => {
-		const iconComponentName = iconComponentFilepath.slice(
+let icons_components = Object.entries(icons_imports).map(
+	([icon_component_filepath, icon_component]) => {
+		let icon_component_name = icon_component_filepath.slice(
 			"./src/icons/".length,
 			0 - ".vue".length,
 		);
-		return [iconComponentName, iconComponent] as unknown as [
+		return [icon_component_name, icon_component] as unknown as [
 			string,
 			// biome-ignore lint/suspicious/noExplicitAny: OSEF
 			() => Promise<{ default: any }>,
@@ -42,11 +44,12 @@ export type { Icons } from "./src/icons";
 
 // NOTE(phisyx): plugin Vue.
 export default {
-	install(app: App<Element>) {
-		for (const [iconComponentName, iconComponent] of iconsComponents) {
+	install(app: App<Element>)
+	{
+		for (let [icon_component_name, icon_component] of icons_components) {
 			app.component(
-				iconComponentName,
-				defineAsyncComponent(iconComponent),
+				icon_component_name,
+				define_async_component(icon_component),
 			);
 		}
 	},

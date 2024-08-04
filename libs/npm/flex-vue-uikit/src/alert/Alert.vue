@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted as on_mounted, ref } from "vue";
+
 import { ButtonIcon } from "../icons";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props 
+{
 	canClose?: boolean;
 	contentCenter?: boolean;
 	closeAfterSeconds?: number;
 	type: "warning" | "error";
 }
 
-interface Emits {
+interface Emits
+{
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "close"): void;
@@ -29,20 +32,29 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-const displaying = ref(true);
+let displaying = ref(true);
 
-function closeHandler() {
-	displaying.value = false;
-	emit("close");
-}
+// --------- //
+// Lifecycle //
+// --------- //
 
-onMounted(() => {
+on_mounted(() => {
 	if (props.closeAfterSeconds) {
 		setTimeout(() => {
-			closeHandler();
+			close_handler();
 		}, props.closeAfterSeconds * 1000);
 	}
 });
+
+// ------- //
+// Handler //
+// ------- //
+
+function close_handler()
+{
+	displaying.value = false;
+	emit("close");
+}
 </script>
 
 <template>
@@ -60,7 +72,7 @@ onMounted(() => {
 			v-if="canClose"
 			icon="close"
 			class="[ flex:shrink=0 ]"
-			@click="closeHandler"
+			@click="close_handler"
 		/>
 	</div>
 </template>

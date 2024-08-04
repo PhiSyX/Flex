@@ -1,6 +1,24 @@
 <script setup lang="ts">
-import { handleClick } from "./Button.handler";
-import { type Props, computeIsSelected } from "./Button.state";
+import type { Icons } from "~/icons";
+
+import { computed } from "vue";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props
+{
+	icon?: Icons;
+	position?: "left" | "right";
+	withOpacity?: boolean;
+	value?: unknown;
+	trueValue?: unknown;
+	falseValue?: unknown;
+	selected?: unknown;
+	type?: HTMLButtonElement["type"] | "dialog";
+	variant?: "primary" | "secondary" | "danger";
+}
 
 // --------- //
 // Composant //
@@ -12,22 +30,56 @@ const props = withDefaults(defineProps<Props>(), {
 	type: "button",
 });
 
-const selectedModel = defineModel("selected");
+let selected_model = defineModel("selected");
 
-const handleClickHandler = handleClick(props, selectedModel);
-const isSelected = computeIsSelected(props);
+let value$ = computed(() => props.value ?? props.trueValue);
+
+let is_selected = computed(() => {
+	if (value$.value == null && props.selected == null) {
+		return false;
+	}
+	return value$.value === props.selected;
+});
+
+
+// ------- //
+// Handler //
+// ------- //
+
+function click_handler(_: MouseEvent)
+{
+	if (value$.value == null && props.selected == null) {
+		return;
+	}
+
+	if (is_selected.value) {
+		if (props.falseValue != null) {
+			selected_model.value = props.falseValue;
+		} else {
+			selected_model.value = value$.value;
+		}
+	} else {
+		if (props.trueValue != null) {
+			selected_model.value = props.trueValue;
+		} else if (props.falseValue != null) {
+			selected_model.value = props.falseValue;
+		} else {
+			selected_model.value = value$.value;
+		}
+	}
+}
 </script>
 
 <template>
 	<button
 		class="btn flex:shrink=0"
 		:class="{
-			'btn(:active)': isSelected,
+			'btn(:active)': is_selected,
 			'btn/without-opacity': withOpacity === false,
 			[`btn/${variant}`]: variant,
 		}"
 		:type="(type as HTMLButtonElement['type'])"
-		@click="handleClickHandler"
+		@click="click_handler"
 	>
 		<template v-if="position === 'left' && icon">
 			<component :is="`icon-${icon}`" />

@@ -5,7 +5,8 @@ import { computed } from "vue";
 // Type //
 // ---- //
 
-interface Props {
+interface Props
+{
 	form?: string;
 	labelN?: string;
 	valueN?: string | boolean;
@@ -19,7 +20,8 @@ interface Props {
 // Constant //
 // -------- //
 
-enum InputRadioLabelDefault {
+enum InputRadioLabelDefault
+{
 	Yes = "Yes",
 	No = "No",
 }

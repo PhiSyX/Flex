@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import { type Icons, LabelIcon } from "../icons";
+import type { Icons } from "../icons";
 
-interface Props {
+import { LabelIcon } from "../icons";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props
+{
 	error?: string | null;
 	label: Icons;
-	modelValue: string;
 	name: string;
 }
 
+// --------- //
+// Composant //
+// --------- //
+
 defineOptions({ inheritAttrs: false });
 defineProps<Props>();
-const inputModel = defineModel();
+
+let input_model = defineModel();
 </script>
 
 <template>
@@ -19,7 +30,7 @@ const inputModel = defineModel();
 			<LabelIcon :for="name" :icon="label" />
 			<input
 				:id="name"
-				v-model="inputModel"
+				v-model="input_model"
 				type="text"
 				v-bind="$attrs"
 			/>
