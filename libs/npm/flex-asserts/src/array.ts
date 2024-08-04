@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function isArray<T>(value: unknown): value is Array<T> {
+export function is_array<T>(value: unknown): value is Array<T> 
+{
 	return Array.isArray(value);
 }

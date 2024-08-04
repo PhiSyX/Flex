@@ -8,12 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isFunction } from "./fn";
+import { is_function } from "./fn";
 
-export function isFuture<T>(value: unknown): value is Promise<T> {
+export function is_future<T>(value: unknown): value is Promise<T> 
+{
 	return value instanceof Promise;
 }
 
-export function isImportFuture<T>(value: unknown): value is () => Promise<T> {
-	return isFunction(value) && value.toString().indexOf("() => import") >= 0;
+export function is_import_future<T>(value: unknown): value is () => Promise<T> {
+	return is_function(value) && value.toString().indexOf("() => import") >= 0;
 }

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isClass, isFuture, isImportFuture } from "@phisyx/flex-asserts";
+import { is_class, is_future, is_import_future } from "@phisyx/flex-asserts";
 import { HTMLElementExtension as Ext } from "../extension";
 
 // biome-ignore lint/suspicious/noExplicitAny: ;-)
@@ -44,16 +44,16 @@ export function use(
 		return customElement;
 	};
 
-	if (isImportFuture<{ default: FIXME }>(customTag)) {
+	if (is_import_future<{ default: FIXME }>(customTag)) {
 		// biome-ignore lint/style/noParameterAssign: ;-)
 		customTag = customTag();
 	}
 
-	if (isFuture<{ default: FIXME }>(customTag)) {
+	if (is_future<{ default: FIXME }>(customTag)) {
 		return customTag.then((cel) => render(cel.default.TAG_NAME));
 	}
 
-	return render(isClass(customTag) ? customTag.TAG_NAME : customTag);
+	return render(is_class(customTag) ? customTag.TAG_NAME : customTag);
 }
 
 export const is = use;

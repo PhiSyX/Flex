@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { isArray } from "@phisyx/flex-asserts";
+import { is_array } from "@phisyx/flex-asserts";
 import { type Signal, isSignal } from "@phisyx/flex-signal";
 import {
 	// ElementExtension as Ext,
@@ -22,7 +22,7 @@ export function forview<T>(
 ): HExt {
 	let fragment = HExt.createFragment() as HExt;
 
-	if (isArray<T>(arr)) {
+	if (is_array<T>(arr)) {
 		for (const item of arr.map(shallowView)) {
 			fragment.append(item);
 		}

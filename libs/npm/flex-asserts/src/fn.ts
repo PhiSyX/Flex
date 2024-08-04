@@ -8,12 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function isClass<O>(value: unknown): value is object & O {
+export function is_class<O>(value: unknown): value is object & O 
+{
 	return typeof value === "function";
 }
 
-export function isFunction<O>(
+export function is_function<O>(
 	value: unknown,
-): value is (...args: Array<unknown>) => O {
+): value is (...args: Array<unknown>) => O 
+{
 	return typeof value === "function";
 }

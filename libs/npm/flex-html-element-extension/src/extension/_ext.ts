@@ -9,15 +9,15 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import {
-	isBoolean,
-	isDOMElement,
-	isDOMFragment,
-	isDOMInput,
-	isDOMNode,
-	isFunction,
-	isFuture,
-	isPrimitive,
-	isString,
+	is_boolean,
+	is_dom_element,
+	is_dom_fragment,
+	is_dom_input,
+	is_dom_node,
+	is_function,
+	is_future,
+	is_primitive,
+	is_string
 } from "@phisyx/flex-asserts";
 import { kebabcase } from "@phisyx/flex-capitalization";
 import { noopBool } from "@phisyx/flex-helpers";
@@ -76,13 +76,13 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 		let $nativeFragment = document.createDocumentFragment();
 
 		for (let child of children) {
-			if (isFunction<Node>(child)) {
+			if (is_function<Node>(child)) {
 				$nativeFragment.append(child());
-			} else if (isString(child)) {
+			} else if (is_string(child)) {
 				$nativeFragment.append(child);
-			} else if (isDOMFragment(child)) {
+			} else if (is_dom_fragment(child)) {
 				$nativeFragment.append(child);
-			} else if (isDOMNode(child)) {
+			} else if (is_dom_node(child)) {
 				$nativeFragment.append(child);
 			} else {
 				$nativeFragment.append(child.node());
@@ -225,11 +225,11 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			return this.#handleSelf(obj);
 		}
 
-		if (isDOMElement(obj)) {
+		if (is_dom_element(obj)) {
 			return this.#handleDOMElement(obj);
 		}
 
-		if (isDOMNode(obj)) {
+		if (is_dom_node(obj)) {
 			return this.#handleDOMNode(obj);
 		}
 
@@ -238,13 +238,13 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			return true;
 		}
 
-		if (isFuture<FIXME>(obj)) {
+		if (is_future<FIXME>(obj)) {
 			obj.then((self) => this.#handleArgs([self]));
 			return true;
 		}
 
 		for (const [attr, value] of Object.entries(obj)) {
-			if (isPrimitive(value)) {
+			if (is_primitive(value)) {
 				this.nativeElement.setAttribute(kebabcase(attr), value);
 			} else {
 				this.nativeElement.setAttribute(
@@ -280,14 +280,14 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	protected handleSignal(signal: Signal): boolean {
-		if (isDOMInput(this.nativeElement)) {
+		if (is_dom_input(this.nativeElement)) {
 			this.nativeElement.value = signal.toString();
 			return true;
 		}
 
 		let value = signal.valueOf();
 
-		if (isPrimitive(value)) {
+		if (is_primitive(value)) {
 			signal.addTriggerElement(document.createTextNode(value.toString()));
 		}
 
@@ -373,7 +373,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 			updateDisplay(sig.valueOf());
 		} else if (isComputed(sig)) {
 			sig.watch((a) => updateDisplay(a), { immediate: true });
-		} else if (isBoolean(sig)) {
+		} else if (is_boolean(sig)) {
 			updateDisplay(sig);
 		}
 
@@ -392,7 +392,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	class(rawClassName: string | Record<PropertyKey, unknown>): this {
-		if (isString(rawClassName)) {
+		if (is_string(rawClassName)) {
 			const classNames = rawClassName.split(" ");
 			this.nativeElement.classList.add(...classNames);
 		} else {
@@ -430,6 +430,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	}
 
 	onlyIf(condition: boolean): this {
+		// @ts-expect-error à corriger
 		if (!condition) this.nativeElement.lastElementChild.remove();
 		return this;
 	}
