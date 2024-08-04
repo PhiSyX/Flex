@@ -72,13 +72,11 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 			.slice(-2)
 			.map((msg) => msg.id);
 
-		let msg = room.add_message(
-			new RoomMessage()
+		let message = room.add_message(
+			new RoomMessage(data.text)
 				.with_id(data.tags.msgid)
-				.with_message(data.text)
 				.with_nickname(data.origin.nickname)
 				.with_target(data.channel)
-				.with_time(new Date())
 				.with_type("pubmsg")
 				.with_data(data)
 				.with_is_current_client(is_current_client)
@@ -88,8 +86,8 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 		if (has_mention && !is_current_client) {
 			room.activities.upsert("mention", {
 				channel_id: room.id(),
-				message_id: msg.id,
-				nickname: msg.nickname,
+				message_id: message.id,
+				nickname: message.nickname,
 				previous_messages_ids,
 			});
 		}

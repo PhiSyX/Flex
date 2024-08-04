@@ -110,15 +110,13 @@ export class Room<R = RoomID, Type extends string = string> {
 		message_text: string,
 	): RoomMessage
 	{
-		let message = new RoomMessage()
+		let message = new RoomMessage(message_text)
 			.with_id(payload.tags.msgid)
 			.with_type("event:connect")
 			// NOTE(phisyx): Les événements de connexions n'ont pas besoin
 			// d'être annotés d'un pseudonyme.
 			.with_nickname("*")
-			.with_message(message_text)
 			.with_target(this._name)
-			.with_time(new Date())
 			.with_data(payload);
 		return this.add_message(message);
 	}
@@ -134,13 +132,11 @@ export class Room<R = RoomID, Type extends string = string> {
 		message_text: string,
 	): RoomMessage
 	{
-		let message = new RoomMessage()
+		let message = new RoomMessage(message_text)
 			.with_id(payload.tags.msgid)
 			.with_type("event:error")
 			.with_nickname("*")
-			.with_message(message_text)
 			.with_target(this._name)
-			.with_time(new Date())
 			.with_data(payload);
 		return this.add_message(message);
 	}
@@ -158,13 +154,11 @@ export class Room<R = RoomID, Type extends string = string> {
 		message_text?: string,
 	): RoomMessage
 	{
-		let message = new RoomMessage()
+		let message = new RoomMessage(message_text || event_name)
 			.with_data(payload)
 			.with_id(payload.tags.msgid)
-			.with_message(message_text || event_name)
 			.with_nickname(payload.origin.nickname)
 			.with_target(this.id())
-			.with_time(new Date())
 			.with_type(event_name)
 			.with_is_current_client(payload.isCurrentClient);
 		this.add_message(message);

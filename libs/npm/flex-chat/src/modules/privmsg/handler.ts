@@ -106,12 +106,10 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 				: "*";
 
 		room.add_message(
-			new RoomMessage()
+			new RoomMessage(data.text)
 				.with_id(data.tags.msgid)
-				.with_message(data.text)
 				.with_nickname(nickname)
 				.with_target(data.target)
-				.with_time(new Date())
 				.with_type("privmsg")
 				.with_data(data)
 				.with_is_current_client(is_current_client),

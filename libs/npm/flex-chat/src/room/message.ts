@@ -48,6 +48,19 @@ export const MESSAGES_LIMIT: number = 250;
 
 export class RoomMessage<T = unknown, D = object>
 {
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(message: RoomMessage["message"]) 
+	{
+		this.message = message;
+		this.with_time(new Date());
+	}
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
 	archived = false;
 	data!: MessageProperties<T, D>["data"];
 	id!: MessageProperties["id"];
@@ -99,12 +112,6 @@ export class RoomMessage<T = unknown, D = object>
 	with_mention(bool: boolean): this
 	{
 		this.mention = bool;
-		return this;
-	}
-
-	with_message(message: this["message"]): this
-	{
-		this.message = message;
 		return this;
 	}
 

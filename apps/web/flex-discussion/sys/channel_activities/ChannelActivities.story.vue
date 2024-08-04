@@ -27,9 +27,8 @@ let member = channel.get_member_by_nickname("PhiSyX");
 
 let msgid = "0000-0000-0000-0000-0000";
 channel.add_message(
-	new RoomMessage<"channel", { text: string }>()
+	new RoomMessage<"channel", { text: string }>("hello world")
 		.with_type("privmsg")
-		.with_message("hello world")
 		.with_id(msgid),
 );
 let message = channel.get_message<{ text: string }>(msgid).unwrap();

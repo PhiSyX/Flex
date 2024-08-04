@@ -36,16 +36,14 @@ let origin2: User = new User({
 let me = Some(new ChannelMember(origin1));
 
 chan.messages.push(
-	new RoomMessage()
+	new RoomMessage("Hello World")
 		.with_data({ origin: origin1 })
 		.with_id("id")
 		.with_is_current_client(false)
-		.with_message("Hello World")
 		.with_nickname("ModeratorUser")
 		.with_target(channel_name)
-		.with_time(new Date())
 		.with_type("pubmsg"),
-	new RoomMessage()
+	new RoomMessage("Hello World")
 		.with_data({
 			origin: origin1,
 			channel: cast_to_channel_id("#channel"),
@@ -56,10 +54,8 @@ chan.messages.push(
 		} as GenericReply<"KICK">)
 		.with_id("id2")
 		.with_is_current_client(false)
-		.with_message("Hello World")
 		.with_nickname("ModeratorUser")
 		.with_target(channel_name)
-		.with_time(new Date())
 		.with_type("event:kick"),
 );
 
