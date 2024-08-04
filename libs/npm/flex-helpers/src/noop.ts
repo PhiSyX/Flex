@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function noop() {}
+export function noop()
+{}
 
-export function noopBool() {
+export function noop_bool(): boolean
+{
 	return false;
 }
