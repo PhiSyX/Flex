@@ -11,3 +11,4 @@
 export * from "./chat";
 export * from "./overlayer";
 export * from "./settings";
+export * from "./uuid";

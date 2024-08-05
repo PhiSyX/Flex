@@ -13,10 +13,13 @@ import type {
 	ChannelMemberSelected,
 	ChannelRoom,
 	ChatStoreInterfaceExt,
+	ChatStoreUUIDExt,
 	CommandInterface,
 	ConnectUserInfo,
 	Module,
 	OverlayerStore,
+	UUIDStore,
+	UUIDVariant,
 	User,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
@@ -37,14 +40,20 @@ import {
 import { None } from "@phisyx/flex-safety";
 
 import { use_overlayer_store } from "./overlayer";
+import { useUUIDv4Store, useUUIDv7Store } from "./uuid";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt
+export class ChatStoreVue 
+	extends ChatStore 
+	implements ChatStoreInterfaceExt, ChatStoreUUIDExt
 {
 	private _overlayer = use_overlayer_store() as unknown as OverlayerStore;
+
+	private _uuidv4 = useUUIDv4Store() as unknown as UUIDStore;
+	private _uuidv7 = useUUIDv7Store() as unknown as UUIDStore;
 
 	static default(): ChatStoreVue
 	{
@@ -206,6 +215,18 @@ export class ChatStoreVue extends ChatStore implements ChatStoreInterfaceExt
 	overlayer(): OverlayerStore
 	{
 		return this._overlayer;
+	}
+
+	// ------- //
+	// Méthode // -> ChatStoreUUIDExt
+	// ------- //
+
+	uuid(version: UUIDVariant): UUIDStore {
+		if (version === 4) {
+			return this._uuidv4;
+		}
+
+		return this._uuidv7;
 	}
 }
 

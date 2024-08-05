@@ -31,7 +31,7 @@ use lib_flex::constant::{
 	FLEX_VERSION,
 	PROJECT_DIR,
 };
-use lib_flex::{AuthApplication, ChatApplication, Flex, UsersApplication};
+use lib_flex::{AuthApplication, ChatApplication, Flex, GenerateApplication, UsersApplication};
 
 // ---- //
 // Main //
@@ -71,6 +71,7 @@ async fn main() -> impl process::Termination
 		use flex_web_framework::ApplicationFeatureInterface;
 		application
 			.define_default_state(lib_flex::FlexState::Initial)
+			.feature::<GenerateApplication>()
 			.feature::<AuthApplication>()
 			.feature::<UsersApplication>()
 			.feature_ws::<ChatApplication>()

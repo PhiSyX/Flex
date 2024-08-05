@@ -22,10 +22,12 @@ mod features
 {
 	mod auth;
 	mod chat;
+	mod generate;
 	mod users;
 
 	pub use self::auth::AuthApplication;
 	pub use self::chat::ChatApplication;
+	pub use self::generate::GenerateApplication;
 	pub use self::users::UsersApplication;
 }
 
