@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Some } from "@phisyx/flex-safety";
-
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
@@ -29,14 +27,15 @@ export class ErrorBannedfromchanHandler
 
 	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">)
 	{
-		let room = this.store
-			.room_manager()
-			.get(data.channel, { state: "opened:not-kicked" })
-			.or_else(() => Some(this.store.network()))
+		let room = this.store.room_manager().get(data.channel, {
+			state: "opened:not-kicked"
+		})
+			.or_else(() => this.store.network().into_some())
 			.unwrap();
+
 		room.add_event(
 			"error:err_bannedfromchan",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.reason,
 		);
 	}

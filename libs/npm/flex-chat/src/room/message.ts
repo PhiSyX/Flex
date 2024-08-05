@@ -149,3 +149,30 @@ export class RoomMessage<T = unknown, D = object>
 		return this.message;
 	}
 }
+
+export class RoomMessageEvent<R extends RepliesNames>
+{
+	data: GenericReply<Uppercase<R>>;
+	name: this["data"]["name"];
+	tags: this["data"]["tags"];
+	origin: this["data"]["origin"];
+
+	is_current_client: boolean;
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+
+	constructor(
+		data: RoomMessageEvent<R>["data"],
+		is_current_client = true
+	)
+	{
+		this.data = data;
+		this.name = data.name;
+		this.tags = data.tags;
+		this.origin = data.origin;
+
+		this.is_current_client = is_current_client;
+	}
+}

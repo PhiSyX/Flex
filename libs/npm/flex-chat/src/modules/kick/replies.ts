@@ -10,8 +10,17 @@
 
 import type { ChatStoreInterface } from "../../store";
 
-export class ErrorCannotkickglobopsHandler
-	implements SocketEventInterface<"ERR_CANNOTKICKGLOBOPS">
+// ---- //
+// Type //
+// ---- //
+
+type S = SocketEventInterface<"ERR_CANNOTKICKGLOBOPS">;
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ErrorCannotkickglobopsHandler implements S
 {
 	// ----------- //
 	// Constructor //
@@ -33,7 +42,7 @@ export class ErrorCannotkickglobopsHandler
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_cannotkickglobops",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.reason,
 		);
 	}

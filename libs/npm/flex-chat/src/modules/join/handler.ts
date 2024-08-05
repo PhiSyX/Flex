@@ -8,11 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assert_channel_room } from "../../asserts/room";
-import { ChannelMember } from "../../channel/member";
-import { ChannelRoom } from "../../channel/room";
 import type { ChatStoreInterface } from "../../store";
-import { User } from "../../user";
+
+import { assert_channel_room } from "../../asserts/room";
+import { ChannelRoom } from "../../channel/room";
 
 // -------------- //
 // Implémentation //
@@ -47,13 +46,9 @@ export class JoinHandler implements SocketEventInterface<"JOIN">
 
 	handle_client_itself(data: GenericReply<"JOIN">)
 	{
-		let user = new User(data.origin);
-
-		let channel = this.store
-			.room_manager()
-			.get_or_insert(data.channel, () =>
-				ChannelRoom.create_with_owner(data.channel, user),
-			);
+		let channel = this.store.room_manager().get_or_insert(data.channel, 
+			() => ChannelRoom.create_with_owner(data.channel, data.origin),
+		);
 
 		assert_channel_room(channel);
 
@@ -63,24 +58,23 @@ export class JoinHandler implements SocketEventInterface<"JOIN">
 			this.store.room_manager().set_current(data.channel);
 		}
 
-		channel.add_event("event:join", { ...data, isCurrentClient: true });
+		channel.add_event("event:join", channel.create_event(data));
 	}
 
 	handle_user(data: GenericReply<"JOIN">)
 	{
-		let user = this.store.user_manager().add(data.origin).with_channel(data.channel);
+		let user = this.store.user_manager().add(data.origin)
+			.with_channel(data.channel);
 
 		let maybe_channel = this.store.room_manager().get(data.channel);
-
 		if (maybe_channel.is_none()) {
 			return;
 		}
 
 		let channel = maybe_channel.unwrap();
 		assert_channel_room(channel);
-		let new_member = new ChannelMember(user);
-		channel.add_member(new_member);
+		channel.add_member(user);
 
-		channel.add_event("event:join", { ...data, isCurrentClient: false });
+		channel.add_event("event:join", channel.create_event(data, false));
 	}
 }

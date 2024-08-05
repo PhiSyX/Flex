@@ -17,6 +17,10 @@ import type { Layer, OverlayerStore } from "../store";
 export interface UserChangeNicknameRecordDialog
 {}
 
+// -------------- //
+// Implémentation //
+// -------------- //
+
 export class UserChangeNicknameDialog
 {
 	// ------ //

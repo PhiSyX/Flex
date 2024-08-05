@@ -10,8 +10,19 @@
 
 import type { ChatStoreInterface } from "../../store";
 
-export class ErrorNooperhostHandler
-	implements SocketEventInterface<"ERR_NOOPERHOST">
+// ---- //
+// Type //
+// ---- //
+
+type S1 = SocketEventInterface<"ERR_NOOPERHOST">;
+type S2 = SocketEventInterface<"ERR_PASSWDMISMATCH">;
+type S3 = SocketEventInterface<"ERR_OPERONLY">;
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ErrorNooperhostHandler implements S1
 {
 	// ----------- //
 	// Constructor //
@@ -30,17 +41,16 @@ export class ErrorNooperhostHandler
 
 	handle(data: GenericReply<"ERR_NOOPERHOST">)
 	{
-		let active_room = this.store.room_manager().active();
-		active_room.add_event(
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"error:err_nooperhost",
-			{ ...data, isCurrentClient: false },
+			room.create_event(data),
 			data.reason,
 		);
 	}
 }
 
-export class ErrorPasswdmismatchHandler
-	implements SocketEventInterface<"ERR_PASSWDMISMATCH">
+export class ErrorPasswdmismatchHandler implements S2
 {
 	// ----------- //
 	// Constructor //
@@ -59,17 +69,16 @@ export class ErrorPasswdmismatchHandler
 
 	handle(data: GenericReply<"ERR_PASSWDMISMATCH">)
 	{
-		let active_room = this.store.room_manager().active();
-		active_room.add_event(
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"error:err_passwdmismatch",
-			{ ...data, isCurrentClient: false },
+			room.create_event(data),
 			data.reason,
 		);
 	}
 }
 
-export class ErrorOperonlyHandler
-	implements SocketEventInterface<"ERR_OPERONLY">
+export class ErrorOperonlyHandler implements S3
 {
 	// ----------- //
 	// Constructor //
@@ -88,10 +97,10 @@ export class ErrorOperonlyHandler
 
 	handle(data: GenericReply<"ERR_OPERONLY">)
 	{
-		let active_room = this.store.room_manager().active();
-		active_room.add_event(
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"error:err_operonly",
-			{ ...data, isCurrentClient: false },
+			room.create_event(data),
 			data.reason,
 		);
 	}

@@ -8,7 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	ChatStoreUUIDExt
+} from "../../store";
 import type { Module } from "../interface";
 import { AuthCommand } from "./command";
 import { AuthApiHTTPClient } from "./feign/api";
@@ -27,8 +31,10 @@ export class AuthModule implements Module<AuthModule>
 
 	static NAME = "AUTH";
 
-	static create(
-		store: ChatStoreInterface & ChatStoreInterfaceExt,
+	static create(store:
+		& ChatStoreInterface 
+		& ChatStoreInterfaceExt 
+		& ChatStoreUUIDExt
 	): AuthModule
 	{
 		return new AuthModule(
@@ -50,7 +56,7 @@ export class AuthModule implements Module<AuthModule>
 	// Méthode //
 	// ------- //
 
-	input(_roomName: RoomID, ...args: Array<string>)
+	input(_room_id: RoomID, ...args: Array<string>)
 	{
 		let size = args.length;
 		if (size < 1) {

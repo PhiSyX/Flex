@@ -64,17 +64,17 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 		let priv = this.store
 			.room_manager()
 			.get_or_insert(data.origin.id, () => {
-				this.store
-					.room_manager()
-					.active()
-					// @ts-expect-error : type à corriger
-					.add_event("event:query", {
-						...data,
-						isCurrentClient: false,
-					});
-				let room = new PrivateRoom(data.origin.nickname).with_id(
-					data.origin.id,
-				);
+				let active_room = this.store.room_manager().active();
+
+				// @ts-expect-error : type à corriger
+				active_room.add_event("event:query", active_room.create_event(
+					data,
+					false,
+				));
+
+				let room = new PrivateRoom(data.origin.nickname)
+					.with_id(data.origin.id);
+
 				room.add_participant(new PrivateParticipant(data.origin));
 				room.add_participant(
 					new PrivateParticipant(

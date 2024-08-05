@@ -13,7 +13,7 @@ import type { Option } from "@phisyx/flex-safety";
 import type { ChannelAccessLevelGroup } from "../access_level";
 import type { ChannelMember } from "../member";
 
-import { None, Some } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety";
 
 // -------------- //
 // Implémentation //
@@ -132,7 +132,9 @@ export class ChannelMembers
 	{
 		for (let map of Object.values(this.members)) {
 			let member = map.get(id);
-			if (member) return Some(member);
+			if (member) {
+				return member.into_some();
+			}
 		}
 		return None();
 	}
@@ -147,7 +149,7 @@ export class ChannelMembers
 			let members = new Set(map.values());
 			for (let member of members) {
 				if (member.eq(nickname)) {
-					return Some(member);
+					return member.into_some();
 				}
 			}
 		}

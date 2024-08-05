@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreUUIDExt } from "../../store";
 
 // -------------- //
 // Implémentation //
@@ -19,7 +19,7 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE">
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
+	constructor(private store: ChatStoreInterface & ChatStoreUUIDExt)
 	{}
 
 	// ------- //
@@ -31,24 +31,15 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE">
 		this.store.on("SILENCE", (data) => this.handle(data));
 	}
 
-	// NOTE(phisyx): la propriété `msgid` est redéfini pour éviter d'avoir des
-	// doublons dans les listes pour Vue (à cause de l'attribut `key`) étant
-	// donnée qu'on se base sur le même ID pour afficher deux messages
-	// différents. Cela n'est pas dérangeant de le redéfinir pour cet événement.
 	handle(data: GenericReply<"SILENCE">)
 	{
-		let active_room = this.store.room_manager().active();
+		let room = this.store.room_manager().active();
 
 		if (data.updated) {
 			let message = "Votre liste des utilisateurs ignorés a été mis à jour";
-			active_room.add_connect_event(
-				{
-					...data,
-					// Voir NOTE ci-haut.
-					tags: { ...data.tags, msgid: `${data.tags.msgid}_1` },
-				},
-				message,
-			);
+			let [random_uuid] = this.store.uuid(7).take(1);
+			data.tags.msgid = random_uuid;
+			room.add_connect_event(data, message);
 		}
 
 		for (let user of data.users) {
@@ -61,12 +52,9 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE">
 			}
 
 			if (data.updated) {
-				active_room.add_event("event:silence", {
-					...data,
-					// Voir NOTE ci-haut.
-					tags: { ...data.tags, msgid: `${data.tags.msgid}_2` },
-					isCurrentClient: true,
-				});
+				let [random_uuid] = this.store.uuid(7).take(1);
+				data.tags.msgid = random_uuid;
+				room.add_event("event:silence", room.create_event(data));
 			}
 		}
 	}

@@ -30,7 +30,7 @@ export class ErrorNosuchchannelHandler
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_nosuchchannel",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.reason,
 		);
 	}

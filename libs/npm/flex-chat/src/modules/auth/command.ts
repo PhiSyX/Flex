@@ -8,10 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Err, None, Ok, type Result } from "@phisyx/flex-safety";
-
 import type { ChatStoreInterface, ChatStoreInterfaceExt, ChatStoreUUIDExt } from "../../store";
 import type { AuthApiHTTPClient } from "./feign/api";
+
+import { Err, None, Ok, type Result } from "@phisyx/flex-safety";
+
 import { AuthSubCommand } from "./subcommand";
 
 // -------------- //
@@ -33,12 +34,9 @@ export class AuthCommand
 				return Ok(AuthSubCommand.REGISTER);
 
 			default:
-			{
-				let err = new Error(
+				return Err(new Error(
 					`La commande "${value}" n'est pas valide pour le module AUTH`,
-				);
-				return Err(err);
-			}
+				));
 		}
 	}
 
@@ -55,7 +53,7 @@ export class AuthCommand
 	{
 		payload.remember_me ??= false;
 
-		let on_success = (response: AuthIdentifyHttpResponse) => {
+		const on_success = (response: AuthIdentifyHttpResponse) => {
 			this.store.emit("AUTH IDENTIFY", response);
 
 			let message = "-AuthServ- Connexion réussie";
@@ -64,13 +62,11 @@ export class AuthCommand
 				tags: { msgid: response.id },
 			};
 
-			this.store
-				.room_manager()
-				.active()
+			this.store.room_manager().active()
 				.add_connect_event(connect_data, message);
 		};
 
-		let on_failure = async (problem: HttpProblemErrorResponse) => {
+		const on_failure = async (problem: HttpProblemErrorResponse) => {
 			let detail = problem.detail;
 			let message = `-AuthServ- ${detail}`;
 			let [random_uuid] = this.store.uuid(7).take(1);
@@ -79,34 +75,28 @@ export class AuthCommand
 				tags: { msgid: random_uuid },
 			};
 
-			this.store
-				.room_manager()
-				.active()
+			this.store.room_manager().active()
 				.add_error_event(connect_data, message);
 		};
 
-		this.auth_api_http_client
-			.identify(payload)
-			.then(on_success)
-			.catch(on_failure);
+		this.auth_api_http_client.identify(payload)
+			.then(on_success).catch(on_failure);
 	}
 
 	send_register(payload: AuthRegisterFormData)
 	{
-		let on_success = (response: AuthRegisterHttpResponse) => {
+		const on_success = (response: AuthRegisterHttpResponse) => {
 			let connect_data = {
 				origin: this.store.client(),
 				tags: { msgid: response.id },
 			};
 			let message = `-AuthServ- ${response.message}`;
 
-			this.store
-				.room_manager()
-				.active()
+			this.store.room_manager().active()
 				.add_connect_event(connect_data, message);
 		};
 
-		let on_failure = (problem: HttpProblemErrorResponse) => {
+		const on_failure = (problem: HttpProblemErrorResponse) => {
 			this.store.overlayer().create({
 				id: "authserv-register-error",
 				centered: true,
@@ -118,17 +108,18 @@ export class AuthCommand
 			function filter_object<T extends object>(
 				obj: T,
 				keys: Array<string>,
-			): Partial<T> {
-				let filtered = Object.entries(obj).filter(([key, _]) =>
-					keys.includes(key),
+			): Partial<T>
+			{
+				let filtered = Object.entries(obj).filter(
+					([key, _]) => keys.includes(key),
 				);
 				return Object.fromEntries(filtered) as Partial<T>;
 			}
 
 			let filtered_payload = filter_object(
 				payload,
-				(problem.errors || []).flatMap((err) =>
-					err.pointer.slice(2).split("/"),
+				(problem.errors || []).flatMap(
+					(err) => err.pointer.slice(2).split("/"),
 				),
 			);
 
@@ -148,15 +139,11 @@ export class AuthCommand
 			};
 			let message = `-AuthServ- ${problem.title}`;
 
-			this.store
-				.room_manager()
-				.active()
+			this.store.room_manager().active()
 				.add_error_event(connect_data, message);
 		};
 
-		this.auth_api_http_client
-			.register(payload)
-			.then(on_success)
-			.catch(on_failure);
+		this.auth_api_http_client.register(payload)
+			.then(on_success).catch(on_failure);
 	}
 }

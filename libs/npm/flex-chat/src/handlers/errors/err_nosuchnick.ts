@@ -10,12 +10,17 @@
 
 import type { ChatStoreInterface } from "../../store";
 
+// ---- //
+// Type //
+// ---- //
+
+type S = SocketEventInterface<"ERR_NOSUCHNICK">;
+
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ErrorNosuchnickHandler
-	implements SocketEventInterface<"ERR_NOSUCHNICK">
+export class ErrorNosuchnickHandler implements S
 {
 	constructor(private store: ChatStoreInterface)
 	{}
@@ -30,7 +35,7 @@ export class ErrorNosuchnickHandler
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_nosuchnick",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.reason,
 		);
 	}

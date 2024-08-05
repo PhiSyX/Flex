@@ -8,16 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Some } from "@phisyx/flex-safety";
-
 import type { ChatStoreInterface } from "../../store";
+
+// ---- //
+// Type //
+// ---- //
+
+type S = SocketEventInterface<"ERR_CANNOTSENDTOCHAN">;
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ErrorCannotsendtochanHandler
-	implements SocketEventInterface<"ERR_CANNOTSENDTOCHAN">
+export class ErrorCannotsendtochanHandler implements S
 {
 	constructor(private store: ChatStoreInterface)
 	{}
@@ -29,14 +32,15 @@ export class ErrorCannotsendtochanHandler
 
 	handle(data: GenericReply<"ERR_CANNOTSENDTOCHAN">)
 	{
-		let room = this.store
-			.room_manager()
-			.get(data.channel_name, { state: "opened:not-kicked" })
-			.or_else(() => Some(this.store.network()))
+		let room = this.store.room_manager().get(data.channel_name, {
+			state: "opened:not-kicked"
+		})
+			.or_else(() => this.store.network().into_some())
 			.unwrap();
+
 		room.add_event(
 			"error:err_cannotsendtochan",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.reason,
 		);
 	}

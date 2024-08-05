@@ -33,14 +33,14 @@ export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER">
 
 	handle(data: GenericReply<"RPL_YOUREOPER">)
 	{
-		this.store
-			.user_manager()
+		this.store.user_manager()
 			.upsert(data.origin)
 			.with_operator_flag(data.oper_type);
-		let active_room = this.store.room_manager().active();
-		active_room.add_event(
+
+		let room = this.store.room_manager().active();
+		room.add_event(
 			"event:rpl_youreoper",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.message.slice(1),
 		);
 	}

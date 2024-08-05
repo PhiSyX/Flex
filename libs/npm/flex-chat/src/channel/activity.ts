@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Option } from "@phisyx/flex-safety";
+
 import type { RoomMessage } from "../room/message";
 import type { User } from "../user";
 import type { ChannelMember } from "./member";

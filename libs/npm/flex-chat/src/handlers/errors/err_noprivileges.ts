@@ -30,7 +30,7 @@ export class ErrorNoprivilegesHandler
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_noprivileges",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.reason.slice(1),
 		);
 	}

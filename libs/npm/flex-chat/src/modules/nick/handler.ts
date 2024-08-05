@@ -34,27 +34,29 @@ export class NickHandler implements SocketEventInterface<"NICK">
 
 	handle(data: GenericReply<"NICK">)
 	{
-		this.store
-			.user_manager()
-			.change_nickname(data.old_nickname, data.new_nickname);
+		this.store.user_manager().change_nickname(
+			data.old_nickname,
+			data.new_nickname,
+		);
 
 		let is_current_client = this.store.is_current_client(data.origin);
 		if (is_current_client) {
-			if (data.tags.user_id) this.store.set_client_id(data.tags.user_id);
+			if (data.tags.user_id) {
+				this.store.set_client_id(data.tags.user_id);
+			}
 			this.store.set_client_nickname(data.new_nickname);
 		}
 
 		for (let room of this.store.room_manager().rooms()) {
-			room.add_event("event:nick", {
-				...data,
-				isCurrentClient: is_current_client,
-			});
+			room.add_event("event:nick", room.create_event(
+				data,
+				is_current_client,
+			));
 
 			if (room.type === "channel") {
 				assert_channel_room(room);
 
-				let user = this.store
-					.user_manager()
+				let user = this.store.user_manager()
 					.find_by_nickname(data.new_nickname)
 					.expect(`L'utilisateur ${data.new_nickname}.`);
 

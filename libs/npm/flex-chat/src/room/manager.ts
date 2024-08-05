@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option, Some } from "@phisyx/flex-safety";
+import { None, Option } from "@phisyx/flex-safety";
 
 import type { Room } from "./index";
 
@@ -50,7 +50,7 @@ export class RoomManager
 						}
 					}
 				}
-				return Some(room);
+				return room.into_some();
 			})
 			.expect("La chambre courante");
 	}
@@ -95,11 +95,7 @@ export class RoomManager
 			this.set_current_to_last();
 		}
 
-		if (maybe_room.is_some()) {
-			return Some(maybe_room.unwrap());
-		}
-
-		return None();
+		return maybe_room;
 	}
 
 	/**
@@ -168,7 +164,7 @@ export class RoomManager
 			.or_else(() => {
 				let room = fallback();
 				this.insert(room_id, room);
-				return Some(room);
+				return room.into_some();
 			})
 			.unwrap()
 			.marks_as_opened();

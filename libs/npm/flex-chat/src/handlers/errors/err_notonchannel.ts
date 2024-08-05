@@ -10,12 +10,17 @@
 
 import type { ChatStoreInterface } from "../../store";
 
+// ---- //
+// Type //
+// ---- //
+
+type S = SocketEventInterface<"ERR_NOTONCHANNEL">;
+
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ErrorNotonchannelHandler
-	implements SocketEventInterface<"ERR_NOTONCHANNEL">
+export class ErrorNotonchannelHandler implements S
 {
 	constructor(private store: ChatStoreInterface)
 	{}
@@ -30,7 +35,7 @@ export class ErrorNotonchannelHandler
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_notonchannel",
-			{ ...data, isCurrentClient: true },
+			room.create_event(data),
 			data.reason,
 		);
 	}

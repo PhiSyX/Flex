@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Some } from "@phisyx/flex-safety";
-
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
@@ -35,21 +33,19 @@ export class InviteHandler implements SocketEventInterface<"INVITE">
 
 	handle(data: GenericReply<"INVITE">)
 	{
-		let room = this.store
-			.room_manager()
-			.get(data.channel, { state: "opened:not-kicked" })
-			.or_else(() =>
-				Some(
-					this.store
-						.room_manager()
-						.active({ state: "opened:not-kicked" }),
-				),
-			)
-			.unwrap();
+		let room = this.store.room_manager().get(data.channel, { 
+				state: "opened:not-kicked"
+			})
+			.or_else(
+				() => this.store.room_manager().active({
+					state: "opened:not-kicked"
+				})
+				.into_some()
+			).unwrap();
 
-		room.add_event("event:invite", {
-			...data,
-			isCurrentClient: this.store.is_current_client(data.origin),
-		});
+		room.add_event(
+			"event:invite", 
+			room.create_event(data, this.store.is_current_client(data.origin)),
+		);
 	}
 }

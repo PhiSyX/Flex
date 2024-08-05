@@ -12,6 +12,7 @@ import type { User } from "../user";
 
 import { Option } from "@phisyx/flex-safety";
 
+import { is_user } from "../asserts/user";
 import { Room } from "../room";
 import { ChannelAccessControl } from "./access_control";
 import { ChannelAccessLevelFlag } from "./access_level";
@@ -33,7 +34,7 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Crée un salon avec un propriétaire.
 	 */
-	static create_with_owner(name: ChannelID, user: User): ChannelRoom
+	static create_with_owner(name: ChannelID, user: User | Origin): ChannelRoom
 	{
 		return new ChannelRoom(name).with_id(name).with_owner(user);
 	}
@@ -87,9 +88,16 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Ajoute un membre à la liste des membres.
 	 */
-	add_member(member: ChannelMember)
+	add_member(member: ChannelMember | User): ChannelMember
 	{
+		if (is_user(member)) {
+			let new_member = new ChannelMember(member);
+			this.members.add(new_member);
+			return new_member;
+		}
+
 		this.members.add(member);
+		return member;
 	}
 
 	/**
@@ -209,7 +217,7 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
-	with_owner(user: User): this
+	with_owner(user: User | Origin): this
 	{
 		this.add_member(
 			new ChannelMember(user)

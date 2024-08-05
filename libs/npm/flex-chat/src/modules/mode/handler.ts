@@ -8,8 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assert_channel_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
+
+import { assert_channel_room } from "../../asserts/room";
 
 // -------------- //
 // Implémentation //
@@ -44,8 +45,8 @@ export class ModeHandler implements SocketEventInterface<"MODE">
 
 	handle_client_itself(data: GenericReply<"MODE">)
 	{
-		let network = this.store.network();
-		network.add_event("event:mode", { ...data, isCurrentClient: true });
+		let room = this.store.network();
+		room.add_event("event:mode", room.create_event(data));
 	}
 
 	handle_channel(data: GenericReply<"MODE">)
@@ -55,14 +56,14 @@ export class ModeHandler implements SocketEventInterface<"MODE">
 			return;
 		}
 
-		let channel = maybe_room.unwrap();
-		assert_channel_room(channel);
+		let room = maybe_room.unwrap();
+		assert_channel_room(room);
 
 		if (data.updated) {
-			channel.add_event("event:mode", {
-				...data,
-				isCurrentClient: this.store.is_current_client(data.origin),
-			});
+			room.add_event("event:mode", room.create_event(
+				data,
+				this.store.is_current_client(data.origin)),
+			);
 		}
 	}
 }

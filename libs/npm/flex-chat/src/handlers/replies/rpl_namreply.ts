@@ -40,9 +40,7 @@ export class ReplyNamreplyHandler
 		assert_channel_room(channel);
 
 		for (let user_origin of data.users) {
-			let user = this.store
-				.user_manager()
-				.add(user_origin)
+			let user = this.store.user_manager().add(user_origin)
 				.with_channel(channel.id());
 
 			let new_member = new ChannelMember(user)

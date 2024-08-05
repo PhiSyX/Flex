@@ -42,18 +42,18 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 		for (let room of this.store.room_manager().rooms()) {
 			if (room.type === "channel") {
 				assert_channel_room(room);
-				this.handle_channel(data, room);
+				this.handle_channel(room, data);
 			}
 		}
 	}
 
-	handle_channel(data: GenericReply<"QUIT">, channel: ChannelRoom)
+	handle_channel(channel: ChannelRoom, data: GenericReply<"QUIT">)
 	{
 		if (!channel.members.has(data.origin.id)) {
 			return;
 		}
 
-		channel.add_event("event:quit", { ...data, isCurrentClient: false });
+		channel.add_event("event:quit", channel.create_event(data, false));
 
 		channel.remove_member(data.origin.id);
 	}

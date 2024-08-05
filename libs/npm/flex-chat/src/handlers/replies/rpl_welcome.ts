@@ -61,8 +61,8 @@ export class ReplyWelcomeHandler
 			body: JSON.stringify(token_data),
 		});
 
-		let network_room = this.store.network();
-		network_room.add_connect_event(data, data.message);
+		let room = this.store.network();
+		room.add_connect_event(data, data.message);
 
 		let module = this.store.module_manager().get("JOIN")
 			.expect("Récupération du module `JOIN`");

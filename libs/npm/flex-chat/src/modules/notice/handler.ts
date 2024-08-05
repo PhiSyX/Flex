@@ -8,11 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assert_channel_room, is_channel } from "../../asserts/room";
 import type { ChannelRoom } from "../../channel/room";
-import { NoticeCustomRoom } from "../../custom_room/notice";
-import type { RoomMessage } from "../../room/message";
+import type { RoomMessage, RoomMessageEvent } from "../../room/message";
 import type { ChatStoreInterface } from "../../store";
+
+import { assert_channel_room, is_channel } from "../../asserts/room";
+import { NoticeCustomRoom } from "../../custom_room/notice";
 
 // -------------- //
 // Implémentation //
@@ -38,44 +39,47 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE">
 	handle(data: GenericReply<"NOTICE">)
 	{
 		let is_current_client = this.store.is_current_client(data.origin);
-		let active_room = this.store.room_manager().active();
+		let room = this.store.room_manager().active();
 
-		let payload = { ...data, isCurrentClient: is_current_client };
-		let message = active_room.add_event(
+		let event: RoomMessageEvent<"NOTICE"> = room.create_event(
+			data,
+			is_current_client,
+		);
+		let message = room.add_event(
 			"event:notice",
-			payload,
-			payload.text,
+			event,
+			data.text,
 		);
 
 		if (
 			!is_current_client ||
-			(is_current_client && is_channel(payload.target))
+			(is_current_client && is_channel(data.target))
 		) {
 			let notice_room = this.store.room_manager().get_or_insert(
 				NoticeCustomRoom.ID,
 				() => new NoticeCustomRoom(),
 			);
 
-			if (active_room.id() !== NoticeCustomRoom.ID) {
-				notice_room.add_event("event:notice", payload, payload.text);
+			if (room.id() !== NoticeCustomRoom.ID) {
+				notice_room.add_event("event:notice", event, data.text);
 			}
 		}
 
 		// NOTE: envoie la notice dans le panel d'activité du salon.
-		if (!is_current_client && is_channel(payload.target)) {
-			let maybe_channel = this.store.room_manager().get(payload.target);
+		if (!is_current_client && is_channel(data.target)) {
+			let maybe_channel = this.store.room_manager().get(data.target);
 
 			if (maybe_channel.is_some()) {
 				let channel = maybe_channel.unwrap();
 				assert_channel_room(channel);
-				this.handle_channel(channel, payload, message);
+				this.handle_channel(channel, event, message);
 			}
 		}
 	}
 
 	handle_channel(
 		channel: ChannelRoom,
-		payload: GenericReply<"NOTICE"> & { isCurrentClient: boolean },
+		payload: RoomMessageEvent<"NOTICE">,
 		message: RoomMessage,
 	)
 	{

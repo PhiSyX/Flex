@@ -37,11 +37,9 @@ export class User
 	{
 		let user: User;
 
-		if (is_user(user_origin))
-			{
+		if (is_user(user_origin)) {
 			user = user_origin;
-		} else
-		{
+		} else {
 			user = new User(user_origin);
 		}
 
@@ -51,7 +49,7 @@ export class User
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(user: Origin)
+	constructor(user: Origin | User)
 	{
 		this.id = user.id;
 		this.nickname = user.nickname;
@@ -251,6 +249,14 @@ export class User
 	}
 
 	/**
+	 * Englobe l'instance dans un type Option.Some
+	 */
+	into_some(): Option<this>
+	{
+		return Some(this)
+	}
+
+	/**
 	 * Est-ce que l'utilisateur est un opérateur local?
 	 */
 	is_local_operator()
@@ -317,6 +323,12 @@ export class User
 	set_nickname(nickname: string)
 	{
 		this.nickname = nickname;
+	}
+
+	with_id(id: this["id"]): this
+	{
+		this.id = id;
+		return this;
 	}
 
 	/**

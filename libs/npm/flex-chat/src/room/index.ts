@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option } from "@phisyx/flex-safety";
-import { MESSAGES_LIMIT, RoomMessage } from "./message";
+
+import { None, Option, Some } from "@phisyx/flex-safety";
+
+import { MESSAGES_LIMIT, RoomMessage, RoomMessageEvent } from "./message";
 
 // -------- //
 // Constant //
@@ -21,7 +23,8 @@ export const INPUT_HISTORY_LIMIT: number = 50;
 // Implémentation //
 // -------------- //
 
-export class Room<R = RoomID, Type extends string = string> {
+export class Room<R = RoomID, Type extends string = string> 
+{
 	/**
 	 * ID de la chambre.
 	 */
@@ -150,17 +153,17 @@ export class Room<R = RoomID, Type extends string = string> {
 			| `event:${Lowercase<R>}`
 			| `error:${Uppercase<R>}`
 			| `event:${Uppercase<R>}`,
-		payload: GenericReply<Uppercase<R>> & { isCurrentClient: boolean },
+		event: RoomMessageEvent<R>,
 		message_text?: string,
 	): RoomMessage
 	{
 		let message = new RoomMessage(message_text || event_name)
-			.with_data(payload)
-			.with_id(payload.tags.msgid)
-			.with_nickname(payload.origin.nickname)
+			.with_data(event.data)
+			.with_id(event.tags.msgid)
+			.with_nickname(event.origin.nickname)
 			.with_target(this.id())
 			.with_type(event_name)
-			.with_is_current_client(payload.isCurrentClient);
+			.with_is_current_client(event.is_current_client);
 		this.add_message(message);
 		return message;
 	}
@@ -224,6 +227,14 @@ export class Room<R = RoomID, Type extends string = string> {
 		this.messages = [];
 	}
 
+	create_event<T extends RepliesNames>(
+		data: RoomMessageEvent<T>["data"],
+		is_current_client = true
+	): RoomMessageEvent<T>
+	{
+		return new RoomMessageEvent(data, is_current_client);
+	}
+
 	eq($1: string | this): boolean
 	{
 		if (typeof $1 === "string") {
@@ -278,6 +289,14 @@ export class Room<R = RoomID, Type extends string = string> {
 	is_closed(): boolean
 	{
 		return this.closed;
+	}
+
+	/**
+	 * Englobe l'instance dans un type Option.Some
+	 */
+	into_some(): Option<this>
+	{
+		return Some(this);
 	}
 
 	/**

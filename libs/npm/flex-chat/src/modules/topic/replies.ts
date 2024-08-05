@@ -8,8 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assert_channel_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
+
+import { assert_channel_room } from "../../asserts/room";
 
 // -------------- //
 // Implémentation //
@@ -43,15 +44,14 @@ export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC">
 		channel.set_topic(data.topic);
 
 		// @ts-expect-error : type à corriger
-		channel.add_event("event:topic", {
-			...data,
-			isCurrentClient: this.store.is_current_client(data.origin),
-		});
+		channel.add_event("event:topic", channel.create_event(
+			data,
+			this.store.is_current_client(data.origin)),
+		);
 	}
 }
 
-export class ReplyNotopicHandler
-	implements SocketEventInterface<"RPL_NOTOPIC">
+export class ReplyNotopicHandler implements SocketEventInterface<"RPL_NOTOPIC">
 {
 	// ----------- //
 	// Constructor //

@@ -10,7 +10,7 @@
 
 import { Option } from "@phisyx/flex-safety";
 
-import type { PrivateParticipant } from "../private/participant";
+import { PrivateParticipant } from "../private/participant";
 
 import { Room } from "../room";
 
@@ -46,9 +46,22 @@ export class PrivateRoom extends Room<UserID, "private">
 	/**
 	 * Ajoute un participant à la chambre privé.
 	 */
-	add_participant(participant: PrivateParticipant)
+	add_participant(participant: PrivateParticipant | Origin)
 	{
-		this.participants.set(participant.id, participant);
+		if (participant instanceof PrivateParticipant) {
+			this.participants.set(participant.id, participant);
+		} else {
+			let new_participant = new PrivateParticipant(participant);
+			this.participants.set(participant.id, new_participant);
+		}
+	}
+
+	/**
+	 * Supprime un participant de la chambre privé.
+	 */
+	del_participant(participant_id: string)
+	{
+		this.participants.delete(participant_id);
 	}
 
 	/**

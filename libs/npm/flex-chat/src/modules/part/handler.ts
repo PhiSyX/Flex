@@ -62,7 +62,7 @@ export class PartHandler implements SocketEventInterface<"PART">
 
 	handle_user(data: GenericReply<"PART">, channel: ChannelRoom)
 	{
-		channel.add_event("event:part", { ...data, isCurrentClient: false });
+		channel.add_event("event:part", channel.create_event(data, false));
 		channel.remove_member(data.origin.id);
 	}
 }

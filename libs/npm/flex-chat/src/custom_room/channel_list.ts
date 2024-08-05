@@ -14,6 +14,8 @@ import { Room } from "../room";
 // Interface //
 // --------- //
 
+type Channels = Map<ListDataResponse["channel"], ListDataResponse>;
+
 export interface ListDataResponse
 {
 	channel: ChannelID;
@@ -50,7 +52,7 @@ export class ChannelListCustomRoom extends Room<CustomRoomID, "channel-list-cust
 	/**
 	 * La liste des salons publiques du serveur.
 	 */
-	channels: Map<ListDataResponse["channel"], ListDataResponse> = new Map();
+	channels: Channels = new Map();
 
 	// ------- //
 	// Méthode //
