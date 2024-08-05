@@ -211,7 +211,9 @@ export class ChannelAccessLevel
 		}
 
 		let level = Array.from(this.modes).reduce((acc, mode) => {
-			if (mode > acc) return mode;
+			if (mode > acc) {
+				return mode;
+			}
 			return acc;
 		}, ChannelAccessLevelFlag.User);
 

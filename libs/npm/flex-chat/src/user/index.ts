@@ -120,7 +120,9 @@ export class User
 	 */
 	get class_name(): string
 	{
-		if (this.away) return "is-away";
+		if (this.away) {
+			return "is-away";
+		}
 		return "";
 	}
 
@@ -341,12 +343,11 @@ export class User
 	 */
 	with_operator_flag(flag: UserFlag | string): this
 	{
-		if (typeof flag === "string")
-			{
+		if (typeof flag === "string") {
 			this.operator = this.parse_flag(flag);
-			return this;
+		} else {
+			this.operator.replace(flag);
 		}
-		this.operator.replace(flag);
 		return this;
 	}
 }

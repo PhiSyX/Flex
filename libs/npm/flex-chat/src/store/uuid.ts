@@ -124,7 +124,9 @@ export class UUIDStore
     {
 		const ntimes = Number(n) ?? 1;
 		const uuids = this.uuids.splice(0, ntimes);
-		if (this.uuids.length < 5) this.populate();
+		if (this.uuids.length < 5) {
+			this.populate();
+		}
 		return uuids;
 	}
 }
