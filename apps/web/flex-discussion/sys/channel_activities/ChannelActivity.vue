@@ -95,10 +95,3 @@ p {
 	color: var(--channel-activities-color);
 }
 </style>
-
-<style lang="scss">
-p {
-	line-height: 24px;
-	color: var(--channel-activities-color);
-}
-</style>
