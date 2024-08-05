@@ -45,7 +45,7 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE">
 				{
 					...data,
 					// Voir NOTE ci-haut.
-					tags: { ...data.tags, msgid: `${data.tags.msgid}#1` },
+					tags: { ...data.tags, msgid: `${data.tags.msgid}_1` },
 				},
 				message,
 			);
@@ -64,7 +64,7 @@ export class ReplySilenceHandler implements SocketEventInterface<"SILENCE">
 				active_room.add_event("event:silence", {
 					...data,
 					// Voir NOTE ci-haut.
-					tags: { ...data.tags, msgid: `${data.tags.msgid}#2` },
+					tags: { ...data.tags, msgid: `${data.tags.msgid}_2` },
 					isCurrentClient: true,
 				});
 			}

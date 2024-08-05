@@ -10,7 +10,7 @@
 
 import { Err, None, Ok, type Result } from "@phisyx/flex-safety";
 
-import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt, ChatStoreUUIDExt } from "../../store";
 import type { AuthApiHTTPClient } from "./feign/api";
 import { AuthSubCommand } from "./subcommand";
 
@@ -46,7 +46,7 @@ export class AuthCommand
 	// Constructor //
 	// ----------- //
 	constructor(
-		private store: ChatStoreInterface & ChatStoreInterfaceExt,
+		private store: ChatStoreInterface & ChatStoreInterfaceExt & ChatStoreUUIDExt,
 		private auth_api_http_client: AuthApiHTTPClient,
 	)
 	{}
@@ -58,7 +58,7 @@ export class AuthCommand
 		let on_success = (response: AuthIdentifyHttpResponse) => {
 			this.store.emit("AUTH IDENTIFY", response);
 
-			let message = "-AuthServ:IDENTIFY- Connexion réussie";
+			let message = "-AuthServ- Connexion réussie";
 			let connect_data = {
 				origin: this.store.client(),
 				tags: { msgid: response.id },
@@ -72,10 +72,11 @@ export class AuthCommand
 
 		let on_failure = async (problem: HttpProblemErrorResponse) => {
 			let detail = problem.detail;
-			let message = `-AuthServ:IDENTIFY- ${detail}`;
+			let message = `-AuthServ- ${detail}`;
+			let [random_uuid] = this.store.uuid(7).take(1);
 			let connect_data = {
 				origin: this.store.client(),
-				tags: { msgid: new Date().toISOString() },
+				tags: { msgid: random_uuid },
 			};
 
 			this.store
@@ -97,7 +98,7 @@ export class AuthCommand
 				origin: this.store.client(),
 				tags: { msgid: response.id },
 			};
-			let message = `-AuthServ:REGISTER- ${response.message}`;
+			let message = `-AuthServ- ${response.message}`;
 
 			this.store
 				.room_manager()
@@ -140,11 +141,12 @@ export class AuthCommand
 				data: filtered_payload,
 			});
 
+			let [random_uuid] = this.store.uuid(7).take(1);
 			let connect_data = {
 				origin: this.store.client(),
-				tags: { msgid: new Date().toISOString() },
+				tags: { msgid: random_uuid },
 			};
-			let message = `-AuthServ:REGISTER- ${problem.title}`;
+			let message = `-AuthServ- ${problem.title}`;
 
 			this.store
 				.room_manager()

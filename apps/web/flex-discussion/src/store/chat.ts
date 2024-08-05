@@ -562,6 +562,15 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 				ChatStore.NAME,
 				command_name,
 			);
+
+			let [random_uuid] = store.uuid(7).take(1);
+			store.room_manager().active().add_error_event(
+				{
+					origin: store.client(),
+					tags: { msgid: random_uuid },
+				},
+				`La commande "/${command_name}" n'a pas été traité.`
+			);
 			return;
 		}
 
