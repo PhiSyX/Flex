@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { is_boolean } from "@phisyx/flex-asserts";
 import { AppLocalStorage } from "./storage";
 
 /**
@@ -32,7 +33,7 @@ export class RememberMeStorage extends AppLocalStorage<boolean>
 	 */
 	static fromJSON(key: string, value: string): boolean | undefined
 	{
-		if (!(key.length === 0 && typeof value === "boolean")) {
+		if (!(key.length === 0 && is_boolean(value))) {
 			return;
 		}
 		return value;

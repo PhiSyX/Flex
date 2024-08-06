@@ -13,6 +13,7 @@ import type { Option } from "@phisyx/flex-safety";
 import type { ChannelRoom } from "../channel/room";
 import type { OverlayerStore } from "./overlayer";
 
+import { is_string } from "@phisyx/flex-asserts";
 import { None } from "@phisyx/flex-safety";
 
 import { assert_channel_room } from "../asserts/room";
@@ -359,7 +360,7 @@ export class ChatStore implements ChatStoreInterface
 
 	is_current_client(origin: Origin | string): boolean
 	{
-		if (typeof origin === "string") {
+		if (is_string(origin)) {
 			return (
 				this.client().id === origin ||
 				this.client().nickname.toLowerCase() === origin.toLowerCase()

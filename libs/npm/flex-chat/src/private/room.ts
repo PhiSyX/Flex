@@ -10,8 +10,8 @@
 
 import { Option } from "@phisyx/flex-safety";
 
+import { is_participant } from "../asserts/participant";
 import { PrivateParticipant } from "../private/participant";
-
 import { Room } from "../room";
 
 // ---- //
@@ -48,7 +48,7 @@ export class PrivateRoom extends Room<UserID, "private">
 	 */
 	add_participant(participant: PrivateParticipant | Origin)
 	{
-		if (participant instanceof PrivateParticipant) {
+		if (is_participant(participant)) {
 			this.participants.set(participant.id, participant);
 		} else {
 			let new_participant = new PrivateParticipant(participant);

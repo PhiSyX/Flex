@@ -28,6 +28,7 @@ import { defineStore as define_store } from "pinia";
 import { io } from "socket.io-client";
 import { reactive } from "vue";
 
+import { is_string } from "@phisyx/flex-asserts";
 import {
 	ChannelAccessLevelFlag,
 	ChannelListCustomRoom,
@@ -274,7 +275,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	{
 		let room_id: RoomID;
 
-		if (typeof target === "string") {
+		if (is_string(target)) {
 			room_id = target;
 		} else {
 			room_id = target.id;
@@ -313,7 +314,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	function close_room(target: Origin | RoomID, message?: string)
 	{
 		let room_id: RoomID;
-		if (typeof target === "string") {
+		if (is_string(target)) {
 			room_id = target;
 		} else {
 			room_id = target.id;
@@ -479,7 +480,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	function open_room(target: Origin | RoomID)
 	{
 		let room_id: RoomID;
-		if (typeof target === "string") {
+		if (is_string(target)) {
 			room_id = target;
 		} else {
 			room_id = target.id;

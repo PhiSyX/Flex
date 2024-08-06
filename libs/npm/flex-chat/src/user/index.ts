@@ -8,7 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, type Option, Some } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety";
+
+import { is_string } from "@phisyx/flex-asserts";
+import { None, Some } from "@phisyx/flex-safety";
+
 import { is_user } from "../asserts/user";
 
 // ----------- //
@@ -230,7 +234,7 @@ export class User
 	 */
 	eq(other: this | string): boolean
 	{
-		if (typeof other === "string")
+		if (is_string(other))
 			{
 			return (
 				other === this.id ||
@@ -306,14 +310,16 @@ export class User
 	 */
 	partial_eq(user: this): boolean
 	partial_eq(nickname: string): boolean;
-	partial_eq(un: unknown): boolean
+	partial_eq(other: unknown): boolean
 	{
-		if (typeof un === "string") {
-			return un.toLowerCase() === this.nickname.toLowerCase();
+		if (is_string(other)) {
+			return other.toLowerCase() === this.nickname.toLowerCase();
 		}
-		if (un instanceof User) {
-			return un.nickname.toLowerCase() === this.nickname.toLowerCase();
+
+		if (is_user(other)) {
+			return other.nickname.toLowerCase() === this.nickname.toLowerCase();
 		}
+
 		return false;
 	}
 
@@ -355,7 +361,7 @@ export class User
 	 */
 	with_operator_flag(flag: UserFlag | string): this
 	{
-		if (typeof flag === "string") {
+		if (is_string(flag)) {
 			this.operator = this.parse_flag(flag);
 		} else {
 			this.operator.replace(flag);

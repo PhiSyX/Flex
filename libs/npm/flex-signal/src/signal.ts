@@ -10,7 +10,7 @@
 
 import type { ComputedWatchFnOptions } from "./computed";
 
-import { is_dom_input } from "@phisyx/flex-asserts";
+import { is_dom_input, is_function } from "@phisyx/flex-asserts";
 
 import { Computed } from "./computed";
 
@@ -76,11 +76,7 @@ export class Signal<T = FIXME>
 
 	replace(new_value: T | ((value: T) => T))
 	{
-		let is_fn = (value: unknown): value is (value: T) => T => {
-			return typeof value === "function";
-		};
-
-		if (is_fn(new_value)) {
+		if (is_function<T, T>(new_value)) {
 			this.set(new_value(this.valueOf()));
 		} else {
 			this.set(this.#options.parser?.(new_value) ?? new_value);

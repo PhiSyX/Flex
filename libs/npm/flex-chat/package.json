@@ -7,6 +7,7 @@
 		"build": "tsc"
 	},
 	"dependencies": {
+		"@phisyx/flex-asserts": "workspace:",
 		"@phisyx/flex-css": "workspace:",
 		"@phisyx/flex-date": "workspace:",
 		"@phisyx/flex-safety": "workspace:",

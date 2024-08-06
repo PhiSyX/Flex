@@ -11,6 +11,8 @@
 import type { PrivateRoom } from "../private/room";
 import type { Room } from "../room";
 
+import { is_string } from "@phisyx/flex-asserts";
+
 import { ChannelMember } from "../channel/member";
 import { ChannelRoom } from "../channel/room";
 
@@ -47,7 +49,7 @@ export function assert_private_room(room: { type: string; }): asserts room is Pr
  */
 export function is_channel(room: unknown): room is ChannelID
 {
-	return (typeof room === "string" && room.startsWith("#")) ?? false;
+	return (is_string(room) && room.startsWith("#")) ?? false;
 }
 
 /**

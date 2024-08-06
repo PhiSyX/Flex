@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-
+import { is_string } from "@phisyx/flex-asserts";
 import { None, Option, Some } from "@phisyx/flex-safety";
 
 import { MESSAGES_LIMIT, RoomMessage, RoomMessageEvent } from "./message";
@@ -237,7 +237,7 @@ export class Room<R = RoomID, Type extends string = string>
 
 	eq($1: string | this): boolean
 	{
-		if (typeof $1 === "string") {
+		if (is_string($1)) {
 			return (
 				this.id() === $1 ||
 				(this.name as string).toLowerCase() === $1.toLowerCase()
