@@ -46,7 +46,7 @@ let servers = computed(() => {
 // Handler //
 // ------- //
 
-const open_settings_view_handler = () => ("open-settings-view");
+const open_settings_view_handler = () => emit("open-settings-view");
 
 function change_room_handler(origin: Origin | RoomID)
 {
