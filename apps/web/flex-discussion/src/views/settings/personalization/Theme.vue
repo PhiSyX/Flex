@@ -4,11 +4,11 @@ import { onActivated as on_activated, shallowRef as shallow_ref } from "vue";
 import SettingsPersonalizationTheme from "#/sys/settings_personalization_theme/SettingsPersonalizationTheme.template.vue";
 
 import {
-    THEMES,
-    type Theme,
-    type ThemeRecord,
-    find_theme,
-    set_theme_ls,
+	THEMES,
+	type Theme,
+	type ThemeRecord,
+	find_theme,
+	set_theme_ls,
 } from "~/theme";
 
 // --------- //

@@ -17,7 +17,8 @@ import {
 	PersonalizationStorage,
 } from "../localstorage/settings_personalization";
 
-export class SettingsStore {
+export class SettingsStore 
+{
 	static readonly NAME = "settings-store";
 
 	// --------- //
@@ -27,14 +28,15 @@ export class SettingsStore {
 	personalization: PersonalizationSettings = new PersonalizationSettings();
 	layout: LayoutSettings = new LayoutSettings();
 
-	save()
+	persist()
 	{
 		this.personalization.persist();
 		this.layout.persist();
 	}
 }
 
-export class PersonalizationSettings {
+export class PersonalizationSettings 
+{
 	storage = new PersonalizationStorage();
 
 	get theme()
@@ -49,11 +51,12 @@ export class PersonalizationSettings {
 
 	persist()
 	{
-		this.storage.save();
+		this.storage.set({ theme: this.theme });
 	}
 }
 
-export class LayoutSettings {
+export class LayoutSettings 
+{
 	storage = new LayoutStorage();
 
 	get channel_userlist_display()
@@ -97,6 +100,10 @@ export class LayoutSettings {
 
 	persist()
 	{
-		this.storage.save();
+		this.storage.set({
+			channel_userlist_display: this.channel_userlist_display,
+			channel_userlist_position: this.channel_userlist_position,
+			navigation_bar_position: this.navigation_bar_position,
+		});
 	}
 }

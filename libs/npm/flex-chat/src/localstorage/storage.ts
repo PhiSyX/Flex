@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, type Option } from "@phisyx/flex-safety";
+import { None, Option } from "@phisyx/flex-safety";
 
 // -------------- //
 // Implémentation //
@@ -27,22 +27,22 @@ export class AppLocalStorage<T>
 		private with_defaults?: T,
 	)
 	{
-		if (with_defaults) {
-			this.value = with_defaults;
+		if (with_defaults !== undefined) {
+			this.item = Option.from(with_defaults);
 		}
 
 		try {
 			let item = localStorage.getItem(key);
 			if (reviver) {
-				if (item) {
+				if (item !== null) {
 					this.value = JSON.parse(item, reviver);
 				}
 			} else {
 				this.value = JSON.parse(item as NonNullable<string>);
 			}
 		} catch {
-			if (with_defaults) {
-				this.value = with_defaults;
+			if (with_defaults !== undefined) {
+				this.item = Option.from(with_defaults);
 			}
 		}
 	}
@@ -62,9 +62,9 @@ export class AppLocalStorage<T>
 		return this.get();
 	}
 
-	set value($1: NonNullable<T>)
+	set value($1: T)
 	{
-		this.set($1);
+		this.set($1 as NonNullable<T>);
 	}
 
 	// ------- //
@@ -76,10 +76,10 @@ export class AppLocalStorage<T>
 		return this.item;
 	}
 
-	get()
+	get(): T
 	{
-		if (this.with_defaults) {
-			return this.item.unwrap_or(this.with_defaults);
+		if (this.with_defaults !== undefined) {
+			return this.item.unwrap_or(this.with_defaults as NonNullable<T>);
 		}
 
 		return this.item.expect(
@@ -96,15 +96,17 @@ export class AppLocalStorage<T>
 
 	set($1: NonNullable<T>)
 	{
-		if (this.with_defaults && $1 == null) {
-			this.item.replace(this.with_defaults);
+		if ($1 == null && this.with_defaults !== undefined) {
+			this.item = Option.from(this.with_defaults);
 		} else {
-			this.item.replace($1);
+			this.item = Option.from($1);
 		}
+
 		this.save();
 	}
 
-	toString(): string {
-		return this.item.unwrap() as string;
+	toString(): string 
+	{
+		return this.value as string;
 	}
 }

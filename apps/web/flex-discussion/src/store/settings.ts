@@ -17,6 +17,6 @@ export const use_settings_store = define_store(SettingsStore.NAME, () => {
 	let store = reactive(new SettingsStore()) as SettingsStore;
 	return {
 		...store,
-		save: store.save.bind(store),
+		persist: store.persist.bind(store),
 	};
 });

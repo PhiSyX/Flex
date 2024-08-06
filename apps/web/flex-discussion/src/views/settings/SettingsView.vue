@@ -33,7 +33,7 @@ let change_view = defineModel<View>("changeView");
 
 function save_and_exit_handler()
 {
-	settings_store.save();
+	settings_store.persist();
 	change_view.value = props.previousView;
 }
 </script>
