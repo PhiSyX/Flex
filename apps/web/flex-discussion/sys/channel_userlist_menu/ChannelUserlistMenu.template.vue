@@ -147,7 +147,7 @@ const unset_access_level_handler = (
 				title="Commande /kick"
 				@click="kick_member_handler"
 			>
-				Kick
+				Expulser
 			</UiButton>
 
 			<UiButton
@@ -157,7 +157,7 @@ const unset_access_level_handler = (
 				title="Commande /ban"
 				@click="ban_member_handler"
 			>
-				Ban
+				Bannir
 			</UiButton>
 			<UiButton
 				v-else
@@ -166,7 +166,7 @@ const unset_access_level_handler = (
 				title="Commande /unban"
 				@click="unban_member_handler"
 			>
-				Unban
+				Débannir
 			</UiButton>
 
 			<UiButton
@@ -176,7 +176,7 @@ const unset_access_level_handler = (
 				title="Commande /bannick"
 				@click="ban_nick_handler"
 			>
-				Bannick
+				Bannir pseudo
 			</UiButton>
 			<UiButton
 				v-else
@@ -185,7 +185,7 @@ const unset_access_level_handler = (
 				title="Commande /unbannick"
 				@click="unban_nick_handler"
 			>
-				Unbannick
+				Débannir pseudo
 			</UiButton>
 		</li>
 
