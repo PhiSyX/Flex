@@ -93,7 +93,7 @@ let active_title_access_control = computed(() => {
 		case AccessControl.BanListException:
 			return "Liste des exceptions de bannissements";
 		case AccessControl.InviteList:
-			return "Liste des invitations";
+			return "Liste des exceptions d'invitations";
 	}
 });
 
