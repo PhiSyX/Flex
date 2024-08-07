@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { ChannelMember } from "../channel/member";
 import { User } from "../user";
 
 /**
@@ -15,5 +16,8 @@ import { User } from "../user";
  */
 export function is_user(user: unknown): user is User
 {
-	return user instanceof User;
+	// NOTE: étant donné que `ChannelMember` étend de `User`, et que nous
+	// voulons différencier ces deux types (= être précis) sur cette fonction,
+	// nous ne vérifions en plus si l'argument ne correspond pas à ce premier.
+	return user instanceof User && !(user instanceof ChannelMember);
 }
