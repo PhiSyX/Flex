@@ -119,18 +119,14 @@ impl ModeChannelSettingsHandler
 				&mut removed_settings,
 			);
 
-			if let Some(key) = data
-				.modes
-				.key
-				.map(|s| secret::Secret::new(s.to_string()))
-				.as_deref()
+			if let Some(key) = data.modes.key.map(|s| s.into_string()).as_ref()
 			{
 				apply_mode_settings_str(
 					app,
 					&client_socket,
 					&data.target,
 					key,
-					SettingsFlag::Key(key.into()),
+					SettingsFlag::Key(key.to_owned()),
 					&mut added_settings,
 					&mut removed_settings,
 				);
@@ -230,18 +226,14 @@ impl ModeChannelSettingsHandler
 			&mut removed_settings,
 		);
 
-		if let Some(key) = data
-			.modes
-			.key
-			.map(|s| secret::Secret::new(s.to_string()))
-			.as_deref()
+		if let Some(key) = data.modes.key.map(|s| s.into_string()).as_ref()
 		{
 			apply_mode_settings_str(
 				app,
 				&client_socket,
 				&data.target,
 				key,
-				SettingsFlag::Key(key.into()),
+				SettingsFlag::Key(key.to_owned()),
 				&mut added_settings,
 				&mut removed_settings,
 			);

@@ -51,6 +51,14 @@ impl<S> Secret<S>
 	}
 }
 
+impl Secret<std::sync::Arc<str>>
+{
+	pub fn into_string(&self) -> Secret<String>
+	{
+		Secret::new(self.expose().to_string())
+	}
+}
+
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
