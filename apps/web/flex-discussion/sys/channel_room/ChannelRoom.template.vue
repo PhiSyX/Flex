@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type {
-    ChannelAccessLevelFlag,
-    ChannelActivitiesView,
-    ChannelMember,
-    ChannelMemberSelected,
-    ChannelRoom,
+	ChannelAccessLevelFlag,
+	ChannelActivitiesView,
+	ChannelMember,
+	ChannelMemberSelected,
+	ChannelRoom,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
@@ -215,7 +215,7 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 
 			<template #room-info v-if="display_userlist">
 				<aside
-					class="room/info [ flex! h:full pt=2 min-w=35 w=35 max-w=35 ]"
+					class="room/info [ flex! h:full pt=2 min-w=36 w=36 max-w=36 ]"
 				>
 					<ChannelUserlist
 						:name="room.name"
