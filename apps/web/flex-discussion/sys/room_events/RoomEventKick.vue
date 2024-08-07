@@ -35,9 +35,9 @@ const open_channel_handler = () => emit("open-room", props.data.channel);
 		(Raison: <q>{{ data.reason }}</q
 		>)
 	</p>
-	<span v-if="isCurrentClient" @dblclick="open_channel_handler"
-		>({{ data.channel }})</span
-	>
+	<span v-if="isCurrentClient" @dblclick="open_channel_handler">
+		({{ data.channel }})
+	</span>
 </template>
 
 <style scoped lang="scss">
