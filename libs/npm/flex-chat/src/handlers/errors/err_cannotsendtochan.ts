@@ -33,11 +33,13 @@ export class ErrorCannotsendtochanHandler implements S
 	handle(data: GenericReply<"ERR_CANNOTSENDTOCHAN">)
 	{
 		let room = this.store.room_manager().get(data.channel_name, {
-			state: "opened:not-kicked"
+			where: {
+				state: "opened",
+				is_kicked: false,
+			},
+			fallbacks: [{ network: true }]
 		})
-			.or_else(() => this.store.network().into_some())
 			.unwrap();
-
 		room.add_event(
 			"error:err_cannotsendtochan",
 			room.create_event(data),

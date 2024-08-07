@@ -33,15 +33,35 @@ export class InviteHandler implements SocketEventInterface<"INVITE">
 
 	handle(data: GenericReply<"INVITE">)
 	{
-		let room = this.store.room_manager().get(data.channel, { 
-				state: "opened:not-kicked"
+		let room = this.store.room_manager()
+			.get(data.channel, {
+				where: {
+					state: "opened",
+					is_kicked: false,
+				},
+				fallbacks: [
+					{
+						active: {
+							where: {
+								is_kicked: false,
+								is_custom: false,
+							},
+						},
+					},
+					{
+						latest: {
+							where: {
+								is_kicked: false,
+								is_custom: false,
+							},
+						},
+					},
+					{
+						network: true,
+					}
+				]
 			})
-			.or_else(
-				() => this.store.room_manager().active({
-					state: "opened:not-kicked"
-				})
-				.into_some()
-			).unwrap();
+			.unwrap();
 
 		room.add_event(
 			"event:invite", 

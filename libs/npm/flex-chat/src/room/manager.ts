@@ -15,43 +15,42 @@ import type { Room } from "./index";
 import { assert_channel_room, cast_to_room_id } from "../asserts/room";
 import { ServerCustomRoom } from "../custom_room/server";
 
+// ---- //
+// Type //
+// ---- //
+
+type GetOptions = {
+	where: {
+		state?: "opened" | "closed";
+		is_kicked?: boolean;
+		is_custom?: boolean;
+	};
+	fallbacks?: Array<{
+		active?: GetOptions,
+		latest?: GetOptions,
+		network?: boolean,
+	}>,
+};
+
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class RoomManager
 {
+	_last_room: Option<RoomID> = None();
 	_current_room: Option<RoomID> = None();
 	_rooms: Map<RoomID, Room> = new Map();
 
 	/**
-	 * Chambre courante à l'exception des chambres de type suivants:
-	 *
-	 * 	- "channel-list-custom-room"
+	 * Récupère la chambre courante.
 	 */
-	active(
-		options: {
-			state: "opened" | "closed" | "opened:not-kicked";
-		} = { state: "opened" },
-	): Room
+	active(options: GetOptions = {
+		where: { state: "opened" },
+	}): Room
 	{
 		return this._current_room
-			.and_then((current_room) => this.get(current_room))
-			.filter_map((room) => {
-				if (room.type === "channel-list-custom-room") {
-					return this.get(ServerCustomRoom.ID);
-				}
-
-				if (room.type === "channel") {
-					if (options.state === "opened:not-kicked") {
-						assert_channel_room(room);
-						if (!room.is_closed() && room.kicked) {
-							return this.get(ServerCustomRoom.ID);
-						}
-					}
-				}
-				return room.into_some();
-			})
+			.and_then((current_room) => this.get(current_room, options))
 			.expect("La chambre courante");
 	}
 
@@ -76,10 +75,7 @@ export class RoomManager
 	/**
 	 * Ferme une chambre à partir de son ID.
 	 */
-	close(
-		room_id: RoomID,
-		options?: { state: "opened" | "closed" },
-	): Option<Room>
+	close(room_id: RoomID, options?: GetOptions): Option<Room>
 	{
 		if (this._current_room.is_some()) {
 			if (this.current().eq(room_id)) {
@@ -103,8 +99,8 @@ export class RoomManager
 	 */
 	extends(rooms: Iterable<[RoomID, Room]>)
 	{
-		for (let [current_room_id, r00m] of rooms) {
-			this._rooms.set(cast_to_room_id(current_room_id.toLowerCase()), r00m);
+		for (let [current_room_id, room] of rooms) {
+			this._rooms.set(cast_to_room_id(current_room_id.toLowerCase()), room);
 		}
 	}
 
@@ -119,35 +115,61 @@ export class RoomManager
 	}
 
 	/**
-	 * Récupère un chambre ouverte à partir de son ID.
+	 * Récupère un salon à partir de son ID.
 	 */
-	get(
-		room_id: RoomID,
-		options: {
-			state: "opened" | "closed" | "opened:not-kicked";
-		} = { state: "opened" },
-	): Option<Room>
+	get(room_id: RoomID, options?: GetOptions): Option<Room>
 	{
 		let maybe_room = Option.from(
 			this._rooms.get(cast_to_room_id(room_id.toLowerCase())),
 		);
 
-		if (options) {
-			switch (options.state) {
-				case "closed":
-					return maybe_room.filter((room) => room.is_closed());
+		if (options?.where) {
+			maybe_room = maybe_room
+				.filter((room) => {
+					if (!options.where.state) {
+						return true;
+					}
 
-				case "opened":
-					return maybe_room.filter((room) => !room.is_closed());
-
-				case "opened:not-kicked":
-					return maybe_room.filter((room) => {
+					switch (options.where.state) {
+						case "closed": return room.is_closed();
+						case "opened": return !room.is_closed();
+					}
+				})
+				.filter((room) => {
+					if (options.where.is_kicked !== undefined) {
 						if (room.type === "channel") {
 							assert_channel_room(room);
+
+							if (options.where.is_kicked) {
+								return room.kicked;
+							}
+
 							return !room.kicked;
 						}
-						return true;
-					});
+					}
+
+					if (options.where.is_custom) {
+						return room.id().startsWith("@");
+					}
+
+					return true
+				});
+		}
+
+		for (let fallback of options?.fallbacks || []) {
+			if (fallback.active) {
+				maybe_room = this.maybe_active(fallback.active);
+				break;
+			}
+
+			if (fallback.latest) {
+				maybe_room = this.last(fallback.latest);
+				break;
+			}
+
+			if (fallback.network) {
+				maybe_room = this.network();
+				break;
 			}
 		}
 
@@ -173,7 +195,9 @@ export class RoomManager
 	/**
 	 * Vérifie qu'une chambre existe.
 	 */
-	has(room_id: RoomID, options?: { state: "opened" | "closed" }): boolean
+	has(room_id: RoomID, options: GetOptions = {
+		where: { state: "opened" },
+	}): boolean
 	{
 		return this.get(room_id, options).is_some();
 	}
@@ -188,12 +212,43 @@ export class RoomManager
 	}
 
 	/**
+	 * Récupère la dernière chambre ouverte (safe).
+	 */
+	last(options: GetOptions = {
+		where: { state: "opened" },
+	}): Option<Room>
+	{
+		return this._last_room.and_then(
+			(last_room) => this.get(last_room, options)
+		);
+	}
+
+	/**
+	 * Récupère la chambre courante (SAFE).
+	 */
+	maybe_active(options: GetOptions = {
+		where: { state: "opened" },
+	}): Option<Room>
+	{
+		return this._current_room.and_then(
+			(current_room) => this.get(current_room, options)
+		);
+	}
+
+	/**
+	 * Récupère le chambre réseau.
+	 */
+	network(): Option<Room>
+	{
+		return this.get(ServerCustomRoom.ID);
+	}
+
+	/**
 	 * Supprime une chambre à partir de son ID.
 	 */
-	remove(
-		room_id: RoomID,
-		options?: { state: "opened" | "closed" },
-	): Option<Room>
+	remove(room_id: RoomID, options: GetOptions = {
+		where: { state: "opened" },
+	}): Option<Room>
 	{
 		let maybe_room = this.get(room_id, options);
 		maybe_room.then(() => this._rooms.delete(cast_to_room_id(room_id.toLowerCase())));
@@ -213,6 +268,8 @@ export class RoomManager
 	 */
 	set_current(room_id: RoomID)
 	{
+		this._last_room = this._current_room.clone();
+
 		if (this._current_room.is_some()) {
 			this.current().set_active(false);
 			this.current().set_highlighted(false);
@@ -243,6 +300,7 @@ export class RoomManager
 	 */
 	unset_current()
 	{
+		this._last_room = this._current_room.clone();
 		this._current_room = None();
 	}
 }

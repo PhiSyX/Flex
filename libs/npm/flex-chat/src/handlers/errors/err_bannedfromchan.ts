@@ -28,11 +28,13 @@ export class ErrorBannedfromchanHandler
 	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">)
 	{
 		let room = this.store.room_manager().get(data.channel, {
-			state: "opened:not-kicked"
+			where: {
+				state: "opened",
+				is_kicked: false,
+			},
+			fallbacks: [{ network: true }]
 		})
-			.or_else(() => this.store.network().into_some())
 			.unwrap();
-
 		room.add_event(
 			"error:err_bannedfromchan",
 			room.create_event(data),
