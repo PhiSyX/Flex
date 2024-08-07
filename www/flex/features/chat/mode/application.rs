@@ -13,6 +13,7 @@ use flex_chat::channel::{
 	Channel,
 	ChannelAccessControlBanInterface,
 	ChannelAccessControlBanExceptInterface,
+	ChannelAccessControlInviteExceptInterface,
 	ChannelAccessLevel,
 	ChannelInterface,
 	ChannelMember,
@@ -51,6 +52,14 @@ pub trait ModeChannelAccessControlApplicationInterface
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>;
+	
+	/// Applique une exception d'invite sur un salon.
+	fn apply_invite_except_on_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>>;
 
 	/// Retire un ban sur un salon.
 	fn apply_unban_on_channel(
@@ -62,6 +71,14 @@ pub trait ModeChannelAccessControlApplicationInterface
 
 	/// Retire une exception de ban sur un salon.
 	fn apply_unban_except_on_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>>;
+
+	/// Retire une exception d'invite sur un salon.
+	fn apply_uninvite_except_on_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
@@ -80,6 +97,15 @@ pub trait ModeChannelAccessControlApplicationInterface
 	/// Est-qu'un adresse mask d'une exception de ban existe dans la liste des
 	/// exceptions des bannissement d'un salon.
 	fn has_banmask_except_on_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		mask: impl Into<Mask>,
+	) -> bool;
+
+	/// Est-qu'un adresse mask d'une exception d'invite existe dans la liste des
+	/// exceptions des modes d'invitation d'un salon.
+	fn has_invitemask_except_on_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
@@ -176,6 +202,19 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		channel.add_ban_except(client_socket.user(), mask)
 	}
 
+	fn apply_invite_except_on_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>> {
+		let Some(mut channel) = self.channels.get_mut(channel_name) else {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return None;
+		};
+		channel.add_invite_except(client_socket.user(), mask)
+	}
+
 	fn apply_unban_on_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -204,6 +243,19 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		channel.remove_ban_except(client_socket.user(), mask)
 	}
 
+	fn apply_uninvite_except_on_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>> {
+		let Some(mut channel) = self.channels.get_mut(channel_name) else {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return None;
+		};
+		channel.remove_invite_except(client_socket.user(), mask)
+	}
+	
 	fn has_banmask_on_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -232,6 +284,20 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		};
 		let mask_r = &mask.into();
 		channel.has_banmask_except(mask_r)
+	}
+
+	fn has_invitemask_except_on_channel(
+		&self,
+		client_socket: &Self::ClientSocket<'_>,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		mask: impl Into<Mask>,
+	) -> bool {
+		let Some(channel) = self.channels.get(channel_name) else {
+			client_socket.send_err_nosuchchannel(channel_name);
+			return false;
+		};
+		let mask_r = &mask.into();
+		channel.has_invitemask_except(mask_r)
 	}
 }
 

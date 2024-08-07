@@ -131,11 +131,15 @@ where
 		let banlist = self.access_control.banlist.values()
 			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN, mode.clone()));
 
-		let banlist_exception = self.access_control.banlist_exceptions.values()
+		let banlist_except = self.access_control.banlist_except.values()
 			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN_EXCEPT, mode.clone()));
 
+		let invitelist_except = self.access_control.invitelist_except.values()
+			.map(|mode| (mode::CHANNEL_MODE_LIST_INVITE_EXCEPT, mode.clone()));
+
 		list.extend(banlist);
-		list.extend(banlist_exception);
+		list.extend(banlist_except);
+		list.extend(invitelist_except);
 
 		list
 	}
@@ -241,7 +245,7 @@ where
 	fn has_banmask_except(&self, mask: &Mask) -> bool
 	{
 		let mask_s = mask.to_string();
-		self.access_control.banlist_exceptions.contains_key(&mask_s)
+		self.access_control.banlist_except.contains_key(&mask_s)
 	}
 
 	fn isin_banlist_exception(
@@ -251,12 +255,87 @@ where
 	{
 		#[rustfmt::skip]
 		let check = |addr| {
-			self.access_control.banlist_exceptions.contains_key(&addr)
+			self.access_control.banlist_except.contains_key(&addr)
 		};
 
 		#[rustfmt::skip]
 		let check2 = || {
-			self.access_control.banlist_exceptions.keys()
+			self.access_control.banlist_except.keys()
+				.any(|mask| user.full_address().iswm(mask))
+		};
+
+		check(user.address("*!*@*"))
+			|| check(user.address("*!ident@*"))
+			|| check(user.address("*!*ident@*"))
+			|| check(user.address("*!ident@hostname"))
+			|| check(user.address("*!*ident@hostname"))
+			|| check(user.address("*!*@hostname"))
+			|| check(user.address("*!*ident@*.hostname"))
+			|| check(user.address("*!*@*.hostname"))
+			|| check(user.address("nick!ident@hostname"))
+			|| check(user.address("nick!*ident@hostname"))
+			|| check(user.address("nick!*@hostname"))
+			|| check(user.address("nick!*ident@*.hostname"))
+			|| check(user.address("nick!*@*.hostname"))
+			|| check(user.address("nick!*@*"))
+			|| check2()
+	}
+	
+	fn remove_ban_except(
+		&mut self,
+		apply_by: &<Self as ChannelAccessControlInterface>::User,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMask::new(mask))
+			.with_update_by(apply_by.nickname())
+			.with_args([mask_s.clone()]);
+		self.access_control.remove_ban_except(mask_s)?;
+		Some(mode)
+	}
+}
+
+impl<ID> ChannelAccessControlInviteExceptInterface for Channel<ID>
+where
+	ID: Clone,
+	ID: ToString,
+	ID: PartialEq + Eq + std::hash::Hash,
+{
+	fn add_invite_except(
+		&mut self,
+		apply_by: &<Self as ChannelAccessControlInterface>::User,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<mode::AccessControlMask>>
+	{
+		let mask = mask.into();
+		let mask_s = mask.to_string();
+		let mode = ApplyMode::new(mode::AccessControlMask::new(mask))
+			.with_update_by(apply_by.nickname())
+			.with_args([mask_s.clone()]);
+		self.access_control.add_invite_except(mask_s, mode)
+	}
+
+	fn has_invitemask_except(&self, mask: &Mask) -> bool
+	{
+		let mask_s = mask.to_string();
+		self.access_control.invitelist_except.contains_key(&mask_s)
+	}
+
+	fn isin_invitelist_exception(
+		&self,
+		user: &<Self as ChannelAccessControlInterface>::User,
+	) -> bool
+	{
+		#[rustfmt::skip]
+		let check = |addr| {
+			self.access_control.invitelist_except.contains_key(&addr)
+		};
+
+		#[rustfmt::skip]
+		let check2 = || {
+			self.access_control.invitelist_except.keys()
 				.any(|mask| user.full_address().iswm(mask))
 		};
 
@@ -277,7 +356,7 @@ where
 			|| check2()
 	}
 
-	fn remove_ban_except(
+	fn remove_invite_except(
 		&mut self,
 		apply_by: &<Self as ChannelAccessControlInterface>::User,
 		mask: impl Into<Mask>,
@@ -288,7 +367,7 @@ where
 		let mode = ApplyMode::new(mode::AccessControlMask::new(mask))
 			.with_update_by(apply_by.nickname())
 			.with_args([mask_s.clone()]);
-		self.access_control.remove_ban_except(mask_s)?;
+		self.access_control.remove_invite_except(mask_s)?;
 		Some(mode)
 	}
 }

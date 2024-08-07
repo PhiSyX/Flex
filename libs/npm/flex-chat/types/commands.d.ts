@@ -30,6 +30,8 @@ declare interface Commands {
 	UNBAN: Commands["BAN"];
 	BANEX: { channels: Array<string>; masks: Array<MaskAddr> };
 	UNBANEX: Commands["BANEX"];
+	INVITEX: { channels: Array<string>; masks: Array<MaskAddr> };
+	UNINVITEX: Commands["INVITEX"];
 
 	INVITE: { nickname: string; channel: ChannelID };
 

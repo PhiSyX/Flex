@@ -23,4 +23,9 @@ export class ChannelAccessControl
 	 * Liste des exceptions de bans du salon.
 	 */
 	banlist_exception: Map<MaskAddr, ModeApplyFlag<AccessControlMode>> = new Map();
+
+	/**
+	 * Liste des des exceptions du mode d'invitation du salon.
+	 */
+	invitelist_exception: Map<MaskAddr, ModeApplyFlag<AccessControlMode>> = new Map();
 }

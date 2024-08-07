@@ -41,6 +41,9 @@ pub struct ChannelModesSettings
 	/// Salon sur invitation uniquement.
 	#[serde(rename = "i")]
 	pub invite_only: Option<bool>,
+	/// Liste des exceptions du mode d'invitation à appliquer/retirer.
+	#[serde(rename = "I")]
+	pub invites_except: Option<Vec<Arc<str>>>,
 	/// Clé du salon, pour le rejoindre.
 	#[serde(rename = "k")]
 	pub key: Option<secret::Secret<Arc<str>>>,

@@ -58,3 +58,25 @@ export class UnbanExCommand implements CommandInterface<"UNBANEX">
 		this.store.emit("UNBANEX", payload);
 	}
 }
+
+export class InviteExCommand implements CommandInterface<"INVITEX">
+{
+	constructor(private store: ChatStoreInterface)
+	{}
+
+	send(payload: Command<"INVITEX">)
+	{
+		this.store.emit("INVITEX", payload);
+	}
+}
+
+export class UninviteExCommand implements CommandInterface<"UNINVITEX">
+{
+	constructor(private store: ChatStoreInterface)
+	{}
+
+	send(payload: Command<"UNINVITEX">)
+	{
+		this.store.emit("UNINVITEX", payload);
+	}
+}

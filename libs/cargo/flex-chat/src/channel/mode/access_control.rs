@@ -18,6 +18,7 @@ use crate::mode::{ApplyMode, Mask};
 
 pub const CHANNEL_MODE_LIST_BAN: char = 'b';
 pub const CHANNEL_MODE_LIST_BAN_EXCEPT: char = 'e';
+pub const CHANNEL_MODE_LIST_INVITE_EXCEPT: char = 'I';
 
 // --------- //
 // Structure //
@@ -31,7 +32,9 @@ pub struct AccessControl<ID>
 	/// Les utilisateurs bannis du salon.
 	pub banlist: HashMap<String, ApplyMode<AccessControlMask>>,
 	/// Les exceptions de bannissement du salon.
-	pub banlist_exceptions: HashMap<String, ApplyMode<AccessControlMask>>,
+	pub banlist_except: HashMap<String, ApplyMode<AccessControlMask>>,
+	/// Les exceptions du mode d'invitation uniquement du salon.
+	pub invitelist_except: HashMap<String, ApplyMode<AccessControlMask>>,
 	/// Les utilisateurs en attente dans la liste des invitations.
 	pub invite_list: HashSet<ID>,
 }
@@ -86,11 +89,29 @@ impl<ID> AccessControl<ID>
 		let mask = mask.into();
 		let mask_key = mask.to_string();
 
-		if self.banlist_exceptions.contains_key(&mask_key) {
+		if self.banlist_except.contains_key(&mask_key) {
 			return None;
 		}
 
-		self.banlist_exceptions.insert(mask_key, mode.clone());
+		self.banlist_except.insert(mask_key, mode.clone());
+
+		Some(mode)
+	}
+
+	pub fn add_invite_except(
+		&mut self,
+		mask: impl Into<Mask>,
+		mode: ApplyMode<AccessControlMask>,
+	) -> Option<ApplyMode<AccessControlMask>>
+	{
+		let mask = mask.into();
+		let mask_key = mask.to_string();
+
+		if self.invitelist_except.contains_key(&mask_key) {
+			return None;
+		}
+
+		self.invitelist_except.insert(mask_key, mode.clone());
 
 		Some(mode)
 	}
@@ -112,6 +133,16 @@ impl<ID> AccessControl<ID>
 	{
 		let mask = mask.into();
 		let mask_key = mask.to_string();
-		self.banlist_exceptions.remove(&mask_key)
+		self.banlist_except.remove(&mask_key)
+	}
+
+	pub fn remove_invite_except(
+		&mut self,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>>
+	{
+		let mask = mask.into();
+		let mask_key = mask.to_string();
+		self.invitelist_except.remove(&mask_key)
 	}
 }

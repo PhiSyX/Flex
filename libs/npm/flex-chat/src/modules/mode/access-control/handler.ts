@@ -56,7 +56,7 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 			// biome-ignore lint/suspicious/noExplicitAny: ?
 			mode: ModeApplyFlag<any>,
 		): mode is ModeApplyFlag<AccessControlMode> {
-			return ["b", "e"].includes(letter) && "mask" in mode.flag;
+			return ["b", "e", "I"].includes(letter) && "mask" in mode.flag;
 		}
 
 		if (data.added) {
@@ -73,9 +73,10 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 
 				if (letter === "b") {
 					channel.access_control.banlist.set(mask_addr, mode);
-				}
-				if (letter === "e") {
+				} else if (letter === "e") {
 					channel.access_control.banlist_exception.set(mask_addr, mode);
+				} else if (letter === "I") {
+					channel.access_control.invitelist_exception.set(mask_addr, mode);
 				}
 			}
 		}
@@ -94,9 +95,10 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 
 				if (letter === "b") {
 					channel.access_control.banlist.delete(mask_addr);
-				}
-				if (letter === "e") {
+				} else if (letter === "e") {
 					channel.access_control.banlist_exception.delete(mask_addr);
+				} else if (letter === "I") {
+					channel.access_control.invitelist_exception.delete(mask_addr);
 				}
 			}
 		}

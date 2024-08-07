@@ -30,6 +30,7 @@ interface Emits
 enum AccessControl {
 	BanList = 0,
 	BanListException = 1,
+	InviteList = 2,
 }
 
 // --------- //
@@ -79,6 +80,8 @@ let active_access_control_list = computed(() => {
 			return props.room.access_control.banlist;
 		case AccessControl.BanListException:
 			return props.room.access_control.banlist_exception;
+		case AccessControl.InviteList:
+			return props.room.access_control.invitelist_exception;
 	}
 });
 
@@ -89,6 +92,8 @@ let active_title_access_control = computed(() => {
 			return "Liste des bannissements";
 		case AccessControl.BanListException:
 			return "Liste des exceptions de bannissements";
+		case AccessControl.InviteList:
+			return "Liste des invitations";
 	}
 });
 
@@ -140,7 +145,7 @@ function delete_selected_masks_handler()
 		return;
 	}
 
-	let list: "b" | "e";
+	let list: "b" | "e" | "I";
 
 	switch (active_access_control.value) {
 		case AccessControl.BanList:
@@ -151,6 +156,11 @@ function delete_selected_masks_handler()
 		case AccessControl.BanListException:
 		{
 			list = "e";
+		} break;
+
+		case AccessControl.InviteList:
+		{
+			list = "I";
 		} break;
 	}
 
@@ -210,44 +220,55 @@ function delete_selected_masks_handler()
 				<option v-for="topic in room.topic.history" :value="topic" />
 			</datalist>
 
-			<h2>{{ active_title_access_control }}</h2>
+			<section class="[ flex! gap=1 ]">
+				<h2>{{ active_title_access_control }}</h2>
 
-			<select
-				multiple
-				class="[ w:full min-h=10 max-w=44 ]"
-				v-model="selected_access_control_list"
-			>
-				<option
-					v-for="[addr, mode] of active_access_control_list"
-					:disabled="
-						!is_current_client_channel_member_channel_operator &&
-						!is_current_client_global_operator
-					"
-					:value="addr"
+				<select
+					multiple
+					class="[ w:full min-h=10 max-w=44 ]"
+					v-model="selected_access_control_list"
 				>
-					{{ addr }} par {{ mode.updated_by }} le
-					{{ mode.updated_at }}
-				</option>
-			</select>
+					<option
+						v-for="[addr, mode] of active_access_control_list"
+						:disabled="
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
+						"
+						:value="addr"
+					>
+						{{ addr }} par {{ mode.updated_by }} le
+						{{ mode.updated_at }}
+					</option>
+				</select>
 
-			<div class="[ flex gap=1 ]">
-				<UiButton
-					type="button"
-					variant="secondary"
-					v-model:selected="active_access_control"
-					:value="AccessControl.BanList"
-				>
-					Bans
-				</UiButton>
+				<div class="[ flex gap=1 ]">
+					<UiButton
+						type="button"
+						variant="secondary"
+						v-model:selected="active_access_control"
+						:value="AccessControl.BanList"
+					>
+						Bans (+b)
+					</UiButton>
 
-				<UiButton
-					type="button"
-					variant="secondary"
-					v-model:selected="active_access_control"
-					:value="AccessControl.BanListException"
-				>
-					Bans Excepts
-				</UiButton>
+					<UiButton
+						type="button"
+						variant="secondary"
+						v-model:selected="active_access_control"
+						:value="AccessControl.BanListException"
+					>
+						Exceptions (+e)
+					</UiButton>
+
+					<UiButton
+						type="button"
+						variant="secondary"
+						v-model:selected="active_access_control"
+						:value="AccessControl.InviteList"
+					>
+						Invitations (+I)
+					</UiButton>
+				</div>
 
 				<UiButton
 					type="button"
@@ -257,7 +278,7 @@ function delete_selected_masks_handler()
 				>
 					Supprimer
 				</UiButton>
-			</div>
+			</section>
 
 			<h2>Paramètres du salon</h2>
 

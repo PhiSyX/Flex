@@ -141,6 +141,7 @@ impl WebSocketFeature<FlexState> for ChatApplication
 		handlers!( socket,
 			-/+ use ModeChannelAccessControlBanHandler;
 			-/+ use ModeChannelAccessControlBanExceptionHandler;
+			-/+ use ModeChannelAccessControlInviteExceptionHandler;
 		);
 		/* Channel Access Level */
 		handlers!( socket,

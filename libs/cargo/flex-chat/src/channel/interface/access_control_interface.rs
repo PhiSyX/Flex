@@ -96,6 +96,39 @@ pub trait ChannelAccessControlBanExceptInterface
 		Self: ChannelAccessControlInterface;
 }
 
+pub trait ChannelAccessControlInviteExceptInterface
+{
+	/// Ajoute une exception d'invite au salon.
+	fn add_invite_except(
+		&mut self,
+		apply_by: &<Self as ChannelAccessControlInterface>::User,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>>
+	where
+		Self: ChannelAccessControlInterface;
+
+	/// Est-ce qu'une mask existe dans la liste des exceptions d'invitations.
+	fn has_invitemask_except(&self, mask: &Mask) -> bool;
+
+	/// Est-ce qu'un membre donné est dans la liste des exceptions des
+	/// invitations
+	fn isin_invitelist_exception(
+		&self,
+		user: &<Self as ChannelAccessControlInterface>::User,
+	) -> bool
+	where
+		Self: ChannelAccessControlInterface;
+
+	/// Retire une exception de ban du salon.
+	fn remove_invite_except(
+		&mut self,
+		apply_by: &<Self as ChannelAccessControlInterface>::User,
+		mask: impl Into<Mask>,
+	) -> Option<ApplyMode<AccessControlMask>>
+	where
+		Self: ChannelAccessControlInterface;
+}
+
 pub trait ChannelAccessControlInviteInterface
 {
 	/// Ajoute un utilisateur dans la liste des invitations du salon.

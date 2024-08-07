@@ -10,10 +10,16 @@
 
 use std::sync::Arc;
 
-use flex_chat::channel::{AccessControlMask, ChannelAccessLevel, SettingsFlag};
+use flex_chat::channel::{
+	AccessControlMask,
+	ChannelAccessLevel, 
+	SettingsFlag, 
+	CHANNEL_MODE_LIST_BAN, 
+	CHANNEL_MODE_LIST_BAN_EXCEPT, 
+	CHANNEL_MODE_LIST_INVITE_EXCEPT
+};
 use flex_chat::client::Socket;
 use flex_chat::mode::ApplyMode;
-use flex_web_framework::types::secret;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::mode::{
@@ -70,6 +76,14 @@ impl ModeChannelSettingsHandler
 				&client_socket,
 				&data.target,
 				data.modes.bans_except.as_deref(),
+				&mut added_list,
+				&mut removed_list,
+			);
+			apply_invites_except(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.invites_except.as_deref(),
 				&mut added_list,
 				&mut removed_list,
 			);
@@ -180,6 +194,14 @@ impl ModeChannelSettingsHandler
 			&mut added_list,
 			&mut removed_list,
 		);
+		apply_invites_except(
+			app,
+			&client_socket,
+			&data.target,
+			data.modes.invites_except.as_deref(),
+			&mut added_list,
+			&mut removed_list,
+		);
 		apply_mode_settings_bool(
 			app,
 			&client_socket,
@@ -277,12 +299,12 @@ fn apply_bans(
 					channel_name,
 					banmask,
 				)
-				.map(|mode| ('b', mode)),
+				.map(|mode| (CHANNEL_MODE_LIST_BAN, mode)),
 			);
 		} else {
 			alist.extend(
 				app.apply_ban_on_channel(client_socket, channel_name, banmask)
-					.map(|mode| ('b', mode)),
+					.map(|mode| (CHANNEL_MODE_LIST_BAN, mode)),
 			);
 		}
 	}
@@ -311,7 +333,7 @@ fn apply_bans_except(
 					channel_name,
 					banmask,
 				)
-				.map(|mode| ('e', mode)),
+				.map(|mode| (CHANNEL_MODE_LIST_BAN_EXCEPT, mode)),
 			);
 		} else {
 			alist.extend(
@@ -320,7 +342,45 @@ fn apply_bans_except(
 					channel_name,
 					banmask,
 				)
-				.map(|mode| ('e', mode)),
+				.map(|mode| (CHANNEL_MODE_LIST_BAN_EXCEPT, mode)),
+			);
+		}
+	}
+}
+
+fn apply_invites_except(
+	app: &ChatApplication,
+	client_socket: &Socket,
+	channel_name: &str,
+	invites_except: Option<&[Arc<str>]>,
+	alist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
+	rlist: &mut Vec<(char, ApplyMode<AccessControlMask>)>,
+)
+{
+	let invites_except = invites_except.unwrap_or_default();
+
+	for invitemask in invites_except {
+		if app.has_invitemask_except_on_channel(
+			client_socket,
+			channel_name,
+			invitemask,
+		) {
+			rlist.extend(
+				app.apply_uninvite_except_on_channel(
+					client_socket,
+					channel_name,
+					invitemask,
+				)
+				.map(|mode| (CHANNEL_MODE_LIST_INVITE_EXCEPT, mode)),
+			);
+		} else {
+			alist.extend(
+				app.apply_invite_except_on_channel(
+					client_socket,
+					channel_name,
+					invitemask,
+				)
+				.map(|mode| (CHANNEL_MODE_LIST_INVITE_EXCEPT, mode)),
 			);
 		}
 	}
