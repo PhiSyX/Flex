@@ -1,28 +1,30 @@
 <script setup lang="ts">
-import type {
+import {
 	ChannelListCustomRoom,
 	ChannelRoom,
-	NoticeCustomRoom,
+	NoticesCustomRoom,
 	PrivateRoom,
 	ServerCustomRoom,
 } from "@phisyx/flex-chat";
 
-import { computed } from "vue";
+import { computed, shallowRef as shallow_ref } from "vue";
 
 import { ChannelJoinDialog, View } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
-import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
-import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
 import ClientError from "~/components/error/ClientError.vue";
 import Navigation from "~/components/navigation/Navigation.vue";
+
+import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
-import ChannelList from "#/sys/channel_list/ChannelList.template.vue";
-import CustomRoomNotice from "#/sys/custom_room_notice/CustomRoomNotice.template.vue";
+
+import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
+import ChannelListCustomRoomComponent from "#/sys/custom_room_channel_list/CustomRoomChannelList.template.vue";
+import MentionsCustomRoomComponent from "#/sys/custom_room_mentions/CustomRoomMentions.template.vue";
 
 // --------- //
 // Composant //
@@ -33,6 +35,17 @@ let overlayer_store = use_overlayer_store();
 
 let change_view = defineModel<View>("changeView");
 let rooms = computed(() => chat_store.store.room_manager().rooms());
+
+const custom_rooms_components = shallow_ref({
+	[ChannelListCustomRoom.ID]: ChannelListCustomRoomComponent,
+	[NoticesCustomRoom.ID]: NoticeCustomRoomComponent,
+	[ServerCustomRoom.ID]: ServerCustomRoomComponent,
+} as const);
+
+const rooms_components = shallow_ref({
+	[ChannelRoom.type]: ChannelRoomComponent,
+	[PrivateRoom.type]: PrivateRoomComponent,
+} as const);
 
 // ------- //
 // Handler //
@@ -65,65 +78,16 @@ function open_settings_view_handler()
 		<Navigation @open-settings-view="open_settings_view_handler" />
 
 		<div class="room [ flex:full flex ]">
-			<template v-for="room in rooms" :key="room.id">
-				<template
-					v-if="room.type === 'server-custom-room'"
-					:key="room.type + '@a' + room.name"
-				>
-					<KeepAlive :key="room.type + '@a' + room.name">
-						<ServerCustomRoomComponent
-							:room="(room as ServerCustomRoom)"
-							class="[ flex:full ]"
-						/>
-					</KeepAlive>
-				</template>
-				<template
-					v-else-if="room.type === 'channel'"
-					:key="room.type + ':' + room.name"
-				>
-					<KeepAlive :key="room.type + ':' + room.name">
-						<ChannelRoomComponent
-							v-if="room.is_active() && !room.is_closed()"
-							:room="(room as ChannelRoom)"
-							class="[ flex:full ]"
-						/>
-					</KeepAlive>
-				</template>
-				<template
-					v-else-if="room.type === 'private'"
-					:key="room.type + '/' + room.name"
-				>
-					<KeepAlive :key="room.type + '/' + room.name">
-						<PrivateRoomComponent
-							v-if="room.is_active() && !room.is_closed()"
-							:room="(room as PrivateRoom)"
-							class="[ flex:full ]"
-						/>
-					</KeepAlive>
-				</template>
-				<template
-					v-else-if="room.type === 'channel-list-custom-room'"
-					:key="room.type + '@b' + room.name"
-				>
-					<KeepAlive :key="room.type + '@b' + room.name">
-						<ChannelList
-							v-if="room.is_active() && !room.is_closed()"
-							:room="(room as ChannelListCustomRoom)"
+			<template v-for="room in rooms" :key="room.id()">
+				<template v-if="custom_rooms_components[room.id()] || rooms_components[room.type]">
+					<KeepAlive :key="room.type + '/' + room.id()">
+						<component
+							v-show="room.is_active() && !room.is_closed()"
+							:is="custom_rooms_components[room.id()] || rooms_components[room.type]" 
+							:room="(room as any)"
 							class="[ flex:full ]"
 							@join-channel="join_channel_handler"
 							@create-channel-dialog="open_join_channel_dialog_handler"
-						/>
-					</KeepAlive>
-				</template>
-				<template
-					v-else-if="room.type === 'notice-custom-room'"
-					:key="room.type + '@c' + room.name"
-				>
-					<KeepAlive :key="room.type + '@c' + room.name">
-						<CustomRoomNotice
-							v-if="room.is_active() && !room.is_closed()"
-							:room="(room as NoticeCustomRoom)"
-							class="[ flex:full ]"
 							@close="() => close_room_handler(room.id())"
 						/>
 					</KeepAlive>

@@ -31,6 +31,8 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	// Static //
 	// ------ //
 
+	public static type: string = "channel" as string;
+
 	/**
 	 * Crée un salon avec un propriétaire.
 	 */

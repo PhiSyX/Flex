@@ -17,7 +17,7 @@ import { computed } from "vue";
 import {
 	ChannelSettingsDialog,
 	ChannelTopicLayer,
-	NoticeCustomRoom,
+	NoticesCustomRoom,
 	UserChangeNicknameDialog,
 } from "@phisyx/flex-chat";
 import { format_date } from "@phisyx/flex-date";
@@ -117,7 +117,7 @@ let channel_activities = computed(() => {
 						return make_activity(
 							chat_store.store
 								.room_manager()
-								.get(NoticeCustomRoom.ID)
+								.get(NoticesCustomRoom.ID)
 								.unwrap_or(props.room),
 							activity,
 						);

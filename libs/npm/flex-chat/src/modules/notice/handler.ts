@@ -13,7 +13,7 @@ import type { RoomMessage, RoomMessageEvent } from "../../room/message";
 import type { ChatStoreInterface } from "../../store";
 
 import { assert_channel_room, is_channel } from "../../asserts/room";
-import { NoticeCustomRoom } from "../../custom_room/notice";
+import { NoticesCustomRoom } from "../../custom_room/notices";
 
 // -------------- //
 // Implémentation //
@@ -56,11 +56,11 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE">
 			(is_current_client && is_channel(data.target))
 		) {
 			let notice_room = this.store.room_manager().get_or_insert(
-				NoticeCustomRoom.ID,
-				() => new NoticeCustomRoom(),
+				NoticesCustomRoom.ID,
+				() => new NoticesCustomRoom(),
 			);
 
-			if (room.id() !== NoticeCustomRoom.ID) {
+			if (room.id() !== NoticesCustomRoom.ID) {
 				notice_room.add_event("event:notice", event, data.text);
 			}
 		}

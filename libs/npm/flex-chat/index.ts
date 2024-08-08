@@ -24,10 +24,7 @@ export * from "./src/channel/member/selected";
 export * from "./src/channel/room";
 export * from "./src/channel/topic";
 
-export * from "./src/custom_room/channel_list";
-export * from "./src/custom_room/notice";
-export * from "./src/custom_room/server";
-
+export * from "./src/custom_room";
 export * from "./src/dialogs";
 
 export * from "./src/handlers/manager";

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ChannelListCustomRoom, cast_to_channel_id } from "@phisyx/flex-chat";
 
-import ChannelList from "./ChannelList.template.vue";
+import ChannelList from "./CustomRoomChannelList.template.vue";
 
 let empty_room = new ChannelListCustomRoom();
 

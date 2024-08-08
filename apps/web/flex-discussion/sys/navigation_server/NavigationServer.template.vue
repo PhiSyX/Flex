@@ -49,7 +49,11 @@ const close_room_handler = (origin: Origin | RoomID) =>
 
 function should_be_listed_in_nav(room: Room)
 {
-	return ["channel", "private", "notice-custom-room"].includes(room.type);
+	return [
+		"channel",
+		"private",
+		"notices-custom-room",
+	].includes(room.type);
 }
 
 function change_room_handler(evt: Event)
@@ -123,7 +127,7 @@ function toggle_fold_handler()
 							class="[ flex:shrink=0 ]"
 						/>
 						<icon-notice
-							v-else-if="room.type === 'notice-custom-room'"
+							v-else-if="room.type === 'notices-custom-room'"
 							class="[ flex:shrink=0 ]"
 						/>
 					</template>

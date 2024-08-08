@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import type { NoticeCustomRoom } from "@phisyx/flex-chat";
+import type { NoticesCustomRoom } from "@phisyx/flex-chat";
+
+import { shallowRef as shallow_ref, watch } from "vue";
 
 import { ButtonIcon } from "@phisyx/flex-vue-uikit";
 
+import notice_audio from "#/assets/audio/notice.mp3";
 import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
@@ -11,7 +14,7 @@ import Room from "#/sys/room/Room.template.vue";
 
 interface Props
 {
-	room: NoticeCustomRoom;
+	room: NoticesCustomRoom;
 }
 
 interface Emits
@@ -25,12 +28,21 @@ interface Emits
 // Composant //
 // --------- //
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+
+let $audio = shallow_ref<HTMLAudioElement>();
+
+watch(props.room.messages, () => {
+	if ($audio.value) {
+		$audio.value.play();
+		$audio.value.currentTime = 0;
+	}
+});
 </script>
 
 <template>
-	<div class="room/custom:notice [ flex! ov:h ]">
+	<div class="room/custom:notices [ flex! ov:h ]">
 		<Room :display-input="false" :room="room">
 			<template #topic>
 				<p class="[ flex flex/center:full h:full m=0 p=0 select:none ]">
@@ -46,13 +58,15 @@ const emit = defineEmits<Emits>();
 				/>
 			</template>
 		</Room>
+
+		<audio ref="$audio" :src="notice_audio" :autoplay="true" />
 	</div>
 </template>
 
 <style lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-@include fx.class("room/custom:notice") {
+@include fx.class("room/custom:notices") {
 	background: var(--room-bg);
 
 	@include fx.class("room/topic") {

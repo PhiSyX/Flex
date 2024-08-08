@@ -26,6 +26,16 @@ export type Participants = Map<string, PrivateParticipant>;
 
 export class PrivateRoom extends Room<UserID, "private">
 {
+	// ------ //
+	// Static //
+	// ------ //
+	
+	public static type: string = "private" as string;
+
+	// --------- //
+	// Propriété //
+	// --------- //
+	
 	/**
 	 * Liste des participant de la chambre privé.
 	 */
