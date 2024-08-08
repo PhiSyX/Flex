@@ -28,14 +28,18 @@ export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room">
 		this.with_id(ServerCustomRoom.ID);
 	}
 
-	// ---------- //
-	// Properties //
-	// ---------- //
+	// --------- //
+	// Propriété //
+	// --------- //
 
 	/**
 	 * Connecté ou non
 	 */
 	connected = false;
+
+	// ------- //
+	// Méthode //
+	// ------- //
 
 	/**
 	 * Est-ce que le serveur est connecté?

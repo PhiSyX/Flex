@@ -30,7 +30,15 @@ export class PrivateRoom extends Room<UserID, "private">
 	// Static //
 	// ------ //
 	
-	public static type: string = "private" as string;
+	public static type = "private" as const;
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(name: string)
+	{
+		super(PrivateRoom.type, name);
+	}
 
 	// --------- //
 	// Propriété //
@@ -40,14 +48,6 @@ export class PrivateRoom extends Room<UserID, "private">
 	 * Liste des participant de la chambre privé.
 	 */
 	participants: Participants = new Map();
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(name: string)
-	{
-		super("private", name);
-	}
 
 	// ------- //
 	// Méthode //
@@ -77,8 +77,8 @@ export class PrivateRoom extends Room<UserID, "private">
 	/**
 	 * Récupère un participant de la chambre privé.
 	 */
-	get_participant(id: string): Option<PrivateParticipant>
+	get_participant(participant_id: string): Option<PrivateParticipant>
 	{
-		return Option.from(this.participants.get(id));
+		return Option.from(this.participants.get(participant_id));
 	}
 }

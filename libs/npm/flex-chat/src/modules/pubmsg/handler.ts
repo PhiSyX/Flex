@@ -95,6 +95,18 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 				previous_messages_ids,
 			});
 
+			let mentions_room = this.store.room_manager().get_or_insert(
+				MentionsCustomRoom.ID,
+				() => new MentionsCustomRoom(),
+			);
+			mentions_room.marks_as_opened();
+			
+			let event: RoomMessageEvent<"PUBMSG"> = room.create_event(
+				data,
+				is_current_client,
+			);
+			mentions_room.add_event("event:pubmsg", event, data.text);
+
 			this.store.play_audio("mention");
 		}
 	}

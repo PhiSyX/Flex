@@ -125,6 +125,19 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 		);
 
 		if (has_mention && !is_current_client) {
+			let mentions_room = this.store.room_manager().get_or_insert(
+				MentionsCustomRoom.ID,
+				() => new MentionsCustomRoom(),
+			);
+
+			mentions_room.marks_as_opened();
+			
+			let event: RoomMessageEvent<"PRIVMSG"> = room.create_event(
+				data,
+				is_current_client,
+			);
+			mentions_room.add_event("event:privmsg", event, data.text);
+
 			this.store.play_audio("mention");
 		}
 	}

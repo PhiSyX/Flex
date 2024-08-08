@@ -79,11 +79,6 @@ export class Room<R = RoomID, Type extends string = string>
 	 */
 	total_unread_messages = 0;
 
-	/**
-	 * Définit le mode d'accès en écriture du salon.
-	 */
-	writable = false;
-
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -123,10 +118,6 @@ export class Room<R = RoomID, Type extends string = string>
 		message_text: string,
 	): Option<RoomMessage>
 	{
-		if (!this.writable) {
-			return None();
-		}
-		
 		let message = new RoomMessage(message_text)
 			.with_id(payload.tags.msgid)
 			.with_type("event:connect")
@@ -149,10 +140,6 @@ export class Room<R = RoomID, Type extends string = string>
 		message_text: string,
 	): Option<RoomMessage>
 	{
-		if (!this.writable) {
-			return None();
-		}
-
 		let message = new RoomMessage(message_text)
 			.with_id(payload.tags.msgid)
 			.with_type("event:error")
@@ -212,10 +199,6 @@ export class Room<R = RoomID, Type extends string = string>
 	 */
 	add_message(message: RoomMessage): Option<RoomMessage>
 	{
-		if (!this.writable) {
-			return None();
-		}
-
 		if (this.messages.length === MESSAGES_LIMIT) {
 			this.messages.shift();
 		}

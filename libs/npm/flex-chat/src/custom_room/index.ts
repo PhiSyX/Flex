@@ -9,5 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 export * from "./channel_list";
+export * from "./mentions";
 export * from "./notices";
 export * from "./server";

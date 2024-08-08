@@ -31,10 +31,6 @@ export class MentionsCustomRoom extends Room<CustomRoomID, "mentions-custom-room
 		this.with_id(MentionsCustomRoom.ID);
 	}
 
-	// --------- //
-	// Propriété //
-	// --------- //
-
 	// ------- //
 	// Méthode //
 	// ------- //

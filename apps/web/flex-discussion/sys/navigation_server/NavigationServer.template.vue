@@ -52,6 +52,7 @@ function should_be_listed_in_nav(room: Room)
 	return [
 		"channel",
 		"private",
+		"mentions-custom-room",
 		"notices-custom-room",
 	].includes(room.type);
 }
@@ -128,6 +129,10 @@ function toggle_fold_handler()
 						/>
 						<icon-notice
 							v-else-if="room.type === 'notices-custom-room'"
+							class="[ flex:shrink=0 ]"
+						/>
+						<icon-mention
+							v-else-if="room.type === 'mentions-custom-room'"
 							class="[ flex:shrink=0 ]"
 						/>
 					</template>

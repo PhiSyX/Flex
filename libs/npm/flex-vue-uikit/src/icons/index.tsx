@@ -31,6 +31,7 @@ export const ICON_NAMES = [
 	"home",
 	"loader",
 	"logoff",
+	"mention",
 	"notice",
 	"password",
 	"plus",
