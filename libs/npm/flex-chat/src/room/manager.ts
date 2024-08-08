@@ -159,17 +159,19 @@ export class RoomManager
 		for (let fallback of options?.fallbacks || []) {
 			if (fallback.active) {
 				maybe_room = this.maybe_active(fallback.active);
-				break;
-			}
-
-			if (fallback.latest) {
+				if (maybe_room.is_some()) {
+					break;
+				}
+			} else if (fallback.latest) {
 				maybe_room = this.last(fallback.latest);
-				break;
-			}
-
-			if (fallback.network) {
+				if (maybe_room.is_some()) {
+					break;
+				}
+			} else if (fallback.network) {
 				maybe_room = this.network();
-				break;
+				if (maybe_room.is_some()) {
+					break;
+				}
 			}
 		}
 
@@ -188,8 +190,7 @@ export class RoomManager
 				this.insert(room_id, room);
 				return room.into_some();
 			})
-			.unwrap()
-			.marks_as_opened();
+			.unwrap();
 	}
 
 	/**
@@ -274,6 +275,7 @@ export class RoomManager
 			this.current().set_active(false);
 			this.current().set_highlighted(false);
 			this.current().unset_total_unread_events();
+			this.current().unset_total_unread_mentions();
 			this.current().unset_total_unread_messages();
 		}
 
@@ -282,6 +284,7 @@ export class RoomManager
 		this.current().set_active(true);
 		this.current().set_highlighted(false);
 		this.current().unset_total_unread_events();
+		this.current().unset_total_unread_mentions();
 		this.current().unset_total_unread_messages();
 	}
 

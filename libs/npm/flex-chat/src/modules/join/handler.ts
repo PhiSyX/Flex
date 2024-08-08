@@ -52,6 +52,7 @@ export class JoinHandler implements SocketEventInterface<"JOIN">
 
 		assert_channel_room(channel);
 
+		channel.marks_as_opened();
 		channel.set_kicked(false);
 
 		if (!data.forced) {

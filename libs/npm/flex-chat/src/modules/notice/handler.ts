@@ -60,6 +60,8 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE">
 				() => new NoticesCustomRoom(),
 			);
 
+			notice_room.marks_as_opened();
+
 			if (room.id() !== NoticesCustomRoom.ID) {
 				notice_room.add_event("event:notice", event, data.text);
 			}

@@ -468,6 +468,8 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 			return priv;
 		});
 
+		room.marks_as_opened();
+
 		store.room_manager().set_current(room.id());
 
 		// store.emit("QUERY", { nickname: name });

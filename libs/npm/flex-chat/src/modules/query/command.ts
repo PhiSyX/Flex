@@ -31,13 +31,14 @@ export class QueryCommand {
 		let room = this.store.room_manager().get_or_insert(user.id, () => {
 			let priv = new PrivateRoom(user.nickname).with_id(user.id);
 			priv.add_participant(
-				new PrivateParticipant(this.store.client()).with_is_current_client(
-					true,
-				),
+				new PrivateParticipant(this.store.client())
+					.with_is_current_client(true)
 			);
 			priv.add_participant(new PrivateParticipant(user));
 			return priv;
 		});
+
+		room.marks_as_opened();
 
 		this.store.room_manager().set_current(room.id());
 	}

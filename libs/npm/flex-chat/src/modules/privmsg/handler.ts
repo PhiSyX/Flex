@@ -47,9 +47,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 
 	handle_client_itself(data: GenericReply<"PRIVMSG">)
 	{
-		let user = this.store
-			.user_manager()
-			.find_by_nickname(data.target)
+		let user = this.store.user_manager().find_by_nickname(data.target)
 			.expect(`"L'utilisateur cible ${data.target}."`);
 		let maybe_room = this.store.room_manager().get(user.id);
 		if (maybe_room.is_none()) {
@@ -61,28 +59,30 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 
 	handle_user(data: GenericReply<"PRIVMSG">)
 	{
-		let priv = this.store
-			.room_manager()
-			.get_or_insert(data.origin.id, () => {
-				let active_room = this.store.room_manager().active();
+		let priv = this.store.room_manager().get_or_insert(data.origin.id, () => {
+			let active_room = this.store.room_manager().active();
 
-				// @ts-expect-error : type à corriger
-				active_room.add_event("event:query", active_room.create_event(
-					data,
-					false,
-				));
+			// @ts-expect-error : type à corriger
+			active_room.add_event("event:query", active_room.create_event(
+				data,
+				false,
+			));
 
-				let room = new PrivateRoom(data.origin.nickname)
-					.with_id(data.origin.id);
+			let room = new PrivateRoom(data.origin.nickname)
+				.with_id(data.origin.id)
+				.marks_as_closed();
 
-				room.add_participant(new PrivateParticipant(data.origin));
-				room.add_participant(
-					new PrivateParticipant(
-						this.store.client(),
-					).with_is_current_client(true),
-				);
-				return room;
-			});
+			room.add_participant(
+				new PrivateParticipant(data.origin)
+			);
+			room.add_participant(
+				new PrivateParticipant(this.store.client())
+					.with_is_current_client(true),
+			);
+			return room;
+		});
+
+		priv.marks_as_opened();
 
 		this.handle_message(priv, data);
 	}
