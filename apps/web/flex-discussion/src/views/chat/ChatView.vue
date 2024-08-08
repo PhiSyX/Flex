@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { computed, shallowRef as shallow_ref } from "vue";
+
 import {
+	ChannelJoinDialog,
 	ChannelListCustomRoom,
 	ChannelRoom,
+	MentionsCustomRoom,
 	NoticesCustomRoom,
 	PrivateRoom,
 	ServerCustomRoom,
+	View
 } from "@phisyx/flex-chat";
-
-import { computed, shallowRef as shallow_ref } from "vue";
-
-import { ChannelJoinDialog, View } from "@phisyx/flex-chat";
+import { AudioSound } from "@phisyx/flex-vue-uikit";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
@@ -25,6 +27,13 @@ import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
 import ChannelListCustomRoomComponent from "#/sys/custom_room_channel_list/CustomRoomChannelList.template.vue";
 import MentionsCustomRoomComponent from "#/sys/custom_room_mentions/CustomRoomMentions.template.vue";
+import NoticesCustomRoomComponent from "#/sys/custom_room_notices/CustomRoomNotices.template.vue";
+
+import connection_audio from "#/assets/audio/connection.mp3";
+import invite_audio from "#/assets/audio/invite.mp3";
+import mention_audio from "#/assets/audio/mention.mp3";
+import notice_audio from "#/assets/audio/notice.mp3";
+import query_audio from "#/assets/audio/query.wav";
 
 // --------- //
 // Composant //
@@ -38,14 +47,17 @@ let rooms = computed(() => chat_store.store.room_manager().rooms());
 
 const custom_rooms_components = shallow_ref({
 	[ChannelListCustomRoom.ID]: ChannelListCustomRoomComponent,
-	[NoticesCustomRoom.ID]: NoticeCustomRoomComponent,
+	[NoticesCustomRoom.ID]: NoticesCustomRoomComponent,
 	[ServerCustomRoom.ID]: ServerCustomRoomComponent,
+	[MentionsCustomRoom.ID]: MentionsCustomRoomComponent,
 } as const);
 
 const rooms_components = shallow_ref({
 	[ChannelRoom.type]: ChannelRoomComponent,
 	[PrivateRoom.type]: PrivateRoomComponent,
 } as const);
+
+let audio_src = computed(() => chat_store.store.audio_src);
 
 // ------- //
 // Handler //
@@ -71,6 +83,11 @@ function open_settings_view_handler()
 {
 	change_view.value = View.Settings;
 }
+
+function reset_audio_src()
+{
+	chat_store.store.audio_src = null;
+}
 </script>
 
 <template>
@@ -94,6 +111,12 @@ function open_settings_view_handler()
 				</template>
 			</template>
 		</div>
+
+		<AudioSound :src="connection_audio" :autoplay="audio_src === 'connection'" @ended="reset_audio_src" />
+		<AudioSound :src="invite_audio" :autoplay="audio_src === 'invite'" @ended="reset_audio_src" />
+		<AudioSound :src="mention_audio" :autoplay="audio_src === 'mention'" @ended="reset_audio_src" />
+		<AudioSound :src="notice_audio" :autoplay="audio_src === 'notice'" @ended="reset_audio_src" />
+		<AudioSound :src="query_audio" :autoplay="audio_src === 'query'" @ended="reset_audio_src" />
 
 		<!-- Teleport -->
 

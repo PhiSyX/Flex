@@ -8,11 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Room } from "../../room";
+import type { RoomMessageEvent } from "../../room/message";
+import type { ChatStoreInterface } from "../../store";
+
+import { MentionsCustomRoom } from "../../custom_room";
 import { PrivateParticipant } from "../../private/participant";
 import { PrivateRoom } from "../../private/room";
-import type { Room } from "../../room";
 import { RoomMessage } from "../../room/message";
-import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
 // Implémentation //
@@ -82,6 +85,10 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 			return room;
 		});
 
+		if (priv.is_closed()) {
+			this.store.play_audio("query");
+		}
+
 		priv.marks_as_opened();
 
 		this.handle_message(priv, data);
@@ -89,6 +96,8 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 
 	handle_message(room: Room, data: GenericReply<"PRIVMSG">)
 	{
+		let has_mention = false;
+		
 		let is_current_client = this.store.is_current_client(data.origin);
 		if (!is_current_client && !room.is_active()) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
@@ -96,14 +105,14 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 			let current_client_nickname = this.store.nickname();
 			if (data.text.toLowerCase()
 					.indexOf(current_client_nickname.toLowerCase()) >= 0) {
-				room.set_highlighted(true);
+				has_mention = true;
+				room.set_highlighted(has_mention);
 			}
 		}
 
-		let nickname =
-			room.type === "channel" || room.type === "private"
-				? data.origin.nickname
-				: "*";
+		let nickname = room.type === "channel" || room.type === "private"
+			? data.origin.nickname
+			: "*";
 
 		room.add_message(
 			new RoomMessage(data.text)
@@ -114,5 +123,9 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 				.with_data(data)
 				.with_is_current_client(is_current_client),
 		);
+
+		if (has_mention && !is_current_client) {
+			this.store.play_audio("mention");
+		}
 	}
 }

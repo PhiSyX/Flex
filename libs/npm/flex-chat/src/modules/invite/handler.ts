@@ -67,5 +67,7 @@ export class InviteHandler implements SocketEventInterface<"INVITE">
 			"event:invite", 
 			room.create_event(data, this.store.is_current_client(data.origin)),
 		);
+
+		this.store.play_audio("invite");
 	}
 }

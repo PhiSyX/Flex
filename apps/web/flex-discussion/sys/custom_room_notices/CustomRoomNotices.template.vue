@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import type { NoticesCustomRoom } from "@phisyx/flex-chat";
 
-import { shallowRef as shallow_ref, watch } from "vue";
-
 import { ButtonIcon } from "@phisyx/flex-vue-uikit";
 
-import notice_audio from "#/assets/audio/notice.mp3";
 import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
@@ -28,17 +25,8 @@ interface Emits
 // Composant //
 // --------- //
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits<Emits>();
-
-let $audio = shallow_ref<HTMLAudioElement>();
-
-watch(props.room.messages, () => {
-	if ($audio.value) {
-		$audio.value.play();
-		$audio.value.currentTime = 0;
-	}
-});
 </script>
 
 <template>
@@ -58,8 +46,6 @@ watch(props.room.messages, () => {
 				/>
 			</template>
 		</Room>
-
-		<audio ref="$audio" :src="notice_audio" :autoplay="true" />
 	</div>
 </template>
 

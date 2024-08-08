@@ -70,9 +70,19 @@ export class Room<R = RoomID, Type extends string = string>
 	total_unread_events = 0;
 
 	/**
+	 * Le total des mentions reçues.
+	 */
+	total_unread_mentions = 0;
+
+	/**
 	 * Le total des messages reçus.
 	 */
 	total_unread_messages = 0;
+
+	/**
+	 * Définit le mode d'accès en écriture du salon.
+	 */
+	writable = false;
 
 	// ----------- //
 	// Constructor //
@@ -111,8 +121,12 @@ export class Room<R = RoomID, Type extends string = string>
 			tags: { msgid: string };
 		},
 		message_text: string,
-	): RoomMessage
+	): Option<RoomMessage>
 	{
+		if (!this.writable) {
+			return None();
+		}
+		
 		let message = new RoomMessage(message_text)
 			.with_id(payload.tags.msgid)
 			.with_type("event:connect")
@@ -133,8 +147,12 @@ export class Room<R = RoomID, Type extends string = string>
 			tags: { msgid: string };
 		},
 		message_text: string,
-	): RoomMessage
+	): Option<RoomMessage>
 	{
+		if (!this.writable) {
+			return None();
+		}
+
 		let message = new RoomMessage(message_text)
 			.with_id(payload.tags.msgid)
 			.with_type("event:error")
@@ -192,8 +210,12 @@ export class Room<R = RoomID, Type extends string = string>
 	/**
 	 * Ajoute un message au tableau de messages.
 	 */
-	add_message(message: RoomMessage): RoomMessage
+	add_message(message: RoomMessage): Option<RoomMessage>
 	{
+		if (!this.writable) {
+			return None();
+		}
+
 		if (this.messages.length === MESSAGES_LIMIT) {
 			this.messages.shift();
 		}
@@ -208,7 +230,7 @@ export class Room<R = RoomID, Type extends string = string>
 			}
 		}
 
-		return message;
+		return Some(message);
 	}
 
 	/**
@@ -288,7 +310,7 @@ export class Room<R = RoomID, Type extends string = string>
 	 */
 	is_closed(): boolean
 	{
-		return this.closed;
+		return this.closed === true;
 	}
 
 	/**
@@ -342,6 +364,9 @@ export class Room<R = RoomID, Type extends string = string>
 	 */
 	set_highlighted(bool: boolean)
 	{
+		if (bool) {
+			this.total_unread_mentions += 1;
+		}
 		this.highlighted = bool;
 	}
 
@@ -351,6 +376,14 @@ export class Room<R = RoomID, Type extends string = string>
 	unset_total_unread_events()
 	{
 		this.total_unread_events = 0;
+	}
+
+	/**
+	 * Définit le total des mentions reçues à 0.
+	 */
+	unset_total_unread_mentions()
+	{
+		this.total_unread_mentions = 0;
 	}
 
 	/**

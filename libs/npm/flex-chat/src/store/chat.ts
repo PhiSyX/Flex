@@ -53,6 +53,8 @@ export interface ConnectUserInfo
 
 export interface ChatStoreInterface
 {
+	audio_src: "connection" | "invite" | "mention" | "notice" | "query" | null;
+
 	client_error: Option<{
 		id: string;
 		title?: string;
@@ -159,6 +161,11 @@ export interface ChatStoreInterface
 	): void;
 
 	/**
+	 * Joue un audio
+	 */
+	play_audio(src: this["audio_src"]): void;
+
+	/**
 	 * Gestion des chambres.
 	 */
 	room_manager(): RoomManager;
@@ -255,6 +262,7 @@ export class ChatStore implements ChatStoreInterface
 	// Propriété //
 	// --------- //
 
+	audio_src: "connection" | "invite" | "mention" | "notice" | "query" | null = "connection";
 	private _connect_user_info: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
 	public client_error: Option<{
@@ -423,6 +431,11 @@ export class ChatStore implements ChatStoreInterface
 		this._ws
 			.expect("Instance WebSocket connecté au serveur")
 			.once(event_name, listener);
+	}
+
+	play_audio(src: this["audio_src"])
+	{
+		this.audio_src = src;
 	}
 
 	room_manager(): RoomManager

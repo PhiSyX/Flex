@@ -77,6 +77,8 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE">
 				this.handle_channel(channel, event, message);
 			}
 		}
+
+		this.store.play_audio("notice");
 	}
 
 	handle_channel(

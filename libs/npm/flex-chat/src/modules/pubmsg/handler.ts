@@ -8,10 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assert_channel_room } from "../../asserts/room";
 import type { ChannelRoom } from "../../channel/room";
-import { RoomMessage } from "../../room/message";
+import type { RoomMessageEvent } from "../../room/message";
 import type { ChatStoreInterface } from "../../store";
+
+import { assert_channel_room } from "../../asserts/room";
+import { MentionsCustomRoom } from "../../custom_room";
+import { RoomMessage } from "../../room/message";
 
 // -------------- //
 // Implémentation //
@@ -81,7 +84,8 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 				.with_data(data)
 				.with_is_current_client(is_current_client)
 				.with_mention(has_mention),
-		);
+		)
+			.unwrap();
 
 		if (has_mention && !is_current_client) {
 			room.activities.upsert("mention", {
@@ -90,6 +94,8 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 				nickname: message.nickname,
 				previous_messages_ids,
 			});
+
+			this.store.play_audio("mention");
 		}
 	}
 }

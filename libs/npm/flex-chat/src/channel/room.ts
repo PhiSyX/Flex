@@ -31,7 +31,7 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	// Static //
 	// ------ //
 
-	public static type: string = "channel" as string;
+	public static type = "channel" as const;
 
 	/**
 	 * Crée un salon avec un propriétaire.
@@ -46,7 +46,7 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	// ----------- //
 	constructor(name: ChannelID)
 	{
-		super("channel", name);
+		super(ChannelRoom.type, name);
 	}
 
 	// --------- //
