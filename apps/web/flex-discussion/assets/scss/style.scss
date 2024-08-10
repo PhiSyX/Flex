@@ -34,6 +34,7 @@
 @include ice.use-ice-scheme;
 @include lightMode.use-light-scheme;
 @include darkMode.use-dark-scheme;
+@include colors.use-colors-preset;
 
 @import "./base";
 
@@ -59,6 +60,7 @@
 	"display-b",
 	"display-i",
 	"display-ib",
+	"display-n",
 	"flex:full",
 	"flex:shrink=0",
 	"flex:shrink=1",
@@ -94,6 +96,7 @@
 	"select:disabled",
 	"select:none",
 	"size:full",
+	"vis:h",
 	"w:full"
 );
 
@@ -162,7 +165,13 @@
 			1,
 			4,
 		),
-	)
+	),
+	(
+		className: margin-bottom,
+		values: (
+			1,
+		),
+	),
 );
 
 @include fx.use(
@@ -175,6 +184,21 @@
 );
 
 @include fx.use(
+	(
+		className: padding-block,
+		values: (
+			1,
+			3,
+		),
+	),
+	(
+		className: padding-inline,
+		values: (
+			1,
+			2,
+			3,
+		),
+	),
 	(
 		className: padding,
 		values: (
@@ -193,6 +217,7 @@
 	(
 		className: padding-bottom,
 		values: (
+			0,
 			1,
 		),
 	),
@@ -204,20 +229,6 @@
 			2,
 		),
 	),
-	(
-		className: padding-block,
-		values: (
-			1,
-		),
-	),
-	(
-		className: padding-inline,
-		values: (
-			1,
-			2,
-			3,
-		),
-	)
 );
 
 @include fx.use(
@@ -255,6 +266,7 @@
 		values: (
 			12,
 			36,
+			38,
 			56,
 		),
 	),

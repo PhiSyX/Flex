@@ -1,33 +1,60 @@
 <script setup lang="ts">
-import type { CSSProperties } from "vue";
+import type { CSSProperties, HTMLAttributes } from "vue";
+
+import { shallowRef as shallow_ref, watchEffect as watch_effect } from "vue";
 
 import { vTrap } from "~/directives";
+import { use_overlayer_store } from "~/store";
+
 import { use_overlayer } from "./Overlayer.hooks";
 
-const { store, destroy_handler } = use_overlayer();
+// --------- //
+// Composant //
+// --------- //
+
+let overlayer_store = use_overlayer_store();
+
+let $overlayer = shallow_ref<HTMLDivElement>();
+let $teleport = shallow_ref<Array<HTMLDivElement>>();
+
+const { destroy_handler } = use_overlayer();
+
+watch_effect(() => {
+	if ($overlayer.value) {
+		overlayer_store.store.$overlayer = $overlayer.value;
+	}
+
+	if ($teleport.value && $teleport.value.length > 0) {
+		// biome-ignore lint/style/noNonNullAssertion: ;-)
+		overlayer_store.store.$teleport = $teleport.value.pop()!.firstElementChild as HTMLDivElement;
+		overlayer_store.update_all();
+	}
+});
 </script>
 
 <template>
 	<Transition name="fade">
-		<div v-if="store.has_layers" id="overlayer">
-			<div class="overlay [ pos-a:full ]" @click="destroy_handler" />
+		<div v-if="overlayer_store.has_layers" id="overlayer">
+			<div ref="$overlayer" class="overlay [ pos-a:full ]" @click="destroy_handler" />
 
-			<template v-for="[id, layer] of store.layers" :key="`${id}_layer`">
+			<template v-for="[id, layer] of overlayer_store.layers" :key="`${id}_layer`">
 				<div v-trap:focus="layer.trap_focus">
 					<div
 						:id="`${id}_layer`"
 						class="layer [ border/radius=1 ]"
 						@keydown.esc="destroy_handler($event, id)"
-						:style="(layer.style) as CSSProperties"
+						:style="(layer.style as CSSProperties)"
 					/>
 
 					<div
+						ref="$teleport"
 						:id="`${id}_teleport`"
 						tabindex="0"
 						class="teleport [ pos-a:full flex! ]"
 						:class="{
 							'flex/center:full': layer.centered,
 						}"
+						:style="(layer.mouse_position as HTMLAttributes['style'])"
 					/>
 				</div>
 			</template>

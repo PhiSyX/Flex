@@ -1,0 +1,17 @@
+@use "../mixins/class" as class;
+
+@mixin use-invisibility($options...) {
+	$classes: (
+		"vis:h": (
+			visibility: hidden,
+		),
+		"vis:c": (
+			visibility: collapse,
+		),
+		"vis": (
+			visibility: visible,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

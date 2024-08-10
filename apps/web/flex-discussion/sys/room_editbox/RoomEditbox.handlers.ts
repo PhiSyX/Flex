@@ -19,6 +19,7 @@ import { input_model } from "./RoomEditbox.state";
 export interface Emits
 {
 	(event_name: "change-nickname", event: MouseEvent): void;
+	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "submit", model: string): void;
 }
 
@@ -43,4 +44,9 @@ export const on_submit = (emit: Emits, props: Props) =>
 export function change_nick(emit: Emits)
 {
 	return (event: MouseEvent) => emit("change-nickname", event);
+}
+
+export function open_colors_box(emit: Emits)
+{
+	return (event: MouseEvent) => emit("open-colors-box", event);
 }

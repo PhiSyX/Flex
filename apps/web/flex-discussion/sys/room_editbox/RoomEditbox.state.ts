@@ -21,9 +21,11 @@ export interface Props
 	completionList?: Array<string>;
 	currentClientNickname?: string;
 	disableInput?: boolean;
-	// TODO: possibilité d'envoyer des messages avec des couleurs/mises en formes
-	//background: color;
-	//foreground: color;
+	bold: boolean;
+	italic: boolean;
+	underline: boolean;
+	background: number | null;
+	foreground: number;
 	placeholder?: string;
 	room: Room;
 }

@@ -28,11 +28,16 @@ export interface Props
 {
 	activities?: ChannelActivitiesView;
 	completionList?: Array<string>;
-	currentNickname: string;
 	currentClientMember: Option<ChannelMember>;
-	userlistDisplayedByDefault: boolean;
+	currentNickname: string;
 	room: ChannelRoom;
 	selectedMember: Option<ChannelMemberSelected>;
+	textFormatBold: boolean;
+	textFormatItalic: boolean;
+	textFormatUnderline: boolean;
+	textColorBackground: number | null;
+	textColorForeground: number;
+	userlistDisplayedByDefault: boolean;
 }
 
 export interface Emits
@@ -52,6 +57,7 @@ export interface Emits
 	(event_name: "ignore-user", origin: Origin): void;
 	(event_name: "kick-member", member: ChannelMember): void;
 	(event_name: "open-channel-settings", event: Event): void;
+	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "open-room", room_id: RoomID): void;
 	(event_name: "select-member", origin: Origin): void;
@@ -118,6 +124,7 @@ const ignore_user_handler = (origin: Origin) => emit("ignore-user", origin);
 const kick_member_handler = (member: ChannelMember) => emit("kick-member", member);
 const unignore_user_handler = (origin: Origin) => emit("unignore-user", origin);
 const open_channel_settings_handler = (event: Event) => emit("open-channel-settings", event);
+const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
 const open_private_handler = (origin: Origin) => emit("open-private", origin);
 const select_channel_member_handler = (origin: Origin) => emit("select-member", origin);
 const send_message_handler = (message: string) => emit("send-message", message);
@@ -129,10 +136,16 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 	<div class="room/channel [ flex ]" :data-room="room.name">
 		<Room
 			:completion-list="completionList"
-			:disable-input="is_disabled_input"
 			:current-client-nickname="currentNickname"
+			:disable-input="is_disabled_input"
 			:room="room"
+			:text-format-bold="textFormatBold"
+			:text-format-italic="textFormatItalic"
+			:text-format-underline="textFormatUnderline"
+			:text-color-background="textColorBackground"
+			:text-color-foreground="textColorForeground"
 			@change-nickname="change_nickname_handler"
+			@open-colors-box="open_colors_box_handler"
 			@open-private="open_private_handler"
 			@open-room="open_room_handler"
 			@send-message="send_message_handler"

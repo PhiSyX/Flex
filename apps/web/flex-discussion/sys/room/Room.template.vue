@@ -14,16 +14,22 @@ import RoomTopic from "#/sys/room_topic/RoomTopic.template.vue";
 export interface Props
 {
 	completionList?: Array<string>;
+	currentClientNickname?: string;
 	displayInput?: boolean;
 	disableInput?: boolean;
 	room: Room;
-	currentClientNickname?: string;
+	textFormatBold: boolean;
+	textFormatItalic: boolean;
+	textFormatUnderline: boolean;
+	textColorBackground: number | null;
+	textColorForeground: number;
 }
 
 interface Emits
 {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "dblclick-main", event: MouseEvent): void;
+	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "open-room", room_id: RoomID): void;
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "send-message", message: string): void;
@@ -51,6 +57,7 @@ let input_placeholder = computed(
 
 const change_nick_handler = (event: MouseEvent) => emit("change-nickname", event);
 const dblclick_main_handler = (evt: MouseEvent) => emit("dblclick-main", evt);
+const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const open_private_handler = (origin: Origin) => emit("open-private", origin);
 const send_message_handler = (message: string) => emit("send-message", message);
@@ -86,12 +93,18 @@ const send_message_handler = (message: string) => emit("send-message", message);
 
 		<RoomEditbox
 			v-if="displayInput"
+			:bold="textFormatBold"
+			:italic="textFormatItalic"
+			:underline="textFormatUnderline"
+			:background="textColorBackground"
+			:foreground="textColorForeground"
 			:completion-list="completionList"
 			:disable-input="disableInput"
 			:current-client-nickname="currentClientNickname"
 			:placeholder="input_placeholder"
 			:room="room"
 			@change-nickname="change_nick_handler"
+			@open-colors-box="open_colors_box_handler"
 			@submit="send_message_handler"
 		/>
 	</div>

@@ -15,6 +15,7 @@ import type { Option } from "@phisyx/flex-safety";
 import { computed } from "vue";
 
 import {
+	ChangeFormatsColorsDialog,
 	ChannelSettingsDialog,
 	ChannelTopicLayer,
 	NoticesCustomRoom,
@@ -160,6 +161,13 @@ let userlist_position = computed(
 	() => settings_store.layout.channel_userlist_position,
 );
 
+let format_bold = computed(() => chat_store.store.format_bold);
+let format_italic = computed(() => chat_store.store.format_italic);
+let format_underline = computed(() => chat_store.store.format_underline);
+
+let color_background = computed(() => chat_store.store.color_background);
+let color_foreground = computed(() => chat_store.store.color_foreground);
+
 // ------- //
 // Handler //
 // ------- //
@@ -231,6 +239,17 @@ function open_channel_settings_dialog_handler(_: Event)
 	ChannelSettingsDialog.create(overlayer_store.store, {
 		room: props.room,
 		current_client_channel_member: current_client_member.value.unwrap(),
+	});
+}
+
+/**
+ * Ouvre la boite de couleur du champ de saisie.
+ */
+function open_colors_box_handler(event: MouseEvent)
+{
+	overlayer_store.create({
+		id: ChangeFormatsColorsDialog.ID,
+		event,
 	});
 }
 
@@ -337,10 +356,15 @@ function toggle_select_channel_member_handler(origin: Origin)
 	<ChannelRoomComponent
 		:activities="channel_activities"
 		:completion-list="completion_list"
-		:current-nickname="current_client_nickname"
 		:current-client-member="current_client_member"
+		:current-nickname="current_client_nickname"
 		:room="room"
 		:selected-member="selected_member"
+		:text-format-bold="format_bold"
+		:text-format-italic="format_italic"
+		:text-format-underline="format_underline"
+		:text-color-background="color_background"
+		:text-color-foreground="color_foreground"
 		:userlist-displayed-by-default="userlist_display"
 		@ban-member="send_ban_member_command"
 		@ban-nick="send_ban_member_nick_command"
@@ -350,6 +374,7 @@ function toggle_select_channel_member_handler(origin: Origin)
 		@ignore-user="(o) => send_silence_user_command_handler('+')(o)"
 		@kick-member="send_kick_member_command"
 		@open-channel-settings="open_channel_settings_dialog_handler"
+		@open-colors-box="open_colors_box_handler"
 		@open-room="open_room_handler"
 		@open-private="open_private_handler"
 		@select-member="toggle_select_channel_member_handler"

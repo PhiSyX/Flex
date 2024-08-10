@@ -1,5 +1,7 @@
 @use "./box-layout" as bl;
+@use "./invisibility" as inv;
 
 @mixin use-display($options...) {
 	@include bl.use-box-layout($options...);
+	@include inv.use-invisibility($options...);
 }

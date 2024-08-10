@@ -56,5 +56,5 @@ export function use_overlayer()
 		window.removeEventListener("keydown", keydown_handler);
 	});
 
-	return { store: overlayer_store, destroy_handler, resize_handler };
+	return { destroy_handler, resize_handler };
 }

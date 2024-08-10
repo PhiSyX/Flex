@@ -18,6 +18,7 @@ import { use_chat_store, use_overlayer_store } from "~/store";
 import ClientError from "~/components/error/ClientError.vue";
 import Navigation from "~/components/navigation/Navigation.vue";
 
+import ChangeFormatsColorsDialog from "~/components/dialog/ChangeFormatsColorsDialog.vue";
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
@@ -129,8 +130,11 @@ function reset_audio_src()
 		<!-- Teleport -->
 
 		<ClientError />
+
+		<ChangeFormatsColorsDialog />
+		<ChangeNickDialog />
 		<ChannelCreateDialog />
 		<ChannelSettingsDialog />
-		<ChangeNickDialog />
+
 	</main>
 </template>

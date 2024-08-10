@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { default as vMutationDirective } from "./mutation";
 import { default as vResizeDirective } from "./resize";
 import { default as vTrapDirective } from "./trap";
 
+export { vMutationDirective as vMutation };
 export { vResizeDirective as vResize };
 export { vTrapDirective as vTrap };

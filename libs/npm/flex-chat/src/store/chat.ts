@@ -55,6 +55,12 @@ export interface ChatStoreInterface
 {
 	audio_src: "connection" | "invite" | "mention" | "notice" | "query" | null;
 
+	format_bold: boolean;
+	format_italic: boolean;
+	format_underline: boolean;
+	color_background: 0 | 1| 2 | 3 | 4 | 5 | 6 | 7| 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | null;
+	color_foreground: 0 | 1| 2 | 3 | 4 | 5 | 6 | 7| 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+
 	client_error: Option<{
 		id: string;
 		title?: string;
@@ -263,6 +269,13 @@ export class ChatStore implements ChatStoreInterface
 	// --------- //
 
 	audio_src: ChatStoreInterface["audio_src"] = "connection";
+
+	format_bold: ChatStoreInterface["format_bold"] 				= false;
+	format_italic: ChatStoreInterface["format_italic"] 			= false;
+	format_underline: ChatStoreInterface["format_underline"] 	= false;
+	color_background: ChatStoreInterface["color_background"] 	= null;
+	color_foreground: ChatStoreInterface["color_foreground"] 	= 1;
+
 	private _connect_user_info: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
 	public client_error: Option<{

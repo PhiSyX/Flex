@@ -11,6 +11,9 @@
 		"display-ib": (
 			display: inline-block,
 		),
+		"display-n": (
+			display: none,
+		),
 	);
 
 	@include class.generate($options, $classes);

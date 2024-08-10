@@ -6,7 +6,7 @@ import { computed, onActivated as on_activated } from "vue";
 
 import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
-import { change_nick, on_submit } from "./RoomEditbox.handlers";
+import { change_nick, on_submit, open_colors_box } from "./RoomEditbox.handlers";
 import { use_autocompletion, use_input_history } from "./RoomEditbox.hooks";
 import { $input, input_model } from "./RoomEditbox.state";
 
@@ -49,6 +49,7 @@ on_activated(() => {
 // ------- //
 
 const change_nick_handler = change_nick(emit);
+const open_colors_box_handler = open_colors_box(emit);
 
 function submit_handler()
 {
@@ -108,7 +109,18 @@ function submit_handler()
 				↹ Tab
 			</UiButton>
 
-			<ButtonIcon icon="text-color" :disabled="disableInput" />
+			<ButtonIcon
+				
+				icon="text-color"
+				:disabled="disableInput" 
+				:class="{
+					[`fg-color${foreground}`]: foreground >= 0,
+					[`fshadow-color${background}`]: background != null,
+				}"
+				@click="open_colors_box_handler"
+				
+			/>
+
 			<ButtonIcon
 				icon="send"
 				type="submit"

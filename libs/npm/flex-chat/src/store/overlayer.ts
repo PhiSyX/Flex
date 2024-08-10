@@ -27,6 +27,8 @@ export type Layer<D = unknown> = {
 	on_close?: () => void;
 	mouse_position?: Partial<{
 		top: CSSHoudiniUnitValue;
+		right?: CSSHoudiniUnitValue;
+		bottom?: CSSHoudiniUnitValue;
 		left: CSSHoudiniUnitValue;
 	}>;
 	trap_focus?: boolean;
@@ -59,6 +61,9 @@ export class OverlayerStore
 	// --------- //
 	// Propriété //
 	// --------- //
+
+	$overlayer!: HTMLDivElement;
+	$teleport!: HTMLDivElement;
 
 	layers: Map<string, Layer> = new Map();
 
@@ -204,7 +209,24 @@ export class OverlayerStore
 			),
 		};
 
-		this.layers.set(layer_id, { ...layer, style });
+		let mouse_position: Layer["mouse_position"] = layer.mouse_position || {};
+
+		if (!layer.centered && layer.dom_element && this.$overlayer && this.$teleport) {
+			let dom_element_rect = layer.dom_element.getBoundingClientRect();
+			let teleport_rect = this.$teleport.getBoundingClientRect();
+
+			mouse_position.left = to_px(
+				dom_element_rect.left - 
+				MOUSE_POSITION_PADDING
+			)
+			mouse_position.top = to_px(
+				dom_element_rect.top - 
+				teleport_rect.height - 
+				(MOUSE_POSITION_PADDING * 2)
+			);
+		}
+
+		this.layers.set(layer_id, { ...layer, style, mouse_position });
 	}
 
 	update_data<D = unknown>(layer_id: Layer<D>["id"], data: D)
