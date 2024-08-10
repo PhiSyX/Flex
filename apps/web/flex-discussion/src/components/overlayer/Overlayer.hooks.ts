@@ -12,7 +12,7 @@ import type { Layer } from "@phisyx/flex-chat";
 
 import {
 	onBeforeMount as on_before_mount,
-	onBeforeUnmount as on_before_unmount
+	onBeforeUnmount as on_before_unmount,
 } from "vue";
 
 import { use_overlayer_store } from "~/store";

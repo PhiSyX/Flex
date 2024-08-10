@@ -15,11 +15,12 @@ import { AudioSound } from "@phisyx/flex-vue-uikit";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
+import ClientError from "~/components/error/ClientError.vue";
+import Navigation from "~/components/navigation/Navigation.vue";
+
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
-import ClientError from "~/components/error/ClientError.vue";
-import Navigation from "~/components/navigation/Navigation.vue";
 
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
@@ -57,7 +58,14 @@ const rooms_components = shallow_ref({
 	[PrivateRoom.type]: PrivateRoomComponent,
 } as const);
 
-let audio_src = computed(() => chat_store.store.audio_src);
+let audio_src = computed({
+	get() {
+		return chat_store.store.audio_src;
+	},
+	set($1) {
+		chat_store.store.audio_src = $1;
+	}
+});
 
 // ------- //
 // Handler //
@@ -86,7 +94,7 @@ function open_settings_view_handler()
 
 function reset_audio_src()
 {
-	chat_store.store.audio_src = null;
+	audio_src.value = null;
 }
 </script>
 

@@ -262,7 +262,7 @@ export class ChatStore implements ChatStoreInterface
 	// Propriété //
 	// --------- //
 
-	audio_src: "connection" | "invite" | "mention" | "notice" | "query" | null = "connection";
+	audio_src: ChatStoreInterface["audio_src"] = "connection";
 	private _connect_user_info: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
 	public client_error: Option<{
