@@ -1,5 +1,9 @@
 # Notes
 
+1. Les composants Vue à l'intérieur du dossier `src/` peuvent accéder aux stores. 
+
+2. Les composants Vue à l'intérieur du dossier `sys/` n'accèdent pas aux stores. C'est totalement voulu.
+
 ## À améliorer
 
 -   L'organisation. Encore et toujours.
@@ -8,8 +12,34 @@
 
 -	Éviter de caster avec `as`, surtout pour les types Opaque.
 
--   Utiliser des schémas de validation pour autoriser les données du serveur à
-    être utiliser par notre application. Ca n'est pas une priorité.
+-   Utiliser des schémas de validation pour autoriser les données du serveur à être utiliser par notre application. 
+    Ca n'est pas une priorité.
+
+-   Accès aux assets, l'idéal est de créer un package npm à la racine du projet  `@phisyx/flex-assets`.
+
+**assets/package.json**:
+
+```json
+{
+	"name": "@phisyx/flex-assets",
+	"version": "0.1.0",
+	"private": true,
+	"publishConfig": {
+		"access": "public"
+	}
+}
+```
+
+**config/flex/server.yml**:
+
+```yaml
+static_resources:
+  - url_path: /assets
+    dir_path: /@fs/<root>/assets/ # par Vite (ex: /@fs/C:/Users/phisyx/Flex/assets/fonts/....)
+```
+
+    Pour le moment, il n'est pas possible avec notre serveur de pouvoir définir ce genre de chemin de répertoire.
+    Notamment dû à une limitation de la bibliothèque `tower-http`, qui émet une erreur au runtime.
 
 ## Configuration TypeScript et les imports de types
 
@@ -38,8 +68,7 @@ import type { MyType } from "alias:~/types";
       <stacktrace>
 ```
 
-Veillez à ce que le fichier de configuration de tsconfig inclue les fichiers
-TypeScript.
+Veillez à ce que le fichier de configuration de tsconfig inclue les fichiers TypeScript.
 
 **EXEMPLE**:
 
@@ -59,8 +88,7 @@ TypeScript.
 }
 ```
 
-Il faut impérativement ajouter les caractères génériques `*` à la suite d'un nom
-de répertoire.
+Il faut impérativement ajouter les caractères génériques `*` à la suite d'un nom de répertoire.
 
 **EXEMPLE Correct**:
 
