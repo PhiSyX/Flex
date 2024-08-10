@@ -74,7 +74,12 @@ impl<S, E, C> Server<S, E, C>
 		for static_resource in self.settings.static_resources.iter() {
 			self.router.global = self.router.global.nest_service(
 				&static_resource.url_path,
-				tower_http::services::ServeDir::new(&static_resource.dir_path),
+				tower_http::services::ServeDir::new(&static_resource.dir_path)
+					.append_index_html_on_directories(false)
+					.precompressed_gzip()
+					.precompressed_br()
+					.precompressed_deflate()
+					.precompressed_zstd()
 			);
 		}
 
