@@ -21,11 +21,11 @@ export interface Props
 	completionList?: Array<string>;
 	currentClientNickname?: string;
 	disableInput?: boolean;
-	bold: boolean;
-	italic: boolean;
-	underline: boolean;
-	background: number | null;
-	foreground: number;
+	bold?: boolean | null;
+	italic?: boolean | null;
+	underline?: boolean | null;
+	background?: number | null;
+	foreground?: number | null;
 	placeholder?: string;
 	room: Room;
 }

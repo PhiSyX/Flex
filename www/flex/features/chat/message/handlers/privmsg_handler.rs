@@ -46,7 +46,12 @@ impl PrivmsgHandler
 
 		for target in data.targets.iter() {
 			let origin = Origin::from(client_socket.client());
-			client_socket.emit_privmsg(target, &data.text, &origin);
+			client_socket.emit_privmsg(
+				target,
+				data.formats.as_ref().zip(data.colors.as_ref()),
+				&data.text,
+				&origin,
+			);
 
 			if client_socket.has_same_nickname(target) {
 				continue;
@@ -66,7 +71,12 @@ impl PrivmsgHandler
 				continue;
 			}
 
-			target_client_socket.emit_privmsg(target, &data.text, &origin);
+			target_client_socket.emit_privmsg(
+				target,
+				data.formats.as_ref().zip(data.colors.as_ref()),
+				&data.text,
+				&origin,
+			);
 			if target_client_socket.client().user().is_away() {
 				client_socket.send_rpl_away(&target_client_socket);
 			}

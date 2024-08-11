@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-
-
 // ---- //
 // Type //
 // ---- //
@@ -15,7 +13,7 @@ interface Props
 // --------- //
 
 defineProps<Props>();
-let model = defineModel<boolean>({ required: true });
+let model = defineModel<boolean | null>();
 </script>
 
 <template>

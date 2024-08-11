@@ -10,12 +10,12 @@ import ChangeFormat from "./ChangeFormat.vue";
 // Composant //
 // --------- //
 
-let bold_selected = defineModel<boolean>("bold", { required:true });
-let italic_selected = defineModel<boolean>("italic", { required:true });
-let underline_selected = defineModel<boolean>("underline", { required:true });
+let bold_selected = defineModel<boolean | null>("bold");
+let italic_selected = defineModel<boolean | null>("italic");
+let underline_selected = defineModel<boolean | null>("underline");
 
-let background_selected = defineModel<number | null>("background", { required:true });
-let foreground_selected = defineModel<number>("foreground", { required:true });
+let background_selected = defineModel<number | null>("background");
+let foreground_selected = defineModel<number | null>("foreground");
 
 let reveal_background_box = ref(false);
 let reveal_icon = computed(
@@ -51,7 +51,7 @@ let reveal_icon = computed(
 		<div class="dialog/change-formats-colors:foreground [ p=1 gap=1 ]">
 			<ChangeColorPreset
 				v-for="i in 16"
-				:key="i"
+				:key="foreground_selected ?? i"
 				:preset="i - 1"
 				type="foreground"
 				v-model="foreground_selected"
@@ -73,7 +73,7 @@ let reveal_icon = computed(
 			<div class="dialog/change-formats-colors:background [ p=1 gap=1 ]">
 				<ChangeColorPreset
 					v-for="i in 16"
-					:key="i"
+					:key="background_selected ?? i"
 					:preset="i - 1"
 					type="background"
 					v-model="background_selected"

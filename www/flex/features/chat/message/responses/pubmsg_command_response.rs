@@ -11,6 +11,9 @@
 use flex_chat::channel::{Channel, ChannelInterface};
 use flex_chat::client::{ClientInterface, ClientSocketInterface, Socket};
 use flex_chat::macros::command_response;
+use serde_json::json;
+
+use crate::features::chat::message::format_color::{MessageColors, MessageFormats};
 
 command_response! {
 	struct PUBMSG<'channel, 'text>
@@ -38,6 +41,7 @@ pub trait PubmsgClientSocketCommandResponseInterface
 	fn emit_pubmsg<MemberDTO>(
 		&self,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		formats_colors: Option<(&MessageFormats, &MessageColors)>,
 		text: &str,
 		by: &MemberDTO,
 	) where
@@ -48,6 +52,7 @@ pub trait PubmsgClientSocketCommandResponseInterface
 	fn emit_external_pubmsg(
 		&self,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		formats_colors: Option<(&MessageFormats, &MessageColors)>,
 		text: &str,
 		by: &<Self::Client as ClientInterface>::User,
 	);
@@ -64,14 +69,26 @@ impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s>
 	fn emit_pubmsg<MemberDTO>(
 		&self,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		formats_colors: Option<(&MessageFormats, &MessageColors)>,
 		text: &str,
 		by: &MemberDTO,
 	) where
 		MemberDTO: serde::Serialize,
 	{
+		let mut tags = PubmsgCommandResponse::default_tags();
+		
+		if let Some((formats, colors)) = formats_colors {
+			tags.insert(String::from("format_bold"), json!(formats.format_bold));
+			tags.insert(String::from("format_italic"), json!(formats.format_italic));
+			tags.insert(String::from("format_underline"), json!(formats.format_underline));
+
+			tags.insert(String::from("color_background"), json!(colors.color_background));
+			tags.insert(String::from("color_foreground"), json!(colors.color_foreground));
+		}
+
 		let pubmsg_command = PubmsgCommandResponse {
 			origin: &by,
-			tags: PubmsgCommandResponse::default_tags(),
+			tags,
 			channel: channel_name,
 			text,
 			external: false,
@@ -90,13 +107,25 @@ impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s>
 	fn emit_external_pubmsg(
 		&self,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		formats_colors: Option<(&MessageFormats, &MessageColors)>,
 		text: &str,
 		by: &<Self::Client as ClientInterface>::User,
 	)
 	{
+		let mut tags = PubmsgCommandResponse::default_tags();
+		
+		if let Some((formats, colors)) = formats_colors {
+			tags.insert(String::from("format_bold"), json!(formats.format_bold));
+			tags.insert(String::from("format_italic"), json!(formats.format_italic));
+			tags.insert(String::from("format_underline"), json!(formats.format_underline));
+
+			tags.insert(String::from("color_background"), json!(colors.color_background));
+			tags.insert(String::from("color_foreground"), json!(colors.color_foreground));
+		}
+
 		let pubmsg_command = PubmsgCommandResponse {
 			origin: &by,
-			tags: PubmsgCommandResponse::default_tags(),
+			tags,
 			channel: channel_name,
 			text,
 			external: true,

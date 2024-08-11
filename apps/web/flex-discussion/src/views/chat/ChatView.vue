@@ -105,11 +105,19 @@ function reset_audio_src()
 
 		<div class="room [ flex:full flex ]">
 			<template v-for="room in rooms" :key="room.id()">
-				<template v-if="custom_rooms_components[room.id()] || rooms_components[room.type]">
+				<template v-if="
+					custom_rooms_components[room.id()] || 
+					// @ts-expect-error à corriger
+					rooms_components[room.type]
+				">
 					<KeepAlive :key="room.type + '/' + room.id()">
 						<component
 							v-show="room.is_active() && !room.is_closed()"
-							:is="custom_rooms_components[room.id()] || rooms_components[room.type]" 
+							:is="
+								custom_rooms_components[room.id()] ||
+								// @ts-expect-error à corriger
+								rooms_components[room.type]
+							" 
 							:room="(room as any)"
 							class="[ flex:full ]"
 							@join-channel="join_channel_handler"

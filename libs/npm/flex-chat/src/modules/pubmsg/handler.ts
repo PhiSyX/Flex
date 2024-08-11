@@ -77,6 +77,15 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 
 		let message = room.add_message(
 			new RoomMessage(data.text)
+				.with_colors({
+					background: data.tags.color_background,
+					foreground: data.tags.color_foreground,
+				})
+				.with_formats({
+					bold: data.tags.format_bold,
+					italic: data.tags.format_italic,
+					underline: data.tags.format_underline,
+				})
 				.with_id(data.tags.msgid)
 				.with_nickname(data.origin.nickname)
 				.with_target(data.channel)

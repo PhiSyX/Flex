@@ -41,6 +41,7 @@ import {
 import { None } from "@phisyx/flex-safety";
 
 import { use_overlayer_store } from "./overlayer";
+import { use_settings_store } from "./settings";
 import { useUUIDv4Store, useUUIDv7Store } from "./uuid";
 
 // -------------- //
@@ -222,7 +223,8 @@ export class ChatStoreVue
 	// Méthode // -> ChatStoreUUIDExt
 	// ------- //
 
-	uuid(version: UUIDVariant): UUIDStore {
+	uuid(version: UUIDVariant): UUIDStore
+	{
 		if (version === 4) {
 			return this._uuidv4;
 		}
@@ -233,6 +235,7 @@ export class ChatStoreVue
 
 export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	let store = ChatStoreVue.default();
+	let settings_store = use_settings_store();
 
 	/**
 	 * Toutes les commandes basées sur les noms de modules.
@@ -539,16 +542,41 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		room.add_input_history(message);
 
 		if (!message.startsWith("/")) {
+			
 			let words = message.split(" ");
 
 			if (name.startsWith("#")) {
 				let module = store.module_manager().get("PUBMSG")
 					.expect("Récupération du module `PUBMSG`");
-				module.input(name, ...words);
+				module.input(
+					name,
+					{
+						format_bold: settings_store.personalization.formats.bold,
+						format_italic: settings_store.personalization.formats.italic,
+						format_underline: settings_store.personalization.formats.underline,
+					},
+					{
+						color_background: settings_store.personalization.colors.background,
+						color_foreground: settings_store.personalization.colors.foreground,
+					},
+					...words,
+				);
 			} else {
 				let module = store.module_manager().get("PRIVMSG")
 					.expect("Récupération du module `PRIVMSG`");
-				module.input(name, ...words);
+				module.input(
+					name,
+					{
+						format_bold: settings_store.personalization.formats.bold,
+						format_italic: settings_store.personalization.formats.italic,
+						format_underline: settings_store.personalization.formats.underline,
+					},
+					{
+						color_background: settings_store.personalization.colors.background,
+						color_foreground: settings_store.personalization.colors.foreground,
+					},
+					...words,
+				);
 			}
 			return;
 		}

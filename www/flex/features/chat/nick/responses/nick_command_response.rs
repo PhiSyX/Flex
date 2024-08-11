@@ -16,6 +16,7 @@ use flex_chat::client::{
 };
 use flex_chat::macros::command_response;
 use flex_chat::user::UserInterface;
+use serde_json::json;
 
 command_response! {
 	struct NICK<'old, 'new>
@@ -63,7 +64,7 @@ impl<'s> NickClientSocketCommandResponseInterface for Socket<'s>
 			old_nickname,
 			new_nickname,
 		}
-		.with_tags([("user_id", self.client().cid())]);
+		.with_tags([("user_id", json!(self.client().cid()))]);
 
 		_ = self.socket().join(format!("private:{}", new_nickname.to_lowercase()));
 

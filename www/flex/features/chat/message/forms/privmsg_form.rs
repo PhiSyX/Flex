@@ -15,9 +15,14 @@ use flex_chat::user::{do_nickname_with_config, DoNicknameFnOptions, NICK_MAX_SIZ
 use flex_serde_validation::array::validate_vec_string_filter;
 use flex_serde_validation::string::validate_string_filter;
 
+use super::format_color::{MessageColors, MessageFormats};
+
 command_formdata! {
 	struct PRIVMSG
 	{
+		formats: Option<MessageFormats>,
+		colors: Option<MessageColors>,
+
 		/// Le paramètre `<target>` est généralement le surnom du destinataire
 		/// du message, ou un nom de salon.
 		///

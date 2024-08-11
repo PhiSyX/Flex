@@ -4,7 +4,7 @@ import { computed } from "vue";
 import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat";
 
 import { vMutation } from "~/directives";
-import { use_chat_store, use_overlayer_store } from "~/store";
+import { use_overlayer_store, use_settings_store } from "~/store";
 
 import ChangeFormatsColorsDialogComponent from "#/sys/change_formats_colors_dialog/ChangeFormatsColorsDialog.template.vue";
 
@@ -18,8 +18,8 @@ const LAYER_NAME: string = ChangeFormatsColorsDialog.ID;
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
+let settings_store = use_settings_store();
 
 let dialog = computed(
 	() => new ChangeFormatsColorsDialog(overlayer_store.store),
@@ -28,43 +28,58 @@ let has_layer = computed(() => dialog.value.exists());
 
 let bold = computed({
 	get() {
-		return chat_store.store.format_bold;
+		return settings_store.personalization.formats.bold;
 	},
 	set($1) {
-		chat_store.store.format_bold = $1;
+		settings_store.personalization.formats = {
+			...settings_store.personalization.formats,
+			bold: $1,
+		};
 	}
 });
 let italic = computed({
 	get() {
-		return chat_store.store.format_italic;
+		return settings_store.personalization.formats.italic;
 	},
 	set($1) {
-		chat_store.store.format_italic = $1;
+		settings_store.personalization.formats = {
+			...settings_store.personalization.formats,
+			italic: $1,
+		};
 	}
 });
 let underline = computed({
 	get() {
-		return chat_store.store.format_underline;
+		return settings_store.personalization.formats.underline;
 	},
 	set($1) {
-		chat_store.store.format_underline = $1;
+		settings_store.personalization.formats = {
+			...settings_store.personalization.formats,
+			underline: $1,
+		};
 	}
 });
 
 let background = computed({
 	get() {
-		return chat_store.store.color_background;
+		return settings_store.personalization.colors.background;
 	},
 	set($1) {
-		chat_store.store.color_background = $1;
+		settings_store.personalization.colors = {
+			...settings_store.personalization.colors,
+			background: $1,
+		};
 	}
 });
 let foreground = computed({
 	get() {
-		return chat_store.store.color_foreground;
+		return settings_store.personalization.colors.foreground;
 	},
 	set($1) {
-		chat_store.store.color_foreground = $1;
+		settings_store.personalization.colors = {
+			...settings_store.personalization.colors,
+			foreground: $1,
+		};
 	}
 });
 

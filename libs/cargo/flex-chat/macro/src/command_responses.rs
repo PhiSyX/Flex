@@ -27,12 +27,12 @@ $crate::paste::paste! { $(
 
 	#[derive(Debug)]
 	#[derive(Clone)]
-	#[derive(serde::Serialize)]
+	#[derive($crate::serde::Serialize)]
 	$(#[$doc_struct])*
 	pub struct [ < $command:camel CommandResponse > ] <'o, $($($generic,)*)? O = ()>
 	{
 		pub origin: &'o O,
-		pub tags: std::collections::HashMap<String, String>,
+		pub tags: std::collections::HashMap<String, $crate::serde_json::Value>,
 		$($(
 			$(#[$doc_field])*
 			pub $field : $ty
@@ -49,11 +49,11 @@ $crate::paste::paste! { $(
 
 	impl<'o, $($($generic,)*)?> [ < $command:camel CommandResponse > ] <'o, $($($generic,)*)?>
 	{
-		pub fn default_tags() -> std::collections::HashMap<String, String>
+		pub fn default_tags() -> std::collections::HashMap<String, $crate::serde_json::Value>
 		{
 			return [("msgid", $crate::Uuid::new_v4())]
 				.into_iter()
-				.map(|(k, v)| (k.to_string(), v.to_string()))
+				.map(|(k, v)| (k.to_string(), v.to_string().into()))
 				.collect()
 		}
 	}
@@ -67,11 +67,11 @@ $crate::paste::paste! { $(
 		) -> Self
 		where
 			K: ToString,
-			V: ToString,
+			V: Into<$crate::serde_json::Value>,
 		{
 			let tags = tags
 				.into_iter()
-				.map(|(k, v)| (k.to_string(), v.to_string()));
+				.map(|(k, v)| (k.to_string(), v.into()));
 			self.tags.extend(tags);
 			self
 		}

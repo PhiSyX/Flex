@@ -20,3 +20,9 @@ export type ThemeRecord = {
 	name: keyof Theme;
 	src: Theme[keyof Theme];
 };
+
+// -------- //
+// Constant //
+// -------- //
+
+export const ALL_THEMES = ["dark", "ice", "light", "system"];

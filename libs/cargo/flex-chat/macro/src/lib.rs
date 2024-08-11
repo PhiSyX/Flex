@@ -14,4 +14,4 @@ mod error_replies;
 mod reserved_numerics;
 
 pub use flex_web_framework::types::uuid::Uuid;
-pub use {paste, serde};
+pub use {paste, serde, serde_json};

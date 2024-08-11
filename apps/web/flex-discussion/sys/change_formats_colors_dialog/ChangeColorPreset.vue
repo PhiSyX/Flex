@@ -17,7 +17,7 @@ interface Props
 // --------- //
 
 const props =defineProps<Props>();
-let selected = defineModel<number | null>({ required: true });
+let selected = defineModel<number | null>();
 
 let variant = computed(() => props.type === "foreground" ? "fg" : "bg");
 </script>

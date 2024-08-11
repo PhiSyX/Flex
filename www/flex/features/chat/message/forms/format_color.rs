@@ -8,26 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Room } from "../room";
+// --------- //
+// Structure //
+// --------- //
 
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class MentionsCustomRoom extends Room<CustomRoomID, "mentions-custom-room">
+#[derive(Debug)]
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct MessageFormats
 {
-	/**
-	 * ID de la chambre personnalisée.
-	 */
-	public static ID: CustomRoomID = "@mentions" as CustomRoomID;
+	pub format_bold: Option<bool>,
+	pub format_italic: Option<bool>,
+	pub format_underline: Option<bool>,
+}
 
-	// ----------- //
-	// Constructor //
-	// ----------- //
-
-	constructor()
-	{
-		super("mentions-custom-room", "Mentions");
-		this.with_id(MentionsCustomRoom.ID);
-	}
+#[derive(Debug)]
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct MessageColors
+{
+	pub color_background: Option<u8>,
+	pub color_foreground: Option<u8>,
 }

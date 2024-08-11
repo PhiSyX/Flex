@@ -69,8 +69,32 @@ declare interface Commands {
 	OPER: { name: string; password: string };
 
 	PART: { channels: Array<ChannelID>; message?: string };
-	PRIVMSG: { targets: Array<string>; text: string };
-	PUBMSG: { channels: Array<ChannelID>; text: string };
+	PRIVMSG: {
+		formats: {
+			format_bold: boolean;
+			format_italic: boolean;
+			format_underline: boolean;
+		};
+		colors: {
+			color_background: number | null; 
+			color_foreground: number | null; 
+		};
+		targets: Array<string>;
+		text: string;
+	};
+	PUBMSG: {
+		formats: {
+			format_bold: boolean;
+			format_italic: boolean;
+			format_underline: boolean;
+		};
+		colors: {
+			color_background: number | null; 
+			color_foreground: number | null; 
+		};
+		channels: Array<ChannelID>;
+		text: string;
+	};
 
 	QUIT: {
 		reason?: string;

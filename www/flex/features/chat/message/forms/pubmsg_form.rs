@@ -14,9 +14,14 @@ use flex_chat::channel::validate_channels;
 use flex_chat::macros::command_formdata;
 use flex_serde_validation::string::validate_string_filter;
 
+use super::format_color::{MessageColors, MessageFormats};
+
 command_formdata! {
 	struct PUBMSG
 	{
+		formats: Option<MessageFormats>,
+		colors: Option<MessageColors>,
+
 		#[serde(deserialize_with = "validate_channels")]
 		channels: Vec<Arc<str>>,
 		/// Le message envoyé.

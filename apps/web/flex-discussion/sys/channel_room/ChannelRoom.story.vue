@@ -38,7 +38,7 @@ let me = Some(new ChannelMember(origin1));
 chan.messages.push(
 	new RoomMessage("Hello World")
 		.with_data({ origin: origin1 })
-		.with_id("id")
+		.with_id("id" as UUID)
 		.with_is_current_client(false)
 		.with_nickname("ModeratorUser")
 		.with_target(channel_name)
@@ -50,9 +50,9 @@ chan.messages.push(
 			knick: origin2,
 			name: "KICK",
 			reason: "Dehors !",
-			tags: { msgid: "id" },
+			tags: { msgid: "id" as UUID },
 		} as GenericReply<"KICK">)
-		.with_id("id2")
+		.with_id("id2" as UUID)
 		.with_is_current_client(false)
 		.with_nickname("ModeratorUser")
 		.with_target(channel_name)

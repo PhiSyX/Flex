@@ -41,17 +41,38 @@ export class PersonalizationSettings
 
 	get theme()
 	{
-		return this.storage.get().theme;
+		return this.storage.value.theme;
 	}
-
 	set theme(value: PersonalizationData["theme"])
 	{
 		this.storage.set({ ...this.storage.value, theme: value });
 	}
 
+	get colors()
+	{
+		return this.storage.value.colors;
+	}
+	set colors(value: PersonalizationData["colors"])
+	{
+		this.storage.set({ ...this.storage.value, colors: value });
+	}
+
+	get formats()
+	{
+		return this.storage.value.formats;
+	}
+	set formats(value: PersonalizationData["formats"])
+	{
+		this.storage.set({ ...this.storage.value, formats: value });
+	}
+
 	persist()
 	{
-		this.storage.set({ theme: this.theme });
+		this.storage.set({
+			theme: this.theme,
+			colors: this.colors,
+			formats: this.formats,
+		});
 	}
 }
 

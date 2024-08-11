@@ -21,7 +21,16 @@ interface Props
 {
 	data: object & { origin: Origin | ChannelOrigin };
 	archived: boolean;
-	id: string;
+	id: UUID;
+	formats?: {
+		bold?: boolean | null;
+		italic?: boolean | null;
+		underline?: boolean | null;
+	};
+	colors?: {
+		background?: number | null;
+		foreground?: number | null;
+	};
 	mention: boolean;
 	message: string;
 	isCurrentClient: boolean;
@@ -175,7 +184,15 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 				</Match>
 			</template>
 
-			<p>{{ message }}</p>
+			<p
+				:class="{
+					[`bg-color${colors?.background}`]: colors?.background,
+					[`fg-color${colors?.foreground}`]: colors?.foreground,
+					'text-bold': formats?.bold,
+					'text-italic':formats?.italic,
+					'text-underline': formats?.underline,
+				}"
+			>{{ message }}</p>
 		</template>
 	</li>
 </template>

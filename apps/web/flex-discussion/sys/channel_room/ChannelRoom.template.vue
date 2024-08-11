@@ -32,11 +32,11 @@ export interface Props
 	currentNickname: string;
 	room: ChannelRoom;
 	selectedMember: Option<ChannelMemberSelected>;
-	textFormatBold: boolean;
-	textFormatItalic: boolean;
-	textFormatUnderline: boolean;
-	textColorBackground: number | null;
-	textColorForeground: number;
+	textFormatBold?: boolean | null;
+	textFormatItalic?: boolean | null;
+	textFormatUnderline?: boolean | null;
+	textColorBackground?: number | null;
+	textColorForeground?: number | null;
 	userlistDisplayedByDefault: boolean;
 }
 

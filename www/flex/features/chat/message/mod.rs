@@ -21,8 +21,9 @@ flex_kernel::import! {
 	};
 
 	mod forms use {
+		pub(super) mod format_color; 
 		pub(super) mod privmsg_form use *;
-		pub(super) mod  pubmsg_form use *;
+		pub(super) mod pubmsg_form use *;
 	};
 
 	mod responses use {

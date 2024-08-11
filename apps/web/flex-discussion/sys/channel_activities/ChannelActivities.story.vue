@@ -25,7 +25,7 @@ channel.add_member(user);
 
 let member = channel.get_member_by_nickname("PhiSyX");
 
-let msgid = "0000-0000-0000-0000-0000";
+let msgid = "0000-0000-0000-0000-0000" as UUID;
 channel.add_message(
 	new RoomMessage<"channel", { text: string }>("hello world")
 		.with_type("privmsg")

@@ -85,6 +85,11 @@ function submit_handler()
 					:placeholder="suggestionInput"
 					type="search"
 					class="[ pos-a:full input:reset size:full py=1 ]"
+					:class="{
+						'text-bold': bold,
+						'text-italic': italic,
+						'text-underline': underline,
+					}"
 				/>
 
 				<input
@@ -92,8 +97,15 @@ function submit_handler()
 					v-model="input_model"
 					:disabled="disableInput"
 					:placeholder="placeholder"
-					type="text"
+					:class="{
+						[`fg-color${foreground}`]: foreground && foreground >= 0,
+						[`fshadow-color${background}`]: background !== null,
+						'text-bold': bold,
+						'text-italic': italic,
+						'text-underline': underline,
+					}"
 					class="[ input:reset flex:shrink=0 size:full py=1 ]"
+					type="text"
 					@keydown.down="history_keydown_handler"
 					@keydown.up="history_keydown_handler"
 					@keydown="autocompletion_keydown_handler"
@@ -114,8 +126,8 @@ function submit_handler()
 				icon="text-color"
 				:disabled="disableInput" 
 				:class="{
-					[`fg-color${foreground}`]: foreground >= 0,
-					[`fshadow-color${background}`]: background != null,
+					[`fg-color${foreground}`]: foreground && foreground >= 0,
+					[`fshadow-color${background}`]: background !== null,
 				}"
 				@click="open_colors_box_handler"
 				
@@ -157,6 +169,13 @@ input[type="text"] {
 }
 input[type="search"] {
 	z-index: 0;
+}
+
+input[type="text"]::placeholder {
+	color: var(--default-placeholder-color) !important;
+	font-style: initial !important;
+	text-decoration: initial !important;
+	font-weight: initial !important;
 }
 
 .btn-suggestion {

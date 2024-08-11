@@ -45,7 +45,13 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, targets_raw?: string, ...words: Array<string>)
+	input(
+		room_id: RoomID,
+		formats: Commands["PRIVMSG"]["formats"],
+		colors: Commands["PRIVMSG"]["colors"],
+		targets_raw?: string,
+		...words: Array<string>
+	)
 	{
 		if (room_id.startsWith("@")) {
 			let targets = targets_raw?.split(",");
@@ -53,7 +59,7 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 				return;
 			}
 			let text = words.join(" ");
-			this.send({ targets, text });
+			this.send({ formats, colors, targets, text });
 			return;
 		}
 
@@ -62,7 +68,7 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 			words.unshift(targets_raw);
 		}
 		let text = words.join(" ");
-		this.send({ targets, text });
+		this.send({ formats, colors, targets, text });
 	}
 
 	send(payload: Command<"PRIVMSG">)

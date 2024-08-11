@@ -78,7 +78,7 @@ export class AppLocalStorage<T>
 
 	get(): T
 	{
-		if (this.with_defaults !== undefined) {
+		if (this.item.is_none() && this.with_defaults !== undefined) {
 			return this.item.unwrap_or(this.with_defaults as NonNullable<T>);
 		}
 

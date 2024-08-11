@@ -10,6 +10,7 @@
 
 import type { ChatStoreInterface } from "../../store";
 import type { Module } from "../interface";
+
 import { PubmsgCommand } from "./command";
 import { PubmsgHandler } from "./handler";
 
@@ -45,7 +46,13 @@ export class PubmsgModule implements Module<PubmsgModule>
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channels_raw?: ChannelID, ...words: Array<string>)
+	input(
+		room_id: RoomID,
+		formats: Commands["PUBMSG"]["formats"],
+		colors: Commands["PUBMSG"]["colors"],
+		channels_raw?: ChannelID,
+		...words: Array<string>
+	)
 	{
 		if (!room_id.startsWith("#")) {
 			let channels = channels_raw?.split(",") as
@@ -55,7 +62,7 @@ export class PubmsgModule implements Module<PubmsgModule>
 				return;
 			}
 			let text = words.join(" ");
-			this.send({ channels, text });
+			this.send({ formats, colors, channels, text });
 			return;
 		}
 
@@ -67,7 +74,7 @@ export class PubmsgModule implements Module<PubmsgModule>
 				return;
 			}
 			let text = words.join(" ");
-			this.send({ channels, text });
+			this.send({ formats, colors, channels, text });
 			return;
 		}
 
@@ -76,7 +83,7 @@ export class PubmsgModule implements Module<PubmsgModule>
 			words.unshift(channels_raw);
 		}
 		let text = words.join(" ");
-		this.send({ channels, text });
+		this.send({ formats, colors, channels, text });
 	}
 
 	send(payload: Command<"PUBMSG">)

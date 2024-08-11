@@ -10,3 +10,4 @@ workspace = true
 paste = { version = "1.0.15" }
 flex-web-framework = { path = "../../flex-web-framework" }
 serde = { workspace = true }
+serde_json = { workspace = true }

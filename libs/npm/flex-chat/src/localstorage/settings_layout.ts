@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { is_boolean } from "@phisyx/flex-asserts";
 import { AppLocalStorage } from "./storage";
 
 /**
@@ -26,6 +27,15 @@ export interface LayoutData
 	navigation_bar_position?: "left" | "right";
 }
 
+// -------- //
+// Constant //
+// -------- //
+
+const POSITIONS: Array<string> = ["left", "right"];
+const DEFAULT_CHANNEL_USERLIST_POSITION = "right" as const;
+const DEFAULT_NAVIGATION_BAR_POSITION = "left" as const;
+const DEFAULT_CHANNEL_USERLIST_DISPLAY = true;
+
 // -------------- //
 // Implémentation //
 // -------------- //
@@ -41,9 +51,9 @@ export class LayoutStorage extends AppLocalStorage<LayoutData>
 	static default(): LayoutData
 	{
 		return {
-			channel_userlist_display: true,
-			channel_userlist_position: "right",
-			navigation_bar_position: "left",
+			channel_userlist_display: DEFAULT_CHANNEL_USERLIST_DISPLAY,
+			channel_userlist_position: DEFAULT_CHANNEL_USERLIST_POSITION,
+			navigation_bar_position: DEFAULT_NAVIGATION_BAR_POSITION,
 		};
 	}
 
@@ -63,12 +73,20 @@ export class LayoutStorage extends AppLocalStorage<LayoutData>
 				return;
 			}
 
-			if (![true, false, "left", "right"].includes(value)) {
-				return;
+			if (key === "channel_userlist_display" && !is_boolean(value)) {
+				return DEFAULT_CHANNEL_USERLIST_DISPLAY;
+			}
+
+			if (key === "channel_userlist_position" && !POSITIONS.includes(value)) {
+				return DEFAULT_CHANNEL_USERLIST_POSITION;
+			}
+
+			if (key === "navigation_bar_position" && !POSITIONS.includes(value)) {
+				return DEFAULT_NAVIGATION_BAR_POSITION;
 			}
 		}
 
-		if (value == null) {
+		if (value === undefined) {
 			return LayoutStorage.default();
 		}
 

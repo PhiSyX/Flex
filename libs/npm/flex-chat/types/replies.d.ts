@@ -63,7 +63,7 @@ declare interface CommandResponsesFromServer {
 		tags: { user_id: UserID };
 	};
 	NOTICE: {
-		tags: { msgid: string };
+		tags: { msgid: UUID };
 		target: string;
 		text: string;
 	};
@@ -74,12 +74,26 @@ declare interface CommandResponsesFromServer {
 		forced_by: string | null;
 	};
 	PRIVMSG: {
-		tags: { msgid: string };
+		tags: {
+			msgid: UUID;
+			color_background: number | null;
+			color_foreground: number | null;
+			format_bold: boolean | null;
+			format_italic: boolean | null;
+			format_underline: boolean | null;
+		};
 		target: string;
 		text: string;
 	};
 	PUBMSG: {
-		tags: { msgid: string };
+		tags: {
+			msgid: UUID;
+			color_background: number | null;
+			color_foreground: number | null;
+			format_bold: boolean | null;
+			format_italic: boolean | null;
+			format_underline: boolean | null;
+		};
 		channel: ChannelID;
 		external: boolean;
 		text: string;
@@ -191,7 +205,7 @@ declare type GenericCommandResponseFromServer<
 	T extends keyof CommandResponsesFromServer,
 > = CommandResponsesFromServer[T] & {
 	name: T;
-	tags: { msgid: string } & Record<string, unknown>;
+	tags: { msgid: UUID } & Record<string, unknown>;
 	origin: Origin;
 };
 
@@ -201,7 +215,7 @@ declare type GenericCommandResponseReply<
 	name: T;
 	code: number;
 	message: string;
-	tags: { msgid: string } & Record<string, unknown>;
+	tags: { msgid: UUID } & Record<string, unknown>;
 	origin: Origin;
 };
 
@@ -210,7 +224,7 @@ declare type GenericErrorReply<T extends keyof ErrorReplies> =
 		name: T;
 		code: number;
 		reason: string;
-		tags: { msgid: string } & Record<string, unknown>;
+		tags: { msgid: UUID } & Record<string, unknown>;
 		origin: Origin;
 	};
 

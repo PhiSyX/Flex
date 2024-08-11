@@ -120,10 +120,10 @@ export class UUIDStore
 		});
 	}
 
-	take(n?: u8r25): Array<string>
+	take(n?: u8r25): Array<UUID>
     {
 		const ntimes = Number(n) ?? 1;
-		const uuids = this.uuids.splice(0, ntimes);
+		const uuids = this.uuids.splice(0, ntimes) as Array<UUID>;
 		if (this.uuids.length < 5) {
 			this.populate();
 		}

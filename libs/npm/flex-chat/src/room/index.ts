@@ -113,7 +113,7 @@ export class Room<R = RoomID, Type extends string = string>
 	add_connect_event(
 		payload: {
 			origin: Origin;
-			tags: { msgid: string };
+			tags: { msgid: UUID };
 		},
 		message_text: string,
 	): Option<RoomMessage>
@@ -135,7 +135,7 @@ export class Room<R = RoomID, Type extends string = string>
 	add_error_event(
 		payload: {
 			origin: Origin;
-			tags: { msgid: string };
+			tags: { msgid: UUID };
 		},
 		message_text: string,
 	): Option<RoomMessage>

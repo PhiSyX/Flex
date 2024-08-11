@@ -161,12 +161,12 @@ let userlist_position = computed(
 	() => settings_store.layout.channel_userlist_position,
 );
 
-let format_bold = computed(() => chat_store.store.format_bold);
-let format_italic = computed(() => chat_store.store.format_italic);
-let format_underline = computed(() => chat_store.store.format_underline);
+let format_bold = computed(() => settings_store.personalization.formats.bold);
+let format_italic = computed(() => settings_store.personalization.formats.italic);
+let format_underline = computed(() => settings_store.personalization.formats.underline);
 
-let color_background = computed(() => chat_store.store.color_background);
-let color_foreground = computed(() => chat_store.store.color_foreground);
+let color_background = computed(() => settings_store.personalization.colors.background);
+let color_foreground = computed(() => settings_store.personalization.colors.foreground);
 
 // ------- //
 // Handler //

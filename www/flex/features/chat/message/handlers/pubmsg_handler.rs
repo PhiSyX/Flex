@@ -46,7 +46,7 @@ impl PubmsgHandler
 
 		for channel in data.channels.iter() {
 			#[rustfmt::skip]
-			let channel_permission =app.is_client_able_to_write_on_channel(
+			let channel_permission = app.is_client_able_to_write_on_channel(
 				&client_socket,
 				channel,
 			);
@@ -59,6 +59,7 @@ impl PubmsgHandler
 					));
 					client_socket.emit_pubmsg(
 						channel,
+						data.formats.as_ref().zip(data.colors.as_ref()),
 						&data.text,
 						&channel_member,
 					);
@@ -66,6 +67,7 @@ impl PubmsgHandler
 				| ChannelWritePermission::Bypass => {
 					client_socket.emit_external_pubmsg(
 						channel,
+						data.formats.as_ref().zip(data.colors.as_ref()),
 						&data.text,
 						client_socket.user(),
 					);
