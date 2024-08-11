@@ -6,15 +6,15 @@
 	"type": "module",
 	"license": "MPL-2.0",
 	"dependencies": {
-		"vue": "^3.4.33"
+		"vue": "^3.4.37"
 	},
 	"devDependencies": {
-		"@types/node": "^20.14.11",
-		"@vitejs/plugin-vue": "^5.0.5",
+		"@types/node": "^22.2.0",
+		"@vitejs/plugin-vue": "^5.1.2",
 		"sass": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
-		"vue-tsc": "^2.0.26"
+		"vue-tsc": "^2.0.29"
 	},
 	"scripts": {
 		"build": "vue-tsc && vite build"

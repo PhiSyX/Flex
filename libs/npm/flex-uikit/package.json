@@ -6,12 +6,12 @@
 	"type": "module",
 	"license": "MPL-2.0",
 	"dependencies": {
-		"@phisyx/flex-custom-element": "workspace:*",
-		"@phisyx/flex-html-element-extension": "workspace:*",
-		"@phisyx/flex-signal": "workspace:*"
+		"@phisyx/flex-custom-element": "workspace:",
+		"@phisyx/flex-html-element-extension": "workspace:",
+		"@phisyx/flex-signal": "workspace:"
 	},
 	"devDependencies": {
-		"@phisyx/flex-code-quality": "workspace:*",
+		"@phisyx/flex-code-quality": "workspace:",
 		"vite": "catalog:"
 	}
 }

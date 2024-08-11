@@ -16,14 +16,14 @@ chrono = { workspace = true }
 console = { workspace = true }
 dashmap = { workspace = true }
 dns-lookup = { workspace = true }
-email_address = { version = "0.2.5", features = ["serde"] }
+email_address = { version = "0.2.9", features = ["serde"] }
 flex-crypto = { workspace = true }
 flex-database = { path = "../flex-database", features = ["postgres-sgbd"] }
 flex-kernel = { workspace = true }
 flex-secret = { path = "../flex-secret" }
 flex-web-framework-macro = { path = "macro" }
 html-escape = "0.2.13"
-hyper = { version = "1.3.1" }
+hyper = { version = "1.4.1" }
 log = { workspace = true }
 mime = "0.3.17"
 serde = { workspace = true }

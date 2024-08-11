@@ -8,7 +8,7 @@
 		"build": "tsc"
 	},
 	"devDependencies": {
-		"@phisyx/flex-code-quality": "workspace:*",
+		"@phisyx/flex-code-quality": "workspace:",
 		"typescript": "catalog:"
 	}
 }

@@ -4,6 +4,6 @@
 	"version": "0.1.0",
 	"author": "Mike 'PhiSyX' S.",
 	"devDependencies": {
-		"@phisyx/flex-code-quality": "workspace:*"
+		"@phisyx/flex-code-quality": "workspace:"
 	}
 }

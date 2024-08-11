@@ -22,21 +22,21 @@
 		"@phisyx/flex-search": "workspace:",
 		"@phisyx/flex-vue-uikit": "workspace:",
 		"focus-trap": "^7.5.4",
-		"pinia": "^2.1.7",
+		"pinia": "^2.2.1",
 		"socket.io-client": "^4.7.5",
-		"vue": "^3.4.33"
+		"vue": "^3.4.37"
 	},
 	"devDependencies": {
 		"@histoire/plugin-vue": "^0.17.17",
-		"@playwright/test": "^1.45.2",
-		"@tsconfig/node20": "^20.1.4",
-		"@types/node": "^20.14.11",
-		"@vitejs/plugin-vue": "^5.0.5",
+		"@playwright/test": "^1.46.0",
+		"@tsconfig/node22": "^22.0.0",
+		"@types/node": "^22.2.0",
+		"@vitejs/plugin-vue": "^5.1.2",
 		"histoire": "^0.17.17",
 		"sass": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
-		"vue-tsc": "^2.0.26",
-		"yaml": "^2.4.5"
+		"vue-tsc": "^2.0.29",
+		"yaml": "^2.5.0"
 	}
 }
