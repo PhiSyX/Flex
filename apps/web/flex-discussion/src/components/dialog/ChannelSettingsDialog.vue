@@ -4,7 +4,7 @@ import { computed } from "vue";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
-import ChannelSettingsDialogComponent from "#/sys/channel_settings_dialog/ChannelSettingsDialog.template.vue";
+import ChannelSettingsDialogComponent from "#/sys/dialog_channel_settings/ChannelSettingsDialog.template.vue";
 
 // -------- //
 // Constant //

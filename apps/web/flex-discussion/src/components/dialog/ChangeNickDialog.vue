@@ -5,7 +5,7 @@ import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
-import ChangeNickDialog from "#/sys/change_nick_dialog/ChangeNickDialog.template.vue";
+import ChangeNickDialog from "#/sys/dialog_change_nick/ChangeNickDialog.template.vue";
 
 // -------- //
 // Constant //

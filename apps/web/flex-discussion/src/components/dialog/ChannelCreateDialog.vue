@@ -5,7 +5,7 @@ import { ChannelJoinDialog } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
-import ChannelCreateDialog from "#/sys/channel_create_dialog/ChannelCreateDialog.template.vue";
+import ChannelCreateDialog from "#/sys/dialog_channel_create/ChannelCreateDialog.template.vue";
 
 // -------- //
 // Constant //
