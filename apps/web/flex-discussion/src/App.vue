@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import type { UserSession } from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
 
 import {
 	defineAsyncComponent as define_async_component,
-	onMounted as on_mounted,
 	ref,
 	watch,
 } from "vue";
 
 import { View } from "@phisyx/flex-chat";
-import { None, type Option } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety";
+
+import { use_check_auth } from "./hooks/check_auth";
+import { use_theme } from "./theme";
 
 import Overlayer from "./components/overlayer/Overlayer.vue";
-import { use_theme } from "./theme";
 
 // --------- //
 // Composant //
@@ -36,30 +38,10 @@ let user = ref(None() as Option<UserSession>);
 // --------- //
 
 use_theme();
+use_check_auth(view, user);
 
 watch(view, (_, old_view) => {
 	previous_view.value = old_view;
-});
-
-on_mounted(() => {
-	let fetch_options: RequestInit = { credentials: "same-origin" };
-
-	fetch("/api/v1/users/@me", fetch_options)
-		.then(async (res) => {
-			if (res.ok) {
-				return res.json();
-			}
-
-			if (res.status >= 400 && res.status < 600) {
-				return Promise.reject(await res.json());
-			}
-
-			return Promise.reject(res);
-		})
-		.then((current_user: UserSession) => {
-			view.value = View.DirectAccess;
-			user.value.replace(current_user);
-		});
 });
 </script>
 

@@ -10,7 +10,7 @@
 
 import type { Props } from "./RoomEditbox.state";
 
-import { ref, watchEffect as watch_effect } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { $input, input_model } from "./RoomEditbox.state";
 
@@ -185,6 +185,7 @@ export function use_autocompletion(props: Props)
 export function use_input_history(props: Props)
 {
 	let position_arrow = ref(0);
+	let history = computed(() => props.room.input_history);
 
 	function keydown_handler(evt: KeyboardEvent)
 	{
@@ -192,7 +193,6 @@ export function use_input_history(props: Props)
 			return;
 		}
 
-		let history = props.room.input_history;
 
 		evt.preventDefault();
 
@@ -202,7 +202,7 @@ export function use_input_history(props: Props)
 			position_arrow.value += 1;
 		}
 
-		let v = history[history.length - 1 - position_arrow.value];
+		let v = history.value[history.value.length - 1 - position_arrow.value];
 		if (v == null) {
 			return;
 		}
@@ -214,17 +214,17 @@ export function use_input_history(props: Props)
 		position_arrow.value = 0;
 	}
 
-	watch_effect(() => {
-		if (!history) {
+	watch(position_arrow, (new_value) => {
+		if (!history.value) {
 			return;
 		}
 
-		if (position_arrow.value <= -1) {
+		if (new_value <= -1) {
 			position_arrow.value = 0;
 		}
 
-		if (position_arrow.value >= history.length - 1) {
-			position_arrow.value = history.length - 1;
+		if (new_value >= history.value.length - 1) {
+			position_arrow.value = history.value.length - 1;
 		}
 	});
 

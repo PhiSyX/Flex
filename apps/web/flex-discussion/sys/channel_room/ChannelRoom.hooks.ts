@@ -15,7 +15,7 @@ import {
 	computed,
 	nextTick as next_tick,
 	ref,
-	watchEffect as watch_effect,
+	watch
 } from "vue";
 
 // -------- //
@@ -129,8 +129,8 @@ export function use_channel_topic(props: Props, emit: Emits)
 		current_client_member_can_edit_topic,
 	});
 
-	watch_effect(() => {
-		if (topic_edit_mode.value === false) {
+	watch(topic_edit_mode, (new_value) => {
+		if (new_value === false) {
 			topic_input.value = props.room.topic.get();
 		}
 	});

@@ -18,6 +18,7 @@ import type { Props } from "./ChannelUserlist.template.vue";
 import {
 	ref,
 	shallowRef as shallow_ref,
+	watch,
 	watchEffect as watch_effect
 } from "vue";
 
@@ -159,8 +160,8 @@ export function use_filter_view()
 	let filter_view = ref(UserlistModeView.Default);
 	let view = shallow_ref(ChannelNicklist);
 
-	watch_effect(() => {
-		switch (filter_view.value) {
+	watch(filter_view, (new_value) => {
+		switch (new_value) {
 			case UserlistModeView.Default:
 			{
 				view.value = ChannelNicklist;
