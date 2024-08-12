@@ -10,8 +10,10 @@
 
 import { default as vMutationDirective } from "./mutation";
 import { default as vResizeDirective } from "./resize";
+import { default as vModelSelectDirective } from "./select_multiple_model_object";
 import { default as vTrapDirective } from "./trap";
 
 export { vMutationDirective as vMutation };
 export { vResizeDirective as vResize };
+export { vModelSelectDirective as vModelSelect };
 export { vTrapDirective as vTrap };

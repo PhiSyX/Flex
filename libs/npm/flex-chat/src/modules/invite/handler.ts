@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 
 // -------------- //
 // Implémentation //
@@ -19,7 +19,7 @@ export class InviteHandler implements SocketEventInterface<"INVITE">
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
 	{}
 
 	// ------- //

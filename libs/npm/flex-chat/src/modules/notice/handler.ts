@@ -10,7 +10,7 @@
 
 import type { ChannelRoom } from "../../channel/room";
 import type { RoomMessage, RoomMessageEvent } from "../../room/message";
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 
 import { assert_channel_room, is_channel } from "../../asserts/room";
 import { NoticesCustomRoom } from "../../custom_room/notices";
@@ -24,7 +24,7 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE">
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
 	{}
 
 	// ------- //

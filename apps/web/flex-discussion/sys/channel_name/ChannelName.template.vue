@@ -29,7 +29,7 @@ withDefaults(defineProps<Props>(), { tag: "span" });
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("channel/name") {
-	color: var(--room-target-color, var(--default-text-color));
+	color: var(--room-target-color, var(--default-text-color_alt));
 	word-break: break-all;
 	hyphens: manual;
 	cursor: pointer;

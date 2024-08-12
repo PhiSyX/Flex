@@ -10,7 +10,7 @@
 
 import type { Room } from "../../room";
 import type { RoomMessageEvent } from "../../room/message";
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 
 import { MentionsCustomRoom } from "../../custom_room";
 import { PrivateParticipant } from "../../private/participant";
@@ -26,7 +26,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
 	{}
 
 	// ------- //

@@ -7,6 +7,7 @@ import { use_settings_store } from "~/store";
 
 import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
 import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
+import SettingsNotificationSoundEffect from "./notification/SoundEffect.vue";
 import SettingsPersonalizationTheme from "./personalization/Theme.vue";
 
 // ---- //
@@ -46,18 +47,24 @@ function save_and_exit_handler()
 			</UiButton>
 		</div>
 
-		<div class="content [ flex! w:full scroll:y ]">
-			<section class="[ p=1 ]">
+		<div class="content [ flex! gap=1 w:full scroll:y p=1 ]">
+			<section>
 				<h1 class="[ pos-s ]">Personnalisation</h1>
 
 				<SettingsPersonalizationTheme />
 			</section>
 
-			<section class="[ p=1 ]">
+			<section>
 				<h1 class="[ pos-s ]">Disposition</h1>
 
 				<SettingsLayoutNavigationBar />
 				<SettingsLayoutChannelUserlist />
+			</section>
+			
+			<section>
+				<h1 class="[ pos-s ]">Notification</h1>
+
+				<SettingsNotificationSoundEffect />
 			</section>
 		</div>
 	</main>

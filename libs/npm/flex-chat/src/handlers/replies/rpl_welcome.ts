@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 
 // -------------- //
 // Implémentation //
@@ -17,7 +17,7 @@ import type { ChatStoreInterface } from "../../store";
 export class ReplyWelcomeHandler
 	implements SocketEventInterface<"RPL_WELCOME">
 {
-	constructor(private store: ChatStoreInterface)
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
 	{}
 
 	listen()
@@ -67,5 +67,7 @@ export class ReplyWelcomeHandler
 		let module = this.store.module_manager().get("JOIN")
 			.expect("Récupération du module `JOIN`");
 		module.send({ channels });
+
+		this.store.play_audio("connection");
 	}
 }

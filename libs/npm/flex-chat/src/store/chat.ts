@@ -12,6 +12,7 @@ import type { Option } from "@phisyx/flex-safety";
 
 import type { ChannelRoom } from "../channel/room";
 import type { OverlayerStore } from "./overlayer";
+import type { SettingsStore } from "./settings";
 
 import { is_string } from "@phisyx/flex-asserts";
 import { None } from "@phisyx/flex-safety";
@@ -53,8 +54,6 @@ export interface ConnectUserInfo
 
 export interface ChatStoreInterface
 {
-	audio_src: "connection" | "invite" | "mention" | "notice" | "query" | null;
-
 	client_error: Option<{
 		id: string;
 		title?: string;
@@ -161,11 +160,6 @@ export interface ChatStoreInterface
 	): void;
 
 	/**
-	 * Joue un audio
-	 */
-	play_audio(src: this["audio_src"]): void;
-
-	/**
 	 * Gestion des chambres.
 	 */
 	room_manager(): RoomManager;
@@ -227,7 +221,10 @@ export interface ChatStoreInterface
 	websocket(): TypeSafeSocket;
 }
 
-export interface ChatStoreInterfaceExt {
+export interface ChatStoreInterfaceExt
+{
+	audio_src: "connection" | "invite" | "mention" | "notice" | "query" | null;
+
 	/**
 	 * Connexion au serveur de Chat WebSocket.
 	 */
@@ -243,7 +240,13 @@ export interface ChatStoreInterfaceExt {
 	 */
 	load_all_modules(): Promise<void>;
 
+	/**
+	 * Joue un audio.
+	 */
+	play_audio(src: this["audio_src"]): void;
+
 	overlayer(): OverlayerStore;
+	settings(): SettingsStore;
 }
 
 // -------------- //
@@ -261,8 +264,6 @@ export class ChatStore implements ChatStoreInterface
 	// --------- //
 	// Propriété //
 	// --------- //
-
-	audio_src: ChatStoreInterface["audio_src"] = "connection";
 
 	private _connect_user_info: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
@@ -432,11 +433,6 @@ export class ChatStore implements ChatStoreInterface
 		this._ws
 			.expect("Instance WebSocket connecté au serveur")
 			.once(event_name, listener);
-	}
-
-	play_audio(src: this["audio_src"])
-	{
-		this.audio_src = src;
 	}
 
 	room_manager(): RoomManager

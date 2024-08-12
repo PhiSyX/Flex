@@ -18,6 +18,7 @@ import type {
 	ConnectUserInfo,
 	Module,
 	OverlayerStore,
+	SettingsStore,
 	UUIDStore,
 	UUIDVariant,
 	User,
@@ -52,7 +53,10 @@ export class ChatStoreVue
 	extends ChatStore 
 	implements ChatStoreInterfaceExt, ChatStoreUUIDExt
 {
+	audio_src: ChatStoreInterfaceExt["audio_src"] = null;
+
 	private _overlayer = use_overlayer_store() as unknown as OverlayerStore;
+	private _settings = use_settings_store() as unknown as SettingsStore;
 
 	private _uuidv4 = useUUIDv4Store() as unknown as UUIDStore;
 	private _uuidv7 = useUUIDv7Store() as unknown as UUIDStore;
@@ -212,6 +216,40 @@ export class ChatStoreVue
 		this._handler_manager.free();
 		this._module_manager.free();
 		this._overlayer.destroy("load-all-modules");
+	}
+
+
+
+	play_audio(src: this["audio_src"])
+	{
+		let settings_notification = this.settings().notification;
+		
+		let key = `${src}s` as string;
+
+		switch (src) {
+			case "connection":
+			{
+				key = "connection";
+			} break;
+
+			case "query":
+			{
+				key = "queries";
+			} break;
+		}
+
+		// @ts-expect-error
+		if (!settings_notification.sounds[key]) {
+			this.audio_src = null;
+			return;
+		}
+
+		this.audio_src = src;
+	}
+
+	settings(): SettingsStore
+	{
+		return this._settings;
 	}
 
 	overlayer(): OverlayerStore

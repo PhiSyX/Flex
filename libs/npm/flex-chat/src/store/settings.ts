@@ -13,6 +13,10 @@ import {
 	LayoutStorage,
 } from "../localstorage/settings_layout";
 import {
+	type NotificationData,
+	NotificationStorage
+} from "../localstorage/settings_notification";
+import {
 	type PersonalizationData,
 	PersonalizationStorage,
 } from "../localstorage/settings_personalization";
@@ -25,11 +29,13 @@ export class SettingsStore
 	// Propriété //
 	// --------- //
 
+	notification: NotificationSettings = new NotificationSettings();
 	personalization: PersonalizationSettings = new PersonalizationSettings();
 	layout: LayoutSettings = new LayoutSettings();
 
 	persist()
 	{
+		this.notification.persist();
 		this.personalization.persist();
 		this.layout.persist();
 	}
@@ -125,6 +131,27 @@ export class LayoutSettings
 			channel_userlist_display: this.channel_userlist_display,
 			channel_userlist_position: this.channel_userlist_position,
 			navigation_bar_position: this.navigation_bar_position,
+		});
+	}
+}
+
+export class NotificationSettings 
+{
+	storage = new NotificationStorage();
+	
+	get sounds()
+	{
+		return this.storage.value.sounds;
+	}
+	set sounds(value: NotificationData["sounds"])
+	{
+		this.storage.set({ ...this.storage.value, sounds: value });
+	}
+
+	persist()
+	{
+		this.storage.set({
+			sounds: this.storage.value.sounds,
 		});
 	}
 }

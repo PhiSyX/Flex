@@ -25,6 +25,7 @@ export * from "./src/handlers/manager";
 export * from "./src/localstorage/client_id";
 export * from "./src/localstorage/remember_me";
 export * from "./src/localstorage/settings_layout";
+export * from "./src/localstorage/settings_notification";
 export * from "./src/localstorage/settings_personalization";
 export * from "./src/localstorage/storage";
 export * from "./src/modules/interface";

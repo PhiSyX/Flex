@@ -10,7 +10,7 @@
 
 import type { ChannelRoom } from "../../channel/room";
 import type { RoomMessageEvent } from "../../room/message";
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 
 import { assert_channel_room } from "../../asserts/room";
 import { MentionsCustomRoom } from "../../custom_room";
@@ -25,7 +25,7 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
 	{}
 
 	// ------- //
