@@ -15,5 +15,5 @@ reserved_numerics! {
 	/// RPL_YOUREOPER est renvoyé à un client qui vient d'émettre avec succès un
 	/// message OPER et d'obtenir le statut d'opérateur.
 	| 381 <-> RPL_YOUREOPER { oper_type: Flag }
-		=> ":Vous êtes maintenant un OPÉRATEUR"
+		=> ":Tu es maintenant un OPÉRATEUR"
 }

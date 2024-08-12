@@ -14,5 +14,5 @@ error_replies! {
 	/// Renvoyé par le serveur chaque fois qu'un client tente d'exécuter une
 	/// commande affectant un salon dont il n'est pas membre.
 	| 442 <-> ERR_NOTONCHANNEL { channel }
-		=> "{channel} :Vous n'êtes pas dans ce salon"
+		=> "{channel} :Tu es pas dans ce salon"
 }

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 
 import { containsMessage, sendMessage } from "./helpers/channel.js";
 import { connectUsersToChat } from "./helpers/connect.js";
@@ -36,7 +36,7 @@ test("Invite un utilisateur dans un salon via la commande /INVITE", async ({ bro
 	await containsMessage(
 		user2.page,
 		channelToInvite,
-		`Vous avez rejoint le salon ${channelToInvite}`,
+		`Tu as rejoint le salon ${channelToInvite}`,
 	);
 });
 
@@ -74,7 +74,7 @@ test("Paramètre de salon +i", async ({ browser }) => {
 	await containsMessage(
 		user.page,
 		channelToJoin,
-		`* ${channelToInvite} :Vous ne pouvez pas rejoindre le salon (+i)`,
+		`* ${channelToInvite} :Tu ne peux pas rejoindre le salon (+i)`,
 	);
 
 	// NOTE: le propriétaire invite l'utilisateur
@@ -88,6 +88,6 @@ test("Paramètre de salon +i", async ({ browser }) => {
 	await containsMessage(
 		user.page,
 		channelToInvite,
-		`Vous avez rejoint le salon ${channelToInvite}`,
+		`Tu as rejoint le salon ${channelToInvite}`,
 	);
 });

@@ -31,7 +31,7 @@ const open_channel_handler = () => emit("open-room", props.data.channel);
 		{{ time.formattedTime }}
 	</time>
 	<p v-if="isCurrentClient">
-		* <strong>Vous</strong> avez invité <bdo>{{ data.nick }}</bdo> à
+		* <strong>Tu</strong> as invité <bdo>{{ data.nick }}</bdo> à
 		rejoindre le salon <span>{{ data.channel }}</span>
 	</p>
 	<p v-else>

@@ -12,5 +12,5 @@ use flex_chat::macros::reserved_numerics;
 
 reserved_numerics! {
 	| 306 <-> RPL_NOWAWAY
-		 => ":Vous avez été marqué comme étant absent"
+		 => ":Tu as été marqué comme étant absent"
 }

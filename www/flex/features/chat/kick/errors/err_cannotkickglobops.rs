@@ -14,5 +14,5 @@ error_replies! {
 	/// Renvoyé pour indiquer l'échec d'une tentative de sanction KICK sur un
 	/// utilisateur (opérateur global) ayant le drapeau utilisateur +q.
 	| 480 <-> ERR_CANNOTKICKGLOBOPS { channel, nick }
-		=> "{channel} {nick} :Vous n'avez pas le droit de sanctionner d'un KICK cet utilisateur (protégé par le drapeau +q)"
+		=> "{channel} {nick} :Tu n'as pas le droit de sanctionner d'un KICK cet utilisateur (protégé par le drapeau +q)"
 }

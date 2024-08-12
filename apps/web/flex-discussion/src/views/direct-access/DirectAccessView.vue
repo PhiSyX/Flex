@@ -223,7 +223,7 @@ function to_settings_view_handler()
 
 			<div class="remember-me [ m:a align-t:center w=35 ]">
 				<label>
-					Connexion automatique lors de vos prochaines sessions :
+					Connexion automatique lors de tes prochaines sessions :
 				</label>
 
 				<InputSwitch

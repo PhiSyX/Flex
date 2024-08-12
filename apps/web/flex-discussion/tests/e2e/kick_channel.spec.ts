@@ -46,7 +46,7 @@ test("Sanctionner d'un KICK un membre de salon via la commande /KICK", async ({
 
 	const $kicked = user2.page.locator(".channel\\/kicked");
 	await expect($kicked).toContainText(
-		`Vous avez été sanctionné par ${user1.nick} du salon ${channelToKick} pour la raison suivante « ${kickReason} » !`,
+		`Tu as été sanctionné par ${user1.nick} du salon ${channelToKick} pour la raison suivante « ${kickReason} » !`,
 	);
 });
 
@@ -76,6 +76,6 @@ test("Sanctionner d'un KICK un membre de salon via le menu de la liste des utili
 
 	const $kicked = user2.page.locator(".channel\\/kicked");
 	await expect($kicked).toContainText(
-		`Vous avez été sanctionné par ${user1.nick} du salon ${channelToKick} pour la raison suivante « Kick. » !`,
+		`Tu as été sanctionné par ${user1.nick} du salon ${channelToKick} pour la raison suivante « Kick. » !`,
 	);
 });

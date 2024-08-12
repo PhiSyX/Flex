@@ -12,5 +12,5 @@ use flex_chat::macros::error_replies;
 
 error_replies! {
 	| 475 <-> ERR_BADCHANNELKEY { channel }
-		=> "{channel} :Vous ne pouvez pas rejoindre le salon (+k)"
+		=> "{channel} :Tu ne peux pas rejoindre le salon (+k)"
 }

@@ -53,7 +53,7 @@ const join_channel_handler = () => emit("join-channel", to_raw_last_message.data
 <template>
 	<div class="channel/kicked [ flex:full flex! flex/center:full px=3 ]">
 		<p>
-			Vous avez été sanctionné par
+			Tu as été sanctionné par
 			<strong>{{ nickname }}</strong>
 			du salon {{ channel }} pour la raison suivante «
 			<strong>{{ reason }}</strong> » !

@@ -178,7 +178,7 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 					class="[ flex flex/center:full h:full my=0 select:none cursor:pointer ]"
 					@dblclick="enable_topic_edit_mode_handler"
 				>
-					Appuyez deux fois sur cette section pour mettre à jour le
+					Appuie deux fois sur cette section pour mettre à jour le
 					sujet.
 				</p>
 				<p

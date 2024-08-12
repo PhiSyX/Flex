@@ -49,7 +49,7 @@ test("Sanctionner d'un KILL un utilisateur via la commande /KILL", async ({
 	const $teleportErrorKill = user2.page.locator("#error-layer_teleport");
 
 	await expect($teleportErrorKill).toContainText(
-		`Déconnexion: vous avez été sanctionné d'un KILL par ${user1.nick} (${killReason})`,
+		`Déconnexion: tu as été sanctionné d'un KILL par ${user1.nick} (${killReason})`,
 	);
 });
 
@@ -77,6 +77,6 @@ test("Sanctionner d'un KILL un utilisateur via la commande /KILL sans permission
 	await containsMessage(
 		user1.page,
 		channelToJoin,
-		"* Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects.",
+		"* Permission refusée. tu n'as pas les privilèges d'opérateur corrects.",
 	);
 });

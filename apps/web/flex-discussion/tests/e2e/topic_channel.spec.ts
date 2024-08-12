@@ -36,7 +36,7 @@ test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) =
 	await containsMessage(
 		owner.page,
 		channelToJoin,
-		`Vous avez mis à jour le sujet du salon ${channelToJoin}: ${topic}`,
+		`Tu as mis à jour le sujet du salon ${channelToJoin}: ${topic}`,
 	);
 
 	await containsMessage(
@@ -52,7 +52,7 @@ test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) =
 	await containsMessage(
 		user.page,
 		channelToJoin,
-		`* ${channelToJoin} :Vous n'êtes pas opérateur sur ce salon`,
+		`* ${channelToJoin} :Tu n'es pas opérateur sur ce salon`,
 	);
 
 	// NOTE: retrait du drapeau -t topic, l'utilisateur a les droits d'édition.
@@ -74,7 +74,7 @@ test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) =
 	await containsMessage(
 		user.page,
 		channelToJoin,
-		`Vous avez mis à jour le sujet du salon ${channelToJoin}: ${topic} #2`,
+		`Tu as mis à jour le sujet du salon ${channelToJoin}: ${topic} #2`,
 	);
 	await containsMessage(
 		owner.page,
@@ -104,7 +104,7 @@ test("Changer le sujet d'un salon via le champ d'édition du sujet", async ({ br
 	await containsMessage(
 		owner.page,
 		channelToJoin,
-		`Vous avez mis à jour le sujet du salon ${channelToJoin}: ${topic}`,
+		`Tu as mis à jour le sujet du salon ${channelToJoin}: ${topic}`,
 	);
 
 	await containsMessage(

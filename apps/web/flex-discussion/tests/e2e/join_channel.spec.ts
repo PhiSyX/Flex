@@ -41,7 +41,7 @@ test("Rejoindre un salon via la commande /JOIN", async ({ page }) => {
 	const channelToJoin = generateRandomChannel();
 	await connectChat({ page });
 	await joinChannel({ page, channels: channelToJoin });
-	await containsMessageInActiveRoom(page, `Vous avez rejoint le salon ${channelToJoin}`);
+	await containsMessageInActiveRoom(page, `Tu as rejoint le salon ${channelToJoin}`);
 });
 
 test("Rejoindre un salon avec une clé via la commande /JOIN", async ({ browser }) => {
@@ -56,13 +56,13 @@ test("Rejoindre un salon avec une clé via la commande /JOIN", async ({ browser 
 		channels: channelToJoin,
 		key: channelToJoinKey,
 	});
-	await containsMessage(user1.page, channelToJoin, `Vous avez rejoint le salon ${channelToJoin}`);
+	await containsMessage(user1.page, channelToJoin, `Tu as rejoint le salon ${channelToJoin}`);
 
 	// NOTE: user2 rejoint un salon SANS la clé
 	await joinChannel({ page: user2.page, channels: channelToJoin });
 	await containsMessageInActiveRoom(
 		user2.page,
-		`* ${channelToJoin} :Vous ne pouvez pas rejoindre le salon (+k)`,
+		`* ${channelToJoin} :Tu ne peux pas rejoindre le salon (+k)`,
 	);
 
 	// NOTE: user2 rejoint un salon AVEC la clé
@@ -71,7 +71,7 @@ test("Rejoindre un salon avec une clé via la commande /JOIN", async ({ browser 
 		channels: channelToJoin,
 		key: channelToJoinKey,
 	});
-	await containsMessage(user2.page, channelToJoin, `Vous avez rejoint le salon ${channelToJoin}`);
+	await containsMessage(user2.page, channelToJoin, `Tu as rejoint le salon ${channelToJoin}`);
 });
 
 test("Rejoindre un salon via la boite de dialogue (de la vue ChannelList)", async ({ page }) => {
@@ -99,7 +99,7 @@ test("Rejoindre un salon via la boite de dialogue (de la vue ChannelList)", asyn
 	await page.waitForTimeout(250);
 
 	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(`Vous avez rejoint le salon ${channelToJoin}`);
+	await expect($mainRoom).toContainText(`Tu as rejoint le salon ${channelToJoin}`);
 });
 
 test("Rejoindre un salon via la commande /SAJOIN (globop)", async ({ browser }) => {
@@ -116,7 +116,7 @@ test("Rejoindre un salon via la commande /SAJOIN (globop)", async ({ browser }) 
 	await containsMessage(
 		globop.page,
 		channelToJoin,
-		"* Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects.",
+		"* Permission refusée. Tu n'as pas les privilèges d'opérateur corrects.",
 	);
 
 	// NOTE: user n'a évidemment pas rejoint ce salon, après le fail.

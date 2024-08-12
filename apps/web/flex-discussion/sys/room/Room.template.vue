@@ -48,7 +48,7 @@ const emit = defineEmits<Emits>();
 let input_placeholder = computed(
 	() => props.disableInput
 		? `La chambre « ${props.room.name} » est en mode lecture uniquement.`
-		: "Commencez à taper / pour obtenir la liste des commandes disponibles..."
+		: "Commence à taper / pour obtenir la liste des commandes disponibles..."
 );
 
 // ------- //

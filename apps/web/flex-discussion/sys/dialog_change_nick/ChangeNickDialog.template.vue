@@ -47,7 +47,7 @@ function change_nickname_handler()
 
 		<template #footer>
 			<em>
-				Les champs ayant un <span>*</span>asterisk sont obligatoires.
+				Les champs ayant un <strong>*</strong>asterisk sont obligatoires.
 			</em>
 
 			<UiButton
@@ -106,7 +106,7 @@ em {
 	vertical-align: text-bottom;
 }
 
-span {
+strong {
 	color: var(--color-red500);
 }
 

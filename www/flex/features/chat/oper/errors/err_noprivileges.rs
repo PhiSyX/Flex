@@ -14,5 +14,5 @@ error_replies! {
 	/// Toute commande nécessitant des privilèges d'opérateur pour fonctionner
 	/// DOIT renvoyer cette erreur pour indiquer que la tentative a échoué.
 	| 481 <-> ERR_NOPRIVILEGES
-		=> ":Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects."
+		=> ":Permission refusée. Tu n'as pas les privilèges d'opérateur corrects."
 }

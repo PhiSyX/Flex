@@ -92,7 +92,7 @@ test("Change les niveaux d'accès d'un membre via les /<commande>'s", async ({
 	await containsMessage(
 		user.page,
 		channelToJoin,
-		`* ${channelToJoin} :Vous n'êtes pas opérateur sur ce salon`,
+		`* ${channelToJoin} :Tu n'es pas opérateur sur ce salon`,
 	);
 	await sendMessage(
 		user.page,
@@ -102,7 +102,7 @@ test("Change les niveaux d'accès d'un membre via les /<commande>'s", async ({
 	await containsMessage(
 		user.page,
 		channelToJoin,
-		`* ${channelToJoin} :Vous n'êtes pas opérateur sur ce salon`,
+		`* ${channelToJoin} :Tu n'es pas opérateur sur ce salon`,
 	);
 });
 

@@ -22,7 +22,7 @@ const updated_at = computed(() => {
 	</time>
 	<p v-if="data.updated">
 		<template v-if="isCurrentClient">
-			<strong>Vous</strong> avez mis à jour le sujet du salon
+			<strong>Tu</strong> as mis à jour le sujet du salon
 			<span>{{ data.channel }}: </span> <q>{{ data.topic }}</q>
 		</template>
 		<template v-else>

@@ -33,7 +33,7 @@ test("Connexion au Chat", async ({ page }) => {
 	await $navChannelRoom.click();
 
 	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(`Vous avez rejoint le salon ${channelToJoin}`);
+	await expect($mainRoom).toContainText(`Tu as rejoint le salon ${channelToJoin}`);
 });
 
 test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {

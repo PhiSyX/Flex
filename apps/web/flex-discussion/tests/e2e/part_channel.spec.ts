@@ -103,7 +103,7 @@ test("Partir d'un salon via la commande /SAPART (globop)", async ({ browser }) =
 	await containsMessage(
 		globop.page,
 		channelToJoin,
-		"* Permission refusée. Vous n'avez pas les privilèges d'opérateur corrects.",
+		"* Permission refusée. Tu n'as pas les privilèges d'opérateur corrects.",
 	);
 
 	// NOTE: user n'a évidemment pas rejoint ce salon, après le fail.

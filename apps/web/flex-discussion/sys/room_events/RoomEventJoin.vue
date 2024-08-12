@@ -16,7 +16,7 @@ const hostname = computeHostname(props.data.origin);
 		{{ time.formattedTime }}
 	</time>
 	<p v-if="isCurrentClient">
-		<strong><span>Vous</span></strong> avez rejoint le salon
+		<strong><span>Tu</span></strong> as rejoint le salon
 		<span>{{ data.channel }}</span>
 	</p>
 	<p v-else>
