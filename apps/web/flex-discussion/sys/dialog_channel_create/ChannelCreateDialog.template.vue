@@ -2,7 +2,8 @@
 import { ref } from "vue";
 
 import { cast_to_channel_id } from "@phisyx/flex-chat";
-import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
+
+import { Alert, Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -45,7 +46,7 @@ function create_channel_handler()
 
 		<template #footer>
 			<em>
-				Les champs ayant un <span>*</span>asterisk sont obligatoires.
+				Les champs ayant un <strong>*</strong>asterisk sont obligatoires.
 			</em>
 
 			<UiButton
@@ -59,49 +60,68 @@ function create_channel_handler()
 			</UiButton>
 		</template>
 
-		<form
-			:id="`${layerName}_form`"
-			action="/chat/join/channel"
-			method="post"
-			@submit.prevent="create_channel_handler"
-		>
-			<table class="[ w:full ]">
-				<tr>
-					<td>
-						<span>* </span>
-						<label for="channels">Noms des salons:</label>
-					</td>
-					<td>
-						<input
-							id="channels"
-							v-model="channels_request"
-							placeholder="#channel1,#channel2"
-							required
-							type="text"
-							class="[ input:reset p=1 w:full ]"
-						/>
-					</td>
-				</tr>
+		<section class="[ flex! gap=1 ]">
+			<Alert type="warning" :can-close="false" :content-center="false">
+				Tu es sur le point de rejoindre un salon OU de le créer.
+				
+				<br />
+				<br />
 
-				<tr>
-					<td>
-						<span style="visibility: hidden">* </span>
+				Si tu deviens chef de salon lors de la création du salon, tu es
+				seul responsable des propos qui vont s'y tenir. En cas de
+				dérapage, bannis immédiatement les utilisateurs en cause ou bien
+				ferme ton salon.
 
-						<label for="keys">Clés d'accès: </label>
-					</td>
-					<td>
-						<input
-							id="keys"
-							v-model="keys_request"
-							name="keys"
-							placeholder="key1,key2"
-							type="text"
-							class="[ input:reset p=1 w:full ]"
-						/>
-					</td>
-				</tr>
-			</table>
-		</form>
+				<br />
+
+				Pour privatiser ton salon, protège-le par un mot de passe ! Il
+				te suffira de le donner avec le nom du salon à tes contacts.
+			</Alert>
+
+			<form
+				:id="`${layerName}_form`"
+				action="/chat/join/channel"
+				method="post"
+				@submit.prevent="create_channel_handler"
+			>
+				<table class="[ w:full ]">
+					<tr>
+						<td>
+							<strong>* </strong>
+							<label for="channels">Noms des salons:</label>
+						</td>
+						<td>
+							<input
+								id="channels"
+								v-model="channels_request"
+								placeholder="#channel1,#channel2"
+								required
+								type="text"
+								class="[ input:reset p=1 w:full ]"
+							/>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<strong style="visibility: hidden">* </strong>
+
+							<label for="keys">Clés d'accès: </label>
+						</td>
+						<td>
+							<input
+								id="keys"
+								v-model="keys_request"
+								name="keys"
+								placeholder="key1,key2"
+								type="text"
+								class="[ input:reset p=1 w:full ]"
+							/>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</section>
 	</Dialog>
 </template>
 
@@ -122,8 +142,12 @@ em {
 	vertical-align: text-bottom;
 }
 
-span {
+strong {
 	color: var(--color-red500);
+}
+
+span {
+	color: var(--color-grey500);
 }
 
 button[type="submit"] {

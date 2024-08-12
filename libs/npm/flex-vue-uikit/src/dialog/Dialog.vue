@@ -38,7 +38,7 @@ const emit = defineEmits<Emits>();
 				<slot name="label" />
 			</h1>
 
-			<div class="dialog/actions">
+			<div class="dialog/actions [ flex:shrink=0 ]">
 				<slot name="actions" />
 
 				<UiButton
