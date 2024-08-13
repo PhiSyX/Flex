@@ -124,6 +124,13 @@ function reply_welcome_handler()
 {
 	loader.value = false;
 	router.push({ name: View.Chat });
+
+	if (login_form_data.password_user) {
+		chat_store.send_message(
+			chat_store.store.room_manager().active().id(),
+			`/AUTH IDENTIFY ${login_form_data.nickname} ${login_form_data.password_user}`
+		);
+	}
 }
 
 /**
@@ -186,6 +193,26 @@ function to_settings_view_handler()
 					:maxlength="MAXLENGTH_NICKNAME"
 					:placeholder="PLACEHOLDER_NICKNAME"
 					:title="VALIDATION_NICKNAME_INFO"
+				>
+					<button 
+						v-if="user_session.is_none() && !display_password_user_field"
+						type="button"
+						class="[ flex flex/center:full gap=1 f-size=12px ]"
+						title="Utiliser mon mot de passe (optionnel)"
+						@click="display_password_user_field = true"
+					>
+						<span>Mot de passe</span>
+						<icon-password />
+					</button>
+				</TextInput>
+
+				<TextInput
+					v-if="user_session.is_none() && display_password_user_field"
+					v-model="login_form_data.password_user"
+					label="password"
+					name="password_user"
+					placeholder="Mot de passe du compte"
+					type="password"
 				/>
 
 				<TextInput

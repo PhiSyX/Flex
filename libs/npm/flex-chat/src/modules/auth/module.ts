@@ -65,7 +65,7 @@ export class AuthModule implements Module<AuthModule>
 
 		// SAFETY(type): le type ne peut pas être `undefined`, grâce à la
 		//               condition ci-haut.
-		let sub_command_str = args.shift() as string;
+		let sub_command_str = args.shift()?.toLowerCase() as string;
 
 		let maybe_sub_command = AuthCommand.from_str(sub_command_str);
 		if (maybe_sub_command.is_err()) {

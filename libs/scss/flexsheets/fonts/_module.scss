@@ -1,0 +1,5 @@
+@use "./font-size" as fs;
+
+@mixin use-fonts($options...) {
+	@include fs.use-font-size($options...);
+}

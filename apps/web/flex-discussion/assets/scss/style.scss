@@ -113,6 +113,15 @@
 
 @include fx.use(
 	(
+		className: font-size,
+		values: (
+			12px,
+		),
+	)
+);
+
+@include fx.use(
+	(
 		className: border-radius,
 		values: (
 			0.6,

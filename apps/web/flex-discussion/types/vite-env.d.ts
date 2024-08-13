@@ -18,6 +18,7 @@ declare interface ImportMetaEnv {
 	VITE_APP_CHANNELS: ChannelID;
 	VITE_APP_NICKNAME: string;
 	VITE_APP_PASSWORD_SERVER: string;
+	VITE_APP_PASSWORD_USER: string;
 	VITE_APP_REALNAME: string;
 	VITE_APP_WEBSOCKET_URL: string;
 	VITE_APP_FORUM_URL: string;

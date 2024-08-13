@@ -34,6 +34,7 @@ let input_model = defineModel();
 				type="text"
 				v-bind="$attrs"
 			/>
+			<slot />
 		</div>
 		<p v-if="error" class="[ p:reset ml=4 ]">{{ error }}</p>
 	</div>

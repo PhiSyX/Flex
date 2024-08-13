@@ -1,0 +1,13 @@
+@use "../mixins/class" as class;
+@use "../functions/space" as fn;
+
+@mixin use-font-size($options...) {
+	$classes: (
+		font-size: f-size,
+	);
+
+	@include class.generate-dynamic($options, $classes) using
+		($user_value, $user_className) {
+		#{$user_className}: $user_value;
+	}
+}
