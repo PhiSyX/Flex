@@ -21,6 +21,8 @@ import {
 import { Option } from "@phisyx/flex-safety";
 import { use_chat_store, use_user_store } from "~/store";
 
+import ModulesProgress from "~/components/progress/ModulesProgress.vue";
+
 // --------- //
 // Composant //
 // --------- //
@@ -123,6 +125,7 @@ function connect_submit()
 function reply_welcome_handler()
 {
 	loader.value = false;
+
 	router.push({ name: View.Chat });
 
 	if (login_form_data.password_user) {
@@ -273,7 +276,9 @@ function to_settings_view_handler()
 			</UiButton>
 		</section>
 
-		<UiButton icon="settings" class="color-scheme" @click="to_settings_view_handler" />
+		<UiButton icon="settings" class="settings-btn" @click="to_settings_view_handler" />
+
+		<ModulesProgress />
 	</main>
 </template>
 
@@ -347,7 +352,7 @@ body:has(#chat-login-view) {
 	line-height: 1.2;
 }
 
-.color-scheme {
+.settings-btn {
 	position: absolute;
 	top: fx.space(1);
 	right: fx.space(1);
