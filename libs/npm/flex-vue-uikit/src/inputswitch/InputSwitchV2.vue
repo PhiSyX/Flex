@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watchEffect as watch_effect } from "vue";
+import { computed, watchEffect as watch_effect } from "vue";
 
 // ---- //
 // Type //
@@ -10,6 +10,7 @@ interface Props
 	name: string;
 	checked?: boolean;
 	disabled?: boolean;
+	position?: "left" | "right";
 }
 
 interface Emits
@@ -22,16 +23,25 @@ interface Emits
 // Composant //
 // --------- //
 
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { position: "left" });
 const emit = defineEmits<Emits>();
-let inputModel = defineModel();
+
+let input_model = defineModel();
+
+let title_attribute = computed(() => {
+	let state = input_model.value ? "Activé" : "Désactivé";
+	if (props.disabled) {
+		return `${state} (verrouillé)`;
+	}
+	return state;
+});
 
 // --------- //
 // Lifecycle //
 // --------- //
 
 watch_effect(() => {
-	if (inputModel.value) {
+	if (input_model.value) {
 		emit("on");
 	} else {
 		emit("off");
@@ -46,21 +56,25 @@ watch_effect(() => {
 		:class="{
 			'cursor:default': disabled,
 		}"
+		:title="title_attribute"
 	>
 		<input
 			:id="name"
-			v-model="inputModel"
+			v-model="input_model"
 			:name="name"
 			:checked="checked"
 			role="switch"
 			type="checkbox"
-			class="[ size=0 ]"
-			style="position: absolute; visibility: hidden"
+			class="[ size=0 vis:h ]"
+			style="position: absolute;"
 			:disabled="disabled"
 		/>
 
 		<span
 			class="input@radio/switch:control [ pos-r i-flex flex/center:full w=5 h=2 border/radius=1 ]"
+			:style="{
+				order: position === 'right' ? 1 : undefined,
+			}"
 		>
 			<span
 				class="input@radio/switch:thumb [ size=3 border/radius=50 ]"

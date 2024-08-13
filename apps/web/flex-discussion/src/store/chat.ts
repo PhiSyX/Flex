@@ -258,6 +258,10 @@ export class ChatStoreVue
 	play_audio(src: this["audio_src"])
 	{
 		let settings_notification = this.settings().notification;
+
+		if (settings_notification.sounds.enabled === false) {
+			return;
+		}
 		
 		let key = `${src}s` as string;
 

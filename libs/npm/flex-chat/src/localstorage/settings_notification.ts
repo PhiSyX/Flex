@@ -23,6 +23,7 @@ export const STORAGE_SETTINGS_NOTIFICATION_KEY = "flex.settings.notification";
 export interface NotificationData
 {
     sounds: {
+		enabled?: boolean;
         connection?: boolean;
         invites?: boolean;
         mentions?: boolean;
@@ -35,19 +36,21 @@ export interface NotificationData
 // Constant //
 // -------- //
 
-const DEFAULT_SOUNDS = {
-	queries: true,
+const DEFAULT_SOUNDS: NotificationData["sounds"] = {
+	enabled: true,
 	connection: true,
 	invites: true,
 	mentions: true,
 	notices: true,
+	queries: true,
 };
-const DEFAULT_SOUNDS_KEYS: Array<string> = [
-	"queries",
+const DEFAULT_SOUNDS_KEYS: Array<(keyof NotificationData["sounds"]) | string> = [
+	"enabled",
 	"connection",
 	"invites",
 	"mentions",
 	"notices",
+	"queries",
 ];
 
 // -------------- //

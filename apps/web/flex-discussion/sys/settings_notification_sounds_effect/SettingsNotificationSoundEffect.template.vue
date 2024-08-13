@@ -3,6 +3,7 @@ import { vModelSelect } from '~/directives';
 
 interface Props
 {
+	disabled?: boolean;
 }
 
 // --------- //
@@ -16,7 +17,7 @@ let sounds = defineModel<Record<string, boolean>>("sounds", { required: true });
 
 <template>
 	<div class="[ flex gap=3 w:full select:none ]">
-		<select multiple v-model-select="sounds" class="[ p=1 ]">
+		<select multiple v-model-select="sounds" class="[ p=1 ]" :disabled="disabled">
 			<option value="connection">Lors de la connexion</option>
 			<option value="invites">Lorsqu'on m'invite sur un salon</option>
 			<option value="mentions">Lorsqu'on mentionne mon pseudo</option>
@@ -29,9 +30,14 @@ let sounds = defineModel<Record<string, boolean>>("sounds", { required: true });
 <style lang="scss" scoped>
 @use "scss:~/flexsheets" as fx;
 
-select
-{
+select {
 	border: 0;
 	border-radius: 4px;
+}
+
+select[disabled] option:checked
+{
+	background-color: var(--disabled-color);
+	cursor: not-allowed;
 }
 </style>
