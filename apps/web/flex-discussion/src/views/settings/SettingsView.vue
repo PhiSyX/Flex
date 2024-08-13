@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useRouter as use_router } from "vue-router";
 
+import { View } from "@phisyx/flex-chat";
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
-import { use_settings_store } from "~/store";
+import { use_chat_store, use_settings_store } from "~/store";
 
 import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
 import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
@@ -16,6 +17,7 @@ import SettingsPersonalizationTheme from "./personalization/Theme.vue";
 // --------- //
 
 let router = use_router();
+let chat_store = use_chat_store();
 let settings_store = use_settings_store();
 
 // ------- //
@@ -25,6 +27,12 @@ let settings_store = use_settings_store();
 function save_and_exit_handler()
 {
 	settings_store.persist();
+
+	if (chat_store.store.is_connected()) {
+		router.replace({name: View.Chat });
+		return;
+	}
+
 	router.back();
 }
 </script>

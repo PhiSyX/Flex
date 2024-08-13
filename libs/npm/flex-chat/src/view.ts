@@ -15,6 +15,7 @@
 export enum View
 {
 	Chat = "ChatView",
+	ChannelList = "ChannelListView",
 	DirectAccess = "DirectAccessView",
 	Settings = "SettingsView",
 }

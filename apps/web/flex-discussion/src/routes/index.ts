@@ -19,14 +19,27 @@ import { View } from "@phisyx/flex-chat";
 export const ROUTES: Array<RouteRecordRaw> = [
     {
         path: "/",
+        strict: true,
         component: () => import("~/views/direct-access/DirectAccessView.vue"),
         name: View.DirectAccess,
     },
 
     {
         path: "/chat",
-        component: () => import("~/views/chat/ChatView.vue"),
-        name: View.Chat,
+        component: () => import("~/views/chat/ChatLayout.vue"),
+        children: [
+            {
+                path: "/channels",
+                component: () => import("~/views/chat/channel/ChannelListView.vue"),
+                name: View.ChannelList,
+            },
+
+            {
+                path: "/",
+                component: () => import("~/views/chat/ChatView.vue"),
+                name: View.Chat,
+            },
+        ],
     },
 
     {

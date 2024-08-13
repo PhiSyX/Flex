@@ -1,28 +1,21 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useRouter } from "vue-router";
+
+import { View } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_settings_store } from "~/store";
 
 import NavigationArea from "#/sys/navigation_area/NavigationArea.template.vue";
 
-// ---- //
-// Type //
-// ---- //
-
-interface Emits
-{
-	// biome-ignore lint/style/useShorthandFunctionType: ?
-	(event_name: "open-settings-view"): void;
-}
-
 // --------- //
 // Composant //
 // --------- //
 
+let router = useRouter();
+
 let chat_store = use_chat_store();
 let settings_store = use_settings_store();
-
-const emit = defineEmits<Emits>();
 
 let navigation_bar_position = computed(
 	() => settings_store.layout.navigation_bar_position,
@@ -46,11 +39,15 @@ let servers = computed(() => {
 // Handler //
 // ------- //
 
-const open_settings_view_handler = () => emit("open-settings-view");
+function open_settings_view_handler()
+{
+	router.push({ name: View.Settings })
+}
 
 function change_room_handler(origin: Origin | RoomID)
 {
 	chat_store.change_room(origin);
+	router.push({ name: View.Chat });
 }
 
 function close_room_handler(origin: Origin | RoomID)
@@ -61,6 +58,7 @@ function close_room_handler(origin: Origin | RoomID)
 function open_channel_list_handler()
 {
 	chat_store.channel_list();
+	router.push({ name: View.ChannelList });
 }
 </script>
 

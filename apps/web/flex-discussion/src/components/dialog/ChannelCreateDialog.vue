@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useRouter as use_router } from "vue-router";
 
-import { ChannelJoinDialog } from "@phisyx/flex-chat";
+import { ChannelJoinDialog, View } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
@@ -17,6 +18,7 @@ const LAYER_NAME: string = ChannelJoinDialog.ID;
 // Composant //
 // --------- //
 
+let router = use_router();
 let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
 
@@ -35,6 +37,7 @@ function join_channel_handler(channels: ChannelID, keys: string)
 
 	chat_store.join_channel(channels, keys);
 	close_layer_handler();
+	router.push({ name: View.Chat });
 }
 
 function close_layer_handler()

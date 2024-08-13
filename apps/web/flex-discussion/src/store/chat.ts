@@ -34,13 +34,11 @@ import { reactive } from "vue";
 
 import { is_string } from "@phisyx/flex-asserts";
 import {
-	ChannelAccessLevelFlag,
-	ChannelListCustomRoom,
-	ChatStore,
+	ChannelAccessLevelFlag, ChatStore,
 	PrivateParticipant,
 	PrivateRoom,
 	assert_channel_room,
-	is_channel,
+	is_channel
 } from "@phisyx/flex-chat";
 import { None } from "@phisyx/flex-safety";
 
@@ -337,7 +335,6 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	 */
 	function channel_list(channels?: Array<string>)
 	{
-		change_room(ChannelListCustomRoom.ID);
 		let module = store.module_manager().get("LIST")
 			.expect("Récupération du module `LIST`");
 		module.send({ channels });

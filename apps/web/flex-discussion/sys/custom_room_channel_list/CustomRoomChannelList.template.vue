@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ChannelListCustomRoom } from "@phisyx/flex-chat";
-
 import { computed, ref } from "vue";
 
 import { fuzzy_search } from "@phisyx/flex-search";
@@ -12,7 +10,7 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 
 interface Props
 {
-	room: ChannelListCustomRoom;
+	channels: Array<GenericReply<"RPL_LIST">>,
 }
 
 interface Emits
@@ -33,11 +31,11 @@ let selected_channels = ref(new Set<ChannelID>());
 
 let filtered_channels = computed(() => {
 	if (filtered_channel_input.value.length === 0) {
-		return props.room.channels;
+		return props.channels;
 	}
 
-	return Array.from(props.room.channels).filter((channel) =>
-		fuzzy_search(filtered_channel_input.value, channel[0]).is_some(),
+	return props.channels.filter((channel) =>
+		fuzzy_search(filtered_channel_input.value, channel.channel).is_some(),
 	);
 });
 
@@ -83,7 +81,7 @@ const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-chann
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
 				:disabled="selected_channels.size === 0"
-				@click="join_selected_channels()"
+				@click="join_selected_channels"
 			>
 				Rejoindre les salons sélectionnés
 			</UiButton>
@@ -100,7 +98,7 @@ const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-chann
 
 			<div
 				class="tbody"
-				v-for="([_, channel_data], idx) of filtered_channels"
+				v-for="(channel_data, idx) of filtered_channels"
 			>
 				<span>#</span>
 				<span>Nom du salon</span>
@@ -126,7 +124,7 @@ const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-chann
 				<div>{{ channel_data.total_members }}</div>
 			</div>
 
-			<div class="tbody" v-if="room.channels.size === 0">
+			<div class="tbody" v-if="channels.length === 0">
 				<p>Il n'y a aucun salon</p>
 			</div>
 		</div>

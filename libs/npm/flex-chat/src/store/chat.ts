@@ -19,7 +19,6 @@ import { None } from "@phisyx/flex-safety";
 
 import { assert_channel_room } from "../asserts/room";
 import { ChannelMemberSelected } from "../channel/member/selected";
-import { ChannelListCustomRoom } from "../custom_room/channel_list";
 import { ServerCustomRoom } from "../custom_room/server";
 import { HandlerManager } from "../handlers/manager";
 import { ClientIDStorage } from "../localstorage/client_id";
@@ -63,9 +62,9 @@ export interface ChatStoreInterface
 	}>;
 
 	/**
-	 * Chambre personnalisé liste des salons.
+	 * Supprime la liste des salons du serveur.
 	 */
-	channel_list(): ChannelListCustomRoom;
+	clear_channel_list(): void;
 
 	/**
 	 * ID du client actuellement connecté à l'application.
@@ -89,6 +88,11 @@ export interface ChatStoreInterface
 	 * Récupère les salons à rejoindre automatiquement.
 	 */
 	get_auto_join_channels(): Array<ChannelID>;
+
+	/**
+	 * Supprime la liste des salons du serveur.
+	 */
+	get_channel_list(): Array<GenericReply<"RPL_LIST">>;
 
 	/**
 	 * Récupère les informations de connexion de l'utilisateur.
@@ -179,6 +183,11 @@ export interface ChatStoreInterface
 	 * Définit l'origine du client.
 	 */
 	set_client(origin: Origin): void;
+
+	/**
+	 * Définit la liste des salons.
+	 */
+	set_channel_list(list: GenericReply<"RPL_LIST">): void;
 
 	/**
 	 * Définit l'ID de l'utilisateur.
@@ -274,6 +283,7 @@ export class ChatStore implements ChatStoreInterface
 		problems?: HttpProblemErrorResponse["errors"];
 		data: unknown;
 	}> = None();
+	private _channel_list: Array<GenericReply<"RPL_LIST">> = [];
 	protected _client_id_storage: ClientIDStorage = new ClientIDStorage();
 	protected _user_id: Option<UUID> = None();
 	private _network: Option<CustomRoomID> = None();
@@ -292,12 +302,10 @@ export class ChatStore implements ChatStoreInterface
 		this._module_manager.extends(MODULES);
 
 		let this_server = new ServerCustomRoom();
-		let channel_list = new ChannelListCustomRoom();
 
 		this.set_network_name(this_server.id());
 		this.room_manager().extends([
 			[this_server.id(), this_server],
-			[channel_list.id(), channel_list],
 		]);
 		this.room_manager().set_current(this_server.id());
 	}
@@ -306,11 +314,9 @@ export class ChatStore implements ChatStoreInterface
 	// Méthode // -> Interface
 	// ------- //
 
-	channel_list(): ChannelListCustomRoom
+	clear_channel_list()
 	{
-		return this.room_manager()
-			.get(ChannelListCustomRoom.ID)
-			.unwrap_unchecked() as ChannelListCustomRoom;
+		this._channel_list = [];
 	}
 
 	client_id(): UserID
@@ -337,6 +343,11 @@ export class ChatStore implements ChatStoreInterface
 	{
 		let channels: ChannelID = this.get_connect_user_info().channels;
 		return channels.split(",") as Array<ChannelID>;
+	}
+
+	get_channel_list(): Array<GenericReply<"RPL_LIST">>
+	{
+		return this._channel_list;
 	}
 
 	get_connect_user_info(): ConnectUserInfo
@@ -438,6 +449,11 @@ export class ChatStore implements ChatStoreInterface
 	room_manager(): RoomManager
 	{
 		return this._room_manager;
+	}
+
+	set_channel_list(list: GenericReply<"RPL_LIST">)
+	{
+		this._channel_list.push(list);
 	}
 
 	set_connect_user_info(connect_user_info: ConnectUserInfo)

@@ -33,8 +33,7 @@ export class ReplyListHandler implements SocketEventInterface<"RPL_LIST">
 
 	handle(data: GenericReply<"RPL_LIST">)
 	{
-		let channel_list = this.store.channel_list();
-		channel_list.insert(data);
+		this.store.set_channel_list(data);
 	}
 }
 
@@ -58,9 +57,7 @@ export class ReplyListstartHandler
 
 	handle(_: GenericReply<"RPL_LISTSTART">)
 	{
-		let channel_list = this.store.channel_list();
-		this.store.room_manager().set_current(channel_list.id());
-		channel_list.clear();
+		this.store.clear_channel_list();
 	}
 }
 
