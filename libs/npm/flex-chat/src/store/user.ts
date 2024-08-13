@@ -8,22 +8,65 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { onMounted as on_mounted } from "vue";
-import { useRouter as use_router } from "vue-router";
+import type { Option } from "@phisyx/flex-safety";
 
-import { View } from "@phisyx/flex-chat";
+import type { UserSession } from "../user/session";
 
-import { use_user_store } from "~/store";
+import { None } from "@phisyx/flex-safety";
 
-export function use_check_auth()
+// ---- //
+// Type //
+// ---- //
+
+export interface ChatStoreUserExt 
 {
-    let router = use_router();
-    let user_store = use_user_store();
+	_user: Option<UserSession>;
 
-    on_mounted(() => {
-        user_store.fetch().then((current_user) => {
-            router.replace({ name: View.DirectAccess });
-            user_store.update(current_user);
-        });
-    });
+	user(): this["_user"];
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class UserStore 
+{
+	// ------ //
+	// Static //
+	// ------ //
+
+	static ID = "user-store";
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	_session: ChatStoreUserExt["_user"] = None();
+
+	set(user: UserSession)
+	{
+		this._session.replace(user);
+	}
+
+	get(): this["_session"]
+	{
+		return this._session;
+	}
+
+	fetch(): Promise<UserSession>
+	{
+		let fetch_options: RequestInit = { credentials: "same-origin" };
+
+		return fetch("/api/v1/users/@me", fetch_options).then(async (res) => {
+			if (res.ok) {
+				return res.json();
+			}
+
+			if (res.status >= 400 && res.status < 600) {
+				return Promise.reject(await res.json());
+			}
+
+			return Promise.reject(res);
+		});
+	}
 }

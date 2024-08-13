@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef as shallow_ref } from "vue";
+import { useRouter as use_router } from "vue-router";
 
 import {
 	ChannelJoinDialog,
@@ -41,10 +42,10 @@ import query_audio from "#/assets/audio/query.wav";
 // Composant //
 // --------- //
 
+let router = use_router();
 let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
 
-let change_view = defineModel<View>("changeView");
 let rooms = computed(() => chat_store.store.room_manager().rooms());
 
 const custom_rooms_components = shallow_ref({
@@ -90,7 +91,7 @@ function open_join_channel_dialog_handler(event: Event)
 
 function open_settings_view_handler()
 {
-	change_view.value = View.Settings;
+	router.push({ name: View.Settings });
 }
 
 function reset_audio_src()

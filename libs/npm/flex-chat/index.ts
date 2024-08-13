@@ -37,7 +37,6 @@ export * from "./src/room";
 export * from "./src/room/manager";
 export * from "./src/room/message";
 export * from "./src/store";
-export * from "./src/store/chat";
 export * from "./src/theme";
 export * from "./src/user";
 export * from "./src/user/manager";

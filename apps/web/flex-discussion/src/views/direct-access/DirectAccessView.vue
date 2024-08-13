@@ -1,11 +1,7 @@
 
 <script setup lang="ts">
-import type { ModelRef } from "vue";
-
-import type { UserSession } from "@phisyx/flex-chat";
-import type { Option } from "@phisyx/flex-safety";
-
-import { computed, onMounted as on_mounted, reactive, ref } from "vue";
+import { onMounted as on_mounted, reactive, ref } from "vue";
+import { useRouter as use_router } from "vue-router";
 
 import {
 	MAXLENGTH_NICKNAME,
@@ -22,36 +18,38 @@ import {
 	UiButton,
 } from "@phisyx/flex-vue-uikit";
 
-import { use_chat_store } from "~/store";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props
-{
-	user: Option<UserSession>;
-}
+import { Option } from "@phisyx/flex-safety";
+import { use_chat_store, use_user_store } from "~/store";
 
 // --------- //
 // Composant //
 // --------- //
 
-const props = defineProps<Props>();
-let change_view = defineModel<View>("changeView");
-
-let user = computed(() => props.user.unwrap());
-
+let router = use_router();
 let chat_store = use_chat_store();
+let user_store = use_user_store();
+
+let user_session = user_store.session();
 
 let advanced_info = ref(false);
+let display_password_user_field = ref(false);
 let login_form_data = reactive({
-	alternative_nickname: `${user.value.name}_`,
+	alternative_nickname: user_session
+		.map((user) => `${user.name}_`)
+		.or(Option.from(import.meta.env.VITE_APP_NICKNAME).map((nick) => `${nick}_`))
+		.unwrap_or(""),
 	channels: import.meta.env.VITE_APP_CHANNELS || cast_to_channel_id(""),
-	nickname: user.value.name,
-	realname: `${user.value.role} - ${user.value.id}`,
+	nickname: user_session
+		.map((user) => user.name)
+		.or(Option.from(import.meta.env.VITE_APP_NICKNAME))
+		.unwrap_or(""),
+	realname: user_session
+		.map((user) => `${user.role} - ${user.id}`)
+		.or(Option.from(import.meta.env.VITE_APP_REALNAME))
+		.unwrap_or("Flex Web App"),
 	remember_me: new RememberMeStorage(),
 	password_server: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
+	password_user: import.meta.env.VITE_APP_PASSWORD_USER || null,
 	websocket_server_url: import.meta.env.VITE_APP_WEBSOCKET_URL,
 });
 let errors = reactive({
@@ -65,7 +63,10 @@ let loader = ref(false);
 // --------- //
 
 on_mounted(() => {
-	chat_store.store.set_user_id(user.value.id);
+	user_session.then((user) => {
+		chat_store.store.set_user_id(user.id);
+	});
+
 	if (login_form_data.remember_me.get()) {
 		submit_handler();
 	}
@@ -75,7 +76,7 @@ on_mounted(() => {
 // Handler //
 // ------- //
 
-const submit_handler = connect_submit(change_view);
+const submit_handler = connect_submit();
 
 /**
  * Affiche les informations de connexion avancées.
@@ -88,7 +89,7 @@ function display_advanced_info_handler()
 /**
  * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
  */
-function connect_submit(change_view_model: ModelRef<View | undefined, string>)
+function connect_submit()
 {
 	async function connect_submit_handler(evt?: Event)
 	{
@@ -102,7 +103,7 @@ function connect_submit(change_view_model: ModelRef<View | undefined, string>)
 
 		chat_store.listen(
 			"RPL_WELCOME",
-			() => reply_welcome_handler(change_view_model),
+			() => reply_welcome_handler(),
 			{
 				once: true,
 			},
@@ -119,10 +120,10 @@ function connect_submit(change_view_model: ModelRef<View | undefined, string>)
 /**
  * Écoute de l'événement `RPL_WELCOME`.
  */
-function reply_welcome_handler(change_view_model: ModelRef<View | undefined, string>)
+function reply_welcome_handler()
 {
 	loader.value = false;
-	change_view_model.value = View.Chat;
+	router.push({ name: View.Chat });
 }
 
 /**
@@ -143,7 +144,7 @@ function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">)
 
 function to_settings_view_handler()
 {
-	change_view.value = View.Settings;
+	router.push({ name: View.Settings });
 }
 </script>
 

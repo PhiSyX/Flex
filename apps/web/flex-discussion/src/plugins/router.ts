@@ -8,22 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { onMounted as on_mounted } from "vue";
-import { useRouter as use_router } from "vue-router";
+import type { App } from "vue";
 
-import { View } from "@phisyx/flex-chat";
+import {
+    createMemoryHistory as create_mem_history,
+    createRouter as create_router
+} from "vue-router";
 
-import { use_user_store } from "~/store";
+import { ROUTES } from "~/routes";
 
-export function use_check_auth()
+/**
+ * Installe le plugin vue-router.
+ */
+export function install(app: App<Element>)
 {
-    let router = use_router();
-    let user_store = use_user_store();
-
-    on_mounted(() => {
-        user_store.fetch().then((current_user) => {
-            router.replace({ name: View.DirectAccess });
-            user_store.update(current_user);
-        });
-    });
+	app.use(create_router({
+        history: create_mem_history(),
+        routes: ROUTES,
+    }));
 }

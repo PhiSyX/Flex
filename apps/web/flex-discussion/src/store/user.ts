@@ -8,22 +8,28 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { onMounted as on_mounted } from "vue";
-import { useRouter as use_router } from "vue-router";
+import {
+	acceptHMRUpdate as accept_hmr_update,
+	defineStore as define_store
+} from "pinia";
+import { reactive } from "vue";
 
-import { View } from "@phisyx/flex-chat";
+import { UserStore } from "@phisyx/flex-chat";
 
-import { use_user_store } from "~/store";
+// ----- //
+// Store //
+// ----- //
 
-export function use_check_auth()
-{
-    let router = use_router();
-    let user_store = use_user_store();
+export const use_user_store = define_store(UserStore.ID, () => {
+	const store = reactive(new UserStore()) as UserStore;
+	return {
+		store,
+		fetch: store.fetch.bind(store),
+		update: store.set.bind(store),
+		session: store.get.bind(store),
+	};
+});
 
-    on_mounted(() => {
-        user_store.fetch().then((current_user) => {
-            router.replace({ name: View.DirectAccess });
-            user_store.update(current_user);
-        });
-    });
+if (import.meta.hot) {
+	import.meta.hot.accept(accept_hmr_update(use_user_store, import.meta.hot));
 }

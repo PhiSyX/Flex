@@ -8,22 +8,30 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { onMounted as on_mounted } from "vue";
-import { useRouter as use_router } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 
 import { View } from "@phisyx/flex-chat";
 
-import { use_user_store } from "~/store";
+// -------- //
+// Constant //
+// -------- //
 
-export function use_check_auth()
-{
-    let router = use_router();
-    let user_store = use_user_store();
+export const ROUTES: Array<RouteRecordRaw> = [
+    {
+        path: "/",
+        component: () => import("~/views/direct-access/DirectAccessView.vue"),
+        name: View.DirectAccess,
+    },
 
-    on_mounted(() => {
-        user_store.fetch().then((current_user) => {
-            router.replace({ name: View.DirectAccess });
-            user_store.update(current_user);
-        });
-    });
-}
+    {
+        path: "/chat",
+        component: () => import("~/views/chat/ChatView.vue"),
+        name: View.Chat,
+    },
+
+    {
+        path: "/settings",
+        component: () => import("~/views/settings/SettingsView.vue"),
+        name: View.Settings,
+    }
+];

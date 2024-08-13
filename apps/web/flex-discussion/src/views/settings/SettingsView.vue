@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { View } from "@phisyx/flex-chat";
+import { useRouter as use_router } from "vue-router";
 
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
@@ -10,23 +10,13 @@ import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
 import SettingsNotificationSoundEffect from "./notification/SoundEffect.vue";
 import SettingsPersonalizationTheme from "./personalization/Theme.vue";
 
-// ---- //
-// Type //
-// ---- //
-
-interface Props
-{
-	previousView: View;
-}
 
 // --------- //
 // Composant //
 // --------- //
 
+let router = use_router();
 let settings_store = use_settings_store();
-
-const props = defineProps<Props>();
-let change_view = defineModel<View>("changeView");
 
 // ------- //
 // Handler //
@@ -35,7 +25,7 @@ let change_view = defineModel<View>("changeView");
 function save_and_exit_handler()
 {
 	settings_store.persist();
-	change_view.value = props.previousView;
+	router.back();
 }
 </script>
 

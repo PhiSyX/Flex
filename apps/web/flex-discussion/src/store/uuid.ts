@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { defineStore } from "pinia";
+import {
+	acceptHMRUpdate as accept_hmr_update,
+	defineStore as define_store
+} from "pinia";
 import { reactive } from "vue";
 
 import { UUIDStore } from "@phisyx/flex-chat";
@@ -17,7 +20,7 @@ import { UUIDStore } from "@phisyx/flex-chat";
 // Store //
 // ----- //
 
-export const useUUIDv4Store = defineStore(UUIDStore.IDv4, () => {
+export const useUUIDv4Store = define_store(UUIDStore.IDv4, () => {
 	const store = reactive(UUIDStore.v4()) as UUIDStore;
 	return {
 		store,
@@ -25,10 +28,15 @@ export const useUUIDv4Store = defineStore(UUIDStore.IDv4, () => {
 	};
 });
 
-export const useUUIDv7Store = defineStore(UUIDStore.IDv7, () => {
+export const useUUIDv7Store = define_store(UUIDStore.IDv7, () => {
 	const store = reactive(UUIDStore.v7()) as UUIDStore;
 	return {
 		store,
 		take: store.take.bind(store),
 	};
 });
+
+if (import.meta.hot) {
+	import.meta.hot.accept(accept_hmr_update(useUUIDv4Store, import.meta.hot));
+	import.meta.hot.accept(accept_hmr_update(useUUIDv7Store, import.meta.hot));
+}

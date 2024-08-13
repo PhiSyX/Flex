@@ -111,6 +111,7 @@ function resize_handler(entries: Array<ResizeObserverEntry>)
 		<footer class="[ flex gap=1 p=1 h=6 ]">
 			<ButtonIcon
 				:icon="folded ? 'arrow-right' : 'arrow-left'"
+				:title="(folded ? 'Élargir' : 'Réduire') + ' la barre de navigation'"
 				@click="toggle_navigation_handler"
 			/>
 
@@ -127,7 +128,11 @@ function resize_handler(entries: Array<ResizeObserverEntry>)
 					@click="open_channel_list_handler"
 				/>
 
-				<ButtonIcon icon="settings" @click="open_settings_view_handler" />
+				<ButtonIcon
+					icon="settings"
+					title="Paramètres globaux du Chat"
+					@click="open_settings_view_handler" 
+				/>
 			</div>
 		</footer>
 	</section>

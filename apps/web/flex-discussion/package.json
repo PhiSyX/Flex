@@ -24,7 +24,8 @@
 		"focus-trap": "^7.5.4",
 		"pinia": "^2.2.1",
 		"socket.io-client": "^4.7.5",
-		"vue": "^3.4.37"
+		"vue": "^3.4.37",
+		"vue-router": "^4.4.3"
 	},
 	"devDependencies": {
 		"@histoire/plugin-vue": "^0.17.17",

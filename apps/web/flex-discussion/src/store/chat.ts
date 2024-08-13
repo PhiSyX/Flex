@@ -25,7 +25,10 @@ import type {
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
-import { defineStore as define_store } from "pinia";
+import {
+	acceptHMRUpdate as accept_hmr_update,
+	defineStore as define_store
+} from "pinia";
 import { io } from "socket.io-client";
 import { reactive } from "vue";
 
@@ -792,3 +795,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		update_topic,
 	};
 });
+
+if (import.meta.hot) {
+	import.meta.hot.accept(accept_hmr_update(use_chat_store, import.meta.hot));
+}

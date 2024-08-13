@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { defineStore as define_store } from "pinia";
+import {
+	acceptHMRUpdate as accept_hmr_update,
+	defineStore as define_store
+} from "pinia";
 import { computed, reactive } from "vue";
 
 import { OverlayerStore } from "@phisyx/flex-chat";
@@ -37,3 +40,7 @@ export const use_overlayer_store = define_store(OverlayerStore.ID, () => {
 		update_data: store.update_data.bind(store),
 	};
 });
+
+if (import.meta.hot) {
+	import.meta.hot.accept(accept_hmr_update(use_overlayer_store, import.meta.hot));
+}
