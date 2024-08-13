@@ -1,8 +1,8 @@
 # Notes
 
-1. Les composants Vue à l'intérieur du dossier `src/` peuvent accéder aux stores. 
+1. Les composants Vue à l'intérieur du dossier `src/` peuvent accéder aux stores et au router. 
 
-2. Les composants Vue à l'intérieur du dossier `sys/` n'accèdent pas aux stores. C'est totalement voulu.
+2. Les composants Vue à l'intérieur du dossier `sys/` n'accèdent pas aux stores et au router. C'est totalement voulu.
 
 ## À améliorer
 
