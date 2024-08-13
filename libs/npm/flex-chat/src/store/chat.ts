@@ -13,6 +13,7 @@ import type { Option } from "@phisyx/flex-safety";
 import type { ChannelRoom } from "../channel/room";
 import type { OverlayerStore } from "./overlayer";
 import type { SettingsStore } from "./settings";
+import type { UserStore } from "./user";
 
 import { is_string } from "@phisyx/flex-asserts";
 import { None } from "@phisyx/flex-safety";
@@ -190,11 +191,6 @@ export interface ChatStoreInterface
 	set_channel_list(list: GenericReply<"RPL_LIST">): void;
 
 	/**
-	 * Définit l'ID de l'utilisateur.
-	 */
-	set_user_id(user_id: UUID): void;
-
-	/**
 	 * Définit le nom du serveur.
 	 */
 	set_network_name(network_name: CustomRoomID): void;
@@ -256,6 +252,7 @@ export interface ChatStoreInterfaceExt
 
 	overlayer(): OverlayerStore;
 	settings(): SettingsStore;
+	user(): UserStore;
 }
 
 // -------------- //
@@ -285,7 +282,6 @@ export class ChatStore implements ChatStoreInterface
 	}> = None();
 	private _channel_list: Array<GenericReply<"RPL_LIST">> = [];
 	protected _client_id_storage: ClientIDStorage = new ClientIDStorage();
-	protected _user_id: Option<UUID> = None();
 	private _network: Option<CustomRoomID> = None();
 	private _room_manager: RoomManager = new RoomManager();
 	protected _ws: Option<TypeSafeSocket> = None();
@@ -470,11 +466,6 @@ export class ChatStore implements ChatStoreInterface
 	{
 		this._client_id_storage.set(origin.id);
 		this._client.replace(origin);
-	}
-
-	set_user_id(user_id: UUID)
-	{
-		this._user_id.replace(user_id);
 	}
 
 	set_network_name(network_name: CustomRoomID)

@@ -65,10 +65,6 @@ let loader = ref(false);
 // --------- //
 
 on_mounted(() => {
-	user_session.then((user) => {
-		chat_store.store.set_user_id(user.id);
-	});
-
 	if (login_form_data.remember_me.get()) {
 		submit_handler();
 	}

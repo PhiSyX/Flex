@@ -25,7 +25,9 @@ export const use_user_store = define_store(UserStore.ID, () => {
 	return {
 		store,
 		fetch: store.fetch.bind(store),
+		set: store.set.bind(store),
 		update: store.set.bind(store),
+		get: store.get.bind(store),
 		session: store.get.bind(store),
 	};
 });

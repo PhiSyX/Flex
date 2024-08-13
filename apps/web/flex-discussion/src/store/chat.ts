@@ -24,6 +24,7 @@ import type {
 	UUIDStore,
 	UUIDVariant,
 	User,
+	UserStore,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
@@ -48,6 +49,7 @@ import { None } from "@phisyx/flex-safety";
 
 import { use_overlayer_store } from "./overlayer";
 import { use_settings_store } from "./settings";
+import { use_user_store } from "./user";
 import { useUUIDv4Store, useUUIDv7Store } from "./uuid";
 
 // -------------- //
@@ -61,7 +63,9 @@ export class ChatStoreVue
 	audio_src: ChatStoreInterfaceExt["audio_src"] = null;
 
 	private _router = use_router();
+
 	private _overlayer = use_overlayer_store() as unknown as OverlayerStore;
+	private _user = use_user_store() as unknown as UserStore;
 	private _settings = use_settings_store() as unknown as SettingsStore;
 
 	private _uuidv4 = useUUIDv4Store() as unknown as UUIDStore;
@@ -114,7 +118,7 @@ export class ChatStoreVue
 		let client_id = this._client_id_storage.maybe().unwrap_or("") as
 			| string
 			| null;
-		let user_id = this._user_id.unwrap_or("") as string | null;
+		let user_id = this.user().get().map((u) => u.id).unwrap_or("") as string | null;
 
 		if (client_id?.length === 0) {
 			client_id = null;
@@ -292,6 +296,11 @@ export class ChatStoreVue
 	settings(): SettingsStore
 	{
 		return this._settings;
+	}
+
+	user(): UserStore
+	{
+		return this._user;
 	}
 
 	// ------- //
