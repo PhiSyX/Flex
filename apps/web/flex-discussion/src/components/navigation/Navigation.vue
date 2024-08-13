@@ -47,7 +47,6 @@ function open_settings_view_handler()
 function change_room_handler(origin: Origin | RoomID)
 {
 	chat_store.change_room(origin);
-	router.push({ name: View.Chat });
 }
 
 function close_room_handler(origin: Origin | RoomID)
@@ -58,7 +57,6 @@ function close_room_handler(origin: Origin | RoomID)
 function open_channel_list_handler()
 {
 	chat_store.channel_list();
-	router.push({ name: View.ChannelList });
 }
 </script>
 

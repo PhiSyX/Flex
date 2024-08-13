@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter as use_router } from "vue-router";
 
-import { View } from "@phisyx/flex-chat";
+import { ServerCustomRoom, View } from "@phisyx/flex-chat";
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
 import { use_chat_store, use_settings_store } from "~/store";
@@ -29,8 +29,10 @@ function save_and_exit_handler()
 	settings_store.persist();
 
 	if (chat_store.store.is_connected()) {
-		router.replace({name: View.Chat });
-		return;
+		if (chat_store.store.room_manager().active().id() === ServerCustomRoom.ID) {
+			router.replace({name: View.Chat });
+			return;
+		}
 	}
 
 	router.back();

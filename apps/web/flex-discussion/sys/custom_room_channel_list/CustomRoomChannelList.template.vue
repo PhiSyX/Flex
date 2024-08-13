@@ -10,6 +10,7 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 
 interface Props
 {
+	servername: string;
 	channels: Array<GenericReply<"RPL_LIST">>,
 }
 
@@ -58,7 +59,7 @@ const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-chann
 
 <template>
 	<div class="channel/list [ flex! gap=2 p=1 ]">
-		<h1 class="[ align-t:center ]">Liste des salons</h1>
+		<h1 class="[ align-t:center ]">Liste des salons du serveur {{ servername }}</h1>
 
 		<input
 			v-model.trim="filtered_channel_input"

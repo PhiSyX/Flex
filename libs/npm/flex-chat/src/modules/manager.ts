@@ -40,6 +40,15 @@ export class ModuleManager {
 		return Option.from(maybe_module);
 	}
 
+	get_unchecked<T extends CommandsNames = CommandsNames>(
+		module_id: T,
+	): ModuleInterface & CommandInterface<T> | undefined {
+		let maybe_module = this._maps.get(module_id) as
+			| (ModuleInterface & CommandInterface<T>)
+			| undefined;
+		return maybe_module;
+	}
+
 	set(module_id: string, module: ModuleInterface & CommandInterface)
 	{
 		return this._maps.set(module_id, module);

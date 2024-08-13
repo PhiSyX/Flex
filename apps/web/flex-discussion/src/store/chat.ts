@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Router } from "vue-router";
+
 import type {
 	ChannelMember,
 	ChannelMemberSelected,
@@ -31,12 +33,14 @@ import {
 } from "pinia";
 import { io } from "socket.io-client";
 import { reactive } from "vue";
+import { useRouter as use_router } from "vue-router";
 
 import { is_string } from "@phisyx/flex-asserts";
 import {
 	ChannelAccessLevelFlag, ChatStore,
 	PrivateParticipant,
 	PrivateRoom,
+	View,
 	assert_channel_room,
 	is_channel
 } from "@phisyx/flex-chat";
@@ -56,6 +60,7 @@ export class ChatStoreVue
 {
 	audio_src: ChatStoreInterfaceExt["audio_src"] = null;
 
+	private _router = use_router();
 	private _overlayer = use_overlayer_store() as unknown as OverlayerStore;
 	private _settings = use_settings_store() as unknown as SettingsStore;
 
@@ -64,7 +69,32 @@ export class ChatStoreVue
 
 	static default(): ChatStoreVue
 	{
-		return reactive(new ChatStoreVue()) as ChatStoreVue;
+		let cs = reactive(new ChatStoreVue()) as ChatStoreVue;
+		cs.room_manager().set_on_change((room_id) => {
+			let servername = cs.network_name();
+					
+			if (is_channel(room_id)) {
+				cs.router().push({
+					name: View.Channel, 
+					params: {
+						servername,
+						channelname: room_id,
+					},
+				});
+			} else if (is_string(room_id) && !room_id.startsWith("@")) {
+				cs.router().push({
+					name: View.Private,
+					params: {
+						id: room_id,
+					},
+				});
+			} else {
+				cs.router().push({
+					name: View.Chat,
+				});
+			}
+		});
+		return cs;
 	}
 
 	// ------- //
@@ -214,12 +244,12 @@ export class ChatStoreVue
 			}
 		}
 
+		
+
 		this._handler_manager.free();
 		this._module_manager.free();
 		this._overlayer.destroy("load-all-modules");
 	}
-
-
 
 	play_audio(src: this["audio_src"])
 	{
@@ -248,14 +278,20 @@ export class ChatStoreVue
 		this.audio_src = src;
 	}
 
-	settings(): SettingsStore
-	{
-		return this._settings;
-	}
 
 	overlayer(): OverlayerStore
 	{
 		return this._overlayer;
+	}
+
+	router(): Router
+	{
+		return this._router;
+	}
+	
+	settings(): SettingsStore
+	{
+		return this._settings;
 	}
 
 	// ------- //
@@ -274,6 +310,7 @@ export class ChatStoreVue
 
 export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	let store = ChatStoreVue.default();
+	let router = use_router();
 	let settings_store = use_settings_store();
 
 	/**
@@ -335,9 +372,14 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	 */
 	function channel_list(channels?: Array<string>)
 	{
-		let module = store.module_manager().get("LIST")
-			.expect("Récupération du module `LIST`");
-		module.send({ channels });
+		store.module_manager().get_unchecked("LIST")?.send({ channels });
+
+		router.push({
+			name: View.ChannelList,
+			params: {
+				servername: store.network_name(),
+			},
+		});
 	}
 
 	/**
@@ -366,9 +408,10 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 			return;
 		}
 
-		let module = store.module_manager().get("PART")
-			.expect("Récupération du module `PART`");
-		module.send({ channels: [room_id], message });
+		store.module_manager().get_unchecked("PART")?.send({
+			channels: [room_id],
+			message,
+		});
 	}
 
 	/**

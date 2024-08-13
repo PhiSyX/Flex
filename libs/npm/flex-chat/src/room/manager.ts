@@ -41,6 +41,7 @@ export class RoomManager
 	_last_room: Option<RoomID> = None();
 	_current_room: Option<RoomID> = None();
 	_rooms: Map<RoomID, Room> = new Map();
+	_on_change: (room_id: RoomID, room: Room) => void = (_) => {};
 
 	/**
 	 * Récupère la chambre courante.
@@ -286,6 +287,11 @@ export class RoomManager
 		this.current().unset_total_unread_events();
 		this.current().unset_total_unread_mentions();
 		this.current().unset_total_unread_messages();
+
+		this._on_change(
+			cast_to_room_id(room_id.toLowerCase()),
+			this.get(room_id).unwrap_unchecked(),
+		);
 	}
 
 	/**
@@ -296,6 +302,11 @@ export class RoomManager
 		let rooms = this.rooms().filter((room) => !room.is_closed());
 		let maybe_last_room_id = Option.from(rooms.at(-1));
 		maybe_last_room_id.then((room) => this.set_current(room.id()));
+	}
+
+	set_on_change(cb: this["_on_change"])
+	{
+		this._on_change = cb;
 	}
 
 	/**

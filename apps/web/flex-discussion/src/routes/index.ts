@@ -29,9 +29,21 @@ export const ROUTES: Array<RouteRecordRaw> = [
         component: () => import("~/views/chat/ChatLayout.vue"),
         children: [
             {
-                path: "/channels",
+                path: "/server/:servername/channels",
                 component: () => import("~/views/chat/channel/ChannelListView.vue"),
                 name: View.ChannelList,
+            },
+
+            {
+                path: "/server/:servername/channel/:channelname",
+                component: () => import("~/views/chat/channel/ChannelView.vue"),
+                name: View.Channel,
+            },
+
+            {
+                path: "/private/:id",
+                component: () => import("~/views/chat/private/PrivateView.vue"),
+                name: View.Private,
             },
 
             {
