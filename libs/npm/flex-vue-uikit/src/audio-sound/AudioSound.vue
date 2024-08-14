@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { shallowRef as shallow_ref, watchEffect as watch_effect } from "vue";
+import {
+	shallowRef as shallow_ref,
+	watchEffect as watch_effect
+} from "vue";
 
 // ---- //
 // Type //

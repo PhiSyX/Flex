@@ -3,7 +3,7 @@ import { computed } from "vue";
 
 import { AudioSound } from "@phisyx/flex-vue-uikit";
 
-import { use_chat_store } from "~/store";
+import { use_chat_store, use_settings_store } from "~/store";
 
 import ClientError from "~/components/error/ClientError.vue";
 import Navigation from "~/components/navigation/Navigation.vue";
@@ -24,6 +24,7 @@ import query_audio from "#/assets/audio/query.wav";
 // --------- //
 
 let chat_store = use_chat_store();
+let settings_store = use_settings_store();
 
 let audio_src = computed({
 	get() {
@@ -46,11 +47,38 @@ function reset_audio_src()
 
         <RouterView />
 
-		<AudioSound :src="connection_audio" :autoplay="audio_src === 'connection'" @ended="reset_audio_src" />
-		<AudioSound :src="invite_audio" :autoplay="audio_src === 'invite'" @ended="reset_audio_src" />
-		<AudioSound :src="mention_audio" :autoplay="audio_src === 'mention'" @ended="reset_audio_src" />
-		<AudioSound :src="notice_audio" :autoplay="audio_src === 'notice'" @ended="reset_audio_src" />
-		<AudioSound :src="query_audio" :autoplay="audio_src === 'query'" @ended="reset_audio_src" />
+		<template v-if="settings_store.notification.sounds.enabled">
+			<AudioSound 
+				v-if="settings_store.notification.sounds.connection"
+				:src="connection_audio"
+				:autoplay="audio_src === 'connection'"
+				@ended="reset_audio_src" 
+			/>
+			<AudioSound 
+				v-if="settings_store.notification.sounds.invites"
+				:src="invite_audio"
+				:autoplay="audio_src === 'invite'"
+				@ended="reset_audio_src" 
+			/>
+			<AudioSound 
+				v-if="settings_store.notification.sounds.mentions"
+				:src="mention_audio"
+				:autoplay="audio_src === 'mention'"
+				@ended="reset_audio_src" 
+			/>
+			<AudioSound 
+				v-if="settings_store.notification.sounds.notices"
+				:src="notice_audio"
+				:autoplay="audio_src === 'notice'"
+				@ended="reset_audio_src" 
+			/>
+			<AudioSound 
+				v-if="settings_store.notification.sounds.queries"
+				:src="query_audio"
+				:autoplay="audio_src === 'query'"
+				@ended="reset_audio_src" 
+			/>
+		</template>
 
 		<!-- Teleport -->
 
