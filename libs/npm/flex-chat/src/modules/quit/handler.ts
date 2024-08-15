@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { assert_channel_room } from "../../asserts/room";
 import type { ChannelRoom } from "../../channel/room";
+import type { PrivateRoom } from "../../private/room";
+
+import { assert_channel_room, assert_private_room } from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 
 // -------------- //
@@ -43,6 +45,9 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 			if (room.type === "channel") {
 				assert_channel_room(room);
 				this.handle_channel(room, data);
+			} else if (room.type === "private") {
+				assert_private_room(room);
+				this.handle_private(room, data);
 			}
 		}
 	}
@@ -56,5 +61,16 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 		channel.add_event("event:quit", channel.create_event(data, false));
 
 		channel.remove_member(data.origin.id);
+	}
+
+	handle_private(priv: PrivateRoom, data: GenericReply<"QUIT">)
+	{
+		console.log({priv, data});
+		if (!priv.participants.has(data.origin.id)) {
+			return;
+		}
+
+		priv.add_event("event:quit", priv.create_event(data, false));
+		priv.marks_as_readonly();
 	}
 }

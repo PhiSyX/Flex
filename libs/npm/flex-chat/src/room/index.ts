@@ -79,6 +79,11 @@ export class Room<R = RoomID, Type extends string = string>
 	 */
 	total_unread_messages = 0;
 
+	/**
+	 * Droit d'écriture.
+	 */
+	writable = true;
+
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -96,6 +101,11 @@ export class Room<R = RoomID, Type extends string = string>
 	get last_message(): Option<RoomMessage>
 	{
 		return Option.from(this.messages.at(-1));
+	}
+
+	get is_readonly(): boolean
+	{
+		return !this.writable;
 	}
 
 	get name(): R
@@ -324,6 +334,22 @@ export class Room<R = RoomID, Type extends string = string>
 	{
 		this.closed = false;
 		return this;
+	}
+
+	/**
+	 * Marque la chambre en lecture seule.
+	 */
+	marks_as_readonly()
+	{
+		this.writable = false;
+	}
+
+	/**
+	 * Marque la chambre en écriture.
+	 */
+	marks_as_writable()
+	{
+		this.writable = true;
 	}
 
 	/**

@@ -67,15 +67,14 @@ export class JoinHandler implements SocketEventInterface<"JOIN">
 		let user = this.store.user_manager().add(data.origin)
 			.with_channel(data.channel);
 
-		let maybe_channel = this.store.room_manager().get(data.channel);
-		if (maybe_channel.is_none()) {
-			return;
-		}
+		this.store.room_manager().get(data.channel).then((channel) => {
+			assert_channel_room(channel);
+			channel.add_member(user);
+			channel.add_event("event:join", channel.create_event(data, false));
+		});
 
-		let channel = maybe_channel.unwrap();
-		assert_channel_room(channel);
-		channel.add_member(user);
-
-		channel.add_event("event:join", channel.create_event(data, false));
+		this.store.room_manager().get(data.origin.id).then((priv) => {
+			priv.marks_as_writable();
+		});
 	}
 }
