@@ -27,7 +27,9 @@ let input_model = defineModel();
 <template>
 	<div class="form-group [ flex! py=1 ]" :class="{ error: error }">
 		<div class="[ flex align-ji:center gap=1 ]">
-			<LabelIcon :for="name" :icon="label" />
+			<slot name="icon">
+				<LabelIcon :for="name" :icon="label" />
+			</slot>
 			<input
 				:id="name"
 				v-model="input_model"

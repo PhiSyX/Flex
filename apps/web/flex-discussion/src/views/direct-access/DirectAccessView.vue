@@ -20,8 +20,10 @@ import {
 import {
 	ButtonIcon,
 	InputSwitch,
+	Match,
 	TextInput,
 	UiButton,
+	UiImage,
 } from "@phisyx/flex-vue-uikit";
 
 import { Option } from "@phisyx/flex-safety";
@@ -60,6 +62,14 @@ let errors = reactive({
 	alternative_nickname: null as string | null,
 });
 let loader = ref(false);
+
+let image_title_attribute = computed(() => {
+	return user_session.value.map((user) => {
+		// biome-ignore lint/style/useTemplate: non merci.
+		return `Bonjour, tu es actuellement connecté en tant ${user.name}.`
+			+ "\n\nClique sur cette image pour te déconnecter, si tu le souhaites."
+	}).unwrap_or("")
+})
 
 // --------- //
 // Lifecycle // -> Hooks
@@ -215,16 +225,31 @@ function disconnect_handler()
 					:placeholder="PLACEHOLDER_NICKNAME"
 					:title="VALIDATION_NICKNAME_INFO"
 				>
-					<button 
-						v-if="user_session.is_none() && !display_password_user_field"
-						type="button"
-						class="[ flex flex/center:full gap=1 f-size=12px ]"
-						title="Utiliser mon mot de passe (optionnel)"
-						@click="display_password_user_field = true"
-					>
-						<span>Mot de passe</span>
-						<icon-password />
-					</button>
+					<Match :maybe="user_session" >
+						<template #some="{ data: user }">
+							<UiImage
+								v-if="user.account?.avatar"
+								:src="user.account.avatar"
+								:title="image_title_attribute"
+								:prefixed="false"
+								size="3"
+								class="[ cursor:pointer ]"
+								@click="disconnect_handler"
+							/>
+						</template>
+						<template #none>
+							<button 
+								v-if="!display_password_user_field"
+								type="button"
+								class="[ flex flex/center:full gap=1 f-size=12px ]"
+								title="Utiliser mon mot de passe (optionnel)"
+								@click="display_password_user_field = true"
+							>
+								<span>Mot de passe</span>
+								<icon-password />
+							</button>
+						</template>
+					</Match>
 				</TextInput>
 
 				<TextInput

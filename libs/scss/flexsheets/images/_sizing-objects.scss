@@ -1,0 +1,11 @@
+@use "../mixins/class" as class;
+
+@mixin use-sizing-object($options...) {
+	$classes: (
+		"img:cover": (
+			object-fit: cover,
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

@@ -7,7 +7,9 @@
 	"license": "MPL-2.0",
 	"dependencies": {
 		"@phisyx/flex-asserts": "workspace:",
-		"vue": "^3.4.37"
+		"@phisyx/flex-safety": "workspace:",
+		"@phisyx/flex-vue-directives": "workspace:",
+		"vue": "catalog:"
 	},
 	"devDependencies": {
 		"@types/node": "^22.2.0",
@@ -15,7 +17,7 @@
 		"sass": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
-		"vue-tsc": "^2.0.29"
+		"vue-tsc": "catalog:"
 	},
 	"scripts": {
 		"build": "vue-tsc && vite build"

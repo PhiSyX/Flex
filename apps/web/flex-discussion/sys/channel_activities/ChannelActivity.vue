@@ -40,6 +40,7 @@ defineProps<Props>();
 				<Match :maybe="previous_message.member">
 					<template #some="{ data: member }">
 						<ChannelNick
+							:id="member.id"
 							:nickname="member.nickname"
 							:classes="member.class_name"
 							:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
@@ -70,6 +71,7 @@ defineProps<Props>();
 			<Match :maybe="activity.member">
 				<template #some="{ data: member }">
 					<ChannelNick
+						:id="member.id"
 						:nickname="member.nickname"
 						:classes="member.class_name"
 						:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"

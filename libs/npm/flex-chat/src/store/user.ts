@@ -10,6 +10,7 @@
 
 import type { Option } from "@phisyx/flex-safety";
 
+import type { User } from "../user";
 import type { UserSession } from "../user/session";
 
 import { None } from "@phisyx/flex-safety";
@@ -24,6 +25,12 @@ export interface ChatStoreUserExt
 
 	user(): this["_user"];
 }
+
+// -------- //
+// Constant //
+// -------- //
+
+const FETCH_OPTIONS: RequestInit = { credentials: "same-origin" };
 
 // -------------- //
 // Implémentation //
@@ -43,21 +50,27 @@ export class UserStore
 
 	_session: ChatStoreUserExt["_user"] = None();
 
-	set(user: UserSession)
-	{
-		this._session.replace(user);
-	}
+	users: Set<User> = new Set();
 
-	get(): this["_session"]
+	disconnect()
 	{
-		return this._session;
+		return fetch("/auth/logout", {...FETCH_OPTIONS, method: "DELETE" }).then(async (res) => {
+			if (res.ok) {
+				this._session = None();
+				return res;
+			}
+
+			if (res.status >= 400 && res.status < 600) {
+				return Promise.reject(await res.json());
+			}
+
+			return Promise.reject(res);
+		});
 	}
 
 	fetch(): Promise<UserSession>
 	{
-		let fetch_options: RequestInit = { credentials: "same-origin" };
-
-		return fetch("/api/v1/users/@me", fetch_options).then(async (res) => {
+		return fetch("/api/v1/users/@me", FETCH_OPTIONS).then(async (res) => {
 			if (res.ok) {
 				return res.json();
 			}
@@ -68,5 +81,13 @@ export class UserStore
 
 			return Promise.reject(res);
 		});
+	}
+	
+	session(user?: UserSession): this["_session"]
+	{
+		if (user) {
+			this._session.replace(user);
+		}
+		return this._session;
 	}
 }

@@ -24,6 +24,7 @@
 @import "./flexsheets/display/module";
 @import "./flexsheets/elements/module";
 @import "./flexsheets/flexbox/module";
+@import "./flexsheets/images/module";
 @import "./flexsheets/fonts/module";
 @import "./flexsheets/overflow/module";
 @import "./flexsheets/position/module";
@@ -81,6 +82,11 @@
 					className: $cls,
 				)
 			);
+			@include use-images(
+				(
+					className: $cls,
+				)
+			);
 			@include use-position(
 				(
 					className: $cls,
@@ -115,6 +121,7 @@
 			@include use-display($cls);
 			@include use-element($cls);
 			@include use-flexbox($cls);
+			@include use-images($cls);
 			@include use-fonts($cls);
 			@include use-overflow($cls);
 			@include use-position($cls);

@@ -121,6 +121,7 @@ const select_user_handler  = (member: ChannelMember) => emit("select-member", me
 					tag="li"
 					v-for="filtered_member in moderators_list"
 					:key="filtered_member.id"
+					:id="filtered_member.id"
 					:classes="filtered_member.class_name"
 					:hits="
 						'search_hits' in filtered_member
@@ -146,6 +147,7 @@ const select_user_handler  = (member: ChannelMember) => emit("select-member", me
 					tag="li"
 					v-for="filtered_member in vips_list"
 					:key="filtered_member.id"
+					:id="filtered_member.id"
 					:classes="filtered_member.class_name"
 					:hits="
 						'search_hits' in filtered_member
@@ -170,6 +172,7 @@ const select_user_handler  = (member: ChannelMember) => emit("select-member", me
 					tag="li"
 					v-for="filtered_member in users_list"
 					:key="filtered_member.id"
+					:id="filtered_member.id"
 					:classes="filtered_member.class_name"
 					:hits="
 						'search_hits' in filtered_member

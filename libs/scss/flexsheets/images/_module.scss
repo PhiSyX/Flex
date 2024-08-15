@@ -1,0 +1,5 @@
+@use "./sizing-objects" as so;
+
+@mixin use-images($options...) {
+	@include so.use-sizing-object($options...);
+}

@@ -3,6 +3,7 @@ import type { Room } from "@phisyx/flex-chat";
 
 import Match from "#/sys/match/Match.vue";
 import NavigationRoom from "#/sys/navigation_room/NavigationRoom.template.vue";
+import Avatar from "../avatar/Avatar.vue";
 
 // ---- //
 // Type //
@@ -123,8 +124,11 @@ function toggle_fold_handler()
 							v-if="room.type === 'channel'"
 							class="[ flex:shrink=0 ]"
 						/>
-						<icon-user
+						<Avatar
 							v-else-if="room.type === 'private'"
+							:key="room.id()"
+							:id="room.id()"
+							:alt="`Avatar du compte de ${room.name}.`"
 							class="[ flex:shrink=0 ]"
 						/>
 						<icon-notice

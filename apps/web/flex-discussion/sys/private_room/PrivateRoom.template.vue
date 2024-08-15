@@ -5,6 +5,7 @@ import { computed } from "vue";
 
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
+import Avatar from "#/sys/avatar/Avatar.vue";
 import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
@@ -48,6 +49,7 @@ let ignore_btn_title_attribute = computed(
 		? `Ne plus ignorer ${props.recipient.nickname}`
 		: `Ignorer ${props.recipient.nickname}`
 );
+let image_alt = computed(() => `Avatar du compte de ${props.recipient.nickname}.`);
 
 // ------- //
 // Handler //
@@ -71,7 +73,7 @@ function toggle_ignore_user_handler()
 	<div class="room/private [ flex ]" :data-room="recipient.nickname">
 		<Room
 			:completion-list="completionList"
-			:disable-input="isRecipientBlocked"
+			:disable-input="room.is_readonly || isRecipientBlocked"
 			:current-client-nickname="currentNickname"
 			:room="room"
 			@open-room="open_room_handler"
@@ -85,6 +87,11 @@ function toggle_ignore_user_handler()
 			</template>
 
 			<template #topic-action>
+				<Avatar
+					:key="recipient.id"
+					:id="recipient.id"
+					:alt="image_alt"
+				/>
 				<UiButton
 					v-if="!is_current_client_participant_himself"
 					icon="user-block"

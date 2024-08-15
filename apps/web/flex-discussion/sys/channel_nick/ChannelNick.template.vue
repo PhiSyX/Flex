@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import type { ChannelMemberSearchHits } from "@phisyx/flex-chat";
 
+import { computed } from "vue";
+
+import Avatar from "../avatar/Avatar.vue";
+
 // ---- //
 // Type //
 // ---- //
 
 interface Props
 {
+	id?: string;
 	classes?: string;
 	hits?: Array<ChannelMemberSearchHits>;
 	isCurrentClient?: boolean;
@@ -21,29 +26,38 @@ interface Props
 // Composant //
 // --------- //
 
-withDefaults(defineProps<Props>(), { tag: "bdo" });
+const props =withDefaults(defineProps<Props>(), { tag: "bdo" });
+
+let image_alt = computed(() => `Avatar du compte de ${props.nickname}.`);
 </script>
 
 <template>
-	<component :is="tag" :data-myself="isCurrentClient" :class="classes">
-		<span class="prefix">{{ prefix }}</span>
-		<span class="channel/nick:symbol">{{ symbol }}</span>
-		<bdo v-if="hits && hits.length > 0" :class="classes">
-			<template v-for="(substring, idx) of hits" :key="idx">
-				<mark
-					:key="idx + '!'"
-					v-if="!substring.is_symbol"
-					:class="[{ hit: substring.type === 'HIT' }]"
-				>
-					{{ substring.word }}
-				</mark>
-				<mark v-else :key="idx + '?'">{{ nickname }}</mark>
-			</template>
-		</bdo>
-		<bdo v-else :class="classes">
-			{{ nickname }}
-		</bdo>
-		<span class="suffix">{{ suffix }}</span>
+	<component
+		:is="tag"
+		:data-myself="isCurrentClient"
+		:class="classes" class="[ i-flex gap=1 align-i:center ]"
+	>
+		<Avatar v-if="id" :id="id" :alt="image_alt" />
+		<span>
+			<span class="prefix">{{ prefix }}</span>
+			<span class="channel/nick:symbol">{{ symbol }}</span>
+			<bdo v-if="hits && hits.length > 0" :class="classes">
+				<template v-for="(substring, idx) of hits" :key="idx">
+					<mark
+						:key="idx + '!'"
+						v-if="!substring.is_symbol"
+						:class="[{ hit: substring.type === 'HIT' }]"
+					>
+						{{ substring.word }}
+					</mark>
+					<mark v-else :key="idx + '?'">{{ nickname }}</mark>
+				</template>
+			</bdo>
+			<bdo v-else :class="classes">
+				{{ nickname }}
+			</bdo>
+			<span class="suffix">{{ suffix }}</span>
+		</span>
 	</component>
 </template>
 
