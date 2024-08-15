@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-
 import { Alert } from "@phisyx/flex-vue-uikit";
 
 import { use_chat_store } from "~/store";
@@ -12,12 +10,10 @@ import Match from "#/sys/match/Match.vue";
 // --------- //
 
 let chat_store = use_chat_store();
-
-let client_error = computed(() => chat_store.store.client_error);
 </script>
 
 <template>
-	<Match :maybe="client_error">
+	<Match :maybe="chat_store.client_error">
 		<template #some="{ data: error }">
 			<Teleport :to="`#${error.id}_teleport`">
 				<Alert type="error" :can-close="false" class="[ max-w=56 ]">

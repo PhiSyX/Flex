@@ -20,6 +20,11 @@ interface Props
 	isRecipientBlocked: boolean;
 	recipient: PrivateParticipant;
 	room: PrivateRoom;
+	textFormatBold?: boolean | null;
+	textFormatItalic?: boolean | null;
+	textFormatUnderline?: boolean | null;
+	textColorBackground?: number | null;
+	textColorForeground?: number | null;
 }
 
 interface Emits
@@ -76,6 +81,11 @@ function toggle_ignore_user_handler()
 			:disable-input="room.is_readonly || isRecipientBlocked"
 			:current-client-nickname="currentNickname"
 			:room="room"
+			:text-format-bold="textFormatBold"
+			:text-format-italic="textFormatItalic"
+			:text-format-underline="textFormatUnderline"
+			:text-color-background="textColorBackground"
+			:text-color-foreground="textColorForeground"
 			@open-room="open_room_handler"
 			@change-nickname="change_nickname_handler"
 			@send-message="send_message_handler"

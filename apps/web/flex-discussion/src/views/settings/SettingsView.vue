@@ -28,9 +28,9 @@ function save_and_exit_handler()
 {
 	settings_store.persist();
 
-	if (chat_store.store.is_connected()) {
-		if (chat_store.store.room_manager().active().id() === ServerCustomRoom.ID) {
-			router.replace({name: View.Chat });
+	if (chat_store.is_connected()) {
+		if (chat_store.room_manager().active().id() === ServerCustomRoom.ID) {
+			router.replace({ name: View.Chat });
 			return;
 		}
 	}

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { ServerCustomRoom } from "@phisyx/flex-chat";
 
-import { computed } from "vue";
-
 import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
@@ -27,12 +25,6 @@ let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
 
 const props = defineProps<Props>();
-
-// Le client courant.
-let current_client = computed(() => chat_store.store.client());
-
-// Le pseudo du client courant.
-let current_client_nickname = computed(() => current_client.value.nickname);
 
 // L'URL du forum.
 let forum_url = import.meta.env.VITE_APP_FORUM_URL || "#";
@@ -73,7 +65,7 @@ function send_message_handler(message: string)
 		v-if="room.is_active() && !room.is_closed()"
 		:forum-url="forum_url"
 		:vademecum-url="vademecum_url"
-		:current-nickname="current_client_nickname"
+		:current-nickname="chat_store.current_client_nickname"
 		:room="room"
 		class="[ flex:full ]"
 		@change-nickname="open_change_nickname_dialog_handler"

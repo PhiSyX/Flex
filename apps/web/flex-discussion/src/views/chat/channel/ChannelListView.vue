@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted as on_mounted, shallowRef as shallow_ref } from "vue";
+import { onMounted as on_mounted, shallowRef as shallow_ref } from "vue";
 import { useRoute as use_route } from "vue-router";
 
 import { ChannelJoinDialog } from "@phisyx/flex-chat";
@@ -18,12 +18,10 @@ let route = use_route();
 let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
 
-let channels = computed(() => chat_store.store.get_channel_list());
 let servername = shallow_ref(None().as<string>());
 
 on_mounted(() => {
-	servername.value = chat_store.store
-		.room_manager()
+	servername.value = chat_store.room_manager()
 		.get(route.params.servername as RoomID)
 		.map((r) => r.name);
 });
@@ -48,7 +46,7 @@ function open_join_channel_dialog_handler(event: Event)
 	<Match :maybe="servername">
 		<template #some="{ data: servername }">
 			<ChannelList
-				:channels="channels"
+				:channels="chat_store.channels_list_arr"
 				:servername="servername"
 				class="[ flex:full ]"
 				@join-channel="join_channel_handler"

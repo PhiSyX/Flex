@@ -22,7 +22,7 @@ let chat_store = use_chat_store();
 let room = shallow_ref(None().as<ChannelRoom>());
 
 on_mounted(() => {
-	room.value = chat_store.store.room_manager()
+	room.value = chat_store.room_manager()
 		.get(route.params.channelname as ChannelID || "")
 		.as<ChannelRoom>();
 });

@@ -47,18 +47,13 @@ let settings_store = use_settings_store();
 
 const props = defineProps<Props>();
 
-// Le client courant.
-let current_client = computed(() => chat_store.store.client());
-
-// Le pseudo du client courant.
-let current_client_nickname = computed(() => current_client.value.nickname);
-
 // Le client courant, qui est membre du salon.
 //
 // NOTE: l'utilisateur courant PEUT être sanctionné à tout moment, c'est
-//       pourquoi l'on évitera de .unwrap() le retour de la fonction `getUser`.
+//       pourquoi l'on évitera de .unwrap() le retour de la fonction
+//       `get_member`.
 let current_client_member = computed(() =>
-	props.room.get_member(current_client.value.id),
+	props.room.get_member(chat_store.current_client.id),
 );
 
 // Membre du salon actuellement sélectionné par le client courant.
@@ -132,16 +127,8 @@ let channel_activities = computed(() => {
 	};
 });
 
-// Liste de la complétion pour la boite de saisie, il y contient:
-//
-// 1. Les salons (TODO).
-// 2. Les membres du salon.
-// 3. Toutes les commandes.
-let completion_list = computed(() => [
-	props.room.name,
-	...props.room.members.all.map((user) => user.nickname),
-	...chat_store.all_commands(),
-]);
+// Liste de la complétion pour la boite de saisie.
+let completion_list = computed(() => chat_store.all_commands(props.room));
 
 /// Affichage de la liste des utilisateurs
 let userlist_display = computed(
@@ -349,7 +336,7 @@ function toggle_select_channel_member_handler(origin: Origin)
 		:activities="channel_activities"
 		:completion-list="completion_list"
 		:current-client-member="current_client_member"
-		:current-nickname="current_client_nickname"
+		:current-nickname="chat_store.current_client_nickname"
 		:room="room"
 		:selected-member="selected_member"
 		:text-format-bold="format_bold"

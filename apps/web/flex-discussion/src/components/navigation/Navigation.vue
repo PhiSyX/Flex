@@ -18,11 +18,13 @@ let chat_store = use_chat_store();
 let settings_store = use_settings_store();
 
 let navigation_bar_position = computed(
-	() => settings_store.layout.navigation_bar_position,
+	() => settings_store.layout.navigation_bar_position === "left"
+		? "ltl" 
+		: "rtl"
 );
 
 let servers = computed(() => {
-	let network = chat_store.store.network();
+	let network = chat_store.network();
 	return [
 		{
 			active: network.is_active(),
@@ -30,7 +32,7 @@ let servers = computed(() => {
 			folded: false,
 			id: network.id(),
 			name: network.name,
-			rooms: chat_store.store.room_manager().rooms(),
+			rooms: chat_store.rooms,
 		},
 	];
 });
@@ -67,9 +69,9 @@ function open_channel_list_handler()
 		@close-room="close_room_handler"
 		@open-channel-list="open_channel_list_handler"
 		@open-settings-view="open_settings_view_handler"
-		:dir="navigation_bar_position === 'left' ? 'ltl' : 'rtl'"
+		:dir="navigation_bar_position"
 		:style="{
-			'--navigation-area-order': navigation_bar_position === 'right' && '1'
+			'--navigation-area-order': navigation_bar_position === 'rtl' && '1'
 		}"
 	/>
 </template>

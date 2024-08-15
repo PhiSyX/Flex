@@ -5,7 +5,7 @@ import { computed } from "vue";
 
 import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
-import { use_chat_store, use_overlayer_store } from "~/store";
+import { use_chat_store, use_overlayer_store, use_settings_store } from "~/store";
 
 import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
 
@@ -25,17 +25,13 @@ interface Props
 
 let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
+let settings_store = use_settings_store();
 
 const props = defineProps<Props>();
 
-// Client courant.
-let current_client = computed(() => chat_store.store.client());
-// Pseudo du client courant.
-let current_client_nickname = computed(() => current_client.value.nickname);
-
 // Client courant, qui est un participant de la chambre privée.
 let current_client_user = computed(() =>
-	props.room.get_participant(current_client.value.id).unwrap(),
+	props.room.get_participant(chat_store.current_client.id).unwrap(),
 );
 
 // Participant de la chambre.
@@ -49,15 +45,15 @@ let is_recipient_blocked = computed(() =>
 	chat_store.check_user_is_blocked(recipient.value),
 );
 
-// La liste de la complétion de la boite de saisie, il y contient:
-//
-// 1. Les participants.
-// 2. Toutes les commandes.
-let completion_list = computed(() => [
-	current_client_user.value.nickname,
-	recipient.value.nickname,
-	...chat_store.all_commands(),
-]);
+// La liste de la complétion de la boite de saisie.
+let completion_list = computed(() => chat_store.all_commands(props.room));
+
+let format_bold = computed(() => settings_store.personalization.formats.bold);
+let format_italic = computed(() => settings_store.personalization.formats.italic);
+let format_underline = computed(() => settings_store.personalization.formats.underline);
+
+let color_background = computed(() => settings_store.personalization.colors.background);
+let color_foreground = computed(() => settings_store.personalization.colors.foreground);
 
 // ------- //
 // Handler //
@@ -113,10 +109,15 @@ const send_silence_user_command_handler = (apply_state: "+" | "-") => (
 	<PrivateRoomComponent
 		:completion-list="completion_list"
 		:current-client-user="current_client_user"
-		:current-nickname="current_client_nickname"
+		:current-nickname="chat_store.current_client_nickname"
 		:is-recipient-blocked="is_recipient_blocked"
 		:recipient="recipient"
 		:room="room"
+		:text-format-bold="format_bold"
+		:text-format-italic="format_italic"
+		:text-format-underline="format_underline"
+		:text-color-background="color_background"
+		:text-color-foreground="color_foreground"
 		@change-nickname="open_change_nickname_dialog_handler"
 		@close="close_private_handler"
 		@open-room="open_room_handler"

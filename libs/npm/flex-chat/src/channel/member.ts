@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { is_channel_member } from "../asserts/room";
 import { User } from "../user";
 import { ChannelAccessLevel, ChannelAccessLevelFlag } from "./access_level";
 
@@ -54,6 +55,16 @@ export class ChannelMember extends User
 	is_channel_operator(): boolean
 	{
 		return this.ge_access_level(ChannelAccessLevelFlag.HalfOperator);
+	}
+
+	// @ts-expect-error ;-)
+	override partial_eq(user: this): boolean
+	{
+		if (is_channel_member(user)) {
+			return user.nickname.toLowerCase() === this.nickname.toLowerCase();
+		}
+
+		return super.partial_eq(user);
 	}
 
 	/**

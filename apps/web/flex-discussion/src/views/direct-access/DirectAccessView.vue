@@ -119,7 +119,7 @@ function connect_submit()
 
 		loader.value = true;
 
-		await chat_store.store.load_all_modules();
+		await chat_store.load_all_modules();
 
 		chat_store.connect(login_form_data);
 
@@ -150,7 +150,7 @@ function reply_welcome_handler()
 
 	if (login_form_data.password_user) {
 		chat_store.send_message(
-			chat_store.store.room_manager().active().id(),
+			chat_store.room_manager().active().id(),
 			`/AUTH IDENTIFY ${login_form_data.nickname} ${login_form_data.password_user}`
 		);
 	}

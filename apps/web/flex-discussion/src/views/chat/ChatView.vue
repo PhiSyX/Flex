@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, shallowRef as shallow_ref } from "vue";
+import { shallowRef as shallow_ref } from "vue";
 
 import {
 	MentionsCustomRoom,
@@ -19,8 +19,6 @@ import NoticesCustomRoomComponent from "#/sys/custom_room_notices/CustomRoomNoti
 // --------- //
 
 let chat_store = use_chat_store();
-
-let rooms = computed(() => chat_store.store.room_manager().rooms());
 
 const custom_rooms_components = shallow_ref({
 	[NoticesCustomRoom.ID]: NoticesCustomRoomComponent,
@@ -46,7 +44,7 @@ function close_room_handler(name: RoomID)
 
 <template>
 	<div class="room [ flex:full flex ]">
-		<template v-for="room in rooms" :key="room.id()">
+		<template v-for="room in chat_store.rooms" :key="room.id()">
 			<template v-if="custom_rooms_components[room.id()]">
 				<KeepAlive :key="room.type + '/' + room.id()">
 					<component
