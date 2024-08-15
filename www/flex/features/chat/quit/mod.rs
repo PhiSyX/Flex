@@ -15,8 +15,8 @@ flex_kernel::import! {
 		pub mod quit_handler use *;
 	};
 
-	mod forms use {
-		pub(super) mod quit_form use *;
+	pub(crate) mod forms use {
+		pub(crate) mod quit_form use *;
 	};
 
 	mod responses use {

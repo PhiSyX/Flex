@@ -57,5 +57,10 @@ impl QuitApplicationInterface for ChatApplication
 
 		session_client.channels.clear();
 		session_client.disconnect();
+		drop(session_client);
+
+		std::thread::sleep(std::time::Duration::from_millis(60));
+		
+		self.remove_client_by_id(client_socket.cid());
 	}
 }

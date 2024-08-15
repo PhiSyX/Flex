@@ -38,9 +38,13 @@ impl QuitHandler
 		Data(data): Data<QuitCommandFormData>,
 	)
 	{
-		let _client_socket = app.current_client(&socket);
-
-		println!("DATA: {data:?}");
+		let client_socket = app.current_client(&socket);
+		app.disconnect_client(
+			client_socket, 
+			data.message.as_deref().unwrap_or("Client Quit"),
+		);
+		socket.extensions.remove::<Client>();
+		drop(socket);
 	}
 }
 
