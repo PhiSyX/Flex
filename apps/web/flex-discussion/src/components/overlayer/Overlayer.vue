@@ -3,7 +3,8 @@ import type { CSSProperties, HTMLAttributes } from "vue";
 
 import { shallowRef as shallow_ref, watchEffect as watch_effect } from "vue";
 
-import { vTrap } from "~/directives";
+import { vTrap } from "@phisyx/flex-vue-directives";
+
 import { use_overlayer_store } from "~/store";
 
 import { use_overlayer } from "./Overlayer.hooks";

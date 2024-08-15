@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
+import { vModelSelect } from "@phisyx/flex-vue-directives";
 import { AudioSound } from "@phisyx/flex-vue-uikit";
-
-import { vModelSelect } from "~/directives";
 
 import connection_audio from "#/assets/audio/connection.mp3";
 import invite_audio from "#/assets/audio/invite.mp3";

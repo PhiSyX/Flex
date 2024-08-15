@@ -3,9 +3,8 @@ import type { Room } from "@phisyx/flex-chat";
 
 import { ref } from "vue";
 
+import { vResize } from "@phisyx/flex-vue-directives";
 import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
-
-import { vResize } from "~/directives";
 
 import NavigationServer from "#/sys/navigation_server/NavigationServer.template.vue";
 

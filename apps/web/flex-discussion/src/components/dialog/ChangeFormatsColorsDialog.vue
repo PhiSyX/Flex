@@ -2,8 +2,8 @@
 import { computed } from "vue";
 
 import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat";
+import { vMutation } from "@phisyx/flex-vue-directives";
 
-import { vMutation } from "~/directives";
 import { use_overlayer_store, use_settings_store } from "~/store";
 
 import ChangeFormatsColorsDialogComponent from "#/sys/dialog_change_formats_colors/ChangeFormatsColorsDialog.template.vue";

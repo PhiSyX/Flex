@@ -20,11 +20,12 @@
 		"@phisyx/flex-date": "workspace:",
 		"@phisyx/flex-safety": "workspace:",
 		"@phisyx/flex-search": "workspace:",
+		"@phisyx/flex-vue-directives": "workspace:",
 		"@phisyx/flex-vue-uikit": "workspace:",
 		"focus-trap": "^7.5.4",
 		"pinia": "^2.2.1",
 		"socket.io-client": "^4.7.5",
-		"vue": "^3.4.37",
+		"vue": "catalog:",
 		"vue-router": "^4.4.3"
 	},
 	"devDependencies": {
@@ -37,7 +38,7 @@
 		"sass": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
-		"vue-tsc": "^2.0.29",
+		"vue-tsc": "catalog:",
 		"yaml": "^2.5.0"
 	}
 }

@@ -1,0 +1,24 @@
+{
+	"name": "@phisyx/flex-vue-directives",
+	"version": "0.1.0",
+	"description": "UI Kit",
+	"author": "Mike 'PhiSyX' S.",
+	"type": "module",
+	"license": "MPL-2.0",
+	"dependencies": {
+		"@phisyx/flex-asserts": "workspace:",
+		"@phisyx/flex-safety": "workspace:",
+		"focus-trap": "^7.5.4",
+		"vue": "catalog:"
+	},
+	"devDependencies": {
+		"@types/node": "^22.2.0",
+		"@vitejs/plugin-vue": "^5.1.2",
+		"sass": "catalog:",
+		"typescript": "catalog:",
+		"vue-tsc": "catalog:"
+	},
+	"scripts": {
+		"build": "vue-tsc && vite build"
+	}
+}

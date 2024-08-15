@@ -8,12 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { default as vMutationDirective } from "./mutation";
-import { default as vResizeDirective } from "./resize";
-import { default as vModelSelectDirective } from "./select_multiple_model_object";
-import { default as vTrapDirective } from "./trap";
-
-export { vMutationDirective as vMutation };
-export { vResizeDirective as vResize };
-export { vModelSelectDirective as vModelSelect };
-export { vTrapDirective as vTrap };
+export { default as vIntersection } from "./src/intersection";
+export { default as vMutation } from "./src/mutation";
+export { default as vResize } from "./src/resize";
+export { default as vModelSelect } from "./src/select_multiple_model_object";
+export { default as vTrap } from "./src/trap";

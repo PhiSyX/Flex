@@ -4,9 +4,9 @@ import type { ChannelMembers } from "@phisyx/flex-chat";
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
 import {
-    UserlistModeView,
-    use_filter_view,
-    use_inputfilter_userlist,
+	UserlistModeView,
+	use_filter_view,
+	use_inputfilter_userlist,
 } from "./ChannelUserlist.hooks";
 
 // ---- //
