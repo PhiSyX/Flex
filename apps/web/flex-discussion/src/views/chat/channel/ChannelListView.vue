@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted as on_mounted, shallowRef as shallow_ref } from "vue";
 import { useRoute as use_route } from "vue-router";
 
 import { ChannelJoinDialog } from "@phisyx/flex-chat";
+import { None } from "@phisyx/flex-safety";
+import { Match } from "@phisyx/flex-vue-uikit";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
@@ -16,12 +18,14 @@ let route = use_route();
 let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
 
-const channels = computed(() => chat_store.store.get_channel_list());
-const servername = computed(() => {
-	let server = chat_store.store.room_manager()
+let channels = computed(() => chat_store.store.get_channel_list());
+let servername = shallow_ref(None().as<string>());
+
+on_mounted(() => {
+	servername.value = chat_store.store
+		.room_manager()
 		.get(route.params.servername as RoomID)
-		.unwrap();
-	return server.name;
+		.map((r) => r.name);
 });
 
 // ------- //
@@ -41,11 +45,15 @@ function open_join_channel_dialog_handler(event: Event)
 </script>
 
 <template>
-	<ChannelList
-		:channels="channels"
-		:servername="servername"
-		class="[ flex:full ]"
-		@join-channel="join_channel_handler"
-		@create-channel-dialog="open_join_channel_dialog_handler"
-	/>
+	<Match :maybe="servername">
+		<template #some="{ data: servername }">
+			<ChannelList
+				:channels="channels"
+				:servername="servername"
+				class="[ flex:full ]"
+				@join-channel="join_channel_handler"
+				@create-channel-dialog="open_join_channel_dialog_handler"
+			/>
+		</template>
+	</Match>
 </template>

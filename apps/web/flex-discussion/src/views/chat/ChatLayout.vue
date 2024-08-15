@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useRoute as use_route } from "vue-router";
 
 import { AudioSound } from "@phisyx/flex-vue-uikit";
 
@@ -35,6 +36,12 @@ let audio_src = computed({
 	}
 });
 
+let route = use_route();
+
+// ------- //
+// Handler //
+// ------- //
+
 function reset_audio_src()
 {
 	audio_src.value = null;
@@ -45,7 +52,11 @@ function reset_audio_src()
     <main id="chat-view" class="[ flex h:full ]">
 		<Navigation />
 
-        <RouterView />
+		<RouterView v-slot="{ Component }">
+			<KeepAlive>
+				<component :is="Component" :key="route.fullPath" />
+			</KeepAlive>
+		</RouterView>
 
 		<template v-if="settings_store.notification.sounds.enabled">
 			<AudioSound 

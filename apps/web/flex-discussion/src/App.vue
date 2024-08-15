@@ -14,7 +14,12 @@ use_check_auth();
 
 <template>
 	<div id="app">
-		<RouterView />
+		<RouterView v-slot="{ Component }">
+			<KeepAlive>
+				<component :is="Component" />
+			</KeepAlive>
+		</RouterView>
+
 		<Overlayer />
 	</div>
 </template>

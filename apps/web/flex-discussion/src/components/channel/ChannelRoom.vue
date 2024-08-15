@@ -8,7 +8,6 @@ import type {
 	ChannelRoom,
 	Room,
 	RoomMessage,
-	User,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
@@ -74,14 +73,7 @@ let channel_activities = computed(() => {
 		activity: Optional<ChannelActivityRef, "channel_id">,
 	): ChannelActivity
 	{
-		let member = props.room
-			.get_member_by_nickname(activity.nickname)
-			.as<ChannelMember | User>()
-			.or_else(() => {
-				return chat_store.store
-					.user_manager()
-					.find_by_nickname(activity.nickname);
-			});
+		let member = props.room.get_member_by_nickname(activity.nickname);
 
 		// @ts-expect-error : type à corriger.
 		let message: Option<RoomMessage<ChannelID, { text: string }>> =

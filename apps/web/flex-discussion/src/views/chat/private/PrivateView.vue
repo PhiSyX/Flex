@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { PrivateRoom } from "@phisyx/flex-chat";
 
-import { computed } from "vue";
+import { onMounted as on_mounted, shallowRef as shallow_ref } from "vue";
 import { useRoute as use_route } from "vue-router";
+
+import { None } from "@phisyx/flex-safety";
 
 import { use_chat_store } from "~/store";
 
@@ -17,12 +19,14 @@ let route = use_route();
 
 let chat_store = use_chat_store();
 
-let room = computed(() =>
-	chat_store.store
+let room = shallow_ref(None().as<PrivateRoom>());
+
+on_mounted(() => {
+	room.value = chat_store.store
 		.room_manager()
 		.get(route.params.id as UserID)
 		.as<PrivateRoom>()
-);
+});
 </script>
 
 <template>
