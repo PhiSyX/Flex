@@ -8,26 +8,67 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod postgresql;
+use std::sync::Arc;
+
+use sqlx::types::Uuid;
+
+use crate::features::avatars::entities::AvatarEntity;
+use crate::features::avatars::repositories::AvatarRepository;
+
+// --------- //
+// Interface //
+// --------- //
+
+#[flex_web_framework::async_trait]
+pub trait AvatarService
+{
+	async fn get(
+		&self,
+		user_id: Uuid,
+	) -> Result<AvatarEntity, AvatarErrorService>;
+
+	fn shared(self) -> Arc<Self>
+	where
+		Self: Sized,
+	{
+		Arc::new(self)
+	}
+}
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Clone)]
-pub struct SQLQueryBuilder<Database>
+pub struct AvatarServiceImpl
 {
-	database: Database,
+	pub avatar_repository: Arc<dyn AvatarRepository>,
+}
+
+// ----------- //
+// Énumération //
+// ----------- //
+
+#[derive(Debug)]
+#[derive(thiserror::Error)]
+#[error("\n\t{}: {0}", std::any::type_name::<Self>())]
+pub enum AvatarErrorService
+{
+	SQLx(#[from] sqlx::Error),
 }
 
 // -------------- //
-// Implémentation //
+// Implémentation // -> Interface
 // -------------- //
 
-impl<D> SQLQueryBuilder<D>
-{
-	pub fn new(database: D) -> Self
+#[flex_web_framework::async_trait]
+impl AvatarService for AvatarServiceImpl
+{	async fn get(
+		&self,
+		id: Uuid,
+	) -> Result<AvatarEntity, AvatarErrorService>
 	{
-		Self { database }
+		Ok(self.avatar_repository.get(id).await?)
 	}
 }
+
+unsafe impl Sync for AvatarServiceImpl {}

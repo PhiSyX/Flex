@@ -8,26 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod postgresql;
+use flex_web_framework::Feature;
+
+use super::routes::api::AvtarsApi_V1_Router;
+use crate::FlexState;
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Clone)]
-pub struct SQLQueryBuilder<Database>
-{
-	database: Database,
-}
+pub struct AvatarsApplication;
 
 // -------------- //
-// Implémentation //
+// Implémentation // -> Interface
 // -------------- //
 
-impl<D> SQLQueryBuilder<D>
+impl Feature for AvatarsApplication
 {
-	pub fn new(database: D) -> Self
-	{
-		Self { database }
-	}
+	type Config = ();
+	type Router = AvtarsApi_V1_Router;
+	type State = FlexState;
+
+	const NAME: &'static str = "AvatarsApplication";
 }

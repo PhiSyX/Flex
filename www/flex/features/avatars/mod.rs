@@ -8,26 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod postgresql;
+flex_kernel::import! {
+	pub mod feature use *;
 
-// --------- //
-// Structure //
-// --------- //
+	mod controllers {
+		pub mod api {
+			pub mod v1 {
+				pub mod avatars_controller use *;
+			}
+		}
+	};
 
-#[derive(Clone)]
-pub struct SQLQueryBuilder<Database>
-{
-	database: Database,
-}
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod entities {
+		pub mod avatar_entity use *;
+	};
 
-// -------------- //
-// Implémentation //
-// -------------- //
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod repositories {
+		pub mod avatar_repository use *;
+	};
 
-impl<D> SQLQueryBuilder<D>
-{
-	pub fn new(database: D) -> Self
-	{
-		Self { database }
-	}
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod services {
+		pub mod avatar_service use *;
+	};
+
+	mod routes {
+		pub mod api;
+	};
 }

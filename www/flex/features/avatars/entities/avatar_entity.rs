@@ -8,26 +8,38 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod postgresql;
+use flex_web_framework::types::{time, uuid};
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Clone)]
-pub struct SQLQueryBuilder<Database>
+#[derive(Debug)]
+#[derive(serde::Deserialize)]
+#[derive(sqlx::FromRow)]
+pub struct AvatarEntity
 {
-	database: Database,
+	/// ID de l'avatar.
+	pub id: uuid::Uuid,
+	/// URL ou chemin absolu de l'avatar (par rapport au projet).
+	pub path: String,
+	/// Affiché l'avatar uniquement pour...
+	pub display_for: AvatarDisplayFor,
+	/// Date de création de l'avatar.
+	pub created_at: time::DateTime<time::Utc>,
 }
 
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl<D> SQLQueryBuilder<D>
+#[derive(Debug)]
+#[derive(Copy, Clone)]
+#[derive(Default)]
+#[derive(PartialEq, Eq)]
+#[derive(serde::Deserialize)]
+#[derive(sqlx::Type)]
+#[sqlx(type_name = "avatars_display", rename_all = "lowercase")]
+pub enum AvatarDisplayFor
 {
-	pub fn new(database: D) -> Self
-	{
-		Self { database }
-	}
+	#[serde(rename = "member_only")]
+	MemberOnly,
+	#[default]
+	Public,
 }

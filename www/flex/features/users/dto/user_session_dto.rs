@@ -10,12 +10,14 @@
 
 use flex_web_framework::types::uuid;
 
-use crate::features::users::entities::{UserEntity, UserRole};
+use crate::features::accounts::dto::UserAccountDTO;
+use crate::features::users::entities::UserRole;
 
 // --------- //
 // Structure //
 // --------- //
 
+#[derive(Debug)]
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct UserSessionDTO
 {
@@ -23,21 +25,6 @@ pub struct UserSessionDTO
 	pub name: String,
 	pub email: String,
 	pub role: UserRole,
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl From<UserEntity> for UserSessionDTO
-{
-	fn from(user_entity: UserEntity) -> Self
-	{
-		Self {
-			id: user_entity.id,
-			name: user_entity.name,
-			email: user_entity.email,
-			role: user_entity.role,
-		}
-	}
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub account: Option<UserAccountDTO>,
 }

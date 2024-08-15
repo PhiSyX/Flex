@@ -116,6 +116,16 @@ impl ChatApplication
 	{
 		self.clients.get_mut(client_id)
 	}
+
+	
+	/// Supprime un client à partir de son ID.
+	pub fn remove_client_by_id(
+		&self,
+		client_id: &ClientID,
+	) -> Option<(ClientID, Client)>
+	{
+		self.clients.remove(client_id)
+	}
 }
 
 // -------------- //
@@ -185,8 +195,7 @@ impl ClientsSessionInterface for ClientsSession
 			.find(|rm| rm.key() == client_id && rm.value().is_registered())
 	}
 
-	/// Enregistre un client.
-	fn register(&self, client: &Client)
+	fn register(&self, client: &Self::Client)
 	{
 		let mut session_client = self.clients.get_mut(client.cid()).unwrap();
 		if let Some(sid) = client.maybe_sid() {
@@ -196,8 +205,14 @@ impl ClientsSessionInterface for ClientsSession
 		session_client.set_registered();
 	}
 
-	/// Mise à niveau d'un client.
-	fn upgrade(&self, client: &Client)
+	fn remove(&self, client_id: &<Self::Client as ClientInterface>::ClientID) -> Option<
+		(<Self::Client as ClientInterface>::ClientID, Self::Client)
+	> 
+	{
+		self.clients.remove(client_id)
+	}
+
+	fn upgrade(&self, client: &Self::Client)
 	{
 		self.clients.remove(client.cid());
 		self.clients.insert(*client.cid(), client.clone());

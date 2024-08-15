@@ -14,8 +14,9 @@ use flex_crypto::Hasher;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::types::{email, secret};
 
+use crate::features::accounts::repositories::AccountRepository;
 use crate::features::auth::forms::{Identifier, RegistrationFormData};
-use crate::features::users::dto::UserNewActionDTO;
+use crate::features::users::dto::{UserNewActionDTO, UserSessionDTO};
 use crate::features::users::entities::UserEntity;
 use crate::features::users::repositories::UserRepository;
 
@@ -31,7 +32,7 @@ pub trait AuthenticationService
 		&self,
 		identifier: &Identifier,
 		password: &str,
-	) -> Result<UserEntity, AuthErrorService>;
+	) -> Result<UserSessionDTO, AuthErrorService>;
 
 	/// Tentative d'inscription d'un nouvel utilisateur.
 	async fn signup(
@@ -53,6 +54,7 @@ pub trait AuthenticationService
 
 pub struct AuthService
 {
+	pub account_repository: Arc<dyn AccountRepository>,
 	pub user_repository: Arc<dyn UserRepository>,
 	pub password_service: Argon2Password,
 }
@@ -83,10 +85,10 @@ impl AuthenticationService for AuthService
 		&self,
 		identifier: &Identifier,
 		password: &str,
-	) -> Result<UserEntity, AuthErrorService>
+	) -> Result<UserSessionDTO, AuthErrorService>
 	{
 		// FIXME: passer un DTO en paramètre générique plutôt que de retourner
-		//        directement l'entité `UserEntity`. Actuellement, le système de
+		//        directement `UserSessionDTO`. Actuellement, le système de
 		//        trait async + générique ne fonctionne pas correctement dans
 		//        mon cas.
 		let maybe_user = match identifier {
@@ -109,7 +111,17 @@ impl AuthenticationService for AuthService
 			return Err(AuthErrorService::InvalidPassword);
 		}
 
-		Ok(user)
+		let account = self.account_repository.find_by_user_id(user.id).await;
+
+		let session = UserSessionDTO {
+			email: user.email,
+			name: user.name,
+			id: user.id,
+			role: user.role,
+			account: account.ok(),
+		};
+
+		Ok(session)
 	}
 
 	async fn signup(

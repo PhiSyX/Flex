@@ -28,6 +28,10 @@ use flex_web_framework::{
 	SessionFlashExtension,
 };
 
+use crate::features::accounts::repositories::{
+	AccountRepository,
+	AccountRepositoryPostgreSQL,
+};
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::{AuthService, AuthenticationService};
@@ -91,7 +95,7 @@ impl LoginController
 		};
 
 		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
-		_ = ctx.session.insert(USER_SESSION, UserSessionDTO::from(user)).await;
+		_ = ctx.session.insert(USER_SESSION, user).await;
 
 		if ctx.request.accept().json() {
 			let user_session = ctx.session.get::<UserSessionDTO>(
@@ -119,8 +123,15 @@ impl HttpContextInterface for LoginController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
-		let user_repository = UserRepositoryPostgreSQL { query_builder };
+		let account_repository = AccountRepositoryPostgreSQL {
+			query_builder: query_builder.clone(),
+		};
+		let user_repository = UserRepositoryPostgreSQL {
+			query_builder,
+		};
+
 		let auth_service = AuthService {
+			account_repository: account_repository.shared(),
 			user_repository: user_repository.shared(),
 			password_service: password_service.clone(),
 		};

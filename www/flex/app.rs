@@ -20,12 +20,15 @@ pub mod constant;
 
 mod features
 {
+	mod accounts;
 	mod auth;
+	mod avatars;
 	mod chat;
 	mod generate;
 	mod users;
 
 	pub use self::auth::AuthApplication;
+	pub use self::avatars::AvatarsApplication;
 	pub use self::chat::ChatApplication;
 	pub use self::generate::GenerateApplication;
 	pub use self::users::UsersApplication;

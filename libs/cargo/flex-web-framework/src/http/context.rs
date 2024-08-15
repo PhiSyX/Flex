@@ -79,6 +79,11 @@ pub enum HttpContextError<T>
 	Infaillible(#[from] std::convert::Infallible),
 	#[error("{1}")]
 	Err(http::StatusCode, String),
+	Database
+	{
+		request: HttpRequest<T>,
+		sqlx: sqlx::Error,
+	},
 	MissingExtension,
 	Session(#[from] tower_sessions::session::Error),
 	Unauthorized
@@ -245,6 +250,10 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 		let status_code = match self {
 			| Self::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
 			| Self::Err(status, _) => status,
+			| Self::Database { ref sqlx, ..} => match sqlx {
+				| sqlx::Error::RowNotFound => StatusCode::NOT_FOUND,
+				| _ => StatusCode::INTERNAL_SERVER_ERROR,
+			}
 			| _ => StatusCode::INTERNAL_SERVER_ERROR,
 		};
 
@@ -260,10 +269,14 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 						msg.to_owned()
 					}
 				} else {
-					String::from("Un problème est survenue sur le serveur")
+					String::from("Un problème est survenue sur le serveur (ID: n°5000)")
 				}
 			}
-			| _ => String::from("Un problème est survenue sur le serveur"),
+			| Self::Database { ref sqlx, ..} => match sqlx {
+				| sqlx::Error::RowNotFound => String::from("Not Found"),
+				| _ => String::from("Un problème est survenue sur le serveur (ID: n°54321)"),
+			}
+			| _ => String::from("Un problème est survenue sur le serveur  (ID: n°5001)"),
 		};
 
 		let detail = match self {
@@ -284,11 +297,22 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 					self.to_string()
 				}
 			}
+			| Self::Database { ref sqlx, .. } => match sqlx {
+				| sqlx::Error::RowNotFound => String::from("Not Found"),
+				| _ => {
+					log::error!("Erreur en base de données: {sqlx:?}");
+					String::from("Erreur ID: n°54322")
+				},
+			}
 			| _ => self.to_string(),
 		};
 
 		let instance = match self {
 			| Self::Unauthorized { ref request } => Some(request.uri.path()),
+			| Self::Database { ref request, sqlx } => match sqlx {
+				| sqlx::Error::RowNotFound => Some(request.uri.path()),
+				| _ => None,
+			}
 			| _ => None,
 		};
 

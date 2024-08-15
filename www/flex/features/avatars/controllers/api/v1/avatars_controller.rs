@@ -8,54 +8,63 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::sync::Arc;
+
+use flex_web_framework::http::request::Path;
 use flex_web_framework::http::{
 	Extensions,
-	HttpAuthContext,
 	HttpContext,
+	HttpContextError,
 	HttpContextInterface,
 	IntoResponse,
 };
+use flex_web_framework::query_builder::SQLQueryBuilder;
+use flex_web_framework::types::uuid::Uuid;
+use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
-use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::views::LogoutView;
-use crate::features::chat::connect::TokenController;
-use crate::features::users::dto::UserSessionDTO;
-use crate::features::users::sessions::constant::USER_SESSION;
+use crate::features::avatars::repositories::{
+	AvatarRepository,
+	AvatarRepositoryPostgreSQL,
+};
+use crate::features::avatars::services::{
+	AvatarErrorService,
+	AvatarService,
+	AvatarServiceImpl,
+};
 use crate::FlexState;
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct LogoutController {}
+pub struct AvatarsController
+{
+	avatar_service: Arc<dyn AvatarService>,
+}
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl LogoutController
+impl AvatarsController
 {
-	pub const COOKIE_NAME: &'static str = "flex.auth_user";
-
-	/// Page de déconnexion.
-	#[rustfmt::skip]
-	pub async fn view(
-		ctx: HttpAuthContext<Self, UserSessionDTO>,
-	) -> impl IntoResponse
+	pub async fn show(
+		http: HttpContext<Self>,
+		Path(id): Path<Uuid>,
+	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
-		ctx.response.render(LogoutView {
-			user_session: ctx.user,
-		}).await
-	}
+		let avatar = http.avatar_service.get(id).await.map_err(|err| {
+			match err {
+				| AvatarErrorService::SQLx(err) => {
+					HttpContextError::Database {
+						request: http.request,
+						sqlx: err,
+					}
+				}
+			}
+		})?;
 
-	/// Déconnexion de l'utilisateur en session.
-	#[rustfmt::skip]
-	pub async fn handle(ctx: HttpContext<Self>) -> impl IntoResponse
-	{
-		ctx.cookies.signed().remove(Self::COOKIE_NAME);
-		ctx.cookies.signed().remove(TokenController::COOKIE_TOKEN_KEY);
-		_ = ctx.session.remove::<()>(USER_SESSION).await;
-		ctx.response.redirect_to(AuthRouteID::Login)
+		Ok(http.response.redirect_temporary(avatar.path))
 	}
 }
 
@@ -63,15 +72,29 @@ impl LogoutController
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for LogoutController
+impl HttpContextInterface for AvatarsController
 {
 	type State = FlexState;
 
-	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
+	fn constructor(ext: &Extensions, _: Self::State) -> Option<Self>
 	{
-		Some(Self {})
+		let db_service = ext.get::<DatabaseService<PostgreSQLDatabase>>()?;
+
+		let query_builder = SQLQueryBuilder::new(db_service.clone());
+
+		let avatar_repository = AvatarRepositoryPostgreSQL {
+			query_builder: query_builder.clone(),
+		};
+
+		let avatar_service = AvatarServiceImpl {
+			avatar_repository: avatar_repository.shared(),
+		};
+
+		Some(Self {
+			avatar_service: avatar_service.shared(),
+		})
 	}
 }
 
-unsafe impl Send for LogoutController {}
-unsafe impl Sync for LogoutController {}
+unsafe impl Send for AvatarsController {}
+unsafe impl Sync for AvatarsController {}

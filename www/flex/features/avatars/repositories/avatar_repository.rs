@@ -8,70 +8,71 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::{
-	Extensions,
-	HttpAuthContext,
-	HttpContext,
-	HttpContextInterface,
-	IntoResponse,
-};
+use std::sync::Arc;
 
-use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::views::LogoutView;
-use crate::features::chat::connect::TokenController;
-use crate::features::users::dto::UserSessionDTO;
-use crate::features::users::sessions::constant::USER_SESSION;
-use crate::FlexState;
+use flex_web_framework::query_builder::SQLQueryBuilder;
+use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
+use flex_web_framework::types::uuid::Uuid;
+
+use crate::features::avatars::entities::AvatarEntity;
+
+// --------- //
+// Interface //
+// --------- //
+
+#[flex_web_framework::async_trait]
+pub trait AvatarRepository
+{
+	/// Récupère une entrée à partir d'un ID utilisateur.
+	async fn get(&self, user_id: Uuid)
+		-> Result<AvatarEntity, sqlx::Error>;
+
+	fn shared(self) -> Arc<Self>
+	where
+		Self: Sized,
+	{
+		Arc::new(self)
+	}
+}
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct LogoutController {}
+pub struct AvatarRepositoryPostgreSQL
+{
+	pub query_builder: SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>,
+}
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-impl LogoutController
+impl AvatarRepositoryPostgreSQL
 {
-	pub const COOKIE_NAME: &'static str = "flex.auth_user";
-
-	/// Page de déconnexion.
-	#[rustfmt::skip]
-	pub async fn view(
-		ctx: HttpAuthContext<Self, UserSessionDTO>,
-	) -> impl IntoResponse
-	{
-		ctx.response.render(LogoutView {
-			user_session: ctx.user,
-		}).await
-	}
-
-	/// Déconnexion de l'utilisateur en session.
-	#[rustfmt::skip]
-	pub async fn handle(ctx: HttpContext<Self>) -> impl IntoResponse
-	{
-		ctx.cookies.signed().remove(Self::COOKIE_NAME);
-		ctx.cookies.signed().remove(TokenController::COOKIE_TOKEN_KEY);
-		_ = ctx.session.remove::<()>(USER_SESSION).await;
-		ctx.response.redirect_to(AuthRouteID::Login)
-	}
+	/// Nom de la table de ce repository.
+	pub const TABLE_NAME: &'static str = "avatars";
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl HttpContextInterface for LogoutController
+#[flex_web_framework::async_trait]
+impl AvatarRepository for AvatarRepositoryPostgreSQL
 {
-	type State = FlexState;
-
-	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
+	async fn get(&self, user_id: Uuid)
+		-> Result<AvatarEntity, sqlx::Error>
 	{
-		Some(Self {})
+		let id = user_id.to_string();
+		let raw_query = format!(
+			"SELECT {avatars}.* FROM {avatars} 
+			LEFT JOIN {accounts} on {accounts}.avatar_id = {avatars}.id
+			WHERE {accounts}.user_id=$1::uuid AND {avatars}.display_for = 'public'", 
+			avatars = Self::TABLE_NAME,
+			accounts = "accounts",
+		);
+		let record = self.query_builder.fetch_one(&raw_query, &[&id]).await?;
+		Ok(record)
 	}
 }
-
-unsafe impl Send for LogoutController {}
-unsafe impl Sync for LogoutController {}

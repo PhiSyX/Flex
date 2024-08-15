@@ -8,26 +8,19 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod postgresql;
+flex_kernel::import! {
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod dto {
+		pub mod user_account_session_dto use *;
+	};
 
-// --------- //
-// Structure //
-// --------- //
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod entities {
+		pub mod account_entity use *;
+	};
 
-#[derive(Clone)]
-pub struct SQLQueryBuilder<Database>
-{
-	database: Database,
-}
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl<D> SQLQueryBuilder<D>
-{
-	pub fn new(database: D) -> Self
-	{
-		Self { database }
-	}
+	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub(crate) mod repositories {
+		pub mod account_repository use *;
+	};
 }
