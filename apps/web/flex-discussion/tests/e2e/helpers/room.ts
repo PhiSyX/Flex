@@ -11,7 +11,7 @@
 import { Page, expect } from "@playwright/test";
 
 export async function sendMessageInActiveRoom(page: Page, message: string) {
-	const $room = page.locator(".room");
+	const $room = page.locator("div[data-room]");
 	const $formRoom = $room.locator("form[action^='/msg/']");
 	const $inputRoom = $formRoom.locator("input[type='text']");
 	await $inputRoom.fill(message);
@@ -29,6 +29,6 @@ export async function openRoomFromNavigation(page: Page, room: string) {
 	const $navRoom = page.locator(".navigation-area .navigation-server ul li").getByText(room);
 	await $navRoom.click();
 	await page.waitForTimeout(250);
-	const $room = page.locator(`.room [data-room="${room}"]`);
+	const $room = page.locator(`div[data-room="${room}"]`);
 	return [$navRoom, $room];
 }

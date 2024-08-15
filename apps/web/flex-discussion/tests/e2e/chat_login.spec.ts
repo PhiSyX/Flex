@@ -18,7 +18,7 @@ test("Connexion au Chat", async ({ page }) => {
 	const nickname = generateRandomWord();
 	const channelToJoin = generateRandomChannel();
 
-	await page.goto("/");
+	await page.goto("/chat");
 
 	await page.locator("#nickname").fill(nickname);
 	await page.locator("#channels").fill(channelToJoin);
@@ -39,7 +39,7 @@ test("Connexion au Chat", async ({ page }) => {
 test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {
 	const nickname = generateRandomWord();
 
-	await page.goto("/");
+	await page.goto("/chat");
 	await page.locator("#nickname").fill(nickname);
 	await page.locator("#channels").fill("");
 

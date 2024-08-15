@@ -37,7 +37,7 @@ async function joinChannel({
 }
 
 test("Rejoindre un salon via la commande /JOIN", async ({ page }) => {
-	await page.goto("/");
+	await page.goto("/chat");
 	const channelToJoin = generateRandomChannel();
 	await connectChat({ page });
 	await joinChannel({ page, channels: channelToJoin });

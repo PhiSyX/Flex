@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 import type { Module } from "../interface";
 
 import { PubmsgCommand } from "./command";
@@ -26,7 +26,8 @@ export class PubmsgModule implements Module<PubmsgModule>
 
 	static NAME = "PUBMSG";
 
-	static create(store: ChatStoreInterface): PubmsgModule {
+	static create(store: ChatStoreInterface & ChatStoreInterfaceExt): PubmsgModule
+	{
 		return new PubmsgModule(
 			new PubmsgCommand(store),
 			new PubmsgHandler(store),

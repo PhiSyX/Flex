@@ -19,7 +19,7 @@ import { openRoomFromNavigation } from "./helpers/room.js";
 // https://playwright.dev/docs/intro
 
 test("Changer le pseudonyme via la commande /NICK", async ({ page }) => {
-	await page.goto("/");
+	await page.goto("/chat");
 
 	const channelToJoin = generateRandomChannel();
 
@@ -36,7 +36,7 @@ test("Changer le pseudonyme via la commande /NICK", async ({ page }) => {
 });
 
 test("Changer le pseudonyme via la boite de dialogue", async ({ page }) => {
-	await page.goto("/");
+	await page.goto("/chat");
 
 	const channelToJoin = generateRandomChannel();
 	const layerName = "user-change-nickname-dialog";

@@ -77,6 +77,6 @@ test("Sanctionner d'un KILL un utilisateur via la commande /KILL sans permission
 	await containsMessage(
 		user1.page,
 		channelToJoin,
-		"* Permission refusée. tu n'as pas les privilèges d'opérateur corrects.",
+		"* Permission refusée. Tu n'as pas les privilèges d'opérateur corrects.",
 	);
 });

@@ -18,7 +18,7 @@ export async function connectChat({
 }: { page: Page; channels?: string }): Promise<string> {
 	const nickname = generateRandomWord();
 
-	await page.goto("/");
+	await page.goto("/chat");
 	await page.locator("#nickname").fill(nickname);
 	await page.locator("#channels").fill(channels);
 

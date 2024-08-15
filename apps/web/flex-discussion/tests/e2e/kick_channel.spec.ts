@@ -65,7 +65,7 @@ test("Sanctionner d'un KICK un membre de salon via le menu de la liste des utili
 		channelToKick,
 		user2.nick,
 	);
-	const $kickItem = $userlistMenu.locator("li").getByText("Kick");
+	const $kickItem = $userlistMenu.locator("li").getByText("Expulser");
 	await $kickItem.click();
 
 	await containsMessage(

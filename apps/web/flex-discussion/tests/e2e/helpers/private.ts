@@ -11,7 +11,7 @@
 import { Page, expect } from "@playwright/test";
 
 export async function sendMessage(page: Page, priv: string, message: string) {
-	const $privateRoom = page.locator(`.room\\/private[data-room="${priv}"]`);
+	const $privateRoom = page.locator(`div[data-room="${priv}"]`);
 	const $formRoom = $privateRoom.locator(`form[action='/msg/${encodeURIComponent(priv)}']`);
 	const $inputRoom = $formRoom.locator("input[type='text']");
 	await $inputRoom.fill(message);
@@ -21,13 +21,13 @@ export async function sendMessage(page: Page, priv: string, message: string) {
 }
 
 export async function containsMessage(page: Page, priv: string, message: string) {
-	const $privateRoom = page.locator(`.room\\/private[data-room="${priv}"]`);
+	const $privateRoom = page.locator(`div[data-room="${priv}"]`);
 	const $privateMain = $privateRoom.locator(".room\\/main");
 	await expect($privateMain).toContainText(message);
 }
 
 export async function notContainsMessage(page: Page, priv: string, message: string) {
-	const $privateRoom = page.locator(`.room\\/private[data-room="${priv}"]`);
+	const $privateRoom = page.locator(`div[data-room="${priv}"]`);
 	const $privateMain = $privateRoom.locator(".room\\/main");
 	await expect($privateMain).not.toContainText(message);
 }

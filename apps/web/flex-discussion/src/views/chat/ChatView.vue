@@ -53,6 +53,7 @@ function close_room_handler(name: RoomID)
 						v-show="room.is_active() && !room.is_closed()"
 						:is="custom_rooms_components[room.id()]" 
 						:room="(room as any)"
+						:data-room="room.name"
 						class="[ flex:full ]"
 						@join-channel="join_channel_handler"
 						@close="() => close_room_handler(room.id())"

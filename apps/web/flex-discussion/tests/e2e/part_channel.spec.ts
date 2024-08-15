@@ -41,7 +41,7 @@ async function partChannel(
 }
 
 test("Partir d'un salon via la commande /PART", async ({ page }) => {
-	await page.goto("/");
+	await page.goto("/chat");
 	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, () =>
@@ -66,7 +66,7 @@ test("Partir d'un salon via la commande /PART avec un message", async ({ browser
 });
 
 test("Partir d'un salon via le bouton de fermeture du la navigation", async ({ page }) => {
-	await page.goto("/");
+	await page.goto("/chat");
 	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, async ({ $navRooms }) => {
@@ -79,7 +79,7 @@ test("Partir d'un salon via le bouton de fermeture du la navigation", async ({ p
 });
 
 test("Partir d'un salon via le bouton de fermeture du salon", async ({ page }) => {
-	await page.goto("/");
+	await page.goto("/chat");
 	const channelToPart = generateRandomChannel();
 	await connectChat({ page, channels: channelToPart });
 	await partChannel({ page, channel: channelToPart }, async ({ $channelRoom }) => {

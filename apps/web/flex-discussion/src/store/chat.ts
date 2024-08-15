@@ -706,6 +706,24 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 
 		let module = maybe_module.unwrap();
 
+		if (command_name_upper === "PUBMSG" || command_name_upper === "PRIVMSG")
+		{
+			args = [
+				// @ts-expect-error : à corriger
+				{
+					format_bold: settings_store.personalization.formats.bold,
+					format_italic: settings_store.personalization.formats.italic,
+					format_underline: settings_store.personalization.formats.underline,
+				},
+				// @ts-expect-error : à corriger
+				{
+					color_background: settings_store.personalization.colors.background,
+					color_foreground: settings_store.personalization.colors.foreground,
+				},
+				...args
+			];
+		}
+
 		module.input(room.name, ...args);
 	}
 

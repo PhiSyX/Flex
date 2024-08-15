@@ -157,6 +157,10 @@ export class RoomManager
 				});
 		}
 
+		if (maybe_room.is_some()) {
+			return maybe_room;
+		}
+
 		for (let fallback of options?.fallbacks || []) {
 			if (fallback.active) {
 				maybe_room = this.maybe_active(fallback.active);
