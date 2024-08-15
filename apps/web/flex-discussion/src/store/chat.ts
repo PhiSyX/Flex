@@ -626,12 +626,18 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	 */
 	function send_message(name: RoomID, message: string)
 	{
-		let room = store.room_manager().get(name)
-			.or_else(() =>
-				store.user_manager().find_by_nickname(name)
-					.and_then((user) => store.room_manager().get(user.id)),
-			)
-			.unwrap_unchecked();
+		let maybe_room = store.room_manager().get(name, {
+			where:{
+				state: "opened",
+				is_kicked: false,
+			},
+		});
+
+		if (maybe_room.is_none()) {
+			return;
+		}
+
+		let room = maybe_room.unwrap();
 
 		room.add_input_history(message);
 
