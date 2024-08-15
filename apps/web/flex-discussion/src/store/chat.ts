@@ -118,7 +118,7 @@ export class ChatStoreVue
 		let client_id = this._client_id_storage.maybe().unwrap_or("") as
 			| string
 			| null;
-		let user_id = this.user().get().map((u) => u.id).unwrap_or("") as string | null;
+		let user_id = this.user().session().map((u) => u.id).unwrap_or("") as string | null;
 
 		if (client_id?.length === 0) {
 			client_id = null;

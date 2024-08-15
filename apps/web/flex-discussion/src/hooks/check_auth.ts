@@ -23,7 +23,7 @@ export function use_check_auth()
     on_mounted(() => {
         user_store.fetch().then((current_user) => {
             router.replace({ name: View.DirectAccess });
-            user_store.update(current_user);
+            user_store.session(current_user);
         });
     });
 }

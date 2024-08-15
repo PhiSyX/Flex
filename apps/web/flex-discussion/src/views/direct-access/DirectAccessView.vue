@@ -1,6 +1,12 @@
 
 <script setup lang="ts">
-import { onMounted as on_mounted, reactive, ref } from "vue";
+import {
+	computed,
+	onMounted as on_mounted,
+	reactive,
+	ref,
+	watchEffect as watch_effect
+} from "vue";
 import { useRouter as use_router } from "vue-router";
 
 import {
@@ -31,23 +37,18 @@ let router = use_router();
 let chat_store = use_chat_store();
 let user_store = use_user_store();
 
-let user_session = user_store.session();
+let user_session = computed(() => user_store.session());
 
 let advanced_info = ref(false);
 let display_password_user_field = ref(false);
 let login_form_data = reactive({
-	alternative_nickname: user_session
-		.map((user) => `${user.name}_`)
-		.or(Option.from(import.meta.env.VITE_APP_NICKNAME).map((nick) => `${nick}_`))
+	alternative_nickname: Option.from(import.meta.env.VITE_APP_NICKNAME)
+		.map((nick) => `${nick}_`)
 		.unwrap_or(""),
 	channels: import.meta.env.VITE_APP_CHANNELS || cast_to_channel_id(""),
-	nickname: user_session
-		.map((user) => user.name)
-		.or(Option.from(import.meta.env.VITE_APP_NICKNAME))
+	nickname: Option.from(import.meta.env.VITE_APP_NICKNAME)
 		.unwrap_or(""),
-	realname: user_session
-		.map((user) => `${user.role} - ${user.id}`)
-		.or(Option.from(import.meta.env.VITE_APP_REALNAME))
+	realname: Option.from(import.meta.env.VITE_APP_REALNAME)
 		.unwrap_or("Flex Web App"),
 	remember_me: new RememberMeStorage(),
 	password_server: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
@@ -68,6 +69,19 @@ on_mounted(() => {
 	if (login_form_data.remember_me.get()) {
 		submit_handler();
 	}
+});
+
+watch_effect(() => {
+	if (user_session.value.is_none()) {
+		login_form_data.realname = Option.from(import.meta.env.VITE_APP_REALNAME)
+			.unwrap_or("Flex Web App");
+		return;
+	}
+
+	let user = user_session.value.unwrap();
+	login_form_data.nickname = user.name;
+	login_form_data.alternative_nickname = `${user.name}\``;
+	login_form_data.realname = `#${user.id} - ${user.role} - (${user.email})`;
 });
 
 // ------- //
@@ -151,6 +165,14 @@ function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">)
 function to_settings_view_handler()
 {
 	router.push({ name: View.Settings });
+}
+
+function disconnect_handler()
+{
+	loader.value = true;
+	user_store.disconnect().then(() => {
+		loader.value = false;
+	});
 }
 </script>
 

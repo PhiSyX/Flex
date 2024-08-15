@@ -24,11 +24,9 @@ export const use_user_store = define_store(UserStore.ID, () => {
 	const store = reactive(new UserStore()) as UserStore;
 	return {
 		store,
+		disconnect: store.disconnect.bind(store),
 		fetch: store.fetch.bind(store),
-		set: store.set.bind(store),
-		update: store.set.bind(store),
-		get: store.get.bind(store),
-		session: store.get.bind(store),
+		session: store.session.bind(store),
 	};
 });
 
