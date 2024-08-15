@@ -50,6 +50,8 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 				this.handle_private(room, data);
 			}
 		}
+
+		this.store.user_manager().del(data.origin.id);
 	}
 
 	handle_channel(channel: ChannelRoom, data: GenericReply<"QUIT">)
@@ -65,7 +67,6 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 
 	handle_private(priv: PrivateRoom, data: GenericReply<"QUIT">)
 	{
-		console.log({priv, data});
 		if (!priv.participants.has(data.origin.id)) {
 			return;
 		}

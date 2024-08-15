@@ -642,14 +642,13 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		room.add_input_history(message);
 
 		if (!message.startsWith("/")) {
-			
 			let words = message.split(" ");
 
-			if (name.startsWith("#")) {
+			if (room.name.startsWith("#")) {
 				let module = store.module_manager().get("PUBMSG")
 					.expect("Récupération du module `PUBMSG`");
 				module.input(
-					name,
+					room.name,
 					{
 						format_bold: settings_store.personalization.formats.bold,
 						format_italic: settings_store.personalization.formats.italic,
@@ -665,7 +664,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 				let module = store.module_manager().get("PRIVMSG")
 					.expect("Récupération du module `PRIVMSG`");
 				module.input(
-					name,
+					room.name,
 					{
 						format_bold: settings_store.personalization.formats.bold,
 						format_italic: settings_store.personalization.formats.italic,
@@ -707,7 +706,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 
 		let module = maybe_module.unwrap();
 
-		module.input(name, ...args);
+		module.input(room.name, ...args);
 	}
 
 	/**

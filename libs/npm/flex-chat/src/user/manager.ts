@@ -52,7 +52,7 @@ export class UserManager
 		maybe_found_user.then((found_user) => {
 			if (found_user.id !== user.id) {
 				found_user.id = user.id;
-				this._nicks.set(user.nickname, found_user.id);
+				this.add_nickname(user.nickname, found_user.id);
 			}
 		});
 
@@ -111,10 +111,10 @@ export class UserManager
 	change_nickname(old_nickname: string, new_nickname: string)
 	{
 		let maybe_user = this.find_by_nickname(old_nickname);
-		let nick = this._nicks.get(old_nickname.toLowerCase());
-		if (nick) {
-			this._nicks.delete(old_nickname.toLowerCase());
-			this._nicks.set(new_nickname.toLowerCase(), nick);
+		let nick_id = this._nicks.get(old_nickname.toLowerCase());
+		if (nick_id) {
+			this.remove_nickname(old_nickname);
+			this.add_nickname(new_nickname, nick_id);
 		}
 		if (maybe_user.is_none()) {
 			return;
@@ -129,7 +129,10 @@ export class UserManager
 	del(user_id: UserID): Option<User>
 	{
 		let user = this.find(user_id);
-		user.then(() => this._users.delete(user_id));
+		user.then((user) => {
+			this.remove_nickname(user.nickname);
+			this._users.delete(user_id)
+		});
 		return user;
 	}
 
@@ -157,7 +160,7 @@ export class UserManager
 		);
 
 		maybe_user.then((user) => {
-			this._nicks.set(user.nickname.toLowerCase(), user.id);
+			this.add_nickname(user.nickname, user.id);
 		});
 
 		return maybe_user;

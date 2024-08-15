@@ -3,7 +3,7 @@ import type { PrivateRoom } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
-import { UserChangeNicknameDialog, cast_to_room_id } from "@phisyx/flex-chat";
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_overlayer_store } from "~/store";
 
@@ -92,7 +92,7 @@ function open_room_handler(room_id: RoomID)
  */
 function send_message_handler(message: string)
 {
-	chat_store.send_message(cast_to_room_id(recipient.value.nickname), message);
+	chat_store.send_message(recipient.value.id, message);
 }
 
 /**
