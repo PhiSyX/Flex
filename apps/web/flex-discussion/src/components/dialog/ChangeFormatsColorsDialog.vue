@@ -1,30 +1,18 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat";
 import { vMutation } from "@phisyx/flex-vue-directives";
 
-import { use_overlayer_store, use_settings_store } from "~/store";
+import { use_settings_store } from "~/store";
+import { use_dialog } from "./hook";
 
 import ChangeFormatsColorsDialogComponent from "#/sys/dialog_change_formats_colors/ChangeFormatsColorsDialog.template.vue";
-
-// -------- //
-// Constant //
-// -------- //
-
-const LAYER_NAME: string = ChangeFormatsColorsDialog.ID;
 
 // --------- //
 // Composant //
 // --------- //
 
-let overlayer_store = use_overlayer_store();
 let settings_store = use_settings_store();
 
-let dialog = computed(
-	() => new ChangeFormatsColorsDialog(overlayer_store.store),
-);
-let has_layer = computed(() => dialog.value.exists());
 
 let bold = computed({
 	get() {
@@ -82,15 +70,11 @@ let foreground = computed({
 		};
 	}
 });
-
-function mutation_handler()
-{
-	overlayer_store.update(LAYER_NAME);
-}
+let { teleport_id, dialog, update_dialog } = use_dialog(ChangeFormatsColorsDialog);
 </script>
 
 <template>
-	<Teleport v-if="has_layer" :to="`#${LAYER_NAME}_teleport`">
+	<Teleport v-if="dialog.exists()" :to="teleport_id">
 		<ChangeFormatsColorsDialogComponent 
 			v-model:bold="bold"
 			v-model:italic="italic"

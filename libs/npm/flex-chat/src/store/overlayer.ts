@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { type CSSHoudiniUnitValue, to_px } from "@phisyx/flex-css";
+import type { CSSHoudiniUnitValue } from "@phisyx/flex-css";
+
+import { to_px } from "@phisyx/flex-css";
+import { Option } from "@phisyx/flex-safety";
 
 // ---- //
 // Type //
@@ -176,6 +179,11 @@ export class OverlayerStore
 	}
 
 	get(layer_id: Layer["id"])
+	{
+		return Option.from(this.layers.get(layer_id));
+	}
+
+	get_unchecked(layer_id: Layer["id"])
 	{
 		return this.layers.get(layer_id);
 	}

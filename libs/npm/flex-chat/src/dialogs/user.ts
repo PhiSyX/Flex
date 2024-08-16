@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
+
 import type { Layer, OverlayerStore } from "../store";
+import type { DialogInterface } from "./interface";
 
 // ---- //
 // Type //
@@ -21,7 +24,7 @@ export interface UserChangeNicknameRecordDialog
 // Implémentation //
 // -------------- //
 
-export class UserChangeNicknameDialog
+export class UserChangeNicknameDialog implements DialogInterface<UserChangeNicknameRecordDialog>
 {
 	// ------ //
 	// Static //
@@ -57,18 +60,15 @@ export class UserChangeNicknameDialog
 		this.overlayer_store.destroy(UserChangeNicknameDialog.ID);
 	}
 
-	get(): Layer<UserChangeNicknameRecordDialog> | undefined
+	get(): Option<Layer<UserChangeNicknameRecordDialog>>
 	{
-		return this.overlayer_store.get(UserChangeNicknameDialog.ID) as
-			| Layer<UserChangeNicknameRecordDialog>
-			| undefined;
+		return this.overlayer_store.get(UserChangeNicknameDialog.ID)
+			.as<Layer<UserChangeNicknameRecordDialog>>();
 	}
 
 	get_unchecked(): Layer<UserChangeNicknameRecordDialog>
 	{
-		return this.overlayer_store.get(
-			UserChangeNicknameDialog.ID,
-		) as Layer<UserChangeNicknameRecordDialog>;
+		return this.get().unwrap_unchecked();
 	}
 
 	exists(): boolean

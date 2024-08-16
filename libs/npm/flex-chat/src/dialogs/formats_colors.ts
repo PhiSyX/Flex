@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
+
 import type { Layer, OverlayerStore } from "../store";
+import type { DialogInterface } from "./interface";
 
 // ---- //
 // Type //
@@ -21,7 +24,7 @@ export interface ChangeFormatsColorsRecordDialog
 // Implémentation //
 // -------------- //
 
-export class ChangeFormatsColorsDialog
+export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsColorsRecordDialog>
 {
 	// ------ //
 	// Static //
@@ -57,18 +60,15 @@ export class ChangeFormatsColorsDialog
 		this.overlayer_store.destroy(ChangeFormatsColorsDialog.ID);
 	}
 
-	get(): Layer<ChangeFormatsColorsRecordDialog> | undefined
+	get(): Option<Layer<ChangeFormatsColorsRecordDialog>>
 	{
-		return this.overlayer_store.get(ChangeFormatsColorsDialog.ID) as
-			| Layer<ChangeFormatsColorsRecordDialog>
-			| undefined;
+		return this.overlayer_store.get(ChangeFormatsColorsDialog.ID)
+			.as<Layer<ChangeFormatsColorsRecordDialog>>();
 	}
 
 	get_unchecked(): Layer<ChangeFormatsColorsRecordDialog>
 	{
-		return this.overlayer_store.get(
-			ChangeFormatsColorsDialog.ID,
-		) as Layer<ChangeFormatsColorsRecordDialog>;
+		return this.get().unwrap_unchecked();
 	}
 
 	exists(): boolean

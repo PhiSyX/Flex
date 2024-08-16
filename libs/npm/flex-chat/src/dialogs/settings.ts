@@ -8,9 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
+
 import type { ChannelMember } from "../channel/member";
 import type { ChannelRoom } from "../channel/room";
 import type { Layer, OverlayerStore } from "../store";
+import type { DialogInterface } from "./interface";
 
 // ---- //
 // Type //
@@ -28,7 +31,7 @@ export interface ChannelSettingsRecordDialog
 // Implémentation //
 // -------------- //
 
-export class ChannelSettingsDialog
+export class ChannelSettingsDialog implements DialogInterface<ChannelSettingsRecordDialog>
 {
 	// ------ //
 	// Static //
@@ -66,18 +69,15 @@ export class ChannelSettingsDialog
 		this.overlayer_store.destroy(ChannelSettingsDialog.ID);
 	}
 
-	get(): Layer<ChannelSettingsRecordDialog> | undefined
+	get(): Option<Layer<ChannelSettingsRecordDialog>>
 	{
-		return this.overlayer_store.get(ChannelSettingsDialog.ID) as
-			| Layer<ChannelSettingsRecordDialog>
-			| undefined;
+		return this.overlayer_store.get(ChannelSettingsDialog.ID)
+			.as<Layer<ChannelSettingsRecordDialog>>();
 	}
 
 	get_unchecked(): Layer<ChannelSettingsRecordDialog>
 	{
-		return this.overlayer_store.get(
-			ChannelSettingsDialog.ID,
-		) as Layer<ChannelSettingsRecordDialog>;
+		return this.get().unwrap_unchecked();
 	}
 
 	exists(): boolean

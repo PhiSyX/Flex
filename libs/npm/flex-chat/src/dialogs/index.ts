@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 export * from "./formats_colors";
+export * from "./interface";
 export * from "./room";
 export * from "./settings";
 export * from "./topic";

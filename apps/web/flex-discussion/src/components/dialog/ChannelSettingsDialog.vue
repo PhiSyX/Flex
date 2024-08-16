@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import { ChannelSettingsDialog } from "@phisyx/flex-chat";
-import { computed } from "vue";
+import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat";
 
-import { use_chat_store, use_overlayer_store } from "~/store";
+import { ChannelSettingsDialog } from "@phisyx/flex-chat";
+
+import { use_chat_store } from "~/store";
+import { use_dialog } from "./hook";
 
 import ChannelSettingsDialogComponent from "#/sys/dialog_channel_settings/ChannelSettingsDialog.template.vue";
-
-// -------- //
-// Constant //
-// -------- //
-
-const LAYER_NAME: string = ChannelSettingsDialog.ID;
 
 // --------- //
 // Composant //
 // --------- //
 
 let chat_store = use_chat_store();
-let overlayer_store = use_overlayer_store();
 
-let dialog = computed(() => new ChannelSettingsDialog(overlayer_store.store));
-let has_layer = computed(() => dialog.value.exists());
-let layer = computed(() => dialog.value.get_unchecked());
+let {
+	dialog,
+	close_dialog,
+	teleport_id,
+	layer_name,
+	layer_unsafe,
+} = use_dialog<ChannelSettingsDialog, ChannelSettingsRecordDialog>(
+	ChannelSettingsDialog
+);
 
 // ------- //
 // Handler //
@@ -32,12 +33,12 @@ let layer = computed(() => dialog.value.get_unchecked());
  */
 function submit_form_data_handler(modes_settings: Partial<Command<"MODE">["modes"]>)
 {
-	if (!layer.value.data) {
+	if (!layer_unsafe.value.data) {
 		return;
 	}
 
 	chat_store.apply_channel_settings(
-		layer.value.data.room.name,
+		layer_unsafe.value.data.room.name,
 		modes_settings as Command<"MODE">["modes"],
 	);
 }
@@ -47,26 +48,21 @@ function submit_form_data_handler(modes_settings: Partial<Command<"MODE">["modes
  */
 function update_topic_handler(topic?: string)
 {
-	if (!layer.value.data || layer.value.data.room.topic.get() === topic) {
+	if (!layer_unsafe.value.data || layer_unsafe.value.data.room.topic.get() === topic) {
 		return;
 	}
 
-	chat_store.update_topic(layer.value.data.room.name, topic);
-}
-
-function close_layer_handler()
-{
-	dialog.value.destroy();
+	chat_store.update_topic(layer_unsafe.value.data.room.name, topic);
 }
 </script>
 
 <template>
-	<Teleport v-if="has_layer && layer.data" :to="`#${LAYER_NAME}_teleport`">
+	<Teleport v-if="dialog.exists() && layer_unsafe.data" :to="teleport_id">
 		<ChannelSettingsDialogComponent
-			v-bind="layer.data"
-			:layer-name="LAYER_NAME"
-			:current-client-channel-member="layer.data.current_client_channel_member"
-			@close="close_layer_handler"
+			v-bind="layer_unsafe.data"
+			:layer-name="layer_name"
+			:current-client-channel-member="layer_unsafe.data.current_client_channel_member"
+			@close="close_dialog"
 			@submit="submit_form_data_handler"
 			@update-topic="update_topic_handler"
 		/>

@@ -1,29 +1,23 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
-import { use_chat_store, use_overlayer_store } from "~/store";
+import { use_chat_store } from "~/store";
+import { use_dialog } from "./hook";
 
 import ChangeNickDialog from "#/sys/dialog_change_nick/ChangeNickDialog.template.vue";
-
-// -------- //
-// Constant //
-// -------- //
-
-const LAYER_NAME: string = UserChangeNicknameDialog.ID;
 
 // --------- //
 // Composant //
 // --------- //
 
 let chat_store = use_chat_store();
-let overlayer_store = use_overlayer_store();
 
-let dialog = computed(
-	() => new UserChangeNicknameDialog(overlayer_store.store),
-);
-let has_layer = computed(() => dialog.value.exists());
+let {
+	layer_name,
+	dialog,
+	teleport_id,
+	close_dialog,
+} = use_dialog(UserChangeNicknameDialog);
 
 // ------- //
 // Handler //
@@ -35,20 +29,15 @@ let has_layer = computed(() => dialog.value.exists());
 function send_change_nick_command_handler(nickname: string)
 {
 	chat_store.change_nick(nickname);
-	dialog.value.destroy();
-}
-
-function close_layer_handler()
-{
-	dialog.value.destroy();
+	close_dialog();
 }
 </script>
 
 <template>
-	<Teleport v-if="has_layer" :to="`#${LAYER_NAME}_teleport`">
+	<Teleport v-if="dialog.exists()" :to="teleport_id">
 		<ChangeNickDialog
-			:layer-name="LAYER_NAME"
-			@close="close_layer_handler"
+			:layer-name="layer_name"
+			@close="close_dialog"
 			@submit="send_change_nick_command_handler"
 		/>
 	</Teleport>

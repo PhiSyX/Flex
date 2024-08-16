@@ -8,13 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
+
 import type { Layer, OverlayerStore } from "../store";
+import type { DialogInterface } from "./interface";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelTopicLayer
+export class ChannelTopicLayer implements DialogInterface
 {
 	// ------ //
 	// Static //
@@ -61,9 +64,14 @@ export class ChannelTopicLayer
 		this.overlayer_store.destroy(ChannelTopicLayer.ID);
 	}
 
-	get(): Layer | undefined
+	get(): Option<Layer>
 	{
 		return this.overlayer_store.get(ChannelTopicLayer.ID);
+	}
+
+	get_unchecked(): Layer
+	{
+		return this.get().unwrap_unchecked();
 	}
 
 	exists(): boolean
