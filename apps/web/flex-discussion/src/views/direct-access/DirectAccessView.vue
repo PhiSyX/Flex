@@ -66,7 +66,7 @@ let loader = ref(false);
 let image_title_attribute = computed(() => {
 	return user_session.value.map((user) => {
 		// biome-ignore lint/style/useTemplate: non merci.
-		return `Bonjour, tu es actuellement connecté en tant ${user.name}.`
+		return `Bonjour, tu es actuellement connecté en tant que ${user.name}.`
 			+ "\n\nClique sur cette image pour te déconnecter, si tu le souhaites."
 	}).unwrap_or("")
 })
