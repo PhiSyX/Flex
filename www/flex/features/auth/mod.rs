@@ -11,8 +11,8 @@
 flex_kernel::import! {
 	pub mod feature use *;
 
-	mod controllers {
-		pub mod login_controller use *;
+	pub(crate) mod controllers {
+		pub(crate) mod login_controller use *;
 		pub mod logout_controller use *;
 		pub mod signup_controller use *;
 	};

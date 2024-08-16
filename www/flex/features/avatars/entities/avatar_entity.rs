@@ -35,7 +35,7 @@ pub struct AvatarEntity
 #[derive(PartialEq, Eq)]
 #[derive(serde::Deserialize)]
 #[derive(sqlx::Type)]
-#[sqlx(type_name = "avatars_display", rename_all = "lowercase")]
+#[sqlx(type_name = "avatars_display", rename_all = "snake_case")]
 pub enum AvatarDisplayFor
 {
 	#[serde(rename = "member_only")]

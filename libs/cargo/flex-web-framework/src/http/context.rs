@@ -79,6 +79,10 @@ pub enum HttpContextError<T>
 	Infaillible(#[from] std::convert::Infallible),
 	#[error("{1}")]
 	Err(http::StatusCode, String),
+	NotFound
+	{
+		request: HttpRequest<T>,
+	},
 	Database
 	{
 		request: HttpRequest<T>,
@@ -250,6 +254,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 		let status_code = match self {
 			| Self::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
 			| Self::Err(status, _) => status,
+			| Self::NotFound { .. } => StatusCode::NOT_FOUND,
 			| Self::Database { ref sqlx, ..} => match sqlx {
 				| sqlx::Error::RowNotFound => StatusCode::NOT_FOUND,
 				| _ => StatusCode::INTERNAL_SERVER_ERROR,
@@ -261,6 +266,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 			| Self::Unauthorized { .. } => {
 				String::from("Non autorisé à consulter cette ressource")
 			}
+
 			| Self::Err(header, ref msg) => {
 				if header.is_client_error() {
 					if header.as_u16() == 401 {
@@ -272,10 +278,14 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 					String::from("Un problème est survenue sur le serveur (ID: n°5000)")
 				}
 			}
+
+			| Self::NotFound { .. } => String::from("Not Found"),
+
 			| Self::Database { ref sqlx, ..} => match sqlx {
 				| sqlx::Error::RowNotFound => String::from("Not Found"),
 				| _ => String::from("Un problème est survenue sur le serveur (ID: n°54321)"),
 			}
+
 			| _ => String::from("Un problème est survenue sur le serveur  (ID: n°5001)"),
 		};
 
@@ -286,6 +296,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 				 utilisateurs connectés sont autorisés à le faire."
 					.to_owned()
 			}
+
 			| Self::Err(header, ref msg) => {
 				if header.is_client_error() {
 					if header.as_u16() == 401 {
@@ -297,6 +308,9 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 					self.to_string()
 				}
 			}
+
+			| Self::NotFound { .. } => String::from("Not Found"),
+
 			| Self::Database { ref sqlx, .. } => match sqlx {
 				| sqlx::Error::RowNotFound => String::from("Not Found"),
 				| _ => {
@@ -304,11 +318,13 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 					String::from("Erreur ID: n°54322")
 				},
 			}
+
 			| _ => self.to_string(),
 		};
 
 		let instance = match self {
 			| Self::Unauthorized { ref request } => Some(request.uri.path()),
+			| Self::NotFound { ref request } => Some(request.uri.path()),
 			| Self::Database { ref request, sqlx } => match sqlx {
 				| sqlx::Error::RowNotFound => Some(request.uri.path()),
 				| _ => None,

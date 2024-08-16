@@ -68,7 +68,7 @@ impl AvatarRepository for AvatarRepositoryPostgreSQL
 		let raw_query = format!(
 			"SELECT {avatars}.* FROM {avatars} 
 			LEFT JOIN {accounts} on {accounts}.avatar_id = {avatars}.id
-			WHERE {accounts}.user_id=$1::uuid AND {avatars}.display_for = 'public'", 
+			WHERE {accounts}.user_id=$1::uuid", 
 			avatars = Self::TABLE_NAME,
 			accounts = "accounts",
 		);

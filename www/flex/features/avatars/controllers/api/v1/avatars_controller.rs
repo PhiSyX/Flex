@@ -22,21 +22,23 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::types::uuid::Uuid;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
+use crate::features::avatars::entities::AvatarDisplayFor;
 use crate::features::avatars::repositories::{
 	AvatarRepository,
 	AvatarRepositoryPostgreSQL,
 };
 use crate::features::avatars::services::{
-	AvatarErrorService,
 	AvatarService,
 	AvatarServiceImpl,
 };
+use crate::features::users::dto::UserSessionDTO;
 use crate::FlexState;
 
 // --------- //
 // Structure //
 // --------- //
 
+#[derive(Clone)]
 pub struct AvatarsController
 {
 	avatar_service: Arc<dyn AvatarService>,
@@ -53,18 +55,26 @@ impl AvatarsController
 		Path(id): Path<Uuid>,
 	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
-		let avatar = http.avatar_service.get(id).await.map_err(|err| {
-			match err {
-				| AvatarErrorService::SQLx(err) => {
-					HttpContextError::Database {
-						request: http.request,
-						sqlx: err,
-					}
-				}
-			}
-		})?;
+		let Ok(avatar) = http.avatar_service.get(id).await else 
+		{
+			return Ok(http.response.redirect_temporary(
+				"/public/img/default-avatar.png"
+			));
+		};
 
-		Ok(http.response.redirect_temporary(avatar.path))
+		match avatar.display_for {
+			AvatarDisplayFor::MemberOnly => {
+				let Ok(Some(_)) = http.session.get::<UserSessionDTO>("user").await else {
+					return Ok(http.response.redirect_temporary(
+						"/public/img/default-avatar.png"
+					));
+				};
+
+				Ok(http.response.redirect_temporary(avatar.path))
+			}
+
+			AvatarDisplayFor::Public => Ok(http.response.redirect_temporary(avatar.path))
+		}
 	}
 }
 

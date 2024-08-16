@@ -30,6 +30,7 @@ use hyper::HeaderMap;
 // Structure //
 // --------- //
 
+#[derive(Clone)]
 pub struct HttpRequest<T>
 {
 	#[allow(dead_code)]
