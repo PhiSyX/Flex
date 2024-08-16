@@ -186,8 +186,8 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 
 			<p
 				:class="{
-					[`bg-color${colors?.background}`]: colors?.background,
-					[`fg-color${colors?.foreground}`]: colors?.foreground,
+					[`bg-color${colors?.background}`]: colors?.background != null,
+					[`fg-color${colors?.foreground}`]: colors?.foreground != null,
 					'text-bold': formats?.bold,
 					'text-italic':formats?.italic,
 					'text-underline': formats?.underline,

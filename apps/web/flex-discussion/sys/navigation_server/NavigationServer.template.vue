@@ -155,8 +155,8 @@ function toggle_fold_handler()
 								<p
 									class="[ scroll:y w:full min-h=6 max-hx=8 my=0 p=1 cursor: pointer ]"
 									:class="{
-										[`bgo-color${message.colors.background}`]: message.colors.background !== undefined,
-										[`fg-color${message.colors.foreground}`]: message.colors.foreground !== undefined,
+										[`bgo-color${message.colors.background}`]: message.colors.background != null,
+										[`fg-color${message.colors.foreground}`]: message.colors.foreground != null,
 										
 									}"
 								>

@@ -99,7 +99,7 @@ function submit_handler()
 					:placeholder="placeholder"
 					:class="{
 						[`fg-color${foreground}`]: foreground && foreground >= 0,
-						[`fshadow-color${background}`]: background !== null,
+						[`fshadow-color${background}`]: background != null,
 						'text-bold': bold,
 						'text-italic': italic,
 						'text-underline': underline,
@@ -127,7 +127,7 @@ function submit_handler()
 				:disabled="disableInput" 
 				:class="{
 					[`fg-color${foreground}`]: foreground && foreground >= 0,
-					[`fshadow-color${background}`]: background !== null,
+					[`fshadow-color${background}`]: background != null,
 				}"
 				@click="open_colors_box_handler"
 				
