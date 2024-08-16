@@ -6,7 +6,9 @@
 			@if $name == light {
 				--default-border-color: var(--color-white);
 				--default-text-color: var(--color-grey900);
+				--default-text-color_hsl: var(--color-grey900_hsl);
 				--default-text-color_alt: var(--color-white);
+				--default-text-color_alt_hsl: var(--color-white_hsl);
 				--default-placeholder-color:  var(--color-grey500);
 				--box-shadow: 2px 2px 4px var(--color-grey400);
 

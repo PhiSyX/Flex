@@ -31,9 +31,10 @@ interface Emits
 {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "close"): void;
+	(event_name: "ignore-user", nickname: string): void;
+	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "open-room", room_id: RoomID): void;
 	(event_name: "send-message", message: string): void;
-	(event_name: "ignore-user", nickname: string): void;
 	(event_name: "unignore-user", nickname: string): void;
 }
 
@@ -61,6 +62,7 @@ let image_alt = computed(() => `Avatar du compte de ${props.recipient.nickname}.
 // ------- //
 
 const change_nickname_handler = (event: MouseEvent) => emit("change-nickname", event);
+const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const send_message_handler = (message: string) => emit("send-message", message);
 
@@ -86,6 +88,7 @@ function toggle_ignore_user_handler()
 			:text-format-underline="textFormatUnderline"
 			:text-color-background="textColorBackground"
 			:text-color-foreground="textColorForeground"
+			@open-colors-box="open_colors_box_handler"
 			@open-room="open_room_handler"
 			@change-nickname="change_nickname_handler"
 			@send-message="send_message_handler"

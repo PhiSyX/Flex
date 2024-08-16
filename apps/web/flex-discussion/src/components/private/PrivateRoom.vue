@@ -3,7 +3,7 @@ import type { PrivateRoom } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
-import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
+import { ChangeFormatsColorsDialog, UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
 import { use_chat_store, use_overlayer_store, use_settings_store } from "~/store";
 
@@ -48,13 +48,6 @@ let is_recipient_blocked = computed(() =>
 // La liste de la complétion de la boite de saisie.
 let completion_list = computed(() => chat_store.all_commands(props.room));
 
-let format_bold = computed(() => settings_store.personalization.formats.bold);
-let format_italic = computed(() => settings_store.personalization.formats.italic);
-let format_underline = computed(() => settings_store.personalization.formats.underline);
-
-let color_background = computed(() => settings_store.personalization.colors.background);
-let color_foreground = computed(() => settings_store.personalization.colors.foreground);
-
 // ------- //
 // Handler //
 // ------- //
@@ -73,6 +66,17 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
 function close_private_handler()
 {
 	chat_store.close_room(recipient.value.id);
+}
+
+/**
+ * Ouvre la boite de couleur du champ de saisie.
+ */
+ function open_colors_box_handler(event: MouseEvent)
+{
+	overlayer_store.create({
+		id: ChangeFormatsColorsDialog.ID,
+		event,
+	});
 }
 
 /**
@@ -113,15 +117,16 @@ const send_silence_user_command_handler = (apply_state: "+" | "-") => (
 		:is-recipient-blocked="is_recipient_blocked"
 		:recipient="recipient"
 		:room="room"
-		:text-format-bold="format_bold"
-		:text-format-italic="format_italic"
-		:text-format-underline="format_underline"
-		:text-color-background="color_background"
-		:text-color-foreground="color_foreground"
+		:text-format-bold="settings_store.personalization.formats.bold"
+		:text-format-italic="settings_store.personalization.formats.italic"
+		:text-format-underline="settings_store.personalization.formats.underline"
+		:text-color-background="settings_store.personalization.colors.background"
+		:text-color-foreground="settings_store.personalization.colors.foreground"
 		@change-nickname="open_change_nickname_dialog_handler"
 		@close="close_private_handler"
-		@open-room="open_room_handler"
 		@ignore-user="(o) => send_silence_user_command_handler('+')(o)"
+		@open-colors-box="open_colors_box_handler"
+		@open-room="open_room_handler"
 		@send-message="send_message_handler"
 		@unignore-user="(o) => send_silence_user_command_handler('-')(o)"
 	/>

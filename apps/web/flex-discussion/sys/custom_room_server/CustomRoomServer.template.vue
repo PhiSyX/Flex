@@ -13,11 +13,17 @@ interface Props
 	vademecumUrl: string;
 	currentNickname: string;
 	room: ServerCustomRoom;
+	textFormatBold?: boolean | null;
+	textFormatItalic?: boolean | null;
+	textFormatUnderline?: boolean | null;
+	textColorBackground?: number | null;
+	textColorForeground?: number | null;
 }
 
 interface Emits
 {
 	(event_name: "change-nickname", event: MouseEvent): void;
+	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "open-room", room_id: RoomID): void;
 	(event_name: "send-message", message: string): void;
 }
@@ -34,6 +40,7 @@ const emit = defineEmits<Emits>();
 // -------- //
 
 const change_nickname_request_handler = (event: MouseEvent) => emit("change-nickname", event);
+const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const send_message_handler = (message: string) => emit("send-message", message);
 </script>
@@ -43,7 +50,13 @@ const send_message_handler = (message: string) => emit("send-message", message);
 		<Room
 			:current-client-nickname="currentNickname"
 			:room="room"
+			:text-format-bold="textFormatBold"
+			:text-format-italic="textFormatItalic"
+			:text-format-underline="textFormatUnderline"
+			:text-color-background="textColorBackground"
+			:text-color-foreground="textColorForeground"
 			@change-nickname="change_nickname_request_handler"
+			@open-colors-box="open_colors_box_handler"
 			@open-room="open_room_handler"
 			@send-message="send_message_handler"
 		>

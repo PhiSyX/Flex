@@ -28,7 +28,7 @@
 @import "./access-level";
 
 :root {
-	@include colors.use-colors;
+	@include fx.define-colors;
 }
 
 @include ice.use-ice-scheme;
