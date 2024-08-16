@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter as use_router } from "vue-router";
 
 import { View } from "@phisyx/flex-chat";
 
@@ -12,7 +12,7 @@ import NavigationArea from "#/sys/navigation_area/NavigationArea.template.vue";
 // Composant //
 // --------- //
 
-let router = useRouter();
+let router = use_router();
 
 let chat_store = use_chat_store();
 let settings_store = use_settings_store();
@@ -22,20 +22,6 @@ let navigation_bar_position = computed(
 		? "ltl" 
 		: "rtl"
 );
-
-let servers = computed(() => {
-	let network = chat_store.network();
-	return [
-		{
-			active: network.is_active(),
-			connected: network.is_connected(),
-			folded: false,
-			id: network.id(),
-			name: network.name,
-			rooms: chat_store.rooms,
-		},
-	];
-});
 
 // ------- //
 // Handler //
@@ -64,7 +50,7 @@ function open_channel_list_handler()
 
 <template>
 	<NavigationArea
-		:servers="servers"
+		:servers="chat_store.servers"
 		@change-room="change_room_handler"
 		@close-room="close_room_handler"
 		@open-channel-list="open_channel_list_handler"

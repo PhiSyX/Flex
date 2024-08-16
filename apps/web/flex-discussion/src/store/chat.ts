@@ -470,11 +470,26 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	// Le pseudo du client courant.
 	let current_client_nickname = computed(() => current_client.value.nickname);
 
-	// Liste des salons (récupérés préalablement via /LIST)
-	let channels_list_arr = computed(() => store.get_channel_list());
-
+	
 	// Toutes les chambres.
 	let rooms = computed(() => store.room_manager().rooms());
+
+	let servers = computed(() => {
+		let network = store.network();
+		return [
+			{
+				active: network.is_active(),
+				connected: network.is_connected(),
+				folded: false,
+				id: network.id(),
+				name: network.name,
+				rooms: rooms.value,
+			},
+		];
+	});
+
+	// Liste des salons (récupérés préalablement via /LIST)
+	let channels_list_arr = computed(() => store.get_channel_list());
 
 	/**
 	 * Émet la commande /LIST vers le serveur et redirige vers sa vue.
@@ -499,6 +514,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		current_client,
 		current_client_nickname,
 		rooms,
+		servers,
 
 		// -------- //
 		// Redirect //

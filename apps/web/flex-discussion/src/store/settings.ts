@@ -12,15 +12,84 @@ import {
 	acceptHMRUpdate as accept_hmr_update,
 	defineStore as define_store
 } from "pinia";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 
 import { SettingsStore } from "@phisyx/flex-chat";
 
 export const use_settings_store = define_store(SettingsStore.NAME, () => {
 	let store = reactive(new SettingsStore()) as SettingsStore;
+
+	let layout = computed(() => store.layout);
+	let notification = computed(() => store.notification);
+	let personalization = computed(() => store.personalization);
+
+	let text_format_bold_mut = computed({
+		get() {
+			return store.personalization.formats.bold;
+		},
+		set($1) {
+			store.personalization.formats = {
+				...store.personalization.formats,
+				bold: $1,
+			};
+		}
+	});
+	let text_format_italic_mut = computed({
+		get() {
+			return store.personalization.formats.italic;
+		},
+		set($1) {
+			store.personalization.formats = {
+				...store.personalization.formats,
+				italic: $1,
+			};
+		}
+	});
+	let text_format_underline_mut = computed({
+		get() {
+			return store.personalization.formats.underline;
+		},
+		set($1) {
+			store.personalization.formats = {
+				...store.personalization.formats,
+				underline: $1,
+			};
+		}
+	});
+
+	let text_color_background_mut = computed({
+		get() {
+			return store.personalization.colors.background;
+		},
+		set($1) {
+			store.personalization.colors = {
+				...store.personalization.colors,
+				background: $1,
+			};
+		}
+	});
+	let text_color_foreground_mut = computed({
+		get() {
+			return store.personalization.colors.foreground;
+		},
+		set($1) {
+			store.personalization.colors = {
+				...store.personalization.colors,
+				foreground: $1,
+			};
+		}
+	});
+
 	return {
-		...store,
+		layout,
+		notification,
+		personalization,
 		persist: store.persist.bind(store),
+		text_format_bold_mut,
+		text_format_italic_mut,
+		text_format_underline_mut,
+		text_color_background_mut,
+		text_color_foreground_mut,
 	};
 });
 

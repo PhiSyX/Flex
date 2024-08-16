@@ -130,22 +130,11 @@ let channel_activities = computed(() => {
 // Liste de la complétion pour la boite de saisie.
 let completion_list = computed(() => chat_store.all_commands(props.room));
 
-/// Affichage de la liste des utilisateurs
-let userlist_display = computed(
-	() => settings_store.layout.channel_userlist_display as boolean,
+let room_info_position = computed(
+	() => settings_store.layout.channel_userlist_position === 'left'
+		? 0 
+		: 1
 );
-
-/// Position de la liste des utilisateurs
-let userlist_position = computed(
-	() => settings_store.layout.channel_userlist_position,
-);
-
-let format_bold = computed(() => settings_store.personalization.formats.bold);
-let format_italic = computed(() => settings_store.personalization.formats.italic);
-let format_underline = computed(() => settings_store.personalization.formats.underline);
-
-let color_background = computed(() => settings_store.personalization.colors.background);
-let color_foreground = computed(() => settings_store.personalization.colors.foreground);
 
 // ------- //
 // Handler //
@@ -339,12 +328,12 @@ function toggle_select_channel_member_handler(origin: Origin)
 		:current-nickname="chat_store.current_client_nickname"
 		:room="room"
 		:selected-member="selected_member"
-		:text-format-bold="format_bold"
-		:text-format-italic="format_italic"
-		:text-format-underline="format_underline"
-		:text-color-background="color_background"
-		:text-color-foreground="color_foreground"
-		:userlist-displayed-by-default="userlist_display"
+		:text-format-bold="settings_store.personalization.formats.bold"
+		:text-format-italic="settings_store.personalization.formats.italic"
+		:text-format-underline="settings_store.personalization.formats.underline"
+		:text-color-background="settings_store.personalization.colors.background"
+		:text-color-foreground="settings_store.personalization.colors.foreground"
+		:userlist-displayed-by-default="settings_store.layout.channel_userlist_display ?? true"
 		@ban-member="send_ban_member_command"
 		@ban-nick="send_ban_member_nick_command"
 		@change-nickname="open_change_nickname_dialog_handler"
@@ -365,7 +354,7 @@ function toggle_select_channel_member_handler(origin: Origin)
 		@unset-access-level="(m, a) => send_access_level_handler('-')(m, a)"
 		@update-topic="send_update_topic_handler"
 		:style="{
-			'--room-info-position': userlist_position === 'left' ? 0 : 1,
+			'--room-info-position': room_info_position,
 		}"
 	>
 		<template v-if="room.kicked" #history>

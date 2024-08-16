@@ -13,75 +13,18 @@ import ChangeFormatsColorsDialogComponent from "#/sys/dialog_change_formats_colo
 
 let settings_store = use_settings_store();
 
-
-let bold = computed({
-	get() {
-		return settings_store.personalization.formats.bold;
-	},
-	set($1) {
-		settings_store.personalization.formats = {
-			...settings_store.personalization.formats,
-			bold: $1,
-		};
-	}
-});
-let italic = computed({
-	get() {
-		return settings_store.personalization.formats.italic;
-	},
-	set($1) {
-		settings_store.personalization.formats = {
-			...settings_store.personalization.formats,
-			italic: $1,
-		};
-	}
-});
-let underline = computed({
-	get() {
-		return settings_store.personalization.formats.underline;
-	},
-	set($1) {
-		settings_store.personalization.formats = {
-			...settings_store.personalization.formats,
-			underline: $1,
-		};
-	}
-});
-
-let background = computed({
-	get() {
-		return settings_store.personalization.colors.background;
-	},
-	set($1) {
-		settings_store.personalization.colors = {
-			...settings_store.personalization.colors,
-			background: $1,
-		};
-	}
-});
-let foreground = computed({
-	get() {
-		return settings_store.personalization.colors.foreground;
-	},
-	set($1) {
-		settings_store.personalization.colors = {
-			...settings_store.personalization.colors,
-			foreground: $1,
-		};
-	}
-});
 let { teleport_id, dialog, update_dialog } = use_dialog(ChangeFormatsColorsDialog);
 </script>
 
 <template>
 	<Teleport v-if="dialog.exists()" :to="teleport_id">
 		<ChangeFormatsColorsDialogComponent 
-			v-model:bold="bold"
-			v-model:italic="italic"
-			v-model:underline="underline"
-			v-model:background="background"
-			v-model:foreground="foreground"
-			v-mutation:opt.attributes.children="mutation_handler"
+			v-model:bold="settings_store.text_format_bold_mut"
+			v-model:italic="settings_store.text_format_italic_mut"
+			v-model:underline="settings_store.text_format_underline_mut"
+			v-model:background="settings_store.text_color_background_mut"
+			v-model:foreground="settings_store.text_color_foreground_mut"
+			v-mutation:opt.attributes.children="update_dialog"
 		/>
 	</Teleport>
 </template>
