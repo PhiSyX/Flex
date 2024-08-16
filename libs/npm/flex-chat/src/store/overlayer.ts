@@ -220,18 +220,23 @@ export class OverlayerStore
 		let mouse_position: Layer["mouse_position"] = layer.mouse_position || {};
 
 		if (!layer.centered && layer.dom_element && this.$overlayer && this.$teleport) {
+			let overlayer_rect = this.$overlayer.getBoundingClientRect();
 			let dom_element_rect = layer.dom_element.getBoundingClientRect();
 			let teleport_rect = this.$teleport.getBoundingClientRect();
 
-			mouse_position.left = to_px(
-				dom_element_rect.left - 
-				MOUSE_POSITION_PADDING
-			)
-			mouse_position.top = to_px(
-				dom_element_rect.top - 
-				teleport_rect.height - 
-				(MOUSE_POSITION_PADDING * 2)
-			);
+			let top = dom_element_rect.top - teleport_rect.height - (MOUSE_POSITION_PADDING * 2);
+			let left = dom_element_rect.left - MOUSE_POSITION_PADDING;
+
+			if (left + teleport_rect.width > overlayer_rect.width) {
+				left = overlayer_rect.width - (teleport_rect.width + MOUSE_POSITION_PADDING * 4);
+			}
+
+			if (top + teleport_rect.height > overlayer_rect.height) {
+				top = overlayer_rect.height - (teleport_rect.height + MOUSE_POSITION_PADDING * 4);
+			}
+
+			mouse_position.top = to_px(top);
+			mouse_position.left = to_px(left)
 		}
 
 		this.layers.set(layer_id, { ...layer, style, mouse_position });
