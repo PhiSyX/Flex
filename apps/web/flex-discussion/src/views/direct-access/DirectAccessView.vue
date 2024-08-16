@@ -231,7 +231,6 @@ function disconnect_handler()
 								v-if="user.account?.avatar"
 								:src="user.account.avatar"
 								:title="image_title_attribute"
-								:prefixed="false"
 								size="3"
 								class="[ cursor:pointer ]"
 								@click="disconnect_handler"

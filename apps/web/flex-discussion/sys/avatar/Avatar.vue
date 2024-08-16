@@ -26,7 +26,6 @@ let image_alt = computed(() => props.alt || `Avatar #${props.id}`);
 <template>
     <UiImage
         :src="image_url"
-        :prefixed="false"
         :alt="image_alt"
         :rounded="true"
         size="3"

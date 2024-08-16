@@ -15,7 +15,7 @@ use_check_auth();
 <template>
 	<div id="app">
 		<RouterView v-slot="{ Component }">
-			<KeepAlive>
+			<KeepAlive :exclude="/^DirectAccessView$/">
 				<component :is="Component" />
 			</KeepAlive>
 		</RouterView>
