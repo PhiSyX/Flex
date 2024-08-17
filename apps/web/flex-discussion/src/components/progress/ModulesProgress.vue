@@ -16,7 +16,7 @@ let has_load_all_modules_layer = computed(() =>
 );
 
 let load_all_modulesLayer = computed(() => {
-	return overlayer_store.get("load-all-modules") as Layer<{
+	return overlayer_store.get_unchecked("load-all-modules") as Layer<{
 		module_name?: string;
 		total_loaded: number;
 		loaded: number;
@@ -27,7 +27,7 @@ let load_all_modulesLayer = computed(() => {
 	<Teleport v-if="has_load_all_modules_layer" to="#load-all-modules_teleport">
 		<div
 			v-if="load_all_modulesLayer && load_all_modulesLayer.data"
-			class="align-t:center"
+			class="[ align-t:center ]"
 		>
 			<p>
 				Chargement des modules

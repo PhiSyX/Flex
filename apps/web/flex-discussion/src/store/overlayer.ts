@@ -31,6 +31,7 @@ export const use_overlayer_store = define_store(OverlayerStore.ID, () => {
 		destroy: store.destroy.bind(store),
 		destroy_all: store.destroy_all.bind(store),
 		get: store.get.bind(store),
+		get_unchecked: store.get_unchecked.bind(store),
 		has: store.has.bind(store),
 		has_layers,
 		layers,
