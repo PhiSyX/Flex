@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 import type { Module } from "../interface";
 import { PrivmsgCommand } from "./command";
 import { PrivmsgHandler } from "./handler";
@@ -25,7 +25,8 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 
 	static NAME = "PRIVMSG";
 
-	static create(store: ChatStoreInterface): PrivmsgModule {
+	static create(store: ChatStoreInterface & ChatStoreInterfaceExt): PrivmsgModule 
+	{
 		return new PrivmsgModule(
 			new PrivmsgCommand(store),
 			new PrivmsgHandler(store),
@@ -46,27 +47,14 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 	// ------- //
 
 	input(
-		room_id: RoomID,
+		_: RoomID,
 		formats: Commands["PRIVMSG"]["formats"],
 		colors: Commands["PRIVMSG"]["colors"],
 		targets_raw?: string,
 		...words: Array<string>
 	)
 	{
-		if (room_id.startsWith("@")) {
-			let targets = targets_raw?.split(",");
-			if (!targets) {
-				return;
-			}
-			let text = words.join(" ");
-			this.send({ formats, colors, targets, text });
-			return;
-		}
-
-		let targets = [room_id];
-		if (targets_raw) {
-			words.unshift(targets_raw);
-		}
+		let targets = targets_raw?.split(",") || [];
 		let text = words.join(" ");
 		this.send({ formats, colors, targets, text });
 	}
