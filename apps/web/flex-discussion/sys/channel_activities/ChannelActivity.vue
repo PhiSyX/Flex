@@ -41,6 +41,7 @@ defineProps<Props>();
 					<template #some="{ data: member }">
 						<ChannelNick
 							:id="member.id"
+							:is-current-client="member.is_current_client"
 							:nickname="member.nickname"
 							:classes="member.class_name"
 							:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
@@ -48,6 +49,7 @@ defineProps<Props>();
 					</template>
 					<template #none>
 						<ChannelNick
+							:is-current-client="previous_message.message.is_current_client"
 							:nickname="previous_message.message.nickname"
 						/>
 					</template>
@@ -62,26 +64,30 @@ defineProps<Props>();
 		</li>
 	</ul>
 
-	<li class="activities@activity [ flex gap=1 ]">
+	<li class="activities@activity [ gap=1 ]">
 		<div class="[ flex:shrink=0 ]">
 			<icon-event />
 		</div>
 
-		<div class="[ flex:full ]">
-			<Match :maybe="activity.member">
-				<template #some="{ data: member }">
-					<ChannelNick
-						:id="member.id"
-						:nickname="member.nickname"
-						:classes="member.class_name"
-						:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
-					/>
-				</template>
-				<template #none>
-					<ChannelNick :nickname="activity.message.nickname" />
-				</template>
-			</Match>
-
+		<Match :maybe="activity.member">
+			<template #some="{ data: member }">
+				<ChannelNick
+					:id="member.id"
+					:is-current-client="member.is_current_client"
+					:nickname="member.nickname"
+					:classes="member.class_name"
+					:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
+				/>
+			</template>
+			<template #none>
+				<ChannelNick
+					:is-current-client="activity.message.is_current_client"
+					:nickname="activity.message.nickname"
+				/>
+			</template>
+		</Match>
+			
+		<div>
 			<span>: </span>
 
 			<p class="[ display-i hyphens ]">
@@ -92,6 +98,17 @@ defineProps<Props>();
 </template>
 
 <style lang="scss" scoped>
+@use "scss:~/flexsheets" as fx;
+
+@include fx.class("activities@activity") {
+	display: grid;
+	grid-template-columns: 24px auto auto 1fr;
+	align-items: start;
+	.expanded & {
+		align-items: center;
+	}
+}
+
 p {
 	line-height: 24px;
 	color: var(--channel-activities-color);

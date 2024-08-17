@@ -28,18 +28,18 @@ interface Props
 
 const props =withDefaults(defineProps<Props>(), { tag: "bdo" });
 
-let image_alt = computed(() => `Avatar du compte de ${props.nickname}.`);
+let avatar_alt = computed(
+	() => props.id 
+		? `Avatar du compte de ${props.nickname}.`
+		: undefined
+);
+let avatar_or_span = computed(() => props.id ? Avatar : "span");
 </script>
 
 <template>
-	<component
-		:is="tag"
-		:data-myself="isCurrentClient"
-		:class="classes" class="[ i-flex gap=1 align-i:center ]"
-	>
-		<Avatar v-if="id" :id="id" :alt="image_alt" />
-		<span>
-			<span class="prefix">{{ prefix }}</span>
+	<component :is="tag" :data-myself="isCurrentClient" :class="classes">
+		<component :is="avatar_or_span" :id="id" :alt="avatar_alt">
+			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<span class="channel/nick:symbol">{{ symbol }}</span>
 			<bdo v-if="hits && hits.length > 0" :class="classes">
 				<template v-for="(substring, idx) of hits" :key="idx">
@@ -53,11 +53,9 @@ let image_alt = computed(() => `Avatar du compte de ${props.nickname}.`);
 					<mark v-else :key="idx + '?'">{{ nickname }}</mark>
 				</template>
 			</bdo>
-			<bdo v-else :class="classes">
-				{{ nickname }}
-			</bdo>
-			<span class="suffix">{{ suffix }}</span>
-		</span>
+			<bdo v-else :class="classes">{{ nickname }}</bdo>
+			<span v-if="suffix" class="suffix">{{ suffix }}</span>
+		</component>
 	</component>
 </template>
 

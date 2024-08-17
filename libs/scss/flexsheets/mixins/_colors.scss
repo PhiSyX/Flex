@@ -368,7 +368,7 @@ $variants-globals: (
 	--#{"" + $name}: #{$value};
 }
 
-@mixin --define-colors-variant($preset_name, $presets: ()) {
+@mixin define-colors-variant2($preset_name, $presets: ()) {
 	@each $variant, $color in $presets {
 		@include define-variable(
 			color-#{"" + $preset_name}#{"" + $variant},
@@ -391,44 +391,44 @@ $variants-globals: (
 
 @mixin define-colors-variant($preset_name) {
 	@if $preset_name == globals {
-		@include --define-colors-variant("", $variants-globals);
+		@include define-colors-variant2("", $variants-globals);
 	} @else if $preset_name == amber {
-		@include --define-colors-variant(amber, $variants-amber);
+		@include define-colors-variant2(amber, $variants-amber);
 	} @else if $preset_name == blue {
-		@include --define-colors-variant(blue, $variants-blue);
+		@include define-colors-variant2(blue, $variants-blue);
 	} @else if $preset_name == blue-grey {
-		@include --define-colors-variant(blue-grey, $variants-blue-grey);
+		@include define-colors-variant2(blue-grey, $variants-blue-grey);
 	} @else if $preset_name == brown {
-		@include --define-colors-variant(brown, $variants-brown);
+		@include define-colors-variant2(brown, $variants-brown);
 	} @else if $preset_name == cyan {
-		@include --define-colors-variant(cyan, $variants-cyan);
+		@include define-colors-variant2(cyan, $variants-cyan);
 	} @else if $preset_name == deep-orange {
-		@include --define-colors-variant(deep-orange, $variants-deep-orange);
+		@include define-colors-variant2(deep-orange, $variants-deep-orange);
 	} @else if $preset_name == deep-purple {
-		@include --define-colors-variant(deep-purple, $variants-deep-purple);
+		@include define-colors-variant2(deep-purple, $variants-deep-purple);
 	} @else if $preset_name == green {
-		@include --define-colors-variant(green, $variants-green);
+		@include define-colors-variant2(green, $variants-green);
 	} @else if $preset_name == grey {
-		@include --define-colors-variant(grey, $variants-grey);
+		@include define-colors-variant2(grey, $variants-grey);
 	} @else if $preset_name == indigo {
-		@include --define-colors-variant(indigo, $variants-indigo);
+		@include define-colors-variant2(indigo, $variants-indigo);
 	} @else if $preset_name == light-blue {
-		@include --define-colors-variant(light-blue, $variants-light-blue);
+		@include define-colors-variant2(light-blue, $variants-light-blue);
 	} @else if $preset_name == light-green {
-		@include --define-colors-variant(light-green, $variants-light-green);
+		@include define-colors-variant2(light-green, $variants-light-green);
 	} @else if $preset_name == lime {
-		@include --define-colors-variant(lime, $variants-lime);
+		@include define-colors-variant2(lime, $variants-lime);
 	} @else if $preset_name == orange {
-		@include --define-colors-variant(orange, $variants-orange);
+		@include define-colors-variant2(orange, $variants-orange);
 	} @else if $preset_name == pink {
-		@include --define-colors-variant(pink, $variants-pink);
+		@include define-colors-variant2(pink, $variants-pink);
 	} @else if $preset_name == purple {
-		@include --define-colors-variant(purple, $variants-purple);
+		@include define-colors-variant2(purple, $variants-purple);
 	} @else if $preset_name == red {
-		@include --define-colors-variant(red, $variants-red);
+		@include define-colors-variant2(red, $variants-red);
 	} @else if $preset_name == teal {
-		@include --define-colors-variant(teal, $variants-teal);
+		@include define-colors-variant2(teal, $variants-teal);
 	} @else if $preset_name == yellow {
-		@include --define-colors-variant(yellow, $variants-yellow);
+		@include define-colors-variant2(yellow, $variants-yellow);
 	}
 }

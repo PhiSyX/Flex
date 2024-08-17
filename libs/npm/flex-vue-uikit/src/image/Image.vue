@@ -72,6 +72,11 @@ interface Props
 	 * @default DEV=1
 	 */
 	refreshTime?: number;
+
+	/**
+	 * Mettre le text à droite de l'image.
+	 */
+	textInline?: boolean;
 }
 
 // --------- //
@@ -198,8 +203,15 @@ function get_img_src()
 <template>
 	<Match :maybe="source">
 		<template #some="{ data: source }">
-			<div class="image" v-intersection="intersect_handler">
-				<figure class="[ m=0 align-t:center ]">
+			<div v-intersection="intersect_handler"
+				class="image"
+				:class="{
+					'image:vertical': !textInline,
+				}"
+			>
+				<figure class="[ m=0  gap=1 ]" :class="{
+					'i-flex align-i:center': textInline,
+				}">
 					<img
 						ref="$image"
 						v-bind="$attrs"
@@ -222,7 +234,7 @@ function get_img_src()
 						@error="error_fallback_handler"
 					/>
 
-					<figcaption class="[ align-t:center ]">
+					<figcaption>
 						<slot />
 					</figcaption>
 				</figure>
@@ -230,3 +242,14 @@ function get_img_src()
 		</template>
 	</Match>
 </template>
+
+<style scoped>
+.image\:vertical {
+	display: inline-grid;
+}
+.image\:vertical figure {
+	display: grid;
+	grid-template-rows: auto auto;
+	justify-items: center;
+}
+</style>

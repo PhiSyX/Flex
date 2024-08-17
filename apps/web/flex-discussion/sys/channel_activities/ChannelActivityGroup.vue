@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type {
-    ChannelActivitiesView,
-    ChannelMember,
-    ChannelRoom,
+	ChannelActivitiesView,
+	ChannelMember,
+	ChannelRoom,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 

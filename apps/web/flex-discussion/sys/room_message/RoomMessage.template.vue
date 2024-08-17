@@ -68,8 +68,9 @@ let _is_channel = computed(
 let _is_private = computed(() => props.nickname !== "*" && !_is_channel.value);
 
 let maybe_channel_member = computed(() => {
-	let member = new ChannelMember(props.data.origin);
-	
+	let member = new ChannelMember(props.data.origin)
+		.with_is_current_client(props.isCurrentClient);
+
 	if ("access_level" in props.data.origin) {
 		member = member.with_access_level(props.data.origin.access_level);
 	}
