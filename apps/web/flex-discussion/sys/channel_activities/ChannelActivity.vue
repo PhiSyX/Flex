@@ -36,7 +36,6 @@ defineProps<Props>();
 				<icon-event />
 			</div>
 
-			<div class="[ flex:full ]">
 				<Match :maybe="previous_message.member">
 					<template #some="{ data: member }">
 						<ChannelNick
@@ -55,6 +54,7 @@ defineProps<Props>();
 					</template>
 				</Match>
 
+			<div>
 				<span>: </span>
 
 				<p class="[ display-i hyphens ]">
