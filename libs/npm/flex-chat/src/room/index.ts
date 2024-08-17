@@ -272,6 +272,9 @@ export class Room<R = RoomID, Type extends string = string>
 	/**
 	 * Retourne un message parmi la liste des messages en fonction d'un ID.
 	 */
+	// NOTE: Même si un message a été envoyé au salon, le message peut être ne
+	// pas être trouvé, car: les messages sauvegardés sont limités à 250
+	// messages par salons.
 	get_message<D extends object>(
 		id: RoomMessage<R, D>["id"],
 	): Option<RoomMessage<R, D>>

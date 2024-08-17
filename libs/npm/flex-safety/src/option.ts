@@ -100,12 +100,12 @@ class Option<T>
 		return this.value == null;
 	}
 
-	clone()
+	clone(): Option<T>
 	{
 		if (this.is_some()) {
-			return Some(this.value);
+			return Some(this.value) as unknown as Option<T>;
 		}
-		return None();
+		return None() as unknown as Option<T>;
 	}
 
 	/**

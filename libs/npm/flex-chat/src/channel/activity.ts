@@ -32,8 +32,7 @@ export interface ChannelActivity
 {
 	channel: ChannelRoom;
 	member: Option<ChannelMember | User>;
-	message: RoomMessage<ChannelID,
-	{ text: string }>;
+	message: Option<RoomMessage<ChannelID, { text: string }>>;
 	previousMessages: Array<ChannelActivity>;
 }
 export interface ChannelActivityRef

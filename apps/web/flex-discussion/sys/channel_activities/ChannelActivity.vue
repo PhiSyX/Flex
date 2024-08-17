@@ -32,69 +32,73 @@ defineProps<Props>();
 			v-for="previous_message of activity.previousMessages"
 			class="activities@activity [ flex gap=1 ]"
 		>
-			<div class="[ flex:shrink=0 ]" style="visibility: hidden">
-				<icon-event />
-			</div>
+			<Match :maybe="previous_message.message">
+				<template #some="{ data: message }">
+					<div class="[ flex:shrink=0 vis:h ]">
+						<icon-event />
+					</div>
 
-				<Match :maybe="previous_message.member">
+					<Match :maybe="previous_message.member">
+						<template #some="{ data: member }">
+							<ChannelNick
+								:id="member.id"
+								:is-current-client="member.is_current_client"
+								:nickname="member.nickname"
+								:classes="member.class_name"
+								:symbol="
+									is_channel_member(member)
+										? member.access_level.highest.symbol
+										: undefined
+								"
+							/>
+						</template>
+					</Match>
+
+					<div>
+						<span>: </span>
+
+						<p class="[ display-i hyphens ]">
+							{{ message }}
+						</p>
+					</div>
+				</template>
+			</Match>
+		</li>
+	</ul>
+
+	<Match :maybe="activity.message">
+		<template #some="{ data: message }">
+			<li class="activities@activity [ gap=1 ]">
+				<div class="[ flex:shrink=0 ]">
+					<icon-event />
+				</div>
+
+				<Match :maybe="activity.member">
 					<template #some="{ data: member }">
 						<ChannelNick
 							:id="member.id"
 							:is-current-client="member.is_current_client"
 							:nickname="member.nickname"
 							:classes="member.class_name"
-							:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
-						/>
-					</template>
-					<template #none>
-						<ChannelNick
-							:is-current-client="previous_message.message.is_current_client"
-							:nickname="previous_message.message.nickname"
+							:symbol="
+								is_channel_member(member)
+									? member.access_level.highest.symbol
+									: undefined
+							"
 						/>
 					</template>
 				</Match>
 
-			<div>
-				<span>: </span>
+				<div>
+					<span>: </span>
 
-				<p class="[ display-i hyphens ]">
-					{{ previous_message.message.message }}
-				</p>
-			</div>
-		</li>
-	</ul>
-
-	<li class="activities@activity [ gap=1 ]">
-		<div class="[ flex:shrink=0 ]">
-			<icon-event />
-		</div>
-
-		<Match :maybe="activity.member">
-			<template #some="{ data: member }">
-				<ChannelNick
-					:id="member.id"
-					:is-current-client="member.is_current_client"
-					:nickname="member.nickname"
-					:classes="member.class_name"
-					:symbol="is_channel_member(member) ? member.access_level.highest.symbol : undefined"
-				/>
-			</template>
-			<template #none>
-				<ChannelNick
-					:is-current-client="activity.message.is_current_client"
-					:nickname="activity.message.nickname"
-				/>
-			</template>
-		</Match>
-			
-		<div>
-			<span>: </span>
-
-			<p class="[ display-i hyphens ]">
-				{{ activity.message.message }}
-			</p>
-		</div>
-	</li>
+					<p class="[ display-i hyphens ]">
+						{{ message }}
+					</p>
+				</div>
+			</li>
+		</template>
+	</Match>
 </template>
 
 <style lang="scss" scoped>

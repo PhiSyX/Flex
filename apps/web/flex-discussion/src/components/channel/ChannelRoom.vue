@@ -75,18 +75,20 @@ let channel_activities = computed(() => {
 			room.get_message<{ text: string }>(activity.message_id);
 
 		let previous_messages = activity.previous_messages_ids.map((msgid) => {
-			let message = room.get_message(msgid).unwrap();
-			return make_activity(room, {
+			let maybe_message = room.get_message(msgid);
+			return maybe_message.map((message) => make_activity(room, {
 				message_id: msgid,
 				nickname: message.nickname,
 				previous_messages_ids: [],
-			});
-		});
+			}));
+		})
+			.filter((maybe) => maybe.is_some())
+			.map((maybe) => maybe.unwrap());
 
 		return {
 			channel: props.room,
 			member,
-			message: message.unwrap(),
+			message: message,
 			previousMessages: previous_messages,
 		};
 	}
