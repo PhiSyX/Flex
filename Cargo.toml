@@ -30,7 +30,8 @@ log = { version = "0.4.22" }
 regex = { version = "1.10.6" }
 serde = { version = "1.0.206", features = ["derive"] }
 serde_json = { version = "1.0.123" }
-socketioxide = { version = "0.13.1", features = ["extensions", "state"] }
+# Les versions 13+ de socketioxide semblent contenir des problèmes de performences.
+socketioxide = { version = "0.12.0", features = ["extensions", "state"] }
 sqlx = { version = "0.8.0", features = ["chrono", "postgres", "uuid"] }
 syn = { version = "2.0.74", features = ["full"] }
 thiserror = { version = "1.0.63" }
