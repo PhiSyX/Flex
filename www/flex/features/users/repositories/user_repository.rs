@@ -87,8 +87,8 @@ impl UserRepository for UserRepositoryPostgreSQL
 	) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!(
-			"INSERT INTO {} (id,name,email,password,role) VALUES \
-			 (gen_random_uuid(),$1,$2,$3,$4::users_role)",
+			"INSERT INTO {} (id,name,email,password,role,created_at,updated_at) VALUES \
+			 (gen_random_uuid(),$1,$2,$3,$4::users_role,NOW(),NOW())",
 			Self::TABLE_NAME
 		);
 		let payload = [

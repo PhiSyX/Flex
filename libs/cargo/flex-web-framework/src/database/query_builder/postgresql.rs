@@ -48,7 +48,8 @@ impl SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>
 		T: Send + Unpin,
 		T: std::fmt::Debug,
 	{
-		let mut q = sqlx::query_as(raw_query);
+		let query = format!("{raw_query} RETURNING *");
+		let mut q = sqlx::query_as(&query);
 		for binding in bindings {
 			q = q.bind(binding);
 		}

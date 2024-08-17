@@ -9,20 +9,15 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { onMounted as on_mounted } from "vue";
-import { useRouter as use_router } from "vue-router";
-
-import { View } from "@phisyx/flex-chat";
 
 import { use_user_store } from "~/store";
 
 export function use_check_auth()
 {
-    let router = use_router();
     let user_store = use_user_store();
 
     on_mounted(() => {
         user_store.fetch().then((current_user) => {
-            router.replace({ name: View.DirectAccess });
             user_store.session(current_user);
         });
     });
