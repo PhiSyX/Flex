@@ -9,131 +9,47 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { test } from "@playwright/test";
-import {
-	containsMessage as containsInChannelMessage,
-	notContainsMessage as notContainsInChannelMessage,
-	selectNickFromUserlist,
-	sendMessage as sendChannelMessage,
-} from "./helpers/channel.js";
-import { connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
-import {
-	containsMessage as containsInPrivateMessage,
-	notContainsMessage as notContainsInPrivateMessage,
-	sendMessage as sendPrivateMessage,
-} from "./helpers/private.js";
-import { openRoomFromNavigation } from "./helpers/room.js";
+import { ChatChannelContext } from "./helpers/channel.js";
+import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Ignorer un utilisateur (message salon)", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
+	let channel = ChatChannelContext.generate_name();
+	let chat_ctx = await ChatBrowserContext.connect(browser, channel);	
+	let { globop: user1, owner: user2 } = await chat_ctx.users_with_permissions();
 
-	const { user1, user2 } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
-
-	await sendChannelMessage(user1.page, channelToJoin, "Hello World");
-	await containsInChannelMessage(user2.page, channelToJoin, "Hello World");
-	await sendChannelMessage(user1.page, channelToJoin, "Comment ça va ?");
-	await containsInChannelMessage(user2.page, channelToJoin, "Comment ça va ?");
+	await user1.chan.send_message("Hello World #1");
+	await user2.chan.send_message("Hello World #2");
 
 	// NOTE: user2 ignore user1
-	await sendChannelMessage(
-		user2.page,
-		channelToJoin,
-		`/silence +${user1.nick}`,
-	);
-	await sendChannelMessage(user1.page, channelToJoin, "Super merci ;-)");
-	await notContainsInChannelMessage(
-		user2.page,
-		channelToJoin,
-		"Super merci ;-)",
-	);
+	await user2.chan.send_message(`/silence +${user1.nick}`);
+	await user1.chan.send_message("Hello World #3");
+	await user2.chan.not_contains_message("Hello World #3");
 
 	// NOTE: user2 n'ignore plus user1
-	await sendChannelMessage(
-		user2.page,
-		channelToJoin,
-		`/silence -${user1.nick}`,
-	);
-	await notContainsInChannelMessage(
-		user2.page,
-		channelToJoin,
-		"Super merci ;-)",
-	);
-	await sendChannelMessage(
-		user1.page,
-		channelToJoin,
-		"Je ne vois pas de quoi tu parles",
-	);
-	await containsInChannelMessage(
-		user2.page,
-		channelToJoin,
-		"Je ne vois pas de quoi tu parles",
-	);
+	await user2.chan.send_message(`/silence -${user1.nick}`);
+	await user1.chan.send_message("Hello World #4");
+	await user2.chan.contains_message("Hello World #4");
 });
 
 test("Ignorer un utilisateur (message privé)", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-	const { user1, user2 } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
+	let channel = ChatChannelContext.generate_name();
+	let chat_ctx = await ChatBrowserContext.connect(browser, channel);	
+	let { globop: user1, owner: user2 } = await chat_ctx.users_with_permissions();
 
-	const $userlistMenu = await selectNickFromUserlist(
-		user1.page,
-		channelToJoin,
-		user2.nick,
-	);
+	let $menu = await user1.chan.select_member(user2);;
+	await $menu.locator("li").getByText("Discuter en privé").click();
+	await user1.priv.send(user2, "Hello World");
 
-	await $userlistMenu.locator("li").getByText("Discuter en privé").click();
-	await sendPrivateMessage(user1.page, user2.nick, "Hello World");
-	const [_, $privateRoom] = await openRoomFromNavigation(
-		user2.page,
-		user1.nick,
-	);
-	await containsInPrivateMessage(
-		user2.page,
-		user1.nick,
-		`${user1.nick} :Hello World`,
-	);
-	await sendPrivateMessage(user1.page, user2.nick, "Comment ça va ?");
-	await containsInPrivateMessage(
-		user2.page,
-		user1.nick,
-		`${user1.nick} :Comment ça va ?`,
-	);
+	// NOTE: user1 ignore user2
+	await user1.priv.ignore(user2);
+	await user2.priv.send(user1, "Tu reçois mon message?");
+	await user1.priv.not_contains_message(user2, "Tu reçois mon message?");
 
-	// NOTE: user2 ignore user1
-	const $btnIgnore = $privateRoom.getByTitle(`Ignorer ${user1.nick}`);
-	await $btnIgnore.click();
-	await sendPrivateMessage(user1.page, user2.nick, "Super merci ;-)");
-	await notContainsInPrivateMessage(
-		user2.page,
-		user1.nick,
-		`${user1.nick} :Super merci ;-)`,
-	);
-	await sendPrivateMessage(user1.page, user2.nick, "????");
-	await notContainsInPrivateMessage(
-		user2.page,
-		user1.nick,
-		`${user1.nick} :????`,
-	);
-
-	// NOTE: user2 n'ignore plus user1
-	const $btnUnignore = $privateRoom.getByTitle(`Ne plus ignorer ${user1.nick}`);
-	await $btnUnignore.click();
-	await sendPrivateMessage(
-		user1.page,
-		user2.nick,
-		"Je ne vois pas de quoi tu parles",
-	);
-	await containsInPrivateMessage(
-		user2.page,
-		user1.nick,
-		`${user1.nick} :Je ne vois pas de quoi tu parles`,
-	);
+	// NOTE: user1 n'ignore plus user2
+	await user1.priv.unignore(user2);
+	await user2.priv.send(user1, "Tu reçois mon message?");
+	await user1.priv.contains_message(user2, "Tu reçois mon message?");
 });

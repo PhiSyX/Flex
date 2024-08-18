@@ -10,13 +10,7 @@
 
 import { test } from "@playwright/test";
 
-import {
-	containsMessage,
-	selectNickFromUserlist,
-	sendMessage,
-} from "./helpers/channel.js";
-import { connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
+import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -24,136 +18,80 @@ import { generateRandomChannel } from "./helpers/context.js";
 test("Change les niveaux d'accès d'un membre via les /<commande>'s", async ({
 	browser,
 }) => {
-	const channelToJoin = generateRandomChannel();
-
-	const { user1: owner, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
 
 	// NOTE: Owner
 
-	const SET = [
+	let SET = [
 		["QOP", "+q"],
 		["AOP", "+a"],
 		["OP", "+o"],
 		["HOP", "+h"],
 		["VIP", "+v"],
 	];
-	for (const [cmd, mode] of SET) {
-		await sendMessage(
-			owner.page,
-			channelToJoin,
-			`/${cmd} ${channelToJoin} ${user.nick}`,
-		);
-		await containsMessage(
-			owner.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
-		await containsMessage(
-			user.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
+	for (let [cmd, mode] of SET) {
+		await owner.chan.send_message(`/${cmd} ${user.nick}`);
+		let mode_set = `* ${owner.nick} a défini les modes: ${mode} ${user.nick}`;
+		await owner.chan.contains_message(mode_set);
+		await user.chan.contains_message(mode_set);
 	}
 
-	const UNSET = [
+	let UNSET = [
 		["DEQOP", "-q"],
 		["DEAOP", "-a"],
 		["DEOP", "-o"],
 		["DEHOP", "-h"],
 		["DEVIP", "-v"],
 	];
-	for (const [cmd, mode] of UNSET) {
-		await sendMessage(
-			owner.page,
-			channelToJoin,
-			`/${cmd} ${channelToJoin} ${user.nick}`,
+	for (let [cmd, mode] of UNSET) {
+		await owner.chan.send_message(
+			`/${cmd} ${user.nick}`,
 		);
-		await containsMessage(
-			owner.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
-		await containsMessage(
-			user.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
+		let mode_set = `* ${owner.nick} a défini les modes: ${mode} ${user.nick}`;
+		await owner.chan.contains_message(mode_set);
+		await user.chan.contains_message(mode_set);
 	}
 
 	// NOTE: User
-	await sendMessage(
-		user.page,
-		channelToJoin,
-		`/op ${channelToJoin} ${owner.nick}`,
-	);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${channelToJoin} :Tu n'es pas opérateur sur ce salon`,
-	);
-	await sendMessage(
-		user.page,
-		channelToJoin,
-		`/deop ${channelToJoin} ${owner.nick}`,
-	);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${channelToJoin} :Tu n'es pas opérateur sur ce salon`,
-	);
+	await user.chan.send_message(`/op ${owner.nick}`, {
+		error(channel) {
+			return `* ${channel} :Tu n'es pas opérateur sur ce salon`;
+		},
+	});
+	await user.chan.send_message(`/deop ${owner.nick}`, {
+		error(channel) {
+			return `* ${channel} :Tu n'es pas opérateur sur ce salon`;
+		},
+	});
 });
 
 test("Change les niveaux d'accès d'un membre via le menu de la liste des utilisateurs du salon", async ({
 	browser,
 }) => {
-	const channelToJoin = generateRandomChannel();
-
-	const { user1: owner, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
 
 	// NOTE: Owner
+	let $menu = await owner.chan.select_member(user);
 
-	const $ownerUserlistMenu = await selectNickFromUserlist(
-		owner.page,
-		channelToJoin,
-		user.nick,
-	);
+	let SET = ["+q", "+a", "+o", "+h", "+v"];
+	for (let mode of SET) {
+		let $mode_item = $menu.locator("li").getByText(mode);
+		await $mode_item.click();
 
-	const SET = ["+q", "+a", "+o", "+h", "+v"];
-	for (const mode of SET) {
-		const $modeItem = $ownerUserlistMenu.locator("li").getByText(mode);
-		await $modeItem.click();
-		await containsMessage(
-			owner.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
-		await containsMessage(
-			user.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
+		let mode_set = `* ${owner.nick} a défini les modes: ${mode} ${user.nick}`;
+		await owner.chan.contains_message(mode_set);
+		await user.chan.contains_message(mode_set);
 	}
 
-	const UNSET = ["-q", "-a", "-o", "-h", "-v"];
-	for (const mode of UNSET) {
-		const $modeItem = $ownerUserlistMenu.locator("li").getByText(mode);
-		await $modeItem.click();
-		await containsMessage(
-			owner.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
+	let UNSET = ["-q", "-a", "-o", "-h", "-v"];
+	for (let mode of UNSET) {
+		let $mode_item = $menu.locator("li").getByText(mode);
+		await $mode_item.click();
 
-		await containsMessage(
-			user.page,
-			channelToJoin,
-			`* ${owner.nick} a défini les modes: ${mode} ${user.nick}`,
-		);
+		let mode_set = `* ${owner.nick} a défini les modes: ${mode} ${user.nick}`;
+		await owner.chan.contains_message(mode_set);
+		await user.chan.contains_message(mode_set);
 	}
 });

@@ -10,91 +10,60 @@
 
 import { test } from "@playwright/test";
 
-import { containsMessage, notContainsMessage, sendMessage } from "./helpers/channel.js";
-import { connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
+import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("(Dé)bannissement d'un membre via la commande /BAN ou /UNBAN", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-
-	const { user1: owner, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
 
 	// NOTE: Application du ban user!*@*
+	await owner.chan.bannick(user);
+	await user.chan.send_message("Hello World", {
+		error(chan) {
+			return `* ${chan} :Impossible d'envoyer un message au salon (+b)`;
+		},
+	});
 
-	await sendMessage(owner.page, channelToJoin, `/BAN ${channelToJoin} ${user.nick}!*@*`);
-	await containsMessage(
-		owner.page,
-		channelToJoin,
-		`* ${owner.nick} a défini les modes: +b ${user.nick}!*@*`,
-	);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${owner.nick} a défini les modes: +b ${user.nick}!*@*`,
-	);
+	// NOTE: Retire le ban sur user!*@*
+	await owner.chan.unbannick(user);
+	await user.chan.send_message("Hello World #2");
 
-	await sendMessage(user.page, channelToJoin, `Hello World`);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${channelToJoin} :Impossible d'envoyer un message au salon (+b)`,
-	);
-
-	// NOTE: Retire le ban
-	await sendMessage(owner.page, channelToJoin, `/UNBAN ${channelToJoin} ${user.nick}!*@*`);
-
-	await sendMessage(user.page, channelToJoin, `Hello World #2`);
-	await containsMessage(owner.page, channelToJoin, `Hello World #2`);
-	await containsMessage(user.page, channelToJoin, `Hello World #2`);
+	await owner.chan.contains_message("Hello World #2");
+	await user.chan.contains_message("Hello World #2");
 });
 
-test("Ajouter/enlever exception d'un bannissement d'un membre via la commande /BANEX ou /UNBANEX", async ({
-	browser,
-}) => {
-	const channelToJoin = generateRandomChannel();
-
-	const { user1: owner, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
+test(
+	"Ajouter/enlever exception d'un bannissement d'un membre via " +
+	"la commande /BANEX ou /UNBANEX", 
+async ({ browser }) => {
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
 
 	// NOTE: Application du ban *!*@* (plus personne ne peut parler à part les modérateurs/opérateurs)
 
-	await sendMessage(owner.page, channelToJoin, `/BAN ${channelToJoin} *!*@*`);
-	await containsMessage(
-		owner.page,
-		channelToJoin,
-		`* ${owner.nick} a défini les modes: +b *!*@*`,
-	);
-	await containsMessage(user.page, channelToJoin, `* ${owner.nick} a défini les modes: +b *!*@*`);
+	await owner.chan.banall();
 
-	await sendMessage(user.page, channelToJoin, `Hello World`);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${channelToJoin} :Impossible d'envoyer un message au salon (+b)`,
-	);
+	await user.chan.send_message("Hello World", {
+		error(chan) {
+			return `* ${chan} :Impossible d'envoyer un message au salon (+b)`;
+		},
+	});
 
 	// NOTE: Application de l'exception
-	await sendMessage(owner.page, channelToJoin, `/BANEX ${channelToJoin} ${user.nick}!*@*`);
-	await sendMessage(user.page, channelToJoin, `Hello World`);
-	await containsMessage(owner.page, channelToJoin, `Hello World`);
-	await containsMessage(user.page, channelToJoin, `Hello World`);
+	await owner.chan.banexcept(`${user.nick}!*@*`);
+	await user.chan.send_message("Hello World #2");
+	await owner.chan.contains_message("Hello World #2");
 
 	// NOTE: Retire l'exception
-	await sendMessage(owner.page, channelToJoin, `/UNBANEX ${channelToJoin} ${user.nick}!*@*`);
-	await sendMessage(user.page, channelToJoin, `Hello World #2`);
-	await notContainsMessage(owner.page, channelToJoin, `Hello World #2`);
-	await notContainsMessage(user.page, channelToJoin, `Hello World #2`);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${channelToJoin} :Impossible d'envoyer un message au salon (+b)`,
-	);
+	await owner.chan.unbanexcept(`${user.nick}!*@*`);
+	await user.chan.send_message("Hello World #3", {
+		error(channel) {
+			return `* ${channel} :Impossible d'envoyer un message au salon (+b)`;
+		},
+	});
+	await owner.chan.not_contains_message("Hello World #3");
+	await user.chan.not_contains_message("Hello World #3");
 });

@@ -8,110 +8,53 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Locator, type Page, expect, test } from "@playwright/test";
-import { containsMessage, sendMessage } from "./helpers/channel.js";
-import { connectChat, connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
+import { test } from "@playwright/test";
+import { ChatChannelContext } from "./helpers/channel.js";
+import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
-async function partChannel(
-	{ page, channel }: { page: Page; channel: string },
-	testFn: (_: {
-		$navRooms: Locator;
-		$navRoomsItems: Locator;
-		$channelRoom: Locator;
-	}) => Promise<void>,
-) {
-	const $navRooms = page.locator(".navigation-area .navigation-server ul");
-	const $navRoomsItems = $navRooms.locator("li");
-	await expect($navRoomsItems).toHaveCount(1);
-
-	const $channelRoom = page.locator(`.room\\/channel[data-room="${channel}"]`);
-
-	await testFn({
-		$navRooms,
-		$navRoomsItems,
-		$channelRoom,
-	});
-
-	await expect($navRoomsItems).toHaveCount(0);
-	await expect($navRoomsItems).not.toHaveCount(1);
-}
-
-test("Partir d'un salon via la commande /PART", async ({ page }) => {
-	await page.goto("/chat");
-	const channelToPart = generateRandomChannel();
-	await connectChat({ page, channels: channelToPart });
-	await partChannel({ page, channel: channelToPart }, () =>
-		sendMessage(page, channelToPart, `/part ${channelToPart} Au revoir les amis.`),
-	);
-});
-
 test("Partir d'un salon via la commande /PART avec un message", async ({ browser }) => {
-	const channelToPart = generateRandomChannel();
-
-	const { user1, user2 } = await connectUsersToChat({ browser }, { channels: channelToPart });
-
-	await partChannel({ page: user1.page, channel: channelToPart }, () =>
-		sendMessage(user1.page, channelToPart, `/part ${channelToPart} Au revoir les amis.`),
-	);
-
-	await containsMessage(
-		user2.page,
-		channelToPart,
-		`* Parts: ${user1.nick} (${user1.nick}@flex.chat) (Au revoir les amis.) `,
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
+	await owner.chan.part("Au revoir les amis.");
+	await user.chan.contains_message(
+		`* Parts: ${owner.nick} (${owner.nick}@flex.chat) (Au revoir les amis.)`
 	);
 });
 
-test("Partir d'un salon via le bouton de fermeture du la navigation", async ({ page }) => {
-	await page.goto("/chat");
-	const channelToPart = generateRandomChannel();
-	await connectChat({ page, channels: channelToPart });
-	await partChannel({ page, channel: channelToPart }, async ({ $navRooms }) => {
-		const $navChannelRoom = $navRooms.locator(`li[data-room="${channelToPart}"]`);
-		await $navChannelRoom.click();
-
-		const $btnCloseChannelRoom = $navChannelRoom.locator(".close");
-		await $btnCloseChannelRoom.click();
-	});
+test("Partir d'un salon via le bouton de fermeture du la navigation", async ({ browser }) => {
+	let channel = ChatChannelContext.generate_name();
+	let chat_ctx = await ChatBrowserContext.connect(browser, channel);
+	await chat_ctx.first().chan.close_from_nav();
+	await chat_ctx.timeout(1000);
+	await chat_ctx.second().chan.contains_message(
+		`* Parts: ${chat_ctx.first().nick} (${chat_ctx.first().nick}@flex.chat)`
+	);
 });
 
-test("Partir d'un salon via le bouton de fermeture du salon", async ({ page }) => {
-	await page.goto("/chat");
-	const channelToPart = generateRandomChannel();
-	await connectChat({ page, channels: channelToPart });
-	await partChannel({ page, channel: channelToPart }, async ({ $channelRoom }) => {
-		const $topicActions = $channelRoom.locator(".room\\/topic\\:action");
-
-		const $btnCloseChannelRoom = $topicActions.locator(".close");
-		await $btnCloseChannelRoom.click();
-	});
+test("Partir d'un salon via le bouton de fermeture du salon", async ({ browser }) => {
+	let channel = ChatChannelContext.generate_name();
+	let chat_ctx = await ChatBrowserContext.connect(browser, channel);
+	await chat_ctx.first().chan.close_from_room();
+	await chat_ctx.timeout(1000);
+	await chat_ctx.second().chan.contains_message(
+		`* Parts: ${chat_ctx.first().nick} (${chat_ctx.first().nick}@flex.chat)`
+	);
 });
 
 test("Partir d'un salon via la commande /SAPART (globop)", async ({ browser }) => {
-	const forceChannelToPart = generateRandomChannel();
-	const channelToJoin = generateRandomChannel();
-	const { user1: globop, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: forceChannelToPart + "," + channelToJoin },
+	let channel = ChatChannelContext.generate_name();
+	let chat_ctx = await ChatBrowserContext.connect(browser, channel);	
+	let { globop, owner } = await chat_ctx.users_with_permissions();
+
+	// NOTE: owner n'est pas un opérateur global.
+	await owner.chan.sapart(channel, globop, { with_permission: false });
+
+	// NOTE: globop est opérateur global.
+	await globop.chan.sapart(channel, owner);
+	await globop.chan.contains_message(
+		`* Parts: ${owner.nick} (${owner.nick}@flex.chat)`
 	);
-
-	// NOTE: globop n'est pas opérateur global.
-	await sendMessage(globop.page, channelToJoin, `/sapart ${user.nick} ${forceChannelToPart}`);
-	await containsMessage(
-		globop.page,
-		channelToJoin,
-		"* Permission refusée. Tu n'as pas les privilèges d'opérateur corrects.",
-	);
-
-	// NOTE: user n'a évidemment pas rejoint ce salon, après le fail.
-	const $navRooms = user.page.locator(".navigation-area .navigation-server ul li");
-	await expect($navRooms).toHaveCount(2);
-
-	// NOTE: globop devient opérateur global.
-	await sendMessage(globop.page, channelToJoin, "/oper test-globop test");
-	await sendMessage(globop.page, channelToJoin, `/sapart ${user.nick} ${forceChannelToPart}`);
-	await expect($navRooms).toHaveCount(1);
 });

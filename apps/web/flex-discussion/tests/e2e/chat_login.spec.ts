@@ -9,46 +9,46 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { expect, test } from "@playwright/test";
-import { generateRandomChannel, generateRandomWord } from "./helpers/context.js";
+import { generate_random_channel, generate_random_word } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Connexion au Chat", async ({ page }) => {
-	const nickname = generateRandomWord();
-	const channelToJoin = generateRandomChannel();
+	let nickname = generate_random_word();
+	let channel_name = generate_random_channel();
 
 	await page.goto("/chat");
 
 	await page.locator("#nickname").fill(nickname);
-	await page.locator("#channels").fill(channelToJoin);
+	await page.locator("#channels").fill(channel_name);
 
-	const $btnLogin = page.locator('#chat-login-view button[type="submit"]');
-	await $btnLogin.click();
+	let $btn = page.locator('#chat-login-view button[type="submit"]');
+	await $btn.click();
 
-	const $navChannelRoom = page
+	let $nav = page
 		.locator(".navigation-area .navigation-server ul li")
-		.getByText(channelToJoin);
+		.getByText(channel_name);
 
-	await $navChannelRoom.click();
+	await $nav.click();
 
-	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(`Tu as rejoint le salon ${channelToJoin}`);
+	let $mainRoom = page.locator(".room\\/main");
+	await expect($mainRoom).toContainText(`Tu as rejoint le salon ${channel_name}`);
 });
 
 test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {
-	const nickname = generateRandomWord();
+	let nickname = generate_random_word();
 
 	await page.goto("/chat");
 	await page.locator("#nickname").fill(nickname);
 	await page.locator("#channels").fill("");
 
-	const $btnLogin = page.locator('#chat-login-view button[type="submit"]');
-	await $btnLogin.click();
+	let $btn = page.locator('#chat-login-view button[type="submit"]');
+	await $btn.click();
 
-	const $navServer = page.locator(".navigation-area .navigation-server");
-	await expect($navServer).toHaveText("Flex");
+	let $nav = page.locator(".navigation-area .navigation-server");
+	await expect($nav).toHaveText("Flex");
 
-	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(`Bienvenue sur le réseau ${nickname}!${nickname}@flex.chat`);
+	let $main = page.locator(".room\\/main");
+	await expect($main).toContainText(`Bienvenue sur le réseau ${nickname}!${nickname}@flex.chat`);
 });

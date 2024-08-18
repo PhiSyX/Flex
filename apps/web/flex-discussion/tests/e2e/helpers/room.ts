@@ -20,7 +20,7 @@ export async function sendMessageInActiveRoom(page: Page, message: string) {
 	await page.waitForTimeout(250);
 }
 
-export async function containsMessageInActiveRoom(page: Page, message: string) {
+export async function contains_message_in_active_room(page: Page, message: string) {
 	const $main = page.locator(".room\\/main");
 	await expect($main).toContainText(message);
 }

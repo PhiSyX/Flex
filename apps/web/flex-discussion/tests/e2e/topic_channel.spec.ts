@@ -9,107 +9,45 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { test } from "@playwright/test";
+import { ChatBrowserContext } from "./helpers/context.js";
 
-import { containsMessage, sendMessage } from "./helpers/channel.js";
-import { connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Changer le sujet d'un salon via la commande /TOPIC", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-	const layerName = "channel-settings-layer";
-	const topic = "Mon super topic";
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
 
-	const { user1: owner, user2: user } = await connectUsersToChat(
-		{ browser },
-		// NOTE: le salon a comme drapeau +t dès la création du salon.
-		{ channels: channelToJoin },
-	);
+	await owner.chan.change_topic("Mon super topic");
 
-	// NOTE: Owner a les droits d'édition. Le premier utilisateur arrivé sur un
-	// salon est automatiquement owner du salon.
-
-	await sendMessage(owner.page, channelToJoin, `/topic ${channelToJoin} ${topic}`);
-
-	await containsMessage(
-		owner.page,
-		channelToJoin,
-		`Tu as mis à jour le sujet du salon ${channelToJoin}: ${topic}`,
-	);
-
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* Topic: ${owner.nick} a mis à jour le sujet du salon: ${topic}`,
-	);
+	await chat_ctx.timeout(250);
+	 
+	await user.chan.contains_message((_) => {
+		return `* Topic: ${owner.nick} a mis à jour le sujet du salon: Mon super topic`
+	});
 
 	// NOTE: User, n'a pas les droits d'édition.
+	await user.chan.change_topic("Mon super topic #2", {
+		error(chan) {
+			return `* ${chan} :Tu n'es pas opérateur sur ce salon`;
+		},
+	});
+});
 
-	await sendMessage(user.page, channelToJoin, `/topic ${channelToJoin} ${topic} #2`);
-
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${channelToJoin} :Tu n'es pas opérateur sur ce salon`,
-	);
-
-	// NOTE: retrait du drapeau -t topic, l'utilisateur a les droits d'édition.
-	const $ownerChannelRoom = owner.page.locator(
-		`.room\\/channel[data-room="${channelToJoin}"] .room\\/main`,
-	);
-	await $ownerChannelRoom.dblclick();
-	await owner.page.waitForTimeout(250);
-	const $ownerTeleport = owner.page.locator(`#${layerName}_teleport`);
-	const $topicSettings = $ownerTeleport
-		.locator("ul li label")
-		.getByText("Seuls les opérateurs peuvent définir un topic (+t)");
-	await $topicSettings.click();
-	const $ownerBtnSubmit = $ownerTeleport.locator('button[type="submit"]');
-	await $ownerBtnSubmit.click();
-	await containsMessage(owner.page, channelToJoin, `* ${owner.nick} a défini les modes: -t`);
-
-	await sendMessage(user.page, channelToJoin, `/topic ${channelToJoin} ${topic} #2`);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`Tu as mis à jour le sujet du salon ${channelToJoin}: ${topic} #2`,
-	);
-	await containsMessage(
-		owner.page,
-		channelToJoin,
-		`* Topic: ${user.nick} a mis à jour le sujet du salon: ${topic} #2`,
-	);
+test("Changer le sujet sans paramètre -t", async ({ browser }) => {
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
+	await owner.chan.undefine_settings("Seuls les opérateurs peuvent définir un topic (+t)");
+	await owner.chan.change_topic("Mon super topic");
+	await user.chan.change_topic("Mon super topic #2");
 });
 
 test("Changer le sujet d'un salon via le champ d'édition du sujet", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-	const topic = "Mon super topic";
-
-	const { user1: owner, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
-
-	const $topicArea = owner.page.locator(".room\\/topic\\:text");
-	const $emptyTopic = $topicArea.locator("p");
-	await $emptyTopic.dblclick();
-	await owner.page.waitForTimeout(250);
-
-	const $inputTopic = $topicArea.locator("input");
-	await $inputTopic.fill(topic);
-	await $inputTopic.blur();
-
-	await containsMessage(
-		owner.page,
-		channelToJoin,
-		`Tu as mis à jour le sujet du salon ${channelToJoin}: ${topic}`,
-	);
-
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* Topic: ${owner.nick} a mis à jour le sujet du salon: ${topic}`,
+	let chat_ctx = await ChatBrowserContext.connect_many(3, browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
+	await owner.chan.change_topic_from_editbox("Mon super topic");
+	await user.chan.contains_message(
+		`* Topic: ${owner.nick} a mis à jour le sujet du salon: Mon super topic`,
 	);
 });

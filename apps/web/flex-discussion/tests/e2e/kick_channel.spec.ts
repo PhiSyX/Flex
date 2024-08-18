@@ -8,15 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 
-import {
-	containsMessage,
-	selectNickFromUserlist,
-	sendMessage,
-} from "./helpers/channel.js";
-import { connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
+import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
@@ -24,58 +18,39 @@ import { generateRandomChannel } from "./helpers/context.js";
 test("Sanctionner d'un KICK un membre de salon via la commande /KICK", async ({
 	browser,
 }) => {
-	const channelToKick = generateRandomChannel();
-	const kickReason = "Dehors !";
-
-	const { user1, user2 } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToKick },
-	);
-
-	await sendMessage(
-		user1.page,
-		channelToKick,
-		`/kick ${channelToKick} ${user2.nick} ${kickReason}`,
-	);
-
-	await containsMessage(
-		user1.page,
-		channelToKick,
-		`* Kicks: ${user2.nick} a été sanctionné par ${user1.nick} (Raison: ${kickReason})`,
-	);
-
-	const $kicked = user2.page.locator(".channel\\/kicked");
-	await expect($kicked).toContainText(
-		`Tu as été sanctionné par ${user1.nick} du salon ${channelToKick} pour la raison suivante « ${kickReason} » !`,
-	);
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
+	await owner.chan.kick(user, "Dehors !");
 });
 
-test("Sanctionner d'un KICK un membre de salon via le menu de la liste des utilisateurs du salon", async ({
-	browser,
-}) => {
-	const channelToKick = generateRandomChannel();
+test(
+	"Sanctionner d'un KICK un membre de salon via le menu de la liste des " +
+	"utilisateurs du salon",
+	async ({ browser }) => {
+		let chat_ctx = await ChatBrowserContext.connect(browser);
+		let { owner, user } = await chat_ctx.users_with_permissions();
+		await owner.chan.kick_using_menu(user, "Kick.");
+	}
+);
 
-	const { user1, user2 } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToKick },
-	);
+test("Sanctionner d'un KICK par un opérateur global (globop)", async ({ browser }) => {
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { globop, owner, user } = await chat_ctx.users_with_permissions();
+	await owner.chan.kick(user, "Dehors !");
+	await owner.chan.kick(globop, "Toi aussi dehors !", {
+		error(chan) {
+			return `* ${chan} ${globop.nick} `
+				+ ":Tu n'as pas le droit de sanctionner d'un KICK cet "
+				+ "utilisateur (protégé par le drapeau +q)";
+		},
+	});
+	await owner.chan.kick_using_menu(globop, "Kick.", {
+		error(chan) {
+			return `* ${chan} ${globop.nick} `
+				+ ":Tu n'as pas le droit de sanctionner d'un KICK cet "
+				+ "utilisateur (protégé par le drapeau +q)";
+		},
+	});
 
-	const $userlistMenu = await selectNickFromUserlist(
-		user1.page,
-		channelToKick,
-		user2.nick,
-	);
-	const $kickItem = $userlistMenu.locator("li").getByText("Expulser");
-	await $kickItem.click();
-
-	await containsMessage(
-		user1.page,
-		channelToKick,
-		`* Kicks: ${user2.nick} a été sanctionné par ${user1.nick} (Raison: Kick.)`,
-	);
-
-	const $kicked = user2.page.locator(".channel\\/kicked");
-	await expect($kicked).toContainText(
-		`Tu as été sanctionné par ${user1.nick} du salon ${channelToKick} pour la raison suivante « Kick. » !`,
-	);
+	await globop.chan.kick(owner, "C'est toi qui ira dehors puisque j'ai tous les droits");
 });

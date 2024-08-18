@@ -9,102 +9,79 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { test } from "@playwright/test";
-import {
-	containsMessage as containsInChannelMessage,
-	notContainsMessage as notContainsInChannelMessage,
-	sendMessage as sendChannelMessage,
-} from "./helpers/channel.js";
-import { connectNUsersToChat, connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
+import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Envoyer /NOTICE à un utilisateur", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
+	let chat_ctx = await ChatBrowserContext.connect(browser);
 
-	const { user1, user2 } = await connectUsersToChat({ browser }, { channels: channelToJoin });
+	await chat_ctx.first().chan.notice("Hello World #1", {
+		target: chat_ctx.second(),
+	});
+	await chat_ctx.second().chan.notice("Hello World #2", {
+		target: chat_ctx.first(),
+	});
 
-	await sendChannelMessage(user1.page, channelToJoin, `/notice ${user2.nick} Hello World`);
-	await containsInChannelMessage(user2.page, channelToJoin, "Hello World");
-
-	await sendChannelMessage(user2.page, channelToJoin, `/notice ${user1.nick} Comment ça va ?`);
-	await containsInChannelMessage(user1.page, channelToJoin, "Comment ça va ?");
+	// NOTE: Tous les autres utilisateurs ne reçoivent pas les notices envoyées
+	// entre deux utilisateurs.
+	for (let user of chat_ctx.users()) {
+		await user.chan.not_contains_message("Hello World #1");
+		await user.chan.not_contains_message("Hello World #2");
+	}
 });
 
+// FIXME: globop
 test("Envoyer /NOTICE à un salon", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-
-	const [globop, owner, halfop, vip, user] = await connectNUsersToChat(5)(
-		{ browser },
-		{ channels: channelToJoin },
-	);
-
-	await sendChannelMessage(globop.page, channelToJoin, "/oper test-globop test");
-
-	await sendChannelMessage(globop.page, channelToJoin, `/deqop ${channelToJoin} ${globop.nick}`);
-	await sendChannelMessage(globop.page, channelToJoin, `/deqop ${channelToJoin} ${halfop.nick}`);
-	await sendChannelMessage(globop.page, channelToJoin, `/deqop ${channelToJoin} ${vip.nick}`);
-	await sendChannelMessage(globop.page, channelToJoin, `/deqop ${channelToJoin} ${user.nick}`);
-	await sendChannelMessage(globop.page, channelToJoin, `/qop ${channelToJoin} ${owner.nick}`);
-	await sendChannelMessage(globop.page, channelToJoin, `/op ${channelToJoin} ${globop.nick}`);
-	await sendChannelMessage(globop.page, channelToJoin, `/hop ${channelToJoin} ${halfop.nick}`);
-	await sendChannelMessage(globop.page, channelToJoin, `/vip ${channelToJoin} ${vip.nick}`);
+	let chat_ctx = await ChatBrowserContext.connect_many(7, browser);
+	let { globop, qop, aop, op, hop, vip, user } = await chat_ctx.all_users_with_access_level();
 
 	// NOTE: NOTICE à tout le salon
-	await sendChannelMessage(user.page, channelToJoin, `/notice ${channelToJoin} YO LES GARS`);
-	const allContains1 = [user, globop, owner, halfop, vip];
-	for (const u of allContains1) {
-		await containsInChannelMessage(
-			u.page,
-			channelToJoin,
-			`-${user.nick}:${channelToJoin}- YO LES GARS`,
+	await user.chan.notice("YO LES GARS");
+	for (let cuser of [globop, qop, aop, op, hop, vip, user]) {
+		await cuser.chan.contains_message(
+			(chan) => `-${user.nick}:${chan}- YO LES GARS`,
 		);
 	}
 
 	// NOTE: NOTICE à tous les opérateurs (%)
-	await sendChannelMessage(
-		halfop.page,
-		channelToJoin,
-		`/notice %${channelToJoin} niveau d'accès HalfOperator min`,
-	);
-	const halfopsAndOperatorsOnly = [globop, owner, halfop];
-	const notHalfopsAndOperators = [user, vip];
-	for (const u of halfopsAndOperatorsOnly) {
-		await containsInChannelMessage(
-			u.page,
-			channelToJoin,
-			`-${halfop.nick}:${channelToJoin}- niveau d'accès HalfOperator min`,
-		);
-	}
-	for (const u of notHalfopsAndOperators) {
-		await notContainsInChannelMessage(
-			u.page,
-			channelToJoin,
-			`-${halfop.nick}:${channelToJoin}- niveau d'accès HalfOperator min`,
+	await hop.chan.notice("niveau d'accès HalfOperator min", {
+		access_level_min: "%",
+	});
+	for (let cuser of [globop, qop, aop, op, hop]) {
+		await cuser.chan.contains_message(
+			(chan) => `-${hop.nick}:${chan}- niveau d'accès HalfOperator min`,
 		);
 	}
 
 	// NOTE: NOTICE à tous les opérateurs (@)
-	await sendChannelMessage(
-		owner.page,
-		channelToJoin,
-		`/notice @${channelToJoin} niveau d'accès Operator min`,
-	);
-	const operatorsOnly = [globop, owner];
-	const notOperators = [user, vip, halfop];
-	for (const u of operatorsOnly) {
-		await containsInChannelMessage(
-			u.page,
-			channelToJoin,
-			`-${owner.nick}:${channelToJoin}- niveau d'accès Operator min`,
+	await op.chan.notice("niveau d'accès Operator min", {
+		access_level_min: "@"
+	});
+	for (let cuser of [globop, qop, aop, op]) {
+		await cuser.chan.contains_message(
+			(chan) => `-${op.nick}:${chan}- niveau d'accès Operator min`,
 		);
 	}
-	for (const u of notOperators) {
-		await notContainsInChannelMessage(
-			u.page,
-			channelToJoin,
-			`-${owner.nick}:${channelToJoin}- niveau d'accès Operator min`,
+
+	// NOTE: NOTICE à tous les opérateurs (&)
+	await aop.chan.notice("niveau d'accès AdminOperator min", {
+		access_level_min: "&"
+	});
+	for (let cuser of [globop, qop, aop]) {
+		await cuser.chan.contains_message(
+			(chan) => `-${aop.nick}:${chan}- niveau d'accès AdminOperator min`,
+		);
+	}
+
+	// NOTE: NOTICE à tous les opérateurs (~)
+	await qop.chan.notice("niveau d'accès OwnerOperator min", {
+		access_level_min: "&"
+	});
+	for (let cuser of [globop, qop]) {
+		await cuser.chan.contains_message(
+			(chan) => `-${qop.nick}:${chan}- niveau d'accès OwnerOperator min`,
 		);
 	}
 });

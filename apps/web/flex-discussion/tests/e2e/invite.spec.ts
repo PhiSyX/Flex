@@ -10,84 +10,36 @@
 
 import { test } from "@playwright/test";
 
-import { containsMessage, sendMessage } from "./helpers/channel.js";
-import { connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
+import { ChatChannelContext } from "./helpers/channel.js";
+import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Invite un utilisateur dans un salon via la commande /INVITE", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-
-	const { user1, user2 } = await connectUsersToChat({ browser }, { channels: channelToJoin });
-
-	const channelToInvite = generateRandomChannel();
-
-	await sendMessage(user1.page, channelToJoin, `/join ${channelToInvite}`);
-	await sendMessage(user1.page, channelToInvite, `/invite ${user2.nick} ${channelToInvite}`);
-
-	await containsMessage(
-		user2.page,
-		channelToJoin,
-		`${user2.nick} a été invité à rejoindre le salon ${channelToInvite}`,
-	);
-	await sendMessage(user2.page, channelToJoin, `/join ${channelToInvite}`);
-	await containsMessage(
-		user2.page,
-		channelToInvite,
-		`Tu as rejoint le salon ${channelToInvite}`,
-	);
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
+	let channel_name_to_invite = ChatChannelContext.generate_name();
+	await owner.chan.join(channel_name_to_invite);
+	await owner.chan.invite(user, channel_name_to_invite);
+	await user.chan.join(channel_name_to_invite);
 });
 
 test("Paramètre de salon +i", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-	const layerName = "channel-settings-layer";
-
-	const { user1: owner, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
-	);
-
-	const channelToInvite = generateRandomChannel();
-
-	await sendMessage(owner.page, channelToJoin, `/join ${channelToInvite}`);
-
-	// NOTE: application du drapeau -i invite_only par le propriétaire,
-	// l'utilisateur n'a pas le droit de rejoindre le salon.
-	const $ownerChannelRoom = owner.page.locator(
-		`.room\\/channel[data-room="${channelToInvite}"] .room\\/main`,
-	);
-	await $ownerChannelRoom.dblclick();
-	await owner.page.waitForTimeout(250);
-	const $ownerTeleport = owner.page.locator(`#${layerName}_teleport`);
-	const $inviteOnlySettings = $ownerTeleport
-		.locator("ul li label")
-		.getByText("Salon accessible sur invitation uniquement (+i)");
-	await $inviteOnlySettings.click();
-	const $ownerBtnSubmit = $ownerTeleport.locator('button[type="submit"]');
-	await $ownerBtnSubmit.click();
-	await containsMessage(owner.page, channelToInvite, `* ${owner.nick} a défini les modes: +i`);
-
-	// NOTE: Utilisateur tente de joindre le salon
-	await sendMessage(user.page, channelToJoin, `/join ${channelToInvite}`);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`* ${channelToInvite} :Tu ne peux pas rejoindre le salon (+i)`,
-	);
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { owner, user } = await chat_ctx.users_with_permissions();
+	let channel_name_to_invite = ChatChannelContext.generate_name();
+	await owner.chan.join(channel_name_to_invite, {
+		with_settings: "Salon accessible sur invitation uniquement (+i)",
+	});
+	// NOTE: Utilisateur tente de joindre le salon, alors qu'il n'est pas invité.
+	await user.chan.join(channel_name_to_invite, {
+		error(channel) {
+			return `* ${channel} :Tu ne peux pas rejoindre le salon (+i)`
+		},
+	});
 
 	// NOTE: le propriétaire invite l'utilisateur
-	await sendMessage(owner.page, channelToInvite, `/invite ${user.nick} ${channelToInvite}`);
-	await containsMessage(
-		user.page,
-		channelToJoin,
-		`${user.nick} a été invité à rejoindre le salon ${channelToInvite}`,
-	);
-	await sendMessage(user.page, channelToJoin, `/join ${channelToInvite}`);
-	await containsMessage(
-		user.page,
-		channelToInvite,
-		`Tu as rejoint le salon ${channelToInvite}`,
-	);
+	await owner.chan.invite(user, channel_name_to_invite);
+	await user.chan.join(channel_name_to_invite);
 });

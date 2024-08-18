@@ -10,25 +10,25 @@
 
 import { Browser, Page } from "@playwright/test";
 import { env } from "process";
-import { createNBrowserPages, generateRandomWord } from "./context.js";
+import { create_n_browser_pages, generate_random_word } from "./context.js";
 
-export async function connectChat({
+export async function connect_chat({
 	page,
 	channels = "",
 }: { page: Page; channels?: string }): Promise<string> {
-	const nickname = generateRandomWord();
+	let nickname = generate_random_word();
 
 	await page.goto("/chat");
 	await page.locator("#nickname").fill(nickname);
 	await page.locator("#channels").fill(channels);
 
-	const $btnLogin = page.locator('#chat-login-view button[type="submit"]');
-	await $btnLogin.click();
+	let $btn = page.locator('#chat-login-view button[type="submit"]');
+	await $btn.click();
 
 	return nickname;
 }
 
-export async function connectUsersToChat(
+export async function connect_users_to_chat(
 	{ browser }: { browser: Browser },
 	opts?: { channels?: string },
 ) {
@@ -36,31 +36,31 @@ export async function connectUsersToChat(
 	let page2: Page;
 
 	if (env.CI) {
-		const bCtx1 = await browser.newContext();
-		const bCtx2 = await browser.newContext();
-		page1 = await bCtx1.newPage();
-		page2 = await bCtx2.newPage();
+		let browser_ctx1 = await browser.newContext();
+		let browser_ctx2 = await browser.newContext();
+		page1 = await browser_ctx1.newPage();
+		page2 = await browser_ctx2.newPage();
 	} else {
-		const bCtx1 = await browser.newContext();
-		page1 = await bCtx1.newPage();
-		page2 = await bCtx1.newPage();
+		let browser_ctx1 = await browser.newContext();
+		page1 = await browser_ctx1.newPage();
+		page2 = await browser_ctx1.newPage();
 	}
 
-	const nick1 = await connectChat({ page: page1, channels: opts?.channels });
+	let nick1 = await connect_chat({ page: page1, channels: opts?.channels });
 	page2.waitForTimeout(250);
-	const nick2 = await connectChat({ page: page2, channels: opts?.channels });
-	const user1 = { page: page1, nick: nick1 };
-	const user2 = { page: page2, nick: nick2 };
+	let nick2 = await connect_chat({ page: page2, channels: opts?.channels });
+	let user1 = { page: page1, nick: nick1 };
+	let user2 = { page: page2, nick: nick2 };
 	return { user1, user2 };
 }
 
-export function connectNUsersToChat(n: number) {
-	let pagesFn = createNBrowserPages(n);
+export function connect_n_users_to_chat(n: number) {
+	let pages_fn = create_n_browser_pages(n);
 	return async ({ browser }: { browser: Browser }, opts?: { channels?: string }) => {
 		return Promise.all(
-			(await pagesFn(browser)).map(async (futPage) => {
-				const page = await futPage;
-				const nick = await connectChat({ page, channels: opts?.channels });
+			(await pages_fn(browser)).map(async (future_page) => {
+				let page = await future_page;
+				let nick = await connect_chat({ page, channels: opts?.channels });
 				return { page, nick };
 			}),
 		);

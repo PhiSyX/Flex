@@ -8,123 +8,61 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { type Page, expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { containsMessage, sendMessage } from "./helpers/channel.js";
-import { connectChat, connectUsersToChat } from "./helpers/connect.js";
-import { generateRandomChannel } from "./helpers/context.js";
-import { containsMessageInActiveRoom } from "./helpers/room.js";
+import { ChatChannelContext } from "./helpers/channel.js";
+import { ChatBrowserContext, ChatPageContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
-async function joinChannel({
-	page,
-	channels: channel,
-	key = "",
-}: {
-	page: Page;
-	channels: string;
-	key?: string;
-}) {
-	const $navServer = page.locator(".navigation-area .navigation-server");
-	await expect($navServer).toHaveText("Flex");
-	const $formRoom = page.locator("form[action='/msg/flex']");
-	const $inputRoom = $formRoom.locator("input[type='text']");
-	await $inputRoom.fill(`/join ${channel} ${key}`);
-	const $btnSubmit = $formRoom.locator("button[type='submit']");
-	await $btnSubmit.click();
-}
-
 test("Rejoindre un salon via la commande /JOIN", async ({ page }) => {
-	await page.goto("/chat");
-	const channelToJoin = generateRandomChannel();
-	await connectChat({ page });
-	await joinChannel({ page, channels: channelToJoin });
-	await containsMessageInActiveRoom(page, `Tu as rejoint le salon ${channelToJoin}`);
+	let chat_ctx = await ChatPageContext.connect(page);
+	await chat_ctx.chan.join();
 });
 
 test("Rejoindre un salon avec une clé via la commande /JOIN", async ({ browser }) => {
-	const { user1, user2 } = await connectUsersToChat({ browser });
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	
+	let channel_name = ChatChannelContext.generate_name();
+	// NOTE: `user1` rejoint un salon AVEC une clé
+	await chat_ctx.first().chan.join(channel_name, { key: "good-key" });
 
-	const channelToJoin = generateRandomChannel();
-	const channelToJoinKey = "my-best-key";
-
-	// NOTE: user1 rejoint un salon AVEC une clé
-	await joinChannel({
-		page: user1.page,
-		channels: channelToJoin,
-		key: channelToJoinKey,
+	// NOTE: `user2` tente de rejoin SANS une clé 
+	await chat_ctx.second().chan.join(channel_name, {
+		error(channel) {
+			return `* ${channel} :Tu ne peux pas rejoindre le salon (+k)`
+		},
 	});
-	await containsMessage(user1.page, channelToJoin, `Tu as rejoint le salon ${channelToJoin}`);
-
-	// NOTE: user2 rejoint un salon SANS la clé
-	await joinChannel({ page: user2.page, channels: channelToJoin });
-	await containsMessageInActiveRoom(
-		user2.page,
-		`* ${channelToJoin} :Tu ne peux pas rejoindre le salon (+k)`,
-	);
-
-	// NOTE: user2 rejoint un salon AVEC la clé
-	await joinChannel({
-		page: user2.page,
-		channels: channelToJoin,
-		key: channelToJoinKey,
+	// NOTE: `user2` rejoint une clé incorrecte
+	await chat_ctx.second().chan.join(channel_name, {
+		key: "wrong-key",
+		error(channel) {
+			return `* ${channel} :Tu ne peux pas rejoindre le salon (+k)`;
+		},
 	});
-	await containsMessage(user2.page, channelToJoin, `Tu as rejoint le salon ${channelToJoin}`);
+	// NOTE: `user2` rejoint un salon AVEC la bonne clé
+	await chat_ctx.second().chan.join(channel_name, { key: "good-key" });
 });
 
 test("Rejoindre un salon via la boite de dialogue (de la vue ChannelList)", async ({ page }) => {
-	await connectChat({ page });
-
-	const $channelListView = page.locator(".navigation-area #goto-channel-list");
-	await $channelListView.click();
-
-	const layerName = "channel-join-layer";
-
-	const $btnChannelCreateRequest = page.locator(`#${layerName}_btn`);
-	await $btnChannelCreateRequest.click();
-
-	await page.waitForTimeout(250);
-
-	const $teleportChannelCreateRequest = page.locator(`#${layerName}_teleport`);
-	const $inputChannels = $teleportChannelCreateRequest.locator("input#channels");
-
-	const channelToJoin = generateRandomChannel();
-	await $inputChannels.fill(channelToJoin);
-
-	const $btnSubmit = $teleportChannelCreateRequest.getByText("Rejoindre maintenant");
-	await $btnSubmit.click();
-
-	await page.waitForTimeout(250);
-
-	const $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(`Tu as rejoint le salon ${channelToJoin}`);
+	let chat_ctx = await ChatPageContext.connect(page);
+	await chat_ctx.chan.join_using_dialog();
 });
 
 test("Rejoindre un salon via la commande /SAJOIN (globop)", async ({ browser }) => {
-	const channelToJoin = generateRandomChannel();
-	const { user1: globop, user2: user } = await connectUsersToChat(
-		{ browser },
-		{ channels: channelToJoin },
+	let chat_ctx = await ChatBrowserContext.connect(browser);
+	let { globop, owner, user } = await chat_ctx.users_with_permissions();
+	let to_force_join_channel_name = ChatChannelContext.generate_name();
+	// NOTE: L'owner n'est pas un opérateur GLOBAL.
+	await owner.chan.sajoin(
+		to_force_join_channel_name,
+		user,
+		{ with_permission: false },
 	);
-
-	const forceChannelToJoin = generateRandomChannel();
-
-	// NOTE: globop n'est pas opérateur global.
-	await sendMessage(globop.page, channelToJoin, `/sajoin ${user.nick} ${forceChannelToJoin}`);
-	await containsMessage(
-		globop.page,
-		channelToJoin,
-		"* Permission refusée. Tu n'as pas les privilèges d'opérateur corrects.",
-	);
-
-	// NOTE: user n'a évidemment pas rejoint ce salon, après le fail.
-	const $navRooms = user.page.locator(".navigation-area .navigation-server ul li");
-	await expect($navRooms).toHaveCount(1);
-
-	// NOTE: globop devient opérateur global.
-	await sendMessage(globop.page, channelToJoin, "/oper test-globop test");
-	await sendMessage(globop.page, channelToJoin, `/sajoin ${user.nick} ${forceChannelToJoin}`);
-	await expect($navRooms).toHaveCount(2);
+	// NOTE: `user` n'a évidemment pas rejoint ce salon, après le fail.
+	let $nav = user.page.locator(".navigation-area .navigation-server ul li");
+	await expect($nav).toHaveCount(1);
+	await globop.chan.sajoin(to_force_join_channel_name, user);
+	await expect($nav).toHaveCount(2);
 });
