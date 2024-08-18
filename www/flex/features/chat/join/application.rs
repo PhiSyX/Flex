@@ -152,6 +152,21 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 			)
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
+			_ = client_socket.socket().join(
+				format!("channel:~{}", channel_name.to_lowercase())
+			);
+			_ = client_socket.socket().join(
+				format!("channel:&{}", channel_name.to_lowercase())
+			);
+			_ = client_socket.socket().join(
+				format!("channel:@{}", channel_name.to_lowercase())
+			);
+			_ = client_socket.socket().join(
+				format!("channel:%{}", channel_name.to_lowercase())
+			);
+			_ = client_socket.socket().join(
+				format!("channel:+{}", channel_name.to_lowercase())
+			);
 			return Ok(());
 		}
 

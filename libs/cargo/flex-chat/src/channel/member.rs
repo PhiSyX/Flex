@@ -83,12 +83,11 @@ where
 
 		let last = self.access_level.iter().last();
 
-		let highest: Option<&ChannelAccessLevel> =
-			self.access_level.iter().fold(last, |maybe_level, level| {
-				(level.flag() >= maybe_level?.flag())
-					.then_some(level)
-					.or(maybe_level)
-			});
+		let highest = self.access_level.iter().fold(last, |maybe_level, level| {
+			(level.flag() >= maybe_level?.flag())
+				.then_some(level)
+				.or(maybe_level)
+		});
 
 		highest
 	}

@@ -106,6 +106,7 @@ impl ModeChannelAccessLevelHandler
 							access_level.symbol(),
 							channel_name.to_lowercase(),
 						));
+						dbg!(target_client_socket.socket().rooms());
 					};
 
 					// TODO: à améliorer/mieux réfléchir cette partie de code
@@ -240,6 +241,14 @@ impl ModeChannelAccessLevelHandler
 						));
 					};
 					let leave_room = |access_level: ChannelAccessLevel| {
+						if member
+							.highest_access_level()
+							.filter(|mac| mac.flag() >= access_level.flag())
+							.is_some() 
+						{
+							return;
+						}
+
 						_ = target_client_socket.socket().leave(format!(
 							"channel:{}{}",
 							access_level.symbol(),
