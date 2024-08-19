@@ -72,7 +72,7 @@ function submit_handler()
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<UiButton
 				variant="primary"
-				class="btn-change-nick [ max-w=12 display-i align-jc:stretch my=1 px=1 py=1 border/radius=1 ... ]"
+				class="btn-change-nick [ max-w=12 display-i align-jc:stretch my=1 px=1 py=1 f-size=14px border/radius=1 ... ]"
 				:title="currentClientNickname"
 				@click="change_nick_handler"
 			>
@@ -84,7 +84,7 @@ function submit_handler()
 					:disabled="true"
 					:placeholder="suggestionInput"
 					type="search"
-					class="[ pos-a:full input:reset size:full py=1 ]"
+					class="[ pos-a:full input:reset size:full py=1 f-size=14px ]"
 					:class="{
 						'text-bold': bold,
 						'text-italic': italic,
@@ -104,7 +104,7 @@ function submit_handler()
 						'text-italic': italic,
 						'text-underline': underline,
 					}"
-					class="[ input:reset flex:shrink=0 size:full py=1 ]"
+					class="[ flex:shrink=0] [ input:reset pos-r size:full py=1 f-size=14px ]"
 					type="text"
 					@keydown.down="history_keydown_handler"
 					@keydown.up="history_keydown_handler"
@@ -115,7 +115,7 @@ function submit_handler()
 
 			<UiButton
 				v-if="suggestionInput"
-				class="btn-suggestion"
+				class="btn-suggestion [ f-size=14px ]"
 				@click="apply_suggestion_handler"
 			>
 				↹ Tab
@@ -159,12 +159,7 @@ div {
 	border-radius: 4px;
 }
 
-input[type="search"],
 input[type="text"] {
-	font-size: 14px;
-}
-input[type="text"] {
-	position: relative;
 	z-index: 1;
 }
 input[type="search"] {
@@ -184,15 +179,12 @@ input[type="text"]::placeholder {
 }
 
 .btn-suggestion {
-	font-size: 14px;
 	padding: 4px;
 	border: 1px solid var(--body-bg_alt);
 	border-radius: 4px;
 }
 
 .btn-change-nick {
-	font-size: 14px;
-
 	@include fx.scheme using ($name) {
 		@if $name == dark {
 			--btn-primary-bg: var(--body-bg);

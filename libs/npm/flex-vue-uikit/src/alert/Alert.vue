@@ -59,7 +59,7 @@ function close_handler()
 
 <template>
 	<div
-		class="alert [ ov:c flex align-ji:center gap=1 p=2 select:none ]"
+		class="alert [ ov:c flex align-ji:center gap=1 p=2 select:none f-size=13px ]"
 		:class="{
 			'align-t:center': contentCenter,
 			[`alert/${type}`]: true,
@@ -81,7 +81,6 @@ function close_handler()
 @use "scss:~/flexsheets" as fx;
 
 .alert {
-	font-size: 13px;
 	border: 1px solid transparent;
 	color: currentColor;
 }

@@ -153,7 +153,7 @@ function toggle_fold_handler()
 						>
 							<template #some="{ data: message }">
 								<p
-									class="[ scroll:y w:full min-h=6 max-hx=8 my=0 p=1 cursor: pointer ]"
+									class="[ scroll:y w:full min-h=6 max-hx=8 my=0 p=1 f-size=14px cursor:pointer ]"
 									:class="{
 										[`bgo-color${message.colors.background}`]: message.colors.background != null,
 										[`fg-color${message.colors.foreground}`]: message.colors.foreground != null,
@@ -220,7 +220,6 @@ function toggle_fold_handler()
 }
 
 p {
-	font-size: 14px;
 	justify-self: start;
 	grid-column-start: 2;
 	grid-column-end: 4;

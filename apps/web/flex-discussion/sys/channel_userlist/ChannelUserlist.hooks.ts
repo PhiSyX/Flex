@@ -28,7 +28,7 @@ import {
 } from "@phisyx/flex-chat";
 import { fuzzy_search } from "@phisyx/flex-search";
 
-import ChannelNicklist from "#/sys/channel_nicklist/ChannelNicklist.vue";
+import ChannelNicklistComponent from "#/sys/channel_nicklist/ChannelNicklist.template.vue";
 
 // ----------- //
 // Énumération //
@@ -158,13 +158,13 @@ export function use_inputfilter_userlist(props: Props)
 export function use_filter_view()
 {
 	let filter_view = ref(UserlistModeView.Default);
-	let view = shallow_ref(ChannelNicklist);
+	let view = shallow_ref(ChannelNicklistComponent);
 
 	watch(filter_view, (new_value) => {
 		switch (new_value) {
 			case UserlistModeView.Default:
 			{
-				view.value = ChannelNicklist;
+				view.value = ChannelNicklistComponent;
 			} break;
 		}
 	});

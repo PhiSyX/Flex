@@ -189,7 +189,7 @@ function disconnect_handler()
 <template>
 	<main id="chat-login-view" class="[ scroll:y flex! flex/center:full m:a pos-r ]">
 		<section class="[ flex! gap=3 min-w=43 ]">
-			<h1>Accès direct au Chat</h1>
+			<h1 class="[ f-size=24px ]">Accès direct au Chat</h1>
 
 			<form
 				id="chat-login-form"
@@ -294,7 +294,7 @@ function disconnect_handler()
 				/>
 			</div>
 
-			<div class="remember-me [ m:a align-t:center w=35 ]">
+			<div class="remember-me [ m:a align-t:center f-size=14px w=35 ]">
 				<label>
 					Connexion automatique lors de tes prochaines sessions :
 				</label>
@@ -332,10 +332,6 @@ body:has(#chat-login-view) {
 }
 
 #chat-login-view {
-	h1 {
-		font-size: 24px;
-	}
-
 	form {
 		gap: 1px;
 		border: fx.space(1) solid var(--login-form-bg);
@@ -390,7 +386,6 @@ body:has(#chat-login-view) {
 }
 
 .remember-me {
-	font-size: 14px;
 	line-height: 1.2;
 }
 
@@ -403,7 +398,6 @@ body:has(#chat-login-view) {
 	background: var(--login-button-submit-bg);
 	color: var(--default-text-color_alt);
 	border-radius: 4px;
-	font-size: 14px;
 
 	&:hover {
 		background: var(--login-button-submit-bg-hover);

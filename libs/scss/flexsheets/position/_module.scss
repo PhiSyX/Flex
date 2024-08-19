@@ -8,10 +8,16 @@
 		"pos-s": (
 			position: sticky,
 			top: 0,
-			z-index: 999,
 		),
 		"pos-a:full": (
 			position: absolute,
+			top: 0,
+			right: 0,
+			bottom: 0,
+			left: 0,
+		),
+		"pos-f:full": (
+			position: fixed,
 			top: 0,
 			right: 0,
 			bottom: 0,

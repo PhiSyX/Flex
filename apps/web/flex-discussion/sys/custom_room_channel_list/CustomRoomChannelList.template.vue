@@ -89,7 +89,7 @@ const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-chann
 		</div>
 
 		<div class="table [ ov:h border/radius=1 scroll:y ]">
-			<div class="thead thead:bg pos-s">
+			<div class="thead thead:bg [ pos-s ]" style="z-index: 2;">
 				<div><input type="checkbox" disabled /></div>
 				<div>Nom du salon</div>
 				<div>Paramètres</div>
@@ -125,8 +125,8 @@ const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-chann
 				<div>{{ channel_data.total_members }}</div>
 			</div>
 
-			<div class="tbody" v-if="channels.length === 0">
-				<p>Il n'y a aucun salon</p>
+			<div class="tbody" v-if="filtered_channels.length === 0">
+				<p class="[ align-t:center f-size=14px ]">Il n'y a aucun salon</p>
 			</div>
 		</div>
 	</div>
@@ -209,8 +209,6 @@ input {
 
 	p {
 		grid-column: 1 / end;
-		text-align: center;
-		font-size: 14px;
 		color: var(--color-grey600);
 	}
 }

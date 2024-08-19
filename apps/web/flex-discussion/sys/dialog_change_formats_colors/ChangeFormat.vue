@@ -23,6 +23,7 @@ let model = defineModel<boolean | null>();
 			[`text-${value}`]: true,
 			'selected': model,
 		}"
+		class="[ f-size=14px p=1 ]"
 	>
 		<slot />
 
@@ -41,9 +42,7 @@ let model = defineModel<boolean | null>();
 @use "scss:~/flexsheets" as fx;
 
 label {
-	font-size: 14px;
 	padding-block: 6px;
-	padding-inline: fx.space(1);
 	border: inset 2px transparent;
 	border-radius: 2px;
 	background: var(--dialog-change-formats-colors-color);

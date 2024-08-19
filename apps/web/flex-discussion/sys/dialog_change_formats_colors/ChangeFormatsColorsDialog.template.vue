@@ -30,7 +30,7 @@ let reveal_icon = computed(
 		}"
 		class="dialog/change-formats-colors [ flex! gap=2 m=0 py=3 px=2 max-w=38 ]"
 	>
-		<h1>Formats</h1>
+		<h1 class="[ f-size=13px m=0 p=0 ]">Formats</h1>
 
 		<div class="[ flex gap=1 ]">
 			<ChangeFormat v-model="bold_selected" value="bold">
@@ -46,7 +46,7 @@ let reveal_icon = computed(
 			</ChangeFormat>
 		</div>
 
-		<h1>Choisir une couleur de premier plan</h1>
+		<h1 class="[ f-size=13px m=0 p=0 ]">Choisir une couleur de premier plan</h1>
 
 		<div class="dialog/change-formats-colors:foreground [ p=1 gap=1 ]">
 			<ChangeColorPreset
@@ -68,7 +68,7 @@ let reveal_icon = computed(
 		</div>
 
 		<template v-if="reveal_background_box">
-			<h1>Choisir une couleur de second plan</h1>
+			<h1 class="[ f-size=13px m=0 p=0 ]">Choisir une couleur de second plan</h1>
 
 			<div class="dialog/change-formats-colors:background [ p=1 gap=1 ]">
 				<ChangeColorPreset
@@ -90,12 +90,6 @@ let reveal_icon = computed(
 	border: 1px outset;
 	border-radius: 2px;
 	background: var(--dialog-change-formats-colors-bg);
-}
-
-h1 {
-	font-size: 13px;
-	margin: 0;
-	padding: 0;
 }
 
 @include fx.class("dialog/change-formats-colors:background") {

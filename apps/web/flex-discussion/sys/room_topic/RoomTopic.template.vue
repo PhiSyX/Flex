@@ -5,7 +5,7 @@
 </script>
 
 <template>
-	<div class="room/topic [ flex align-i:center gap=1 p=1 min-h=8 ]">
+	<div class="room/topic [ flex align-i:center gap=1 p=1 min-h=8 f-size=14px ]">
 		<div class="room/topic:text [ flex:full ov:y h:full max-h ]">
 			<slot name="topic" />
 		</div>
@@ -20,7 +20,6 @@
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("room/topic") {
-	font-size: 14px;
 	background: var(--room-topic-bg);
 
 	p:not([contenteditable]) {

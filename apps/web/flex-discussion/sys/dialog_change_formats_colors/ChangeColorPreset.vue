@@ -33,7 +33,7 @@ let variant = computed(() => props.type === "foreground" ? "fg" : "bg");
 			[`tshadow-color${preset}`]: preset !== 0,
 			'selected': preset === selected,
 		}"
-		class="[ align-t:center select:none ]"
+		class="[ align-t:center select:none f-size=14px ]"
 		@click.ctrl="selected = null"
 	>
 		{{ preset }}
@@ -53,10 +53,9 @@ let variant = computed(() => props.type === "foreground" ? "fg" : "bg");
 @use "scss:~/flexsheets" as fx;
 
 label {
-	font-size: 14px;
+	border: inset 2px transparent;
 	border-radius: 4px;
 	background: var(--dialog-change-formats-colors-color);
-	border: inset 2px transparent;
 }
 
 .selected {

@@ -86,9 +86,9 @@ const unset_access_level_handler = (
 </script>
 
 <template>
-	<menu class="room/userlist:menu [ list:reset flex! m=1 ]">
+	<menu class="room/userlist:menu [ list:reset flex! m=1 f-size=14px ]">
 		<li>
-			<p>
+			<p class="[ flex:full align-t:center f-size=12px select:none ]">
 				<bdo>{{ selectedMember.member.nickname }}</bdo>
 				<span>!</span>
 				<bdo>{{ selectedMember.member.ident }}</bdo>
@@ -96,6 +96,7 @@ const unset_access_level_handler = (
 				<span>{{ selectedMember.member.hostname }}</span>
 			</p>
 		</li>
+
 		<li>
 			<UiButton
 				icon="user"
@@ -248,8 +249,6 @@ const unset_access_level_handler = (
 @use "scss:~/flexsheets" as fx;
 
 @include fx.class("room/userlist:menu") {
-	font-size: 14px;
-
 	li {
 		display: flex;
 		align-items: center;
@@ -268,10 +267,6 @@ const unset_access_level_handler = (
 	}
 
 	li > p {
-		font-size: 12px;
-		flex-grow: 1;
-		text-align: center;
-		user-select: none;
 		color: var(--color-grey400);
 	}
 

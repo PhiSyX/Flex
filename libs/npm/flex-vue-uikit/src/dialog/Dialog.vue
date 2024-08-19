@@ -32,9 +32,9 @@ const emit = defineEmits<Emits>();
 </script>
 
 <template>
-	<dialog :open="open" class="dialog [ border/radius=1 flex! gap=1 ]">
+	<dialog :open="open" class="dialog [ border/radius=1 flex! gap=1 size:full f-size=13px select:none ]">
 		<header v-if="!withoutHeader" class="[ flex gap=1 ]">
-			<h1 class="dialog/title [ flex:full p=1 m=0 ]">
+			<h1 class="dialog/title [ flex:full p=1 m=0 f-size=20px f-family=arial ]">
 				<slot name="label" />
 			</h1>
 
@@ -64,31 +64,20 @@ const emit = defineEmits<Emits>();
 @use "scss:~/flexsheets" as fx;
 
 dialog {
-	width: 100%;
-	height: 100%;
-
 	@media (min-width: 530px) and (min-height: 530px) {
 		width: max-content;
 		height: max-content;
 		max-height: fx.space(500);
 		max-width: fx.space(400);
 	}
-}
 
-dialog {
 	box-shadow: var(--box-shadow);
-
 	background: var(--dialog-bg, canvas);
 	color: var(--dialog-color, var(--default-text-color_alt));
 	border-color: var(--dialog-border-color);
-
-	font-size: 13px;
-	user-select: none;
 }
 
 @include fx.class("dialog/title") {
-	font-size: 20px;
 	font-weight: 500;
-	font-family: Arial, Helvetica, sans-serif;
 }
 </style>

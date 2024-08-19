@@ -46,7 +46,7 @@ function change_nickname_handler()
 		<template #label>Changer son pseudonyme</template>
 
 		<template #footer>
-			<em>
+			<em class="[ f-size=12px ]">
 				Les champs ayant un <strong>*</strong>asterisk sont obligatoires.
 			</em>
 
@@ -70,7 +70,7 @@ function change_nickname_handler()
 			<table class="[ w:full ]">
 				<tr>
 					<td>
-						<span>* </span>
+						<strong>* </strong>
 						<label for="nickname">Nouveau pseudo:</label>
 					</td>
 					<td>
@@ -102,7 +102,6 @@ input {
 }
 
 em {
-	font-size: 12px;
 	vertical-align: text-bottom;
 }
 

@@ -36,7 +36,7 @@ watch_effect(() => {
 <template>
 	<Transition name="fade">
 		<div v-if="overlayer_store.has_layers" id="overlayer">
-			<div ref="$overlayer" class="overlay [ pos-a:full ]" @click="destroy_handler" />
+			<div ref="$overlayer" class="overlay [ pos-f:full ]" @click="destroy_handler" />
 
 			<template v-for="[id, layer] of overlayer_store.layers" :key="`${id}_layer`">
 				<div v-trap:focus="layer.trap_focus">
@@ -67,7 +67,6 @@ watch_effect(() => {
 @use "scss:~/flexsheets" as fx;
 
 .overlay {
-	position: fixed;
 	z-index: 1000;
 
 	background-color: hsla(var(--overlayer-bg), 0.75);

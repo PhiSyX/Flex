@@ -6,7 +6,7 @@ import {
 	User,
 } from "@phisyx/flex-chat";
 
-import ChannelNicklist from "./ChannelNicklist.vue";
+import ChannelNicklist from "./ChannelNicklist.template.vue";
 
 let origin1: User = new User({
 	id: "a-b-c-d-e" as UserID,

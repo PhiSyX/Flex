@@ -45,7 +45,7 @@ function create_channel_handler()
 		<template #label>Rejoindre un salon</template>
 
 		<template #footer>
-			<em>
+			<em class="[ f-size=12px ]">
 				Les champs ayant un <strong>*</strong>asterisk sont obligatoires.
 			</em>
 
@@ -138,7 +138,6 @@ input {
 }
 
 em {
-	font-size: 12px;
 	vertical-align: text-bottom;
 }
 
