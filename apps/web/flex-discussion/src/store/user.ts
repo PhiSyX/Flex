@@ -14,16 +14,15 @@ import {
 } from "pinia";
 import { reactive } from "vue";
 
-import { UserStore } from "@phisyx/flex-chat";
+import { UserStore, UserStoreData } from "@phisyx/flex-chat";
 
 // ----- //
 // Store //
 // ----- //
 
-export const use_user_store = define_store(UserStore.ID, () => {
-	const store = reactive(new UserStore()) as UserStore;
+export const use_user_store = define_store(UserStore.NAME, () => {
+	const store = new UserStore(reactive(new UserStoreData()) as UserStoreData);
 	return {
-		store,
 		disconnect: store.disconnect.bind(store),
 		fetch: store.fetch.bind(store),
 		session: store.session.bind(store),

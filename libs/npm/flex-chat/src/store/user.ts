@@ -10,7 +10,6 @@
 
 import type { Option } from "@phisyx/flex-safety";
 
-import type { User } from "../user";
 import type { UserSession } from "../user/session";
 
 import { None } from "@phisyx/flex-safety";
@@ -19,7 +18,7 @@ import { None } from "@phisyx/flex-safety";
 // Type //
 // ---- //
 
-export interface ChatStoreUserExt 
+export interface ChatStoreUserExt
 {
 	_user: Option<UserSession>;
 
@@ -36,58 +35,92 @@ const FETCH_OPTIONS: RequestInit = { credentials: "same-origin" };
 // Implémentation //
 // -------------- //
 
+export class UserStoreData
+{
+	/**
+	 * Utilisateur connecté en session
+	 */
+	private _session: ChatStoreUserExt["_user"] = None();
+	// users: Set<User> = new Set();
+
+	// ------- //
+	// Méthode // -> API Publique
+	// ------- //
+
+	public get_session()
+	{
+		return this._session;
+	}
+
+	public set_session(session: UserSession)
+	{
+		this._session.replace(session);
+	}
+
+	public unset_session()
+	{
+		this._session = None();
+	}
+}
+
 export class UserStore 
 {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "user-store";
+	static readonly NAME = "user-store";
 
-	// --------- //
-	// Propriété //
-	// --------- //
+	// ----------- //
+	// Constructor //
+	// ----------- //
 
-	_session: ChatStoreUserExt["_user"] = None();
+	constructor(private data: UserStoreData)
+	{}
 
-	users: Set<User> = new Set();
+	// ------- //
+	// Méthode // -> API Publique
+	// ------- //
 
-	disconnect()
+	public async disconnect()
 	{
-		return fetch("/auth/logout", {...FETCH_OPTIONS, method: "DELETE" }).then(async (res) => {
-			if (res.ok) {
-				this._session = None();
-				return res;
-			}
-
-			if (res.status >= 400 && res.status < 600) {
-				return Promise.reject(await res.json());
-			}
-
-			return Promise.reject(res);
+		const response = await fetch("/auth/logout", {
+			...FETCH_OPTIONS,
+			method: "DELETE",
 		});
+
+		if (response.ok) {
+			this.data.unset_session();
+			return response;
+		}
+
+		if (response.status >= 400 && response.status < 600) {
+			return Promise.reject(await response.json());
+		}
+
+		return await Promise.reject(response);
 	}
 
-	fetch(): Promise<UserSession>
+	public async fetch(): Promise<UserSession>
 	{
-		return fetch("/api/v1/users/@me", FETCH_OPTIONS).then(async (res) => {
-			if (res.ok) {
-				return res.json();
-			}
+		let response = await fetch("/api/v1/users/@me", FETCH_OPTIONS);
 
-			if (res.status >= 400 && res.status < 600) {
-				return Promise.reject(await res.json());
-			}
+		if (response.ok) {
+			return response.json();
+		}
 
-			return Promise.reject(res);
-		});
+		if (response.status >= 400 && response.status < 600) {
+			return Promise.reject(await response.json());
+		}
+
+		return Promise.reject(response);
 	}
-	
-	session(user?: UserSession): this["_session"]
+
+	public session(user?: UserSession): UserStoreData["_session"]
 	{
 		if (user) {
-			this._session.replace(user);
+			this.data.set_session(user);
 		}
-		return this._session;
+		return this.data.get_session();
 	}
 }
