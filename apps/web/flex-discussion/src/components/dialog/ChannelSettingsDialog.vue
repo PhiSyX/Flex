@@ -3,8 +3,8 @@ import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat";
 
 import { ChannelSettingsDialog } from "@phisyx/flex-chat";
 
+import { use_dialog } from "~/hooks/dialog";
 import { use_chat_store } from "~/store";
-import { use_dialog } from "./hook";
 
 import ChannelSettingsDialogComponent from "#/sys/dialog_channel_settings/ChannelSettingsDialog.template.vue";
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ChannelJoinDialog } from "@phisyx/flex-chat";
 
+import { use_dialog } from "~/hooks/dialog";
 import { use_chat_store } from "~/store";
-import { use_dialog } from "./hook";
 
 import ChannelCreateDialog from "#/sys/dialog_channel_create/ChannelCreateDialog.template.vue";
 

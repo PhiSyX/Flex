@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
+import { use_dialog } from "~/hooks/dialog";
 import { use_chat_store } from "~/store";
-import { use_dialog } from "./hook";
 
 import ChangeNickDialog from "#/sys/dialog_change_nick/ChangeNickDialog.template.vue";
 
