@@ -14,24 +14,22 @@ import {
 } from "pinia";
 import { reactive } from "vue";
 
-import { UUIDStore } from "@phisyx/flex-chat";
+import { UUIDStore, UUIDStoreData } from "@phisyx/flex-chat";
 
 // ----- //
 // Store //
 // ----- //
 
 export const useUUIDv4Store = define_store(UUIDStore.IDv4, () => {
-	const store = reactive(UUIDStore.v4()) as UUIDStore;
+	const store = new UUIDStore(reactive(UUIDStoreData.v4()));
 	return {
-		store,
 		take: store.take.bind(store),
 	};
 });
 
 export const useUUIDv7Store = define_store(UUIDStore.IDv7, () => {
-	const store = reactive(UUIDStore.v7()) as UUIDStore;
+	const store = new UUIDStore(reactive(UUIDStoreData.v7()));
 	return {
-		store,
 		take: store.take.bind(store),
 	};
 });

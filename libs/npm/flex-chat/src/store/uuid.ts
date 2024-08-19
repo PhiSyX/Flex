@@ -59,23 +59,20 @@ const MAX_NTIMES: u8r25 = 25;
 // Implémentation //
 // -------------- //
 
-export class UUIDStore
+export class UUIDStoreData
 {
 	// ------ //
 	// Static //
 	// ------ //
-
-	static IDv4 = "uuidv4-store";
-	static IDv7 = "uuidv7-store";
-
-	static v4(): UUIDStore
+	
+	static v4(): UUIDStoreData
     {
-		return new UUIDStore(4);
+		return new UUIDStoreData(4);
 	}
 
-	static v7(): UUIDStore
+	static v7(): UUIDStoreData
     {
-		return new UUIDStore(7);
+		return new UUIDStoreData(7);
 	}
 
 	// ----------- //
@@ -83,16 +80,15 @@ export class UUIDStore
 	// ----------- //
 
 	constructor(
-		version: UUIDStore["version"] = UUID_V7,
-		ntimes: UUIDStore["ntimes"] = MAX_NTIMES,
+		version: UUIDStoreData["version"] = UUID_V7,
+		ntimes: UUIDStoreData["ntimes"] = MAX_NTIMES,
 	)
     {
 		this.version = version;
 		this.ntimes = ntimes;
-
-		this.populate();
 	}
 
+	
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -100,6 +96,25 @@ export class UUIDStore
 	uuids: Array<string> = [];
 	version: UUIDVariant;
 	ntimes: u8r25;
+}
+
+export class UUIDStore
+{
+	// ------ //
+	// Static //
+	// ------ //
+
+	static readonly IDv4 = "uuidv4-store";
+	static readonly IDv7 = "uuidv7-store";
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+
+	constructor(private data: UUIDStoreData)
+    {
+		this.populate();
+	}
 
 	// ------- //
 	// Méthode //
@@ -108,23 +123,23 @@ export class UUIDStore
 	populate()
     {
 		let UUID_URL_searchParams = new URLSearchParams();
-		UUID_URL_searchParams.set("ntimes", this.ntimes.toString());
+		UUID_URL_searchParams.set("ntimes", this.data.ntimes.toString());
 
-		const variant = `v${this.version}`;
-		const queries = UUID_URL_searchParams.toString();
+		let variant = `v${this.data.version}`;
+		let queries = UUID_URL_searchParams.toString();
 
 		let generate_UUID_URL = `/generate/uuid/${variant}?${queries}`;
 
 		fetch(generate_UUID_URL).then(async (response) => {
-			this.uuids.push(...(await response.json()));
+			this.data.uuids.push(...(await response.json()));
 		});
 	}
 
 	take(n?: u8r25): Array<UUID>
     {
-		const ntimes = Number(n) ?? 1;
-		const uuids = this.uuids.splice(0, ntimes) as Array<UUID>;
-		if (this.uuids.length < 5) {
+		let ntimes = Number(n) ?? 1;
+		let uuids = this.data.uuids.splice(0, ntimes) as Array<UUID>;
+		if (this.data.uuids.length < 5) {
 			this.populate();
 		}
 		return uuids;
