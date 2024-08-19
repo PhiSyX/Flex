@@ -10,7 +10,7 @@ let settings_store = use_settings_store();
 	<h2>Liste des utilisateurs de salon</h2>
 
 	<SettingsLayoutChannelUserlist
-		v-model:display="settings_store.layout.channel_userlist_display"
-		v-model:position="settings_store.layout.channel_userlist_position"
+		v-model:display="settings_store.channel_userlist_display_mut"
+		v-model:position="settings_store.channel_userlist_position_mut"
 	/>
 </template>

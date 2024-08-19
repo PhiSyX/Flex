@@ -133,4 +133,13 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 			PersonalizationStorage.default(),
 		);
 	}
+
+	persist()
+	{
+		this.set({
+			theme: this.value.theme,
+			colors: this.value.colors,
+			formats: this.value.formats,
+		});
+	}
 }

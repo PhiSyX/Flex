@@ -61,7 +61,7 @@ export function set_theme_ls(name: keyof Theme)
 {
 	let settings_store = use_settings_store();
 	document.documentElement.dataset["scheme"] = name;
-	settings_store.personalization.theme = name;
+	settings_store.theme_mut = name;
 }
 
 export function find_theme_name(fallback_theme = DEFAULT_THEME)

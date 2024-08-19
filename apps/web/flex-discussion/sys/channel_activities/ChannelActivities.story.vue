@@ -31,7 +31,7 @@ channel.add_message(
 		.with_type("privmsg")
 		.with_id(msgid),
 );
-let message = channel.get_message<{ text: string }>(msgid).unwrap();
+let message = channel.get_message<{ text: string }>(msgid);
 
 let activities: ChannelActivitiesView = {
 	groups: [

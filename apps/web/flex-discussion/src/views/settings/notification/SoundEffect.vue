@@ -6,7 +6,15 @@ import { use_settings_store } from "~/store";
 import { InputSwitchV2 } from "@phisyx/flex-vue-uikit";
 import SettingsNotificationSoundEffect from "#/sys/settings_notification_sounds_effect/SettingsNotificationSoundEffect.template.vue";
 
+// --------- //
+// Composant //
+// --------- //
+
 let settings_store = use_settings_store();
+
+// ------- //
+// Handler //
+// ------- //
 
 function on_update(_: NotificationData["sounds"])
 {
@@ -17,7 +25,7 @@ function on_update(_: NotificationData["sounds"])
 <template>
 	<h2>
 		<InputSwitchV2
-			v-model="settings_store.notification.sounds.enabled"
+			v-model="settings_store.sounds_effect_enabled_mut"
 			:checked="settings_store.notification.sounds.enabled"
 			name="enabled_sounds_effects"
 			position="right"
@@ -27,7 +35,7 @@ function on_update(_: NotificationData["sounds"])
 	</h2>
 
 	<SettingsNotificationSoundEffect
-		v-model:sounds="settings_store.notification.sounds"
+		v-model:sounds="settings_store.sounds_effect_mut"
 		:disabled="!settings_store.notification.sounds.enabled"
 		@vue:updated="on_update"
 	/>

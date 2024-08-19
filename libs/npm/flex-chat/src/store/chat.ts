@@ -457,7 +457,7 @@ export class ChatStore implements ChatStoreInterface
 		let modules = Array.from(
 			this.module_manager().modules().keys(),
 			(mod) => `/${mod.toLowerCase()}`,
-		).toSorted();
+		).sort();
 
 		let rooms = this._room_manager.rooms().map((room) => room.name);
 

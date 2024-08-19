@@ -105,4 +105,13 @@ export class LayoutStorage extends AppLocalStorage<LayoutData>
 			LayoutStorage.default(),
 		);
 	}
+
+	persist()
+	{
+		this.set({
+			channel_userlist_display: this.value.channel_userlist_display,
+			channel_userlist_position: this.value.channel_userlist_position,
+			navigation_bar_position: this.value.navigation_bar_position,
+		});
+	}
 }

@@ -59,7 +59,7 @@ export class OverlayerStore
 	// Static //
 	// ------ //
 
-	static ID = "overlayer-store";
+	static readonly NAME = "overlayer-store";
 
 	// --------- //
 	// Propriété //

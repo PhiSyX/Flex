@@ -17,7 +17,6 @@ import type {
 	ConnectUserInfo,
 	Module,
 	OverlayerStore,
-	SettingsStore,
 	UUIDStore,
 	UUIDVariant,
 	UserStore,
@@ -44,9 +43,9 @@ import { useUUIDv4Store, useUUIDv7Store } from "./uuid";
 // Implémentation //
 // -------------- //
 
-export class ChatStoreVue 
-	extends ChatStore 
-	implements ChatStoreInterfaceExt, ChatStoreUUIDExt
+export class ChatStoreVue extends ChatStore implements
+	ChatStoreInterfaceExt,
+	ChatStoreUUIDExt
 {
 	audio_src: ChatStoreInterfaceExt["audio_src"] = null;
 
@@ -54,7 +53,7 @@ export class ChatStoreVue
 
 	private _overlayer = use_overlayer_store() as unknown as OverlayerStore;
 	private _user = use_user_store() as unknown as UserStore;
-	private _settings = use_settings_store() as unknown as SettingsStore;
+	private _settings = use_settings_store();
 
 	private _uuidv4 = useUUIDv4Store() as unknown as UUIDStore;
 	private _uuidv7 = useUUIDv7Store() as unknown as UUIDStore;
@@ -433,7 +432,8 @@ export class ChatStoreVue
 		return this._router;
 	}
 	
-	settings(): SettingsStore
+	// @ts-expect-error - type à corriger
+	settings()
 	{
 		return this._settings;
 	}

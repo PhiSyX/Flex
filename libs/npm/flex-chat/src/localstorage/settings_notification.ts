@@ -111,4 +111,9 @@ export class NotificationStorage extends AppLocalStorage<NotificationData>
 			NotificationStorage.default(),
 		);
 	}
+
+	persist()
+	{
+		this.set({ sounds: this.value.sounds });
+	}
 }

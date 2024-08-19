@@ -20,7 +20,7 @@ import { OverlayerStore } from "@phisyx/flex-chat";
 // Store //
 // ----- //
 
-export const use_overlayer_store = define_store(OverlayerStore.ID, () => {
+export const use_overlayer_store = define_store(OverlayerStore.NAME, () => {
 	let store = reactive(new OverlayerStore()) as OverlayerStore;
 
 	let layers = computed(() => store.layers);
