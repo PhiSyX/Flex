@@ -93,25 +93,3 @@ export class ChatPrivateContext
 		await expect($main).not.toContainText(message);
 	}
 }
-
-export async function sendMessage(page: Page, priv: string, message: string) {
-	const $privateRoom = page.locator(`div[data-room="${priv}"]`);
-	const $formRoom = $privateRoom.locator(`form[action='/msg/${encodeURIComponent(priv)}']`);
-	const $inputRoom = $formRoom.locator("input[type='text']");
-	await $inputRoom.fill(message);
-	const $btnSubmit = $formRoom.locator("button[type='submit']");
-	await $btnSubmit.click();
-	await page.waitForTimeout(250);
-}
-
-export async function containsMessage(page: Page, priv: string, message: string) {
-	const $privateRoom = page.locator(`div[data-room="${priv}"]`);
-	const $privateMain = $privateRoom.locator(".room\\/main");
-	await expect($privateMain).toContainText(message);
-}
-
-export async function notContainsMessage(page: Page, priv: string, message: string) {
-	const $privateRoom = page.locator(`div[data-room="${priv}"]`);
-	const $privateMain = $privateRoom.locator(".room\\/main");
-	await expect($privateMain).not.toContainText(message);
-}

@@ -271,7 +271,3 @@ export class ChatPageContext
 		);
 	}
 }
-
-export function generate_random_channel() {
-	return `#test-x${(Math.random() + 1).toString(36).slice(2)}x`;
-}
