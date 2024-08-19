@@ -181,7 +181,7 @@ export class ChatPageContext
 		return `x${(Math.random() + 1).toString(36).slice(2)}x`;
 	}
 
-	static async connect(page: Page, channels = "", nick = generate_random_word())
+	static async connect(page: Page, channels = "", nick = ChatPageContext.generate_nick())
 	{
 		await page.goto("/chat");
 		await page.locator("#nickname").fill(nick);
@@ -270,20 +270,6 @@ export class ChatPageContext
 			`Déconnexion: tu as été sanctionné d'un KILL par ${this.nick} (${reason})`,
 		);
 	}
-}
-
-export function create_n_browser_pages(n: number) {
-	return async (browser: Browser) => {
-		let bCtx = browser.newContext();
-		let pages: Array<Promise<Page>> = Array.from({ length: n }, async () => {
-			return (env.CI ? browser.newContext() : bCtx).then((ctx) => ctx.newPage());
-		});
-		return pages;
-	};
-}
-
-export function generate_random_word() {
-	return `x${(Math.random() + 1).toString(36).slice(2)}x`;
 }
 
 export function generate_random_channel() {

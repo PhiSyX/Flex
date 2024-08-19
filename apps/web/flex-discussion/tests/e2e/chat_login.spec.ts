@@ -8,47 +8,25 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { expect, test } from "@playwright/test";
-import { generate_random_channel, generate_random_word } from "./helpers/context.js";
+import { test } from "@playwright/test";
+import { ChatChannelContext } from "./helpers/channel.js";
+import { ChatPageContext } from "./helpers/context.js";
 
 // See here how to get started:
 // https://playwright.dev/docs/intro
 
 test("Connexion au Chat", async ({ page }) => {
-	let nickname = generate_random_word();
-	let channel_name = generate_random_channel();
-
-	await page.goto("/chat");
-
-	await page.locator("#nickname").fill(nickname);
-	await page.locator("#channels").fill(channel_name);
-
-	let $btn = page.locator('#chat-login-view button[type="submit"]');
-	await $btn.click();
-
-	let $nav = page
-		.locator(".navigation-area .navigation-server ul li")
-		.getByText(channel_name);
-
-	await $nav.click();
-
-	let $mainRoom = page.locator(".room\\/main");
-	await expect($mainRoom).toContainText(`Tu as rejoint le salon ${channel_name}`);
+	let channel_name = ChatChannelContext.generate_name();
+	let chat_ctx = await ChatPageContext.connect(page, channel_name);
+	await chat_ctx.chan.join();
 });
 
 test("Connexion au Chat sans aucun salon, RPL_WELCOME", async ({ page }) => {
-	let nickname = generate_random_word();
+	let nickname = ChatPageContext.generate_nick();
+	let chat_ctx = await ChatPageContext.connect(page, undefined, nickname);
 
-	await page.goto("/chat");
-	await page.locator("#nickname").fill(nickname);
-	await page.locator("#channels").fill("");
-
-	let $btn = page.locator('#chat-login-view button[type="submit"]');
-	await $btn.click();
-
-	let $nav = page.locator(".navigation-area .navigation-server");
-	await expect($nav).toHaveText("Flex");
-
-	let $main = page.locator(".room\\/main");
-	await expect($main).toContainText(`Bienvenue sur le réseau ${nickname}!${nickname}@flex.chat`);
+	await chat_ctx.chan.contains_message(
+		`Bienvenue sur le réseau ${nickname}!${nickname}@flex.chat`,
+		"Flex",
+	);
 });
