@@ -422,7 +422,7 @@ export class ChatStoreVue extends ChatStore implements
 	// Redirect //
 	// -------- //
 
-	overlayer(): OverlayerStore
+	overlayer()
 	{
 		return this._overlayer;
 	}
@@ -431,7 +431,7 @@ export class ChatStoreVue extends ChatStore implements
 	{
 		return this._router;
 	}
-	
+
 	// @ts-expect-error - type à corriger
 	settings()
 	{

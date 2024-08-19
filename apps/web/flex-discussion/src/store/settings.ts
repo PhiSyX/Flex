@@ -20,7 +20,7 @@ import { SettingsStore, SettingsStoreData } from "@phisyx/flex-chat";
 // Implémentation //
 // -------------- //
 
-class SettingsStoreVue 
+export class SettingsStoreVue 
 {
 	// --------- //
 	// Propriété //

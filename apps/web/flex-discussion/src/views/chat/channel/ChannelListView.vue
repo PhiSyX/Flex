@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { OverlayerStore } from "@phisyx/flex-chat";
+
 import { onMounted as on_mounted, shallowRef as shallow_ref } from "vue";
 import { useRoute as use_route } from "vue-router";
 
@@ -38,7 +40,7 @@ function join_channel_handler(name: ChannelID)
 
 function open_join_channel_dialog_handler(event: Event)
 {
-	ChannelJoinDialog.create(overlayer_store.store, { event });
+	ChannelJoinDialog.create(overlayer_store.store as OverlayerStore, { event });
 }
 </script>
 

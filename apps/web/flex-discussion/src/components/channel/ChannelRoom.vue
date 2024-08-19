@@ -6,6 +6,7 @@ import type {
 	ChannelMember,
 	ChannelMemberSelected,
 	ChannelRoom,
+	OverlayerStore,
 	Room,
 	RoomMessage,
 } from "@phisyx/flex-chat";
@@ -160,9 +161,9 @@ function create_topic_layer_handler(payload: {
 })
 {
 	if (payload.mode) {
-		ChannelTopicLayer.create(overlayer_store.store, payload);
+		ChannelTopicLayer.create(overlayer_store.store as OverlayerStore, payload);
 	} else {
-		ChannelTopicLayer.destroy(overlayer_store.store);
+		ChannelTopicLayer.destroy(overlayer_store.store as OverlayerStore);
 	}
 }
 
@@ -198,7 +199,7 @@ const send_silence_user_command_handler = (apply_state: "+" | "-") => (
  */
 function open_change_nickname_dialog_handler(event: MouseEvent)
 {
-	UserChangeNicknameDialog.create(overlayer_store.store, { event });
+	UserChangeNicknameDialog.create(overlayer_store.store as OverlayerStore, { event });
 }
 
 /**
@@ -206,7 +207,7 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
  */
 function open_channel_settings_dialog_handler(_: Event)
 {
-	ChannelSettingsDialog.create(overlayer_store.store, {
+	ChannelSettingsDialog.create(overlayer_store.store as OverlayerStore, {
 		room: props.room,
 		current_client_channel_member: current_client_member.value.unwrap(),
 	});

@@ -17,7 +17,8 @@ import { Option } from "@phisyx/flex-safety";
 // Type //
 // ---- //
 
-export type Layer<D = unknown> = {
+export interface Layer<D = unknown>
+{
 	id: string;
 	centered?: boolean;
 	data?: D;
@@ -53,22 +54,13 @@ const MOUSE_POSITION_PADDING: number = 4;
 // Implémentation //
 // -------------- //
 
-export class OverlayerStore
+export class OverlayerData 
 {
-	// ------ //
-	// Static //
-	// ------ //
-
-	static readonly NAME = "overlayer-store";
-
 	// --------- //
 	// Propriété //
 	// --------- //
 
-	$overlayer!: HTMLDivElement;
-	$teleport!: HTMLDivElement;
-
-	layers: Map<string, Layer> = new Map();
+	public layers: Map<string, Layer> = new Map();
 
 	// --------------- //
 	// Getter | Setter //
@@ -78,6 +70,30 @@ export class OverlayerStore
 	{
 		return this.layers.size > 0;
 	}
+}
+
+export class OverlayerStore
+{
+	// ------ //
+	// Static //
+	// ------ //
+
+	static readonly NAME = "overlayer-store";
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+
+	constructor(protected data: OverlayerData)
+	{
+	}
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	$overlayer!: HTMLDivElement;
+	$teleport!: HTMLDivElement;
 
 	// ------- //
 	// Méthode //
@@ -89,8 +105,8 @@ export class OverlayerStore
 		payload.trap_focus ??= true;
 
 		if (!payload.event) {
-			this.layers.set(payload.id, payload);
-			return this.layers.get(payload.id) as Layer<D>;
+			this.data.layers.set(payload.id, payload);
+			return this.data.layers.get(payload.id) as Layer<D>;
 		}
 
 		let dom_element = payload.dom_element || (payload.event.currentTarget as HTMLElement);
@@ -99,7 +115,7 @@ export class OverlayerStore
 			dom_element.classList.contains(LAYER_HL_CSS_CLASS) ||
 			dom_element.classList.contains(LAYER_HL_CSS_CLASS_ALT)
 		) {
-			return this.layers.get(payload.id) as Layer<D>;
+			return this.data.layers.get(payload.id) as Layer<D>;
 		}
 
 		let computed_style = window.getComputedStyle(dom_element);
@@ -135,19 +151,19 @@ export class OverlayerStore
 			mouse_position.left = to_px(deltaX + MOUSE_POSITION_PADDING);
 		}
 
-		this.layers.set(payload.id, {
+		this.data.layers.set(payload.id, {
 			...payload,
 			dom_element: dom_element,
 			style,
 			mouse_position,
 		});
 
-		return this.layers.get(payload.id) as Layer<D>;
+		return this.data.layers.get(payload.id) as Layer<D>;
 	}
 
 	destroy(layer_id: Layer["id"])
 	{
-		let layer = this.layers.get(layer_id);
+		let layer = this.data.layers.get(layer_id);
 
 		if (!layer) {
 			return;
@@ -159,12 +175,12 @@ export class OverlayerStore
 
 		layer.on_close?.call(this);
 
-		this.layers.delete(layer_id);
+		this.data.layers.delete(layer_id);
 	}
 
 	destroy_all(options: { force: boolean } = { force: false })
 	{
-		for (let [id, layer] of this.layers) {
+		for (let [id, layer] of this.data.layers) {
 			if (options.force) {
 				this.destroy(id);
 				continue;
@@ -180,22 +196,22 @@ export class OverlayerStore
 
 	get(layer_id: Layer["id"])
 	{
-		return Option.from(this.layers.get(layer_id));
+		return Option.from(this.data.layers.get(layer_id));
 	}
 
 	get_unchecked(layer_id: Layer["id"])
 	{
-		return this.layers.get(layer_id);
+		return this.data.layers.get(layer_id);
 	}
 
 	has(layer_id: Layer["id"])
 	{
-		return this.layers.has(layer_id);
+		return this.data.layers.has(layer_id);
 	}
 
 	update(layer_id: Layer["id"])
 	{
-		let layer = this.layers.get(layer_id);
+		let layer = this.data.layers.get(layer_id);
 
 		if (!layer) {
 			return;
@@ -239,12 +255,12 @@ export class OverlayerStore
 			mouse_position.left = to_px(left)
 		}
 
-		this.layers.set(layer_id, { ...layer, style, mouse_position });
+		this.data.layers.set(layer_id, { ...layer, style, mouse_position });
 	}
 
 	update_data<D = unknown>(layer_id: Layer<D>["id"], data: D)
 	{
-		let layer = this.layers.get(layer_id);
+		let layer = this.data.layers.get(layer_id);
 		if (!layer) {
 			return;
 		}
@@ -253,7 +269,7 @@ export class OverlayerStore
 
 	update_all()
 	{
-		for (let [id, _] of this.layers) {
+		for (let [id, _] of this.data.layers) {
 			this.update(id);
 		}
 	}

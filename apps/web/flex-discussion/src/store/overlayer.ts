@@ -12,30 +12,73 @@ import {
 	acceptHMRUpdate as accept_hmr_update,
 	defineStore as define_store
 } from "pinia";
-import { computed, reactive } from "vue";
+import { computed, reactive, readonly } from "vue";
 
-import { OverlayerStore } from "@phisyx/flex-chat";
+import { OverlayerData, OverlayerStore } from "@phisyx/flex-chat";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+class OverlayerStoreVue extends OverlayerStore
+{
+	get layers()
+	{
+		return computed(() => readonly(this.data.layers))
+	}
+
+	get has_layers()
+	{
+		return computed(() => this.data.has_layers);
+	}
+
+	get $overlayer_mut()
+	{
+		return computed({
+			get: () => this.$overlayer,
+			set: ($1) => {
+				this.$overlayer = $1
+			}
+		});
+	}
+
+	get $teleport_mut()
+	{
+		return computed({
+			get: () => this.$teleport,
+			set: ($1) => {
+				this.$teleport = $1
+			}
+		});
+	}
+}
 
 // ----- //
 // Store //
 // ----- //
 
 export const use_overlayer_store = define_store(OverlayerStore.NAME, () => {
-	let store = reactive(new OverlayerStore()) as OverlayerStore;
-
-	let layers = computed(() => store.layers);
-	let has_layers = computed(() => store.has_layers);
+	const store = new OverlayerStoreVue(reactive(new OverlayerData()));
 
 	return {
+		has_layers: store.has_layers,
+		layers: store.layers,
+
+		$overlayer_mut: store.$overlayer_mut,
+		$teleport_mut: store.$teleport_mut,
+
+		// -------- //
+		// Redirect //
+		// -------- //
+
+		store: store as OverlayerStore,
+
 		create: store.create.bind(store),
 		destroy: store.destroy.bind(store),
 		destroy_all: store.destroy_all.bind(store),
 		get: store.get.bind(store),
 		get_unchecked: store.get_unchecked.bind(store),
 		has: store.has.bind(store),
-		has_layers,
-		layers,
-		store,
 		update: store.update.bind(store),
 		update_all: store.update_all.bind(store),
 		update_data: store.update_data.bind(store),

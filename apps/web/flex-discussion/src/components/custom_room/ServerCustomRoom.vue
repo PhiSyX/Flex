@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ServerCustomRoom } from "@phisyx/flex-chat";
+import type { OverlayerStore, ServerCustomRoom } from "@phisyx/flex-chat";
 
 import { ChangeFormatsColorsDialog, UserChangeNicknameDialog } from "@phisyx/flex-chat";
 
@@ -41,7 +41,9 @@ let vademecum_url = import.meta.env.VITE_APP_VADEMECUM_URL || "#";
  */
 function open_change_nickname_dialog_handler(event: MouseEvent)
 {
-	UserChangeNicknameDialog.create(overlayer_store.store, { event });
+	UserChangeNicknameDialog.create(overlayer_store.store as OverlayerStore, {
+		event,
+	});
 }
 
 /**

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { DialogClass, DialogInterface } from "@phisyx/flex-chat";
+import type { DialogClass, DialogInterface, OverlayerStore } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
@@ -29,7 +29,7 @@ export function use_dialog<
 	let layer_name: string = dialog_cls.ID;
 	let teleport_id = computed(() => `#${layer_name}_teleport`);
 
-	let dialog = computed(() => new dialog_cls(overlayer_store.store));
+	let dialog = computed(() => new dialog_cls(overlayer_store.store as OverlayerStore));
 
 	let layer = computed(() => dialog.value.get());
 	let layer_unsafe = computed(() => dialog.value.get_unchecked());

@@ -22,12 +22,12 @@ const { destroy_handler } = use_overlayer();
 
 watch_effect(() => {
 	if ($overlayer.value) {
-		overlayer_store.store.$overlayer = $overlayer.value;
+		overlayer_store.$overlayer_mut = $overlayer.value;
 	}
 
 	if ($teleport.value && $teleport.value.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: ;-)
-		overlayer_store.store.$teleport = $teleport.value.pop()!.firstElementChild as HTMLDivElement;
+		overlayer_store.$teleport_mut = $teleport.value.pop()!.firstElementChild as HTMLDivElement;
 		overlayer_store.update_all();
 	}
 });

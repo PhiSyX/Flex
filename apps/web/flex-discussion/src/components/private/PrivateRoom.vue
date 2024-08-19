@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrivateRoom } from "@phisyx/flex-chat";
+import type { OverlayerStore, PrivateRoom } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
@@ -57,7 +57,9 @@ let completion_list = computed(() => chat_store.all_commands(props.room));
  */
 function open_change_nickname_dialog_handler(event: MouseEvent)
 {
-	UserChangeNicknameDialog.create(overlayer_store.store, { event });
+	UserChangeNicknameDialog.create(overlayer_store.store  as OverlayerStore, {
+		event,
+	});
 }
 
 /**

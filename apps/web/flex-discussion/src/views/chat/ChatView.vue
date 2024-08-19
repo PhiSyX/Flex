@@ -9,7 +9,6 @@ import {
 
 import { use_chat_store } from "~/store";
 
-
 import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
 import MentionsCustomRoomComponent from "#/sys/custom_room_mentions/CustomRoomMentions.template.vue";
 import NoticesCustomRoomComponent from "#/sys/custom_room_notices/CustomRoomNotices.template.vue";
