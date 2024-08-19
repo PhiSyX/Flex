@@ -172,7 +172,12 @@ input[type="search"] {
 }
 
 input[type="text"]::placeholder {
-	color: var(--default-placeholder-color) !important;
+	@include fx.scheme using ($name)
+	{
+		@if $name == ice {
+			color: var(--default-placeholder-color) !important;
+		}
+	}
 	font-style: initial !important;
 	text-decoration: initial !important;
 	font-weight: initial !important;

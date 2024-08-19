@@ -9,7 +9,7 @@
 				--default-text-color_hsl: var(--color-grey900_hsl);
 				--default-text-color_alt: var(--color-white);
 				--default-text-color_alt_hsl: var(--color-white_hsl);
-				--default-placeholder-color:  var(--color-grey500);
+				--default-placeholder-color:  var(--color-grey800);
 				--box-shadow: 2px 2px 4px var(--color-grey400);
 
 				--disabled-bg: var(--color-grey400);
@@ -128,7 +128,7 @@
 				--btn-primary-bg-hover: var(--color-grey200);
 				--btn-secondary-bg: var(--color-black);
 				--btn-secondary-bg-hover: var(--color-grey800);
-				// --btn-secondary-color: var(--default-text-color_alt);
+				--btn-secondary-color: var(--default-text-color_alt);
 				--btn-danger-bg: var(--color-blue-grey100);
 				--btn-danger-bg-hover: var(--color-blue-grey200);
 			}

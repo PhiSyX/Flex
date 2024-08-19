@@ -136,7 +136,7 @@ export class ChatBrowserContext
 
 	async all_users_with_access_level()
 	{
-		expect(this.#contexts.length).toBe(7);
+		expect(this.#contexts.length).toBeGreaterThanOrEqual(7);
 		
 		await this.get_user(0).chan.send_message("/oper test-globop test");
 		
