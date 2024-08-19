@@ -64,17 +64,17 @@ const emit = defineEmits<Emits>();
 @use "scss:~/flexsheets" as fx;
 
 dialog {
+	box-shadow: var(--box-shadow);
+	background: var(--dialog-bg, canvas);
+	color: var(--dialog-color, var(--default-text-color_alt));
+	border-color: var(--dialog-border-color);
+
 	@media (min-width: 530px) and (min-height: 530px) {
 		width: max-content;
 		height: max-content;
 		max-height: fx.space(500);
 		max-width: fx.space(400);
 	}
-
-	box-shadow: var(--box-shadow);
-	background: var(--dialog-bg, canvas);
-	color: var(--dialog-color, var(--default-text-color_alt));
-	border-color: var(--dialog-border-color);
 }
 
 @include fx.class("dialog/title") {

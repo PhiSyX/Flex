@@ -167,15 +167,15 @@ input[type="search"] {
 }
 
 input[type="text"]::placeholder {
-	@include fx.scheme using ($name)
-	{
+	font-style: initial !important;
+	text-decoration: initial !important;
+	font-weight: initial !important;
+
+	@include fx.scheme using ($name) {
 		@if $name == ice {
 			color: var(--default-placeholder-color) !important;
 		}
 	}
-	font-style: initial !important;
-	text-decoration: initial !important;
-	font-weight: initial !important;
 }
 
 .btn-suggestion {
