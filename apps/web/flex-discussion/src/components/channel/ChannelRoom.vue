@@ -16,8 +16,8 @@ import { computed } from "vue";
 
 import {
 	ChangeFormatsColorsDialog,
+	ChannelChangeTopicLayer,
 	ChannelSettingsDialog,
-	ChannelTopicLayer,
 	NoticesCustomRoom,
 	UserChangeNicknameDialog,
 } from "@phisyx/flex-chat";
@@ -161,9 +161,9 @@ function create_topic_layer_handler(payload: {
 })
 {
 	if (payload.mode) {
-		ChannelTopicLayer.create(overlayer_store.store as OverlayerStore, payload);
+		ChannelChangeTopicLayer.create(overlayer_store.store as OverlayerStore, payload);
 	} else {
-		ChannelTopicLayer.destroy(overlayer_store.store as OverlayerStore);
+		ChannelChangeTopicLayer.destroy(overlayer_store.store as OverlayerStore);
 	}
 }
 

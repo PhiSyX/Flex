@@ -11,7 +11,7 @@ import Navigation from "~/components/navigation/Navigation.vue";
 
 import ChangeFormatsColorsDialog from "~/components/dialog/ChangeFormatsColorsDialog.vue";
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
-import ChannelCreateDialog from "~/components/dialog/ChannelCreateDialog.vue";
+import ChannelJoinDialog from "~/components/dialog/ChannelJoinDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
 
 import connection_audio from "#/assets/audio/connection.mp3";
@@ -97,7 +97,7 @@ function reset_audio_src()
 
 		<ChangeFormatsColorsDialog />
 		<ChangeNickDialog />
-		<ChannelCreateDialog />
+		<ChannelJoinDialog />
 		<ChannelSettingsDialog />
 	</main>
 </template>

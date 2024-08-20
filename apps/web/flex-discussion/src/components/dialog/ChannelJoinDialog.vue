@@ -4,7 +4,7 @@ import { ChannelJoinDialog } from "@phisyx/flex-chat";
 import { use_dialog } from "~/hooks/dialog";
 import { use_chat_store } from "~/store";
 
-import ChannelCreateDialog from "#/sys/dialog_channel_create/ChannelCreateDialog.template.vue";
+import ChannelJoinDialogComponent from "#/sys/dialog_channel_join/ChannelJoinDialog.template.vue";
 
 // --------- //
 // Composant //
@@ -36,7 +36,7 @@ function join_channel_handler(channels: ChannelID, keys: string)
 
 <template>
 	<Teleport v-if="dialog.exists()" :to="teleport_id">
-		<ChannelCreateDialog
+		<ChannelJoinDialogComponent
 			:layer-name="layer_name"
 			@close="close_dialog"
 			@submit="join_channel_handler"

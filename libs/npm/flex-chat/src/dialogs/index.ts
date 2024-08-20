@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./formats_colors";
 export * from "./interface";
-export * from "./room";
-export * from "./settings";
-export * from "./topic";
-export * from "./user";
+
+export * from "./change_formats_colors";
+export * from "./channel_join";
+export * from "./channel_settings";
+export * from "./channel_change_topic";
+export * from "./user_change_nickname";

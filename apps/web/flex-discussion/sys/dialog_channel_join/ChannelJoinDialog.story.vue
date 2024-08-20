@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import ChannelCreateDialog from "./ChannelCreateDialog.template.vue";
+import ChannelJoinDialog from "./ChannelJoinDialog.template.vue";
 </script>
 
 <template>
-	<Story title="Molecules/Dialog/ChannelCreateDialog" responsive-disabled>
+	<Story title="Molecules/Dialog/ChannelJoinDialog" responsive-disabled>
 		<Variant title="Default">
-			<ChannelCreateDialog layer-name="layer" />
+			<ChannelJoinDialog layer-name="layer" />
 		</Variant>
 	</Story>
 </template>

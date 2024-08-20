@@ -17,13 +17,13 @@ import type { DialogInterface } from "./interface";
 // Implémentation //
 // -------------- //
 
-export class ChannelTopicLayer implements DialogInterface
+export class ChannelChangeTopicLayer implements DialogInterface
 {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "channel-topic-layer";
+	static ID = "channel-change-topic-layer";
 
 	static create(
 		overlayer_store: OverlayerStore,
@@ -34,19 +34,19 @@ export class ChannelTopicLayer implements DialogInterface
 	)
 	{
 		overlayer_store.create({
-			id: ChannelTopicLayer.ID,
+			id: ChannelChangeTopicLayer.ID,
 			destroyable: "manual",
 			event: payload.event,
 			dom_element: payload.linked_element,
 			trap_focus: false,
 		});
 
-		return new ChannelTopicLayer(overlayer_store);
+		return new ChannelChangeTopicLayer(overlayer_store);
 	}
 
 	static destroy(overlayer_store: OverlayerStore)
 	{
-		overlayer_store.destroy(ChannelTopicLayer.ID);
+		overlayer_store.destroy(ChannelChangeTopicLayer.ID);
 	}
 
 	// ----------- //
@@ -61,12 +61,12 @@ export class ChannelTopicLayer implements DialogInterface
 
 	destroy()
 	{
-		this.overlayer_store.destroy(ChannelTopicLayer.ID);
+		this.overlayer_store.destroy(ChannelChangeTopicLayer.ID);
 	}
 
 	get(): Option<Layer>
 	{
-		return this.overlayer_store.get(ChannelTopicLayer.ID);
+		return this.overlayer_store.get(ChannelChangeTopicLayer.ID);
 	}
 
 	get_unchecked(): Layer
@@ -76,6 +76,6 @@ export class ChannelTopicLayer implements DialogInterface
 
 	exists(): boolean
 	{
-		return this.overlayer_store.has(ChannelTopicLayer.ID);
+		return this.overlayer_store.has(ChannelChangeTopicLayer.ID);
 	}
 }
