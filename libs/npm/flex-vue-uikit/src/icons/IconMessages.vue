@@ -15,15 +15,15 @@ interface Props
 // --------- //
 
 const props = defineProps<Props>();
-
-let title = computed(() => props.unread ? `${props.unread} messages non lus` : undefined);
+let title = computed(() => props.unread ? `${props.unread} non lu` : undefined);
 </script>
 
 <template>
-	<span class="[ pos-r ]" :title="title">
+	<span class="[ pos-r ]">
 		<strong
             v-if="unread"
             class="[ f-size=10px border/radius:full ]"
+			 :aria-title="title"
         >
             {{ unread }}
         </strong>

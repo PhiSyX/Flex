@@ -33,10 +33,26 @@ export class ChatPrivateContext
 		await this.contains_message(user, `${user.nick} n'est désormais plus ignoré.`);
 	}
 
-	async send(to: ChatPageContext, message: string)
+	async send(to: ChatPageContext, message: string, opt?: {
+		waiting_list: boolean;
+	})
 	{
 		let msg = `/privmsg ${to.nick} ${message}`;
 		await this.send_message(to, msg);
+		
+		if (opt?.waiting_list) {
+			await to.page.locator("#goto-private-list").click();
+			await to.page.waitForTimeout(500);
+			let $priv = to.page.locator(".private\\/list ul li")
+				.getByTitle(`Ouvrir le privé de ${this.user.nick}.`);
+			await $priv.click();
+			await to.page.waitForTimeout(500);
+			let $btn_accept = to.page
+				.locator("#private-pending-request-layer_teleport footer button")
+				.getByText("Accepter");
+			await $btn_accept.click();
+		}
+
 		msg = this.user.nick + " :" + msg.slice(`/privmsg ${to.nick} `.length);
 		await this.contains_message(to, msg);
 	}

@@ -124,9 +124,11 @@ function resize_handler(entries: Array<ResizeObserverEntry>)
 			>
 				<ButtonIcon
 					v-if="totalPrivatesWaiting"
+					id="goto-private-list"
 					icon="messages"
 					:iconAttrs="{ unread: totalPrivatesWaiting }"
 					@click="open_private_list_handler"
+					title="Liste des privés en attente"
 				/>
 
 				<UiButton

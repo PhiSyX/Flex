@@ -39,9 +39,9 @@ test("Ignorer un utilisateur (message privé)", async ({ browser }) => {
 	let chat_ctx = await ChatBrowserContext.connect(browser, channel);	
 	let { globop: user1, owner: user2 } = await chat_ctx.users_with_permissions();
 
-	let $menu = await user1.chan.select_member(user2);;
+	let $menu = await user1.chan.select_member(user2);
 	await $menu.locator("li").getByText("Discuter en privé").click();
-	await user1.priv.send(user2, "Hello World");
+	await user1.priv.send(user2, "Hello World", { waiting_list: true });
 
 	// NOTE: user1 ignore user2
 	await user1.priv.ignore(user2);
@@ -50,6 +50,8 @@ test("Ignorer un utilisateur (message privé)", async ({ browser }) => {
 
 	// NOTE: user1 n'ignore plus user2
 	await user1.priv.unignore(user2);
-	await user2.priv.send(user1, "Tu reçois mon message?");
-	await user1.priv.contains_message(user2, "Tu reçois mon message?");
+	// NOTE: user2 a déjà accepté le privé de user1 lors du premier envoie
+	// pas besoin de placer l'option `{ waiting_list: true }`.
+	await user2.priv.send(user1, "Tu reçois mon message? #2");
+	await user1.priv.contains_message(user2, "Tu reçois mon message? #2");
 });

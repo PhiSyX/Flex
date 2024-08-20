@@ -47,14 +47,14 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 	// ------- //
 
 	input(
-		room_id: RoomID,
+		active_room_id: RoomID,
 		formats: Commands["PRIVMSG"]["formats"],
 		colors: Commands["PRIVMSG"]["colors"],
 		targets_raw?: string,
 		...words: Array<string>
 	)
 	{
-		if (room_id.startsWith("#")) {
+		if (active_room_id.startsWith("#") || active_room_id.toLowerCase() === "flex") {
 			let targets = targets_raw?.split(",");
 			if (!targets) {
 				return;
@@ -64,7 +64,7 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 			return;
 		}
 
-		let targets = [room_id];
+		let targets = [active_room_id];
 		let text = [targets_raw, ...words].join(" ");
 		this.send({ formats, colors, targets, text });
 	}
