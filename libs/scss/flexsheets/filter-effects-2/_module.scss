@@ -1,0 +1,5 @@
+@use "./backdrop-filter" as bf;
+
+@mixin use-filter-effects2($options...) {
+	@include bf.use-backdrop-filters($options...);
+}

@@ -32,6 +32,8 @@ export const ICON_NAMES = [
 	"loader",
 	"logoff",
 	"mention",
+	"message",
+	"messages",
 	"notice",
 	"password",
 	"plus",
@@ -52,12 +54,14 @@ interface ButtonProps
 {
 	disabled?: boolean;
 	icon: Icons;
+	iconAttrs?: object;
 }
 
 interface LabelProps
 {
 	for: string;
 	icon: Icons;
+	iconAttrs?: object;
 }
 
 // -------- //
@@ -65,28 +69,29 @@ interface LabelProps
 // -------- //
 
 // HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assertIcon(_value: unknown): asserts _value is string
+function assert_icon(_value: unknown): asserts _value is string
 {}
 
 export function ButtonIcon(props: ButtonProps): JSX.Element
 {
 	const IconName = resolveComponent(`icon-${props.icon}`);
-	assertIcon(IconName);
+	assert_icon(IconName);
+	const { iconAttrs, ...attrs } = props;
 	return (
-		<button type="button" {...props} class="btn flex:shrink=0">
-			<IconName />
+		<button type="button" {...attrs} class="btn flex:shrink=0">
+			<IconName {...iconAttrs} />
 		</button>
 	);
 }
 
 export function LabelIcon(props: LabelProps): JSX.Element
 {
-	let { icon, ...rest } = props;
-	const IconName = resolveComponent(`icon-${icon}`);
-	assertIcon(IconName);
+	const IconName = resolveComponent(`icon-${props.icon}`);
+	assert_icon(IconName);
+	const { iconAttrs, ...attrs } = props;
 	return (
-		<label {...rest}>
-			<IconName />
+		<label {...attrs}>
+			<IconName {...iconAttrs} />
 		</label>
 	);
 }

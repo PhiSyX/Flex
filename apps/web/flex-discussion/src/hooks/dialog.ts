@@ -34,6 +34,11 @@ export function use_dialog<
 	let layer = computed(() => dialog.value.get());
 	let layer_unsafe = computed(() => dialog.value.get_unchecked());
 
+	function create_dialog(...args: Array<Parameters<DialogClass<T>["create"]>[1]>)
+	{
+		dialog_cls.create(overlayer_store.store as OverlayerStore, ...args);
+	}
+
 	function close_dialog()
 	{
 		dialog.value.destroy();
@@ -52,6 +57,7 @@ export function use_dialog<
         layer_name,
 		layer_unsafe,
 
+		create_dialog,
 		close_dialog,
 		update_dialog,
 	}

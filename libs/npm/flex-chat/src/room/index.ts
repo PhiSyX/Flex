@@ -38,12 +38,14 @@ export class Room<R = RoomID, Type extends string = string>
 	/**
 	 * Définit l'état de la chambre, fermée ou non.
 	 */
-	private closed = false;
+	protected closed = false;
 
 	/**
 	 * Nom personnalisé de la fenêtre.
 	 */
 	private custom_name: Option<R> = None();
+
+	declare created_at: Date;
 
 	/**
 	 * Chambre marqué comme étant "Highlight". Cela signifie que le client
@@ -92,7 +94,9 @@ export class Room<R = RoomID, Type extends string = string>
 		public type: Type,
 		protected _name: R | string,
 	)
-	{}
+	{
+		this.created_at = new Date();
+	}
 
 	// --------------- //
 	// Getter | Setter //
@@ -101,11 +105,6 @@ export class Room<R = RoomID, Type extends string = string>
 	get last_message(): Option<RoomMessage>
 	{
 		return Option.from(this.messages.at(-1));
-	}
-
-	get is_readonly(): boolean
-	{
-		return !this.writable;
 	}
 
 	get name(): R
@@ -310,6 +309,14 @@ export class Room<R = RoomID, Type extends string = string>
 	}
 
 	/**
+	 * Est-ce que la chambre est en lecture seule
+	 */
+	is_readonly(): boolean
+	{
+		return !this.writable;
+	}
+
+	/**
 	 * Englobe l'instance dans un type Option.Some
 	 */
 	into_some(): Option<this>
@@ -331,7 +338,7 @@ export class Room<R = RoomID, Type extends string = string>
 	}
 
 	/**
-	 * Marque la chambre comme étant ouverture.
+	 * Marque la chambre comme étant ouverte.
 	 */
 	marks_as_opened(): this
 	{

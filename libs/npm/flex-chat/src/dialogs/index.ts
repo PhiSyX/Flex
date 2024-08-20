@@ -14,4 +14,5 @@ export * from "./change_formats_colors";
 export * from "./channel_join";
 export * from "./channel_settings";
 export * from "./channel_change_topic";
+export * from "./private_pending_request";
 export * from "./user_change_nickname";

@@ -70,6 +70,16 @@ export interface ChatStoreInterface
 	}>;
 
 	/**
+	 * Accepte un privé en attente.
+	 */
+	accept_participant(participant: PrivateParticipant): void;
+
+	/**
+	 * Décline un privé en attente.
+	 */
+	decline_participant(participant: PrivateParticipant): void;
+
+	/**
 	 * Toutes les commandes d'une chambre. En fonction de la chambre active.
 	 *
 	 * 1. Tous les salons.
@@ -246,6 +256,11 @@ export interface ChatStoreInterface
 		event_name: K,
 		listener: ServerToClientEvent[K],
 	): void;
+
+	/**
+	 * Ouvre un privé qui est en attente.
+	 */
+	open_pending_private(origin: Origin): void;
 
 	/**
 	 * Ouvre un privé ou le crée.
@@ -451,6 +466,32 @@ export class ChatStore implements ChatStoreInterface
 	// ------- //
 	// Méthode // -> Interface
 	// ------- //
+
+	accept_participant(participant: PrivateParticipant)
+	{
+		let maybe_priv = this.room_manager().get(participant.id);
+		if (maybe_priv.is_none()) {
+			return;
+		}
+		let priv = maybe_priv.unwrap();
+		assert_private_room(priv);
+		priv.set_pending(false);
+		priv.marks_as_opened();
+		this.room_manager().set_current(participant.id);
+	}
+
+	decline_participant(participant: PrivateParticipant)
+	{
+		let maybe_priv = this.room_manager().get(participant.id);
+		if (maybe_priv.is_none()) {
+			return;
+		}
+		let priv = maybe_priv.unwrap();
+		assert_private_room(priv);
+		priv.set_pending(true);
+		priv.marks_as_closed();
+		this.room_manager().set_current_to_last();
+	}
 
 	all_commands(room: Room): Array<string>
 	{
@@ -735,10 +776,24 @@ export class ChatStore implements ChatStoreInterface
 			.once(event_name, listener);
 	}
 
+	open_pending_private(origin: Origin)
+	{
+		let maybe_priv = this.room_manager().get(origin.id, {
+			where: { state: "closed" }
+		});
+		if (maybe_priv.is_none()) {
+			return
+		}
+		let priv = maybe_priv.unwrap();
+		priv.marks_as_opened();
+		this.room_manager().set_current(priv.id());
+	}
+
 	open_private_or_create(origin: Origin)
 	{
 		let room = this.room_manager().get_or_insert(origin.id, () => {
 			let priv = new PrivateRoom(origin.nickname).with_id(origin.id);
+			priv.set_pending(false);
 			priv.add_participant(
 				new PrivateParticipant(this.client())
 					.with_is_current_client(true),

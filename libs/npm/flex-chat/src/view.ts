@@ -18,6 +18,7 @@ export enum View
 	ChannelList = "ChannelListView",
 	Channel = "ChannelView",
 	Private = "PrivateView",
+	PrivateList = "PrivateListView",
 	DirectAccess = "DirectAccessView",
 	Settings = "SettingsView",
 }

@@ -13,6 +13,7 @@ import ChangeFormatsColorsDialog from "~/components/dialog/ChangeFormatsColorsDi
 import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelJoinDialog from "~/components/dialog/ChannelJoinDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
+import PrivatePendingRequestDialog from "~/components/dialog/PrivatePendingRequestDialog.vue";
 
 import connection_audio from "#/assets/audio/connection.mp3";
 import invite_audio from "#/assets/audio/invite.mp3";
@@ -99,5 +100,6 @@ function reset_audio_src()
 		<ChangeNickDialog />
 		<ChannelJoinDialog />
 		<ChannelSettingsDialog />
+		<PrivatePendingRequestDialog />
 	</main>
 </template>

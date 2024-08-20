@@ -46,14 +46,21 @@ function open_channel_list_handler()
 {
 	chat_store.channel_list();
 }
+
+function open_private_list_view_handler()
+{
+	router.push({ name: View.PrivateList })
+}
 </script>
 
 <template>
 	<NavigationArea
+		:total-privates-waiting="chat_store.privates_waiting.length"
 		:servers="chat_store.servers"
 		@change-room="change_room_handler"
 		@close-room="close_room_handler"
 		@open-channel-list="open_channel_list_handler"
+		@open-private-list="open_private_list_view_handler"
 		@open-settings-view="open_settings_view_handler"
 		:dir="navigation_bar_position"
 		:style="{

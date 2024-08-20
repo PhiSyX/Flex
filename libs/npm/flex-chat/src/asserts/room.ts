@@ -8,13 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { PrivateRoom } from "../private/room";
 import type { Room } from "../room";
 
 import { is_string } from "@phisyx/flex-asserts";
 
 import { ChannelMember } from "../channel/member";
 import { ChannelRoom } from "../channel/room";
+import { PrivateRoom } from "../private/room";
 
 // -------- //
 // Fonction //
@@ -66,6 +66,14 @@ export function is_channel_room(room?: Room): room is ChannelRoom
 export function is_channel_member(member: unknown): member is ChannelMember
 {
 	return member instanceof ChannelMember;
+}
+
+/**
+ * Certifie que la chambre passée en argument est un privé.
+ */
+export function is_private_room(room?: Room): room is PrivateRoom
+{
+	return room instanceof PrivateRoom;
 }
 
 /**

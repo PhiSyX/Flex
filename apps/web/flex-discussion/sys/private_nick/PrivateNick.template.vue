@@ -9,14 +9,14 @@ interface Props
 	nickname: string;
 	prefix?: string;
 	suffix?: string;
-	tag: keyof HTMLElementTagNameMap;
+	tag?: keyof HTMLElementTagNameMap;
 }
 
 // --------- //
 // Composant //
 // --------- //
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), { tag: "span" });
 </script>
 
 <template>

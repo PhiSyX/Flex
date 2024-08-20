@@ -74,13 +74,15 @@ function toggle_ignore_user_handler()
 		emit("ignore-user", props.recipient.nickname);
 	}
 }
+// props.room.is_pending()
 </script>
 
 <template>
-	<div class="room/private [ flex ]" :data-room="recipient.nickname">
+	<div :data-room="recipient.nickname" class="room/private [ flex ]">
 		<Room
+			:blurred-messages="room.is_pending()"
 			:completion-list="completionList"
-			:disable-input="room.is_readonly || isRecipientBlocked"
+			:disable-input="room.is_readonly() || isRecipientBlocked"
 			:current-client-nickname="currentNickname"
 			:room="room"
 			:text-format-bold="textFormatBold"

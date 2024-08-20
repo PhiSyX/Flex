@@ -23,6 +23,7 @@ export interface Layer<D = unknown>
 	centered?: boolean;
 	data?: D;
 	destroyable?: "background" | "manual";
+	without_background_color?: boolean;
 	event?: Event & { clientX?: number; clientY?: number };
 	dom_element?: HTMLElement;
 	style?: {
@@ -104,12 +105,14 @@ export class OverlayerStore
 		payload.destroyable ||= "background";
 		payload.trap_focus ??= true;
 
-		if (!payload.event) {
-			this.data.layers.set(payload.id, payload);
+		let dom_element = (payload.dom_element || (
+			payload.event?.currentTarget
+		)) as HTMLElement | undefined;
+
+		if (!dom_element) {
+			this.data.layers.set(payload.id, { ...payload });
 			return this.data.layers.get(payload.id) as Layer<D>;
 		}
-
-		let dom_element = payload.dom_element || (payload.event.currentTarget as HTMLElement);
 
 		if (
 			dom_element.classList.contains(LAYER_HL_CSS_CLASS) ||
@@ -145,7 +148,7 @@ export class OverlayerStore
 
 		let mouse_position: Layer["mouse_position"] = {};
 
-		if (!payload.centered) {
+		if (!payload.centered && payload.event) {
 			let { clientX: deltaX = 0, clientY: deltaY = 0 } = payload.event;
 			mouse_position.top = to_px(deltaY + MOUSE_POSITION_PADDING);
 			mouse_position.left = to_px(deltaX + MOUSE_POSITION_PADDING);

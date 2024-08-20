@@ -1,0 +1,15 @@
+@use "../mixins/class" as class;
+
+@mixin use-backdrop-filters($options...) {
+	$classes: (
+		"blur": (
+			backdrop-filter: blur(8px),
+		),
+		"blur-t": (
+			color: transparent,
+   			text-shadow: 0 0 5px rgba(0,0,0,0.5),
+		),
+	);
+
+	@include class.generate($options, $classes);
+}

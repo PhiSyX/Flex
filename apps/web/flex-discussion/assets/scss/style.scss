@@ -54,6 +54,8 @@
 	"align-v:top",
 	"align-v:middle",
 	"b:none",
+	"blur-t",
+	"border/radius:full",
 	"button:reset",
 	"cursor:default",
 	"cursor:pointer",
@@ -117,6 +119,7 @@
 	(
 		className: font-size,
 		values: (
+			10px,
 			12px,
 			13px,
 			14px,
@@ -221,11 +224,13 @@
 			0,
 			1,
 			2,
+			8,
 		),
 	),
 	(
 		className: padding-top,
 		values: (
+			0,
 			1,
 			2,
 		),

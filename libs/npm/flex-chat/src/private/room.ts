@@ -43,12 +43,32 @@ export class PrivateRoom extends Room<UserID, "private">
 	// --------- //
 	// Propriété //
 	// --------- //
+
+	closed = true;
 	
 	/**
 	 * Liste des participant de la chambre privé.
 	 */
 	participants: Participants = new Map();
 
+	/**
+	 * Est-ce que le privé est en attente?
+	 */
+	private pending = true;
+
+	// ------- //
+	// Méthode // -> Override
+	// ------- //
+
+	/**
+	 * Marque la chambre comme étant fermée.
+	 */
+	marks_as_closed(): this
+	{
+		// this.pre
+		return super.marks_as_closed();
+	}
+	
 	// ------- //
 	// Méthode //
 	// ------- //
@@ -80,5 +100,28 @@ export class PrivateRoom extends Room<UserID, "private">
 	get_participant(participant_id: string): Option<PrivateParticipant>
 	{
 		return Option.from(this.participants.get(participant_id));
+	}
+
+	/**
+	 * Récupère un participant de la chambre privé.
+	 */
+	get_participant_unchecked(participant_id: string): PrivateParticipant
+	{
+		return this.get_participant(participant_id).unwrap_unchecked();
+	}
+
+	override is_readonly(): boolean
+	{
+		return this.is_pending() || super.is_readonly();
+	}
+
+	is_pending()
+	{
+		return this.pending;
+	}
+
+	set_pending(bool: boolean)
+	{
+		this.pending = bool;
 	}
 }

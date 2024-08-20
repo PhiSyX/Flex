@@ -12,6 +12,7 @@ import type { Room } from "../../room";
 import type { RoomMessageEvent } from "../../room/message";
 import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 
+import { assert_private_room } from "../../asserts/room";
 import { MentionsCustomRoom } from "../../custom_room";
 import { PrivateParticipant } from "../../private/participant";
 import { PrivateRoom } from "../../private/room";
@@ -75,6 +76,10 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 				.with_id(data.origin.id)
 				.marks_as_closed();
 
+			if (room.is_closed()) {
+				this.store.play_audio("query");
+			}
+
 			room.add_participant(
 				new PrivateParticipant(data.origin)
 			);
@@ -85,11 +90,11 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 			return room;
 		});
 
-		if (priv.is_closed()) {
-			this.store.play_audio("query");
-		}
+		assert_private_room(priv);
 
-		priv.marks_as_opened();
+		if (!priv.is_pending()) {
+			priv.marks_as_opened();
+		}
 
 		this.handle_message(priv, data);
 	}

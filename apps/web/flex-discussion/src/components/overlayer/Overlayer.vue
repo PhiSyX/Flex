@@ -82,6 +82,10 @@ watch_effect(() => {
 	}
 }
 
+.without-bg {
+	background-color: transparent!important;
+}
+
 .layer {
 	position: fixed;
 
@@ -127,10 +131,10 @@ watch_effect(() => {
 	z-index: 1010 !important;
 }
 
-.layer\@highlight:not(input),
-.layer\@highlight--alt:not(input) {
-	pointer-events: none;
-}
+// .layer\@highlight:not(input),
+// .layer\@highlight--alt:not(input) {
+// 	pointer-events: none;
+// }
 
 .teleport {
 	outline: 0;

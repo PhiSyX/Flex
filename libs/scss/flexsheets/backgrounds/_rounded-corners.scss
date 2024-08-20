@@ -3,7 +3,7 @@
 
 @mixin use-backgrounds-rounded-corners($options...) {
 	$classes: (
-		"border/radius=all": (
+		"border/radius:full": (
 			border-radius: 100%,
 		),
 	);

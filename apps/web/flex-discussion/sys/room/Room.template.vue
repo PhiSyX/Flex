@@ -17,6 +17,7 @@ export interface Props
 	currentClientNickname?: string;
 	displayInput?: boolean;
 	disableInput?: boolean;
+	blurredMessages?: boolean;
 	room: Room;
 	textFormatBold?: boolean | null;
 	textFormatItalic?: boolean | null;
@@ -83,6 +84,9 @@ const send_message_handler = (message: string) => emit("send-message", message);
 				<RoomHistoryLogs
 					:messages="room.messages"
 					class="[ flex:full ]"
+					:class="{
+						'blur-t': blurredMessages,
+					}"
 					@open-private="open_private_handler"
 					@open-room="open_room_handler"
 					@dblclick="dblclick_main_handler"

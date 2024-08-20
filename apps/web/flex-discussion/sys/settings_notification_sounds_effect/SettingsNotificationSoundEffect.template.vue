@@ -72,7 +72,7 @@ let audio = ref({
 			<option value="invites">Lorsqu'on m'invite sur un salon</option>
 			<option value="mentions">Lorsqu'on mentionne mon pseudo</option>
 			<option value="notices">Lorsqu'une notice m'est destinée</option>
-			<option value="queries">Lorsqu'un privé s'ouvre pour la 1ère fois</option>
+			<option value="queries">Lorsqu'un utilisateur me contacte pour la 1ère fois en privé</option>
 		</select>
 	</div>
 </template>

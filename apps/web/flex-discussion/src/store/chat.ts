@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { ComputedRef } from "vue";
 import type { Router } from "vue-router";
 
 import type {
@@ -17,6 +18,7 @@ import type {
 	ConnectUserInfo,
 	Module,
 	OverlayerStore,
+	PrivateRoom,
 	UUIDStore,
 	UUIDVariant,
 	UserStore,
@@ -31,7 +33,7 @@ import { computed, reactive } from "vue";
 import { useRouter as use_router } from "vue-router";
 
 import { is_string } from "@phisyx/flex-asserts";
-import { ChatStore, View, is_channel } from "@phisyx/flex-chat";
+import { ChatStore, View, is_channel, is_private_room } from "@phisyx/flex-chat";
 import { None } from "@phisyx/flex-safety";
 
 import { use_overlayer_store } from "./overlayer";
@@ -474,6 +476,16 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	// Toutes les chambres.
 	let rooms = computed(() => store.room_manager().rooms());
 
+	// Toutes les chambres privés en attente
+	let privates_waiting: ComputedRef<Array<PrivateRoom>> = computed(
+		() => store.room_manager().rooms().filter((room) => {
+			if (!is_private_room(room)) {
+				return false;
+			}
+			return room.is_pending() && room.is_closed();
+		}) as Array<PrivateRoom>
+	);
+
 	let servers = computed(() => {
 		let network = store.network();
 		return [
@@ -513,6 +525,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		client_error,
 		current_client,
 		current_client_nickname,
+		privates_waiting,
 		rooms,
 		servers,
 
@@ -520,6 +533,8 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		// Redirect //
 		// -------- //
 
+		accept_participant: store.accept_participant.bind(store),
+		decline_participant: store.decline_participant.bind(store),
 		all_commands: store.all_commands.bind(store),
 		apply_channel_settings: store.apply_channel_settings.bind(store),
 		ban_channel_member_mask: store.ban_channel_member_mask.bind(store),
@@ -539,6 +554,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		listen: store.listen.bind(store),
 		network: store.network.bind(store),
 		open_private_or_create: store.open_private_or_create.bind(store),
+		open_pending_private: store.open_pending_private.bind(store),
 		open_room: store.open_room.bind(store),
 		room_manager: store.room_manager.bind(store),
 		send_message: store.send_message.bind(store),

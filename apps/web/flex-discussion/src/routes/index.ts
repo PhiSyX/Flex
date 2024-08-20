@@ -41,6 +41,11 @@ export const ROUTES: Array<RouteRecordRaw> = [
             },
 
             {
+                path: "/privates/",
+                component: () => import("~/views/chat/private/PrivateListView.vue"),
+                name: View.PrivateList,
+            },
+            {
                 path: "/private/:id",
                 component: () => import("~/views/chat/private/PrivateView.vue"),
                 name: View.Private,

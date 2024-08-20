@@ -15,6 +15,7 @@ import NavigationServer from "#/sys/navigation_server/NavigationServer.template.
 interface Props
 {
 	servers: Array<Server>;
+	totalPrivatesWaiting?: number;
 }
 
 interface Server
@@ -32,6 +33,7 @@ interface Emits
 	(event_name: "change-room", origin: Origin | RoomID): void;
 	(event_name: "close-room", origin: Origin | RoomID): void;
 	(event_name: "open-channel-list"): void;
+	(event_name: "open-private-list"): void;
 	(event_name: "open-settings-view"): void;
 }
 
@@ -59,6 +61,7 @@ let nav_width_ref = ref(folded.value ? `${DEFAULT_MIN_SIZE}px` : `${DEFAULT_MAX_
 const change_room_handler = (origin: Origin | RoomID) => emit("change-room", origin);
 const close_room_handler = (origin: Origin | RoomID) => emit("close-room", origin);
 const open_channel_list_handler = () => emit("open-channel-list");
+const open_private_list_handler = () => emit("open-private-list");
 const open_settings_view_handler = () => emit("open-settings-view");
 
 function toggle_navigation_handler()
@@ -119,6 +122,13 @@ function resize_handler(entries: Array<ResizeObserverEntry>)
 				class="[ flex:full flex flex/center:full gap=1 flex:shrink=0 ]"
 				dir="ltr"
 			>
+				<ButtonIcon
+					v-if="totalPrivatesWaiting"
+					icon="messages"
+					:iconAttrs="{ unread: totalPrivatesWaiting }"
+					@click="open_private_list_handler"
+				/>
+
 				<UiButton
 					id="goto-channel-list"
 					icon="channel-list"

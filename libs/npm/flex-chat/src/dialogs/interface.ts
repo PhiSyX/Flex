@@ -18,6 +18,9 @@ import type { Layer, OverlayerStore } from "../store";
 export interface DialogClass<T>
 {
 	ID: string;
+
+	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
+
 	new(_: OverlayerStore): T;
 }
 
