@@ -26,8 +26,8 @@
 		"jsx": "preserve",
 		"jsxFactory": "h",
 		"jsxImportSource": "vue",
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"target": "ES2020",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"target": "ESNext",
 		"useDefineForClassFields": true,
 
 		"skipLibCheck": true

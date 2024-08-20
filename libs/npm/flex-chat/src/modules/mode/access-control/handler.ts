@@ -56,7 +56,7 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 			// biome-ignore lint/suspicious/noExplicitAny: ?
 			mode: ModeApplyFlag<any>,
 		): mode is ModeApplyFlag<AccessControlMode> {
-			return ["b", "e", "I"].includes(letter) && "mask" in mode.flag;
+			return ["b", "e", "I"].includes(letter) && Object.hasOwn(mode.flag, "mask");
 		}
 
 		if (data.added) {

@@ -62,7 +62,7 @@ const model_object_select: DirectiveModelObject = {
 
 function get_value(el: HTMLOptionElement): string 
 {
-	return "_value" in el ? (el._value as string) : el.value;
+	return Object.hasOwn(el, "_value") ? (el._value as string) : el.value;
 }
 
 function set_selected(el: HTMLSelectElement, value: { [o: string]: boolean })
