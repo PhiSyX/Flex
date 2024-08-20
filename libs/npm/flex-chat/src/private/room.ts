@@ -60,13 +60,11 @@ export class PrivateRoom extends Room<UserID, "private">
 	// Méthode // -> Override
 	// ------- //
 
-	/**
-	 * Marque la chambre comme étant fermée.
-	 */
-	marks_as_closed(): this
+	override clear_messages()
 	{
-		// this.pre
-		return super.marks_as_closed();
+		if (!this.pending) {
+			super.clear_messages();
+		}
 	}
 	
 	// ------- //
