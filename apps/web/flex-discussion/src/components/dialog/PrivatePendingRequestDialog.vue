@@ -6,7 +6,7 @@ import { PrivatePendingRequestDialog } from "@phisyx/flex-chat";
 import { use_dialog } from "~/hooks/dialog";
 import { use_chat_store } from "~/store";
 
-import PrivatePendingRequestDialogComponent from "#/sys/dialog_pending_request_dialog/PrivatePendingRequestDialog.template.vue";
+import PrivatePendingRequestDialogComponent from "#/sys/dialog_pending_request/PrivatePendingRequestDialog.template.vue";
 
 // --------- //
 // Composant //

@@ -50,7 +50,8 @@ const emit = defineEmits<Emits>();
 		</template>
 
 		<div>
-			<strong>{{ participant.nickname }}</strong> souhaite échanger textuellement avec vous.
+			<strong>{{ participant.nickname }}</strong> souhaite échanger
+			textuellement avec vous.
 		</div>
 	</Dialog>
 </template>
