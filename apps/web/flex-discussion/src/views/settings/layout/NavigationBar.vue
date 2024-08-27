@@ -10,6 +10,6 @@ let settings_store = use_settings_store();
 	<h2>Barre de navigation</h2>
 
 	<SettingsLayoutNavigationBar
-		v-model="settings_store.channel_userlist_position_mut"
+		v-model="settings_store.navigation_bar_position_mut"
 	/>
 </template>

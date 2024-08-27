@@ -75,6 +75,20 @@ export class SettingsStoreVue
 			}
 		});
 	}
+	get navigation_bar_position_mut()
+	{
+		return computed({
+			get: () => {
+				return this.#store.get_layout().navigation_bar_position;
+			},
+			set: ($1) => {
+				this.#store.mut_layout((current) => ({
+					...current,
+					navigation_bar_position: $1,
+				}));
+			}
+		});
+	}
 	
 	get sounds_effect_enabled_mut()
 	{
@@ -205,6 +219,7 @@ export const use_settings_store = define_store(SettingsStore.NAME, () => {
 
 		channel_userlist_display_mut: store.channel_userlist_display_mut,
 		channel_userlist_position_mut: store.channel_userlist_position_mut,
+		navigation_bar_position_mut: store.navigation_bar_position_mut,
 
 		sounds_effect_enabled_mut: store.sounds_effect_enabled_mut,
 		sounds_effect_mut: store.sounds_effect_mut,
