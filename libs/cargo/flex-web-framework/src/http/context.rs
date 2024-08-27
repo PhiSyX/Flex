@@ -73,27 +73,21 @@ pub struct HttpAuthContext<T, U>
 
 #[derive(thiserror::Error)]
 #[error("\n\t{}: {0}", std::any::type_name::<Self>())]
-pub enum HttpContextError<T>
+pub struct HttpContextError<T>
 {
-	Extension(#[from] axum::extract::rejection::ExtensionRejection),
-	Infaillible(#[from] std::convert::Infallible),
-	#[error("{1}")]
+	request: Option<HttpRequest<T>>,
+	variant: HttpContextErrorVariant,
+}
+
+pub enum HttpContextErrorVariant
+{
+	Extension(axum::extract::rejection::ExtensionRejection),
+	Infaillible(std::convert::Infallible),
 	Err(http::StatusCode, String),
-	NotFound
-	{
-		request: HttpRequest<T>,
-	},
-	Database
-	{
-		request: HttpRequest<T>,
-		sqlx: sqlx::Error,
-	},
+	Database(sqlx::Error),
+	Tokio(tokio::io::Error),
 	MissingExtension,
-	Session(#[from] tower_sessions::session::Error),
-	Unauthorized
-	{
-		request: HttpRequest<T>,
-	},
+	Session(tower_sessions::session::Error),
 }
 
 // -------------- //
@@ -152,6 +146,111 @@ impl<T, U> HttpAuthContext<T, U>
 	}
 }
 
+impl<T> HttpContextError<T>
+{
+	pub fn bad_request(req: HttpRequest<T>, reason: impl ToString) -> Self
+	{
+		Self {
+			request: Some(req),
+			variant: HttpContextErrorVariant::Err(
+				StatusCode::BAD_REQUEST,
+				reason.to_string(),
+			),
+		}
+	}
+
+	pub fn database(req: HttpRequest<T>, sqlx_err: sqlx::Error) -> Self
+	{
+		Self {
+			request: Some(req),
+			variant: HttpContextErrorVariant::Database(sqlx_err),
+		}
+	}
+
+	fn infaillible(err: std::convert::Infallible) -> Self
+	{
+		Self {
+			request: None,
+			variant: HttpContextErrorVariant::Infaillible(err),
+		}
+	}
+
+	pub fn internal(req: HttpRequest<T>) -> Self
+	{
+		Self {
+			request: Some(req),
+			variant: HttpContextErrorVariant::Err(
+				StatusCode::INTERNAL_SERVER_ERROR,
+				String::from("Un problème est survenue sur le serveur"),
+			),
+		}
+	}
+
+	fn missing_extension() -> Self
+	{
+		Self {
+			request: None,
+			variant: HttpContextErrorVariant::MissingExtension,
+		}
+	}
+
+	pub fn not_found(req: HttpRequest<T>) -> Self
+	{
+		Self {
+			request: Some(req),
+			variant: HttpContextErrorVariant::Err(
+				StatusCode::NOT_FOUND,
+				String::from("Page non trouvée"),
+			),
+		}
+	}
+
+	pub fn unauthorized(req: HttpRequest<T>) -> Self
+	{
+		Self {
+			request: Some(req),
+			variant: HttpContextErrorVariant::Err(
+				StatusCode::UNAUTHORIZED,
+				String::from("Non autorisé à consulter cette ressource"),
+			),
+		}
+	}
+
+	pub fn unauthorized_with_reason(
+		req: HttpRequest<T>,
+		reason: impl ToString,
+	) -> Self
+	{
+		Self {
+			request: Some(req),
+			variant: HttpContextErrorVariant::Err(
+				StatusCode::UNAUTHORIZED,
+				reason.to_string(),
+			),
+		}
+	}
+
+	pub fn tokio(req: HttpRequest<T>, io_error: tokio::io::Error) -> Self
+	{
+		Self {
+			request: Some(req),
+			variant: HttpContextErrorVariant::Tokio(io_error),
+		}
+	}
+
+	fn with_status_code(status_code: StatusCode, reason: impl ToString)
+		-> Self
+	{
+		Self {
+			request: None,
+			variant: HttpContextErrorVariant::Err(
+				status_code,
+				reason.to_string(),
+			),
+		}
+	}
+}
+
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
@@ -168,7 +267,6 @@ where
 {
 	type Rejection = HttpContextError<T>;
 
-	#[rustfmt::skip]
 	async fn from_request_parts(
 		parts: &mut axum::http::request::Parts,
 		state: &AxumState<S>,
@@ -177,30 +275,44 @@ where
 		use axum_extra::TypedHeader;
 
 		// Context
-		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(
-			parts,
-			state,
-		).await?;
+		let State(extracts) =
+			State::<<T as HttpContextInterface>::State>::from_request_parts(
+				parts, state,
+			)
+			.await
+			.map_err(HttpContextError::infaillible)?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
-			.ok_or(HttpContextError::MissingExtension)?
+			.ok_or(HttpContextError::missing_extension())?
 			.shared();
 
 		// Cookie / Session
-		let cookies = Cookies::from_request_parts(parts, state)
-			.await
-			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
-		let session = Session::from_request_parts(parts, state)
-			.await
-			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
+		let cookies =
+			Cookies::from_request_parts(parts, state)
+				.await
+				.map_err(|err| {
+					HttpContextError::with_status_code(err.0, err.1.to_owned())
+				})?;
+		let session =
+			Session::from_request_parts(parts, state)
+				.await
+				.map_err(|err| {
+					HttpContextError::with_status_code(err.0, err.1.to_owned())
+				})?;
 
 		// Request
-		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)
-			.expect("Adresse IP");
+		let InsecureClientIp(ip) =
+			InsecureClientIp::from(&parts.headers, &parts.extensions)
+				.expect("Adresse IP");
 		let method = parts.method.clone();
-		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state).await?;
-		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state).await?;
-		let referer = TypedHeader::<Referer>::from_request_parts(parts, state).await
+		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state)
+			.await
+			.map_err(HttpContextError::infaillible)?;
+		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state)
+			.await
+			.map_err(HttpContextError::infaillible)?;
+		let referer = TypedHeader::<Referer>::from_request_parts(parts, state)
+			.await
 			.map(|ext| ext.0)
 			.ok();
 
@@ -251,88 +363,67 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 			HeaderValue::from_str("application/problem+json").unwrap(),
 		);
 
-		let status_code = match self {
-			| Self::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
-			| Self::Err(status, _) => status,
-			| Self::NotFound { .. } => StatusCode::NOT_FOUND,
-			| Self::Database { ref sqlx, ..} => match sqlx {
-				| sqlx::Error::RowNotFound => StatusCode::NOT_FOUND,
-				| _ => StatusCode::INTERNAL_SERVER_ERROR,
+		let status_code = match self.variant {
+			| HttpContextErrorVariant::Err(status, _) => status,
+			| HttpContextErrorVariant::Database(ref sqlx_error) => {
+				match sqlx_error {
+					| sqlx::Error::RowNotFound => StatusCode::NOT_FOUND,
+					| _ => StatusCode::INTERNAL_SERVER_ERROR,
+				}
 			}
 			| _ => StatusCode::INTERNAL_SERVER_ERROR,
 		};
 
-		let title = match self {
-			| Self::Unauthorized { .. } => {
-				String::from("Non autorisé à consulter cette ressource")
-			}
-
-			| Self::Err(header, ref msg) => {
-				if header.is_client_error() {
-					if header.as_u16() == 401 {
-						String::from("Non autorisé à consulter cette ressource")
-					} else {
-						msg.to_owned()
-					}
-				} else {
-					String::from("Un problème est survenue sur le serveur (ID: n°5000)")
-				}
-			}
-
-			| Self::NotFound { .. } => String::from("Not Found"),
-
-			| Self::Database { ref sqlx, ..} => match sqlx {
-				| sqlx::Error::RowNotFound => String::from("Not Found"),
-				| _ => String::from("Un problème est survenue sur le serveur (ID: n°54321)"),
-			}
-
-			| _ => String::from("Un problème est survenue sur le serveur  (ID: n°5001)"),
-		};
-
-		let detail = match self {
-			| Self::Unauthorized { .. } => {
+		let title = match self.variant {
+			| HttpContextErrorVariant::Err(StatusCode::UNAUTHORIZED, _) => {
 				"Pour des raisons de confidentialité, vous n'êtes pas autorisé \
 				 à consulter les détails de cette ressource. Seuls les \
 				 utilisateurs connectés sont autorisés à le faire."
 					.to_owned()
 			}
 
-			| Self::Err(header, ref msg) => {
-				if header.is_client_error() {
-					if header.as_u16() == 401 {
-						msg.to_owned()
-					} else {
-						self.to_string()
+			| HttpContextErrorVariant::Database(ref sqlx_error) => {
+				match sqlx_error {
+					| sqlx::Error::RowNotFound => {
+						String::from("Page non trouvé")
 					}
-				} else {
-					self.to_string()
+					| _ => {
+						String::from(
+							"Un problème est survenue sur le serveur (ID: \
+							 n°54321)",
+						)
+					}
 				}
 			}
 
-			| Self::NotFound { .. } => String::from("Not Found"),
+			| _ => {
+				String::from(
+					"Un problème est survenue sur le serveur  (ID: n°5000)",
+				)
+			}
+		};
 
-			| Self::Database { ref sqlx, .. } => match sqlx {
-				| sqlx::Error::RowNotFound => String::from("Not Found"),
-				| _ => {
-					log::error!("Erreur en base de données: {sqlx:?}");
-					String::from("Erreur ID: n°54322")
-				},
+		let detail = match self.variant {
+			| HttpContextErrorVariant::Err(StatusCode::UNAUTHORIZED, msg) => {
+				msg
+			}
+
+			| HttpContextErrorVariant::Database(ref io_error) => {
+				match io_error {
+					| sqlx::Error::RowNotFound => {
+						String::from("Page non trouvée")
+					}
+					| _ => {
+						log::error!("Erreur en base de données: {io_error:?}");
+						String::from("Erreur ID: n°54322")
+					}
+				}
 			}
 
 			| _ => self.to_string(),
 		};
 
-		let instance = match self {
-			| Self::Unauthorized { ref request } => Some(request.uri.path()),
-			| Self::NotFound { ref request } => Some(request.uri.path()),
-			| Self::Database { ref request, sqlx } => match sqlx {
-				| sqlx::Error::RowNotFound => Some(request.uri.path()),
-				| _ => None,
-			}
-			| _ => None,
-		};
-
-		if let Some(instance) = instance {
+		if let Some(instance) = self.request {
 			(
 				status_code,
 				headers,
@@ -340,7 +431,7 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 					"title": title,
 					"status": status_code.as_u16(),
 					"detail": detail,
-					"instance": instance,
+					"instance": instance.uri.path(),
 				})),
 			)
 		} else {
@@ -371,7 +462,6 @@ where
 {
 	type Rejection = HttpContextError<T>;
 
-	#[rustfmt::skip]
 	async fn from_request_parts(
 		parts: &mut axum::http::request::Parts,
 		state: &AxumState<S>,
@@ -380,30 +470,44 @@ where
 		use axum_extra::TypedHeader;
 
 		// Context
-		let State(extracts) = State::<<T as HttpContextInterface>::State>::from_request_parts(
-			parts,
-			state,
-		).await?;
+		let State(extracts) =
+			State::<<T as HttpContextInterface>::State>::from_request_parts(
+				parts, state,
+			)
+			.await
+			.map_err(HttpContextError::infaillible)?;
 
 		let context: Arc<T> = T::constructor(&parts.extensions, extracts)
-			.ok_or(HttpContextError::MissingExtension)?
+			.ok_or(HttpContextError::missing_extension())?
 			.shared();
 
 		// Cookie / Session
-		let cookies = Cookies::from_request_parts(parts, state)
-			.await
-			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
-		let session = Session::from_request_parts(parts, state)
-			.await
-			.map_err(|err| HttpContextError::Err(err.0, err.1.to_owned()))?;
+		let cookies =
+			Cookies::from_request_parts(parts, state)
+				.await
+				.map_err(|err| {
+					HttpContextError::with_status_code(err.0, err.1.to_owned())
+				})?;
+		let session =
+			Session::from_request_parts(parts, state)
+				.await
+				.map_err(|err| {
+					HttpContextError::with_status_code(err.0, err.1.to_owned())
+				})?;
 
 		// Request
-		let InsecureClientIp(ip) = InsecureClientIp::from(&parts.headers, &parts.extensions)
-			.expect("Adresse IP");
+		let InsecureClientIp(ip) =
+			InsecureClientIp::from(&parts.headers, &parts.extensions)
+				.expect("Adresse IP");
 		let method = parts.method.clone();
-		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state).await?;
-		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state).await?;
-		let referer = TypedHeader::<Referer>::from_request_parts(parts, state).await
+		let OriginalUri(uri) = OriginalUri::from_request_parts(parts, state)
+			.await
+			.map_err(HttpContextError::infaillible)?;
+		let RawQuery(raw_query) = RawQuery::from_request_parts(parts, state)
+			.await
+			.map_err(HttpContextError::infaillible)?;
+		let referer = TypedHeader::<Referer>::from_request_parts(parts, state)
+			.await
 			.map(|ext| ext.0)
 			.ok();
 
@@ -424,7 +528,7 @@ where
 		};
 
 		let Ok(Some(current_user)) = session.get::<U>("user").await else {
-			return Err(HttpContextError::Unauthorized { request });
+			return Err(HttpContextError::unauthorized(request));
 		};
 
 		Ok(Self {

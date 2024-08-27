@@ -13,7 +13,6 @@ use std::sync::Arc;
 use flex_web_framework::extract::Form;
 use flex_web_framework::http::response::Html;
 use flex_web_framework::http::{
-	self,
 	Extensions,
 	HttpContext,
 	HttpContextError,
@@ -37,7 +36,6 @@ use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::{AuthService, AuthenticationService};
 use crate::features::auth::views::LoginView;
 use crate::features::chat::routes::ChatRouteID;
-use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::repositories::{
 	UserRepository,
 	UserRepositoryPostgreSQL,
@@ -69,41 +67,38 @@ impl LoginController
 	}
 
 	/// Traitement du formulaire de connexion.
-	#[rustfmt::skip]
 	pub async fn handle(
-		ctx: HttpContext<Self>,
+		http: HttpContext<Self>,
 		Form(formdata): Form<LoginFormData>,
 	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
-		let Ok(user) = ctx.auth_service.attempt(
-			&formdata.identifier,
-			&formdata.password
-		).await else
-		{
-			if ctx.request.accept().json() {
-				return Err(HttpContextError::Err(
-					http::StatusCode::UNAUTHORIZED,
-					LoginError::InvalidCredentials.to_string(),
+		let Ok(user) = http
+			.auth_service
+			.attempt(&formdata.identifier, &formdata.password)
+			.await
+		else {
+			if http.request.accept().json() {
+				return Err(HttpContextError::unauthorized_with_reason(
+					http.request,
+					LoginError::InvalidCredentials,
 				));
 			} else {
-				ctx.session.flash(
-					LoginError::KEY,
-					LoginError::InvalidCredentials
-				).await;
-				return Ok(ctx.redirect_back().into_response());
+				http.session
+					.flash(LoginError::KEY, LoginError::InvalidCredentials)
+					.await;
+				return Ok(http.redirect_back().into_response());
 			}
 		};
 
-		ctx.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
-		_ = ctx.session.insert(USER_SESSION, user).await;
+		http.cookies
+			.signed()
+			.add((Self::COOKIE_NAME, user.id.to_string()));
+		_ = http.session.insert(USER_SESSION, &user).await;
 
-		if ctx.request.accept().json() {
-			let user_session = ctx.session.get::<UserSessionDTO>(
-				USER_SESSION
-			).await?.unwrap();
-			Ok(ctx.response.json(user_session).into_response())
+		if http.request.accept().json() {
+			Ok(http.response.json(user).into_response())
 		} else {
-			Ok(ctx.response.redirect_to(ChatRouteID::Home).into_response())
+			Ok(http.response.redirect_to(ChatRouteID::Home).into_response())
 		}
 	}
 }
