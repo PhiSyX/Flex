@@ -9,18 +9,31 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 flex_kernel::import! {
-	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
+	pub mod feature use *;
+
+	pub(crate) mod controllers {
+		pub(crate) mod api {
+			pub(crate) mod v1 {
+				pub(crate) mod accounts_controller use *;
+			}
+		};
+	};
+
+	
 	pub(crate) mod dto {
-		pub mod user_account_session_dto use *;
+		pub(crate) mod update_account_dto use *;
+	};
+
+	pub(crate) mod forms {
+		pub mod account_update_form use *;
 	};
 
 	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
-	pub(crate) mod entities {
-		pub mod account_entity use *;
+	pub(crate) mod services {
+		pub mod account_service use *;
 	};
 
-	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
-	pub(crate) mod repositories {
-		pub mod account_repository use *;
+	mod routes {
+		pub(crate) mod api use *;
 	};
 }

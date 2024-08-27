@@ -28,6 +28,7 @@ mod features
 	mod users;
 
 	pub use self::auth::AuthApplication;
+	pub use self::accounts::AccountsApplication;
 	pub use self::avatars::AvatarsApplication;
 	pub use self::chat::ChatApplication;
 	pub use self::generate::GenerateApplication;

@@ -20,13 +20,8 @@ flex_kernel::import! {
 	};
 
 	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
-	pub(crate) mod entities {
-		pub mod avatar_entity use *;
-	};
-
-	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
-	pub(crate) mod repositories {
-		pub mod avatar_repository use *;
+	pub(crate) mod dto {
+		pub mod update_avatar use *;
 	};
 
 	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments

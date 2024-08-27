@@ -10,9 +10,12 @@
 
 use std::sync::Arc;
 
+use flex_web_framework::extract::Multipart;
 use flex_web_framework::http::request::Path;
+use flex_web_framework::http::response::Json;
 use flex_web_framework::http::{
 	Extensions,
+	HttpAuthContext,
 	HttpContext,
 	HttpContextError,
 	HttpContextInterface,
@@ -22,16 +25,19 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::types::uuid::Uuid;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
-use crate::features::avatars::entities::AvatarDisplayFor;
-use crate::features::avatars::repositories::{
-	AvatarRepository,
-	AvatarRepositoryPostgreSQL,
-};
+use crate::features::avatars::dto::UpdateAvatarDTO;
 use crate::features::avatars::services::{
+	AvatarErrorService,
 	AvatarService,
 	AvatarServiceImpl,
 };
 use crate::features::users::dto::UserSessionDTO;
+use crate::features::users::repositories::{
+	UserRepository,
+	UserRepositoryPostgreSQL,
+};
+use crate::features::users::services::{UserService, UserServiceImpl};
+use crate::features::users::sessions::constant::USER_SESSION;
 use crate::FlexState;
 
 // --------- //
@@ -42,6 +48,7 @@ use crate::FlexState;
 pub struct AvatarsController
 {
 	avatar_service: Arc<dyn AvatarService>,
+	user_service: Arc<dyn UserService>,
 }
 
 // -------------- //
@@ -50,31 +57,99 @@ pub struct AvatarsController
 
 impl AvatarsController
 {
+	const DEFAULT_AVATAR: &'static str = "/public/img/default-avatar.png";
+	// ------ //
+	// Erreur //
+	// ------ //
+	const ERROR_CONTENT_TYPE: &'static str =
+		"L'image DOIT être au format JPEG, JPG ou PNG.";
+	const ERROR_REQUIRED_IMAGE: &'static str = "Une image au format JPEG, JPG \
+	                                            ou PNG et une clé `avatar` \
+	                                            sont attendues.";
+
 	pub async fn show(
 		http: HttpContext<Self>,
-		Path(id): Path<Uuid>,
+		Path(user_id): Path<Uuid>,
 	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
-		let Ok(avatar) = http.avatar_service.get(id).await else 
-		{
-			return Ok(http.response.redirect_temporary(
-				"/public/img/default-avatar.png"
+		#[rustfmt::skip]
+		let fallback = || {
+			Ok(http.response.redirect_temporary(Self::DEFAULT_AVATAR))
+		};
+
+		let Ok(user) = http.user_service.get(&user_id).await else {
+			return fallback();
+		};
+
+		let Some(avatar) = user.avatar else {
+			return fallback();
+		};
+
+		if user.avatar_display_for.is_member_only() {
+			type U = UserSessionDTO;
+			let Ok(Some(_)) = http.session.get::<U>(USER_SESSION).await else {
+				return fallback();
+			};
+		}
+
+		Ok(http.response.redirect_temporary(avatar))
+	}
+
+	pub async fn update(
+		http: HttpAuthContext<Self, UserSessionDTO>,
+		Path(user_id): Path<Uuid>,
+		mut multipart: Multipart,
+	) -> Result<Json<UpdateAvatarDTO>, HttpContextError<Self>>
+	{
+		if http.user.id.ne(&user_id) {
+			return Err(HttpContextError::unauthorized(http.request));
+		}
+
+		let Ok(Some(field)) = multipart.next_field().await else {
+			return Err(HttpContextError::bad_request(
+				http.request,
+				Self::ERROR_REQUIRED_IMAGE,
 			));
 		};
 
-		match avatar.display_for {
-			AvatarDisplayFor::MemberOnly => {
-				let Ok(Some(_)) = http.session.get::<UserSessionDTO>("user").await else {
-					return Ok(http.response.redirect_temporary(
-						"/public/img/default-avatar.png"
-					));
-				};
+		let Some(content_type) = field.content_type() else {
+			return Err(HttpContextError::bad_request(
+				http.request,
+				Self::ERROR_CONTENT_TYPE,
+			));
+		};
 
-				Ok(http.response.redirect_temporary(avatar.path))
-			}
-
-			AvatarDisplayFor::Public => Ok(http.response.redirect_temporary(avatar.path))
+		if !["image/jpeg", "image/jpg", "image/png"].contains(&content_type) {
+			return Err(HttpContextError::bad_request(
+				http.request,
+				Self::ERROR_REQUIRED_IMAGE,
+			));
 		}
+
+		let content_type = String::from(content_type);
+		let image_data = field.bytes().await;
+		let image_data = image_data.unwrap();
+
+		let new_path = http
+			.avatar_service
+			.upload(user_id, image_data, &content_type)
+			.await
+			.map_err(|err| {
+				match err {
+					| AvatarErrorService::IO(err) => {
+						HttpContextError::tokio(http.request, err)
+					}
+					| AvatarErrorService::SQLx(err) => {
+						HttpContextError::database(http.request, err)
+					}
+				}
+			})?;
+
+		let mut user = http.user;
+		user.avatar = Some(new_path.avatar.to_owned());
+		_ = http.session.insert(USER_SESSION, user).await;
+
+		Ok(http.response.json(new_path))
 	}
 }
 
@@ -92,15 +167,18 @@ impl HttpContextInterface for AvatarsController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
-		let avatar_repository = AvatarRepositoryPostgreSQL {
+		let user_repository = UserRepositoryPostgreSQL {
 			query_builder: query_builder.clone(),
-		};
+		}
+		.shared();
 
-		let avatar_service = AvatarServiceImpl {
-			avatar_repository: avatar_repository.shared(),
+		let user_service = UserServiceImpl {
+			user_repository: user_repository.clone(),
 		};
+		let avatar_service = AvatarServiceImpl { user_repository };
 
 		Some(Self {
+			user_service: user_service.shared(),
 			avatar_service: avatar_service.shared(),
 		})
 	}

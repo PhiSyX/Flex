@@ -27,10 +27,6 @@ use flex_web_framework::{
 	SessionFlashExtension,
 };
 
-use crate::features::accounts::repositories::{
-	AccountRepository,
-	AccountRepositoryPostgreSQL,
-};
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::{AuthService, AuthenticationService};
@@ -118,15 +114,9 @@ impl HttpContextInterface for LoginController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
-		let account_repository = AccountRepositoryPostgreSQL {
-			query_builder: query_builder.clone(),
-		};
-		let user_repository = UserRepositoryPostgreSQL {
-			query_builder,
-		};
+		let user_repository = UserRepositoryPostgreSQL { query_builder };
 
 		let auth_service = AuthService {
-			account_repository: account_repository.shared(),
 			user_repository: user_repository.shared(),
 			password_service: password_service.clone(),
 		};

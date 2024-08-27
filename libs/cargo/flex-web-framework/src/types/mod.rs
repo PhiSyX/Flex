@@ -15,3 +15,5 @@ pub mod secret
 	pub use flex_secret::Secret;
 }
 pub mod time;
+
+pub use axum::body::Bytes;

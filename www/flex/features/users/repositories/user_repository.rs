@@ -13,7 +13,11 @@ use std::sync::Arc;
 use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::types::email;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
+use sqlx::types::Uuid;
 
+use crate::features::accounts::dto::UpdateAccountDTO;
+use crate::features::accounts::forms::AccountUpdateFormData;
+use crate::features::avatars::dto::UpdateAvatarDTO;
 use crate::features::users::dto::UserNewActionDTO;
 use crate::features::users::entities::UserEntity;
 
@@ -29,6 +33,9 @@ pub trait UserRepository
 		&self,
 		new_user: UserNewActionDTO,
 	) -> Result<UserEntity, sqlx::Error>;
+
+	/// Récupère un utilisateur en fonction de son ID.
+	async fn get(&self, id: &Uuid) -> Result<UserEntity, sqlx::Error>;
 
 	/// Cherche un utilisateur par son adresse e-mail.
 	async fn find_by_email(
@@ -46,6 +53,18 @@ pub trait UserRepository
 		email: &email::EmailAddress,
 		name: &str,
 	) -> Result<UserEntity, sqlx::Error>;
+
+	async fn update_avatar_path(
+		&self,
+		user_id: &Uuid,
+		path: &str,
+	) -> Result<UpdateAvatarDTO, sqlx::Error>;
+
+	async fn update_account_info(
+		&self,
+		user_id: &Uuid,
+		payload: AccountUpdateFormData,
+	) -> Result<UpdateAccountDTO, sqlx::Error>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -87,7 +106,8 @@ impl UserRepository for UserRepositoryPostgreSQL
 	) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!(
-			"INSERT INTO {} (id,name,email,password,role,created_at,updated_at) VALUES \
+			"INSERT INTO {} \
+			 (id,name,email,password,role,created_at,updated_at) VALUES \
 			 (gen_random_uuid(),$1,$2,$3,$4::users_role,NOW(),NOW())",
 			Self::TABLE_NAME
 		);
@@ -101,16 +121,30 @@ impl UserRepository for UserRepositoryPostgreSQL
 		Ok(record)
 	}
 
+	async fn get(&self, id: &Uuid) -> Result<UserEntity, sqlx::Error>
+	{
+		let id = id.to_string();
+		let raw_query = format!(
+			"SELECT * FROM {users} WHERE id=$1::uuid",
+			users = Self::TABLE_NAME
+		);
+		let record = self.query_builder.fetch_one(&raw_query, &[&id]).await?;
+		Ok(record)
+	}
+
 	async fn find_by_email(
 		&self,
 		email: &email::EmailAddress,
 	) -> Result<UserEntity, sqlx::Error>
 	{
-		let raw_query = format!("SELECT * FROM {} WHERE email=$1", Self::TABLE_NAME);
-		let record = self.query_builder.fetch_one(
-			&raw_query,
-			&[email.as_ref()]
-		).await?;
+		let raw_query = format!(
+			"SELECT * FROM {users} WHERE email=$1",
+			users = Self::TABLE_NAME
+		);
+		let record = self
+			.query_builder
+			.fetch_one(&raw_query, &[email.as_ref()])
+			.await?;
 		Ok(record)
 	}
 
@@ -121,21 +155,73 @@ impl UserRepository for UserRepositoryPostgreSQL
 	) -> Result<UserEntity, sqlx::Error>
 	{
 		let raw_query = format!(
-			"SELECT * FROM {} WHERE email=$1 OR name=$2",
-			Self::TABLE_NAME
+			"SELECT * FROM {users} WHERE email=$1 OR name=$2",
+			users = Self::TABLE_NAME
 		);
-		let record = self.query_builder.fetch_one(
-			&raw_query,
-			&[email.as_ref(), name]
-		).await?;
+		let record = self
+			.query_builder
+			.fetch_one(&raw_query, &[email.as_ref(), name])
+			.await?;
 		Ok(record)
 	}
 
 	async fn find_by_name(&self, name: &str)
 		-> Result<UserEntity, sqlx::Error>
 	{
-		let raw_query = format!("SELECT * FROM {} WHERE name=$1", Self::TABLE_NAME);
+		let raw_query = format!(
+			"SELECT * FROM {users} WHERE name=$1",
+			users = Self::TABLE_NAME
+		);
 		let record = self.query_builder.fetch_one(&raw_query, &[name]).await?;
+		Ok(record)
+	}
+
+	async fn update_avatar_path(
+		&self,
+		user_id: &Uuid,
+		path: &str,
+	) -> Result<UpdateAvatarDTO, sqlx::Error>
+	{
+		let id = user_id.to_string();
+
+		let raw_query = format!(
+			"UPDATE {users} SET avatar = $2 WHERE id=$1::uuid",
+			users = Self::TABLE_NAME,
+		);
+		let record =
+			self.query_builder.update(&raw_query, &[&id, path]).await?;
+		Ok(record)
+	}
+
+	async fn update_account_info(
+		&self,
+		user_id: &Uuid,
+		payload: AccountUpdateFormData,
+	) -> Result<UpdateAccountDTO, sqlx::Error>
+	{
+		let id = user_id.to_string();
+
+		let raw_query = format!(
+			"UPDATE {users} SET firstname=$2, lastname=$3, gender=$4, \
+			 country=$5, city=$6 WHERE id=$1::uuid",
+			users = Self::TABLE_NAME,
+		);
+
+		let record = self
+			.query_builder
+			.update(
+				&raw_query,
+				&[
+					&id,
+					payload.firstname.as_deref().unwrap_or_default(),
+					payload.lastname.as_deref().unwrap_or_default(),
+					payload.gender.as_deref().unwrap_or_default(),
+					payload.country.as_deref().unwrap_or_default(),
+					payload.city.as_deref().unwrap_or_default(),
+				],
+			)
+			.await?;
+
 		Ok(record)
 	}
 }

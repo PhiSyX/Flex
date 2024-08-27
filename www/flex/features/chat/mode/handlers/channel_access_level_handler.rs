@@ -106,7 +106,6 @@ impl ModeChannelAccessLevelHandler
 							access_level.symbol(),
 							channel_name.to_lowercase(),
 						));
-						dbg!(target_client_socket.socket().rooms());
 					};
 
 					// TODO: à améliorer/mieux réfléchir cette partie de code

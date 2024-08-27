@@ -8,38 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::{time, uuid};
+use flex_web_framework::Feature;
+
+use super::routes::AccountsApi_V1_Router;
+use crate::FlexState;
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Debug)]
-#[derive(serde::Deserialize)]
-#[derive(sqlx::FromRow)]
-pub struct AvatarEntity
-{
-	/// ID de l'avatar.
-	pub id: uuid::Uuid,
-	/// URL ou chemin absolu de l'avatar (par rapport au projet).
-	pub path: String,
-	/// Affiché l'avatar uniquement pour...
-	pub display_for: AvatarDisplayFor,
-	/// Date de création de l'avatar.
-	pub created_at: time::DateTime<time::Utc>,
-}
+pub struct AccountsApplication;
 
-#[derive(Debug)]
-#[derive(Copy, Clone)]
-#[derive(Default)]
-#[derive(PartialEq, Eq)]
-#[derive(serde::Deserialize)]
-#[derive(sqlx::Type)]
-#[sqlx(type_name = "avatars_display", rename_all = "snake_case")]
-pub enum AvatarDisplayFor
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl Feature for AccountsApplication
 {
-	#[serde(rename = "member_only")]
-	MemberOnly,
-	#[default]
-	Public,
+	type Config = ();
+	type Router = AccountsApi_V1_Router;
+	type State = FlexState;
+
+	const NAME: &'static str = "AccountsApplication";
 }

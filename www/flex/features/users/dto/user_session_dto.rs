@@ -10,7 +10,6 @@
 
 use flex_web_framework::types::uuid;
 
-use crate::features::accounts::dto::UserAccountDTO;
 use crate::features::users::entities::UserRole;
 
 // --------- //
@@ -26,5 +25,15 @@ pub struct UserSessionDTO
 	pub email: String,
 	pub role: UserRole,
 	#[serde(skip_serializing_if = "Option::is_none")]
-	pub account: Option<UserAccountDTO>,
+	pub avatar: Option<String>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub firstname: Option<String>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub lastname: Option<String>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub gender: Option<String>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub country: Option<String>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub city: Option<String>,
 }

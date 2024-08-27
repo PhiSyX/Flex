@@ -8,24 +8,41 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use crate::features::users::dto::UserSessionDTO;
+
 // --------- //
 // Structure //
 // --------- //
 
 #[derive(Debug)]
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 #[derive(sqlx::FromRow)]
-pub struct UserAccountDTO
+pub struct UpdateAccountDTO
 {
-	pub avatar: Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
 	pub firstname: Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
 	pub lastname: Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
 	pub gender: Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
 	pub country: Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
 	pub city: Option<String>,
+}
+
+impl<'a> From<(&'a UserSessionDTO, &'a UpdateAccountDTO)> for UserSessionDTO
+{
+	fn from(
+		(session, account): (&'a UserSessionDTO, &'a UpdateAccountDTO),
+	) -> Self
+	{
+		Self {
+			avatar: session.avatar.clone(),
+			city: account.city.clone(),
+			country: account.country.clone(),
+			email: session.email.clone(),
+			firstname: account.firstname.clone(),
+			gender: account.gender.clone(),
+			id: session.id,
+			lastname: account.lastname.clone(),
+			name: session.name.clone(),
+			role: session.role,
+		}
+	}
 }

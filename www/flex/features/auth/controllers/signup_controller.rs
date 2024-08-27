@@ -26,10 +26,6 @@ use flex_web_framework::{
 	SessionFlashExtension,
 };
 
-use crate::features::accounts::repositories::{
-	AccountRepository,
-	AccountRepositoryPostgreSQL,
-};
 use crate::features::auth::forms::RegistrationFormData;
 use crate::features::auth::responses::CreationAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
@@ -99,15 +95,11 @@ impl HttpContextInterface for SignupController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
-		let account_repository = AccountRepositoryPostgreSQL {
-			query_builder: query_builder.clone(),
-		};
 		let user_repository = UserRepositoryPostgreSQL {
 			query_builder,
 		};
 
 		let auth_service = AuthService {
-			account_repository: account_repository.shared(),
 			user_repository: user_repository.shared(),
 			password_service: password_service.clone(),
 		};

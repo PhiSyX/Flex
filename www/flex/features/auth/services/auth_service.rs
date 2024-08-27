@@ -14,7 +14,6 @@ use flex_crypto::Hasher;
 use flex_web_framework::security::Argon2Password;
 use flex_web_framework::types::{email, secret};
 
-use crate::features::accounts::repositories::AccountRepository;
 use crate::features::auth::forms::{Identifier, RegistrationFormData};
 use crate::features::users::dto::{UserNewActionDTO, UserSessionDTO};
 use crate::features::users::entities::UserEntity;
@@ -54,7 +53,6 @@ pub trait AuthenticationService
 
 pub struct AuthService
 {
-	pub account_repository: Arc<dyn AccountRepository>,
 	pub user_repository: Arc<dyn UserRepository>,
 	pub password_service: Argon2Password,
 }
@@ -107,18 +105,24 @@ impl AuthenticationService for AuthService
 		}
 
 		let user = maybe_user?;
+
 		if !self.password_service.cmp(&user.password, password) {
+			// SECURITY: timing attacks.
+			self.password_service.hash("1234567890").unwrap();
 			return Err(AuthErrorService::InvalidPassword);
 		}
 
-		let account = self.account_repository.find_by_user_id(user.id).await;
-
 		let session = UserSessionDTO {
-			email: user.email,
-			name: user.name,
-			id: user.id,
-			role: user.role,
-			account: account.ok(),
+			id: user.id, 
+			name: user.name, 
+			email: user.email, 
+			role: user.role, 
+			avatar: user.avatar, 
+			firstname: user.firstname, 
+			lastname: user.lastname, 
+			gender: user.gender, 
+			country: user.country, 
+			city: user.city, 
 		};
 
 		Ok(session)
@@ -129,10 +133,11 @@ impl AuthenticationService for AuthService
 		mut new_user: UserNewActionDTO,
 	) -> Result<UserEntity, AuthErrorService>
 	{
-		let user_exists = self.user_repository.find_by_email_or_name(
-			&new_user.email_address,
-			&new_user.username,
-		).await.is_ok();
+		let user_exists = self
+			.user_repository
+			.find_by_email_or_name(&new_user.email_address, &new_user.username)
+			.await
+			.is_ok();
 
 		if user_exists {
 			// SECURITY: timing attacks.
@@ -141,7 +146,9 @@ impl AuthenticationService for AuthService
 		}
 
 		let exposed_password = new_user.password.expose();
-		let encoded_password = self.password_service.hash(exposed_password)
+		let encoded_password = self
+			.password_service
+			.hash(exposed_password)
 			.map_err(|_| AuthErrorService::Hasher)?;
 		new_user.password = secret::Secret::from(encoded_password);
 		let user = self.user_repository.create(new_user).await?;
@@ -161,7 +168,9 @@ impl From<RegistrationFormData> for UserNewActionDTO
 	{
 		Self {
 			username: form.username,
-			email_address: email::EmailAddress::new_unchecked(form.email_address),
+			email_address: email::EmailAddress::new_unchecked(
+				form.email_address,
+			),
 			password: form.password,
 			role: Default::default(),
 		}

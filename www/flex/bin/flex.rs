@@ -32,12 +32,13 @@ use lib_flex::constant::{
 	PROJECT_DIR,
 };
 use lib_flex::{
+	AccountsApplication,
 	AuthApplication,
 	AvatarsApplication,
 	ChatApplication,
 	Flex,
 	GenerateApplication,
-	UsersApplication
+	UsersApplication,
 };
 
 // ---- //
@@ -81,6 +82,7 @@ async fn main() -> impl process::Termination
 			.feature::<GenerateApplication>()
 			.feature::<AuthApplication>()
 			.feature::<UsersApplication>()
+			.feature::<AccountsApplication>()
 			.feature::<AvatarsApplication>()
 			.feature_ws::<ChatApplication>()
 	};

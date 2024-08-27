@@ -10,22 +10,19 @@
 
 use std::sync::Arc;
 
-use flex_web_framework::query_builder::SQLQueryBuilder;
-use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
-use flex_web_framework::types::uuid::Uuid;
+use sqlx::types::Uuid;
 
-use crate::features::avatars::entities::AvatarEntity;
+use crate::features::users::entities::UserEntity;
+use crate::features::users::repositories::UserRepository;
 
 // --------- //
 // Interface //
 // --------- //
 
 #[flex_web_framework::async_trait]
-pub trait AvatarRepository
+pub trait UserService
 {
-	/// Récupère une entrée à partir d'un ID utilisateur.
-	async fn get(&self, user_id: Uuid)
-		-> Result<AvatarEntity, sqlx::Error>;
+	async fn get(&self, user_id: &Uuid) -> Result<UserEntity, UserErrorService>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -39,19 +36,21 @@ pub trait AvatarRepository
 // Structure //
 // --------- //
 
-pub struct AvatarRepositoryPostgreSQL
+pub struct UserServiceImpl
 {
-	pub query_builder: SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>,
+	pub user_repository: Arc<dyn UserRepository>,
 }
 
-// -------------- //
-// Implémentation //
-// -------------- //
+// ----------- //
+// Énumération //
+// ----------- //
 
-impl AvatarRepositoryPostgreSQL
+#[derive(Debug)]
+#[derive(thiserror::Error)]
+#[error("\n\t{}: {0}", std::any::type_name::<Self>())]
+pub enum UserErrorService
 {
-	/// Nom de la table de ce repository.
-	pub const TABLE_NAME: &'static str = "avatars";
+	SQLx(#[from] sqlx::Error),
 }
 
 // -------------- //
@@ -59,20 +58,11 @@ impl AvatarRepositoryPostgreSQL
 // -------------- //
 
 #[flex_web_framework::async_trait]
-impl AvatarRepository for AvatarRepositoryPostgreSQL
-{
-	async fn get(&self, user_id: Uuid)
-		-> Result<AvatarEntity, sqlx::Error>
+impl UserService for UserServiceImpl {
+	async fn get(&self, user_id: &Uuid) -> Result<UserEntity, UserErrorService>
 	{
-		let id = user_id.to_string();
-		let raw_query = format!(
-			"SELECT {avatars}.* FROM {avatars} 
-			LEFT JOIN {accounts} on {accounts}.avatar_id = {avatars}.id
-			WHERE {accounts}.user_id=$1::uuid", 
-			avatars = Self::TABLE_NAME,
-			accounts = "accounts",
-		);
-		let record = self.query_builder.fetch_one(&raw_query, &[&id]).await?;
-		Ok(record)
+		Ok(self.user_repository.get(user_id).await?)
 	}
 }
+
+unsafe impl Sync for UserServiceImpl {}

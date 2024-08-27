@@ -8,7 +8,7 @@ workspace = true
 
 [dependencies]
 argon2 = { version = "0.5.3", features = ["rand"] }
-axum = { version = "0.7.5" }
+axum = { version = "0.7.5", features = ["multipart"] }
 axum-server = { version = "0.6.0", features = ["tls-rustls"] }
 axum-extra = { version = "0.9.3", features = ["typed-header"] }
 axum-client-ip = { version = "0.6.0" }

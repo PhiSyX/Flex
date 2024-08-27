@@ -55,4 +55,22 @@ impl SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>
 		}
 		q.fetch_one(self.database.connection.pool()).await
 	}
+
+	pub async fn update<'a, T>(
+		&'a self,
+		raw_query: &'a str,
+		bindings: &'a [&'a str],
+	) -> Result<T, sqlx::Error>
+	where
+		T: for<'r> sqlx::FromRow<'r, PgRow>,
+		T: Send + Unpin,
+		T: std::fmt::Debug,
+	{
+		let query = format!("{raw_query} RETURNING *");
+		let mut q = sqlx::query_as(&query);
+		for binding in bindings {
+			q = q.bind(binding);
+		}
+		q.fetch_one(self.database.connection.pool()).await
+	}
 }

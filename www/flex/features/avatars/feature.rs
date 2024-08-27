@@ -10,7 +10,7 @@
 
 use flex_web_framework::Feature;
 
-use super::routes::api::AvtarsApi_V1_Router;
+use super::routes::api::AvatarsApi_V1_Router;
 use crate::FlexState;
 
 // --------- //
@@ -26,7 +26,7 @@ pub struct AvatarsApplication;
 impl Feature for AvatarsApplication
 {
 	type Config = ();
-	type Router = AvtarsApi_V1_Router;
+	type Router = AvatarsApi_V1_Router;
 	type State = FlexState;
 
 	const NAME: &'static str = "AvatarsApplication";

@@ -26,7 +26,7 @@ flex_kernel::import! {
 		pub mod login_error use *;
 	};
 
-	mod middleware {
+	pub(crate) mod middleware {
 		pub mod auth_middleware use *;
 		pub mod guest_middleware use *;
 	};

@@ -8,70 +8,47 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::{time, uuid};
-
 // --------- //
 // Structure //
 // --------- //
 
 #[derive(Debug)]
-#[derive(serde::Deserialize)]
-#[derive(sqlx::FromRow)]
-pub struct AccountEntity
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(remote = "Self")]
+pub struct AccountUpdateFormData
 {
-	/// ID du compte
-	pub id: uuid::Uuid,
-	/// ID de l'utilisateur.
-	pub user_id: uuid::Uuid,
-	/// ID de l'avatar.
-	pub avatar_id: Option<uuid::Uuid>,
-	// pub avatar: Option<String>,
-	/// Prénom de l'utilisateur.
+	#[serde(skip_serializing_if = "Option::is_none")]
 	pub firstname: Option<String>,
-	/// Nom de l'utilisateur.
+	#[serde(skip_serializing_if = "Option::is_none")]
 	pub lastname: Option<String>,
-	/// Le genre de l'utilisateur.
+	#[serde(skip_serializing_if = "Option::is_none")]
 	pub gender: Option<String>,
-	/// Le pays de l'utilisateur.
+	#[serde(skip_serializing_if = "Option::is_none")]
 	pub country: Option<String>,
-	/// La ville de l'utilisateur.
+	#[serde(skip_serializing_if = "Option::is_none")]
 	pub city: Option<String>,
-	/// Le status du compte utilisateur.
-	pub status: AccountStatus,
-	/// Date de création de l'utilisateur.
-	pub created_at: time::DateTime<time::Utc>,
-	/// Date de mise à jour des informations de l'utilisateur.
-	pub updated_at: time::DateTime<time::Utc>,
 }
 
-/// Les différents status d'un compte.
-#[derive(Debug)]
-#[derive(Copy, Clone)]
-#[derive(Default)]
-#[derive(PartialEq, Eq)]
-#[derive(serde::Deserialize, serde::Serialize)]
-#[derive(sqlx::Type)]
-#[sqlx(type_name = "accounts_status", rename_all = "lowercase")]
-pub enum AccountStatus
+impl<'de> serde::Deserialize<'de> for AccountUpdateFormData
 {
-	Public,
-	Private,
-	#[default]
-	Secret,
-}
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl AccountStatus
-{
-	pub fn as_str(&self) -> &str
+	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+	where
+		D: serde::Deserializer<'de>,
 	{
-		match self {
-			| Self::Public => "public",
-			| Self::Private => "private",
-			| Self::Secret => "secret",
-		}
+		let mut this = Self::deserialize(deserializer)?;
+
+		this.city = this.city.map(strip_tags);
+		this.country = this.country.map(strip_tags);
+		this.firstname = this.firstname.map(strip_tags);
+		this.lastname = this.lastname.map(strip_tags);
+		this.gender = this.gender.map(strip_tags);
+
+		Ok(this)
 	}
+}
+
+fn strip_tags(s: String) -> String
+{
+	let re = regex::Regex::new("(<([^>]+)>)").unwrap();
+	String::from(re.replace_all(&s, ""))
 }
