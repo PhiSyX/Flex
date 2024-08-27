@@ -5,7 +5,7 @@ import { computed } from "vue";
 
 import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
-import Avatar from "#/sys/avatar/Avatar.vue";
+import Avatar from "#/api/avatar/Avatar.vue";
 import Room from "#/sys/room/Room.template.vue";
 
 // ---- //

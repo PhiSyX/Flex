@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Room } from "@phisyx/flex-chat";
 
+import Avatar from "#/api/avatar/Avatar.vue";
 import Match from "#/sys/match/Match.vue";
 import NavigationRoom from "#/sys/navigation_room/NavigationRoom.template.vue";
-import Avatar from "../avatar/Avatar.vue";
 
 // ---- //
 // Type //

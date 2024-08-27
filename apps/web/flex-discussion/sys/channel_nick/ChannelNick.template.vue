@@ -3,7 +3,7 @@ import type { ChannelMemberSearchHits } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
-import Avatar from "../avatar/Avatar.vue";
+import Avatar from "#/api/avatar/Avatar.vue";
 
 // ---- //
 // Type //

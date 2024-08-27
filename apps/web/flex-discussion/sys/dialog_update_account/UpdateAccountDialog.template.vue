@@ -2,7 +2,8 @@
 import { computed, ref } from "vue";
 
 import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
-import Avatar from "../avatar/Avatar.vue";
+
+import Avatar from "#/api/avatar/Avatar.vue";
 
 // ---- //
 // Type //
@@ -81,7 +82,7 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 
 			<UiButton
 				:form="form"
-				type="cancel"
+				type="button"
 				variant="secondary"
 				class="[ ml=1 mt=1 ]"
 				@click="close_dialog_handler"
@@ -91,7 +92,7 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 		</template>
 
 		<template #left-content>
-			<div class="[ flex! ]">
+			<div class="[ flex:shrink=0 ]">
 				<Avatar
 					:form="form"
 					:id="userId"

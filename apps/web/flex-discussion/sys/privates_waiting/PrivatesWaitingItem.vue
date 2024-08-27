@@ -4,7 +4,8 @@ import type { PrivateRoom } from "@phisyx/flex-chat";
 import { format_date } from "@phisyx/flex-date";
 
 import { computed } from "vue";
-import Avatar from "../avatar/Avatar.vue";
+
+import Avatar from "#/api/avatar/Avatar.vue";
 import PrivateNick from "../private_nick/PrivateNick.template.vue";
 
 // ---- //

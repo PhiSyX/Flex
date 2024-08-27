@@ -1,8 +1,17 @@
 # Notes
 
-1. Les composants Vue à l'intérieur du dossier `src/` peuvent accéder aux stores et au router. 
+1. Les composants Vue à l'intérieur du dossier `api/` font des requêtes XHR pour les afficher dans la vue.
 
-2. Les composants Vue à l'intérieur du dossier `sys/` n'accèdent pas aux stores et au router. C'est totalement voulu.
+	1. Ces composants peuvent accéder aux composants du répertoire `sys/`  (à réfléchir)
+
+2. Les composants Vue à l'intérieur du dossier `sys/` n'accèdent pas aux stores et au router.
+
+	1. Ces composants peuvent accéder aux composants du répertoire `api/` (à réfléchir)
+
+3. Les composants Vue à l'intérieur du dossier `src/` peuvent accéder aux stores et au router. 
+	1. Ces composants peuvent accéder aux composants du répertoire `api/`
+
+	2. Ces composants peuvent accéder aux composants du répertoire `sys/`
 
 ## À améliorer
 
