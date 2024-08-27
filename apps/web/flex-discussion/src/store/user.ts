@@ -25,6 +25,7 @@ export const use_user_store = define_store(UserStore.NAME, () => {
 	return {
 		disconnect: store.disconnect.bind(store),
 		fetch: store.fetch.bind(store),
+		patch: store.patch.bind(store),
 		session: store.session.bind(store),
 	};
 });

@@ -1,11 +1,10 @@
-
 <script setup lang="ts">
 import {
 	computed,
 	onMounted as on_mounted,
 	reactive,
 	ref,
-	watchEffect as watch_effect
+	watchEffect as watch_effect,
 } from "vue";
 import { useRouter as use_router } from "vue-router";
 
@@ -13,23 +12,26 @@ import {
 	MAXLENGTH_NICKNAME,
 	PLACEHOLDER_NICKNAME,
 	RememberMeStorage,
+	UpdateAccountDialog,
 	VALIDATION_NICKNAME_INFO,
 	View,
 	cast_to_channel_id,
 } from "@phisyx/flex-chat";
+import { Option } from "@phisyx/flex-safety";
 import {
 	ButtonIcon,
 	InputSwitch,
-	Match,
 	TextInput,
 	UiButton,
 	UiImage,
 } from "@phisyx/flex-vue-uikit";
 
-import { Option } from "@phisyx/flex-safety";
+import { use_dialog } from "~/hooks/dialog";
 import { use_chat_store, use_user_store } from "~/store";
 
+import UpdateAccountDialogComponent from "~/components/dialog/UpdateAccountDialog.vue";
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";
+import Match from "#/sys/match/Match.vue";
 
 // --------- //
 // Composant //
@@ -48,10 +50,10 @@ let login_form_data = reactive({
 		.map((nick) => `${nick}_`)
 		.unwrap_or(""),
 	channels: import.meta.env.VITE_APP_CHANNELS || cast_to_channel_id(""),
-	nickname: Option.from(import.meta.env.VITE_APP_NICKNAME)
-		.unwrap_or(""),
-	realname: Option.from(import.meta.env.VITE_APP_REALNAME)
-		.unwrap_or("Flex Web App"),
+	nickname: Option.from(import.meta.env.VITE_APP_NICKNAME).unwrap_or(""),
+	realname: Option.from(import.meta.env.VITE_APP_REALNAME).unwrap_or(
+		"Flex Web App",
+	),
 	remember_me: new RememberMeStorage(),
 	password_server: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
 	password_user: import.meta.env.VITE_APP_PASSWORD_USER || null,
@@ -64,12 +66,16 @@ let errors = reactive({
 let loader = ref(false);
 
 let image_title_attribute = computed(() => {
-	return user_session.value.map((user) => {
-		// biome-ignore lint/style/useTemplate: non merci.
-		return `Bonjour, tu es actuellement connecté en tant que ${user.name}.`
-			+ "\n\nClique sur cette image pour te déconnecter, si tu le souhaites."
-	}).unwrap_or("")
-})
+	return user_session.value
+		.map((user) => {
+			return (
+				// biome-ignore lint/style/useTemplate: non merci.
+				`Bonjour, tu es actuellement connecté en tant que ${user.name}.` +
+				"\n\nClique sur cette image pour modifier ton profil, si tu le souhaites."
+			);
+		})
+		.unwrap_or("");
+});
 
 // --------- //
 // Lifecycle // -> Hooks
@@ -83,8 +89,9 @@ on_mounted(() => {
 
 watch_effect(() => {
 	if (user_session.value.is_none()) {
-		login_form_data.realname = Option.from(import.meta.env.VITE_APP_REALNAME)
-			.unwrap_or("Flex Web App");
+		login_form_data.realname = Option.from(
+			import.meta.env.VITE_APP_REALNAME,
+		).unwrap_or("Flex Web App");
 		return;
 	}
 
@@ -123,13 +130,9 @@ function connect_submit()
 
 		chat_store.connect(login_form_data);
 
-		chat_store.listen(
-			"RPL_WELCOME",
-			() => reply_welcome_handler(),
-			{
-				once: true,
-			},
-		);
+		chat_store.listen("RPL_WELCOME", () => reply_welcome_handler(), {
+			once: true,
+		});
 
 		chat_store.listen("ERR_NICKNAMEINUSE", (data) =>
 			error_nicknameinuse_handler(data),
@@ -151,7 +154,7 @@ function reply_welcome_handler()
 	if (login_form_data.password_user) {
 		chat_store.send_message(
 			chat_store.room_manager().active().id(),
-			`/AUTH IDENTIFY ${login_form_data.nickname} ${login_form_data.password_user}`
+			`/AUTH IDENTIFY ${login_form_data.nickname} ${login_form_data.password_user}`,
 		);
 	}
 }
@@ -166,7 +169,9 @@ function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">)
 			login_form_data.alternative_nickname.length + 2,
 		);
 	} else {
-		errors.nickname = data.reason.slice(login_form_data.nickname.length + 2);
+		errors.nickname = data.reason.slice(
+			login_form_data.nickname.length + 2,
+		);
 	}
 
 	loader.value = false;
@@ -177,12 +182,10 @@ function to_settings_view_handler()
 	router.push({ name: View.Settings });
 }
 
-function disconnect_handler()
+function update_account_handler()
 {
-	loader.value = true;
-	user_store.disconnect().then(() => {
-		loader.value = false;
-	});
+	let { create_dialog } = use_dialog(UpdateAccountDialog);
+	create_dialog(user_store.session().unwrap());
 }
 </script>
 
@@ -228,16 +231,18 @@ function disconnect_handler()
 					<Match :maybe="user_session" >
 						<template #some="{ data: user }">
 							<UiImage
-								v-if="user.account?.avatar"
-								:src="user.account.avatar"
+								:v-if="user.avatar"
+								:id="user.id"
+								:key="user.avatar"
+								:src="user.avatar"
 								:title="image_title_attribute"
 								size="3"
 								class="[ cursor:pointer ]"
-								@click="disconnect_handler"
+								@click="update_account_handler"
 							/>
 						</template>
 						<template #none>
-							<button 
+							<button
 								v-if="!display_password_user_field"
 								type="button"
 								class="[ flex flex/center:full gap=1 f-size=12px ]"
@@ -321,6 +326,7 @@ function disconnect_handler()
 		<UiButton icon="settings" class="settings-btn" @click="to_settings_view_handler" />
 
 		<ModulesProgress />
+		<UpdateAccountDialogComponent />
 	</main>
 </template>
 

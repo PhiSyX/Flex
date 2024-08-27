@@ -14,14 +14,12 @@ export interface UserSession
 	name: string;
 	email: string;
 	role: UserRole;
-	account?: {
-		avatar?: string;
-		firstname?: string;
-		lastname?: string;
-		gender?: string;
-		country?: string;
-		city?: string;
-	};
+	avatar?: string;
+	firstname?: string;
+	lastname?: string;
+	gender?: string;
+	country?: string;
+	city?: string;
 }
 
 export enum UserRole

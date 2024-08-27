@@ -14,7 +14,8 @@ import {
 	computed,
 	onMounted as on_mounted,
 	onUnmounted as on_unmounted,
-	ref
+	ref,
+	watch
 } from "vue";
 
 import { Some } from "@phisyx/flex-safety";
@@ -34,6 +35,10 @@ interface Props
 	 * est utilisé pour charger une par défaut.
 	 */
 	src: HTMLImageElement["src"];
+	/**
+	 * Fichier à charger à la place de la source.
+	 */
+	file?: File;
 	/**
 	 * Image à charger en cas d'échec.
 	 * 
@@ -77,6 +82,10 @@ interface Props
 	 * Mettre le text à droite de l'image.
 	 */
 	textInline?: boolean;
+	/**
+	 * Classes à ajouter à l'élément racine.
+	 */
+	rootClass?: unknown;
 }
 
 // --------- //
@@ -128,6 +137,11 @@ on_unmounted(() => {
 	}
 });
 
+watch(() => props.file, (file) => {
+	let url = URL.createObjectURL(file as File)
+	source.value = Some(url);
+});
+
 // ------- //
 // Handler //
 // ------ //
@@ -170,11 +184,11 @@ function get_img_src()
 	if (IMAGE_CACHE.has(props.src)) {
 		let img = IMAGE_CACHE.get(props.src);
 		if (img) {
-			if (img.expires.getTime() > Date.now()) {
+			if (img.expires.getTime() >= Date.now()) {
 				return Some(img.source);
 			}
-
-			if (img.loaded) {
+			
+			if (!props.refreshSrc && img.loaded) {
 				return Some(img.source);
 			}
 		}
@@ -196,7 +210,7 @@ function get_img_src()
 		});
 	}
 	
-	return Some(img_src + "?r=" + refresh_timer.value);
+	return Some(img_src + "?r=" + (refresh_timer.value || "0"));
 }
 </script>
 
@@ -205,9 +219,12 @@ function get_img_src()
 		<template #some="{ data: source }">
 			<div v-intersection="intersect_handler"
 				class="image"
-				:class="{
-					'image:vertical': !textInline,
-				}"
+				:class="[
+					rootClass,
+					{
+						'image:vertical': !textInline,
+					}
+				]"
 			>
 				<figure class="[ m=0  gap=1 ]" :class="{
 					'i-flex align-i:center': textInline,

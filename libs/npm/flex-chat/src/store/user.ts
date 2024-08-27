@@ -115,6 +115,56 @@ export class UserStore
 
 		return Promise.reject(response);
 	}
+	
+	public async patch(user_id: UUID, form_data: FormData)
+	{
+		let avatar = form_data.get("avatar") as File | null;
+
+		let current_session = this.data.get_session().unwrap();
+
+		if (!avatar || avatar.name.length === 0)  {
+			form_data.delete("avatar");
+		} else {
+			let form_data = new FormData();
+			form_data.append("avatar", avatar);
+			let response = await fetch(`/api/v1/avatars/${user_id}`, {
+				...FETCH_OPTIONS,
+				method: "PUT",
+				body: form_data,
+			});
+
+			if (response.ok) {
+				let data = await response.json() as { avatar: string };
+				current_session.avatar = data.avatar;
+			}
+	
+			// TODO: gérer les erreurs, via une alert ou autre.
+			if (response.status >= 400 && response.status < 600) {}
+		}
+
+		let data = await fetch(`/api/v1/accounts/${user_id}`, {
+			...FETCH_OPTIONS,
+			headers: {
+				"Content-type": "application/json",
+			},
+			method: "PUT",
+			body: JSON.stringify(Object.fromEntries(form_data.entries())),
+		}).then((res) => res.json()) as {
+			city?: string;
+			country?: string;
+			firstname?: string;
+			gender?: string;
+			lastname?: string;
+		};
+
+		current_session.city = data.city
+		current_session.country = data.country;
+		current_session.firstname = data.firstname;
+		current_session.gender = data.gender;
+		current_session.lastname = data.lastname;
+
+		this.data.set_session(current_session);
+	}
 
 	public session(user?: UserSession): UserStoreData["_session"]
 	{

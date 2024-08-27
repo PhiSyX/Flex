@@ -45,6 +45,21 @@ const LONG_MONTHS_LANG_FR = [
 	"Décembre",
 ] as const;
 
+const SHORT_MONTHS_LANG_FR = [
+	"Jan",
+	"Fév",
+	"Mar",
+	"Avr",
+	"Mai",
+	"Juin",
+	"Juil",
+	"Août",
+	"Sept",
+	"Oct",
+	"Nov",
+	"Déc",
+] as const;
+
 // -------- //
 // Fonction //
 // -------- //
@@ -437,8 +452,39 @@ function format_date(format = "[H:i:s]", time: Date = new Date()): string
 	);
 }
 
+function get_long_month_from(
+	nmonth: number,
+	opt: { to_lower?: boolean } = {},
+): string
+{
+	opt.to_lower ||= false;
+
+	let month = LONG_MONTHS_LANG_FR.at(nmonth - 1) || "";
+
+	if (opt.to_lower) {
+		month = month.toLowerCase()
+	}
+
+	return month;
+}
+function get_short_month_from(
+	nmonth: number,
+	opt: { to_lower?: boolean } = {},
+): string
+{
+	opt.to_lower ||= false;
+
+	let month = SHORT_MONTHS_LANG_FR.at(nmonth - 1) || "";
+
+	if (opt.to_lower) {
+		month = month.toLowerCase()
+	}
+
+	return month;
+}
+
 // ------ //
 // Export //
 // ------ //
 
-export { format_date };
+export { get_long_month_from, get_short_month_from, format_date };

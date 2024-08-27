@@ -32,31 +32,37 @@ const emit = defineEmits<Emits>();
 </script>
 
 <template>
-	<dialog :open="open" class="dialog [ border/radius=1 flex! gap=1 size:full f-size=13px select:none ]">
-		<header v-if="!withoutHeader" class="[ flex gap=1 ]">
-			<h1 class="dialog/title [ flex:full p=1 m=0 f-size=20px f-family=arial ]">
-				<slot name="label" />
-			</h1>
+	<dialog :open="open" class="dialog [ border/radius=1 flex size:full f-size=13px select:none ]">
+		<slot name="left-content" />
 
-			<div class="dialog/actions [ flex:shrink=0 ]">
-				<slot name="actions" />
+		<div class="flex! gap=1">
+			<header v-if="!withoutHeader" class="[ flex gap=1 ]">
+				<h1 class="dialog/title [ flex:full p=1 m=0 f-size=20px f-family=arial ]">
+					<slot name="label" />
+				</h1>
 
-				<UiButton
-					v-if="!withoutClose"
-					icon="close"
-					class="[ h:full ]"
-					@click="emit('close', $event)"
-				/>
+				<div class="dialog/actions [ flex:shrink=0 ]">
+					<slot name="actions" />
+
+					<UiButton
+						v-if="!withoutClose"
+						icon="close"
+						class="[ h:full ]"
+						@click="emit('close', $event)"
+					/>
+				</div>
+			</header>
+
+			<div class="dialog/body [ flex:full p=1 ov:a ]">
+				<slot />
 			</div>
-		</header>
 
-		<div class="dialog/body [ flex:full p=1 ov:a ]">
-			<slot />
+			<footer class="[ align-t:right p=1 ]">
+				<slot name="footer" />
+			</footer>
 		</div>
 
-		<footer class="[ align-t:right p=1 ]">
-			<slot name="footer" />
-		</footer>
+		<slot name="right-content" />
 	</dialog>
 </template>
 

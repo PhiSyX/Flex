@@ -9,3 +9,6 @@ pnpm-lock.yaml
 Cargo.lock
 
 /biome.json
+/tmp/sessions/*
+/tmp/logs/*
+/tmp/uploads/*

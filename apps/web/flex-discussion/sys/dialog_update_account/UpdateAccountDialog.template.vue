@@ -1,0 +1,222 @@
+<script setup lang="ts">
+import { computed, ref } from "vue";
+
+import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
+import Avatar from "../avatar/Avatar.vue";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props
+{
+	layerName: string;
+	userId: UUID;
+	username: string;
+	firstname: string | null;
+	lastname: string | null;
+	country: string | null;
+	gender: string | null;
+	city: string | null;
+	countriesList: Array<{ code: string; country: string }>;
+}
+
+interface Emits
+{
+	(event_name: "close"): void;
+	(event_name: "upload", file: File): void;
+	(event_name: "submit", evt: Event): void;
+}
+
+// --------- //
+// Composant //
+// --------- //
+
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
+
+let selected_country = ref(props.country || "");
+let form = computed(() => `${props.layerName}_form`);
+
+function iso_to_country_flag(code: string)
+{
+	if (code.length < 2) {
+		return "";
+	}
+	return [code.charAt(0), code.charAt(1)]
+		.map((letter) => (letter.charCodeAt(0) % 32) + 0x1f1e5)
+		.map((code) => String.fromCodePoint(code))
+		.join("");
+}
+
+let flag_country = computed(() => iso_to_country_flag(selected_country.value));
+
+// ------- //
+// Handler //
+// ------- //
+
+const close_dialog_handler = () => emit("close");
+const upload_file_handler = (file: File) => emit("upload", file);
+const submit_handler = (evt: Event) => emit("submit", evt);
+</script>
+
+<template>
+	<Dialog @close="close_dialog_handler">
+		<template #label> Modifier le profil de {{ username }} </template>
+
+		<template #footer>
+			<em class="[ f-size=12px ]">
+				Les champs ayant un <strong>*</strong>asterisk sont
+				obligatoires.
+			</em>
+
+			<UiButton
+				:form="form"
+				type="submit"
+				variant="primary"
+				class="[ ml=1 mt=1 ]"
+			>
+				OK
+			</UiButton>
+
+			<UiButton
+				:form="form"
+				type="cancel"
+				variant="secondary"
+				class="[ ml=1 mt=1 ]"
+				@click="close_dialog_handler"
+			>
+				Annuler
+			</UiButton>
+		</template>
+
+		<template #left-content>
+			<div class="[ flex! ]">
+				<Avatar
+					:form="form"
+					:id="userId"
+					vertical
+					editable
+					:size="14"
+					name="avatar"
+					class="[ mt=8 ]"
+					@upload="upload_file_handler"
+				/>
+			</div>
+		</template>
+
+		<form method="post" :id="form" @submit.prevent="submit_handler">
+			<fieldset class="[ flex gap=2 ]" name="name">
+				<div class="[ flex! gap=1 ]">
+					<label for="firstname">Prénom :</label>
+					<input type="text" name="firstname" id="firstname" :value="firstname" />
+				</div>
+
+				<div class="[ flex! gap=1 ]">
+					<label for="lastname">Nom :</label>
+					<input type="text" name="lastname" id="lastname" :value="lastname" />
+				</div>
+			</fieldset>
+
+			<fieldset class="[ flex gap=1 align-i:center ]" data-group="gender">
+				<div class="[ flex! gap=1 ]">
+					<label for="gender">Genre :</label>
+					<input
+						:value="gender"
+						type="text"
+						name="gender"
+						list="gender-list"
+						id="gender"
+						placeholder="Homme,Femme,Autre..."
+					/>
+					<datalist id="gender-list">
+						<option value="Homme">Homme</option>
+						<option value="Femme">Femme</option>
+					</datalist>
+				</div>
+			</fieldset>
+
+			<fieldset class="[ flex gap=2 ]" data-group="city">
+				<div class="[ flex! gap=1 ]">
+					<label for="country">Pays : {{ flag_country }}</label>
+
+					<input
+						v-model="selected_country"
+						type="text"
+						list="countries-list"
+						name="country"
+						id="country"
+					/>
+
+					<datalist id="countries-list">
+						<option
+							v-for="country of countriesList"
+							:value="country.code"
+						>
+							{{ country.country }}
+						</option>
+					</datalist>
+				</div>
+
+				<div class="[ flex! gap=1 ]">
+					<label for="city">Ville :</label>
+					<input :value="city" type="text" name="city" id="city" />
+				</div>
+			</fieldset>
+		</form>
+	</Dialog>
+</template>
+
+<style lang="scss" scoped>
+@use "scss:~/flexsheets" as fx;
+
+dialog {
+	max-width: max-content !important;
+}
+
+fieldset {
+	border-color: transparent;
+}
+
+em {
+	vertical-align: text-bottom;
+}
+
+strong {
+	color: var(--color-red500);
+}
+
+input[type="email"],
+input[type="text"],
+input[type="text"] {
+	--default-placeholder-color: var(--color-grey900);
+	background: var(--color-ultra-white);
+	color: var(--color-black);
+	border: 1px solid var(--default-border-color);
+	border-radius: 4px;
+	padding: 4px;
+}
+
+input[name="gender"][type="text"] {
+	width: fx.space(150);
+}
+
+button[type="submit"] {
+	--btn-primary-bg: var(--color-ultra-white);
+	--btn-primary-bg-hover: var(--color-white);
+	--btn-primary-color: var(--color-black);
+	padding: fx.space(1) fx.space(2);
+	border-radius: 2px;
+	&:hover {
+		outline: 3px solid var(--dialog-border-color);
+	}
+}
+
+button[type="cancel"] {
+	padding: fx.space(1) fx.space(2);
+	border-radius: 2px;
+	&:hover {
+		outline: 3px solid var(--dialog-border-color);
+	}
+}
+</style>
