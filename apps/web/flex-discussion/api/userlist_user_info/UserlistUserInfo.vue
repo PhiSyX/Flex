@@ -1,15 +1,13 @@
 <script lang="ts">
 // TODO: Récupérer l'URL depuis une les points d'entrées du site.
 const API_V1_USER_INFO_ENDPOINT = "/api/v1/users/:userid/info";
+
+const CACHE_MINUTE = import.meta.env.DEV ? 5 : 60;
 </script>
 
 <script setup lang="ts">
-import {
-	computed,
-	onMounted as on_mounted,
-	onUnmounted as on_unmounted,
-	shallowRef as shallow_ref,
-} from "vue";
+import { computed } from "vue";
+import { useQuery } from "@tanstack/vue-query";
 
 import { calculate_age } from "@phisyx/flex-date";
 import { iso_to_country_flag } from "@phisyx/flex-helpers";
@@ -45,10 +43,30 @@ const props = withDefaults(defineProps<Props>(), {
 	endpoint: API_V1_USER_INFO_ENDPOINT,
 });
 
-let user_info = shallow_ref<UserInfo | null>();
+async function fetcher(): Promise<UserInfo>
+{
+	let res = await fetch(
+		// TODO: Créer un URL builder
+		`${props.endpoint.replace(":userid", props.userId)}?privacy=${props.privacy}`,
+		{
+			headers: {
+				"Content-Type": "application/json",
+			},
+			// signal: AbortSignal.any([abort_ctrl.signal, timeout_sig]),
+			credentials: "same-origin",
+		},
+	);
+	return res.json();
+}
 
-let timeout_sig = AbortSignal.timeout(5_000);
-let abort_ctrl = new AbortController();
+const { data: user_info, isLoading } = useQuery({
+	queryKey: [`user_info${props.privacy}`],
+	queryFn: fetcher,
+	retry: 5,
+	retryDelay: 10e3,
+	staleTime: CACHE_MINUTE * 6e4,
+	refetchInterval: CACHE_MINUTE * 6e4 + 1,
+});
 
 let age = computed(() => {
 	return user_info.value?.birthday
@@ -68,36 +86,11 @@ let user_flag = computed(() => {
 	}
 	return null;
 });
-
-on_mounted(async () => {
-	let response = await fetch(
-		// TODO: Créer un URL builder
-		`${props.endpoint.replace(":userid", props.userId)}?privacy=${props.privacy}`,
-		{
-			headers: {
-				"Content-Type": "application/json",
-			},
-			signal: AbortSignal.any([abort_ctrl.signal, timeout_sig]),
-			credentials: "same-origin",
-		},
-	);
-
-	user_info.value = await (response.ok
-		? response.json()
-		: Promise.reject(`
-		Impossible de récupérer les informations de l'utilisateur à l'ID ${props.userId}
-	`));
-});
-
-on_unmounted(() => {
-	if (!abort_ctrl.signal.aborted) {
-		abort_ctrl.abort();
-	}
-});
 </script>
 
 <template>
 	<UserlistUserInfoPresenter
+		v-if="!isLoading"
 		:age="age"
 		:from="user_info?.country || user_info?.city"
 		:user-flag="user_flag"

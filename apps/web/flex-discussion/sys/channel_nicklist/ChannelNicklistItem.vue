@@ -84,12 +84,10 @@ const select_user_handler = (member: ChannelMember) =>
 						class="channel/nick [ flex:full ]"
 					/>
 
-					<Suspense>
-						<UserInfo
-							:user-id="filtered_member.id"
-							privacy="public"
-						/>
-					</Suspense>
+					<UserInfo
+						:user-id="filtered_member.id"
+						privacy="public"
+					/>
 				</li>
 			</template>
 		</ul>

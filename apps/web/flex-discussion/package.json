@@ -23,6 +23,7 @@
 		"@phisyx/flex-search": "workspace:",
 		"@phisyx/flex-vue-directives": "workspace:",
 		"@phisyx/flex-vue-uikit": "workspace:",
+		"@tanstack/vue-query": "^5.52.2",
 		"country-flag-emoji-polyfill": "^0.1.8",
 		"focus-trap": "^7.5.4",
 		"pinia": "^2.2.1",
