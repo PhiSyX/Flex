@@ -60,7 +60,7 @@ async function fetcher(): Promise<UserInfo>
 }
 
 const { data: user_info, isLoading } = useQuery({
-	queryKey: [`user_info${props.privacy}`],
+	queryKey: [`user_info${props.userId}${props.privacy}`],
 	queryFn: fetcher,
 	retry: 5,
 	retryDelay: 10e3,
