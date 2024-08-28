@@ -9,10 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::http::request::Request;
-use flex_web_framework::http::response::Redirect;
-use flex_web_framework::http::{IntoResponse, Response};
+use flex_web_framework::http::response::{Html, Json, Redirect};
+use flex_web_framework::http::{header, IntoResponse, Response, StatusCode};
 use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
+use flex_web_framework::Error404HTMLView;
+use serde_json::json;
 
 use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::users::dto::UserSessionDTO;
@@ -37,11 +39,39 @@ impl AuthMiddleware
 		session: Session,
 		req: Request,
 		next: Next,
-	) -> Response
+	) -> impl IntoResponse
 	{
 		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(user)) if user.role.is_admin() => next.run(req).await,
-			| _ => Redirect::to(&Self::REDIRECT_TO.to_string()).into_response(),
+			| _ => {
+				if let Some(accept) = req
+					.headers()
+					.get(header::ACCEPT)
+					.and_then(|a| a.to_str().ok())
+				{
+					if accept.contains("application/json") {
+						return (
+							StatusCode::NOT_FOUND,
+							Json(serde_json::json!({
+								"code": 404,
+								"error": "La page demandée n'existe pas.",
+								"uri": req.uri().to_string(),
+								"method": req.method().to_string(),
+							})),
+						)
+							.into_response();
+					}
+				}
+
+				(
+					StatusCode::NOT_FOUND,
+					Html(Error404HTMLView {
+						uri: req.uri().to_owned(),
+						method: req.method().to_string(),
+					}),
+				)
+					.into_response()
+			}
 		}
 	}
 
@@ -50,7 +80,7 @@ impl AuthMiddleware
 		session: Session,
 		req: Request,
 		next: Next,
-	) -> Response
+	) -> impl IntoResponse
 	{
 		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(user))
@@ -58,7 +88,35 @@ impl AuthMiddleware
 			{
 				next.run(req).await
 			}
-			| _ => Redirect::to(&Self::REDIRECT_TO.to_string()).into_response(),
+			| _ => {
+				if let Some(accept) = req
+					.headers()
+					.get(header::ACCEPT)
+					.and_then(|a| a.to_str().ok())
+				{
+					if accept.contains("application/json") {
+						return (
+							StatusCode::NOT_FOUND,
+							Json(serde_json::json!({
+								"code": 404,
+								"error": "La page demandée n'existe pas.",
+								"uri": req.uri().to_string(),
+								"method": req.method().to_string(),
+							})),
+						)
+							.into_response();
+					}
+				}
+
+				(
+					StatusCode::NOT_FOUND,
+					Html(Error404HTMLView {
+						uri: req.uri().to_owned(),
+						method: req.method().to_string(),
+					}),
+				)
+					.into_response()
+			}
 		}
 	}
 
@@ -71,7 +129,23 @@ impl AuthMiddleware
 	{
 		match session.get::<UserSessionDTO>(USER_SESSION).await {
 			| Ok(Some(_)) => next.run(req).await,
-			| _ => Redirect::to(&Self::REDIRECT_TO.to_string()).into_response(),
+			| _ => {
+				if let Some(accept) = req
+					.headers()
+					.get(header::ACCEPT)
+					.and_then(|a| a.to_str().ok())
+				{
+					if accept.contains("application/json") {
+						return Json(json!({
+							"error": "Vous devez être authentifié pour pouvoir \
+									  accéder à cette ressource.",
+							"redirect_to": Self::REDIRECT_TO.to_string(),
+						}))
+						.into_response();
+					}
+				}
+				Redirect::to(&Self::REDIRECT_TO.to_string()).into_response()
+			}
 		}
 	}
 }

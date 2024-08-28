@@ -11,9 +11,11 @@
 mod layout
 {
 	mod empty;
+	mod error404;
 	mod vite;
 
 	pub use self::empty::*;
+	pub use self::error404::*;
 	pub use self::vite::*;
 }
 mod markup;
