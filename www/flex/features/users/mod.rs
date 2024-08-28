@@ -21,6 +21,7 @@ flex_kernel::import! {
 
 	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
 	pub(crate) mod dto {
+		pub mod user_info_dto use *;
 		pub mod user_new_action_dto use *;
 		pub mod user_session_dto use *;
 	};

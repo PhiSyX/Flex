@@ -19,7 +19,7 @@ use crate::features::accounts::dto::UpdateAccountDTO;
 use crate::features::accounts::forms::AccountUpdateFormData;
 use crate::features::avatars::dto::UpdateAvatarDTO;
 use crate::features::users::dto::UserNewActionDTO;
-use crate::features::users::entities::UserEntity;
+use crate::features::users::entities::{UserAccountStatus, UserEntity};
 
 // --------- //
 // Interface //
@@ -34,8 +34,12 @@ pub trait UserRepository
 		new_user: UserNewActionDTO,
 	) -> Result<UserEntity, sqlx::Error>;
 
-	/// Récupère un utilisateur en fonction de son ID.
-	async fn get(&self, id: &Uuid) -> Result<UserEntity, sqlx::Error>;
+	/// Récupère un utilisateur en fonction de son ID et de sa confidentialité.
+	async fn get(
+		&self,
+		id: &Uuid,
+		private: UserAccountStatus,
+	) -> Result<UserEntity, sqlx::Error>;
 
 	/// Cherche un utilisateur par son adresse e-mail.
 	async fn find_by_email(
@@ -65,6 +69,8 @@ pub trait UserRepository
 		user_id: &Uuid,
 		payload: AccountUpdateFormData,
 	) -> Result<UpdateAccountDTO, sqlx::Error>;
+
+	fn query_builder(&self) -> &SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -121,14 +127,23 @@ impl UserRepository for UserRepositoryPostgreSQL
 		Ok(record)
 	}
 
-	async fn get(&self, id: &Uuid) -> Result<UserEntity, sqlx::Error>
+	async fn get(
+		&self,
+		user_id: &Uuid,
+		privacy: UserAccountStatus,
+	) -> Result<UserEntity, sqlx::Error>
 	{
-		let id = id.to_string();
+		let id = user_id.to_string();
+		let privacy = privacy.as_str();
 		let raw_query = format!(
-			"SELECT * FROM {users} WHERE id=$1::uuid",
-			users = Self::TABLE_NAME
+			"SELECT * FROM {users} WHERE id=$1::uuid AND \
+			 account_status=$2::users_account_status",
+			users = Self::TABLE_NAME,
 		);
-		let record = self.query_builder.fetch_one(&raw_query, &[&id]).await?;
+		let record = self
+			.query_builder
+			.fetch_one(&raw_query, &[&id, privacy])
+			.await?;
 		Ok(record)
 	}
 
@@ -223,5 +238,10 @@ impl UserRepository for UserRepositoryPostgreSQL
 			.await?;
 
 		Ok(record)
+	}
+
+	fn query_builder(&self) -> &SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>
+	{
+		&self.query_builder
 	}
 }

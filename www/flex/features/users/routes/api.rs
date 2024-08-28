@@ -29,9 +29,13 @@ pub struct UsersApi_V1_Router;
 // ----------- //
 
 #[derive(Debug)]
-pub enum AuthApi_V1_RouteID
+pub enum UsersApi_V1_RouteID<'a>
 {
-	CurrentUser,
+	Info
+	{
+		user_id: &'a str,
+	},
+	Session,
 }
 
 // -------------- //
@@ -47,14 +51,19 @@ impl RouterInterface<FlexState> for UsersApi_V1_Router
 {
 	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
-		Self::group().add(
-			Router::path(AuthApi_V1_RouteID::CurrentUser)
-				.get(UsersController::current_user),
-		)
+		Self::group()
+			.add(
+				Router::path(UsersApi_V1_RouteID::Info { user_id: ":userid" })
+					.get(UsersController::get_user_info),
+			)
+			.add(
+				Router::path(UsersApi_V1_RouteID::Session)
+					.get(UsersController::session),
+			)
 	}
 }
 
-impl RouteIDInterface for AuthApi_V1_RouteID
+impl RouteIDInterface for UsersApi_V1_RouteID<'_>
 {
 	fn fullpath(&self) -> impl ToString
 	{
@@ -64,12 +73,13 @@ impl RouteIDInterface for AuthApi_V1_RouteID
 	fn path(&self) -> impl ToString
 	{
 		match self {
-			| Self::CurrentUser => "/@me",
+			| Self::Info { user_id } => format!("/{user_id}/info"),
+			| Self::Session => String::from("/@me"),
 		}
 	}
 }
 
-impl std::fmt::Display for AuthApi_V1_RouteID
+impl std::fmt::Display for UsersApi_V1_RouteID<'_>
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{

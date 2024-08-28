@@ -38,6 +38,8 @@ pub struct UserEntity
 	pub firstname: Option<String>,
 	/// Nom de l'utilisateur.
 	pub lastname: Option<String>,
+	/// Date d'anniversaire de l'utilisateur.
+	pub birthday: Option<sqlx::types::chrono::NaiveDate>,
 	/// Le genre de l'utilisateur.
 	pub gender: Option<String>,
 	/// Le pays de l'utilisateur.

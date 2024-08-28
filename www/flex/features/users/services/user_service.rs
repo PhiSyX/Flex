@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 use sqlx::types::Uuid;
 
-use crate::features::users::entities::UserEntity;
+use crate::features::users::entities::{UserAccountStatus, UserEntity};
 use crate::features::users::repositories::UserRepository;
 
 // --------- //
@@ -22,7 +22,28 @@ use crate::features::users::repositories::UserRepository;
 #[flex_web_framework::async_trait]
 pub trait UserService
 {
-	async fn get(&self, user_id: &Uuid) -> Result<UserEntity, UserErrorService>;
+	async fn get_public_account(
+		&self,
+		user_id: &Uuid,
+	) -> Result<UserEntity, sqlx::Error>;
+
+	async fn get_private_account(
+		&self,
+		user_id: &Uuid,
+	) -> Result<UserEntity, sqlx::Error>;
+
+	async fn get_secret_account(
+		&self,
+		user_id: &Uuid,
+	) -> Result<UserEntity, sqlx::Error>;
+
+	async fn get_account(
+		&self,
+		user_id: &Uuid,
+		privacy: UserAccountStatus,
+	) -> Result<UserEntity, sqlx::Error>;
+
+	fn user_repository(&self) -> Arc<dyn UserRepository>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -58,10 +79,55 @@ pub enum UserErrorService
 // -------------- //
 
 #[flex_web_framework::async_trait]
-impl UserService for UserServiceImpl {
-	async fn get(&self, user_id: &Uuid) -> Result<UserEntity, UserErrorService>
+impl UserService for UserServiceImpl
+{
+	async fn get_public_account(
+		&self,
+		user_id: &Uuid,
+	) -> Result<UserEntity, sqlx::Error>
 	{
-		Ok(self.user_repository.get(user_id).await?)
+		self.user_repository
+			.get(user_id, UserAccountStatus::Public)
+			.await
+	}
+
+	async fn get_private_account(
+		&self,
+		user_id: &Uuid,
+	) -> Result<UserEntity, sqlx::Error>
+	{
+		self.user_repository
+			.get(user_id, UserAccountStatus::Private)
+			.await
+	}
+
+	async fn get_secret_account(
+		&self,
+		user_id: &Uuid,
+	) -> Result<UserEntity, sqlx::Error>
+	{
+		self.user_repository
+			.get(user_id, UserAccountStatus::Secret)
+			.await
+	}
+
+	async fn get_account(
+		&self,
+		user_id: &Uuid,
+		privacy: UserAccountStatus,
+	) -> Result<UserEntity, sqlx::Error>
+	{
+		Ok(match privacy {
+			| UserAccountStatus::Public => self.get_public_account(user_id),
+			| UserAccountStatus::Private => self.get_private_account(user_id),
+			| UserAccountStatus::Secret => self.get_secret_account(user_id),
+		}
+		.await?)
+	}
+
+	fn user_repository(&self) -> Arc<dyn UserRepository>
+	{
+		self.user_repository.clone()
 	}
 }
 
