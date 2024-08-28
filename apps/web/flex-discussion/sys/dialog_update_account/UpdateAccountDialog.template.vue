@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 
 import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 
+import { iso_to_country_flag } from "@phisyx/flex-helpers";
 import Avatar from "#/api/avatar/Avatar.vue";
 
 // ---- //
@@ -38,17 +39,6 @@ const emit = defineEmits<Emits>();
 
 let selected_country = ref(props.country || "");
 let form = computed(() => `${props.layerName}_form`);
-
-function iso_to_country_flag(code: string)
-{
-	if (code.length < 2) {
-		return "";
-	}
-	return [code.charAt(0), code.charAt(1)]
-		.map((letter) => (letter.charCodeAt(0) % 32) + 0x1f1e5)
-		.map((code) => String.fromCodePoint(code))
-		.join("");
-}
 
 let flag_country = computed(() => iso_to_country_flag(selected_country.value));
 
