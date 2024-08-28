@@ -1,3 +1,8 @@
+<script lang="ts">
+// TODO: Récupérer l'URL depuis une les points d'entrées du site.
+const API_V1_AVATAR_ENDPOINT = "/api/v1/avatars/:userid";
+</script>
+
 <script setup lang="ts">
 import { computed, ref, shallowRef } from "vue";
 
@@ -15,6 +20,7 @@ interface Props
 	id: string;
 	vertical?: boolean;
 	size?: number | string;
+	endpoint?: string;
 }
 
 interface Emits
@@ -30,13 +36,15 @@ interface Emits
 const props = withDefaults(defineProps<Props>(), {
 	size: 3,
 	vertical: false,
+	endpoint: API_V1_AVATAR_ENDPOINT,
 });
 const emit = defineEmits<Emits>();
 
 let $upload = ref<HTMLInputElement>();
 let uploaded_file = shallowRef<File>();
 
-let image_url = computed(() => `/api/v1/avatars/${props.id}`);
+// TODO: Créer un URL builder
+let image_url = computed(() => props.endpoint.replaceAll(":userid", props.id));
 let image_alt = computed(() => props.alt || `Avatar #${props.id}`);
 
 // ------- //

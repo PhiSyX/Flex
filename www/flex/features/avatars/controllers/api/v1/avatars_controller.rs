@@ -11,7 +11,7 @@
 use std::sync::Arc;
 
 use flex_web_framework::extract::Multipart;
-use flex_web_framework::http::request::Path;
+use flex_web_framework::http::request::{Path, Query};
 use flex_web_framework::http::response::Json;
 use flex_web_framework::http::{
 	Extensions,
@@ -32,6 +32,7 @@ use crate::features::avatars::services::{
 	AvatarServiceImpl,
 };
 use crate::features::users::dto::UserSessionDTO;
+use crate::features::users::entities::UserAccountStatus;
 use crate::features::users::repositories::{
 	UserRepository,
 	UserRepositoryPostgreSQL,
@@ -49,6 +50,22 @@ pub struct AvatarsController
 {
 	avatar_service: Arc<dyn AvatarService>,
 	user_service: Arc<dyn UserService>,
+}
+
+#[derive(serde::Deserialize)]
+pub struct ShowQueryParams
+{
+	#[serde(default)]
+	privacy: QueryParamsPrivacy,
+}
+
+#[derive(Default)]
+#[derive(serde::Deserialize)]
+#[serde(rename_all = "lowercase")]
+enum QueryParamsPrivacy
+{
+	#[default]
+	Public,
 }
 
 // -------------- //
@@ -70,6 +87,7 @@ impl AvatarsController
 	pub async fn show(
 		http: HttpContext<Self>,
 		Path(user_id): Path<Uuid>,
+		Query(query): Query<ShowQueryParams>,
 	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
 		#[rustfmt::skip]
@@ -77,7 +95,11 @@ impl AvatarsController
 			Ok(http.response.redirect_temporary(Self::DEFAULT_AVATAR))
 		};
 
-		let Ok(user) = http.user_service.get(&user_id).await else {
+		let privacy = match query.privacy {
+			QueryParamsPrivacy::Public => UserAccountStatus::Public,
+		};
+
+		let Ok(user) = http.user_service.get_account(&user_id, privacy).await else {
 			return fallback();
 		};
 
