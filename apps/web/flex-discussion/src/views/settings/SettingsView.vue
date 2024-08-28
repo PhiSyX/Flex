@@ -10,7 +10,7 @@ import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
 import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
 import SettingsNotificationSoundEffect from "./notification/SoundEffect.vue";
 import SettingsPersonalizationTheme from "./personalization/Theme.vue";
-
+import SettingsPrivate from "./private/SettingsPrivate.vue";
 
 // --------- //
 // Composant //
@@ -48,38 +48,54 @@ function save_and_exit_handler()
 		</div>
 
 		<div class="content [ flex! gap=1 w:full scroll:y p=1 ]">
-			<section>
-				<h1 class="[ pos-s ]">Personnalisation</h1>
+			<details open>
+				<summary class="[ pos-s ]">Personnalisation</summary>
 
 				<SettingsPersonalizationTheme />
-			</section>
+			</details>
 
-			<section>
-				<h1 class="[ pos-s ]">Disposition</h1>
+			<details open>
+				<summary class="[ pos-s ]">Disposition</summary>
 
 				<SettingsLayoutNavigationBar />
 				<SettingsLayoutChannelUserlist />
-			</section>
+			</details>
 			
-			<section>
-				<h1 class="[ pos-s ]">Notification</h1>
+			<details open>
+				<summary class="[ pos-s ]">Notification</summary>
 
 				<SettingsNotificationSoundEffect />
-			</section>
+			</details>
+			
+			<details open>
+				<summary class="[ pos-s ]">Privé</summary>
+
+				<SettingsPrivate />
+			</details>
 		</div>
 	</main>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-.content {
-	margin: 0 auto;
-	max-width: 80ch;
-}
+#settings-view {
+	.content {
+		margin: 0 auto;
+		max-width: 80ch;
+	}
 
-h1 {
-	padding-block: fx.space(1);
-	backdrop-filter: blur(8px);
+	summary {
+		padding-block: fx.space(1);
+		backdrop-filter: blur(8px);
+		font-size: 26px;
+		font-weight: bold;
+		list-style: none;
+	}
+
+	h2 {
+		color: var(--color-grey500);
+		font-size: 20px;
+	}
 }
 </style>

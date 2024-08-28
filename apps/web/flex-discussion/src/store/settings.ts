@@ -47,6 +47,11 @@ export class SettingsStoreVue
 		return computed(() => readonly(this.#store.get_personalization()));
 	}
 
+	get priv4te() 
+	{
+		return computed(() => readonly(this.#store.get_private()));
+	}
+
 	get channel_userlist_display_mut()
 	{
 		return computed({
@@ -198,6 +203,40 @@ export class SettingsStoreVue
 			}
 		});
 	}
+	
+	get waiting_private_list_mut()
+	{
+		return computed({
+			get: () => {
+				return this.#store.get_private().waiting_list;
+			},
+			set: ($1) => {
+				this.#store.mut_private((_current) => ({
+					waiting_list: $1,
+				}));
+			}
+		});
+	}
+
+	get_layout() 
+	{
+		return this.#store.get_layout();
+	}
+
+	get_notification() 
+	{
+		return this.#store.get_notification();
+	}
+
+	get_personalization() 
+	{
+		return this.#store.get_personalization();
+	}
+
+	get_private() 
+	{
+		return this.#store.get_private();
+	}
 
 	// ------- //
 	// Méthode // -> API Publique
@@ -216,21 +255,29 @@ export const use_settings_store = define_store(SettingsStore.NAME, () => {
 		layout: store.layout,
 		notification: store.notification,
 		personalization: store.personalization,
+		priv4te: store.priv4te,
+
+		get_layout: store.get_layout.bind(store),
+		get_notification: store.get_notification.bind(store),
+		get_personalization: store.get_personalization.bind(store),
+		get_private: store.get_private.bind(store),
 
 		channel_userlist_display_mut: store.channel_userlist_display_mut,
 		channel_userlist_position_mut: store.channel_userlist_position_mut,
 		navigation_bar_position_mut: store.navigation_bar_position_mut,
-
+		
 		sounds_effect_enabled_mut: store.sounds_effect_enabled_mut,
 		sounds_effect_mut: store.sounds_effect_mut,
-
+		
 		text_format_bold_mut: store.text_format_bold_mut,
 		text_format_italic_mut: store.text_format_italic_mut,
 		text_format_underline_mut: store.text_format_underline_mut,
 		text_color_background_mut: store.text_color_background_mut,
 		text_color_foreground_mut: store.text_color_foreground_mut,
-
+		
 		theme_mut: store.theme_mut,
+		
+		waiting_private_list_mut: store.waiting_private_list_mut,
 
 		persist: store.persist.bind(store),
 	};

@@ -11,10 +11,12 @@
 import type { LayoutData } from "../localstorage/settings_layout";
 import type { NotificationData } from "../localstorage/settings_notification";
 import type { PersonalizationData } from "../localstorage/settings_personalization";
+import type { PrivateData } from "../localstorage/settings_private";
 
 import { LayoutStorage } from "../localstorage/settings_layout";
 import { NotificationStorage } from "../localstorage/settings_notification";
 import { PersonalizationStorage } from "../localstorage/settings_personalization";
+import { PrivateStorage } from "../localstorage/settings_private";
 
 // -------------- //
 // Implémentation //
@@ -25,6 +27,7 @@ export class SettingsStoreData
 	public layout: LayoutStorage = new LayoutStorage();
 	public notification: NotificationStorage = new NotificationStorage();
 	public personalization: PersonalizationStorage = new PersonalizationStorage();
+	public priv4te: PrivateStorage = new PrivateStorage();
 
 	// ------- //
 	// Méthode // -> API Publique
@@ -66,6 +69,11 @@ export class SettingsStore
 		return this.data.personalization.get();
 	}
 
+	public get_private()
+	{
+		return this.data.priv4te.get();
+	}
+
 	public mut_layout(
 		set: (
 			current: LayoutData
@@ -105,10 +113,25 @@ export class SettingsStore
 		};
 	}
 
+	public mut_private(
+		set: (
+			current: PrivateData
+		) => PrivateData
+	)
+	{
+		let readonly_value = this.get_private();
+		this.data.priv4te.value = {
+			...readonly_value,
+			...set(readonly_value)
+		};
+	}
+
+
 	public persist()
 	{
 		this.data.layout.persist();
 		this.data.notification.persist();
 		this.data.personalization.persist();
+		this.data.priv4te.persist();
 	}
 }

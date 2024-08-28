@@ -14,7 +14,8 @@ import query_audio from "#/assets/audio/query.wav";
 // Type //
 // ---- //
 
-interface Props {
+interface Props
+{
 	disabled?: boolean;
 }
 
@@ -66,11 +67,12 @@ let audio = ref({
 
 		<select
 			multiple v-model-select="sounds" :disabled="disabled"
+			title="Maintenir la touche CTRL pour (dé)sélectionner"
 			class="[ p=1 ]"
 		>
-			<option value="connection">Lors de la connexion</option>
+			<option value="connection">Lorsque je me connecte au Chat</option>
 			<option value="invites">Lorsqu'on m'invite sur un salon</option>
-			<option value="mentions">Lorsqu'on mentionne mon pseudo</option>
+			<option value="mentions">Lorsqu'un utilisateur mentionne mon pseudo</option>
 			<option value="notices">Lorsqu'une notice m'est destinée</option>
 			<option value="queries">Lorsqu'un utilisateur me contacte pour la 1ère fois en privé</option>
 		</select>

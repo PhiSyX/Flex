@@ -92,7 +92,12 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 
 		assert_private_room(priv);
 
-		if (!priv.is_pending()) {
+		console.log(this.store.settings().get_private());
+
+		if (!this.store.settings().get_private().waiting_list) {
+			priv.marks_as_opened();
+			priv.set_pending(false);
+		} else if (!priv.is_pending()) {
 			priv.marks_as_opened();
 		}
 
