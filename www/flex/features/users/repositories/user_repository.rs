@@ -70,7 +70,9 @@ pub trait UserRepository
 		payload: AccountUpdateFormData,
 	) -> Result<UpdateAccountDTO, sqlx::Error>;
 
-	fn query_builder(&self) -> &SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>;
+	fn query_builder(
+		&self,
+	) -> &SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>;
 
 	fn shared(self) -> Arc<Self>
 	where
@@ -111,20 +113,20 @@ impl UserRepository for UserRepositoryPostgreSQL
 		new_user: UserNewActionDTO,
 	) -> Result<UserEntity, sqlx::Error>
 	{
-		let raw_query = format!(
-			"INSERT INTO {} \
-			 (id,name,email,password,role,created_at,updated_at) VALUES \
-			 (gen_random_uuid(),$1,$2,$3,$4::users_role,NOW(),NOW())",
-			Self::TABLE_NAME
-		);
-		let payload = [
-			&new_user.username,
-			new_user.email_address.as_ref(),
-			new_user.password.expose(),
-			new_user.role.as_str(),
-		];
-		let record = self.query_builder.insert(&raw_query, &payload).await?;
-		Ok(record)
+		self.query_builder
+			.table(Self::TABLE_NAME)
+			.insert([
+				("id", "gen_random_uuid()"),
+				("name", &new_user.username),
+				("email", new_user.email_address.as_ref()),
+				("password", new_user.password.expose()),
+				("role::users_role", new_user.role.as_str()),
+				("created_at", "now()"),
+				("updated_at", "now()"),
+			])
+			.returning_all()
+			.execute()
+			.await
 	}
 
 	async fn get(
@@ -133,18 +135,18 @@ impl UserRepository for UserRepositoryPostgreSQL
 		privacy: UserAccountStatus,
 	) -> Result<UserEntity, sqlx::Error>
 	{
-		let id = user_id.to_string();
-		let privacy = privacy.as_str();
-		let raw_query = format!(
-			"SELECT * FROM {users} WHERE id=$1::uuid AND \
-			 account_status=$2::users_account_status",
-			users = Self::TABLE_NAME,
-		);
-		let record = self
-			.query_builder
-			.fetch_one(&raw_query, &[&id, privacy])
-			.await?;
-		Ok(record)
+		let user_id = user_id.to_string();
+		let privacy = privacy.as_string();
+
+		self.query_builder
+			.table(Self::TABLE_NAME)
+			.select_all()
+			.where_and([
+				("id::uuid", &user_id),
+				("account_status::users_account_status", &privacy),
+			])
+			.fetch_one()
+			.await
 	}
 
 	async fn find_by_email(
@@ -152,15 +154,12 @@ impl UserRepository for UserRepositoryPostgreSQL
 		email: &email::EmailAddress,
 	) -> Result<UserEntity, sqlx::Error>
 	{
-		let raw_query = format!(
-			"SELECT * FROM {users} WHERE email=$1",
-			users = Self::TABLE_NAME
-		);
-		let record = self
-			.query_builder
-			.fetch_one(&raw_query, &[email.as_ref()])
-			.await?;
-		Ok(record)
+		self.query_builder
+			.table(Self::TABLE_NAME)
+			.select_all()
+			.where_and(("email", email))
+			.fetch_one()
+			.await
 	}
 
 	async fn find_by_email_or_name(
@@ -169,26 +168,23 @@ impl UserRepository for UserRepositoryPostgreSQL
 		name: &str,
 	) -> Result<UserEntity, sqlx::Error>
 	{
-		let raw_query = format!(
-			"SELECT * FROM {users} WHERE email=$1 OR name=$2",
-			users = Self::TABLE_NAME
-		);
-		let record = self
-			.query_builder
-			.fetch_one(&raw_query, &[email.as_ref(), name])
-			.await?;
-		Ok(record)
+		self.query_builder
+			.table(Self::TABLE_NAME)
+			.select_all()
+			.where_or([("email", email.as_ref()), ("name", name)])
+			.fetch_one()
+			.await
 	}
 
 	async fn find_by_name(&self, name: &str)
 		-> Result<UserEntity, sqlx::Error>
 	{
-		let raw_query = format!(
-			"SELECT * FROM {users} WHERE name=$1",
-			users = Self::TABLE_NAME
-		);
-		let record = self.query_builder.fetch_one(&raw_query, &[name]).await?;
-		Ok(record)
+		self.query_builder()
+			.table(Self::TABLE_NAME)
+			.select_all()
+			.where_eq(("name", name))
+			.fetch_one()
+			.await
 	}
 
 	async fn update_avatar_path(
@@ -197,15 +193,13 @@ impl UserRepository for UserRepositoryPostgreSQL
 		path: &str,
 	) -> Result<UpdateAvatarDTO, sqlx::Error>
 	{
-		let id = user_id.to_string();
-
-		let raw_query = format!(
-			"UPDATE {users} SET avatar = $2 WHERE id=$1::uuid",
-			users = Self::TABLE_NAME,
-		);
-		let record =
-			self.query_builder.update(&raw_query, &[&id, path]).await?;
-		Ok(record)
+		self.query_builder
+			.table(Self::TABLE_NAME)
+			.update(("avatar", path))
+			.where_eq(("id::uuid", user_id))
+			.returning_all()
+			.execute()
+			.await
 	}
 
 	async fn update_account_info(
@@ -214,33 +208,30 @@ impl UserRepository for UserRepositoryPostgreSQL
 		payload: AccountUpdateFormData,
 	) -> Result<UpdateAccountDTO, sqlx::Error>
 	{
-		let id = user_id.to_string();
+		let firstname = payload.firstname.as_deref().unwrap_or_default();
+		let lastname = payload.lastname.as_deref().unwrap_or_default();
+		let gender = payload.gender.as_deref().unwrap_or_default();
+		let country = payload.country.as_deref().unwrap_or_default();
+		let city = payload.city.as_deref().unwrap_or_default();
 
-		let raw_query = format!(
-			"UPDATE {users} SET firstname=$2, lastname=$3, gender=$4, \
-			 country=$5, city=$6 WHERE id=$1::uuid",
-			users = Self::TABLE_NAME,
-		);
-
-		let record = self
-			.query_builder
-			.update(
-				&raw_query,
-				&[
-					&id,
-					payload.firstname.as_deref().unwrap_or_default(),
-					payload.lastname.as_deref().unwrap_or_default(),
-					payload.gender.as_deref().unwrap_or_default(),
-					payload.country.as_deref().unwrap_or_default(),
-					payload.city.as_deref().unwrap_or_default(),
-				],
-			)
-			.await?;
-
-		Ok(record)
+		self.query_builder
+			.table(Self::TABLE_NAME)
+			.update([
+				("firstname", firstname),
+				("lastname", lastname),
+				("gender", gender),
+				("country", country),
+				("city", city),
+			])
+			.where_eq(("id::uuid", user_id))
+			.returning_all()
+			.execute()
+			.await
 	}
 
-	fn query_builder(&self) -> &SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>
+	fn query_builder(
+		&self,
+	) -> &SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>
 	{
 		&self.query_builder
 	}

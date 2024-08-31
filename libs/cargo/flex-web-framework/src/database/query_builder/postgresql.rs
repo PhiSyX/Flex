@@ -8,9 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::marker::PhantomData;
+
 use flex_database::SGBD;
 use sqlx::postgres::PgRow;
 
+use super::insert::SQLQueryInsertBuilder;
+use super::select::SQLQuerySelectBuilder;
+use super::table::SQLQueryBuilderTable;
+use super::update::SQLQueryUpdateBuilder;
 use super::SQLQueryBuilder;
 use crate::{DatabaseService, PostgreSQLDatabase};
 
@@ -18,59 +24,163 @@ use crate::{DatabaseService, PostgreSQLDatabase};
 // Implémentation //
 // -------------- //
 
-// FIXME: utiliser de vraies méthodes de query builder
 impl SQLQueryBuilder<DatabaseService<PostgreSQLDatabase>>
 {
-	pub async fn fetch_one<'a, T>(
-		&'a self,
-		raw_query: &'a str,
-		bindings: &'a [&'a str],
-	) -> Result<T, sqlx::Error>
-	where
-		T: for<'r> sqlx::FromRow<'r, PgRow>,
-		T: Send + Unpin,
-		T: std::fmt::Debug,
+	pub fn table<R>(
+		&self,
+		name: impl ToString,
+	) -> SQLQueryBuilderTable<DatabaseService<PostgreSQLDatabase>, R>
 	{
-		let mut q = sqlx::query_as(raw_query);
-		for binding in bindings {
-			q = q.bind(binding);
+		SQLQueryBuilderTable {
+			db: self.database.clone(),
+			name: name.to_string(),
+			select: Default::default(),
+			insert: Default::default(),
+			update: Default::default(),
+			_phantom: PhantomData,
 		}
-		q.fetch_one(self.database.connection.pool()).await
 	}
+}
 
-	pub async fn insert<'a, T>(
-		&'a self,
-		raw_query: &'a str,
-		bindings: &'a [&'a str],
-	) -> Result<T, sqlx::Error>
+impl<R> SQLQuerySelectBuilder<DatabaseService<PostgreSQLDatabase>, R>
+{
+	pub async fn fetch_one(&self) -> Result<R, sqlx::Error>
 	where
-		T: for<'r> sqlx::FromRow<'r, PgRow>,
-		T: Send + Unpin,
-		T: std::fmt::Debug,
+		R: for<'r> sqlx::FromRow<'r, PgRow>,
+		R: Send + Unpin,
+		R: std::fmt::Debug,
 	{
-		let query = format!("{raw_query} RETURNING *");
-		let mut q = sqlx::query_as(&query);
-		for binding in bindings {
-			q = q.bind(binding);
+		let table: SQLQueryBuilderTable<
+			DatabaseService<PostgreSQLDatabase>,
+			R,
+		> = SQLQueryBuilderTable {
+			db: self.db.clone(),
+			name: self.table.to_owned(),
+			select: Some(SQLQuerySelectBuilder {
+				table: self.table.clone(),
+				db: self.db.clone(),
+				fields: self.fields.clone(),
+				wheres: self.wheres.clone(),
+				_phantom: self._phantom,
+			}),
+			insert: None,
+			update: None,
+			_phantom: Default::default(),
+		};
+
+		let sql = table.build();
+
+		let mut q = sqlx::query_as(&sql);
+
+		for wh3re in self.wheres.iter() {
+			for binding in wh3re.values() {
+				q = q.bind(binding);
+			}
 		}
-		q.fetch_one(self.database.connection.pool()).await
+
+		q.fetch_one(table.db.connection.pool()).await
 	}
+}
 
-	pub async fn update<'a, T>(
-		&'a self,
-		raw_query: &'a str,
-		bindings: &'a [&'a str],
-	) -> Result<T, sqlx::Error>
+impl<R> SQLQueryInsertBuilder<DatabaseService<PostgreSQLDatabase>, R>
+{
+	pub async fn execute(&self) -> Result<R, sqlx::Error>
 	where
-		T: for<'r> sqlx::FromRow<'r, PgRow>,
-		T: Send + Unpin,
-		T: std::fmt::Debug,
+		R: for<'r> sqlx::FromRow<'r, PgRow>,
+		R: Send + Unpin,
+		R: std::fmt::Debug,
 	{
-		let query = format!("{raw_query} RETURNING *");
-		let mut q = sqlx::query_as(&query);
-		for binding in bindings {
-			q = q.bind(binding);
+		let table: SQLQueryBuilderTable<
+			DatabaseService<PostgreSQLDatabase>,
+			R,
+		> = SQLQueryBuilderTable {
+			db: self.db.clone(),
+			name: self.table.to_owned(),
+			select: None,
+			insert: Some(SQLQueryInsertBuilder {
+				table: self.table.clone(),
+				db: self.db.clone(),
+				props: self.props.clone(),
+				wheres: self.wheres.clone(),
+				returning: self.returning.clone(),
+				_phantom: self._phantom,
+			}),
+			update: None,
+			_phantom: Default::default(),
+		};
+
+		let mut sql = table.build();
+
+		if !self.returning.is_empty() {
+			sql += " RETURNING ";
+			sql = format!("{sql}{}", self.returning.join(","));
 		}
-		q.fetch_one(self.database.connection.pool()).await
+
+		let mut q = sqlx::query_as(&sql);
+
+		for binding in self.props.values() {
+			if !binding.ends_with("()") {
+				q = q.bind(binding);
+			}
+		}
+
+		for wh3re in self.wheres.iter() {
+			for binding in wh3re.values() {
+				q = q.bind(binding);
+			}
+		}
+
+		q.fetch_one(table.db.connection.pool()).await
+	}
+}
+
+impl<R> SQLQueryUpdateBuilder<DatabaseService<PostgreSQLDatabase>, R>
+{
+	pub async fn execute(&self) -> Result<R, sqlx::Error>
+	where
+		R: for<'r> sqlx::FromRow<'r, PgRow>,
+		R: Send + Unpin,
+		R: std::fmt::Debug,
+	{
+		let table: SQLQueryBuilderTable<
+			DatabaseService<PostgreSQLDatabase>,
+			R,
+		> = SQLQueryBuilderTable {
+			db: self.db.clone(),
+			name: self.table.to_owned(),
+			select: None,
+			insert: None,
+			update: Some(SQLQueryUpdateBuilder {
+				table: self.table.clone(),
+				db: self.db.clone(),
+				props: self.props.clone(),
+				wheres: self.wheres.clone(),
+				returning: self.returning.clone(),
+				_phantom: self._phantom,
+			}),
+			_phantom: Default::default(),
+		};
+
+		let mut sql = table.build();
+
+		if !self.returning.is_empty() {
+			sql = format!("{sql} RETURNING {}", self.returning.join(","));
+		}
+
+		let mut q = sqlx::query_as(&sql);
+
+		for binding in self.props.values() {
+			if !binding.ends_with("()") {
+				q = q.bind(binding);
+			}
+		}
+
+		for wh3re in self.wheres.iter() {
+			for binding in wh3re.values() {
+				q = q.bind(binding);
+			}
+		}
+
+		q.fetch_one(table.db.connection.pool()).await
 	}
 }

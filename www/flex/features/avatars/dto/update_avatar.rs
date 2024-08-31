@@ -12,6 +12,8 @@
 // Structure //
 // --------- //
 
+use flex_web_framework::query_builder::SQLQuerySelectAllFields;
+
 #[derive(Debug)]
 #[derive(serde::Serialize, serde::Deserialize)]
 #[derive(sqlx::FromRow)]
@@ -19,4 +21,12 @@ pub struct UpdateAvatarDTO
 {
 	/// URL ou chemin absolu de l'avatar (par rapport au projet).
 	pub avatar: String,
+}
+
+impl SQLQuerySelectAllFields for UpdateAvatarDTO
+{
+	fn fields() -> Vec<&'static str>
+	{
+		["avatar"].to_vec()
+	}
 }

@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::query_builder::SQLQuerySelectAllFields;
 use flex_web_framework::types::{time, uuid};
 
 // --------- //
@@ -107,7 +108,6 @@ pub enum UserAvatarDisplayFor
 	Public,
 }
 
-
 // -------------- //
 // Implémentation //
 // -------------- //
@@ -149,6 +149,11 @@ impl UserRole
 			| Self::User => "user",
 		}
 	}
+
+	pub fn as_string(&self) -> String
+	{
+		self.as_str().to_owned()
+	}
 }
 
 impl UserAccountStatus
@@ -161,11 +166,15 @@ impl UserAccountStatus
 			| Self::Secret => "secret",
 		}
 	}
+
+	pub fn as_string(&self) -> String
+	{
+		self.as_str().to_string()
+	}
 }
 
-impl UserAvatarDisplayFor 
+impl UserAvatarDisplayFor
 {
-	
 	pub fn is_member_only(&self) -> bool
 	{
 		matches!(self, Self::MemberOnly)
@@ -174,5 +183,37 @@ impl UserAvatarDisplayFor
 	pub fn is_public(&self) -> bool
 	{
 		matches!(self, Self::Public)
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+// TODO: utiliser les proc-macro directement sur la structure pour générer ces
+// champs.
+impl SQLQuerySelectAllFields for UserEntity
+{
+	fn fields() -> Vec<&'static str>
+	{
+		[
+			"id",
+			"name",
+			"password",
+			"email",
+			"role",
+			"avatar",
+			"avatar_display_for",
+			"firstname",
+			"lastname",
+			"birthday",
+			"gender",
+			"country",
+			"city",
+			"account_status",
+			"created_at",
+			"updated_at",
+		]
+		.to_vec()
 	}
 }

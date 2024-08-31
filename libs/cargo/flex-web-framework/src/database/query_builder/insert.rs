@@ -8,56 +8,56 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::query_builder::SQLQuerySelectAllFields;
-use serde_json::to_vec;
+use std::collections::BTreeMap;
+use std::marker::PhantomData;
 
-use crate::features::users::dto::UserSessionDTO;
+use super::wheres::{Where, WhereAnd, WhereOr};
+use super::SQLQuerySelectAllFields;
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Debug)]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[derive(sqlx::FromRow)]
-pub struct UpdateAccountDTO
+#[derive(Clone)]
+pub struct SQLQueryInsertBuilder<D, R>
 {
-	pub firstname: Option<String>,
-	pub lastname: Option<String>,
-	pub gender: Option<String>,
-	pub country: Option<String>,
-	pub city: Option<String>,
+	pub(crate) table: String,
+	pub(crate) db: D,
+	pub(crate) props: BTreeMap<String, String>,
+	pub(crate) wheres: Vec<Where>,
+	pub(crate) returning: Vec<String>,
+	pub(crate) _phantom: PhantomData<R>,
 }
 
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-impl<'a> From<(&'a UserSessionDTO, &'a UpdateAccountDTO)> for UserSessionDTO
+impl<D, R> SQLQueryInsertBuilder<D, R>
 {
-	fn from(
-		(session, account): (&'a UserSessionDTO, &'a UpdateAccountDTO),
-	) -> Self
+	pub fn returning_all(&mut self) -> &mut Self
+	where
+		R: SQLQuerySelectAllFields,
 	{
-		Self {
-			avatar: session.avatar.clone(),
-			city: account.city.clone(),
-			country: account.country.clone(),
-			email: session.email.clone(),
-			firstname: account.firstname.clone(),
-			gender: account.gender.clone(),
-			id: session.id,
-			lastname: account.lastname.clone(),
-			name: session.name.clone(),
-			role: session.role,
-		}
+		self.returning.extend(R::fields().into_iter().map(Into::into));
+		self
 	}
-}
 
-impl SQLQuerySelectAllFields for UpdateAccountDTO
-{
-	fn fields() -> Vec<&'static str>
+	pub fn where_eq(&mut self, where_eq: impl Into<WhereAnd>) -> &mut Self
 	{
-		["firstname", "lastname", "gender", "country", "city"].to_vec()
+		self.wheres.push(Where::And(where_eq.into()));
+		self
+	}
+
+	pub fn where_and(&mut self, where_and: impl Into<WhereAnd>) -> &mut Self
+	{
+		self.wheres.push(Where::And(where_and.into()));
+		self
+	}
+
+	pub fn where_or(&mut self, where_or: impl Into<WhereOr>) -> &mut Self
+	{
+		self.wheres.push(Where::Or(where_or.into()));
+		self
 	}
 }
