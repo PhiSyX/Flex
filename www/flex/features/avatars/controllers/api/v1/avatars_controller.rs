@@ -95,11 +95,25 @@ impl AvatarsController
 			Ok(http.response.redirect_temporary(Self::DEFAULT_AVATAR))
 		};
 
+		// NOTE: L'ID reçu correspond à l'ID de l'utilisateur en session
+		type U = UserSessionDTO;
+		let session_user = http.session.get::<U>(USER_SESSION).await;
+		if let Ok(Some(user)) = session_user.as_ref() {
+			if user_id == user.id {
+				if let Some(avatar) = user.avatar.as_deref() {
+					return Ok(http.response.redirect_temporary(avatar));
+				} else {
+					return fallback();
+				}
+			}
+		}
+
 		let privacy = match query.privacy {
-			QueryParamsPrivacy::Public => UserAccountStatus::Public,
+			| QueryParamsPrivacy::Public => UserAccountStatus::Public,
 		};
 
-		let Ok(user) = http.user_service.get_account(&user_id, privacy).await else {
+		let Ok(user) = http.user_service.get_account(&user_id, privacy).await
+		else {
 			return fallback();
 		};
 
@@ -108,10 +122,9 @@ impl AvatarsController
 		};
 
 		if user.avatar_display_for.is_member_only() {
-			type U = UserSessionDTO;
-			let Ok(Some(_)) = http.session.get::<U>(USER_SESSION).await else {
+			if let Ok(None) = session_user {
 				return fallback();
-			};
+			}
 		}
 
 		Ok(http.response.redirect_temporary(avatar))
