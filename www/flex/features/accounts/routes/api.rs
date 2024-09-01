@@ -47,7 +47,7 @@ impl RouterInterface<FlexState> for AccountsApi_V1_Router
 	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
 	{
 		Self::group().add(
-			Router::path(AccountsApi_V1_RouteID::Update { id: "/:userid" })
+			Router::path(AccountsApi_V1_RouteID::Update { id: ":userid" })
 				.put(AccountsController::update)
 				.middleware(middleware::from_fn(AuthMiddleware::required)),
 		)
@@ -64,7 +64,7 @@ impl RouteIDInterface for AccountsApi_V1_RouteID<'_>
 	fn path(&self) -> impl ToString
 	{
 		match self {
-			| Self::Update { id } => id,
+			| Self::Update { id } => format!("/{id}"),
 		}
 	}
 }

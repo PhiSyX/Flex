@@ -20,40 +20,12 @@ use crate::features::users::entities::UserEntity;
 use crate::features::users::repositories::UserRepository;
 
 // --------- //
-// Interface //
-// --------- //
-
-#[flex_web_framework::async_trait]
-pub trait AuthenticationService
-{
-	/// Tentative de connexion d'un utilisateur.
-	async fn attempt(
-		&self,
-		identifier: &Identifier,
-		password: &str,
-	) -> Result<UserSessionDTO, AuthErrorService>;
-
-	/// Tentative d'inscription d'un nouvel utilisateur.
-	async fn signup(
-		&self,
-		new_user: UserNewActionDTO,
-	) -> Result<UserEntity, AuthErrorService>;
-
-	fn shared(self) -> Arc<Self>
-	where
-		Self: Sized,
-	{
-		Arc::new(self)
-	}
-}
-
-// --------- //
 // Structure //
 // --------- //
 
-pub struct AuthService
+pub struct AuthService<Database>
 {
-	pub user_repository: Arc<dyn UserRepository>,
+	pub user_repository: Arc<dyn UserRepository<Database = Database>>,
 	pub password_service: Argon2Password,
 }
 
@@ -76,10 +48,10 @@ pub enum AuthErrorService
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
-impl AuthenticationService for AuthService
+impl<Database> AuthService<Database>
 {
-	async fn attempt(
+	/// Tentative de connexion d'un utilisateur.
+	pub async fn attempt(
 		&self,
 		identifier: &Identifier,
 		password: &str,
@@ -113,22 +85,23 @@ impl AuthenticationService for AuthService
 		}
 
 		let session = UserSessionDTO {
-			id: user.id, 
-			name: user.name, 
-			email: user.email, 
-			role: user.role, 
-			avatar: user.avatar, 
-			firstname: user.firstname, 
-			lastname: user.lastname, 
-			gender: user.gender, 
-			country: user.country, 
-			city: user.city, 
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			role: user.role,
+			avatar: user.avatar,
+			firstname: user.firstname,
+			lastname: user.lastname,
+			gender: user.gender,
+			country: user.country,
+			city: user.city,
 		};
 
 		Ok(session)
 	}
 
-	async fn signup(
+	/// Tentative d'inscription d'un nouvel utilisateur.
+	pub async fn signup(
 		&self,
 		mut new_user: UserNewActionDTO,
 	) -> Result<UserEntity, AuthErrorService>
@@ -158,9 +131,16 @@ impl AuthenticationService for AuthService
 
 		Ok(user)
 	}
+
+	pub fn shared(self) -> Arc<Self>
+	{
+		Arc::new(self)
+	}
 }
 
-unsafe impl Sync for AuthService {}
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
 
 impl From<RegistrationFormData> for UserNewActionDTO
 {
@@ -176,3 +156,5 @@ impl From<RegistrationFormData> for UserNewActionDTO
 		}
 	}
 }
+
+unsafe impl<D> Sync for AuthService<D> {}

@@ -31,8 +31,14 @@ pub struct AvatarsApi_V1_Router;
 #[derive(Debug)]
 pub enum AvatarsApi_V1_RouteID<'a>
 {
-	Show { user_id: &'a str },
-	Update { user_id: &'a str },
+	Show
+	{
+		user_id: &'a str
+	},
+	Update
+	{
+		user_id: &'a str
+	},
 }
 
 // -------------- //
@@ -50,12 +56,16 @@ impl RouterInterface<FlexState> for AvatarsApi_V1_Router
 	{
 		Self::group()
 			.add(
-				Router::path(AvatarsApi_V1_RouteID::Show { user_id: "/:user_id" })
-					.get(AvatarsController::show),
+				Router::path(AvatarsApi_V1_RouteID::Show {
+					user_id: ":user_id",
+				})
+				.get(AvatarsController::show),
 			)
 			.add(
-				Router::path(AvatarsApi_V1_RouteID::Update { user_id: "/:user_id" })
-					.put(AvatarsController::update),
+				Router::path(AvatarsApi_V1_RouteID::Update {
+					user_id: ":user_id",
+				})
+				.put(AvatarsController::update),
 			)
 	}
 }
@@ -70,8 +80,8 @@ impl RouteIDInterface for AvatarsApi_V1_RouteID<'_>
 	fn path(&self) -> impl ToString
 	{
 		match self {
-			| Self::Update { user_id: id }=> id,
-			| Self::Show { user_id: id }=> id,
+			| Self::Update { user_id: id } => format!("/{id}"),
+			| Self::Show { user_id: id } => format!("/{id}"),
 		}
 	}
 }

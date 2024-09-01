@@ -29,7 +29,7 @@ use crate::features::users::repositories::{
 	UserRepository,
 	UserRepositoryPostgreSQL,
 };
-use crate::features::users::services::{UserService, UserServiceImpl};
+use crate::features::users::services::UserService;
 use crate::FlexState;
 
 // --------- //
@@ -38,7 +38,7 @@ use crate::FlexState;
 
 pub struct UsersController
 {
-	user_service: Arc<dyn UserService>,
+	user_service: Arc<UserService<PostgreSQLDatabase>>,
 }
 
 #[derive(serde::Deserialize)]
@@ -74,7 +74,10 @@ impl UsersController
 			| QueryParamsPrivacy::Public => UserAccountStatus::Public,
 		};
 
-		let user_info = http.user_service.get_account(&user_id, privacy).await
+		let user_info = http
+			.user_service
+			.get_account(&user_id, privacy)
+			.await
 			.map(UserInfoDTO::from)
 			.map_err(|err| HttpContextError::database(http.request, err))?;
 
@@ -108,7 +111,7 @@ impl HttpContextInterface for UsersController
 			query_builder: query_builder.clone(),
 		};
 
-		let user_service = UserServiceImpl {
+		let user_service = UserService {
 			user_repository: user_repository.shared(),
 		};
 		Some(Self {

@@ -18,6 +18,7 @@ use axum_extra::headers::Referer;
 use hyper::{header, HeaderMap, StatusCode};
 use serde_json::json;
 use tower_sessions::Session;
+use tracing::instrument;
 
 use super::request::HttpRequest;
 use super::response::HttpResponse;
@@ -148,7 +149,11 @@ impl<T, U> HttpAuthContext<T, U>
 
 impl<T> HttpContextError<T>
 {
-	pub fn bad_request(req: HttpRequest<T>, reason: impl ToString) -> Self
+	#[instrument(name = "HttpContextError::bad_request", skip(req))]
+	pub fn bad_request(
+		req: HttpRequest<T>,
+		reason: impl ToString + std::fmt::Debug,
+	) -> Self
 	{
 		Self {
 			request: Some(req),
@@ -159,6 +164,7 @@ impl<T> HttpContextError<T>
 		}
 	}
 
+	#[instrument(name = "HttpContextError::database", skip(req))]
 	pub fn database(req: HttpRequest<T>, sqlx_err: sqlx::Error) -> Self
 	{
 		Self {
@@ -216,9 +222,10 @@ impl<T> HttpContextError<T>
 		}
 	}
 
+	#[instrument(name = "HttpContextError::unauthorized", skip(req))]
 	pub fn unauthorized_with_reason(
 		req: HttpRequest<T>,
-		reason: impl ToString,
+		reason: impl ToString + std::fmt::Debug,
 	) -> Self
 	{
 		Self {
@@ -230,6 +237,7 @@ impl<T> HttpContextError<T>
 		}
 	}
 
+	#[instrument(name = "HttpContextError::tokio", skip(req))]
 	pub fn tokio(req: HttpRequest<T>, io_error: tokio::io::Error) -> Self
 	{
 		Self {
@@ -238,8 +246,11 @@ impl<T> HttpContextError<T>
 		}
 	}
 
-	fn with_status_code(status_code: StatusCode, reason: impl ToString)
-		-> Self
+	#[instrument(name = "HttpContextError::with_status_code")]
+	fn with_status_code(
+		status_code: StatusCode,
+		reason: impl ToString + std::fmt::Debug,
+	) -> Self
 	{
 		Self {
 			request: None,

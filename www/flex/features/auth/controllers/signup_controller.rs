@@ -29,7 +29,7 @@ use flex_web_framework::{
 use crate::features::auth::forms::RegistrationFormData;
 use crate::features::auth::responses::CreationAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
-use crate::features::auth::services::{AuthService, AuthenticationService};
+use crate::features::auth::services::AuthService;
 use crate::features::auth::views::SignupView;
 use crate::features::users::dto::UserNewActionDTO;
 use crate::features::users::repositories::{
@@ -44,7 +44,7 @@ use crate::FlexState;
 
 pub struct SignupController
 {
-	auth_service: Arc<dyn AuthenticationService>,
+	auth_service: Arc<AuthService<PostgreSQLDatabase>>,
 }
 
 // -------------- //
@@ -66,6 +66,8 @@ impl SignupController
 		Form(form): Form<RegistrationFormData>,
 	) -> impl IntoResponse
 	{
+		tracing::debug!(?form, "Données du formulaire");
+
 		let user_new = UserNewActionDTO::from(form);
 		if let Err(err) = ctx.auth_service.signup(user_new).await {
 			tracing::error!(?err, "Erreur lors de l'inscription");
@@ -95,9 +97,7 @@ impl HttpContextInterface for SignupController
 
 		let query_builder = SQLQueryBuilder::new(db_service.clone());
 
-		let user_repository = UserRepositoryPostgreSQL {
-			query_builder,
-		};
+		let user_repository = UserRepositoryPostgreSQL { query_builder };
 
 		let auth_service = AuthService {
 			user_repository: user_repository.shared(),

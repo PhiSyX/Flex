@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::query_builder::SQLQuerySelectAllFields;
-use serde_json::to_vec;
 
 use crate::features::users::dto::UserSessionDTO;
 

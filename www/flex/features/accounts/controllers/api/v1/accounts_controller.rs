@@ -11,6 +11,7 @@
 use std::sync::Arc;
 
 use flex_web_framework::extract::Form;
+use flex_web_framework::http::request::Path;
 use flex_web_framework::http::{
 	Extensions,
 	HttpAuthContext,
@@ -19,10 +20,11 @@ use flex_web_framework::http::{
 	IntoResponse,
 };
 use flex_web_framework::query_builder::SQLQueryBuilder;
+use flex_web_framework::types::uuid::Uuid;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
 use crate::features::accounts::forms::AccountUpdateFormData;
-use crate::features::accounts::services::{AccountService, AccountServiceImpl};
+use crate::features::accounts::services::AccountService;
 use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::repositories::{
 	UserRepository,
@@ -37,7 +39,7 @@ use crate::FlexState;
 
 pub struct AccountsController
 {
-	account_service: Arc<dyn AccountService>,
+	account_service: Arc<AccountService<PostgreSQLDatabase>>,
 }
 
 // -------------- //
@@ -48,9 +50,14 @@ impl AccountsController
 {
 	pub async fn update(
 		http: HttpAuthContext<Self, UserSessionDTO>,
+		Path(user_id): Path<Uuid>,
 		Form(data): Form<AccountUpdateFormData>,
 	) -> Result<impl IntoResponse, HttpContextError<Self>>
 	{
+		if http.user.id.ne(&user_id) {
+			return Err(HttpContextError::unauthorized(http.request));
+		}
+
 		let update_account_dto = http
 			.account_service
 			.update(&http.user.id, data)
@@ -82,7 +89,7 @@ impl HttpContextInterface for AccountsController
 			query_builder: query_builder.clone(),
 		};
 
-		let account_service = AccountServiceImpl {
+		let account_service = AccountService {
 			user_repository: user_repository.shared(),
 		};
 		Some(Self {

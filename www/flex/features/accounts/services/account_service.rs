@@ -17,61 +17,35 @@ use crate::features::accounts::forms::AccountUpdateFormData;
 use crate::features::users::repositories::UserRepository;
 
 // --------- //
-// Interface //
-// --------- //
-
-#[flex_web_framework::async_trait]
-pub trait AccountService
-{
-	async fn update(
-		&self,
-		user_id: &Uuid,
-		data: AccountUpdateFormData,
-	) -> Result<UpdateAccountDTO, sqlx::Error>;
-
-	fn shared(self) -> Arc<Self>
-	where
-		Self: Sized,
-	{
-		Arc::new(self)
-	}
-}
-
-// --------- //
 // Structure //
 // --------- //
 
-pub struct AccountServiceImpl
+pub struct AccountService<Database>
 {
-	pub user_repository: Arc<dyn UserRepository>,
-}
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-#[derive(Debug)]
-#[derive(thiserror::Error)]
-#[error("\n\t{}: {0}", std::any::type_name::<Self>())]
-pub enum AccountServiceError
-{
-	SQLx(#[from] sqlx::Error),
+	pub user_repository: Arc<dyn UserRepository<Database = Database>>,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
-impl AccountService for AccountServiceImpl {
-	async fn update(
+impl<Database> AccountService<Database>
+{
+	pub async fn update(
 		&self,
 		user_id: &Uuid,
 		data: AccountUpdateFormData,
 	) -> Result<UpdateAccountDTO, sqlx::Error>
 	{
-		self.user_repository.update_account_info(user_id,data).await
+		self.user_repository
+			.update_account_info(user_id, data)
+			.await
+	}
+
+	pub fn shared(self) -> Arc<Self>
+	{
+		Arc::new(self)
 	}
 }
 
-unsafe impl Sync for AccountServiceImpl {}
+unsafe impl<D> Sync for AccountService<D> {}

@@ -26,18 +26,14 @@ use flex_web_framework::types::uuid::Uuid;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
 use crate::features::avatars::dto::UpdateAvatarDTO;
-use crate::features::avatars::services::{
-	AvatarErrorService,
-	AvatarService,
-	AvatarServiceImpl,
-};
+use crate::features::avatars::services::{AvatarErrorService, AvatarService};
 use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::entities::UserAccountStatus;
 use crate::features::users::repositories::{
 	UserRepository,
 	UserRepositoryPostgreSQL,
 };
-use crate::features::users::services::{UserService, UserServiceImpl};
+use crate::features::users::services::UserService;
 use crate::features::users::sessions::constant::USER_SESSION;
 use crate::FlexState;
 
@@ -48,8 +44,8 @@ use crate::FlexState;
 #[derive(Clone)]
 pub struct AvatarsController
 {
-	avatar_service: Arc<dyn AvatarService>,
-	user_service: Arc<dyn UserService>,
+	avatar_service: Arc<AvatarService<PostgreSQLDatabase>>,
+	user_service: Arc<UserService<PostgreSQLDatabase>>,
 }
 
 #[derive(serde::Deserialize)]
@@ -167,7 +163,7 @@ impl AvatarsController
 
 		let new_path = http
 			.avatar_service
-			.upload(user_id, image_data, &content_type)
+			.upload(http.user.id, image_data, &content_type)
 			.await
 			.map_err(|err| {
 				match err {
@@ -207,10 +203,10 @@ impl HttpContextInterface for AvatarsController
 		}
 		.shared();
 
-		let user_service = UserServiceImpl {
+		let user_service = UserService {
 			user_repository: user_repository.clone(),
 		};
-		let avatar_service = AvatarServiceImpl { user_repository };
+		let avatar_service = AvatarService { user_repository };
 
 		Some(Self {
 			user_service: user_service.shared(),

@@ -17,34 +17,12 @@ use crate::features::avatars::dto::UpdateAvatarDTO;
 use crate::features::users::repositories::UserRepository;
 
 // --------- //
-// Interface //
-// --------- //
-
-#[flex_web_framework::async_trait]
-pub trait AvatarService
-{
-	async fn upload(
-		&self,
-		user_id: Uuid,
-		bytes: Bytes,
-		content_type: &str,
-	) -> Result<UpdateAvatarDTO, AvatarErrorService>;
-
-	fn shared(self) -> Arc<Self>
-	where
-		Self: Sized,
-	{
-		Arc::new(self)
-	}
-}
-
-// --------- //
 // Structure //
 // --------- //
 
-pub struct AvatarServiceImpl
+pub struct AvatarService<Database>
 {
-	pub user_repository: Arc<dyn UserRepository>,
+	pub user_repository: Arc<dyn UserRepository<Database = Database>>,
 }
 
 // ----------- //
@@ -64,10 +42,9 @@ pub enum AvatarErrorService
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
-impl AvatarService for AvatarServiceImpl
+impl<Database> AvatarService<Database>
 {
-	async fn upload(
+	pub async fn upload(
 		&self,
 		user_id: Uuid,
 		bytes: Bytes,
@@ -84,27 +61,35 @@ impl AvatarService for AvatarServiceImpl
 		tokio::fs::create_dir_all(temp_dir).await?;
 		tokio::fs::write(&temp_file, bytes).await?;
 
-		// NOTE: supprime le répertoire des avatars de l'utilisateur et le recrée.
-		let user_upload_folder = format!(
-			"/public/avatars/{user_id}",
-			user_id = user_id.simple(),
-		);
-		let user_upload_folder_fs = format!("{}{user_upload_folder}", env!("CARGO_MANIFEST_DIR"));
+		// NOTE: supprime le répertoire des avatars de l'utilisateur et le
+		// recrée.
+		let user_upload_folder =
+			format!("/public/avatars/{user_id}", user_id = user_id.simple(),);
+		let user_upload_folder_fs =
+			format!("{}{user_upload_folder}", env!("CARGO_MANIFEST_DIR"));
 
 		// NOTE: Pas besoin de gérer l'erreur dans le cas où le répertoire
 		// n'existe pas.
 		_ = tokio::fs::remove_dir_all(&user_upload_folder_fs).await;
 		tokio::fs::create_dir_all(&user_upload_folder_fs).await?;
-		
+
 		// NOTE: déplace l'image crée dans le répertoire temporaire vers le
 		// répertoire public d'avatars
 		let user_upload_file_fs = format!("{user_upload_folder_fs}/{new_file}");
 		tokio::fs::copy(&temp_file, user_upload_file_fs).await?;
 		tokio::fs::remove_file(temp_file).await?;
-		
+
 		let user_upload_file = format!("{user_upload_folder}/{new_file}");
-		Ok(self.user_repository.update_avatar_path(&user_id, &user_upload_file).await?)
+		Ok(self
+			.user_repository
+			.update_avatar_path(&user_id, &user_upload_file)
+			.await?)
+	}
+
+	pub fn shared(self) -> Arc<Self>
+	{
+		Arc::new(self)
 	}
 }
 
-unsafe impl Sync for AvatarServiceImpl {}
+unsafe impl<D> Sync for AvatarService<D> {}

@@ -29,7 +29,7 @@ use flex_web_framework::{
 
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
-use crate::features::auth::services::{AuthService, AuthenticationService};
+use crate::features::auth::services::AuthService;
 use crate::features::auth::views::LoginView;
 use crate::features::chat::routes::ChatRouteID;
 use crate::features::users::repositories::{
@@ -45,7 +45,7 @@ use crate::FlexState;
 
 pub struct LoginController
 {
-	auth_service: Arc<dyn AuthenticationService>,
+	auth_service: Arc<AuthService<PostgreSQLDatabase>>,
 }
 
 // -------------- //

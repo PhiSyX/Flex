@@ -16,72 +16,21 @@ use crate::features::users::entities::{UserAccountStatus, UserEntity};
 use crate::features::users::repositories::UserRepository;
 
 // --------- //
-// Interface //
-// --------- //
-
-#[flex_web_framework::async_trait]
-pub trait UserService
-{
-	async fn get_public_account(
-		&self,
-		user_id: &Uuid,
-	) -> Result<UserEntity, sqlx::Error>;
-
-	async fn get_private_account(
-		&self,
-		user_id: &Uuid,
-	) -> Result<UserEntity, sqlx::Error>;
-
-	async fn get_secret_account(
-		&self,
-		user_id: &Uuid,
-	) -> Result<UserEntity, sqlx::Error>;
-
-	async fn get_account(
-		&self,
-		user_id: &Uuid,
-		privacy: UserAccountStatus,
-	) -> Result<UserEntity, sqlx::Error>;
-
-	fn user_repository(&self) -> Arc<dyn UserRepository>;
-
-	fn shared(self) -> Arc<Self>
-	where
-		Self: Sized,
-	{
-		Arc::new(self)
-	}
-}
-
-// --------- //
 // Structure //
 // --------- //
 
-pub struct UserServiceImpl
+pub struct UserService<Database>
 {
-	pub user_repository: Arc<dyn UserRepository>,
-}
-
-// ----------- //
-// Énumération //
-// ----------- //
-
-#[derive(Debug)]
-#[derive(thiserror::Error)]
-#[error("\n\t{}: {0}", std::any::type_name::<Self>())]
-pub enum UserErrorService
-{
-	SQLx(#[from] sqlx::Error),
+	pub user_repository: Arc<dyn UserRepository<Database = Database>>,
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-#[flex_web_framework::async_trait]
-impl UserService for UserServiceImpl
+impl<Database> UserService<Database>
 {
-	async fn get_public_account(
+	pub async fn get_public_account(
 		&self,
 		user_id: &Uuid,
 	) -> Result<UserEntity, sqlx::Error>
@@ -91,7 +40,7 @@ impl UserService for UserServiceImpl
 			.await
 	}
 
-	async fn get_private_account(
+	pub async fn get_private_account(
 		&self,
 		user_id: &Uuid,
 	) -> Result<UserEntity, sqlx::Error>
@@ -101,7 +50,7 @@ impl UserService for UserServiceImpl
 			.await
 	}
 
-	async fn get_secret_account(
+	pub async fn get_secret_account(
 		&self,
 		user_id: &Uuid,
 	) -> Result<UserEntity, sqlx::Error>
@@ -111,24 +60,36 @@ impl UserService for UserServiceImpl
 			.await
 	}
 
-	async fn get_account(
+	pub async fn get_account(
 		&self,
 		user_id: &Uuid,
 		privacy: UserAccountStatus,
 	) -> Result<UserEntity, sqlx::Error>
 	{
 		Ok(match privacy {
-			| UserAccountStatus::Public => self.get_public_account(user_id),
-			| UserAccountStatus::Private => self.get_private_account(user_id),
-			| UserAccountStatus::Secret => self.get_secret_account(user_id),
-		}
-		.await?)
+			| UserAccountStatus::Public => {
+				self.get_public_account(user_id).await?
+			}
+			| UserAccountStatus::Private => {
+				self.get_private_account(user_id).await?
+			}
+			| UserAccountStatus::Secret => {
+				self.get_secret_account(user_id).await?
+			}
+		})
 	}
 
-	fn user_repository(&self) -> Arc<dyn UserRepository>
+	pub fn user_repository(
+		&self,
+	) -> Arc<dyn UserRepository<Database = Database>>
 	{
 		self.user_repository.clone()
 	}
+
+	pub fn shared(self) -> Arc<Self>
+	{
+		Arc::new(self)
+	}
 }
 
-unsafe impl Sync for UserServiceImpl {}
+unsafe impl<D> Sync for UserService<D> {}
