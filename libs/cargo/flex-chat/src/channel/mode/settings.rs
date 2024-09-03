@@ -35,6 +35,7 @@ pub trait SettingsFlagInterface
 
 pub const CHANNEL_MODE_SETTINGS_KEY: char = 'k';
 pub const CHANNEL_MODE_SETTINGS_INVITE_ONLY: char = 'i';
+pub const CHANNEL_MODE_SETTINGS_LIMIT_MEMBERS: char = 'l';
 pub const CHANNEL_MODE_SETTINGS_MODERATE: char = 'm';
 pub const CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES: char = 'n';
 pub const CHANNEL_MODE_SETTINGS_NOTOPIC: char = 't';
@@ -56,6 +57,8 @@ pub enum SettingsFlag
 	InviteOnly,
 	/// Clé du salon, pour le rejoindre.
 	Key(Secret<String>),
+	/// Nombre limite de membres autorisés sur le salon.
+	Limit(u16),
 	/// Salon en modéré.
 	Moderate,
 	/// Interdire les messages provenant des utilisateurs externes au salon.
@@ -77,6 +80,17 @@ pub enum SettingsFlag
 
 impl ChannelModes<SettingsFlag>
 {
+	/// Vérifie que le drapeau +l <limit> contienne la bonne limite.
+	pub fn compare_limit(&self, limit: usize) -> bool
+	{
+		self.modes.values().any(|mode| {
+			if let SettingsFlag::Limit(current_limit) = mode.flag {
+				return current_limit > limit as u16;
+			}
+			false
+		})
+	}
+
 	/// Vérifie que le drapeau +k <key> contienne la bonne clé.
 	pub fn contains_key_flag(&self, key: &Secret<String>) -> bool
 	{
@@ -107,6 +121,20 @@ impl ChannelModes<SettingsFlag>
 				mode,
 				ApplyMode {
 					flag: SettingsFlag::Key(_),
+					..
+				}
+			)
+		})
+	}
+
+	/// Est-ce que les paramètres du salon contiennent le drapeau +l <limit>
+	pub fn has_limit_flag(&self) -> bool
+	{
+		self.modes.values().any(|mode| {
+			matches!(
+				mode,
+				ApplyMode {
+					flag: SettingsFlag::Limit(_),
 					..
 				}
 			)
@@ -193,7 +221,9 @@ impl ChannelModes<SettingsFlag>
 	{
 		let mode: ApplyMode<SettingsFlag> = mode.into();
 		let letter = mode.letter().to_string();
-		if letter != "k" && self.modes.contains_key(&letter) {
+		if !["k", "l"].contains(&letter.as_str())
+			&& self.modes.contains_key(&letter)
+		{
 			return None;
 		}
 		self.modes.insert(letter, mode.clone());
@@ -207,7 +237,9 @@ impl ChannelModes<SettingsFlag>
 	{
 		let mode: ApplyMode<SettingsFlag> = mode.into();
 		let letter = mode.letter().to_string();
-		if letter != "k" && !self.modes.contains_key(&letter) {
+		if !["k", "l"].contains(&letter.as_str())
+			&& !self.modes.contains_key(&letter)
+		{
 			return None;
 		}
 		self.modes.remove(&letter);
@@ -264,6 +296,7 @@ impl SettingsFlagInterface for SettingsFlag
 	{
 		match self {
 			| Self::Key(_) => CHANNEL_MODE_SETTINGS_KEY,
+			| Self::Limit(_) => CHANNEL_MODE_SETTINGS_LIMIT_MEMBERS,
 			| Self::InviteOnly => CHANNEL_MODE_SETTINGS_INVITE_ONLY,
 			| Self::Moderate => CHANNEL_MODE_SETTINGS_MODERATE,
 			#[rustfmt::skip]

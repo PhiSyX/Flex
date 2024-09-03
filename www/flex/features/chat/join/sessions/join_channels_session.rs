@@ -12,6 +12,7 @@ use flex_chat::channel::{
 	ChannelAccessControlBanInterface,
 	ChannelAccessControlInviteExceptInterface,
 	ChannelInterface,
+	ChannelMemberInterface,
 	ChannelsSessionInterface,
 };
 use flex_chat::client::{Client, ClientInterface};
@@ -60,6 +61,12 @@ impl JoinChannelsSessionInterface for ChannelsSession
 			return Err(JoinChannelPermissionError::ERR_USERONCHANNEL);
 		}
 
+		if channel.modes_settings.has_limit_flag()
+			&& !channel.modes_settings.compare_limit(channel.members().len())
+		{
+			return Err(JoinChannelPermissionError::ERR_CHANNELISFULL);
+		}
+
 		if channel.is_banned(client.user()) {
 			return Err(JoinChannelPermissionError::ERR_BANNEDFROMCHAN);
 		}
@@ -80,7 +87,7 @@ impl JoinChannelsSessionInterface for ChannelsSession
 			}
 
 			if channel.isin_invitelist_exception(client.user()) {
-				return Ok(())
+				return Ok(());
 			}
 			return Err(JoinChannelPermissionError::ERR_INVITEONLYCHAN);
 		}

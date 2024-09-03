@@ -12,11 +12,11 @@ use std::sync::Arc;
 
 use flex_chat::channel::{
 	AccessControlMask,
-	ChannelAccessLevel, 
-	SettingsFlag, 
-	CHANNEL_MODE_LIST_BAN, 
-	CHANNEL_MODE_LIST_BAN_EXCEPT, 
-	CHANNEL_MODE_LIST_INVITE_EXCEPT
+	ChannelAccessLevel,
+	SettingsFlag,
+	CHANNEL_MODE_LIST_BAN,
+	CHANNEL_MODE_LIST_BAN_EXCEPT,
+	CHANNEL_MODE_LIST_INVITE_EXCEPT,
 };
 use flex_chat::client::Socket;
 use flex_chat::mode::ApplyMode;
@@ -87,6 +87,17 @@ impl ModeChannelSettingsHandler
 				&mut added_list,
 				&mut removed_list,
 			);
+			if let Some(limit) = data.modes.limit {
+				apply_limit_members(
+					app,
+					&client_socket,
+					&data.target,
+					data.modes.limit,
+					SettingsFlag::Limit(limit),
+					&mut added_settings,
+					&mut removed_settings,
+				);
+			}
 			apply_mode_settings_bool(
 				app,
 				&client_socket,
@@ -202,6 +213,17 @@ impl ModeChannelSettingsHandler
 			&mut added_list,
 			&mut removed_list,
 		);
+		if let Some(limit) = data.modes.limit {
+			apply_limit_members(
+				app,
+				&client_socket,
+				&data.target,
+				data.modes.limit,
+				SettingsFlag::Limit(limit),
+				&mut added_settings,
+				&mut removed_settings,
+			);
+		}
 		apply_mode_settings_bool(
 			app,
 			&client_socket,
@@ -248,8 +270,7 @@ impl ModeChannelSettingsHandler
 			&mut removed_settings,
 		);
 
-		if let Some(key) = data.modes.key.map(|s| s.into_string()).as_ref()
-		{
+		if let Some(key) = data.modes.key.map(|s| s.into_string()).as_ref() {
 			apply_mode_settings_str(
 				app,
 				&client_socket,
@@ -424,6 +445,31 @@ fn apply_mode_settings_str(
 )
 {
 	if !s.is_empty() {
+		alist.extend(app.set_settings_on_channel(
+			client_socket,
+			channel_name,
+			flag,
+		));
+	} else {
+		rlist.extend(app.unset_settings_on_channel(
+			client_socket,
+			channel_name,
+			flag,
+		));
+	}
+}
+
+fn apply_limit_members(
+	app: &ChatApplication,
+	client_socket: &Socket,
+	channel_name: &str,
+	max: Option<u16>,
+	flag: SettingsFlag,
+	alist: &mut Vec<ApplyMode<SettingsFlag>>,
+	rlist: &mut Vec<ApplyMode<SettingsFlag>>,
+)
+{
+	if max.filter(|&m| m > 0).is_some() {
 		alist.extend(app.set_settings_on_channel(
 			client_socket,
 			channel_name,

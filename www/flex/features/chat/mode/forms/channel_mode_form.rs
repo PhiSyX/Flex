@@ -47,6 +47,9 @@ pub struct ChannelModesSettings
 	/// Clé du salon, pour le rejoindre.
 	#[serde(rename = "k")]
 	pub key: Option<secret::Secret<Arc<str>>>,
+	/// Nombre limite d'utilisateurs autorisés.
+	#[serde(rename = "l")]
+	pub limit: Option<u16>,
 	/// Salon en modéré.
 	#[serde(rename = "m")]
 	pub moderate: Option<bool>,

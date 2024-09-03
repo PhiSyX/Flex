@@ -96,6 +96,9 @@ impl JoinHandler
 						| JoinChannelPermissionError::ERR_BADCHANNELKEY => {
 							client_socket.send_err_badchannelkey(channel_name);
 						}
+						| JoinChannelPermissionError::ERR_CHANNELISFULL => {
+							client_socket.send_err_channelisfull(channel_name);
+						}
 						| JoinChannelPermissionError::ERR_INVITEONLYCHAN => {
 							client_socket.send_err_inviteonlychan(channel_name);
 						}
