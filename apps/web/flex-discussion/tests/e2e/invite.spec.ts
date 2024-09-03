@@ -30,7 +30,7 @@ test("Paramètre de salon +i", async ({ browser }) => {
 	let { owner, user } = await chat_ctx.users_with_permissions();
 	let channel_name_to_invite = ChatChannelContext.generate_name();
 	await owner.chan.join(channel_name_to_invite, {
-		with_settings: "Salon accessible sur invitation uniquement (+i)",
+		with_settings_label: "Salon accessible sur invitation uniquement (+i)",
 	});
 	// NOTE: Utilisateur tente de joindre le salon, alors qu'il n'est pas invité.
 	await user.chan.join(channel_name_to_invite, {
