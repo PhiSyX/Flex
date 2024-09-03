@@ -93,7 +93,8 @@ export class ChatBrowserContext
 		return this.#contexts[1];
 	}
 
-	get_user(idx: number) {
+	get_user(idx: number)
+	{
 		return this.#contexts[idx];
 	}
 
@@ -137,9 +138,9 @@ export class ChatBrowserContext
 	async all_users_with_access_level()
 	{
 		expect(this.#contexts.length).toBeGreaterThanOrEqual(7);
-		
+
 		await this.get_user(0).chan.send_message("/oper test-globop test");
-		
+
 		for (let user of this.all_users()) {
 			await this.get_user(0).chan.send_message(`/deqop ${user.nick}`);
 			await this.get_user(0).chan.send_message(`/deaop ${user.nick}`);
@@ -164,7 +165,7 @@ export class ChatBrowserContext
 			user: this.get_user(6),
 		};
 	}
-	
+
 	async timeout(timeout: number)
 	{
 		await Promise.all(
@@ -198,8 +199,8 @@ export class ChatPageContext
 	chan: ChatChannelContext;
 
 	constructor(
-		page: ChatPageContext["page"], 
-		nick: ChatPageContext["nick"], 
+		page: ChatPageContext["page"],
+		nick: ChatPageContext["nick"],
 		channels?: string
 	)
 	{
@@ -224,23 +225,23 @@ export class ChatPageContext
 	{
 		let $btn = this.page.locator(".btn-change-nick");
 		await $btn.click();
-		
+
 		let layer_name = "user-change-nickname-dialog";
 		let $teleport = this.page.locator(`#${layer_name}_teleport`);
 
 		let $input = $teleport.locator("#nickname");
 		await $input.fill(new_nick);
-	
+
 		let $submit_btn = $teleport.getByText("Changer maintenant");
 		await $submit_btn.click();
-	
+
 		await this.chan.contains_message(
 			`${this.nick} est désormais connu sous le nom de ${new_nick}`,
 		);
 	}
 
 	/**
-	 * Kill 
+	 * Kill
 	 */
 	async kill(
 		user: ChatPageContext,

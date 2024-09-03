@@ -17,8 +17,8 @@ export class ChatChannelContext
 	{
 		return `#test-x${(Math.random() + 1).toString(36).slice(2)}x`;
 	}
-	
-	private channel_name!: string;
+
+	public channel_name!: string;
 	private key?: string;
 
 	constructor(private user: { page: Page; nick: string; })
@@ -38,7 +38,7 @@ export class ChatChannelContext
 		return this;
 	}
 
-	async define_settings(settings: string, channel = this.channel_name)
+	async define_settings(settings_label: string, settings_value?: unknown, channel = this.channel_name)
 	{
 		let layer_name = "channel-settings-layer";
 
@@ -46,15 +46,23 @@ export class ChatChannelContext
 		await $room.dblclick();
 
 		let $teleport = this.user.page.locator(`#${layer_name}_teleport`);
-		let $invite_only_settings = $teleport
+		let $settings = $teleport
 			.locator("ul li label")
-			.getByText(settings);
-		await $invite_only_settings.click();
+			.getByText(settings_label);
+		if (settings_label.indexOf("(+l)") >= 0) {
+			await Promise.all(
+				new Array(settings_value as number)
+				.fill(0)
+				.map(_ => $settings.click())
+			);
+		} else {
+			await $settings.click();
+		}
 
 		let $submit_btn = $teleport.locator('button[type="submit"]');
 		await $submit_btn.click();
 
-		let mode = settings.slice(-3, -1);
+		let mode = settings_label.slice(-3, -1);
 		this.contains_message(`* ${this.user.nick} a défini les modes: ${mode}`, channel);
 	}
 
@@ -119,7 +127,7 @@ export class ChatChannelContext
 			);
 		}
 	}
-	
+
 	async unbannick(
 		user: ChatPageContext,
 		opt: {
@@ -146,7 +154,7 @@ export class ChatChannelContext
 	}
 
 	async change_topic(
-		topic: string, 
+		topic: string,
 		opt: {
 			channel?: string;
 			error?: (chan: string) => string,
@@ -167,13 +175,13 @@ export class ChatChannelContext
 		}
 
 		await this.contains_message(
-			(chan) => `Tu as mis à jour le sujet du salon ${chan}: Mon super topic`, 
+			(chan) => `Tu as mis à jour le sujet du salon ${chan}: Mon super topic`,
 			opt.channel
 		);
 	}
 
 	async change_topic_from_editbox(
-		topic: string, 
+		topic: string,
 		opt: {
 			channel?: string;
 			error?: (chan: string) => string,
@@ -193,7 +201,7 @@ export class ChatChannelContext
 		await this.user.page.waitForTimeout(250);
 
 		await this.contains_message(
-			(chan) => `Tu as mis à jour le sujet du salon ${chan}: Mon super topic`, 
+			(chan) => `Tu as mis à jour le sujet du salon ${chan}: Mon super topic`,
 			opt.channel
 		);
 	}
@@ -232,29 +240,39 @@ export class ChatChannelContext
 		channel = this.channel_name,
 		opt: {
 			key?: string,
+			from?: string;
 			from_dialog?: boolean;
-			with_settings?: string;
+			with_settings_label?: string;
+			with_settings_value?: unknown;
 			error?: (channel: string) => string;
 		} = {
 			key: this.key,
+			from: this.channel_name,
 			from_dialog: false,
 		},
 	)
 	{
 		if (opt.from_dialog) {
 			await this.#join_from_dialog(channel, opt.key);
-		} else if (opt.with_settings) {
+		} else if (opt.with_settings_label) {
 			await this.#join_sending_command(channel, opt.key);
-			await this.define_settings(opt.with_settings, channel);
+			await this.define_settings(
+				opt.with_settings_label,
+				opt.with_settings_value,
+				channel
+			);
 		} else {
 			await this.#join_sending_command(channel, opt.key);
 		}
 
 		if (opt.error) {
-			await this.contains_message(opt.error(channel));
+			if (opt.from) {
+				await this.navigate_to(opt.from);
+			}
+			await this.contains_message(opt.error(channel), opt.from);
 			return;
 		}
-		
+
 		await this.contains_message(
 			`Tu as rejoint le salon ${channel}`,
 			channel,
@@ -270,12 +288,12 @@ export class ChatChannelContext
 	{
 		let $nav = this.user.page.locator(".navigation-area #goto-channel-list");
 		await $nav.click();
-	
+
 		let layer_name = "channel-join-layer";
-	
+
 		let $btn = this.user.page.locator(`#${layer_name}_btn`);
 		await $btn.click();
-	
+
 		let $teleport = this.user.page.locator(`#${layer_name}_teleport`);
 
 		let $input_channels = $teleport.locator("input#channels");
@@ -285,7 +303,7 @@ export class ChatChannelContext
 			let $input_keys = $teleport.locator("input#keys");
 			await $input_keys.fill(key || "");
 		}
-	
+
 		let $submit_btn = $teleport.getByText("Rejoindre maintenant");
 		await $submit_btn.click();
 	}
@@ -434,7 +452,7 @@ export class ChatChannelContext
 		} = {
 			from: this.channel_name,
 		},
-	) 
+	)
 	{
 		opt.from ||= this.channel_name;
 
@@ -481,7 +499,7 @@ export class ChatChannelContext
 	}
 
 	async contains_message(
-		message: ((channel: string) => string | RegExp) | string | RegExp, 
+		message: ((channel: string) => string | RegExp) | string | RegExp,
 		channel = this.channel_name,
 	)
 	{
@@ -495,9 +513,9 @@ export class ChatChannelContext
 	}
 
 	async not_contains_message(
-		message: ((channel: string) => string | RegExp) | string | RegExp, 
+		message: ((channel: string) => string | RegExp) | string | RegExp,
 		channel = this.channel_name,
-	) 
+	)
 	{
 		let $channel = this.user.page.locator(`div[data-room="${channel}"]`);
 		let $main = $channel.locator(".room\\/main");
@@ -511,7 +529,7 @@ export class ChatChannelContext
 	async select_member(
 		user: { nick: string },
 		channel: string = this.channel_name,
-	): Promise<Locator> 
+	): Promise<Locator>
 	{
 		let $channel = this.user.page.locator(`div[data-room="${channel}"]`);
 		let $userlist = $channel.locator(".room\\/userlist");

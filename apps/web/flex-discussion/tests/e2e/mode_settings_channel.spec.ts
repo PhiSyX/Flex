@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { test } from "@playwright/test";
+import { ChatChannelContext } from "./helpers/channel.js";
 import { ChatBrowserContext } from "./helpers/context.js";
 
 // See here how to get started:
@@ -68,7 +69,7 @@ test("Paramètre n: no external messages", async ({ browser }) => {
 	// NOTE: globop quitte le salon et envoie un message au salon en +n
 	await globop.chan.part();
 	await globop.chan.send_message((_, chan) => `/pubmsg ${chan} Hello World #1`, { from: "Flex" });
-	
+
 	let message1 = new RegExp(`\(extern\).*-.*${globop.nick}.*-.*Hello World #1`);
 	await owner.chan.contains_message(message1);
 
@@ -92,4 +93,31 @@ test("Paramètre n: no external messages", async ({ browser }) => {
 	});
 	let message2 = new RegExp(`\(extern\).*-.*${user.nick}.*-.*Hello World #3`);
 	await owner.chan.contains_message(message2);
+});
+
+test("Paramètre l: channel limit members", async ({ browser }) => {
+	let chat_ctx = await ChatBrowserContext.connect_many(2, browser);
+
+	let [owner, user] = chat_ctx.all_users();
+
+	let new_channel = ChatChannelContext.generate_name();
+	await owner.chan.join(new_channel, {
+		with_settings_label: "Définir une limite d'utilisateurs autorisés (+l)",
+	});
+
+	await user.chan.join(new_channel, {
+		from: user.chan.channel_name,
+		from_dialog: true,
+		error(channel) {
+			return `* ${channel} :Tu ne peux pas rejoindre le salon (+l)`;
+		},
+	});
+
+	await owner.chan.define_settings(
+		"Définir une limite d'utilisateurs autorisés (+l)",
+		2,
+		new_channel,
+	);
+
+	await user.chan.join(new_channel);
 });
