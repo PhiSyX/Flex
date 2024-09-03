@@ -8,7 +8,50 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/contenteditable";
-export * from "./src/iso_to_country_flag";
-export * from "./src/minmax";
-export * from "./src/noop";
+import type { ChatStoreInterface } from "../../store";
+
+
+// ---- //
+// Type //
+// ---- //
+
+type S = SocketEventInterface<"ERR_CHANNELISFULL">;
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ErrorChannelisfullHandler implements S
+{
+	constructor(private store: ChatStoreInterface)
+	{}
+
+	listen()
+	{
+		this.store.on("ERR_CHANNELISFULL", (data) => this.handle(data));
+	}
+
+	handle(data: GenericReply<"ERR_CHANNELISFULL">)
+	{
+		let room = this.store.room_manager().get(data.channel, {
+			where: {
+				state: "opened",
+				is_kicked: false,
+			},
+			fallbacks: [
+				{
+					active: {
+						where: { is_kicked: false },
+					},
+				},
+				{ network: true },
+			]
+		})
+			.unwrap();
+		room.add_event(
+			"error:err_channelisfull",
+			room.create_event(data),
+			data.reason
+		);
+	}
+}

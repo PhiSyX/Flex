@@ -54,7 +54,7 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 			letter: string,
 			_: ModeApplyFlag<unknown>,
 		): _ is ModeApplyFlag<AccessControlMode> {
-			return ["k", "i", "m", "n", "O", "s", "t"].includes(letter);
+			return ["k", "i", "l", "m", "n", "O", "s", "t"].includes(letter);
 		}
 
 		if (data.added) {
@@ -64,6 +64,9 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 				}
 
 				channel.set_setting_mode(letter);
+				if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
+					channel.set_limit(mode.flag.limit);
+				}
 				if (letter === "t") {
 					channel.topic.set_editable(false);
 				}
@@ -77,6 +80,9 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 				}
 
 				channel.unset_setting_mode(letter);
+				if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
+					channel.set_limit(mode.flag.limit);
+				}
 				if (letter === "t") {
 					channel.topic.set_editable(true);
 				}
