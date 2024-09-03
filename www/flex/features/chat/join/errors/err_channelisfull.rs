@@ -8,31 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-flex_kernel::import! {
-	pub mod application use *;
+use flex_chat::macros::error_replies;
 
-	pub(crate) mod errors use {
-		pub mod err_badchannelkey use *;
-		pub mod err_channelisfull use *;
-		pub mod join_channel_permission_error use *;
-	};
-
-	pub(crate) mod handlers use {
-		pub mod join_handler use *;
-		pub mod sajoin_handler use *;
-	};
-
-	pub(crate) mod sessions use {
-		pub mod join_channels_session use *;
-	};
-
-	mod forms use {
-		pub(super) mod join_form use *;
-		pub(super) mod sajoin_form use *;
-	};
-
-	pub(crate) mod responses use {
-		pub(super) mod join_command_response use *;
-		pub(crate) mod join_error_response use *;
-	};
+error_replies! {
+	| 471 <-> ERR_CHANNELISFULL { channel }
+		=> "{channel} :Tu ne peux pas rejoindre le salon (+l)"
 }

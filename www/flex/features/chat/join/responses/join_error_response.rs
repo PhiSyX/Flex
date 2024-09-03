@@ -11,7 +11,7 @@
 use flex_chat::channel::{Channel, ChannelInterface};
 use flex_chat::client::{ClientSocketInterface, Origin, Socket};
 
-use crate::features::chat::join::ErrBadchannelkeyError;
+use crate::features::chat::join::{ErrBadchannelkeyError, ErrChannelisfullError};
 
 // --------- //
 // Interface //
@@ -28,9 +28,10 @@ pub trait JoinErrorResponseInterface
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	);
 
-	// TODO: ERR_CHANNELISFULL
-	#[allow(dead_code)]
-	fn send_err_channelisfull(&self) {}
+	fn send_err_channelisfull(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	);
 
 	// TODO: ERR_TOOMANYCHANNELS
 	#[allow(dead_code)]
@@ -57,5 +58,19 @@ impl<'s> JoinErrorResponseInterface for Socket<'s>
 			origin: &origin,
 		};
 		self.emit(err_badchannelkey.name(), err_badchannelkey);
+	}
+
+	fn send_err_channelisfull(
+		&self,
+		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
+	)
+	{
+		let origin = Origin::from(self.client());
+		let err_channelisfull = ErrChannelisfullError {
+			channel: channel_name,
+			tags: ErrChannelisfullError::default_tags(),
+			origin: &origin,
+		};
+		self.emit(err_channelisfull.name(), err_channelisfull);
 	}
 }
