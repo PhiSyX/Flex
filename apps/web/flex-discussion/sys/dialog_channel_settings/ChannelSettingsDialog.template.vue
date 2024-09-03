@@ -3,7 +3,12 @@ import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
 
 import { computed, ref, watch } from "vue";
 
-import { Dialog, InputSwitchV2, UiButton } from "@phisyx/flex-vue-uikit";
+import {
+	Dialog,
+	InputCounter,
+	InputSwitchV2,
+	UiButton,
+} from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -67,6 +72,7 @@ let topic_settings = ref<boolean>();
 
 let enabled_key_settings = props.room.settings.has("k") ? ref(true) : ref();
 let key_settings = props.room.settings.has("k") ? ref("") : ref();
+let limit_settings = ref(props.room.limit);
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
 let topic_model = ref(Array.from(props.room.topic.history).at(-1));
@@ -126,6 +132,7 @@ function submit_handler()
 	emit("submit", {
 		i: invite_only_settings.value,
 		k: key_settings.value,
+		l: limit_settings.value,
 		m: moderate_settings.value,
 		n: no_external_messages_settings.value,
 		s: secret_settings.value,
@@ -173,10 +180,7 @@ function delete_selected_masks_handler()
 <template>
 	<Dialog :without-close="true">
 		<template #label>
-			Paramètres {{ room.name
-			}}<span v-if="settings_str"
-				>: (modes: +{{ settings_str }})</span
-			>
+			Paramètres {{ room.name }}<span v-if="settings_str">: (modes: +{{ settings_str }})</span>
 		</template>
 
 		<template #footer>
@@ -325,6 +329,29 @@ function delete_selected_masks_handler()
 				</li>
 
 				<li>
+					<InputCounter
+						v-model="limit_settings"
+						name="limit-settings"
+						:disabled="
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
+						"
+						:min="0"
+						:max="1 << 16"
+						style="margin-left: -8px"
+					/>
+					<label
+						for="limit-settings"
+						:disabled="
+							!is_current_client_channel_member_channel_operator &&
+							!is_current_client_global_operator
+						"
+					>
+						Définir une limite d'utilisateurs autorisés (+l)
+					</label>
+				</li>
+
+				<li>
 					<InputSwitchV2
 						v-model="moderate_settings"
 						name="moderate-settings"
@@ -435,10 +462,10 @@ input {
 
 button[type="button"] {
 	--btn-secondary-color: var(--color-black);
-	
+
 	padding: fx.space(1) fx.space(2);
 	border-radius: 2px;
-	
+
 	&:hover {
 		outline: 3px solid var(--dialog-border-color);
 	}

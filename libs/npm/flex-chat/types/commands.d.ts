@@ -48,7 +48,7 @@ declare interface Commands {
 		target: string;
 		modes: Record<
 			CommandResponsesFromServer["MODE"]["added"][0][0],
-			string | Array<string> | boolean
+			string | number | Array<string> | boolean
 		>;
 	};
 	QOP: { channel: ChannelID; nicknames: Array<string> };
@@ -76,8 +76,8 @@ declare interface Commands {
 			format_underline: boolean;
 		};
 		colors: {
-			color_background: number | null; 
-			color_foreground: number | null; 
+			color_background: number | null;
+			color_foreground: number | null;
 		};
 		targets: Array<string>;
 		text: string;
@@ -89,8 +89,8 @@ declare interface Commands {
 			format_underline: boolean;
 		};
 		colors: {
-			color_background: number | null; 
-			color_foreground: number | null; 
+			color_background: number | null;
+			color_foreground: number | null;
 		};
 		channels: Array<ChannelID>;
 		text: string;

@@ -47,6 +47,7 @@ declare interface CommandResponsesFromServer {
 			| ["v", ModeApplyFlag<"vip">]
 			| ["k", ModeApplyFlag<{ key: string }>]
 			| ["i", ModeApplyFlag<"invite_only">]
+			| ["l", ModeApplyFlag<"limit">]
 			| ["m", ModeApplyFlag<"moderate">]
 			| ["n", ModeApplyFlag<"no_external_messages">]
 			| ["O", ModeApplyFlag<"oper_only">]

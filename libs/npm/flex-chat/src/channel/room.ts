@@ -69,6 +69,11 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	kicked = false;
 
 	/**
+	 * Nombre limite d'utilisateurs autorisés
+	 */
+	limit = 0;
+
+	/**
 	 * Paramètres du salon.
 	 */
 	settings: Set<string> = new Set();
@@ -180,6 +185,14 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	set_setting_mode(mode: string)
 	{
 		this.settings.add(mode);
+	}
+
+	/**
+	 * Définit le nombre de limite des utilisateurs autorisés sur le salon.
+	 */
+	set_limit(limit: number)
+	{
+		this.limit = limit;
 	}
 
 	/**

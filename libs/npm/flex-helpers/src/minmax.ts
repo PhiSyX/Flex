@@ -8,7 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/contenteditable";
-export * from "./src/iso_to_country_flag";
-export * from "./src/minmax";
-export * from "./src/noop";
+// -------- //
+// Fonction //
+// -------- //
+
+function minmax(val: number, min: number, max: number): number
+{
+	return Math.min(Math.max(min, val), max);
+}
+
+// ------ //
+// Export //
+// ------ //
+
+export { minmax };

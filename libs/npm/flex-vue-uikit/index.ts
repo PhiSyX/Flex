@@ -37,6 +37,7 @@ export { default as Badge } from "./src/badge/Badge.vue";
 export { default as UiButton } from "./src/button/Button.vue";
 export { default as Dialog } from "./src/dialog/Dialog.vue";
 export { default as UiImage } from "./src/image/Image.vue";
+export { default as InputCounter } from "./src/inputcounter/InputCounter.vue";
 export { default as InputSwitch } from "./src/inputswitch/InputSwitch.vue";
 export { default as InputSwitchV2 } from "./src/inputswitch/InputSwitchV2.vue";
 export { default as Match } from "./src/match/Match.vue";

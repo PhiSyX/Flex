@@ -51,12 +51,18 @@ let settings_word = computed(() =>
 			{{ letter }}
 		</output>
 		{{ " " }}
-		<bdo v-for="[_, mode] of data.added">
+		<bdo v-for="[letter, mode] of data.added">
 			{{ mode.args.join(" ") }}{{ " " }}
+			<span v-if="['k','l'].includes(letter)">
+				{{ Object.values(mode.flag).join(", ") }}
+			</span>
 		</bdo>
 		{{ " " }}
-		<bdo v-for="[_, mode] of data.removed">
+		<bdo v-for="[letter, mode] of data.removed">
 			{{ mode.args.join(" ") }}{{ " " }}
+			<span v-if="['k','l'].includes(letter)">
+				{{ Object.values(mode.flag).join(", ") }}
+			</span>
 		</bdo>
 	</p>
 </template>
