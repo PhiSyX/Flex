@@ -39,6 +39,9 @@ let input_model = defineModel<number>({ required: true });
 function decrement_handler(evt: Event & { shiftKey: boolean })
 {
 	evt.preventDefault();
+	if (props.disabled) {
+		return;
+	}
 	let step = props.stepX10WithShift && evt.shiftKey ? 10 : props.step;
 	input_model.value = minmax(input_model.value - step, props.min, props.max);
 }
@@ -46,6 +49,9 @@ function decrement_handler(evt: Event & { shiftKey: boolean })
 function increment_handler(evt: Event & { shiftKey: boolean })
 {
 	evt.preventDefault();
+	if (props.disabled) {
+		return;
+	}
 	let step = props.stepX10WithShift && evt.shiftKey ? 10 : props.step;
 	input_model.value = minmax(input_model.value + step, props.min, props.max);
 }
@@ -53,12 +59,10 @@ function increment_handler(evt: Event & { shiftKey: boolean })
 function input_handler(evt: Event)
 {
 	let target = evt.target as HTMLOutputElement & { value: string };
-	let matches = target.value.match(/[^\d]/) ?? [];
-
 	let pos = get_caret_contenteditable(target);
+
 	let fallback = () => {
-		console.log(input_model.value);
-		target.value = input_model.value.toFixed();
+		target.value = (Number.parseInt(input_model.value.toFixed(), 10) || 0).toFixed();
 
 		set_caret_contenteditable(target, {
 			start: pos.start,
@@ -67,12 +71,19 @@ function input_handler(evt: Event)
 		});
 	};
 
+	if (props.disabled) {
+		fallback();
+		return;
+	}
+
+	let matches = target.value.match(/[^\d]/) ?? [];
+
 	if (matches.length > 0) {
 		fallback();
 		return;
 	}
 
-	let val = Number.parseInt(target.value, 10);
+	let val = Number.parseInt(target.value, 10) || 0;
 	input_model.value = minmax(val, props.min, props.max);
 	target.value = input_model.value.toFixed();
 	nextTick(() => {
@@ -83,6 +94,7 @@ function input_handler(evt: Event)
 
 <template>
 	<div
+		:disabled="disabled ? 'disabled' : undefined"
 		class="input@counter [ flex:shrink=0 flex flex/center:full ]"
 		@keydown.up="increment_handler"
 		@keydown.down="decrement_handler"
@@ -141,6 +153,8 @@ function input_handler(evt: Event)
 button {
 	cursor: pointer;
 }
+div[disabled],
+output[disabled],
 button[disabled] {
 	opacity: 0.75;
 	pointer-events: none;
