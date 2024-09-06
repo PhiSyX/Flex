@@ -67,24 +67,21 @@ function change_nickname_handler()
 			method="post"
 			@submit.prevent="change_nickname_handler"
 		>
-			<table class="[ w:full ]">
-				<tr>
-					<td>
-						<strong>* </strong>
-						<label for="nickname">Nouveau pseudo:</label>
-					</td>
-					<td>
-						<input
-							id="nickname"
-							v-model="new_nickname_request"
-							placeholder="JohnDoe"
-							required
-							type="text"
-							class="[ input:reset p=1 w:full ]"
-						/>
-					</td>
-				</tr>
-			</table>
+			<fieldset class="[ w:full flex flex/center:full gap=1 p=0 m=0 ]">
+				<p class="flex:shrink=0">
+					<strong>* </strong>
+					<label for="nickname">Nouveau pseudo:</label>
+				</p>
+
+				<input
+					id="nickname"
+					v-model="new_nickname_request"
+					placeholder="JohnDoe"
+					required
+					type="text"
+					class="[ input:reset p=1 w:full h=4 ]"
+				/>
+			</fieldset>
 		</form>
 	</Dialog>
 </template>
@@ -99,6 +96,10 @@ input {
 	&:placeholder-shown {
 		color: var(--default-placeholder-color);
 	}
+}
+
+fieldset {
+	border: 0;
 }
 
 em {

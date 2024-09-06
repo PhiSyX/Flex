@@ -63,7 +63,7 @@ function create_channel_handler()
 		<section class="[ flex! gap=1 ]">
 			<Alert type="warning" :can-close="false" :content-center="false">
 				Tu es sur le point de rejoindre un salon OU de le créer.
-				
+
 				<br />
 				<br />
 
@@ -84,42 +84,38 @@ function create_channel_handler()
 				method="post"
 				@submit.prevent="create_channel_handler"
 			>
-				<table class="[ w:full ]">
-					<tr>
-						<td>
-							<strong>* </strong>
-							<label for="channels">Noms des salons:</label>
-						</td>
-						<td>
-							<input
-								id="channels"
-								v-model="channels_request"
-								placeholder="#channel1,#channel2"
-								required
-								type="text"
-								class="[ input:reset p=1 w:full ]"
-							/>
-						</td>
-					</tr>
+				<fieldset class="[ w:full flex flex/center:full gap=1 p=0 m=0 ]">
+					<p class="flex:shrink=0">
+						<strong>* </strong>
+						<label for="channels">Noms des salons:</label>
+					</p>
 
-					<tr>
-						<td>
-							<strong style="visibility: hidden">* </strong>
+					<input
+						id="channels"
+						v-model="channels_request"
+						placeholder="#channel1,#channel2"
+						required
+						type="text"
+						class="[ input:reset p=1 w:full ]"
+					/>
+				</fieldset>
 
-							<label for="keys">Clés d'accès: </label>
-						</td>
-						<td>
-							<input
-								id="keys"
-								v-model="keys_request"
-								name="keys"
-								placeholder="key1,key2"
-								type="text"
-								class="[ input:reset p=1 w:full ]"
-							/>
-						</td>
-					</tr>
-				</table>
+				<fieldset class="[ w:full flex flex/center:full gap=1 p=0 m=0 ]">
+					<p class="flex:shrink=0">
+						<strong style="visibility: hidden">* </strong>
+						<label for="keys">Clés d'accès: </label>
+						<label style="visibility: hidden">abc"</label>
+					</p>
+
+					<input
+						id="keys"
+						v-model="keys_request"
+						name="keys"
+						placeholder="key1,key2"
+						type="text"
+						class="[ input:reset p=1 w:full ]"
+					/>
+				</fieldset>
 			</form>
 		</section>
 	</Dialog>
@@ -127,6 +123,10 @@ function create_channel_handler()
 
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
+
+fieldset {
+	border: 0;
+}
 
 input {
 	--default-placeholder-color: var(--color-grey900);
