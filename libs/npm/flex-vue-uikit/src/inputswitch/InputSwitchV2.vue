@@ -8,7 +8,6 @@ import { computed, watchEffect as watch_effect } from "vue";
 interface Props
 {
 	name: string;
-	checked?: boolean;
 	disabled?: boolean;
 	position?: "left" | "right";
 }
@@ -62,7 +61,6 @@ watch_effect(() => {
 			:id="name"
 			v-model="input_model"
 			:name="name"
-			:checked="checked"
 			role="switch"
 			type="checkbox"
 			class="[ size=0 vis:h ]"

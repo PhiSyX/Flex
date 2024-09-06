@@ -63,15 +63,15 @@ let is_current_client_channel_member_channel_operator = computed(
 // Les paramètres du salon.
 let settings = computed(() => Array.from(props.room.settings));
 let settings_str = computed(() => settings.value.join(""));
-let invite_only_settings = ref<boolean>();
-let moderate_settings = ref<boolean>();
-let operators_only_settings = ref<boolean>();
-let no_external_messages_settings = ref<boolean>();
-let secret_settings = ref<boolean>();
-let topic_settings = ref<boolean>();
+let invite_only_settings = ref<boolean>(props.room.settings.has('i'));
+let moderate_settings = ref<boolean>(props.room.settings.has('m'));
+let operators_only_settings = ref<boolean>(props.room.settings.has('O'));
+let no_external_messages_settings = ref<boolean>(props.room.settings.has('n'));
+let secret_settings = ref<boolean>(props.room.settings.has('s'));
+let topic_settings = ref<boolean>(props.room.settings.has('t'));
 
-let enabled_key_settings = props.room.settings.has("k") ? ref(true) : ref();
-let key_settings = props.room.settings.has("k") ? ref("") : ref();
+let enabled_key_settings = ref(props.room.settings.has("k"));
+let key_settings = ref(props.room.settings.has("k") ? "" : undefined);
 let limit_settings = ref(props.room.limit);
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
@@ -245,7 +245,7 @@ function delete_selected_masks_handler()
 					</option>
 				</select>
 
-				<div class="[ flex gap=1 ]">
+				<div class="[ flex align-jc:sb gap=1 ]">
 					<UiButton
 						type="button"
 						variant="secondary"
@@ -291,7 +291,6 @@ function delete_selected_masks_handler()
 					<InputSwitchV2
 						v-model="invite_only_settings"
 						name="invite-only-settings"
-						:checked="room.settings.has('i')"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -305,7 +304,6 @@ function delete_selected_masks_handler()
 					<InputSwitchV2
 						v-model="enabled_key_settings"
 						name="key-settings"
-						:checked="room.settings.has('k')"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -355,7 +353,6 @@ function delete_selected_masks_handler()
 					<InputSwitchV2
 						v-model="moderate_settings"
 						name="moderate-settings"
-						:checked="room.settings.has('m')"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -369,7 +366,6 @@ function delete_selected_masks_handler()
 					<InputSwitchV2
 						v-model="no_external_messages_settings"
 						name="no-external-messages-settings"
-						:checked="room.settings.has('n')"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -383,7 +379,6 @@ function delete_selected_masks_handler()
 					<InputSwitchV2
 						v-model="secret_settings"
 						name="secret-settings"
-						:checked="room.settings.has('s')"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -397,7 +392,6 @@ function delete_selected_masks_handler()
 					<InputSwitchV2
 						v-model="topic_settings"
 						name="topic-settings"
-						:checked="room.settings.has('t')"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -411,7 +405,6 @@ function delete_selected_masks_handler()
 					<InputSwitchV2
 						v-model="operators_only_settings"
 						name="operators-only-settings"
-						:checked="room.settings.has('O')"
 						:disabled="
 							!is_current_client_channel_member_channel_operator &&
 							!is_current_client_global_operator
@@ -429,9 +422,12 @@ function delete_selected_masks_handler()
 @use "scss:~/flexsheets" as fx;
 
 dialog {
-	// @media (max-height: 515px) {
-	// 	height: 100%;
-	// }
+	@media (max-height: 530px) {
+		justify-content: center;
+	}
+	@media (min-height: 730px) {
+		max-height: max-content;
+	}
 }
 
 h1,

@@ -26,7 +26,6 @@ function on_update(_: NotificationData["sounds"])
 	<h2>
 		<InputSwitchV2
 			v-model="settings_store.sounds_effect_enabled_mut"
-			:checked="settings_store.notification.sounds.enabled"
 			name="enabled_sounds_effects"
 			position="right"
 		>
