@@ -231,7 +231,7 @@ function update_account_handler()
 					<Match :maybe="user_session" >
 						<template #some="{ data: user }">
 							<UiImage
-								:v-if="user.avatar"
+								v-if="user.avatar"
 								:id="user.id"
 								:key="user.avatar"
 								:src="user.avatar"
