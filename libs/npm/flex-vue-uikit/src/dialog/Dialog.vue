@@ -5,14 +5,15 @@ import UiButton from "../button/Button.vue";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	open?: boolean;
+	closeLabeled?: boolean;
 	withoutClose?: boolean;
 	withoutHeader?: boolean;
 }
 
-interface Emits 
+interface Emits
 {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
@@ -25,6 +26,7 @@ interface Emits
 
 withDefaults(defineProps<Props>(), {
 	open: true,
+	closeLabeled: true,
 	withoutClose: false,
 	withoutHeader: false,
 });
@@ -32,12 +34,20 @@ const emit = defineEmits<Emits>();
 </script>
 
 <template>
-	<dialog :open="open" class="dialog [ border/radius=1 flex size:full f-size=13px select:none ]">
+	<dialog
+		:open="open"
+		class="dialog [ border/radius=1 flex size:full f-size=13px select:none ]"
+	>
 		<slot name="left-content" />
 
 		<div class="flex! gap=1">
-			<header v-if="!withoutHeader" class="[ flex gap=1 ]">
-				<h1 class="dialog/title [ flex:full p=1 m=0 f-size=20px f-family=arial ]">
+			<header
+				v-if="!withoutHeader"
+				class="[ flex flex/center:full gap=1 ]"
+			>
+				<h1
+					class="dialog/title [ flex:full p=1 m=0 f-size=20px f-family=arial ]"
+				>
 					<slot name="label" />
 				</h1>
 
@@ -45,9 +55,18 @@ const emit = defineEmits<Emits>();
 					<slot name="actions" />
 
 					<UiButton
-						v-if="!withoutClose"
+						v-if="!withoutClose && closeLabeled"
+						class="dialog/close:label [ f-size=10px ]"
+						title="Fermer la boite modale"
+						@click="emit('close', $event)"
+					>
+						ESC
+					</UiButton>
+					<UiButton
+						v-else-if="!withoutClose"
 						icon="close"
-						class="[ h:full ]"
+						class="dialog/close"
+						title="Fermer la boite modale"
 						@click="emit('close', $event)"
 					/>
 				</div>
@@ -81,6 +100,12 @@ dialog {
 		max-height: fx.space(500);
 		max-width: fx.space(400);
 	}
+}
+
+@include fx.class("dialog/close:label") {
+	padding: 2px;
+	border: 1px solid;
+	border-radius: 3px;
 }
 
 @include fx.class("dialog/title") {
