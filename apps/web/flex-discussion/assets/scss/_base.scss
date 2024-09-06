@@ -1,5 +1,9 @@
 @use "scss:~/flexsheets" as fx;
 
+*:not(input, textarea):focus-visible {
+	outline: 3px solid var(--color-blue200);
+}
+
 html,
 body {
 	width: 100svw;
