@@ -9,74 +9,25 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Option } from "@phisyx/flex-safety";
-
 import type { Layer, OverlayerStore } from "../store";
-import type { DialogInterface } from "./interface";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface ChangeFormatsColorsRecordDialog
-{}
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsColorsRecordDialog>
+export interface MenuClass<T>
 {
-	// ------ //
-	// Static //
-	// ------ //
+	ID: string;
 
-	static ID = "change-formats-colors-dialog";
+	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
 
-	static create(
-		overlayer_store: OverlayerStore,
-		event: MouseEvent,
-	)
-	{
-		overlayer_store.create({
-			id: ChangeFormatsColorsDialog.ID,
-			event,
-		});
-		return new ChangeFormatsColorsDialog(overlayer_store);
-	}
+	new(_: OverlayerStore): T;
+}
 
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	destroy()
-	{
-		this.overlayer_store.destroy(ChangeFormatsColorsDialog.ID);
-	}
-
-	get(): Option<Layer<ChangeFormatsColorsRecordDialog>>
-	{
-		return this.overlayer_store.get(ChangeFormatsColorsDialog.ID)
-			.as<Layer<ChangeFormatsColorsRecordDialog>>();
-	}
-
-	get_unchecked(): Layer<ChangeFormatsColorsRecordDialog>
-	{
-		return this.get().unwrap_unchecked();
-	}
-
-	exists(): boolean
-	{
-		return this.overlayer_store.has(ChangeFormatsColorsDialog.ID);
-	}
-
-	with_data(data: ChangeFormatsColorsRecordDialog)
-	{
-		this.overlayer_store.update_data(ChangeFormatsColorsDialog.ID, data);
-	}
+export interface MenuInterface<R = unknown>
+{
+	exists(): boolean;
+    get(): Option<Layer<R>>;
+    get_unchecked(): Layer<R>;
+	destroy(): void;
 }

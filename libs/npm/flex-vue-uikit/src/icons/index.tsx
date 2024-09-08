@@ -26,6 +26,7 @@ export const ICON_NAMES = [
 	"channel",
 	"channel-list",
 	"close",
+	"ellipsis",
 	"error",
 	"event",
 	"home",

@@ -17,6 +17,7 @@ import { computed } from "vue";
 import {
 	ChangeFormatsColorsDialog,
 	ChannelChangeTopicLayer,
+	ChannelOptionsMenu,
 	ChannelSettingsDialog,
 	NoticesCustomRoom,
 	UserChangeNicknameDialog,
@@ -206,9 +207,20 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
 /**
  * Ouvre la boite de dialogue du centre de contrôle du salon actif.
  */
-function open_channel_settings_dialog_handler(_: Event)
+ function open_channel_settings_dialog_handler(_: Event)
 {
 	ChannelSettingsDialog.create(overlayer_store.store as OverlayerStore, {
+		room: props.room,
+		current_client_channel_member: current_client_member.value.unwrap(),
+	});
+}
+
+/**
+ * Ouvre le menu d'options du salon.
+ */
+ function open_channel_options_menu_handler(evt: MouseEvent)
+{
+	ChannelOptionsMenu.create(overlayer_store.store as OverlayerStore, evt, {
 		room: props.room,
 		current_client_channel_member: current_client_member.value.unwrap(),
 	});
@@ -219,10 +231,10 @@ function open_channel_settings_dialog_handler(_: Event)
  */
 function open_colors_box_handler(event: MouseEvent)
 {
-	overlayer_store.create({
-		id: ChangeFormatsColorsDialog.ID,
+	ChangeFormatsColorsDialog.create(
+		overlayer_store.store as OverlayerStore,
 		event,
-	});
+	);
 }
 
 /**
@@ -346,6 +358,7 @@ function toggle_select_channel_member_handler(origin: Origin)
 		@ignore-user="(o) => send_silence_user_command_handler('+')(o)"
 		@kick-member="send_kick_member_command"
 		@open-channel-settings="open_channel_settings_dialog_handler"
+		@open-menu-channel-options="open_channel_options_menu_handler"
 		@open-colors-box="open_colors_box_handler"
 		@open-room="open_room_handler"
 		@open-private="open_private_handler"

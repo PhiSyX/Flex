@@ -10,38 +10,49 @@
 
 import type { Option } from "@phisyx/flex-safety";
 
+import type { ChannelMember } from "../channel/member";
+import type { ChannelRoom } from "../channel/room";
 import type { Layer, OverlayerStore } from "../store";
-import type { DialogInterface } from "./interface";
+import type { MenuInterface } from "./interface";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface ChangeFormatsColorsRecordDialog
-{}
+export interface ChannelOptionsRecordMenu
+{
+	// Salon actif
+	room: ChannelRoom;
+	// Le client courant, qui est membre du salon.
+	current_client_channel_member: ChannelMember;
+}
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsColorsRecordDialog>
+export class ChannelOptionsMenu implements MenuInterface<ChannelOptionsRecordMenu>
 {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static ID = "change-formats-colors-dialog";
+	static ID = "menu-channel-options-layer";
 
 	static create(
 		overlayer_store: OverlayerStore,
 		event: MouseEvent,
+		data: ChannelOptionsRecordMenu,
 	)
 	{
 		overlayer_store.create({
-			id: ChangeFormatsColorsDialog.ID,
+			id: ChannelOptionsMenu.ID,
+			background_color: true,
 			event,
+			data,
 		});
-		return new ChangeFormatsColorsDialog(overlayer_store);
+
+		return new ChannelOptionsMenu(overlayer_store);
 	}
 
 	// ----------- //
@@ -56,27 +67,27 @@ export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsC
 
 	destroy()
 	{
-		this.overlayer_store.destroy(ChangeFormatsColorsDialog.ID);
+		this.overlayer_store.destroy(ChannelOptionsMenu.ID);
 	}
 
-	get(): Option<Layer<ChangeFormatsColorsRecordDialog>>
+	get(): Option<Layer<ChannelOptionsRecordMenu>>
 	{
-		return this.overlayer_store.get(ChangeFormatsColorsDialog.ID)
-			.as<Layer<ChangeFormatsColorsRecordDialog>>();
+		return this.overlayer_store.get(ChannelOptionsMenu.ID)
+			.as<Layer<ChannelOptionsRecordMenu>>();
 	}
 
-	get_unchecked(): Layer<ChangeFormatsColorsRecordDialog>
+	get_unchecked(): Layer<ChannelOptionsRecordMenu>
 	{
 		return this.get().unwrap_unchecked();
 	}
 
 	exists(): boolean
 	{
-		return this.overlayer_store.has(ChangeFormatsColorsDialog.ID);
+		return this.overlayer_store.has(ChannelOptionsMenu.ID);
 	}
 
-	with_data(data: ChangeFormatsColorsRecordDialog)
+	with_data(data: ChannelOptionsRecordMenu)
 	{
-		this.overlayer_store.update_data(ChangeFormatsColorsDialog.ID, data);
+		this.overlayer_store.update_data(ChannelOptionsMenu.ID, data);
 	}
 }

@@ -41,6 +41,8 @@ export { default as InputCounter } from "./src/inputcounter/InputCounter.vue";
 export { default as InputSwitch } from "./src/inputswitch/InputSwitch.vue";
 export { default as InputSwitchV2 } from "./src/inputswitch/InputSwitchV2.vue";
 export { default as Match } from "./src/match/Match.vue";
+export { default as UiMenu } from "./src/menu/Menu.vue";
+export { default as UiMenuItem } from "./src/menu/MenuItem.vue";
 export { default as TextInput } from "./src/textinput/TextInput.vue";
 
 export { ButtonIcon, LabelIcon, ICON_NAMES } from "./src/icons";

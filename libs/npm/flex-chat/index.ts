@@ -28,6 +28,7 @@ export * from "./src/localstorage/settings_layout";
 export * from "./src/localstorage/settings_notification";
 export * from "./src/localstorage/settings_personalization";
 export * from "./src/localstorage/storage";
+export * from "./src/menu";
 export * from "./src/modules/interface";
 export * from "./src/modules/manager";
 export * from "./src/nickname";

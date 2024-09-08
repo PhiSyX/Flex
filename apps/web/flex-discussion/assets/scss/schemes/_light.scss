@@ -9,7 +9,7 @@
 				--default-text-color_hsl: var(--color-grey900_hsl);
 				--default-text-color_alt: var(--color-white);
 				--default-text-color_alt_hsl: var(--color-white_hsl);
-				--default-placeholder-color:  var(--color-grey800);
+				--default-placeholder-color: var(--color-grey800);
 				--box-shadow: 2px 2px 4px var(--color-grey400);
 
 				--disabled-bg: var(--color-grey400);
@@ -23,6 +23,9 @@
 				--dialog-border-color: var(--color-white);
 				--dialog-change-formats-colors-bg: var(--body-bg);
 				--dialog-change-formats-colors-color: var(--color-grey300);
+
+				--menu-bg: var(--body-bg);
+				--menu-item-bg-hover: var(--body-bg_alt);
 
 				--text-input-color-error: #4dd2d4;
 
@@ -70,7 +73,7 @@
 				--tbody-bg-hover: var(--color-grey100);
 
 				--channel-list-filter-input-bg: var(--color-grey300);
-				
+
 				--channel-activities-bg: #31363a;
 				--channel-activities-color: var(--default-text-color_alt);
 			}

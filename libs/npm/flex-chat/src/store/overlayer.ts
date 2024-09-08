@@ -11,6 +11,7 @@
 import type { CSSHoudiniUnitValue } from "@phisyx/flex-css";
 
 import { to_px } from "@phisyx/flex-css";
+import { minmax } from "@phisyx/flex-helpers";
 import { Option } from "@phisyx/flex-safety";
 
 // ---- //
@@ -23,7 +24,7 @@ export interface Layer<D = unknown>
 	centered?: boolean;
 	data?: D;
 	destroyable?: "background" | "manual";
-	without_background_color?: boolean;
+	background_color?: boolean;
 	event?: Event & { clientX?: number; clientY?: number };
 	dom_element?: HTMLElement;
 	style?: {
@@ -55,7 +56,7 @@ const MOUSE_POSITION_PADDING: number = 4;
 // Implémentation //
 // -------------- //
 
-export class OverlayerData 
+export class OverlayerData
 {
 	// --------- //
 	// Propriété //
@@ -243,19 +244,19 @@ export class OverlayerStore
 			let dom_element_rect = layer.dom_element.getBoundingClientRect();
 			let teleport_rect = this.$teleport.getBoundingClientRect();
 
-			let top = dom_element_rect.top - teleport_rect.height - (MOUSE_POSITION_PADDING * 2);
-			let left = dom_element_rect.left - MOUSE_POSITION_PADDING;
+			let val_top = dom_element_rect.top - (MOUSE_POSITION_PADDING * 2);
+			let min_top = overlayer_rect.top + (MOUSE_POSITION_PADDING * 2);
+			let max_top = (overlayer_rect.height - teleport_rect.height) - (MOUSE_POSITION_PADDING * 2);
 
-			if (left + teleport_rect.width > overlayer_rect.width) {
-				left = overlayer_rect.width - (teleport_rect.width + MOUSE_POSITION_PADDING * 4);
-			}
+			let val_left = dom_element_rect.left - (MOUSE_POSITION_PADDING * 2);
+			let min_left = overlayer_rect.left + (MOUSE_POSITION_PADDING * 2);
+			let max_left = (overlayer_rect.width - teleport_rect.width) - (MOUSE_POSITION_PADDING * 2);
 
-			if (top + teleport_rect.height > overlayer_rect.height) {
-				top = overlayer_rect.height - (teleport_rect.height + MOUSE_POSITION_PADDING * 4);
-			}
+			let top = minmax(val_top, min_top, max_top);
+			let left = minmax(val_left, min_left, max_left);
 
 			mouse_position.top = to_px(top);
-			mouse_position.left = to_px(left)
+			mouse_position.left = to_px(left);
 		}
 
 		this.data.layers.set(layer_id, { ...layer, style, mouse_position });

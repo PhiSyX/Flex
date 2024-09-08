@@ -23,6 +23,9 @@
 				--dialog-change-formats-colors-bg: var(--body-bg);
 				--dialog-change-formats-colors-color: var(--body-bg_alt);
 
+				--menu-bg: var(--body-bg);
+				--menu-item-bg-hover: var(--body-bg_alt);
+
 				--text-input-color-error: #4dd2d4;
 
 				--login-page-bg: var(--body-bg);
@@ -61,7 +64,7 @@
 
 				--room-userlist-bg: var(--body-bg);
 				--room-userlist-search-bg: var(--room-bg);
-				--room-userlist-search-outline-focus: #009DFF;
+				--room-userlist-search-outline-focus: #009dff;
 				--room-userlist-filter-bg_hsl: var(--color-cyan300_hsl);
 
 				--thead-bg: var(--color-grey900);

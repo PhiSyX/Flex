@@ -14,6 +14,7 @@ import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
 import ChannelJoinDialog from "~/components/dialog/ChannelJoinDialog.vue";
 import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
 import PrivatePendingRequestDialog from "~/components/dialog/PrivatePendingRequestDialog.vue";
+import ChannelOptionsMenu from "~/components/menu/ChannelOptionsMenu.vue";
 
 import connection_audio from "#/assets/audio/connection.mp3";
 import invite_audio from "#/assets/audio/invite.mp3";
@@ -34,7 +35,7 @@ let audio_src = computed({
 	},
 	set($1) {
 		chat_store.store.audio_src = $1;
-	}
+	},
 });
 
 let route = use_route();
@@ -50,7 +51,7 @@ function reset_audio_src()
 </script>
 
 <template>
-    <main id="chat-view" class="[ flex h:full ]">
+	<main id="chat-view" class="[ flex h:full ]">
 		<Navigation />
 
 		<RouterView v-slot="{ Component }">
@@ -60,35 +61,35 @@ function reset_audio_src()
 		</RouterView>
 
 		<template v-if="settings_store.notification.sounds.enabled">
-			<AudioSound 
+			<AudioSound
 				v-if="settings_store.notification.sounds.connection"
 				:src="connection_audio"
 				:autoplay="audio_src === 'connection'"
-				@ended="reset_audio_src" 
+				@ended="reset_audio_src"
 			/>
-			<AudioSound 
+			<AudioSound
 				v-if="settings_store.notification.sounds.invites"
 				:src="invite_audio"
 				:autoplay="audio_src === 'invite'"
-				@ended="reset_audio_src" 
+				@ended="reset_audio_src"
 			/>
-			<AudioSound 
+			<AudioSound
 				v-if="settings_store.notification.sounds.mentions"
 				:src="mention_audio"
 				:autoplay="audio_src === 'mention'"
-				@ended="reset_audio_src" 
+				@ended="reset_audio_src"
 			/>
-			<AudioSound 
+			<AudioSound
 				v-if="settings_store.notification.sounds.notices"
 				:src="notice_audio"
 				:autoplay="audio_src === 'notice'"
-				@ended="reset_audio_src" 
+				@ended="reset_audio_src"
 			/>
-			<AudioSound 
+			<AudioSound
 				v-if="settings_store.notification.sounds.queries"
 				:src="query_audio"
 				:autoplay="audio_src === 'query'"
-				@ended="reset_audio_src" 
+				@ended="reset_audio_src"
 			/>
 		</template>
 
@@ -101,5 +102,7 @@ function reset_audio_src()
 		<ChannelJoinDialog />
 		<ChannelSettingsDialog />
 		<PrivatePendingRequestDialog />
+
+		<ChannelOptionsMenu />
 	</main>
 </template>

@@ -2,7 +2,9 @@
 import type {
 	ChannelAccessLevelFlag,
 	ChannelActivitiesView,
-	ChannelMember, ChannelMemberSelected, ChannelRoom
+	ChannelMember,
+	ChannelMemberSelected,
+	ChannelRoom,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
@@ -56,6 +58,7 @@ export interface Emits
 	(event_name: "ignore-user", origin: Origin): void;
 	(event_name: "kick-member", member: ChannelMember): void;
 	(event_name: "open-channel-settings", event: Event): void;
+	(event_name: "open-menu-channel-options", event: MouseEvent): void;
 	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "open-room", room_id: RoomID): void;
@@ -119,23 +122,39 @@ let expand_activities = ref(false);
 // Handlers //
 // -------- //
 
-const ban_member_handler = (member: ChannelMember) => emit("ban-member", member);
+const ban_member_handler = (member: ChannelMember) =>
+	emit("ban-member", member);
 const ban_nick_handler = (member: ChannelMember) => emit("ban-nick", member);
-const unban_member_handler = (member: ChannelMemberSelected) => emit("unban-member", member);
-const unban_nick_handler = (member: ChannelMemberSelected) => emit("unban-nick", member);
-const change_nickname_handler = (event: MouseEvent) => emit("change-nickname", event);
+const unban_member_handler = (member: ChannelMemberSelected) =>
+	emit("unban-member", member);
+const unban_nick_handler = (member: ChannelMemberSelected) =>
+	emit("unban-nick", member);
+const change_nickname_handler = (event: MouseEvent) =>
+	emit("change-nickname", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const close_room_handler = () => emit("close");
 const ignore_user_handler = (origin: Origin) => emit("ignore-user", origin);
-const kick_member_handler = (member: ChannelMember) => emit("kick-member", member);
+const kick_member_handler = (member: ChannelMember) =>
+	emit("kick-member", member);
 const unignore_user_handler = (origin: Origin) => emit("unignore-user", origin);
-const open_channel_settings_handler = (event: Event) => emit("open-channel-settings", event);
-const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
+const open_channel_settings_handler = (event: Event) =>
+	emit("open-channel-settings", event);
+const open_menu_channel_options_handler = (event: MouseEvent) =>
+	emit("open-menu-channel-options", event);
+const open_colors_box_handler = (event: MouseEvent) =>
+	emit("open-colors-box", event);
 const open_private_handler = (origin: Origin) => emit("open-private", origin);
-const select_channel_member_handler = (origin: Origin) => emit("select-member", origin);
+const select_channel_member_handler = (origin: Origin) =>
+	emit("select-member", origin);
 const send_message_handler = (message: string) => emit("send-message", message);
-const set_access_level_handler = (member: ChannelMember, flag: ChannelAccessLevelFlag) => emit("set-access-level", member, flag);
-const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLevelFlag) => emit("unset-access-level", member, flag);
+const set_access_level_handler = (
+	member: ChannelMember,
+	flag: ChannelAccessLevelFlag,
+) => emit("set-access-level", member, flag);
+const unset_access_level_handler = (
+	member: ChannelMember,
+	flag: ChannelAccessLevelFlag,
+) => emit("unset-access-level", member, flag);
 </script>
 
 <template>
@@ -196,6 +215,12 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 			</template>
 
 			<template #topic-action>
+				<ButtonIcon
+					icon="ellipsis"
+					title="Ouvrir le menu d'options du salon..."
+					@click="open_menu_channel_options_handler"
+				/>
+
 				<UiButton
 					v-model:selected="display_userlist"
 					:true-value="true"
@@ -245,7 +270,10 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 						@select-member="select_channel_member_handler"
 					>
 						<template #user-info="{ member }">
-							<slot name="userlist-additional-info" :member="member" />
+							<slot
+								name="userlist-additional-info"
+								:member="member"
+							/>
 						</template>
 					</ChannelUserlist>
 
