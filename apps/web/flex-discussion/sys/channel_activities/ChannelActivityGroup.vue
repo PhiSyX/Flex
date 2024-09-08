@@ -54,8 +54,7 @@ let activity_group_name = computed(() => camelcase(`${props.name}s`));
 						<ChannelName
 							v-if="room"
 							:name="room.name"
-							:classes="member.access_level.highest.class_name"
-							:symbol="member.access_level.highest.symbol"
+							:highest-access-level="member.access_level.highest"
 						/>
 					</template>
 				</Match>

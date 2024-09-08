@@ -1,13 +1,16 @@
 <script lang="ts" setup>
+import type { HighestAccessLevelOutput } from "@phisyx/flex-chat";
+
+import { computed } from "vue";
+
 // ---- //
 // Type //
 // ---- //
 
 interface Props
 {
-	classes?: string;
 	name: string;
-	symbol?: string;
+	highestAccessLevel?: Partial<HighestAccessLevelOutput>;
 	tag?: keyof HTMLElementTagNameMap;
 }
 
@@ -15,7 +18,10 @@ interface Props
 // Composant //
 // --------- //
 
-withDefaults(defineProps<Props>(), { tag: "span" });
+const { highestAccessLevel, tag = "span" } = defineProps<Props>();
+
+let classes = computed(() => highestAccessLevel?.class_name);
+let symbol = computed(() => highestAccessLevel?.symbol);
 </script>
 
 <template>

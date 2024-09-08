@@ -12,7 +12,7 @@
 // Type //
 // ---- //
 
-export type HighestAccessLevelOutput = {
+export interface HighestAccessLevelOutput {
 	class_name: ChannelAccessLevelClassName;
 	letter: ChannelAccessLevelLetter;
 	level: ChannelAccessLevelFlag;
@@ -262,5 +262,13 @@ export class ChannelAccessLevel
 			default:
 				return ChannelAccessLevelFlag.User;
 		}
+	}
+
+	with(...levels: Array<ChannelAccessLevelFlag>): this
+	{
+		for (let level of levels){
+			this.add(level);
+		}
+		return this;
 	}
 }
