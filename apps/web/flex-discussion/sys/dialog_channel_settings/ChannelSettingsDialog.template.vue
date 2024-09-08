@@ -71,7 +71,7 @@ let secret_settings = ref<boolean>(props.room.settings.has('s'));
 let topic_settings = ref<boolean>(props.room.settings.has('t'));
 
 let enabled_key_settings = ref(props.room.settings.has("k"));
-let key_settings = ref(props.room.settings.has("k") ? "" : undefined);
+let key_settings = ref(props.room.settings.has("k") ? props.room.key.unwrap_or("") : undefined);
 let limit_settings = ref(props.room.limit);
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
@@ -127,6 +127,10 @@ function submit_handler()
 	) {
 		emit("close");
 		return;
+	}
+
+	if (!enabled_key_settings.value) {
+		key_settings.value = "";
 	}
 
 	emit("submit", {

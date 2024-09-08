@@ -98,7 +98,7 @@ where
 	ID: ToString,
 	ID: PartialEq + Eq + std::hash::Hash,
 {
-	type Key = Secret<String>;
+	type Key = String;
 	type OwnedID = ChannelName;
 	type RefID<'a> = ChannelNameRef where ID: 'a;
 
@@ -280,7 +280,7 @@ where
 			|| check(user.address("nick!*@*"))
 			|| check2()
 	}
-	
+
 	fn remove_ban_except(
 		&mut self,
 		apply_by: &<Self as ChannelAccessControlInterface>::User,
@@ -467,12 +467,12 @@ where
 		self
 	}
 
-	fn set_key(&mut self, updated_by: &str, key: impl Into<Secret<String>>)
+	fn set_key(&mut self, updated_by: &str, key: impl ToString)
 	{
 		self.modes_settings.insert(
 			SettingsFlag::Key(Default::default()).to_string(),
 			ApplyMode {
-				flag: SettingsFlag::Key(key.into()),
+				flag: SettingsFlag::Key(key.to_string()),
 				args: Default::default(),
 				updated_by: updated_by.to_owned(),
 				updated_at: chrono::Utc::now(),

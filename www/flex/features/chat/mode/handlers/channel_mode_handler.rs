@@ -144,7 +144,7 @@ impl ModeChannelSettingsHandler
 				&mut removed_settings,
 			);
 
-			if let Some(key) = data.modes.key.map(|s| s.into_string()).as_ref()
+			if let Some(key) = data.modes.key.map(|s| s.to_string()).as_ref()
 			{
 				apply_mode_settings_str(
 					app,
@@ -270,7 +270,7 @@ impl ModeChannelSettingsHandler
 			&mut removed_settings,
 		);
 
-		if let Some(key) = data.modes.key.map(|s| s.into_string()).as_ref() {
+		if let Some(key) = data.modes.key.map(|s| s.to_string()).as_ref() {
 			apply_mode_settings_str(
 				app,
 				&client_socket,

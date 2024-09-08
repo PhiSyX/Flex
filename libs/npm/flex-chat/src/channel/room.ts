@@ -10,7 +10,7 @@
 
 import type { User } from "../user";
 
-import { Option } from "@phisyx/flex-safety";
+import { None, Option } from "@phisyx/flex-safety";
 
 import { is_user } from "../asserts/user";
 import { Room } from "../room";
@@ -67,6 +67,11 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	 * Le salon rejoint est en état de sanction.
 	 */
 	kicked = false;
+
+	/**
+	 * Clé du salon.
+	 */
+	key: Option<string> = None();
 
 	/**
 	 * Nombre limite d'utilisateurs autorisés

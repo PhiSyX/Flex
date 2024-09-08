@@ -56,7 +56,7 @@ pub enum SettingsFlag
 	/// Salon accessible sur invitation uniquement.
 	InviteOnly,
 	/// Clé du salon, pour le rejoindre.
-	Key(Secret<String>),
+	Key(String),
 	/// Nombre limite de membres autorisés sur le salon.
 	Limit(u16),
 	/// Salon en modéré.
@@ -92,7 +92,7 @@ impl ChannelModes<SettingsFlag>
 	}
 
 	/// Vérifie que le drapeau +k <key> contienne la bonne clé.
-	pub fn contains_key_flag(&self, key: &Secret<String>) -> bool
+	pub fn contains_key_flag(&self, key: &str) -> bool
 	{
 		self.modes
 			.values()

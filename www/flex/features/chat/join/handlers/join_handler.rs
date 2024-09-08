@@ -8,7 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::types::secret;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::invite::InviteChannelClientSocketErrorReplies;
@@ -79,7 +78,7 @@ impl JoinHandler
 			#[rustfmt::skip]
 			let channel_key = channel_keys.get(idx)
 				.filter(|key| !key.is_empty())
-				.map(|s| secret::Secret::new(s.expose().to_string()));
+				.map(|k| k.to_string());
 
 			match app.join_or_create_channel(
 				&client_socket,

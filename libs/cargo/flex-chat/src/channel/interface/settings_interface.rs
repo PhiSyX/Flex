@@ -10,8 +10,6 @@
 
 use std::collections::HashMap;
 
-use flex_secret::Secret;
-
 use crate::channel::SettingsFlagInterface;
 use crate::mode::ApplyMode;
 
@@ -30,7 +28,7 @@ pub trait ChannelSettingsInterface
 	) -> Self;
 
 	/// Définit la clé du salon.
-	fn set_key(&mut self, updated_by: &str, key: impl Into<Secret<String>>);
+	fn set_key(&mut self, updated_by: &str, key: impl ToString);
 
 	/// Paramètres du salon.
 	fn settings(&self) -> HashMap<char, ApplyMode<Self::SettingsFlag>>;

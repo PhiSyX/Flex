@@ -62,7 +62,7 @@ pub trait ChannelsSessionInterface
 		channel_name: impl Into<
 			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
 		>,
-		channel_key: Option<Secret<String>>,
+		channel_key: Option<String>,
 		flags: impl IntoIterator<
 			Item = ApplyMode<
 				<Self::Channel as ChannelSettingsInterface>::SettingsFlag,

@@ -46,7 +46,7 @@ pub struct ChannelModesSettings
 	pub invites_except: Option<Vec<Arc<str>>>,
 	/// Clé du salon, pour le rejoindre.
 	#[serde(rename = "k")]
-	pub key: Option<secret::Secret<Arc<str>>>,
+	pub key: Option<Arc<str>>,
 	/// Nombre limite d'utilisateurs autorisés.
 	#[serde(rename = "l")]
 	pub limit: Option<u16>,

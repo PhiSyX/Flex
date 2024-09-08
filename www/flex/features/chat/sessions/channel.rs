@@ -24,7 +24,6 @@ use flex_chat::channel::{
 };
 use flex_chat::client::{Client, ClientsChannelSessionInterface};
 use flex_chat::mode::ApplyMode;
-use flex_web_framework::types::secret;
 
 use super::ClientsSession;
 use crate::features::ChatApplication;
@@ -136,7 +135,7 @@ impl ChannelsSessionInterface for ChannelsSession
 		channel_name: impl Into<
 			Cow<'a, <Self::Channel as ChannelInterface>::RefID<'a>>,
 		>,
-		channel_key: Option<secret::Secret<String>>,
+		channel_key: Option<String>,
 		flags: impl IntoIterator<
 			Item = ApplyMode<
 				<Self::Channel as ChannelSettingsInterface>::SettingsFlag,

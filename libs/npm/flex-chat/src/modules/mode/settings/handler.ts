@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { None } from "@phisyx/flex-safety";
 import { assert_channel_room } from "../../../asserts/room";
 import type { ChatStoreInterface } from "../../../store";
 
@@ -64,10 +65,11 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 				}
 
 				channel.set_setting_mode(letter);
-				if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
+				if (letter === "k"  && Object.hasOwn(mode.flag, "key")) {
+					channel.key.replace(mode.flag.key);
+				} else if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
 					channel.set_limit(mode.flag.limit);
-				}
-				if (letter === "t") {
+				} else if (letter === "t") {
 					channel.topic.set_editable(false);
 				}
 			}
@@ -80,10 +82,11 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 				}
 
 				channel.unset_setting_mode(letter);
-				if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
+				if (letter === "k"  && Object.hasOwn(mode.flag, "key")) {
+					channel.key = None();
+				} else if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
 					channel.set_limit(mode.flag.limit);
-				}
-				if (letter === "t") {
+				} else if (letter === "t") {
 					channel.topic.set_editable(true);
 				}
 			}
