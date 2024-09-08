@@ -77,5 +77,9 @@ export class ReplyNotopicHandler implements SocketEventInterface<"RPL_NOTOPIC">
 		let channel = maybe_channel.unwrap();
 		assert_channel_room(channel);
 		channel.unset_topic();
+
+		let event = channel.create_event(data);
+		// @ts-expect-error - à corriger
+		channel.add_event("event:no_topic", event);
 	}
 }

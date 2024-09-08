@@ -213,7 +213,7 @@ function delete_selected_masks_handler()
 			:id="`${layerName}_form`"
 			class="[ flex! gap=1 ]"
 			method="dialog"
-			@submit="submit_handler()"
+			@submit="submit_handler"
 		>
 			<h2 class="[ mt=0 ]">Historique des sujets</h2>
 
@@ -225,6 +225,7 @@ function delete_selected_masks_handler()
 				:disabled="!is_current_client_channel_member_can_edit_topic"
 			/>
 			<datalist id="topics">
+				<option value=""></option>
 				<option v-for="topic in room.topic.history" :value="topic" />
 			</datalist>
 

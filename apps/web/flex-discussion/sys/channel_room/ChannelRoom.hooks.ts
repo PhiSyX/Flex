@@ -15,7 +15,6 @@ import {
 	computed,
 	nextTick as next_tick,
 	ref,
-	watch
 } from "vue";
 
 // -------- //
@@ -107,7 +106,7 @@ export function use_channel_topic(props: Props, emit: Emits)
 {
 	let $topic = ref<HTMLInputElement>();
 	let topic_edit_mode = ref(false);
-	let topic_input = ref("");
+	let topic_input = ref(props.room.topic.get());
 
 	// Est-ce que le client courant peut éditer le sujet.
 	let current_client_member_can_edit_topic = computed(
@@ -129,11 +128,11 @@ export function use_channel_topic(props: Props, emit: Emits)
 		current_client_member_can_edit_topic,
 	});
 
-	watch(topic_edit_mode, (new_value) => {
-		if (new_value === false) {
-			topic_input.value = props.room.topic.get();
-		}
-	});
+	// watch(topic_edit_mode, (new_value) => {
+	// 	if (new_value === false) {
+	// 		topic_input.value = props.room.topic.get();
+	// 	}
+	// });
 
 	return {
 		$topic,
