@@ -25,7 +25,7 @@ import { format_date } from "@phisyx/flex-date";
 
 import { use_chat_store, use_overlayer_store, use_settings_store } from "~/store";
 
-import UserInfo from "#/api/userlist_user_info/UserlistUserInfo.vue";
+import ChannelUserlistUserInfo from "#/api/channel_userlist_user_info/ChannelUserlistUserInfo.vue";
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.template.vue";
 import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
 
@@ -362,7 +362,7 @@ function toggle_select_channel_member_handler(origin: Origin)
 		}"
 	>
 		<template #userlist-additional-info="{ member }">
-			<UserInfo :user-id="member.id" privacy="public" />
+			<ChannelUserlistUserInfo :user-id="member.id" privacy="public" />
 		</template>
 
 		<template v-if="room.kicked" #history>

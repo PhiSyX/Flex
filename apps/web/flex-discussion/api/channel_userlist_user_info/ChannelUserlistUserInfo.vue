@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/vue-query";
 import { calculate_age } from "@phisyx/flex-date";
 import { iso_to_country_flag } from "@phisyx/flex-helpers";
 
-import UserlistUserInfoPresenter from "#/sys/userlist_user_info/UserlistUserInfo.template.vue";
+import ChannelUserlistUserInfo from "#/sys/channel_userlist/ChannelUserlistUserInfo.vue";
 
 // ---- //
 // Type //
@@ -90,7 +90,7 @@ let user_flag = computed(() => {
 </script>
 
 <template>
-	<UserlistUserInfoPresenter
+	<ChannelUserlistUserInfo
 		v-if="!isLoading"
 		:age="age"
 		:from="user_info?.country || user_info?.city"

@@ -6,10 +6,10 @@ import { computed } from "vue";
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
-import ChannelUserlistAdminOperatorMenu from "./ChannelUserlistAccessLevelAOPMenu.vue";
-import ChannelUserlistHalfOperatorMenu from "./ChannelUserlistAccessLevelHOPMenu.vue";
-import ChannelUserlistOperatorMenu from "./ChannelUserlistAccessLevelOPMenu.vue";
-import ChannelUserlistOwnerMenu from "./ChannelUserlistAccessLevelQOPMenu.vue";
+import ChannelUserlistAdminOperatorMenu from "./MenuChannelUserlistAccessLevelAOP.vue";
+import ChannelUserlistHalfOperatorMenu from "./MenuChannelUserlistAccessLevelHOP.vue";
+import ChannelUserlistOperatorMenu from "./MenuChannelUserlistAccessLevelOP.vue";
+import ChannelUserlistOwnerMenu from "./MenuChannelUserlistAccessLevelQOP.vue";
 
 // ---- //
 // Type //

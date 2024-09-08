@@ -14,8 +14,8 @@ import { use_channel_topic } from "./ChannelRoom.hooks";
 
 import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
 import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue";
-import ChannelUserlistMenu from "#/sys/channel_userlist_menu/ChannelUserlistMenu.template.vue";
 import Match from "#/sys/match/Match.vue";
+import MenuChannelUserlist from "#/sys/menu_channel_userlist/MenuChannelUserlist.template.vue";
 import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
@@ -252,7 +252,7 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 					<!-- <slot name="userlist-menu" /> -->
 					<Match :maybe="currentClientMember.zip(selectedMember)">
 						<template #some="{ data: [ccm, sm] }">
-							<ChannelUserlistMenu
+							<MenuChannelUserlist
 								:current-client-member="ccm"
 								:selected-member="sm"
 								@ban-member="ban_member_handler"
