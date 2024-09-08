@@ -27,22 +27,22 @@ interface Emits
 // Composant //
 // --------- //
 
-const props = defineProps<Props>();
+const { priv } = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 let lastMessageDate = computed(() => {
-	let time = props.priv.last_message
+	let time = priv.last_message
 		.map((msg) => new Date(msg.time.datetime))
-		.unwrap_or(props.priv.created_at);
+		.unwrap_or(priv.created_at);
 	return format_date("H:i:s", time);
 });
 
 let lastMessage = computed(() => {
-	return props.priv.last_message.map((msg) => msg.message).unwrap_or("");
+	return priv.last_message.map((msg) => msg.message).unwrap_or("");
 });
 
 let user = computed(() =>
-	props.priv.get_participant_unchecked(props.priv.id())
+	priv.get_participant_unchecked(priv.id())
 );
 let open_private_title_attribute = computed(() => {
 	return `Ouvrir le privé de ${user.value.nickname}.`;
@@ -58,19 +58,17 @@ const open_private_handler = (priv: Origin) => emit("open-private", priv);
 <template>
 	<li class="[ pos-r ]">
 		<Avatar :id="user.id" size="6" style="contain: size" />
-		<PrivateNick
-			:nickname="user.nickname"
-			:is-current-client="user.is_current_client"
-			class="[ pt=1 ]"
-		/>
+		<PrivateNick :participant="user" class="[ pt=1 ]" />
 		<time>{{ lastMessageDate }}</time>
 		<p>{{ lastMessage }}</p>
 		<a
 			@click.prevent="open_private_handler(user)"
 			:id="user.id"
-            :title="open_private_title_attribute"
+			:title="open_private_title_attribute"
 			class="[ pos-a:full ]"
-		>{{ open_private_title_attribute }}</a>
+		>
+			{{ open_private_title_attribute }}
+		</a>
 	</li>
 </template>
 
@@ -93,8 +91,8 @@ p {
 }
 
 a {
-    color: transparent;
-    user-select: none;
+	color: transparent;
+	user-select: none;
 	cursor: pointer;
 }
 </style>

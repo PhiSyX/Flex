@@ -11,13 +11,14 @@ import { None, Some } from "@phisyx/flex-safety";
 
 import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";
 import Match from "#/sys/match/Match.vue";
-import PrivateNickComponent from "#/sys/private_nick/PrivateNick.template.vue";
+import PrivateNick from "#/sys/private_nick/PrivateNick.template.vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props {
+interface Props
+{
 	data: object & { origin: Origin | ChannelOrigin };
 	archived: boolean;
 	id: UUID;
@@ -48,7 +49,11 @@ interface Props {
 		| "privmsg";
 }
 
-type Emits = (event_name: "open-room", room_id: RoomID) => void;
+interface Emits
+{
+	// biome-ignore lint/style/useShorthandFunctionType: tkt
+	(event_name: "open-room", room_id: RoomID): void
+}
 
 // --------- //
 // Composant //
@@ -163,21 +168,20 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 				<Match :maybe="maybe_channel_member">
 					<template #some="{ data: cnick }">
 						<ChannelNick
-							tag="span"
 							:member="cnick"
 							:with-avatar="false"
 							prefix="<"
 							suffix=">"
+							tag="span"
 						/>
 					</template>
 				</Match>
 				<Match :maybe="maybe_private_nick">
 					<template #some="{ data: pnick }">
-						<PrivateNickComponent
-							tag="span"
-							:nickname="pnick.nickname"
-							:is-current-client="pnick.is_current_client"
+						<PrivateNick
+							:participant="pnick"
 							suffix=" :"
+							tag="span"
 						/>
 					</template>
 				</Match>

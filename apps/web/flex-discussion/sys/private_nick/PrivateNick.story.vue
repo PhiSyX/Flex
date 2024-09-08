@@ -1,12 +1,20 @@
 <script lang="ts" setup>
+import { PrivateParticipant, User } from "@phisyx/flex-chat";
+
 import PrivateNick from "./PrivateNick.template.vue";
 
-function init_state()
-{
-	return {
-		nickname: "PhiSyX",
-	};
-}
+let user = User.from({
+	id: "0000-0000-0000-0000" as UserID,
+	nickname: "PhiSyX",
+	ident: "PhiSyX",
+	host: {
+		cloaked: "cloaked-host",
+		vhost: "flex.chat",
+	},
+});
+
+let participant = new PrivateParticipant(user);
+let myself = new PrivateParticipant(user).with_is_current_client(true);
 </script>
 
 <template>
@@ -15,43 +23,24 @@ function init_state()
 		:layout="{ type: 'grid' }"
 		responsive-disabled
 	>
-		<Variant title="Default" :init-state="init_state">
-			<template #default="{ state }">
-				<PrivateNick tag="span" :nickname="state.nickname" />
-			</template>
+		<Variant title="Default">
+			<PrivateNick :participant="participant" />
 		</Variant>
 
-		<Variant title="Prefix" :init-state="init_state">
-			<template #default="{ state }">
-				<PrivateNick tag="span" :nickname="state.nickname" prefix="*" />
-			</template>
+		<Variant title="Prefix">
+			<PrivateNick :participant="participant" prefix="*" />
 		</Variant>
 
-		<Variant title="Suffix" :init-state="init_state">
-			<template #default="{ state }">
-				<PrivateNick tag="span" :nickname="state.nickname" suffix=":" />
-			</template>
+		<Variant title="Suffix">
+			<PrivateNick :participant="participant" suffix=":" />
 		</Variant>
 
-		<Variant title="Prefix/Suffix" :init-state="init_state">
-			<template #default="{ state }">
-				<PrivateNick
-					tag="span"
-					:nickname="state.nickname"
-					prefix="<"
-					suffix=">"
-				/>
-			</template>
+		<Variant title="Prefix/Suffix">
+			<PrivateNick :participant="participant" prefix="<" suffix=">" />
 		</Variant>
 
-		<Variant title="Myself" :init-state="init_state">
-			<template #default="{ state }">
-				<PrivateNick
-					tag="span"
-					:is-current-client="true"
-					:nickname="state.nickname"
-				/>
-			</template>
+		<Variant title="Myself">
+			<PrivateNick :participant="myself" />
 		</Variant>
 	</Story>
 </template>

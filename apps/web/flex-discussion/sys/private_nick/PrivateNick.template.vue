@@ -1,12 +1,13 @@
 <script lang="ts" setup>
+import type { PrivateParticipant } from '@phisyx/flex-chat';
+
 // ---- //
 // Type //
 // ---- //
 
 interface Props
 {
-	isCurrentClient?: boolean;
-	nickname: string;
+	participant: PrivateParticipant,
 	prefix?: string;
 	suffix?: string;
 	tag?: keyof HTMLElementTagNameMap;
@@ -20,9 +21,9 @@ withDefaults(defineProps<Props>(), { tag: "span" });
 </script>
 
 <template>
-	<component :is="tag" :data-myself="isCurrentClient">
+	<component :is="tag" :data-myself="participant.is_current_client">
 		<span class="prefix">{{ prefix }}</span>
-		<bdo>{{ nickname }}</bdo>
+		<bdo>{{ participant.nickname }}</bdo>
 		<span class="suffix">{{ suffix }}</span>
 	</component>
 </template>
