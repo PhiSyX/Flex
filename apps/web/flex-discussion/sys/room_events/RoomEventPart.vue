@@ -6,14 +6,14 @@ import { type Props, computeHostname } from "./RoomEvent.state";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<Props<"PART">>();
+const { data } = defineProps<Props<"PART">>();
 
-const hostname = computeHostname(props.data.origin);
+const hostname = computeHostname(data.origin);
 </script>
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p>
 		* Parts: <bdo>{{ data.origin.nickname }}</bdo> (<bdo>{{

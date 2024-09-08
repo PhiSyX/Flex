@@ -11,7 +11,7 @@ defineProps<Props<"SILENCE">>();
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p v-for="user of data.users">
 		<template v-if="data.added">

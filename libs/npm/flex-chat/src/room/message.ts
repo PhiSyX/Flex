@@ -15,7 +15,8 @@ import { format_date } from "@phisyx/flex-date";
 // ---- //
 
 // biome-ignore lint/suspicious/noExplicitAny: à corriger.
-type MessageProperties<T = any, D = object> = {
+export interface MessageProperties<T = any, D = object>
+{
 	data: D & { origin: Origin };
 	id: UUID;
 	archived: boolean;
@@ -60,7 +61,7 @@ export class RoomMessage<T = unknown, D = object>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(message: RoomMessage["message"]) 
+	constructor(message: RoomMessage["message"])
 	{
 		this.message = message;
 		this.with_time(new Date());
@@ -73,8 +74,15 @@ export class RoomMessage<T = unknown, D = object>
 	archived = false;
 	data!: MessageProperties<T, D>["data"];
 	id!: MessageProperties["id"];
-	formats!: MessageProperties["formats"];
-	colors!: MessageProperties["colors"];
+	formats: MessageProperties["formats"] = {
+		bold: null,
+		italic: null,
+		underline: null,
+	};
+	colors: MessageProperties["colors"] = {
+		background: null,
+		foreground: null,
+	};
 	is_current_client: MessageProperties["is_current_client"] = false;
 	mention = false;
 	message!: MessageProperties["message"];

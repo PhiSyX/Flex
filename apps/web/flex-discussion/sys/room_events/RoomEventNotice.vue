@@ -8,24 +8,27 @@ import type { Props } from "./RoomEvent.state";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<Props<"NOTICE">>();
+const { data, is_current_client } = defineProps<Props<"NOTICE">>();
 
 const target = computed(() =>
-	!props.data.target.startsWith("#")
-		? props.isCurrentClient
-			? props.data.target
-			: props.data.origin.nickname
-		: `${props.data.origin.nickname}:${props.data.target}`,
+	!data.target.startsWith("#")
+		? is_current_client
+			? data.target
+			: data.origin.nickname
+		: `${data.origin.nickname}:${data.target}`
 );
 </script>
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
-	<span v-if="isCurrentClient">&ndash;&gt;</span>
+	<span v-if="is_current_client">&ndash;&gt;</span>
 	<span v-else>&lt;&ndash;</span>
-	<p>-<strong>{{ target }}</strong>- {{ message }}</p>
+	<p>
+		-<strong>{{ target }}</strong
+		>- {{ message }}
+	</p>
 </template>
 
 <style scoped lang="scss">

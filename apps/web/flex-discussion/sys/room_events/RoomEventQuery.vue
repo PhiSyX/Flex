@@ -19,7 +19,7 @@ defineProps<PropsQuery>();
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p>
 		* Query:

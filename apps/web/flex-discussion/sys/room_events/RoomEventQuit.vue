@@ -8,14 +8,14 @@ import type { Props } from "./RoomEvent.state";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<Props<"QUIT">>();
+const { data } = defineProps<Props<"QUIT">>();
 
-const hostname = computeHostname(props.data.origin);
+const hostname = computeHostname(data.origin);
 </script>
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p>
 		* Quits: <span>{{ data.origin.nickname }}</span> (<span>{{

@@ -5,6 +5,7 @@ import { camelcase, kebabcase } from "@phisyx/flex-capitalization";
 import {
 	ChannelMember,
 	PrivateParticipant,
+	type RoomMessage,
 	is_channel,
 } from "@phisyx/flex-chat";
 import { None, Some } from "@phisyx/flex-safety";
@@ -19,65 +20,40 @@ import PrivateNick from "#/sys/private_nick/PrivateNick.template.vue";
 
 interface Props
 {
-	data: object & { origin: Origin | ChannelOrigin };
-	archived: boolean;
-	id: UUID;
-	formats?: {
-		bold?: boolean | null;
-		italic?: boolean | null;
-		underline?: boolean | null;
-	};
-	colors?: {
-		background?: number | null;
-		foreground?: number | null;
-	};
-	mention: boolean;
-	message: string;
-	isCurrentClient: boolean;
-	nickname: string;
-	target: unknown;
-	time: {
-		datetime: string;
-		formattedTime: string;
-	};
-	type:
-		| "action"
-		| `error:${string}`
-		| "event"
-		| `event:${string}`
-		| "pubmsg"
-		| "privmsg";
+	message: RoomMessage<unknown, object>;
 }
 
 interface Emits
 {
 	// biome-ignore lint/style/useShorthandFunctionType: tkt
-	(event_name: "open-room", room_id: RoomID): void
+	(event_name: "open-room", room_id: RoomID): void;
 }
 
 // --------- //
 // Composant //
 // --------- //
 
-const props = defineProps<Props>();
+const { message } = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 // NOTE: fournit depuis main.ts
 let events_components = inject<Array<string>>("events_components");
 
 let _is_channel = computed(
-	() => props.nickname !== "*" && is_channel(props.target),
+	() => message.nickname !== "*" && is_channel(message.target)
 );
 
-let _is_private = computed(() => props.nickname !== "*" && !_is_channel.value);
+let _is_private = computed(
+	() => message.nickname !== "*" && !_is_channel.value
+);
 
 let maybe_channel_member = computed(() => {
-	let member = new ChannelMember(props.data.origin).with_is_current_client(
-		props.isCurrentClient,
+	let member = new ChannelMember(message.data.origin).with_is_current_client(
+		message.is_current_client
 	);
 
-	if (Object.hasOwn(props.data.origin, "access_level")) {
-		member = member.with_access_level(...props.data.origin.access_level);
+	if (Object.hasOwn(message.data.origin, "access_level")) {
+		member = member.with_access_level(...message.data.origin.access_level);
 	}
 
 	return _is_channel.value ? Some(member) : None();
@@ -87,13 +63,27 @@ let maybe_private_nick = computed(() =>
 	_is_private.value
 		? Some(
 				new PrivateParticipant(
-					props.data.origin,
-				).with_is_current_client(props.isCurrentClient),
-			)
-		: None(),
+					message.data.origin
+				).with_is_current_client(message.is_current_client)
+		  )
+		: None()
 );
 
-let is_event = computed(() => props.type.startsWith("event:"));
+let is_event = computed(() => message.type.startsWith("event:"));
+
+let code = computed(() => {
+	if (Object.hasOwn(message.data, "code")) {
+		return message.data.code;
+	}
+	return undefined;
+});
+
+let event_name = computed(() => {
+	if (Object.hasOwn(message.data, "name")) {
+		return message.data.name;
+	}
+	return undefined;
+});
 
 let component_event_exists = computed(() => {
 	let component_name = camelcase(component_event_name.value, {
@@ -102,11 +92,11 @@ let component_event_exists = computed(() => {
 	return events_components?.includes(component_name) ?? false;
 });
 
-let component_event_name = computed(() => kebabcase(`room:${props.type}`));
+let component_event_name = computed(() => kebabcase(`room:${message.type}`));
 
 let is_external_message = computed(() => {
-	if (props.type === "pubmsg") {
-		let data = props.data as GenericReply<"PUBMSG">;
+	if (message.type === "pubmsg") {
+		let data = message.data as GenericReply<"PUBMSG">;
 		if (data.external) {
 			return Some(data.origin);
 		}
@@ -117,8 +107,8 @@ let is_external_message = computed(() => {
 
 let is_event_or_error = computed(
 	() =>
-		props.type.startsWith("error:err_") ||
-		props.type.startsWith("event:rpl_"),
+		message.type.startsWith("error:err_") ||
+		message.type.startsWith("event:rpl_")
 );
 
 // ------- //
@@ -130,28 +120,32 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 
 <template>
 	<li
-		:id="id"
-		:data-archived="archived"
+		:id="message.id"
+		:data-archived="message.archived"
+		:data-code="code"
+		:data-event="event_name"
 		:data-external="is_external_message.is_some()"
-		:data-mention="mention"
-		:data-myself="isCurrentClient"
-		:data-type="type"
+		:data-mention="message.mention"
+		:data-myself="message.is_current_client"
+		:data-type="message.type"
 		class="room/echo [ display-i max-w:max w:full ]"
-		:title="archived ? `Il s'agit d'un message archivé.` : undefined"
+		:title="
+			message.archived ? `Il s'agit d'un message archivé.` : undefined
+		"
 		@dblclick.stop
 	>
-		<strong v-if="mention">[mention]</strong>
+		<strong v-if="message.mention">[mention]</strong>
 
 		<template v-if="component_event_exists && is_event">
 			<component
 				:is="component_event_name"
-				v-bind="props"
+				v-bind="message"
 				@open-room="open_room_handler"
 			/>
 		</template>
 		<template v-else>
-			<time :datetime="time.datetime">
-				{{ time.formattedTime }}
+			<time :datetime="message.time.datetime">
+				{{ message.time.formatted_time }}
 			</time>
 
 			<template v-if="is_event_or_error"> * </template>
@@ -189,13 +183,13 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 
 			<p
 				:class="{
-					[`bg-color${colors?.background}`]:
-						colors?.background != null,
-					[`fg-color${colors?.foreground}`]:
-						colors?.foreground != null,
-					'text-bold': formats?.bold,
-					'text-italic': formats?.italic,
-					'text-underline': formats?.underline,
+					[`bg-color${message.colors?.background}`]:
+						message?.colors?.background != null,
+					[`fg-color${message.colors?.foreground}`]:
+						message?.colors?.foreground != null,
+					'text-bold': message?.formats?.bold,
+					'text-italic': message?.formats?.italic,
+					'text-underline': message?.formats?.underline,
 				}"
 			>
 				{{ message }}

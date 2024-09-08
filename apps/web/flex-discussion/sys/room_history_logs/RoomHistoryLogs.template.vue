@@ -78,12 +78,7 @@ function scroll()
 			<RoomMessageComponent
 				v-for="message in messages"
 				:key="message.id"
-				v-bind="message"
-				:is-current-client="message.is_current_client"
-				:time="{
-					datetime: message.time.datetime,
-					formattedTime: message.time.formatted_time
-				}"
+				:message="message"
 				@vue:mounted="scroll_handler"
 				@open-room="open_room_handler"
 			/>

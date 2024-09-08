@@ -14,16 +14,27 @@ import { computed } from "vue";
 // Type //
 // ---- //
 
-export interface Props<E extends keyof Replies> {
-	data: GenericReply<E>;
-	id: string;
+export interface Props<R extends RepliesNames>
+{
+	data: GenericReply<R>;
+	id: UUID;
+	archived: boolean;
+	formats?: {
+		bold: boolean | null;
+		italic: boolean | null;
+		underline: boolean | null;
+	};
+	colors?: {
+		background: number | null;
+		foreground: number | null;
+	};
 	message: string;
-	isCurrentClient: boolean;
+	is_current_client: boolean;
 	nickname: string;
 	target: string;
 	time: {
 		datetime: string;
-		formattedTime: string;
+		formatted_time: string;
 	};
 	type:
 		| "action"

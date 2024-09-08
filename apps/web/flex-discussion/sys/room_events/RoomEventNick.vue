@@ -11,7 +11,7 @@ defineProps<Props<"NICK">>();
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p>
 		<span>{{ data.old_nickname }}</span> est désormais connu sous le nom de

@@ -9,19 +9,19 @@ import type { Props } from "./RoomEvent.state";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<Props<"RPL_TOPIC">>();
+const { data } = defineProps<Props<"RPL_TOPIC">>();
 
-const updated_at = computed(() => {
-	return format_date("d/m/Y à H:i:s", new Date(props.data.updated_at));
-});
+const updated_at = computed(() =>
+	format_date("d/m/Y à H:i:s", new Date(data.updated_at)),
+);
 </script>
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p v-if="data.updated">
-		<template v-if="isCurrentClient">
+		<template v-if="is_current_client">
 			<strong>Tu</strong> as mis à jour le sujet du salon
 			<span>{{ data.channel }}: </span> <q>{{ data.topic }}</q>
 		</template>

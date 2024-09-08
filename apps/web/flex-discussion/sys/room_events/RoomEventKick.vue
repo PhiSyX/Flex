@@ -5,7 +5,8 @@ import type { Props } from "./RoomEvent.state";
 // Type //
 // ---- //
 
-interface Emits {
+interface Emits
+{
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "open-room", roomName: string): void;
@@ -16,16 +17,16 @@ interface Emits {
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<Props<"KICK">>();
+const { data } = defineProps<Props<"KICK">>();
 
 const emit = defineEmits<Emits>();
 
-const open_channel_handler = () => emit("open-room", props.data.channel);
+const open_channel_handler = () => emit("open-room", data.channel);
 </script>
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p>
 		* Kicks:
@@ -35,7 +36,7 @@ const open_channel_handler = () => emit("open-room", props.data.channel);
 		(Raison: <q>{{ data.reason }}</q
 		>)
 	</p>
-	<span v-if="isCurrentClient" @dblclick="open_channel_handler">
+	<span v-if="is_current_client" @dblclick="open_channel_handler">
 		({{ data.channel }})
 	</span>
 </template>

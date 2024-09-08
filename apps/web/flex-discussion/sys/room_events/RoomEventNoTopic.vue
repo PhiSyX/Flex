@@ -1,37 +1,30 @@
 <script setup lang="ts">
-import type { Props } from "./RoomEvent.state";
-
-import { computed } from "vue";
+import type { Props } from './RoomEvent.state';
 
 // --------- //
 // Composant //
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const { data } = defineProps<Props<"RPL_AWAY">>();
-
-const message = computed(() =>
-	data.message.slice(data.nick.length + " :".length),
-);
+defineProps<Props<"RPL_NOTOPIC">>();
 </script>
 
 <template>
 	<time :datetime="time.datetime">
 		{{ time.formatted_time }}
 	</time>
-	<p>
-		* <span>{{ data.nick }}</span> est absent:
-		<q>{{ message }}</q>
-	</p>
+	<p>* {{ data.message }}</p>
 </template>
 
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
 p {
-	color: var(--color-grey400);
+	color: var(--color-green400);
 }
 
+q,
+strong,
 span {
 	color: var(--default-text-color);
 }

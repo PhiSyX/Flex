@@ -6,16 +6,16 @@ import { type Props, computeHostname } from "./RoomEvent.state";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<Props<"JOIN">>();
+const { data } = defineProps<Props<"JOIN">>();
 
-const hostname = computeHostname(props.data.origin);
+const hostname = computeHostname(data.origin);
 </script>
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
-	<p v-if="isCurrentClient">
+	<p v-if="is_current_client">
 		<strong><span>Tu</span></strong> as rejoint le salon
 		<span>{{ data.channel }}</span>
 	</p>

@@ -8,30 +8,30 @@ import { computed } from "vue";
 // --------- //
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<Props<"MODE">>();
+const { data } = defineProps<Props<"MODE">>();
 
-let added_modes_keys = computed(() => Object.keys(props.data.added));
+let added_modes_keys = computed(() => Object.keys(data.added));
 let has_added_modes = computed(() => added_modes_keys.value.length > 0);
 
-let removed_modes_keys = computed(() => Object.keys(props.data.removed));
+let removed_modes_keys = computed(() => Object.keys(data.removed));
 let has_removed_modes = computed(() => removed_modes_keys.value.length > 0);
 
 let updated_by = computed(() => {
-	let x = Object.values(props.data.added).at(-1)?.[1].updated_by;
-	let y = Object.values(props.data.removed).at(-1)?.[1].updated_by;
+	let x = Object.values(data.added).at(-1)?.[1].updated_by;
+	let y = Object.values(data.removed).at(-1)?.[1].updated_by;
 	return x || y;
 });
 
 let settings_word = computed(() =>
-	props.data.target.startsWith("#")
+	data.target.startsWith("#")
 		? "Paramètres du salon"
-		: "Modes utilisateur",
+		: "Modes utilisateur"
 );
 </script>
 
 <template>
 	<time :datetime="time.datetime">
-		{{ time.formattedTime }}
+		{{ time.formatted_time }}
 	</time>
 	<p>
 		<template v-if="!data.updated">* {{ settings_word }}: </template>
@@ -53,14 +53,14 @@ let settings_word = computed(() =>
 		{{ " " }}
 		<bdo v-for="[letter, mode] of data.added">
 			{{ mode.args.join(" ") }}{{ " " }}
-			<span v-if="['k','l'].includes(letter)">
+			<span v-if="['k', 'l'].includes(letter)">
 				{{ Object.values(mode.flag).join(", ") }}
 			</span>
 		</bdo>
 		{{ " " }}
 		<bdo v-for="[letter, mode] of data.removed">
 			{{ mode.args.join(" ") }}{{ " " }}
-			<span v-if="['k','l'].includes(letter)">
+			<span v-if="['k', 'l'].includes(letter)">
 				{{ Object.values(mode.flag).join(", ") }}
 			</span>
 		</bdo>
