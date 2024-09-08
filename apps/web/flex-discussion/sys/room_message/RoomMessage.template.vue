@@ -17,8 +17,7 @@ import PrivateNickComponent from "#/sys/private_nick/PrivateNick.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	data: object & { origin: Origin | ChannelOrigin };
 	archived: boolean;
 	id: UUID;
@@ -68,23 +67,25 @@ let _is_channel = computed(
 let _is_private = computed(() => props.nickname !== "*" && !_is_channel.value);
 
 let maybe_channel_member = computed(() => {
-	let member = new ChannelMember(props.data.origin)
-		.with_is_current_client(props.isCurrentClient);
+	let member = new ChannelMember(props.data.origin).with_is_current_client(
+		props.isCurrentClient,
+	);
 
 	if (Object.hasOwn(props.data.origin, "access_level")) {
-		member = member.with_access_level(props.data.origin.access_level);
+		member = member.with_access_level(...props.data.origin.access_level);
 	}
 
 	return _is_channel.value ? Some(member) : None();
 });
 
-let maybe_private_nick = computed(
-	() => _is_private.value
+let maybe_private_nick = computed(() =>
+	_is_private.value
 		? Some(
-				new PrivateParticipant(props.data.origin)
-					.with_is_current_client(props.isCurrentClient),
+				new PrivateParticipant(
+					props.data.origin,
+				).with_is_current_client(props.isCurrentClient),
 			)
-		: None()
+		: None(),
 );
 
 let is_event = computed(() => props.type.startsWith("event:"));
@@ -110,10 +111,9 @@ let is_external_message = computed(() => {
 });
 
 let is_event_or_error = computed(
-	() =>  (
+	() =>
 		props.type.startsWith("error:err_") ||
-		props.type.startsWith("event:rpl_")
-	)
+		props.type.startsWith("event:rpl_"),
 );
 
 // ------- //
@@ -164,10 +164,8 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 					<template #some="{ data: cnick }">
 						<ChannelNick
 							tag="span"
-							:nickname="cnick.nickname"
-							:symbol="cnick.access_level.highest.symbol"
-							:classes="cnick.class_name"
-							:is-current-client="cnick.is_current_client"
+							:member="cnick"
+							:with-avatar="false"
 							prefix="<"
 							suffix=">"
 						/>
@@ -187,13 +185,17 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 
 			<p
 				:class="{
-					[`bg-color${colors?.background}`]: colors?.background != null,
-					[`fg-color${colors?.foreground}`]: colors?.foreground != null,
+					[`bg-color${colors?.background}`]:
+						colors?.background != null,
+					[`fg-color${colors?.foreground}`]:
+						colors?.foreground != null,
 					'text-bold': formats?.bold,
-					'text-italic':formats?.italic,
+					'text-italic': formats?.italic,
 					'text-underline': formats?.underline,
 				}"
-			>{{ message }}</p>
+			>
+				{{ message }}
+			</p>
 		</template>
 	</li>
 </template>

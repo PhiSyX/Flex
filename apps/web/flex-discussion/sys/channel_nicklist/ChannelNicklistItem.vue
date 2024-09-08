@@ -7,10 +7,10 @@ import type {
 
 import { defineAsyncComponent, onErrorCaptured } from "vue";
 
-import ChannelNickComponent from "#/sys/channel_nick/ChannelNick.template.vue";
+import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";
 
 const UserInfo = defineAsyncComponent(
-	() => import("#/api/userlist_user_info/UserlistUserInfo.vue"),
+	() => import("#/api/userlist_user_info/UserlistUserInfo.vue")
 );
 
 onErrorCaptured((_err) => false);
@@ -68,26 +68,14 @@ const select_user_handler = (member: ChannelMember) =>
 					@dblclick="open_private_handler(filtered_member)"
 					@click="select_user_handler(filtered_member)"
 				>
-					<ChannelNickComponent
+					<ChannelNick
 						tag="div"
-						:id="filtered_member.id"
-						:classes="filtered_member.class_name"
-						:hits="
-							Object.hasOwn(filtered_member, 'search_hits')
-								? filtered_member.search_hits
-								: []
-						"
-						:is-current-client="filtered_member.is_current_client"
-						:nickname="filtered_member.nickname"
-						:symbol="filtered_member.access_level.highest.symbol"
+						:member="filtered_member"
 						:title="channel_member_title_attribute"
 						class="channel/nick [ flex:full ]"
 					/>
 
-					<UserInfo
-						:user-id="filtered_member.id"
-						privacy="public"
-					/>
+					<UserInfo :user-id="filtered_member.id" privacy="public" />
 				</li>
 			</template>
 		</ul>

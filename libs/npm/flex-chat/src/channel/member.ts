@@ -70,19 +70,16 @@ export class ChannelMember extends User
 	/**
 	 * Définit le niveau d'accès du pseudo.
 	 */
-	with_access_level(level: ChannelAccessLevelFlag | Array<string>): this
+	with_access_level(...levels: Array<ChannelAccessLevelFlag | string>): this
 	{
-		if (Array.isArray(level)) {
-			let levels = this.access_level.parse(level);
-
-			for (let level of levels) {
+		for (let level of levels) {
+			if (typeof level === "string") {
+				this.access_level.add(this.access_level.parse_one(level));
+			} else {
 				this.access_level.add(level);
 			}
-
-			return this;
 		}
 
-		this.access_level.add(level);
 		return this;
 	}
 }

@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import type { ChannelMemberSearchHits } from "@phisyx/flex-chat";
+import {
+	type ChannelMember,
+	type ChannelMemberFiltered,
+	type ChannelMemberUnfiltered,
+	type User,
+	is_channel_member,
+} from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
@@ -11,14 +17,14 @@ import Avatar from "#/api/avatar/Avatar.vue";
 
 interface Props
 {
-	id?: string;
-	classes?: string;
-	hits?: Array<ChannelMemberSearchHits>;
-	isCurrentClient?: boolean;
-	nickname: string;
+	member:
+		| ChannelMember
+		| ChannelMemberFiltered
+		| ChannelMemberUnfiltered
+		| User;
+	withAvatar?: boolean;
 	prefix?: string;
 	suffix?: string;
-	symbol?: string;
 	tag?: keyof HTMLElementTagNameMap;
 }
 
@@ -26,22 +32,42 @@ interface Props
 // Composant //
 // --------- //
 
-const props =withDefaults(defineProps<Props>(), { tag: "bdo" });
+const { member, tag = "span", withAvatar = true } = defineProps<Props>();
 
-let avatar_alt = computed(
-	() => props.id 
-		? `Avatar du compte de ${props.nickname}.`
+let avatar_alt = computed(() =>
+	withAvatar && member.id
+		? `Avatar du compte de ${member.nickname}.`
 		: undefined
 );
-let avatar_or_span = computed(() => props.id ? Avatar : "span");
+let avatar_or_span = computed(() =>
+	withAvatar && member.id ? Avatar : "span"
+);
+
+let hits = computed(() =>
+	Object.hasOwn(member, "search_hits") ? member.search_hits : []
+);
+
+let symbol = computed(() => {
+	if (is_channel_member(member)) {
+		return member.access_level.highest.symbol;
+	}
+	if (Object.hasOwn(member, "access_level")) {
+		return member.access_level.highest.symbol;
+	}
+	return undefined;
+});
 </script>
 
 <template>
-	<component :is="tag" :data-myself="isCurrentClient" :class="classes">
-		<component :is="avatar_or_span" :id="id" :alt="avatar_alt">
+	<component
+		:is="tag"
+		:data-myself="member.is_current_client"
+		:class="member.class_name"
+	>
+		<component :is="avatar_or_span" :id="member.id" :alt="avatar_alt">
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
-			<span class="channel/nick:symbol">{{ symbol }}</span>
-			<bdo v-if="hits && hits.length > 0" :class="classes">
+			<span v-if="symbol" class="channel/nick:symbol">{{ symbol }}</span>
+			<bdo v-if="hits && hits.length > 0" :class="member.class_name">
 				<template v-for="(substring, idx) of hits" :key="idx">
 					<mark
 						:key="idx + '!'"
@@ -50,10 +76,10 @@ let avatar_or_span = computed(() => props.id ? Avatar : "span");
 					>
 						{{ substring.word }}
 					</mark>
-					<mark v-else :key="idx + '?'">{{ nickname }}</mark>
+					<mark v-else :key="idx + '?'">{{ member.nickname }}</mark>
 				</template>
 			</bdo>
-			<bdo v-else :class="classes">{{ nickname }}</bdo>
+			<bdo v-else :class="member.class_name">{{ member.nickname }}</bdo>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 		</component>
 	</component>

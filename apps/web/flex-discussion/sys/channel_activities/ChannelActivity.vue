@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ChannelActivity, is_channel_member } from "@phisyx/flex-chat";
+import type { ChannelActivity } from "@phisyx/flex-chat";
 
 import ChannelNick from "../channel_nick/ChannelNick.template.vue";
 import Match from "../match/Match.vue";
@@ -40,17 +40,7 @@ defineProps<Props>();
 
 					<Match :maybe="previous_message.member">
 						<template #some="{ data: member }">
-							<ChannelNick
-								:id="member.id"
-								:is-current-client="member.is_current_client"
-								:nickname="member.nickname"
-								:classes="member.class_name"
-								:symbol="
-									is_channel_member(member)
-										? member.access_level.highest.symbol
-										: undefined
-								"
-							/>
+							<ChannelNick :member="member" />
 						</template>
 					</Match>
 
@@ -75,17 +65,7 @@ defineProps<Props>();
 
 				<Match :maybe="activity.member">
 					<template #some="{ data: member }">
-						<ChannelNick
-							:id="member.id"
-							:is-current-client="member.is_current_client"
-							:nickname="member.nickname"
-							:classes="member.class_name"
-							:symbol="
-								is_channel_member(member)
-									? member.access_level.highest.symbol
-									: undefined
-							"
-						/>
+						<ChannelNick :member="member" />
 					</template>
 				</Match>
 

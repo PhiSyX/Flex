@@ -45,7 +45,7 @@ export class ReplyNamreplyHandler
 
 			let new_member = new ChannelMember(user)
 				.with_is_current_client(this.store.is_current_client(user))
-				.with_access_level(user_origin.access_level);
+				.with_access_level(...user_origin.access_level);
 
 			let maybe_channel_member = channel.get_member(user.id);
 			if (maybe_channel_member.is_some()) {
