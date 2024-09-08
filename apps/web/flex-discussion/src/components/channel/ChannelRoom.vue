@@ -25,6 +25,7 @@ import { format_date } from "@phisyx/flex-date";
 
 import { use_chat_store, use_overlayer_store, use_settings_store } from "~/store";
 
+import UserInfo from "#/api/userlist_user_info/UserlistUserInfo.vue";
 import ChannelRoomComponent from "#/sys/channel_room/ChannelRoom.template.vue";
 import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
 
@@ -135,7 +136,7 @@ let completion_list = computed(() => chat_store.all_commands(props.room));
 
 let room_info_position = computed(
 	() => settings_store.layout.channel_userlist_position === 'left'
-		? 0 
+		? 0
 		: 1
 );
 
@@ -360,6 +361,10 @@ function toggle_select_channel_member_handler(origin: Origin)
 			'--room-info-position': room_info_position,
 		}"
 	>
+		<template #userlist-additional-info="{ member }">
+			<UserInfo :user-id="member.id" privacy="public" />
+		</template>
+
 		<template v-if="room.kicked" #history>
 			<ChannelRoomKicked
 				:last-message="room.last_message.unwrap()"

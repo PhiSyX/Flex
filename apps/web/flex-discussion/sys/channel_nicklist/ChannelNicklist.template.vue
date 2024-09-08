@@ -26,6 +26,7 @@ interface Props
 		original: Array<ChannelMember>;
 		filtered: Array<ChannelMemberFiltered | ChannelMemberUnfiltered>;
 	};
+	useIconInsteadOfAvatar?: boolean;
 }
 
 interface Emits
@@ -34,12 +35,18 @@ interface Emits
 	(event_name: "select-member", origin: Origin): void;
 }
 
+interface Slots
+{
+	"user-info": (_: { member: ChannelMember }) => unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 let moderators_list = computed<Array<
 	| ChannelMember
@@ -110,28 +117,43 @@ const select_user_handler  = (member: Origin) => emit("select-member", member);
 			v-if="moderators.original.length > 0"
 			:list="moderators_list"
 			:open="moderators_list.length > 0"
+			:use-icon-instead-of-avatar="useIconInsteadOfAvatar"
 			title="Modérateurs"
 			@open-private="open_private_handler"
 			@select-member="select_user_handler"
-		/>
+		>
+			<template #user-info="{ member }">
+				<slot name="user-info" :member="member" />
+			</template>
+		</ChannelNicklistItem>
 
 		<ChannelNicklistItem
 			v-if="vips.original.length > 0"
 			:list="vips_list"
 			:open="vips_list.length > 0"
+			:use-icon-instead-of-avatar="useIconInsteadOfAvatar"
 			title="VIP"
 			@open-private="open_private_handler"
 			@select-member="select_user_handler"
-		/>
+		>
+			<template #user-info="{ member }">
+				<slot name="user-info" :member="member" />
+			</template>
+		</ChannelNicklistItem>
 
 		<ChannelNicklistItem
 			v-if="users.original.length > 0"
 			:list="users_list"
 			:open="users_list.length > 0"
+			:use-icon-instead-of-avatar="useIconInsteadOfAvatar"
 			title="Utilisateurs"
 			@open-private="open_private_handler"
 			@select-member="select_user_handler"
-		/>
+		>
+			<template #user-info="{ member }">
+				<slot name="user-info" :member="member" />
+			</template>
+		</ChannelNicklistItem>
 	</fieldset>
 </template>
 

@@ -43,18 +43,19 @@ const props = withDefaults(defineProps<Props>(), {
 	endpoint: API_V1_USER_INFO_ENDPOINT,
 });
 
-async function fetcher(): Promise<UserInfo>
-{
+async function fetcher(): Promise<UserInfo> {
 	let res = await fetch(
 		// TODO: Créer un URL builder
-		`${props.endpoint.replace(":userid", props.userId)}?privacy=${props.privacy}`,
+		`${props.endpoint.replace(":userid", props.userId)}?privacy=${
+			props.privacy
+		}`,
 		{
 			headers: {
 				"Content-Type": "application/json",
 			},
 			// signal: AbortSignal.any([abort_ctrl.signal, timeout_sig]),
 			credentials: "same-origin",
-		},
+		}
 	);
 	return res.json();
 }

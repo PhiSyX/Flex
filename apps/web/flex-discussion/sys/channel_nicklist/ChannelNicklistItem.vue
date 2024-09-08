@@ -5,15 +5,7 @@ import type {
 	ChannelMemberUnfiltered,
 } from "@phisyx/flex-chat";
 
-import { defineAsyncComponent, onErrorCaptured } from "vue";
-
 import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";
-
-const UserInfo = defineAsyncComponent(
-	() => import("#/api/userlist_user_info/UserlistUserInfo.vue")
-);
-
-onErrorCaptured((_err) => false);
 
 // ---- //
 // Type //
@@ -22,10 +14,13 @@ onErrorCaptured((_err) => false);
 interface Props
 {
 	list: Array<
-		ChannelMemberFiltered | ChannelMemberUnfiltered | ChannelMember
+		| ChannelMemberFiltered
+		| ChannelMemberUnfiltered
+		| ChannelMember
 	>;
 	title: string;
 	open?: boolean;
+	useIconInsteadOfAvatar?: boolean;
 }
 
 interface Emits
@@ -34,12 +29,18 @@ interface Emits
 	(event_name: "select-member", origin: Origin): void;
 }
 
+interface Slots
+{
+	"user-info": (_: { member: Props["list"][number] }) => unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 defineProps<Props>();
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 let channel_member_title_attribute =
 	"· Simple clique: ouvrir le menu du membre du salon... \n" +
@@ -71,11 +72,12 @@ const select_user_handler = (member: ChannelMember) =>
 					<ChannelNick
 						tag="div"
 						:member="filtered_member"
+						:with-avatar="!useIconInsteadOfAvatar"
 						:title="channel_member_title_attribute"
 						class="channel/nick [ flex:full ]"
 					/>
 
-					<UserInfo :user-id="filtered_member.id" privacy="public" />
+					<slot name="user-info" :member="filtered_member" />
 				</li>
 			</template>
 		</ul>

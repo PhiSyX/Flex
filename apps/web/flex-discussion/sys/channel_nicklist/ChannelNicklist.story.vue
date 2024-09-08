@@ -6,6 +6,7 @@ import {
 	User,
 } from "@phisyx/flex-chat";
 
+import UserlistUserInfo from "../userlist_user_info/UserlistUserInfo.template.vue";
 import ChannelNicklist from "./ChannelNicklist.template.vue";
 
 let origin1: User = new User({
@@ -29,9 +30,15 @@ let origin3: User = new User({
 
 let moderators_original = [
 	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.Owner),
-	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.AdminOperator),
-	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.Operator),
-	new ChannelMember(origin1).with_access_level(ChannelAccessLevelFlag.HalfOperator),
+	new ChannelMember(origin1).with_access_level(
+		ChannelAccessLevelFlag.AdminOperator,
+	),
+	new ChannelMember(origin1).with_access_level(
+		ChannelAccessLevelFlag.Operator,
+	),
+	new ChannelMember(origin1).with_access_level(
+		ChannelAccessLevelFlag.HalfOperator,
+	),
 ];
 let moderators = {
 	original: moderators_original,
@@ -68,7 +75,26 @@ let users = {
 				:moderators="moderators"
 				:vips="vips"
 				:users="users"
+				:use-icon-instead-of-avatar="true"
 			/>
+		</Variant>
+
+		<Variant title="Additional User Info">
+			<ChannelNicklist
+				filter-input=""
+				:moderators="moderators"
+				:vips="vips"
+				:users="users"
+				:use-icon-instead-of-avatar="true"
+			>
+				<template #user-info="{ member: _ }">
+					<UserlistUserInfo
+						:age="24"
+						from="Italie"
+						user-flag="IT"
+					/>
+				</template>
+			</ChannelNicklist>
 		</Variant>
 	</Story>
 </template>

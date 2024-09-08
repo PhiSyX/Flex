@@ -18,16 +18,16 @@ defineProps<Props>();
 </script>
 
 <template>
-	<div
+	<span
 		class="[ f-size=13px ]"
 		:class="{
 			'vis:h': age === null,
 		}"
 	>
 		{{ age }} ans
-	</div>
+	</span>
 
-	<div
+	<span
 		class="[ f-size=13px f-family=emoji ]"
 		:class="{
 			'vis:h': userFlag === null,
@@ -35,5 +35,5 @@ defineProps<Props>();
 		:title="from"
 	>
 		{{ userFlag }}
-	</div>
+	</span>
 </template>

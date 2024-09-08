@@ -87,6 +87,7 @@ chan.members.add(
 				:selected-member="None()"
 				:room="chan"
 				:userlist-displayed-by-default="true"
+				:use-icon-instead-of-avatar="true"
 			/>
 		</Variant>
 
@@ -98,6 +99,7 @@ chan.members.add(
 				:selected-member="None()"
 				:room="chan"
 				:userlist-displayed-by-default="true"
+				:use-icon-instead-of-avatar="true"
 			>
 				<template #history>
 					<ChannelRoomKicked

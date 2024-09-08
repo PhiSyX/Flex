@@ -44,7 +44,11 @@ users.add(
 <template>
 	<Story title="Molecules/ChannelUserlist" responsive-disabled>
 		<Variant title="Default">
-			<ChannelUserlist :name="channel_name" :members="users" />
+			<ChannelUserlist
+				:name="channel_name"
+				:members="users"
+				:use-icon-instead-of-avatar="true"
+			/>
 		</Variant>
 	</Story>
 </template>

@@ -2,9 +2,7 @@
 import type {
 	ChannelAccessLevelFlag,
 	ChannelActivitiesView,
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelRoom,
+	ChannelMember, ChannelMemberSelected, ChannelRoom
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
@@ -38,6 +36,7 @@ export interface Props
 	textColorBackground?: number | null;
 	textColorForeground?: number | null;
 	userlistDisplayedByDefault: boolean;
+	useIconInsteadOfAvatar?: boolean;
 }
 
 export interface Emits
@@ -78,12 +77,19 @@ export interface Emits
 	(event_name: "update-topic", topic: string): void;
 }
 
+interface Slots
+{
+	history: unknown;
+	"userlist-additional-info": (_: { member: ChannelMember }) => unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 let {
 	$topic,
@@ -233,10 +239,15 @@ const unset_access_level_handler = (member: ChannelMember, flag: ChannelAccessLe
 					<ChannelUserlist
 						:name="room.name"
 						:members="room.members"
+						:use-icon-instead-of-avatar="useIconInsteadOfAvatar"
 						class="room/userlist [ flex:full ov:h ]"
 						@open-private="open_private_handler"
 						@select-member="select_channel_member_handler"
-					/>
+					>
+						<template #user-info="{ member }">
+							<slot name="userlist-additional-info" :member="member" />
+						</template>
+					</ChannelUserlist>
 
 					<!-- <slot name="userlist-menu" /> -->
 					<Match :maybe="currentClientMember.zip(selectedMember)">

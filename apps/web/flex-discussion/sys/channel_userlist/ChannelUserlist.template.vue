@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ChannelMembers } from "@phisyx/flex-chat";
+import type { ChannelMember, ChannelMembers } from "@phisyx/flex-chat";
 
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
@@ -17,6 +17,7 @@ export interface Props
 {
 	name: string;
 	members: ChannelMembers;
+	useIconInsteadOfAvatar?: boolean;
 }
 
 interface Emits
@@ -25,19 +26,21 @@ interface Emits
 	(event_name: "select-member", origin: Origin): void;
 }
 
+interface Slots
+{
+	"user-info": (_: { member: ChannelMember }) => unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
-const {
-	filter_nick,
-	moderators_filtered,
-	vips_filtered,
-	users_filtered
-} = use_inputfilter_userlist(props);
+const { filter_nick, moderators_filtered, vips_filtered, users_filtered } =
+	use_inputfilter_userlist(props);
 
 const { filter_view, view } = use_filter_view();
 
@@ -46,7 +49,8 @@ const { filter_view, view } = use_filter_view();
 // ------- //
 
 const open_private_handler = (origin: Origin) => emit("open-private", origin);
-const select_channel_member_handler = (origin: Origin) => emit("select-member", origin);
+const select_channel_member_handler = (origin: Origin) =>
+	emit("select-member", origin);
 </script>
 
 <template>
@@ -82,9 +86,14 @@ const select_channel_member_handler = (origin: Origin) => emit("select-member", 
 					original: members.users,
 					filtered: users_filtered,
 				}"
+				:use-icon-instead-of-avatar="useIconInsteadOfAvatar"
 				@open-private="open_private_handler"
 				@select-member="select_channel_member_handler"
-			/>
+			>
+				<template #user-info="{ member }">
+					<slot name="user-info" :member="member" />
+				</template>
+			</component>
 		</KeepAlive>
 	</div>
 </template>
