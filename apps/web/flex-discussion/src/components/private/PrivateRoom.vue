@@ -7,6 +7,7 @@ import { ChangeFormatsColorsDialog, UserChangeNicknameDialog } from "@phisyx/fle
 
 import { use_chat_store, use_overlayer_store, use_settings_store } from "~/store";
 
+import Avatar from "#/api/avatar/Avatar.vue";
 import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
 
 // ---- //
@@ -131,5 +132,13 @@ const send_silence_user_command_handler = (apply_state: "+" | "-") => (
 		@open-room="open_room_handler"
 		@send-message="send_message_handler"
 		@unignore-user="(o) => send_silence_user_command_handler('-')(o)"
-	/>
+	>
+		<template #avatar="{ recipient }">
+			<Avatar
+				:key="recipient.id"
+				:id="recipient.id"
+				:alt="`Avatar du compte de ${recipient.nickname}.`"
+			/>
+		</template>
+	</PrivateRoomComponent>
 </template>

@@ -118,6 +118,7 @@ chan.members.add(
 	color: var(--default-text-color);
 }
 
+#app [data-v-app] > div,
 .room\/channel {
 	height: 100%;
 }

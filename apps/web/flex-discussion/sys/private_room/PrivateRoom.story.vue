@@ -65,7 +65,8 @@ let recipient: PrivateParticipant = new PrivateParticipant(origin1);
 	color: var(--default-text-color);
 }
 
-.room\/private {
+#app [data-v-app] > div,
+#app [data-v-app] .room\/private {
 	height: 100%;
 }
 </style>

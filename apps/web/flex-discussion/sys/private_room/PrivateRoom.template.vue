@@ -3,9 +3,8 @@ import type { PrivateParticipant, PrivateRoom } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
-import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
+import { Alert, ButtonIcon, UiButton, UiImage } from "@phisyx/flex-vue-uikit";
 
-import Avatar from "#/api/avatar/Avatar.vue";
 import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
@@ -38,12 +37,18 @@ interface Emits
 	(event_name: "unignore-user", nickname: string): void;
 }
 
+interface Slots
+{
+	"avatar": (_: { recipient: PrivateParticipant }) => unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 // Est-ce que le client courant est le participant lui-même?
 let is_current_client_participant_himself = computed(() =>
@@ -55,7 +60,6 @@ let ignore_btn_title_attribute = computed(
 		? `Ne plus ignorer ${props.recipient.nickname}`
 		: `Ignorer ${props.recipient.nickname}`
 );
-let image_alt = computed(() => `Avatar du compte de ${props.recipient.nickname}.`);
 
 // ------- //
 // Handler //
@@ -74,7 +78,6 @@ function toggle_ignore_user_handler()
 		emit("ignore-user", props.recipient.nickname);
 	}
 }
-// props.room.is_pending()
 </script>
 
 <template>
@@ -102,11 +105,13 @@ function toggle_ignore_user_handler()
 			</template>
 
 			<template #topic-action>
-				<Avatar
-					:key="recipient.id"
-					:id="recipient.id"
-					:alt="image_alt"
-				/>
+				<slot name="avatar" :recipient="recipient">
+					<UiImage
+						src="/img/default-avatar.png"
+						:title="`Avatar du compte de ${recipient.nickname}.`"
+					/>
+				</slot>
+
 				<UiButton
 					v-if="!is_current_client_participant_himself"
 					icon="user-block"
