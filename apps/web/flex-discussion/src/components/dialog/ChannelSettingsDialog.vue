@@ -61,7 +61,6 @@ function update_topic_handler(topic?: string)
 		<ChannelSettingsDialogComponent
 			v-bind="layer_unsafe.data"
 			:layer-name="layer_name"
-			:current-client-channel-member="layer_unsafe.data.current_client_channel_member"
 			@close="close_dialog"
 			@submit="submit_form_data_handler"
 			@update-topic="update_topic_handler"

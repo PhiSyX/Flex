@@ -211,7 +211,7 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
 {
 	ChannelSettingsDialog.create(overlayer_store.store as OverlayerStore, {
 		room: props.room,
-		current_client_channel_member: current_client_member.value.unwrap(),
+		currentClientChannelMember: current_client_member.value.unwrap(),
 	});
 }
 
@@ -222,7 +222,7 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
 {
 	ChannelOptionsMenu.create(overlayer_store.store as OverlayerStore, evt, {
 		room: props.room,
-		current_client_channel_member: current_client_member.value.unwrap(),
+		currentClientChannelMember: current_client_member.value.unwrap(),
 	});
 }
 

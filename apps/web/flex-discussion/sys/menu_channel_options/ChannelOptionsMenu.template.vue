@@ -11,7 +11,7 @@ interface Props
 {
 	layerName: string;
 	room: ChannelRoom;
-	current_client_channel_member: ChannelMember;
+	currentClientChannelMember: ChannelMember;
 }
 
 interface Emits

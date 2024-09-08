@@ -24,7 +24,7 @@ export interface ChannelSettingsRecordDialog
 	// Salon actif
 	room: ChannelRoom;
 	// Le client courant, qui est membre du salon.
-	current_client_channel_member: ChannelMember;
+	currentClientChannelMember: ChannelMember;
 }
 
 // -------------- //
