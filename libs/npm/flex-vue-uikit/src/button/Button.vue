@@ -20,6 +20,11 @@ interface Props
 	variant?: "primary" | "secondary" | "danger";
 }
 
+interface Slots
+{
+	"default": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
@@ -29,6 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
 	withOpacity: true,
 	type: "button",
 });
+defineSlots<Slots>();
 
 let selected_model = defineModel("selected");
 

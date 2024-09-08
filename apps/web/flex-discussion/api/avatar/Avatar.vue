@@ -29,6 +29,12 @@ interface Emits
 	(event_name: "upload", file: File): void;
 }
 
+
+interface Slots
+{
+	"default": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
@@ -39,6 +45,7 @@ const props = withDefaults(defineProps<Props>(), {
 	endpoint: API_V1_AVATAR_ENDPOINT,
 });
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 let $upload = ref<HTMLInputElement>();
 let uploaded_file = shallowRef<File>();
@@ -105,7 +112,7 @@ function on_upload_image_handler(evt: Event)
 			/>
 		</span>
 
-		<strong 
+		<strong
 			v-if="vertical && editable"
 			class="[ display-ib pt=2 cursor:pointer ]"
 			@click="click_handler"

@@ -36,6 +36,17 @@ interface Emits
 	(event_name: "send-message", message: string): void;
 }
 
+interface Slots
+{
+	"room-info": unknown;
+	"topic": unknown;
+	"topic-action": unknown;
+	"after-topic-before-main": unknown;
+	"before-history": unknown;
+	"history": unknown;
+	"after-history": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
@@ -45,6 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disableInput: false,
 });
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 let input_placeholder = computed(
 	() => props.disableInput

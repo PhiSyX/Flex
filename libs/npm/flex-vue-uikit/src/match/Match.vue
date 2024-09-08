@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="T">
 import type { Option } from "@phisyx/flex-safety";
+
 import { computed } from "vue";
 
 // ---- //
@@ -12,7 +13,8 @@ interface Props
 	clone?: boolean;
 }
 
-interface Slots {
+interface Slots
+{
 	some?: (props: { data: NonNullable<T> }) => NonNullable<T>;
 	none?: (props: unknown) => unknown;
 }
@@ -25,8 +27,8 @@ const props= withDefaults(defineProps<Props>(), { clone: false });
 defineSlots<Slots>();
 
 let maybe = computed(
-	() => props.clone && props.maybe.is_some() 
-		? props.maybe.clone() 
+	() => props.clone && props.maybe.is_some()
+		? props.maybe.clone()
 		: props.maybe
 );
 </script>

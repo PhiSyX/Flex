@@ -16,6 +16,11 @@ interface Props
 	name: string;
 }
 
+interface Slots
+{
+	"default": unknown;
+}
+
 // -------- //
 // Constant //
 // -------- //
@@ -34,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 	valueY: true,
 	valueN: false,
 });
+defineSlots<Slots>();
 
 let inputModel = defineModel();
 let uniqueID = computed(() => props.name);

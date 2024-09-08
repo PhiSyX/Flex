@@ -20,6 +20,16 @@ interface Emits
 	(event_name: "close", evt: MouseEvent): void;
 }
 
+interface Slots
+{
+	"default": unknown;
+	"left-content": unknown;
+	"label": unknown;
+	"actions": unknown;
+	"footer": unknown;
+	"right-content": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
@@ -31,6 +41,7 @@ withDefaults(defineProps<Props>(), {
 	withoutHeader: false,
 });
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 </script>
 
 <template>

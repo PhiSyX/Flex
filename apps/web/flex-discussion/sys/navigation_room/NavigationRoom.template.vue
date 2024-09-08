@@ -24,6 +24,12 @@ interface Emits
 	(event_name: "close-room", origin: Origin | RoomID): void;
 }
 
+interface Slots
+{
+	"icon": unknown;
+	"extra": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
@@ -31,6 +37,7 @@ interface Emits
 defineOptions({ inheritAttrs: false });
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 // Est-ce qu'il y un total des événements non lus supérieur à zéro.
 let has_unread_events = computed(() => (props.totalUnreadEvents || 0) > 0);

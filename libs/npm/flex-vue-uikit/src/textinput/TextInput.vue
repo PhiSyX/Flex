@@ -14,12 +14,19 @@ interface Props
 	name: string;
 }
 
+interface Slots
+{
+	"default": unknown;
+	"icon": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 defineOptions({ inheritAttrs: false });
 defineProps<Props>();
+defineSlots<Slots>();
 
 let input_model = defineModel();
 </script>

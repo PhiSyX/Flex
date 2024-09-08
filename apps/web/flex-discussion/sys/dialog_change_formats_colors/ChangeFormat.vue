@@ -8,11 +8,17 @@ interface Props
 	value: string;
 }
 
+interface Slots
+{
+	"default": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 defineProps<Props>();
+defineSlots<Slots>();
 let model = defineModel<boolean | null>();
 </script>
 

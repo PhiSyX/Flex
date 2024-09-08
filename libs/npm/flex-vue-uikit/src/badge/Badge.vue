@@ -1,3 +1,20 @@
+<script setup lang="ts">
+// --------- //
+// Interface //
+// --------- //
+
+interface Slots
+{
+	"default": unknown;
+}
+
+// --------- //
+// Composant //
+// --------- //
+
+defineSlots<Slots>();
+</script>
+
 <template>
 	<span class="badge [ di-b align-t:center border/radius=3 ]"><slot /></span>
 </template>

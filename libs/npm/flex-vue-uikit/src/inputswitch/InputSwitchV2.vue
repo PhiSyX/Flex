@@ -18,12 +18,18 @@ interface Emits
 	(event_name: "off"): void;
 }
 
+interface Slots
+{
+	"default": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
 
 const props = withDefaults(defineProps<Props>(), { position: "left" });
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 let input_model = defineModel();
 

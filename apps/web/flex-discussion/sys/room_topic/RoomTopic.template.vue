@@ -1,7 +1,18 @@
 <script setup lang="ts">
 // --------- //
+// Interface //
+// --------- //
+
+interface Slots
+{
+	"topic": unknown;
+	"topic-action": unknown;
+}
+
+// --------- //
 // Composant //
 // --------- //
+defineSlots<Slots>();
 </script>
 
 <template>

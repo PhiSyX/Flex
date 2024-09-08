@@ -7,7 +7,7 @@ import { ButtonIcon } from "../icons";
 // Type //
 // ---- //
 
-interface Props 
+interface Props
 {
 	canClose?: boolean;
 	contentCenter?: boolean;
@@ -22,6 +22,11 @@ interface Emits
 	(event_name: "close"): void;
 }
 
+interface Slots
+{
+	"default": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
@@ -31,6 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
 	contentCenter: true,
 });
 const emit = defineEmits<Emits>();
+defineSlots<Slots>();
 
 let displaying = ref(true);
 

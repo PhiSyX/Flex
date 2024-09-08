@@ -31,7 +31,7 @@ interface Props
 {
 	alt?: HTMLImageElement["alt"];
 	/**
-	 * Source de l'image. En cas d'échec de chargement, la propriété `fallback` 
+	 * Source de l'image. En cas d'échec de chargement, la propriété `fallback`
 	 * est utilisé pour charger une par défaut.
 	 */
 	src: HTMLImageElement["src"];
@@ -41,7 +41,7 @@ interface Props
 	file?: File;
 	/**
 	 * Image à charger en cas d'échec.
-	 * 
+	 *
 	 * @default "/public/img/default-avatar.png"
 	 */
 	 fallback?: string;
@@ -63,16 +63,16 @@ interface Props
 	cover?: boolean;
 	/**
 	 * Rafraîchi la source de l'image toutes les `refreshTime` minutes.
-	 * 
+	 *
 	 * @default true
-	 * 
+	 *
 	 * @default refreshTime.PROD=30
 	 * @default refreshTime.DEV=1
 	 */
 	refreshSrc?: boolean;
 	/**
 	 * Quand est-ce le rafraîchissement doit être fait. En **MINUTE**.
-	 * 
+	 *
 	 * @default PROD=30
 	 * @default DEV=1
 	 */
@@ -88,6 +88,11 @@ interface Props
 	rootClass?: unknown;
 }
 
+interface Slots
+{
+	"default": unknown;
+}
+
 // --------- //
 // Composant //
 // --------- //
@@ -98,6 +103,7 @@ const props = withDefaults(defineProps<Props>(), {
 	refreshSrc: true,
 	refreshTime: IMAGE_CACHE_MINUTE,
 });
+defineSlots<Slots>();
 
 let size = computed(
 	() => Number.parseInt(props.size?.toString() || IMAGE_SIZE_FALLBACK, 10)
@@ -187,7 +193,7 @@ function get_img_src()
 			if (img.expires.getTime() >= Date.now()) {
 				return Some(img.source);
 			}
-			
+
 			if (!props.refreshSrc && img.loaded) {
 				return Some(img.source);
 			}
@@ -202,14 +208,14 @@ function get_img_src()
 		let expires = new Date();
 		let current_minute = expires.getMinutes();
 		expires.setMinutes(current_minute + props.refreshTime);
-		
+
 		IMAGE_CACHE.set(props.src, {
 			expires,
 			loaded: false,
 			source: img_src,
 		});
 	}
-	
+
 	return Some(img_src + "?r=" + (refresh_timer.value || "0"));
 }
 </script>
