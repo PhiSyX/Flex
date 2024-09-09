@@ -8,8 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::AxumApplication;
-
 // --------- //
 // Interface //
 // --------- //
@@ -59,58 +57,6 @@ pub trait AsyncExtensionInterface: 'static + Clone + Send + Sync
 	type Payload;
 
 	async fn new(payload: Self::Payload) -> Self;
-}
-
-// -------------- //
-// Implémentation //
-// -------------- //
-
-impl<S, E, C> ApplicationExtensionInterface for AxumApplication<S, E, C>
-{
-	fn extension<Ext>(self) -> Self
-	where
-		Ext: ExtensionInterface<Payload = ()>,
-	{
-		ApplicationExtensionInterface::extension_with::<Ext>(self, ())
-	}
-
-	#[rustfmt::skip]
-	fn extension_with<Ext>(mut self, payload: impl Into<Ext::Payload>) -> Self
-	where
-		Ext: ExtensionInterface,
-	{
-		let payload = payload.into();
-		let instance = Ext::new(payload);
-		self.application_adapter.router.global = self.application_adapter.router.global
-			.layer(axum::Extension(instance));
-		self
-	}
-}
-
-impl<S, E, C> AsyncApplicationExtensionInterface for AxumApplication<S, E, C>
-{
-	async fn extension<Ext>(self) -> Self
-	where
-		Ext: AsyncExtensionInterface<Payload = ()>,
-	{
-		AsyncApplicationExtensionInterface::extension_with::<Ext>(self, ())
-			.await
-	}
-
-	#[rustfmt::skip]
-	async fn extension_with<Ext>(
-		mut self,
-		payload: impl Into<Ext::Payload>,
-	) -> Self
-	where
-		Ext: AsyncExtensionInterface,
-	{
-		let payload = payload.into();
-		let instance = Ext::new(payload).await;
-		self.application_adapter.router.global = self.application_adapter.router.global
-			.layer(axum::Extension(instance));
-		self
-	}
 }
 
 // -------------- //

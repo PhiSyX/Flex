@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod adapter;
 mod database;
 mod extension;
 pub mod extract;
@@ -24,29 +25,10 @@ pub use axum::{async_trait, middleware, Extension};
 pub use flex_web_framework_macro::{html, vite, View};
 pub use tower_sessions as sessions;
 
+pub use self::adapter::*;
 pub use self::database::*;
 pub use self::extension::*;
 pub use self::interface::*;
 pub use self::server::ServerState as AxumState;
 pub use self::settings::*;
 pub use self::view::*;
-
-// ---- //
-// Type //
-// ---- //
-
-#[rustfmt::skip]
-pub type AxumApplication<
-	S = (),
-	E = (),
-	C = ()
-> = flex_kernel::Kernel<
-	server::Server<
-		S,
-		E,
-		C
-	>,
-	E,
-	C
->;
-pub type AxumRouter<S> = axum::Router<AxumState<S>>;
