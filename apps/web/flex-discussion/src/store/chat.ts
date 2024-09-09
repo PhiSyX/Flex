@@ -65,10 +65,10 @@ export class ChatStoreVue extends ChatStore implements
 		let cs = reactive(new ChatStoreVue()) as ChatStoreVue;
 		cs.room_manager().set_on_change((room_id) => {
 			let servername = cs.network_name();
-					
+
 			if (is_channel(room_id)) {
 				cs.router().push({
-					name: View.Channel, 
+					name: View.Channel,
 					params: {
 						servername,
 						channelname: room_id,
@@ -132,7 +132,7 @@ export class ChatStoreVue extends ChatStore implements
 			this.emit("NICK (unregistered)", {
 				nickname: connect_user_info.nickname,
 			});
-			
+
 			this.emit("USER", {
 				user: connect_user_info.nickname,
 				mode: 1 << 3,
@@ -152,6 +152,9 @@ export class ChatStoreVue extends ChatStore implements
 			websocket_server_url,
 		);
 
+		let ws_url = new URL(websocket_server_url);
+		let ws_path = ws_url.pathname;
+
 		let client_id = this._client_id_storage.maybe().unwrap_or("") as
 			| string
 			| null;
@@ -165,8 +168,9 @@ export class ChatStoreVue extends ChatStore implements
 			user_id = null;
 		}
 
-		let wsio = <TypeSafeSocket>io(websocket_server_url, {
+		let wsio = <TypeSafeSocket>io(ws_url.origin, {
 			auth: { user_id: user_id, client_id: client_id },
+			path: ws_path,
 			transports: ["websocket"],
 			reconnection: true,
 			reconnectionDelay: 10_000,
@@ -279,7 +283,7 @@ export class ChatStoreVue extends ChatStore implements
 			}
 		}
 
-		
+
 
 		this._handler_manager.free();
 		this._module_manager.free();
@@ -293,7 +297,7 @@ export class ChatStoreVue extends ChatStore implements
 		if (settings_notification.sounds.enabled === false) {
 			return;
 		}
-		
+
 		let key = `${src}s` as string;
 
 		switch (src) {
@@ -468,11 +472,11 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 
 	// Le client courant.
 	let current_client = computed(() => store.client());
-	
+
 	// Le pseudo du client courant.
 	let current_client_nickname = computed(() => current_client.value.nickname);
 
-	
+
 	// Toutes les chambres.
 	let rooms = computed(() => store.room_manager().rooms());
 

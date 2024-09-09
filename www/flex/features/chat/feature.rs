@@ -98,14 +98,15 @@ impl WebSocketFeature<FlexState> for ChatApplication
 
 	type State = Self;
 
-	const ENDPOINT: &'static str = "/chat";
+	const ENDPOINT: &'static str = "/chat:ws";
 
 	fn on_connect(
 		socket: SocketRef,
 		server_state: State<FlexApplicationState>,
 		user_state: State<<Self as WebSocketFeature<FlexState>>::State>,
 		auth_data: TryData<Self::Auth>,
-	) {
+	)
+	{
 		ConnectionRegistrationHandler::handle_connect(
 			&socket,
 			server_state,
