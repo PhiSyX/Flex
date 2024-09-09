@@ -14,6 +14,7 @@ use flex_chat::channel::{
 	MemberInterface,
 };
 use flex_chat::client::{ClientSocketInterface, Origin};
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::mode::ChannelMemberDTO;
@@ -35,9 +36,12 @@ pub struct NoticeHandler;
 // Implémentation //
 // -------------- //
 
-impl NoticeHandler
+impl WebSocketHandler for NoticeHandler
 {
-	pub const COMMAND_NAME: &'static str = "NOTICE";
+	type App = ChatApplication;
+	type Data = NoticeCommandFormData;
+
+	const EVENT_NAME: &'static str = "NOTICE";
 
 	/// La commande NOTICE s'utilise de la même manière que la commande
 	/// PRIVMSG/PUBMSG. La différence entre NOTICE et PRIVMSG/PUBMSG est que les
@@ -57,8 +61,7 @@ impl NoticeHandler
 	///
 	/// Voir PRIVMSG/PUBMSG pour plus de détails sur les réponses et des
 	/// exemples.
-	#[rustfmt::skip]
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<NoticeCommandFormData>,
@@ -75,21 +78,19 @@ impl NoticeHandler
 				// SAFETY(unwrap): on est sûr qu'il existe au moins un préfixe.
 				// De plus, le parsing sur l'un de ces prefixes ne peut pas
 				// échouer.
-				let last_prefix: ChannelAccessLevel = prefixes.next_back()
-					.unwrap()
-					.parse()
-					.unwrap();
+				let last_prefix: ChannelAccessLevel =
+					prefixes.next_back().unwrap().parse().unwrap();
 
-				let target_without_prefixes = String::from(
-					target.trim_start_matches(CHANNEL_PREFIXES)
-				);
+				let target_without_prefixes =
+					target.trim_start_matches(CHANNEL_PREFIXES);
 
 				match app.is_client_able_to_notice_on_channel(
 					&client_socket,
-					&target_without_prefixes,
+					target_without_prefixes,
 				) {
 					| ChannelWritePermission::Yes(member) => {
-						if member.highest_access_level()
+						if member
+							.highest_access_level()
 							.filter(|hal| hal.flag() >= last_prefix.flag())
 							.is_none()
 						{
@@ -102,7 +103,7 @@ impl NoticeHandler
 						));
 						client_socket.emit_notice_on_prefixed_channel(
 							last_prefix.symbol(),
-							&target_without_prefixes,
+							target_without_prefixes,
 							&data.text,
 							channel_member,
 						);
@@ -110,7 +111,7 @@ impl NoticeHandler
 					| ChannelWritePermission::Bypass => {
 						client_socket.emit_notice_on_prefixed_channel(
 							last_prefix.symbol(),
-							&target_without_prefixes,
+							target_without_prefixes,
 							&data.text,
 							client_socket.user(),
 						);
@@ -124,10 +125,9 @@ impl NoticeHandler
 			}
 
 			if target.starts_with('#') {
-				match app.is_client_able_to_notice_on_channel(
-					&client_socket,
-					target,
-				) {
+				match app
+					.is_client_able_to_notice_on_channel(&client_socket, target)
+				{
 					| ChannelWritePermission::Yes(member) => {
 						let channel_member = ChannelMemberDTO::from((
 							client_socket.client(),
@@ -161,16 +161,19 @@ impl NoticeHandler
 				continue;
 			}
 
-			let Some(target_client_socket) = app.find_socket_by_nickname(
-				&socket,
-				target,
-			) else { continue };
+			let Some(target_client_socket) =
+				app.find_socket_by_nickname(&socket, target)
+			else {
+				continue;
+			};
 
-			if app.client_isin_blocklist(&target_client_socket, &client_socket) {
+			if app.client_isin_blocklist(&target_client_socket, &client_socket)
+			{
 				continue;
 			}
 
-			target_client_socket.emit_notice_on_nick(target, &data.text, &origin);
+			target_client_socket
+				.emit_notice_on_nick(target, &data.text, &origin);
 		}
 	}
 }

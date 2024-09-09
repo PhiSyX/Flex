@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::nick::{
@@ -29,11 +30,14 @@ pub struct NickHandler;
 
 /// La commande `NICK` est utilisée pour donner un pseudonyme au client ou
 /// changer le pseudonyme existant d'un client.
-impl NickHandler
+impl WebSocketHandler for NickHandler
 {
-	pub const COMMAND_NAME: &'static str = "NICK";
+	type App = ChatApplication;
+	type Data = NickCommandFormData;
 
-	pub fn handle(
+	const EVENT_NAME: &'static str = "NICK";
+
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<NickCommandFormData>,

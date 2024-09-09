@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::invite::InviteChannelClientSocketErrorReplies;
@@ -31,9 +32,12 @@ pub struct JoinHandler;
 // Implémentation //
 // -------------- //
 
-impl JoinHandler
+impl WebSocketHandler for JoinHandler
 {
-	pub const COMMAND_NAME: &'static str = "JOIN";
+	type App = ChatApplication;
+	type Data = JoinCommandFormData;
+
+	const EVENT_NAME: &'static str = "JOIN";
 
 	/// La commande JOIN est utilisée par un client pour demander de commencer à
 	/// écouter un salon spécifique. Les serveurs DOIVENT être en mesure
@@ -57,7 +61,7 @@ impl JoinHandler
 	/// spéciale de quitter tous les salons dont le client est actuellement
 	/// membre. Le serveur traitera ce message comme si le client avait envoyé
 	/// une commande PART pour chaque salon dont il est membre.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<JoinCommandFormData>,
@@ -75,8 +79,8 @@ impl JoinHandler
 
 		let channel_keys = &data.keys;
 		for (idx, channel_name) in data.channels.iter().enumerate() {
-			#[rustfmt::skip]
-			let channel_key = channel_keys.get(idx)
+			let channel_key = channel_keys
+				.get(idx)
 				.filter(|key| !key.is_empty())
 				.map(|k| k.to_string());
 

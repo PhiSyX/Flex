@@ -8,8 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::Feature;
-use flex_web_framework::WebSocketFeature;
+use flex_web_framework::{Feature, WebSocketFeature};
 use socketioxide::extract::{SocketRef, State, TryData};
 
 use crate::features::chat::auth::*;
@@ -31,42 +30,6 @@ use crate::features::chat::topic::*;
 use crate::features::chat::user_status::*;
 use crate::features::chat::{routes, sessions};
 use crate::{config, FlexApplicationState, FlexState};
-
-// ----- //
-// Macro //
-// ----- //
-
-macro_rules! handlers {
-	(
-		$socket:expr,
-
-		$( + use $struct_handler:tt ; )*
-	) => {
-		$(
-			$socket.on(
-				$struct_handler::COMMAND_NAME,
-				$struct_handler::handle
-			);
-		)*
-	};
-
-	(
-		$socket:expr,
-
-		$( -/+ use $struct_handler:tt ; )*
-	) => {
-		$(
-			$socket.on(
-				$struct_handler::SET_COMMAND_NAME,
-				$struct_handler::handle_set
-			);
-			$socket.on(
-				$struct_handler::UNSET_COMMAND_NAME,
-				$struct_handler::handle_unset
-			);
-		)*
-	};
-}
 
 // --------- //
 // Structure //
@@ -95,7 +58,41 @@ impl Feature for ChatApplication
 impl WebSocketFeature<FlexState> for ChatApplication
 {
 	type Auth = RememberUserFormData;
-
+	type Handlers = (
+		AwayHandler,
+		InviteHandler,
+		JoinHandler,
+		KickHandler,
+		KillHandler,
+		ListHandler,
+		NickHandler,
+		NoticeHandler,
+		OperHandler,
+		PartHandler,
+		PrivmsgHandler,
+		PubmsgHandler,
+		QuitHandler,
+		SajoinHandler,
+		SapartHandler,
+		SilenceHandler,
+		TopicHandler,
+		/* Channel Modes */
+		ModeChannelSettingsHandler,
+		/* Auth */
+		AuthIdentifyHandler,
+	);
+	type Handlers2 = (
+		/* Channel Access Control */
+		ModeChannelAccessControlBanHandler,
+		ModeChannelAccessControlBanExceptionHandler,
+		ModeChannelAccessControlInviteExceptionHandler,
+		/* Channel Access Level */
+		ModeChannelAccessLevelQOPHandler,
+		ModeChannelAccessLevelAOPHandler,
+		ModeChannelAccessLevelOPHandler,
+		ModeChannelAccessLevelHOPHandler,
+		ModeChannelAccessLevelVIPHandler,
+	);
 	type State = Self;
 
 	const ENDPOINT: &'static str = "/chat:ws";
@@ -112,50 +109,6 @@ impl WebSocketFeature<FlexState> for ChatApplication
 			server_state,
 			user_state,
 			auth_data,
-		);
-
-		handlers!( socket,
-			+ use AwayHandler;
-			+ use InviteHandler;
-			+ use JoinHandler;
-			+ use KickHandler;
-			+ use KillHandler;
-			+ use ListHandler;
-			+ use NickHandler;
-			+ use NoticeHandler;
-			+ use OperHandler;
-			+ use PartHandler;
-			+ use PrivmsgHandler;
-			+ use PubmsgHandler;
-			+ use QuitHandler;
-			+ use SajoinHandler;
-			+ use SapartHandler;
-			+ use SilenceHandler;
-			+ use TopicHandler;
-		);
-
-		/* Channel Modes */
-		handlers!( socket,
-			+ use ModeChannelSettingsHandler;
-		);
-		/* Channel Access Control */
-		handlers!( socket,
-			-/+ use ModeChannelAccessControlBanHandler;
-			-/+ use ModeChannelAccessControlBanExceptionHandler;
-			-/+ use ModeChannelAccessControlInviteExceptionHandler;
-		);
-		/* Channel Access Level */
-		handlers!( socket,
-			-/+ use ModeChannelAccessLevelQOPHandler;
-			-/+ use ModeChannelAccessLevelAOPHandler;
-			-/+ use ModeChannelAccessLevelOPHandler;
-			-/+ use ModeChannelAccessLevelHOPHandler;
-			-/+ use ModeChannelAccessLevelVIPHandler;
-		);
-
-		/* Auth */
-		handlers!( socket,
-			+ use AuthIdentifyHandler;
 		);
 	}
 }

@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::kick::{
@@ -26,9 +27,12 @@ pub struct KickHandler;
 // Implémentation //
 // -------------- //
 
-impl KickHandler
+impl WebSocketHandler for KickHandler
 {
-	pub const COMMAND_NAME: &'static str = "KICK";
+	type App = ChatApplication;
+	type Data = KickCommandFormData;
+
+	const EVENT_NAME: &'static str = "KICK";
 
 	/// La commande KICK peut être utilisée pour demander le retrait forcé d'un
 	/// utilisateur d'un salon. Elle entraîne le retrait forcé de l'<user> du
@@ -43,7 +47,7 @@ impl KickHandler
 	/// Le serveur NE DOIT PAS envoyer aux clients des messages KICK comportant
 	/// plusieurs salons ou utilisateurs. Ceci est nécessaire pour maintenir la
 	/// compatibilité avec les anciens logiciels clients.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<KickCommandFormData>,

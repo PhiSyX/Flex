@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat::client::Client;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 use socketioxide::socket;
 
@@ -28,11 +29,14 @@ pub struct QuitHandler;
 // Implémentation //
 // -------------- //
 
-impl QuitHandler
+impl WebSocketHandler for QuitHandler
 {
-	pub const COMMAND_NAME: &'static str = "QUIT";
+	type App = ChatApplication;
+	type Data = QuitCommandFormData;
 
-	pub fn handle(
+	const EVENT_NAME: &'static str = "QUIT";
+
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<QuitCommandFormData>,
@@ -40,7 +44,7 @@ impl QuitHandler
 	{
 		let client_socket = app.current_client(&socket);
 		app.disconnect_client(
-			client_socket, 
+			client_socket,
 			data.message.as_deref().unwrap_or("Client Quit"),
 		);
 		socket.extensions.remove::<Client>();

@@ -11,6 +11,7 @@
 use flex_chat::channel::ChannelsSessionInterface;
 use flex_chat::client::ClientSocketInterface;
 use flex_chat::user::UserOperatorInterface;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::list::{
@@ -30,16 +31,19 @@ pub struct ListHandler;
 // Implémentation //
 // -------------- //
 
-impl ListHandler
+impl WebSocketHandler for ListHandler
 {
-	pub const COMMAND_NAME: &'static str = "LIST";
+	type App = ChatApplication;
+	type Data = ListCommandFormData;
+
+	const EVENT_NAME: &'static str = "LIST";
 
 	/// La commande list permet de dresser la liste des salons et de leurs
 	/// sujets.
 	//
 	// TODO: Les caractères joker sont autorisés dans le paramètre <channels>.
 	// TODO: Mettre en cache le résultat, pendant une certaine durée.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(_): Data<ListCommandFormData>,

@@ -33,6 +33,8 @@ use crate::{
 	RouterInterface,
 	WebSocketAsyncFeature,
 	WebSocketFeature,
+	WebSocketHandlers2Interface,
+	WebSocketHandlersInterface,
 };
 
 // ---- //
@@ -388,6 +390,8 @@ where
 				<F as WebSocketFeature<S>>::State,
 			>,
 			 auth_data: socketioxide::extract::TryData<F::Auth>| {
+				<F::Handlers as WebSocketHandlersInterface>::listen(&socket);
+				<F::Handlers2 as WebSocketHandlers2Interface>::listen(&socket);
 				F::on_connect(socket, server_state, user_state, auth_data);
 			},
 		);

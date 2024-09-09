@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::part::{
@@ -27,12 +28,15 @@ pub struct SapartHandler;
 // Implémentation //
 // -------------- //
 
-impl SapartHandler
+impl WebSocketHandler for SapartHandler
 {
-	pub const COMMAND_NAME: &'static str = "SAPART";
+	type App = ChatApplication;
+	type Data = SapartCommandFormData;
+
+	const EVENT_NAME: &'static str = "SAPART";
 
 	/// La commande SAPART entraîne la suppression des utilisateurs de force.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<SapartCommandFormData>,
@@ -43,11 +47,9 @@ impl SapartHandler
 		};
 
 		for nickname in data.nicknames.iter() {
-			#[rustfmt::skip]
-			let Some(nickname_socket) = app.find_socket_by_nickname(
-				&socket,
-				nickname,
-			) else {
+			let Some(nickname_socket) =
+				app.find_socket_by_nickname(&socket, nickname)
+			else {
 				client_socket.send_err_nosuchnick(nickname);
 				continue;
 			};

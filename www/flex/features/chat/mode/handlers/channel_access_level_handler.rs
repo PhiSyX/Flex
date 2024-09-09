@@ -22,6 +22,7 @@ use flex_chat::client::{
 use flex_chat::mode::ApplyMode;
 use flex_chat::user::UserInterface;
 use flex_web_framework::types::time;
+use flex_web_framework::WebSocketHandler2;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::mode::{
@@ -53,7 +54,6 @@ pub struct ModeChannelAccessLevelVIPHandler;
 // Implémentation //
 // -------------- //
 
-#[rustfmt::skip]
 impl ModeChannelAccessLevelHandler
 {
 	fn update_member_access_level(
@@ -67,23 +67,21 @@ impl ModeChannelAccessLevelHandler
 	{
 		let client_socket = app.current_client(socket);
 
-		if !app.is_client_global_operator(&client_socket) &&
-		   !app.does_client_have_rights_on_channel(
+		if !app.is_client_global_operator(&client_socket)
+			&& !app.does_client_have_rights_on_channel(
 				&client_socket,
 				channel_name,
 				min_access_level,
-			)
-		{
+			) {
 			return;
 		}
 
 		let updated: Vec<_> = nicknames
 			.iter()
 			.filter_map(|nickname| {
-				let Some(target_client_socket) = app.find_socket_by_nickname(
-					client_socket.socket(),
-					nickname,
-				) else {
+				let Some(target_client_socket) = app
+					.find_socket_by_nickname(client_socket.socket(), nickname)
+				else {
 					client_socket.send_err_nosuchnick(nickname);
 					return None;
 				};
@@ -200,23 +198,21 @@ impl ModeChannelAccessLevelHandler
 		let updated: Vec<_> = nicknames
 			.iter()
 			.filter_map(|nickname| {
-				let Some(target_client_socket) = app.find_socket_by_nickname(
-					client_socket.socket(),
-					nickname,
-				) else {
+				let Some(target_client_socket) = app
+					.find_socket_by_nickname(client_socket.socket(), nickname)
+				else {
 					client_socket.send_err_nosuchnick(nickname);
 					return None;
 				};
 
-				let same_client = client_socket.cid() == target_client_socket.cid();
-				if !is_client_operator &&
-				   !same_client &&
-				   !app.does_client_have_rights_on_channel(
-						&client_socket,
-						channel_name,
-						min_access_level,
-					)
-				{
+				let same_client =
+					client_socket.cid() == target_client_socket.cid();
+				if !is_client_operator
+					&& !same_client && !app.does_client_have_rights_on_channel(
+					&client_socket,
+					channel_name,
+					min_access_level,
+				) {
 					return None;
 				}
 
@@ -243,7 +239,7 @@ impl ModeChannelAccessLevelHandler
 						if member
 							.highest_access_level()
 							.filter(|mac| mac.flag() >= access_level.flag())
-							.is_some() 
+							.is_some()
 						{
 							return;
 						}
@@ -341,13 +337,16 @@ impl ModeChannelAccessLevelHandler
 	}
 }
 
-#[rustfmt::skip]
-impl ModeChannelAccessLevelQOPHandler
+impl WebSocketHandler2 for ModeChannelAccessLevelQOPHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "QOP";
-	pub const UNSET_COMMAND_NAME: &'static str = "DEQOP";
+	type App = ChatApplication;
+	type SetData = AccessLevelOwnerOperatorCommandFormData;
+	type UnsetData = AccessLevelOwnerOperatorCommandFormData;
 
-	pub fn handle_set(
+	const SET_EVENT_NAME: &'static str = "QOP";
+	const UNSET_EVENT_NAME: &'static str = "DEQOP";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOwnerOperatorCommandFormData>,
@@ -363,7 +362,7 @@ impl ModeChannelAccessLevelQOPHandler
 		);
 	}
 
-	pub fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOwnerOperatorCommandFormData>,
@@ -380,13 +379,16 @@ impl ModeChannelAccessLevelQOPHandler
 	}
 }
 
-#[rustfmt::skip]
-impl ModeChannelAccessLevelAOPHandler
+impl WebSocketHandler2 for ModeChannelAccessLevelAOPHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "AOP";
-	pub const UNSET_COMMAND_NAME: &'static str = "DEAOP";
+	type App = ChatApplication;
+	type SetData = AccessLevelAdminOperatorCommandFormData;
+	type UnsetData = AccessLevelAdminOperatorCommandFormData;
 
-	pub fn handle_set(
+	const SET_EVENT_NAME: &'static str = "AOP";
+	const UNSET_EVENT_NAME: &'static str = "DEAOP";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelAdminOperatorCommandFormData>,
@@ -402,7 +404,7 @@ impl ModeChannelAccessLevelAOPHandler
 		);
 	}
 
-	pub fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelAdminOperatorCommandFormData>,
@@ -419,13 +421,16 @@ impl ModeChannelAccessLevelAOPHandler
 	}
 }
 
-#[rustfmt::skip]
-impl ModeChannelAccessLevelOPHandler
+impl WebSocketHandler2 for ModeChannelAccessLevelOPHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "OP";
-	pub const UNSET_COMMAND_NAME: &'static str = "DEOP";
+	type App = ChatApplication;
+	type SetData = AccessLevelOperatorCommandFormData;
+	type UnsetData = AccessLevelOperatorCommandFormData;
 
-	pub fn handle_set(
+	const SET_EVENT_NAME: &'static str = "OP";
+	const UNSET_EVENT_NAME: &'static str = "DEOP";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOperatorCommandFormData>,
@@ -441,7 +446,7 @@ impl ModeChannelAccessLevelOPHandler
 		);
 	}
 
-	pub fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelOperatorCommandFormData>,
@@ -458,13 +463,16 @@ impl ModeChannelAccessLevelOPHandler
 	}
 }
 
-#[rustfmt::skip]
-impl ModeChannelAccessLevelHOPHandler
+impl WebSocketHandler2 for ModeChannelAccessLevelHOPHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "HOP";
-	pub const UNSET_COMMAND_NAME: &'static str = "DEHOP";
+	type App = ChatApplication;
+	type SetData = AccessLevelHalfOperatorCommandFormData;
+	type UnsetData = AccessLevelHalfOperatorCommandFormData;
 
-	pub fn handle_set(
+	const SET_EVENT_NAME: &'static str = "HOP";
+	const UNSET_EVENT_NAME: &'static str = "DEHOP";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelHalfOperatorCommandFormData>,
@@ -480,7 +488,7 @@ impl ModeChannelAccessLevelHOPHandler
 		);
 	}
 
-	pub fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelHalfOperatorCommandFormData>,
@@ -497,13 +505,16 @@ impl ModeChannelAccessLevelHOPHandler
 	}
 }
 
-#[rustfmt::skip]
-impl ModeChannelAccessLevelVIPHandler
+impl WebSocketHandler2 for ModeChannelAccessLevelVIPHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "VIP";
-	pub const UNSET_COMMAND_NAME: &'static str = "DEVIP";
+	type App = ChatApplication;
+	type SetData = AccessLevelVipCommandFormData;
+	type UnsetData = AccessLevelVipCommandFormData;
 
-	pub fn handle_set(
+	const SET_EVENT_NAME: &'static str = "VIP";
+	const UNSET_EVENT_NAME: &'static str = "DEVIP";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelVipCommandFormData>,
@@ -519,7 +530,7 @@ impl ModeChannelAccessLevelVIPHandler
 		);
 	}
 
-	pub fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AccessLevelVipCommandFormData>,

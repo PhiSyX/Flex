@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::topic::{
@@ -27,9 +28,12 @@ pub struct TopicHandler;
 // Implémentation //
 // -------------- //
 
-impl TopicHandler
+impl WebSocketHandler for TopicHandler
 {
-	pub const COMMAND_NAME: &'static str = "TOPIC";
+	type App = ChatApplication;
+	type Data = TopicCommandFormData;
+
+	const EVENT_NAME: &'static str = "TOPIC";
 
 	/// La commande TOPIC permet de modifier ou d'afficher le sujet d'un salon.
 	/// Le sujet du salon <channel> est renvoyé s'il n'y a pas de <topic>. Si le
@@ -37,7 +41,7 @@ impl TopicHandler
 	/// cette action est autorisée pour l'utilisateur qui la demande. Si le
 	/// paramètre <topic> est une chaîne vide, le sujet de ce salon sera
 	/// supprimé.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<TopicCommandFormData>,
@@ -52,8 +56,9 @@ impl TopicHandler
 		if let Some(topic) = data.topic.as_deref() {
 			app.update_topic(&client_socket, &data.channel, topic);
 		} else {
-			#[rustfmt::skip]
-			let Some(channel) = app.get_channel(&data.channel) else { return };
+			let Some(channel) = app.get_channel(&data.channel) else {
+				return;
+			};
 			client_socket.send_rpl_topic(&channel, false);
 		}
 	}

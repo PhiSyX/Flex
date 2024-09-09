@@ -11,6 +11,7 @@
 use flex_chat::client::ClientSocketInterface;
 use flex_crypto::Hasher;
 use flex_web_framework::security::Argon2Password;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::config::chat::FlexChatConfig;
@@ -31,17 +32,19 @@ pub struct OperHandler;
 // Implémentation //
 // -------------- //
 
-impl OperHandler
+impl WebSocketHandler for OperHandler
 {
-	pub const COMMAND_NAME: &'static str = "OPER";
+	type App = ChatApplication;
+	type Data = OperCommandFormData;
+
+	const EVENT_NAME: &'static str = "OPER";
 
 	/// Un utilisateur normal utilise la commande OPER pour obtenir des
 	/// privilèges d'opérateur global ou local.  Les combinaisons <name> et
 	/// <password> sont OBLIGATOIRES pour obtenir les privilèges d'opérateur. En
 	/// cas de succès, l'utilisateur reçoit un message MODE indiquant les
 	/// nouveaux modes de l'utilisateur.
-	#[rustfmt::skip]
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<OperCommandFormData>,
@@ -49,12 +52,16 @@ impl OperHandler
 	{
 		let mut client_socket = app.current_client_mut(&socket);
 
-		let config = client_socket.socket().req_parts().extensions
+		let config = client_socket
+			.socket()
+			.req_parts()
+			.extensions
 			.get::<FlexChatConfig>()
 			.cloned()
 			.expect("Configuration de notre application serveur");
 
-		let Some(operator) = config.operators
+		let Some(operator) = config
+			.operators
 			.iter()
 			.find(|operator| operator.identifier.eq(&data.name))
 			.cloned()
@@ -63,14 +70,15 @@ impl OperHandler
 			return;
 		};
 
-		let password_hasher = socket.req_parts().extensions
+		let password_hasher = socket
+			.req_parts()
+			.extensions
 			.get::<Argon2Password>()
 			.expect("Le service d'encodage Argon2.");
 
-		if !password_hasher.cmp(
-			operator.password.expose(),
-			data.password.expose(),
-		) {
+		if !password_hasher
+			.cmp(operator.password.expose(), data.password.expose())
+		{
 			client_socket.send_err_passwdmismatch();
 			return;
 		}

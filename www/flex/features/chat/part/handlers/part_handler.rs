@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::part::{
@@ -26,9 +27,12 @@ pub struct PartHandler;
 // Implémentation //
 // -------------- //
 
-impl PartHandler
+impl WebSocketHandler for PartHandler
 {
-	pub const COMMAND_NAME: &'static str = "PART";
+	type App = ChatApplication;
+	type Data = PartCommandFormData;
+
+	const EVENT_NAME: &'static str = "PART";
 
 	/// La commande PART entraîne la suppression de l'utilisateur qui envoie le
 	/// message de la liste des membres actifs pour tous les salons énumérés
@@ -39,7 +43,7 @@ impl PartHandler
 	/// Les serveurs DOIVENT être capables d'analyser les arguments sous la
 	/// forme d'une liste de cibles, mais NE DOIVENT PAS utiliser de listes lors
 	/// de l'envoi de messages PART aux clients.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<PartCommandFormData>,

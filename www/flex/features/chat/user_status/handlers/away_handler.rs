@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::user_status::{
@@ -26,9 +27,12 @@ pub struct AwayHandler;
 // Implémentation //
 // -------------- //
 
-impl AwayHandler
+impl WebSocketHandler for AwayHandler
 {
-	pub const COMMAND_NAME: &'static str = "AWAY";
+	type App = ChatApplication;
+	type Data = AwayCommandFormData;
+
+	const EVENT_NAME: &'static str = "AWAY";
 
 	/// Avec la commande AWAY, les clients peuvent définir une chaîne de réponse
 	/// automatique pour toutes les commandes PRIVMSG qui leur sont adressées
@@ -47,7 +51,7 @@ impl AwayHandler
 	/// devrait être utilisé à la place.
 	///
 	/// TODO: Notifier les clients avec les capacités serveur (away-notify).
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<AwayCommandFormData>,

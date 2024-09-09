@@ -17,6 +17,7 @@ use flex_chat::client::channel::responses::ChannelClientSocketErrorReplies;
 use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
 use flex_chat::client::ClientSocketInterface;
 use flex_chat::user::UserInterface;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::invite::{
@@ -37,9 +38,12 @@ pub struct InviteHandler;
 // Implémentation //
 // -------------- //
 
-impl InviteHandler
+impl WebSocketHandler for InviteHandler
 {
-	pub const COMMAND_NAME: &'static str = "INVITE";
+	type App = ChatApplication;
+	type Data = InviteCommandFormData;
+
+	const EVENT_NAME: &'static str = "INVITE";
 
 	/// La commande INVITE est utilisée pour inviter un utilisateur à un salon.
 	/// Le paramètre <nickname> est le surnom de la personne à inviter dans le
@@ -52,7 +56,7 @@ impl InviteHandler
 	/// recevront une notification de l'invitation.  Les autres membres du salon
 	/// n'en sont pas informés. (Contrairement aux changements de MODE et c'est
 	/// parfois la source de problèmes pour les utilisateurs).
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<InviteCommandFormData>,
@@ -60,11 +64,9 @@ impl InviteHandler
 	{
 		let client_socket = app.current_client(&socket);
 
-		#[rustfmt::skip]
-		let Some(target_client_socket) = app.find_socket_by_nickname(
-			&socket,
-			&data.nickname,
-		) else {
+		let Some(target_client_socket) =
+			app.find_socket_by_nickname(&socket, &data.nickname)
+		else {
 			client_socket.send_err_nosuchnick(&data.nickname);
 			return;
 		};
@@ -81,8 +83,8 @@ impl InviteHandler
 			return;
 		}
 
-		#[rustfmt::skip]
-		let has_channel_invite_flag = channel.modes_settings.has_invite_only_flag();
+		let has_channel_invite_flag =
+			channel.modes_settings.has_invite_only_flag();
 		let is_member_has_rights = app.does_client_have_rights_on_channel(
 			&client_socket,
 			&data.channel,

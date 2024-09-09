@@ -11,9 +11,11 @@
 use flex_chat::channel::{
 	ChannelAccessLevel,
 	CHANNEL_MODE_LIST_BAN,
-	CHANNEL_MODE_LIST_BAN_EXCEPT, CHANNEL_MODE_LIST_INVITE_EXCEPT,
+	CHANNEL_MODE_LIST_BAN_EXCEPT,
+	CHANNEL_MODE_LIST_INVITE_EXCEPT,
 };
 use flex_chat::client::channel::responses::ChannelClientSocketErrorReplies;
+use flex_web_framework::WebSocketHandler2;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::mode::{
@@ -38,12 +40,16 @@ pub struct ModeChannelAccessControlInviteExceptionHandler;
 // Implémentation //
 // -------------- //
 
-#[rustfmt::skip]
-impl ModeChannelAccessControlBanHandler
+impl WebSocketHandler2 for ModeChannelAccessControlBanHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "BAN";
+	type App = ChatApplication;
+	type SetData = BanCommandFormData;
+	type UnsetData = UnbanCommandFormData;
 
-	pub fn handle_set(
+	const SET_EVENT_NAME: &'static str = "BAN";
+	const UNSET_EVENT_NAME: &'static str = "UNBAN";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<BanCommandFormData>,
@@ -52,17 +58,17 @@ impl ModeChannelAccessControlBanHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket) &&
-			   !app.does_client_have_rights_on_channel(
+			if !app.is_client_global_operator(&client_socket)
+				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				)
-			{
+				) {
 				continue;
 			}
 
-			let updated: Vec<_> = data.masks
+			let updated: Vec<_> = data
+				.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_ban_on_channel(
@@ -95,14 +101,8 @@ impl ModeChannelAccessControlBanHandler
 			);
 		}
 	}
-}
 
-#[rustfmt::skip]
-impl ModeChannelAccessControlBanHandler
-{
-	pub const UNSET_COMMAND_NAME: &'static str = "UNBAN";
-
-	pub fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UnbanCommandFormData>,
@@ -111,17 +111,17 @@ impl ModeChannelAccessControlBanHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket) &&
-			   !app.does_client_have_rights_on_channel(
+			if !app.is_client_global_operator(&client_socket)
+				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				)
-			{
+				) {
 				continue;
 			}
 
-			let updated: Vec<_> = data.masks
+			let updated: Vec<_> = data
+				.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_unban_on_channel(
@@ -156,12 +156,16 @@ impl ModeChannelAccessControlBanHandler
 	}
 }
 
-#[rustfmt::skip]
-impl ModeChannelAccessControlBanExceptionHandler
+impl WebSocketHandler2 for ModeChannelAccessControlBanExceptionHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "BANEX";
+	type App = ChatApplication;
+	type SetData = BanCommandFormData;
+	type UnsetData = UnbanCommandFormData;
 
-	pub async fn handle_set(
+	const SET_EVENT_NAME: &'static str = "BANEX";
+	const UNSET_EVENT_NAME: &'static str = "UNBANEX";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<BanCommandFormData>,
@@ -170,17 +174,17 @@ impl ModeChannelAccessControlBanExceptionHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket) &&
-			   !app.does_client_have_rights_on_channel(
+			if !app.is_client_global_operator(&client_socket)
+				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				)
-			{
+				) {
 				continue;
 			}
 
-			let updated: Vec<_> = data.masks
+			let updated: Vec<_> = data
+				.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_ban_except_on_channel(
@@ -213,14 +217,8 @@ impl ModeChannelAccessControlBanExceptionHandler
 			);
 		}
 	}
-}
 
-#[rustfmt::skip]
-impl ModeChannelAccessControlBanExceptionHandler
-{
-	pub const UNSET_COMMAND_NAME: &'static str = "UNBANEX";
-
-	pub async fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UnbanCommandFormData>,
@@ -229,17 +227,17 @@ impl ModeChannelAccessControlBanExceptionHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket) &&
-			   !app.does_client_have_rights_on_channel(
+			if !app.is_client_global_operator(&client_socket)
+				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				)
-			{
+				) {
 				continue;
 			}
 
-			let updated: Vec<_> = data.masks
+			let updated: Vec<_> = data
+				.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_unban_except_on_channel(
@@ -274,12 +272,16 @@ impl ModeChannelAccessControlBanExceptionHandler
 	}
 }
 
-#[rustfmt::skip]
-impl ModeChannelAccessControlInviteExceptionHandler
+impl WebSocketHandler2 for ModeChannelAccessControlInviteExceptionHandler
 {
-	pub const SET_COMMAND_NAME: &'static str = "INVITEX";
+	type App = ChatApplication;
+	type SetData = BanCommandFormData;
+	type UnsetData = UnbanCommandFormData;
 
-	pub async fn handle_set(
+	const SET_EVENT_NAME: &'static str = "INVITEX";
+	const UNSET_EVENT_NAME: &'static str = "UNINVITEX";
+
+	fn handle_set(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<BanCommandFormData>,
@@ -288,17 +290,17 @@ impl ModeChannelAccessControlInviteExceptionHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket) &&
-			   !app.does_client_have_rights_on_channel(
+			if !app.is_client_global_operator(&client_socket)
+				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				)
-			{
+				) {
 				continue;
 			}
 
-			let updated: Vec<_> = data.masks
+			let updated: Vec<_> = data
+				.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_invite_except_on_channel(
@@ -331,14 +333,8 @@ impl ModeChannelAccessControlInviteExceptionHandler
 			);
 		}
 	}
-}
 
-#[rustfmt::skip]
-impl ModeChannelAccessControlInviteExceptionHandler
-{
-	pub const UNSET_COMMAND_NAME: &'static str = "UNINVITEX";
-
-	pub async fn handle_unset(
+	fn handle_unset(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<UnbanCommandFormData>,
@@ -347,17 +343,17 @@ impl ModeChannelAccessControlInviteExceptionHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel_name in data.channels {
-			if !app.is_client_global_operator(&client_socket) &&
-			   !app.does_client_have_rights_on_channel(
+			if !app.is_client_global_operator(&client_socket)
+				&& !app.does_client_have_rights_on_channel(
 					&client_socket,
 					&channel_name,
 					ChannelAccessLevel::HalfOperator,
-				)
-			{
+				) {
 				continue;
 			}
 
-			let updated: Vec<_> = data.masks
+			let updated: Vec<_> = data
+				.masks
 				.iter()
 				.filter_map(|mask| {
 					app.apply_uninvite_except_on_channel(

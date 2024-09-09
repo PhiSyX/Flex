@@ -20,6 +20,7 @@ use flex_chat::channel::{
 };
 use flex_chat::client::Socket;
 use flex_chat::mode::ApplyMode;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::mode::{
@@ -43,11 +44,14 @@ pub struct ModeChannelSettingsHandler;
 // Implémentation //
 // -------------- //
 
-impl ModeChannelSettingsHandler
+impl WebSocketHandler for ModeChannelSettingsHandler
 {
-	pub const COMMAND_NAME: &'static str = "MODE";
+	type App = ChatApplication;
+	type Data = ChannelModeCommandFormData;
 
-	pub fn handle(
+	const EVENT_NAME: &'static str = "MODE";
+
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<ChannelModeCommandFormData>,
@@ -144,8 +148,7 @@ impl ModeChannelSettingsHandler
 				&mut removed_settings,
 			);
 
-			if let Some(key) = data.modes.key.map(|s| s.to_string()).as_ref()
-			{
+			if let Some(key) = data.modes.key.map(|s| s.to_string()).as_ref() {
 				apply_mode_settings_str(
 					app,
 					&client_socket,

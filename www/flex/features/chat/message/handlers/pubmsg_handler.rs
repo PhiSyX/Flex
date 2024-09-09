@@ -10,6 +10,7 @@
 
 use flex_chat::channel::{ChannelNoPermissionCause, ChannelWritePermission};
 use flex_chat::client::ClientSocketInterface;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::message::{
@@ -31,12 +32,15 @@ pub struct PubmsgHandler;
 // Implémentation //
 // -------------- //
 
-impl PubmsgHandler
+impl WebSocketHandler for PubmsgHandler
 {
-	pub const COMMAND_NAME: &'static str = "PUBMSG";
+	type App = ChatApplication;
+	type Data = PubmsgCommandFormData;
+
+	const EVENT_NAME: &'static str = "PUBMSG";
 
 	/// PUBMSG est utilisé pour envoyer des messages à des salons.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<PubmsgCommandFormData>,
@@ -45,11 +49,8 @@ impl PubmsgHandler
 		let client_socket = app.current_client(&socket);
 
 		for channel in data.channels.iter() {
-			#[rustfmt::skip]
-			let channel_permission = app.is_client_able_to_write_on_channel(
-				&client_socket,
-				channel,
-			);
+			let channel_permission =
+				app.is_client_able_to_write_on_channel(&client_socket, channel);
 
 			match channel_permission {
 				| ChannelWritePermission::Yes(member) => {

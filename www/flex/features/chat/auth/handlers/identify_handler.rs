@@ -10,6 +10,7 @@
 
 use flex_chat::client::ClientSocketInterface;
 use flex_chat::user::UserInterface;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::auth::{
@@ -29,11 +30,14 @@ pub struct AuthIdentifyHandler;
 // Implémentation //
 // -------------- //
 
-impl AuthIdentifyHandler
+impl WebSocketHandler for AuthIdentifyHandler
 {
-	pub const COMMAND_NAME: &'static str = "AUTH IDENTIFY";
+	type App = ChatApplication;
+	type Data = UserSessionDTO;
 
-	pub fn handle(
+	const EVENT_NAME: &'static str = "AUTH IDENTIFY";
+
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(user_session): Data<UserSessionDTO>,

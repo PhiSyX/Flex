@@ -8,9 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat::client::ClientSocketInterface;
 use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
+use flex_chat::client::ClientSocketInterface;
 use flex_chat::user::UserInterface;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::kill::{
@@ -30,9 +31,12 @@ pub struct KillHandler;
 // Implémentation //
 // -------------- //
 
-impl KillHandler
+impl WebSocketHandler for KillHandler
 {
-	pub const COMMAND_NAME: &'static str = "KILL";
+	type App = ChatApplication;
+	type Data = KillCommandFormData;
+
+	const EVENT_NAME: &'static str = "KILL";
 
 	/// La commande KILL est utilisée pour fermer une connexion client-serveur
 	/// par le serveur qui a la connexion actuelle. Les serveurs génèrent des
@@ -69,7 +73,7 @@ impl KillHandler
 	/// d'être générés pour cacher l'identité du KILLer, le commentaire montre
 	/// également un 'kill-path' qui est mis à jour par chaque serveur qu'il
 	/// traverse, chacun ajoutant son nom au chemin.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<KillCommandFormData>,
@@ -79,11 +83,9 @@ impl KillHandler
 			return;
 		};
 
-		#[rustfmt::skip]
-		let Some(knick_socket) = app.find_socket_by_nickname(
-			&socket,
-			&data.nickname,
-		) else {
+		let Some(knick_socket) =
+			app.find_socket_by_nickname(&socket, &data.nickname)
+		else {
 			client_socket.send_err_nosuchnick(&data.nickname);
 			return;
 		};

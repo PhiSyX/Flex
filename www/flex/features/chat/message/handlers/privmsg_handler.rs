@@ -11,6 +11,7 @@
 use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
 use flex_chat::client::{ClientInterface, ClientSocketInterface, Origin};
 use flex_chat::user::UserAwayInterface;
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::message::{
@@ -31,12 +32,15 @@ pub struct PrivmsgHandler;
 // Implémentation //
 // -------------- //
 
-impl PrivmsgHandler
+impl WebSocketHandler for PrivmsgHandler
 {
-	pub const COMMAND_NAME: &'static str = "PRIVMSG";
+	type App = ChatApplication;
+	type Data = PrivmsgCommandFormData;
+
+	const EVENT_NAME: &'static str = "PRIVMSG";
 
 	/// PRIVMSG est utilisé pour envoyer des messages privés entre utilisateurs.
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<PrivmsgCommandFormData>,
@@ -57,11 +61,9 @@ impl PrivmsgHandler
 				continue;
 			}
 
-			#[rustfmt::skip]
-			let Some(target_client_socket) = app.find_socket_by_nickname(
-				&socket,
-				target,
-			) else {
+			let Some(target_client_socket) =
+				app.find_socket_by_nickname(&socket, target)
+			else {
 				client_socket.send_err_nosuchnick(target);
 				continue;
 			};

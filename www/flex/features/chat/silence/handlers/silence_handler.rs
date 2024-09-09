@@ -10,6 +10,7 @@
 
 use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
 use flex_chat::client::{ClientSocketInterface, Origin};
+use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::features::chat::silence::{
@@ -29,14 +30,16 @@ pub struct SilenceHandler;
 // Implémentation //
 // -------------- //
 
-impl SilenceHandler
+impl WebSocketHandler for SilenceHandler
 {
-	pub const COMMAND_NAME: &'static str = "SILENCE";
+	type App = ChatApplication;
+	type Data = SilenceCommandFormData;
+
+	const EVENT_NAME: &'static str = "SILENCE";
 
 	/// La commande `/SILENCE` permet de ne plus être notifié des messages d'un
 	/// client que ces soit dans les messages privés ou publiques.
-	#[rustfmt::skip]
-	pub fn handle(
+	fn handle(
 		socket: SocketRef,
 		State(app): State<ChatApplication>,
 		Data(data): Data<SilenceCommandFormData>,
@@ -50,10 +53,9 @@ impl SilenceHandler
 			return;
 		}
 
-		let Some(to_silence_client_socket) = app.find_socket_by_nickname(
-			&socket,
-			nickname,
-		) else {
+		let Some(to_silence_client_socket) =
+			app.find_socket_by_nickname(&socket, nickname)
+		else {
 			client_socket.send_err_nosuchnick(nickname);
 			return;
 		};
@@ -62,9 +64,9 @@ impl SilenceHandler
 		// 				 ignorés.
 
 		if data.nickname.starts_with('+') {
-			_ = client_socket.socket().join(
-				to_silence_client_socket.useless_people_room()
-			);
+			_ = client_socket
+				.socket()
+				.join(to_silence_client_socket.useless_people_room());
 
 			if app.add_client_to_blocklist(
 				&client_socket,
@@ -80,9 +82,9 @@ impl SilenceHandler
 		// NOTE(phisyx): utilisateur à retirer de la liste des utilisateurs
 		// 				 ignorés.
 
-		_ = client_socket.socket().leave(
-			to_silence_client_socket.useless_people_room()
-		);
+		_ = client_socket
+			.socket()
+			.leave(to_silence_client_socket.useless_people_room());
 
 		if app.remove_client_to_blocklist(
 			&client_socket,
