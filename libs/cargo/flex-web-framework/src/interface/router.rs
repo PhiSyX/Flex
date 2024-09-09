@@ -37,12 +37,12 @@ macro_rules! impl_router_interface {
 		where
 			   $( $generic : RouterInterface<UserState> ),*
 		{
-			   fn routes(s: &$crate::AxumState<UserState>) -> $crate::routing::RouterCollection<UserState>
-			   {
-					   let mut router_collection = Self::collection();
-					   $( router_collection.extends( $generic::routes(s) ); )*
-					   router_collection
-			   }
+			fn routes(s: &$crate::AxumState<UserState>) -> $crate::routing::RouterCollection<UserState>
+			{
+				let mut router_collection = Self::collection();
+				$( router_collection.extends( $generic::routes(s) ); )*
+				router_collection
+			}
 		}
 
 	)*};
