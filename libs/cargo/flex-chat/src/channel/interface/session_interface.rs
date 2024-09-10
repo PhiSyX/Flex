@@ -11,7 +11,6 @@
 use std::borrow::Cow;
 
 use dashmap::mapref::one::{Ref, RefMut};
-use flex_secret::Secret;
 
 use crate::channel::{
 	ChannelInterface,

@@ -43,7 +43,6 @@ pub struct ConnectionRegistrationHandler;
 impl ConnectionRegistrationHandler
 {
 	/// Événement CONNECT
-	#[rustfmt::skip]
 	pub fn handle_connect(
 		socket: &SocketRef,
 		State(server_state): State<FlexApplicationState>,
@@ -52,7 +51,8 @@ impl ConnectionRegistrationHandler
 	)
 	{
 		let maybe_user_id = data.as_ref().cloned().ok().and_then(|d| d.user_id);
-		let maybe_client_id = data.as_ref().cloned().ok().and_then(|d| d.client_id);
+		let maybe_client_id =
+			data.as_ref().cloned().ok().and_then(|d| d.client_id);
 
 		let new_client = || {
 			let client = if let Some(user_id) = maybe_user_id {
@@ -77,7 +77,9 @@ impl ConnectionRegistrationHandler
 			Self::complete_registration(server_state, app, client_socket);
 		};
 
-		let cookie_manager = socket.req_parts().extensions
+		let cookie_manager = socket
+			.req_parts()
+			.extensions
 			.get::<flex_web_framework::http::TowerCookies>()
 			.map(|cm| {
 				Cookies::new(cm.clone(), server_state.get_cookie_key().clone())
@@ -87,14 +89,19 @@ impl ConnectionRegistrationHandler
 			})
 			.expect("Cookie manager");
 
-		let token = cookie_manager.signed().get(TokenController::COOKIE_TOKEN_KEY);
+		let token = cookie_manager
+			.signed()
+			.get(TokenController::COOKIE_TOKEN_KEY);
 
 		socket.on_disconnect(QuitHandler::handle_disconnect);
 
-		let Some(client) = (if let Some((user_id, token)) = maybe_user_id.zip(token.clone())
+		let Some(client) = (if let Some((user_id, token)) =
+			maybe_user_id.zip(token.clone())
 		{
 			app.get_client_by_user_id_and_token(&user_id, token.value())
-		} else if let Some((remember_client_id, token)) = maybe_client_id.zip(token) {
+		} else if let Some((remember_client_id, token)) =
+			maybe_client_id.zip(token)
+		{
 			app.get_client_by_id_and_token(&remember_client_id, token.value())
 		} else {
 			new_client();
@@ -110,25 +117,27 @@ impl ConnectionRegistrationHandler
 	}
 
 	/// Compléter l'enregistrement d'un client.
-	#[rustfmt::skip]
 	pub fn complete_registration(
 		_server_state: &FlexApplicationState,
 		app: &ChatApplication,
 		mut client_socket: Socket,
 	) -> Option<()>
 	{
-		if client_socket.user().nickname().is_empty() ||
-		   client_socket.user().ident().is_empty()
+		if client_socket.user().nickname().is_empty()
+			|| client_socket.user().ident().is_empty()
 		{
 			return Some(());
 		}
 
-		let config = client_socket.socket().req_parts().extensions
+		let config = client_socket
+			.socket()
+			.req_parts()
+			.extensions
 			.get::<FlexChatConfig>()?
 			.clone();
 
-		if config.server.password.is_some() &&
-		   client_socket.user().server_password().is_none()
+		if config.server.password.is_some()
+			&& client_socket.user().server_password().is_none()
 		{
 			// FIXME(phisyx): à déplacer
 			_ = client_socket.socket().emit(
@@ -139,12 +148,17 @@ impl ConnectionRegistrationHandler
 			return None;
 		}
 
-		let passwords = config.server.password
+		let passwords = config
+			.server
+			.password
 			.as_deref()
 			.zip(client_socket.user().server_password_exposed());
 
 		if let Some((server_password, client_password)) = passwords {
-			let password_hasher = client_socket.socket().req_parts().extensions
+			let password_hasher = client_socket
+				.socket()
+				.req_parts()
+				.extensions
 				.get::<Argon2Password>()
 				.expect("Le service de d'encodage Argon2.");
 
@@ -163,8 +177,8 @@ impl ConnectionRegistrationHandler
 		// NOTE(phisyx): Enregistrer le client dans la session.
 		//
 
-		if !client_socket.client().is_registered() &&
-			client_socket.client().is_disconnected()
+		if !client_socket.client().is_registered()
+			&& client_socket.client().is_disconnected()
 		{
 			if !app.can_locate_unregistered_client(client_socket.client()) {
 				return None;
@@ -173,14 +187,16 @@ impl ConnectionRegistrationHandler
 			client_socket.client_mut().set_connected();
 			client_socket.client_mut().set_registered();
 			app.register_client(client_socket.client());
-		} else if client_socket.client().is_registered() &&
-				  client_socket.client().is_disconnected()
+		} else if client_socket.client().is_registered()
+			&& client_socket.client().is_disconnected()
 		{
 			client_socket.client_mut().set_connected();
 			app.register_client(client_socket.client());
 		}
 
-		_ = client_socket.socket().join(client_socket.client().private_room());
+		_ = client_socket
+			.socket()
+			.join(client_socket.client().private_room());
 
 		//
 		// NOTE(phisyx): Émettre au client les messages de connexions.
@@ -205,8 +221,7 @@ impl ConnectionRegistrationHandler
 		// NOTE(phisyx): transmet à l'utilisateur son rôle d'opérateur global.
 		if client_socket.user().is_operator() {
 			client_socket.send_rpl_youreoper(
-				client_socket.user().operator_type()
-					.unwrap(),
+				client_socket.user().operator_type().unwrap(),
 			);
 			for channel_name in config.operator.auto_join.iter() {
 				app.join_or_create_oper_channel(&client_socket, channel_name);
@@ -215,7 +230,9 @@ impl ConnectionRegistrationHandler
 
 		// NOTE(phisyx): transmet les utilisateurs bloqués/ignorés du client (au
 		// client lui-même ;-))
-		let users: Vec<_> = app.clients.blocklist(client_socket.cid())
+		let users: Vec<_> = app
+			.clients
+			.blocklist(client_socket.cid())
 			.iter()
 			.map(Origin::from)
 			.collect();

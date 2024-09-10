@@ -27,6 +27,7 @@ use crate::features::chat::topic::ChannelTopicError;
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait TopicChannelsSessionInterface
 	: ChannelsSessionInterface
 {
@@ -88,8 +89,9 @@ impl TopicChannelsSessionInterface for ChannelsSession
 
 		// NOTE(phisyx): seuls les utilisateurs avec un niveau d'accès minimal à
 		// 				 HalfOperator peuvent éditer le sujet du salon.
-		#[rustfmt::skip]
-		let level_access = member.access_level()
+
+		let level_access = member
+			.access_level()
 			.iter()
 			.fold(0, |acc, mode| mode.flag() | acc);
 

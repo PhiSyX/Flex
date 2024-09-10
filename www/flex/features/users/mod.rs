@@ -43,7 +43,7 @@ flex_kernel::import! {
 	pub(crate) mod sessions {
 		pub mod constant;
 	};
-	
+
 	// NOTE(vis): les autres features pourraient avoir besoin de ces éléments
 	pub(crate) mod services {
 		pub mod user_service use *;

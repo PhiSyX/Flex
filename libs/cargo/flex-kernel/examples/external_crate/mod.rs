@@ -11,7 +11,9 @@ use flex_kernel::{
 
 pub struct AnyApplicationAdapter<E = (), C = ()>
 {
+	#[allow(dead_code)]
 	pub env: Option<E>,
+	#[allow(dead_code)]
 	pub cli: Option<C>,
 }
 

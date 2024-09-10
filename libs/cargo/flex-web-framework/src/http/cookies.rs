@@ -86,7 +86,6 @@ impl Cookies
 
 impl<'s> PrivateCookies<'s>
 {
-	#[rustfmt::skip]
 	pub fn add<C: Into<Cookie<'static>>>(&self, cookie: C)
 	{
 		let user_cookie: TowerCookie = cookie.into().0.build();
@@ -113,9 +112,8 @@ impl<'s> PrivateCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(
-					time::Duration::seconds(max_age)
-				);
+				cookie_builder =
+					cookie_builder.max_age(time::Duration::seconds(max_age));
 			}
 		}
 
@@ -147,7 +145,6 @@ impl<'s> PrivateCookies<'s>
 
 impl<'s> SignedCookies<'s>
 {
-	#[rustfmt::skip]
 	pub fn add<C: Into<Cookie<'static>>>(&self, cookie: C)
 	{
 		let user_cookie: TowerCookie = cookie.into().0.build();
@@ -174,9 +171,8 @@ impl<'s> SignedCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(
-					time::Duration::seconds(max_age)
-				);
+				cookie_builder =
+					cookie_builder.max_age(time::Duration::seconds(max_age));
 			}
 		}
 
@@ -198,7 +194,6 @@ impl<'s> SignedCookies<'s>
 		self.inner.get(name)
 	}
 
-	#[rustfmt::skip]
 	pub fn remove<K>(&self, name: K)
 	where
 		K: Into<std::borrow::Cow<'static, str>>,
@@ -228,9 +223,8 @@ impl<'s> SignedCookies<'s>
 
 		if !has_max_age {
 			if let Some(max_age) = self.settings.max_age {
-				cookie_builder = cookie_builder.max_age(
-					time::Duration::seconds(max_age)
-				);
+				cookie_builder =
+					cookie_builder.max_age(time::Duration::seconds(max_age));
 			}
 		}
 
@@ -290,7 +284,6 @@ where
 	N: Into<std::borrow::Cow<'static, str>>,
 	V: Into<std::borrow::Cow<'static, str>>,
 {
-	#[rustfmt::skip]
 	fn from((name, value, settings): (N, V, CookieSettings)) -> Self
 	{
 		let mut cookie_builder = TowerCookie::build((name, value));
@@ -311,9 +304,8 @@ where
 		}
 
 		if let Some(max_age) = settings.max_age {
-			cookie_builder = cookie_builder.max_age(
-				time::Duration::seconds(max_age)
-			);
+			cookie_builder =
+				cookie_builder.max_age(time::Duration::seconds(max_age));
 		}
 
 		if let Some(same_site) = settings.same_site {
@@ -342,8 +334,9 @@ where
 		state: &AxumState<S>,
 	) -> Result<Self, Self::Rejection>
 	{
-		#[rustfmt::skip]
-		let cm = parts.extensions.get::<tower_cookies::Cookies>()
+		let cm = parts
+			.extensions
+			.get::<tower_cookies::Cookies>()
 			.cloned()
 			.ok_or((
 				StatusCode::INTERNAL_SERVER_ERROR,

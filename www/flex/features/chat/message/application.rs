@@ -59,10 +59,8 @@ impl MessageApplicationInterface for ChatApplication
 
 		let moderate_flag = channel.modes_settings.has_moderate_flag();
 
-		#[rustfmt::skip]
-		let no_external_messages_flag = {
-			channel.modes_settings.has_no_external_messages_flag()
-		};
+		let no_external_messages_flag =
+			{ channel.modes_settings.has_no_external_messages_flag() };
 
 		let Some(member) = channel.member(client_socket.cid()) else {
 			if self.is_client_global_operator(client_socket) {
@@ -96,9 +94,9 @@ impl MessageApplicationInterface for ChatApplication
 		}
 
 		if moderate_flag
-			&& member_hal.filter(|level|
-				level.flag() >= ChannelAccessLevel::Vip.flag()
-			).is_none()
+			&& member_hal
+				.filter(|level| level.flag() >= ChannelAccessLevel::Vip.flag())
+				.is_none()
 		{
 			return ChannelWritePermission::No(
 				ChannelNoPermissionCause::ERR_CHANISINMODERATED,

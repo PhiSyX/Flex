@@ -17,6 +17,7 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait NickClientSessionInterface
 	: ClientsSessionInterface
 {
@@ -37,13 +38,11 @@ pub trait NickClientSessionInterface
 
 impl NickClientSessionInterface for ClientsSession
 {
-	#[rustfmt::skip]
 	fn can_locate_by_nickname(&self, nickname: impl AsRef<str>) -> bool
 	{
 		self.clients.iter().any(|client| {
 			client.user().nickname().to_lowercase()
-			==
-			nickname.as_ref().to_lowercase()
+				== nickname.as_ref().to_lowercase()
 		})
 	}
 

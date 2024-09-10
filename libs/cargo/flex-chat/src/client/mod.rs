@@ -119,10 +119,8 @@ where
 	) where
 		F: Into<<Self::User as UserFlagInterface>::Flag>,
 	{
-		#[rustfmt::skip]
 		self.user.set_flag(
-			Mode::new(oper_type.into())
-				.with_update_by(self.user.nickname()),
+			Mode::new(oper_type.into()).with_update_by(self.user.nickname()),
 		);
 		for flag in oper_flags {
 			self.user.set_flag(Mode::new(flag.into()));

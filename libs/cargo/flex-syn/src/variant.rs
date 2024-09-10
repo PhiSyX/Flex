@@ -39,7 +39,8 @@ impl VariantExt for syn::Variant
 				let parser = |parser: &syn::parse::ParseBuffer| {
 					parser.parse::<syn::MetaNameValue>()
 				};
-				let maybe_cfg = attr.parse_args_with(parser)
+				let maybe_cfg = attr
+					.parse_args_with(parser)
 					.ok()
 					.filter(|nv| !nv.path.is_ident("feature"));
 				let cfg = attr.path().is_ident("cfg").then_some(maybe_cfg);

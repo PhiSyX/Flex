@@ -127,7 +127,7 @@ impl<'d> GridLayout<'d>
 
 			Self::add_newline_to_buffer(
 				&mut print_buffer,
-				&self.rows[index].format(&max_widths, &self.style),
+				self.rows[index].format(&max_widths, &self.style),
 			);
 		}
 

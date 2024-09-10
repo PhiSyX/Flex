@@ -68,14 +68,14 @@ impl<'h> HttpRequestHeaderAccept<'h>
 {
 	pub fn json(&self) -> bool
 	{
-		#[rustfmt::skip]
-		let Some(accept) = self.accept_header else { return false };
+		let Some(accept) = self.accept_header else {
+			return false;
+		};
 
 		if accept.is_empty() {
 			return false;
 		}
 
-		#[rustfmt::skip]
 		let Ok(s) = accept.to_str() else { return false };
 
 		s.contains("json")

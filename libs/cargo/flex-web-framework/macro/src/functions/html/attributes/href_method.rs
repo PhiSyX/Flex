@@ -54,12 +54,15 @@ impl HTMLMacro
 			});
 		}
 
-		#[rustfmt::skip]
-		let link_id = element.attributes()
+		let link_id = element
+			.attributes()
 			.iter()
 			.find_map(|attribute| {
 				if let node::NodeAttribute::Attribute(node_attr) = attribute {
-					return node_attr.key.to_string().eq("id")
+					return node_attr
+						.key
+						.to_string()
+						.eq("id")
 						.then(|| node_attr.value_literal_string());
 				}
 
@@ -72,8 +75,8 @@ impl HTMLMacro
 			.unwrap();
 		let href_value = attr.value();
 
-		#[rustfmt::skip]
-		let mut tag_attrs: Vec<_> = element.attributes()
+		let mut tag_attrs: Vec<_> = element
+			.attributes()
 			.iter()
 			.filter_map(|attr| {
 				let node::NodeAttribute::Attribute(attr) = attr else {
@@ -108,8 +111,8 @@ impl HTMLMacro
 
 		let link_children = self.parse(&element.children)?;
 
-		#[rustfmt::skip]
-		let mut form_children = element.attributes()
+		let mut form_children = element
+			.attributes()
 			.iter()
 			.filter_map(|attr| {
 				let node::NodeAttribute::Attribute(attr) = attr else {

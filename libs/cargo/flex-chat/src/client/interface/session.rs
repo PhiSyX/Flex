@@ -41,12 +41,12 @@ pub trait ClientsSessionInterface
 
 	/// Enregistre un client.
 	fn register(&self, client: &Self::Client);
-	
+
 	/// Supprime un client de la session.
-	fn remove(&self, client: &<Self::Client as ClientInterface>::ClientID) -> 
-		Option<
-			(<Self::Client as ClientInterface>::ClientID, Self::Client)
-		>;
+	fn remove(
+		&self,
+		client: &<Self::Client as ClientInterface>::ClientID,
+	) -> Option<(<Self::Client as ClientInterface>::ClientID, Self::Client)>;
 
 	/// Mise à niveau d'un client.
 	fn upgrade(&self, client: &Self::Client);

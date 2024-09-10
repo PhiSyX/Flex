@@ -19,6 +19,7 @@ pub trait ApplicationAdapterInterface
 	fn new(settings: Self::Settings) -> Self;
 }
 
+#[rustfmt::skip]
 pub trait ApplicationAdapterSettingsInterface
 	: Default
 	+ serde::de::DeserializeOwned

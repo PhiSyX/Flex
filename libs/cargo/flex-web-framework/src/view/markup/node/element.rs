@@ -38,7 +38,9 @@ impl fmt::Display for ElementNode
 
 			if let Some(value) = value.as_deref() {
 				#[rustfmt::skip]
-				let escaped = html_escape::encode_double_quoted_attribute(value);
+				let escaped = html_escape::encode_double_quoted_attribute(
+					value
+				);
 				write!(f, r#"="{escaped}""#)?;
 			}
 		}

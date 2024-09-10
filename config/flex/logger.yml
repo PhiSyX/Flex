@@ -3,5 +3,4 @@ preset: "default"
 target_filters:
   - "flex"
   - "lib_flex"
-  - "h2"
   - "sqlx"

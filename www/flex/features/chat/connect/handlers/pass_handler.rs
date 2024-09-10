@@ -53,10 +53,11 @@ impl PassHandler
 			return;
 		}
 
-		#[rustfmt::skip]
-		let config = {
-			socket.req_parts().extensions.get::<FlexChatConfig>()
-		}.unwrap();
+		let config = socket
+			.req_parts()
+			.extensions
+			.get::<FlexChatConfig>()
+			.unwrap();
 
 		// NOTE(phisyx): ignore la demande si le serveur n'a pas de mot de passe
 		//               dans sa configuration.

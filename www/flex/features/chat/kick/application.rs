@@ -56,7 +56,6 @@ impl KickApplicationInterface for ChatApplication
 	type Channel = Channel;
 	type ClientSocket<'cs> = Socket<'cs>;
 
-	#[rustfmt::skip]
 	fn kick_clients_on_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -74,17 +73,20 @@ impl KickApplicationInterface for ChatApplication
 
 		if is_client_globop {
 			for nickname in knicks.iter() {
-				let Some(knick_client_socket) = self.find_socket_by_nickname(
-					client_socket.socket(),
-					nickname,
-				) else {
+				let Some(knick_client_socket) = self
+					.find_socket_by_nickname(client_socket.socket(), nickname)
+				else {
 					client_socket.send_err_nosuchnick(nickname);
 					continue;
 				};
 
 				// NOTE: la victime (1/5) n'est pas membre du salon (3).
-				if !self.channels.has_member(channel_name, knick_client_socket.cid()) {
-					client_socket.send_err_usernotinchannel(channel_name, nickname);
+				if !self
+					.channels
+					.has_member(channel_name, knick_client_socket.cid())
+				{
+					client_socket
+						.send_err_usernotinchannel(channel_name, nickname);
 					continue;
 				}
 
@@ -139,16 +141,17 @@ impl KickApplicationInterface for ChatApplication
 		// NOTE: opérateur de salon (4) avec les bonnes permissions.
 
 		for nickname in knicks.iter() {
-			let Some(knick_client_socket) = self.find_socket_by_nickname(
-				client_socket.socket(),
-				nickname,
-			) else {
+			let Some(knick_client_socket) =
+				self.find_socket_by_nickname(client_socket.socket(), nickname)
+			else {
 				client_socket.send_err_nosuchnick(nickname);
 				continue;
 			};
 
 			// NOTE: la victime (1/5) n'est pas membre du salon (3).
-			if !self.channels.has_member(channel_name, knick_client_socket.cid())
+			if !self
+				.channels
+				.has_member(channel_name, knick_client_socket.cid())
 			{
 				client_socket.send_err_usernotinchannel(channel_name, nickname);
 				continue;
@@ -165,11 +168,13 @@ impl KickApplicationInterface for ChatApplication
 			// NOTE: l'opérateur de salon (4) n'a pas les droits d'opérer sur la
 			//       victime (5) qui se trouve être un opérateur de salon plus
 			//       haut gradé (4).
-			if !self.channels.does_member_have_rights_to_operate_on_another_member(
-				channel_name,
-				client_socket.cid(),
-				knick_client_socket.cid(),
-			) {
+			if !self
+				.channels
+				.does_member_have_rights_to_operate_on_another_member(
+					channel_name,
+					client_socket.cid(),
+					knick_client_socket.cid(),
+				) {
 				client_socket.send_err_chanoprivsneeded(channel_name);
 				continue;
 			}

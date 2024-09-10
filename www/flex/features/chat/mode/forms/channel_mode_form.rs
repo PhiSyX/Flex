@@ -12,7 +12,6 @@ use std::sync::Arc;
 
 use flex_chat::channel::validate_channel;
 use flex_chat::macros::command_formdata;
-use flex_web_framework::types::secret;
 
 command_formdata! {
 	struct CHANNEL_MODE
@@ -63,7 +62,8 @@ pub struct ChannelModesSettings
 	/// Salon réservé aux opérateurs globaux uniquement.
 	#[serde(rename = "O")]
 	pub oper_only: Option<bool>,
-	/// Salon secret. Ces salons ne seront pas affiché dans la liste des salons.
+	/// Salon secret. Ces salons ne seront pas affiché dans la liste des
+	/// salons.
 	#[serde(rename = "s")]
 	pub secret: Option<bool>,
 }

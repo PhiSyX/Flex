@@ -96,6 +96,7 @@ async fn main() -> impl process::Termination
 	};
 
 	// 3.1. Layers, extensions, services (Async)
+	#[rustfmt::skip]
 	let application = {
 		use flex_web_framework::AsyncApplicationExtensionInterface;
 		let database_url = application.env().database_url.expose().to_owned();

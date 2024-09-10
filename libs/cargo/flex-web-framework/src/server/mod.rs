@@ -31,7 +31,7 @@ use flex_kernel::{
 
 pub use self::error::Error as ServerError;
 pub use self::state::ServerState;
-use crate::routing::RouterCollection;
+use crate::http::routing::HttpRouterCollection;
 use crate::settings::ServerSettings;
 use crate::{server, settings, AxumState};
 
@@ -49,7 +49,7 @@ pub struct Server<UserState, UserEnv, UserCLI>
 	/// Paramètres du serveur HTTP.
 	pub settings: ServerSettings,
 	/// Routeur du serveur HTTP.
-	pub router: RouterCollection<UserState>,
+	pub router: HttpRouterCollection<UserState>,
 	/// État global du serveur.
 	pub state: AxumState<UserState>,
 }
@@ -79,7 +79,7 @@ impl<S, E, C> Server<S, E, C>
 					.precompressed_gzip()
 					.precompressed_br()
 					.precompressed_deflate()
-					.precompressed_zstd()
+					.precompressed_zstd(),
 			);
 		}
 
@@ -90,7 +90,6 @@ impl<S, E, C> Server<S, E, C>
 impl<S, E, C> Server<S, E, C>
 {
 	/// Affiche les routes enregistrées du serveur.
-	#[rustfmt::skip]
 	pub(super) fn display_all_routes(&self)
 	{
 		println!();
@@ -109,7 +108,8 @@ impl<S, E, C> Server<S, E, C>
 
 		println!("Toutes les routes du serveur:");
 		for router in self.router.all() {
-			let methods = router.methods()
+			let methods = router
+				.methods()
 				.map(|method| style(format!("{method:?}")).yellow().to_string())
 				.collect::<Vec<_>>()
 				.join(" | ");
@@ -127,7 +127,6 @@ impl<S, E, C> Server<S, E, C>
 impl<S, E, C> Server<S, E, C>
 {
 	/// Démarre un serveur HTTP se basant sur des paramètres serveur.
-	#[rustfmt::skip]
 	pub(super) async fn launch(self) -> Result<(), ServerError>
 	{
 		let router = self.router.global();
@@ -140,18 +139,22 @@ impl<S, E, C> Server<S, E, C>
 			let tls_config = RustlsConfig::from_pem_file(
 				&tls_settings.cert_file,
 				&tls_settings.key_file,
-			).await?;
+			)
+			.await?;
 			println!("URL: https://{}", addr);
 			let mut server = axum_server::bind_rustls(addr, tls_config);
 			server.http_builder().http2();
-			server.serve(router.into_make_service_with_connect_info::<S>()).await?;
+			server
+				.serve(router.into_make_service_with_connect_info::<S>())
+				.await?;
 		} else {
 			let listener = net::TcpListener::bind(addr).await?;
 			println!("URL: http://{}", listener.local_addr()?);
 			axum::serve(
 				listener,
 				router.into_make_service_with_connect_info::<S>(),
-			).await?;
+			)
+			.await?;
 		}
 
 		Ok(())

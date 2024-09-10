@@ -26,6 +26,7 @@ command_response! {
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait NoticeClientSocketCommandResponseInterface
 	: ClientSocketInterface
 {
@@ -109,7 +110,8 @@ impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s>
 
 		let target_room = format!("channel:{}", target.to_lowercase());
 
-		_ = self.socket()
+		_ = self
+			.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);
@@ -133,7 +135,8 @@ impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s>
 
 		let target_room = format!("channel:{}", target.to_lowercase());
 
-		_ = self.socket()
+		_ = self
+			.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);
@@ -156,10 +159,11 @@ impl<'s> NoticeClientSocketCommandResponseInterface for Socket<'s>
 
 		_ = self.socket().emit(notice_command.name(), &notice_command);
 
-		#[rustfmt::skip]
-		let target_room = format!("channel:{}{}", prefix, target.to_lowercase());
+		let target_room =
+			format!("channel:{}{}", prefix, target.to_lowercase());
 
-		_ = self.socket()
+		_ = self
+			.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(notice_command.name(), notice_command);

@@ -8,11 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat::channel::{
-	Channel,
-	ChannelInterface,
-	ChannelMemberInterface,
-};
+use flex_chat::channel::{Channel, ChannelInterface, ChannelMemberInterface};
 use flex_chat::client::channel::errors::{
 	ErrChanoprivsneededError,
 	ErrNosuchchannelError,
@@ -64,10 +60,10 @@ pub enum Socket<'a>
 impl<'a> Socket<'a>
 {
 	/// Les salons de la socket.
-	#[rustfmt::skip]
 	pub fn channels_rooms(&self) -> Vec<String>
 	{
-		self.socket().rooms()
+		self.socket()
+			.rooms()
 			.iter()
 			.flatten()
 			.filter_map(|room| {

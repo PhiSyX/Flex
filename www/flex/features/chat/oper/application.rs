@@ -94,7 +94,6 @@ impl OperApplicationInterface for ChatApplication
 		client.user().is_global_operator()
 	}
 
-	#[rustfmt::skip]
 	fn join_or_create_oper_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -110,22 +109,22 @@ impl OperApplicationInterface for ChatApplication
 					ApplyMode::new(SettingsFlag::Secret),
 				],
 			);
-			let mut channel = self.channels.add_member(
-				channel_name,
-				*client_socket.cid(),
-			)
+			let mut channel = self
+				.channels
+				.add_member(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 		}
 
-		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
-		let can_join = self.channels.can_join(&client_session, channel_name, None);
+		let client_session =
+			self.get_client_by_id(client_socket.cid()).unwrap();
+		let can_join =
+			self.channels.can_join(&client_session, channel_name, None);
 
 		if can_join.is_ok() {
-			let mut channel = self.channels.add_member(
-				channel_name,
-				*client_socket.cid(),
-			)
+			let mut channel = self
+				.channels
+				.add_member(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 			return;
@@ -155,27 +154,28 @@ impl OperApplicationInterface for ChatApplication
 		}
 	}
 
-	#[rustfmt::skip]
 	fn marks_client_as_operator(
 		&self,
 		client_socket: &mut Self::ClientSocket<'_>,
 		oper: &FlexChatConfigOperatorAuth,
 	)
 	{
-		self.clients.marks_client_as_operator(client_socket.cid(), oper);
+		self.clients
+			.marks_client_as_operator(client_socket.cid(), oper);
 
 		if let Some(vhost) = oper.virtual_host.as_deref() {
 			client_socket.user_mut().set_vhost(vhost);
 		}
 
-		client_socket.client_mut().marks_client_as_operator(
-			oper.oper_type,
-			&oper.flags,
-		);
+		client_socket
+			.client_mut()
+			.marks_client_as_operator(oper.oper_type, &oper.flags);
 
 		let flag_oper = match oper.oper_type {
 			| FlexChatConfigOperatorType::LocalOperator => Flag::LocalOperator,
-			| FlexChatConfigOperatorType::GlobalOperator => Flag::GlobalOperator,
+			| FlexChatConfigOperatorType::GlobalOperator => {
+				Flag::GlobalOperator
+			}
 		};
 
 		client_socket.emit_user_modes(&[ApplyMode::new(flag_oper.clone())]);

@@ -15,6 +15,7 @@ use std::path;
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait EnvInterface
 	: Debug
 	+ Clone

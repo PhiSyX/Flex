@@ -19,7 +19,6 @@ flex_kernel::import! {
 		};
 	};
 
-	
 	pub(crate) mod dto {
 		pub(crate) mod update_account_dto use *;
 	};

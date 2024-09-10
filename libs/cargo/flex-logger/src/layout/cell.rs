@@ -81,10 +81,11 @@ impl<'d> Cell<'d>
 		self.width() as f32 / self.colspan as f32
 	}
 
-	#[rustfmt::skip]
 	pub(crate) fn min_width(&self) -> usize
 	{
-		let max_char_width = self.data.chars()
+		let max_char_width = self
+			.data
+			.chars()
 			.fold(0, |max, ch| cmp::max(max, ch.len_utf8()));
 
 		if self.padding {
@@ -94,7 +95,6 @@ impl<'d> Cell<'d>
 		}
 	}
 
-	#[rustfmt::skip]
 	pub(crate) fn wrapped_content(&self, width: usize) -> Vec<String>
 	{
 		let pad_char = if self.padding { ' ' } else { '\0' };
@@ -113,10 +113,10 @@ impl<'d> Cell<'d>
 		let mut byte_index = 0;
 
 		for ch in self.data.chars() {
-			if !hidden.contains(&byte_index) && (
-				ch == '\n' ||
-				str_len(&temporary_buffer) >= width - pad_char.len_utf8()
-			)
+			if !hidden.contains(&byte_index)
+				&& (ch == '\n'
+					|| str_len(&temporary_buffer)
+						>= width - pad_char.len_utf8())
 			{
 				temporary_buffer.push(pad_char);
 				output.push(temporary_buffer);

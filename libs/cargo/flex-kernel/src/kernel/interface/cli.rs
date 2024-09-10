@@ -45,6 +45,7 @@ pub trait ApplicationAdapterCLIInterface
 }
 
 /// Interface pour la récupération des arguments de la CLI.
+#[rustfmt::skip]
 pub trait UserApplicationCLIInterface
 	: Clone
 	+ Debug
@@ -52,7 +53,6 @@ pub trait UserApplicationCLIInterface
 	/// Récupère les arguments de la CLI.
 	fn arguments() -> Self;
 }
-
 
 // -------------- //
 // Implémentation // -> Interface

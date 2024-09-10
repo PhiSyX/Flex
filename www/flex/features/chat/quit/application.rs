@@ -38,29 +38,31 @@ impl QuitApplicationInterface for ChatApplication
 {
 	type ClientSocket<'cs> = Socket<'cs>;
 
-	#[rustfmt::skip]
 	fn disconnect_client(
 		&self,
 		client_socket: Self::ClientSocket<'_>,
 		reason: impl ToString,
 	)
 	{
-		let Some(mut session_client) = self.get_client_mut_by_id(
-			client_socket.cid(),
-		) else { return };
+		let Some(mut session_client) =
+			self.get_client_mut_by_id(client_socket.cid())
+		else {
+			return;
+		};
 
 		for channel_name in session_client.channels.iter() {
 			client_socket.emit_quit(channel_name, reason.to_string());
 		}
 
-		self.channels.remove_client_from_all_his_channels(&session_client);
+		self.channels
+			.remove_client_from_all_his_channels(&session_client);
 
 		session_client.channels.clear();
 		session_client.disconnect();
 		drop(session_client);
 
 		std::thread::sleep(std::time::Duration::from_millis(60));
-		
+
 		self.remove_client_by_id(client_socket.cid());
 	}
 }

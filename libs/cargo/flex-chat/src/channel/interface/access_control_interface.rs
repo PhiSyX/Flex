@@ -16,6 +16,7 @@ use crate::user::UserInterface;
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait ChannelAccessControlInterface
 	: ChannelAccessControlBanInterface
 	+ ChannelAccessControlBanExceptInterface

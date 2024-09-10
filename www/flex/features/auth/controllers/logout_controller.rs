@@ -38,22 +38,24 @@ impl LogoutController
 	pub const COOKIE_NAME: &'static str = "flex.auth_user";
 
 	/// Page de déconnexion.
-	#[rustfmt::skip]
 	pub async fn view(
 		ctx: HttpAuthContext<Self, UserSessionDTO>,
 	) -> impl IntoResponse
 	{
-		ctx.response.render(LogoutView {
-			user_session: ctx.user,
-		}).await
+		ctx.response
+			.render(LogoutView {
+				user_session: ctx.user,
+			})
+			.await
 	}
 
 	/// Déconnexion de l'utilisateur en session.
-	#[rustfmt::skip]
 	pub async fn handle(ctx: HttpContext<Self>) -> impl IntoResponse
 	{
 		ctx.cookies.signed().remove(Self::COOKIE_NAME);
-		ctx.cookies.signed().remove(TokenController::COOKIE_TOKEN_KEY);
+		ctx.cookies
+			.signed()
+			.remove(TokenController::COOKIE_TOKEN_KEY);
 		_ = ctx.session.remove::<()>(USER_SESSION).await;
 		ctx.response.redirect_to(AuthRouteID::Login)
 	}

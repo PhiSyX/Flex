@@ -145,7 +145,7 @@ impl<T> serde::Serialize for Secret<T>
 
 impl<S> Default for Secret<S>
 where
-	S: Default
+	S: Default,
 {
 	fn default() -> Self
 	{

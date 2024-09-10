@@ -22,8 +22,8 @@ use crate::features::chat::sessions::ChannelsSession;
 // Interface //
 // --------- //
 
-pub trait ModeChannelAccessLevelChannelsSessionInterface
-	: ChannelsSessionInterface
+pub trait ModeChannelAccessLevelChannelsSessionInterface:
+	ChannelsSessionInterface
 {
 	/// Est-ce qu'un membre à des droits minimal.
 	fn does_member_have_rights(
@@ -74,7 +74,6 @@ pub trait ModeChannelAccessLevelChannelsSessionInterface
 
 impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 {
-	#[rustfmt::skip]
 	fn does_member_have_rights(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
@@ -87,7 +86,8 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 		let Some(member) = self.get_member(channel_id, member_id) else {
 			return false;
 		};
-		member.access_level()
+		member
+			.access_level()
 			.iter()
 			.any(|access_level| access_level.flag() >= min_access_level.flag())
 	}
@@ -103,8 +103,8 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 		>::ID,
 	) -> bool
 	{
-		#[rustfmt::skip]
-		let Some((member, other_member)) = self.get_member(channel_id, member_id)
+		let Some((member, other_member)) = self
+			.get_member(channel_id, member_id)
 			.zip(self.get_member(channel_id, other_member_id))
 		else {
 			return false;
@@ -142,8 +142,6 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 		}
 	}
 
-	/// Supprime le niveau d'accès d'un pseudo.
-	#[rustfmt::skip]
 	fn remove_client_access_level(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
@@ -155,12 +153,11 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	{
 		let mut channel = self.get_mut(channel_id)?;
 		let channel_member = channel.member_mut(member_id)?;
-		channel_member.remove_access_level(access_level)
+		channel_member
+			.remove_access_level(access_level)
 			.then_some(channel_member.clone())
 	}
 
-	/// Met à jour le niveau d'accès d'un pseudo.
-	#[rustfmt::skip]
 	fn update_client_access_level(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
@@ -172,7 +169,8 @@ impl ModeChannelAccessLevelChannelsSessionInterface for ChannelsSession
 	{
 		let mut channel = self.get_mut(channel_id)?;
 		let channel_member = channel.member_mut(member_id)?;
-		channel_member.update_access_level(access_level)
+		channel_member
+			.update_access_level(access_level)
 			.then_some(channel_member.clone())
 	}
 }

@@ -61,7 +61,10 @@ impl LoggerInitiator
 				trsb.without_time().init();
 			}
 		} else {
-			let deps: Vec<_> = stdout.filter.dependencies.iter()
+			let deps: Vec<_> = stdout
+				.filter
+				.dependencies
+				.iter()
 				.map(|dep| format!("{dep}={level}"))
 				.collect();
 			let filter = tracing_subscriber::EnvFilter::new(deps.join(","));

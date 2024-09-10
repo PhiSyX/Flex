@@ -54,33 +54,33 @@ impl SilenceApplicationInterface for ChatApplication
 {
 	type ClientSocket<'cs> = Socket<'cs>;
 
-	#[rustfmt::skip]
 	fn add_client_to_blocklist(
 		&self,
 		client: &Self::ClientSocket<'_>,
 		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool
 	{
-		self.clients.add_to_block(client.cid(), to_ignore_client.cid())
+		self.clients
+			.add_to_block(client.cid(), to_ignore_client.cid())
 	}
 
-	#[rustfmt::skip]
 	fn client_isin_blocklist(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
 		other_client_socket: &Self::ClientSocket<'_>,
 	) -> bool
 	{
-		self.clients.isin_blocklist(client_socket.cid(), other_client_socket.cid())
+		self.clients
+			.isin_blocklist(client_socket.cid(), other_client_socket.cid())
 	}
 
-	#[rustfmt::skip]
 	fn remove_client_to_blocklist(
 		&self,
 		client: &Self::ClientSocket<'_>,
 		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool
 	{
-		self.clients.remove_to_block(client.cid(), to_ignore_client.cid())
+		self.clients
+			.remove_to_block(client.cid(), to_ignore_client.cid())
 	}
 }

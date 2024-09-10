@@ -53,8 +53,8 @@ impl JoinChannelsSessionInterface for ChannelsSession
 		channel_key: Option<&<Self::Channel as ChannelInterface>::Key>,
 	) -> Result<(), JoinChannelPermissionError>
 	{
-		#[rustfmt::skip]
-		let channel = self.get(channel_id)
+		let channel = self
+			.get(channel_id)
 			.ok_or(JoinChannelPermissionError::ERR_NOSUCHCHANNEL)?;
 
 		if self.has_member(channel_id, client.cid()) {
@@ -62,7 +62,9 @@ impl JoinChannelsSessionInterface for ChannelsSession
 		}
 
 		if channel.modes_settings.has_limit_flag()
-			&& !channel.modes_settings.compare_limit(channel.members().len())
+			&& !channel
+				.modes_settings
+				.compare_limit(channel.members().len())
 		{
 			return Err(JoinChannelPermissionError::ERR_CHANNELISFULL);
 		}

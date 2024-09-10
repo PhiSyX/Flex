@@ -148,9 +148,9 @@ impl ChannelsSessionInterface for ChannelsSession
 			<Self::Channel as ChannelInterface>::RefID<'a>,
 		> = channel_name.into();
 		let chid = channel_name.to_lowercase();
-		#[rustfmt::skip]
-		let mut channel_entity = Channel::new(channel_name)
-			.with_creation_flags(flags);
+
+		let mut channel_entity =
+			Channel::new(channel_name).with_creation_flags(flags);
 		if let Some(channel_key) = channel_key {
 			channel_entity.set_key("*", channel_key);
 		}

@@ -47,17 +47,10 @@ use crate::ChatApplication;
 
 pub trait JoinApplicationInterface<'a>
 {
-	#[rustfmt::skip]
-	type ClientSocket<'cs>
-		: JoinCommandResponseInterface
-		+ JoinErrorResponseInterface
-		;
+	type ClientSocket<'cs>: JoinCommandResponseInterface
+		+ JoinErrorResponseInterface;
 
-	#[rustfmt::skip]
-	type Channel
-		: 'a
-		+ ChannelInterface
-		;
+	type Channel: 'a + ChannelInterface;
 
 	/// Rejoint un salon du serveur.
 	fn join_channel(
@@ -108,8 +101,8 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		forced: bool,
 	)
 	{
-		#[rustfmt::skip]
-		self.clients.add_channel_on_client(client_socket.cid(), &channel.id());
+		self.clients
+			.add_channel_on_client(client_socket.cid(), &channel.id());
 
 		client_socket.emit_join(channel, forced);
 
@@ -131,7 +124,6 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		client_socket.emit_all_channel_access_control(channel);
 	}
 
-	#[rustfmt::skip]
 	fn join_or_create_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -146,42 +138,39 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, channel_key.cloned());
-			let mut channel = self.channels.add_member(
-				channel_name,
-				*client_socket.cid(),
-			)
+			let mut channel = self
+				.channels
+				.add_member(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
-			_ = client_socket.socket().join(
-				format!("channel:~{}", channel_name.to_lowercase())
-			);
-			_ = client_socket.socket().join(
-				format!("channel:&{}", channel_name.to_lowercase())
-			);
-			_ = client_socket.socket().join(
-				format!("channel:@{}", channel_name.to_lowercase())
-			);
-			_ = client_socket.socket().join(
-				format!("channel:%{}", channel_name.to_lowercase())
-			);
-			_ = client_socket.socket().join(
-				format!("channel:+{}", channel_name.to_lowercase())
-			);
+			_ = client_socket
+				.socket()
+				.join(format!("channel:~{}", channel_name.to_lowercase()));
+			_ = client_socket
+				.socket()
+				.join(format!("channel:&{}", channel_name.to_lowercase()));
+			_ = client_socket
+				.socket()
+				.join(format!("channel:@{}", channel_name.to_lowercase()));
+			_ = client_socket
+				.socket()
+				.join(format!("channel:%{}", channel_name.to_lowercase()));
+			_ = client_socket
+				.socket()
+				.join(format!("channel:+{}", channel_name.to_lowercase()));
 			return Ok(());
 		}
 
-		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
-		let can_join = self.channels.can_join(
-			&client_session,
-			channel_name,
-			channel_key,
-		);
+		let client_session =
+			self.get_client_by_id(client_socket.cid()).unwrap();
+		let can_join =
+			self.channels
+				.can_join(&client_session, channel_name, channel_key);
 
 		if can_join.is_ok() {
-			let mut channel = self.channels.add_member(
-				channel_name,
-				*client_socket.cid(),
-			)
+			let mut channel = self
+				.channels
+				.add_member(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
 			return Ok(());
@@ -190,7 +179,6 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		can_join
 	}
 
-	#[rustfmt::skip]
 	fn join_or_create_channel_bypass_permission(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -204,26 +192,26 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 
 		if !self.channels.has(channel_name) {
 			self.channels.create(channel_name, None);
-			let mut channel = self.channels.add_member(
-				channel_name,
-				*client_socket.cid(),
-			)
+			let mut channel = self
+				.channels
+				.add_member(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 			return Ok(());
 		}
 
-		let client_session = self.get_client_by_id(client_socket.cid()).unwrap();
-		let can_join = self.channels.can_join(&client_session, channel_name, None);
+		let client_session =
+			self.get_client_by_id(client_socket.cid()).unwrap();
+		let can_join =
+			self.channels.can_join(&client_session, channel_name, None);
 
 		if let Err(JoinChannelPermissionError::ERR_USERONCHANNEL) = &can_join {
 			return can_join;
 		}
 
-		let mut channel = self.channels.add_member(
-			channel_name,
-			*client_socket.cid(),
-		)
+		let mut channel = self
+			.channels
+			.add_member(channel_name, *client_socket.cid())
 			.expect("Le salon que le client a rejoint");
 		self.join_channel(client_socket, &mut channel, true);
 

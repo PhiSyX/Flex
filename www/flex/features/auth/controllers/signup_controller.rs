@@ -60,7 +60,7 @@ impl SignupController
 	}
 
 	/// Gestion du formulaire d'inscription au site.
-	#[rustfmt::skip]
+
 	pub async fn handle(
 		ctx: HttpContext<Self>,
 		Form(form): Form<RegistrationFormData>,
@@ -74,9 +74,13 @@ impl SignupController
 		}
 
 		if ctx.request.accept().json() {
-			ctx.response.json(CreationAccountReply.json()).into_response()
+			ctx.response
+				.json(CreationAccountReply.json())
+				.into_response()
 		} else {
-			ctx.session.flash(CreationAccountReply::KEY, CreationAccountReply).await;
+			ctx.session
+				.flash(CreationAccountReply::KEY, CreationAccountReply)
+				.await;
 			ctx.response.redirect_to(AuthRouteID::Login).into_response()
 		}
 	}

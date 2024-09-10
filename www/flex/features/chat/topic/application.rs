@@ -102,8 +102,9 @@ impl TopicApplicationInterface for ChatApplication
 			client_socket.user().nickname(),
 		);
 
-		#[rustfmt::skip]
-		let Some(channel) = self.get_channel(channel_name) else { return };
+		let Some(channel) = self.get_channel(channel_name) else {
+			return;
+		};
 
 		client_socket.send_rpl_topic(&channel, true);
 	}

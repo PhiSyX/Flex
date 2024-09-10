@@ -21,6 +21,7 @@ use crate::mode::ApplyMode;
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait UserInterface
 	: Clone
 	+ fmt::Debug
@@ -61,7 +62,6 @@ pub trait UserInterface
 	fn set_vhost(&mut self, vhost: impl ToString);
 
 	/// Définit le pseudonyme de l'[utilisateur](Self).
-	#[rustfmt::skip]
 	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, Error>;
 
 	/// Définit le mot de passe entré par l'[utilisateur](Self) lors de la

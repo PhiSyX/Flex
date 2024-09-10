@@ -56,8 +56,9 @@ impl ListApplicationInterface for ChatApplication
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 	) -> bool
 	{
-		#[rustfmt::skip]
-		let Some(client) = self.get_client_by_id(client_id) else { return false };
+		let Some(client) = self.get_client_by_id(client_id) else {
+			return false;
+		};
 		client.has_channel(channel_name)
 	}
 }

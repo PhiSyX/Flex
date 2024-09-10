@@ -61,15 +61,19 @@ impl HTMLMacro
 
 		tag_attrs.push(tmp::create_attribute("method", "POST"));
 
-		#[rustfmt::skip]
-		let form_id = element.attributes()
+		let form_id = element
+			.attributes()
 			.iter()
 			.find_map(|attribute| {
-				let node::NodeAttribute::Attribute(node_attr) = attribute else {
+				let node::NodeAttribute::Attribute(node_attr) = attribute
+				else {
 					return None;
 				};
 
-				node_attr.key.to_string().eq("id")
+				node_attr
+					.key
+					.to_string()
+					.eq("id")
 					.then(|| node_attr.value_literal_string())
 			})
 			.unwrap_or_else(|| {

@@ -17,6 +17,7 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait UserStatusAwayClientsSessionInterface
 	: ClientsSessionInterface
 {
@@ -77,8 +78,9 @@ impl UserStatusAwayClientsSessionInterface for ClientsSession
 		client_id: &<Self::Client as ClientInterface>::ClientID,
 	)
 	{
-		#[rustfmt::skip]
-		let Some(mut client) = self.get_mut(client_id) else { return };
+		let Some(mut client) = self.get_mut(client_id) else {
+			return;
+		};
 		client.marks_user_as_no_longer_away();
 	}
 }

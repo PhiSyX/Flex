@@ -17,7 +17,6 @@ mod validation;
 
 use std::collections::HashMap;
 
-use flex_secret::Secret;
 use flex_wildcard_matching::WildcardMatching;
 
 pub use self::interface::*;
@@ -123,19 +122,26 @@ where
 	type ClientID = ID;
 	type User = User;
 
-	#[rustfmt::skip]
 	fn access_controls(&self) -> Vec<(char, ApplyMode<AccessControlMask>)>
 	{
 		let mut list = Vec::default();
 
-		let banlist = self.access_control.banlist.values()
+		let banlist = self
+			.access_control
+			.banlist
+			.values()
 			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN, mode.clone()));
 
-		let banlist_except = self.access_control.banlist_except.values()
+		let banlist_except = self
+			.access_control
+			.banlist_except
+			.values()
 			.map(|mode| (mode::CHANNEL_MODE_LIST_BAN_EXCEPT, mode.clone()));
 
-		let invitelist_except = self.access_control.invitelist_except.values()
-			.map(|mode| (mode::CHANNEL_MODE_LIST_INVITE_EXCEPT, mode.clone()));
+		let invitelist_except =
+			self.access_control.invitelist_except.values().map(|mode| {
+				(mode::CHANNEL_MODE_LIST_INVITE_EXCEPT, mode.clone())
+			});
 
 		list.extend(banlist);
 		list.extend(banlist_except);
@@ -258,9 +264,10 @@ where
 			self.access_control.banlist_except.contains_key(&addr)
 		};
 
-		#[rustfmt::skip]
 		let check2 = || {
-			self.access_control.banlist_except.keys()
+			self.access_control
+				.banlist_except
+				.keys()
 				.any(|mask| user.full_address().iswm(mask))
 		};
 
@@ -333,9 +340,10 @@ where
 			self.access_control.invitelist_except.contains_key(&addr)
 		};
 
-		#[rustfmt::skip]
 		let check2 = || {
-			self.access_control.invitelist_except.keys()
+			self.access_control
+				.invitelist_except
+				.keys()
 				.any(|mask| user.full_address().iswm(mask))
 		};
 
@@ -480,10 +488,10 @@ where
 		);
 	}
 
-	#[rustfmt::skip]
 	fn settings(&self) -> HashMap<char, ApplyMode<Self::SettingsFlag>>
 	{
-		self.modes_settings.values()
+		self.modes_settings
+			.values()
 			.map(|mode| (mode.flag.letter(), mode.clone()))
 			.collect()
 	}

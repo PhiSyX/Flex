@@ -27,7 +27,8 @@ fn main()
 
 	// NOTE: Les fonctions de l'implémentation de `Logger` PEUVENT appliquer des
 	// paramètres par défaut au builder. Ici, la fonction `stdout()`, applique
-	// les paramètres suivants: `.with_colorized(true)` et `.with_timestamp(true)`.
+	// les paramètres suivants: `.with_colorized(true)` et
+	// `.with_timestamp(true)`.
 	//
 	// NOTE: ces paramètres PEUVENT être désactivés explicitement ci-dessous.
 	let logger = Logger::stdout();

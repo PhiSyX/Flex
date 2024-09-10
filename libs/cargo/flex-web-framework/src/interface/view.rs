@@ -22,12 +22,11 @@ pub trait ViewInterface
 	type Scripts: Default;
 	type Styles: Default;
 
-	#[rustfmt::skip]
 	type Layout: ViewLayoutInterface<
 		Metadata = Self::Metadata,
-		Scripts  = Self::Scripts,
-		Styles   = Self::Styles,
-		View     = Self::View,
+		Scripts = Self::Scripts,
+		Styles = Self::Styles,
+		View = Self::View,
 	>;
 
 	type View;

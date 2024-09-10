@@ -32,6 +32,7 @@ command_response! {
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait NickClientSocketCommandResponseInterface
 	: ClientSocketInterface
 {
@@ -45,15 +46,12 @@ pub trait NickClientSocketCommandResponseInterface
 
 impl<'s> NickClientSocketCommandResponseInterface for Socket<'s>
 {
-	#[rustfmt::skip]
 	fn emit_nick(&self)
 	{
-		let (
-			old_nickname,
-			new_nickname
-		): (&str, &str) = (
+		#[rustfmt::skip]
+		let (old_nickname, new_nickname): (&str, &str) = (
 			self.user().old_nickname(),
-			self.user().nickname()
+			self.user().nickname(),
 		);
 
 		let origin = Origin::from(self.client());
@@ -66,7 +64,9 @@ impl<'s> NickClientSocketCommandResponseInterface for Socket<'s>
 		}
 		.with_tags([("user_id", json!(self.client().cid()))]);
 
-		_ = self.socket().join(format!("private:{}", new_nickname.to_lowercase()));
+		_ = self
+			.socket()
+			.join(format!("private:{}", new_nickname.to_lowercase()));
 
 		// NOTE: notifier toutes les rooms dont fait partie le client que le
 		// pseudonyme du client a été changé.
@@ -76,6 +76,8 @@ impl<'s> NickClientSocketCommandResponseInterface for Socket<'s>
 		// tous les client en communs.
 		self.broadcast(nick_command.name(), &nick_command);
 
-		_ = self.socket().leave(format!("private:{}", old_nickname.to_lowercase()));
+		_ = self
+			.socket()
+			.leave(format!("private:{}", old_nickname.to_lowercase()));
 	}
 }

@@ -65,8 +65,8 @@ impl flex_syn::Parser for ViteMacro
 		let output = if vite_path.starts_with("http://")
 			|| vite_path.starts_with("https://")
 		{
-			#[rustfmt::skip]
-			let (vite_url, vite_root) = vite_path.split_once('#')
+			let (vite_url, vite_root) = vite_path
+				.split_once('#')
 				.unwrap_or_else(|| (&vite_path, "root"));
 			quote! {
 				{

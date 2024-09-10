@@ -316,8 +316,8 @@ impl HTMLMacro
 			})
 			.collect();
 
-		#[rustfmt::skip]
-		let contains_custom_attrs: Vec<_> = node.attributes()
+		let contains_custom_attrs: Vec<_> = node
+			.attributes()
 			.iter()
 			.filter_map(|attr| filter_custom_attribute_m(attr))
 			.map(|(attr, custom_attr)| {
@@ -740,8 +740,8 @@ mod tmp
 		attr_maybe: Option<&syn::Expr>,
 	) -> TokenStream2
 	{
-		#[rustfmt::skip]
-		let ident = syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
+		let ident =
+			syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
 		quote! {
 			{
 				if let Some(#ident) = #attr_maybe {
@@ -766,8 +766,8 @@ mod tmp
 		attr_maybe: Option<&syn::Expr>,
 	) -> TokenStream2
 	{
-		#[rustfmt::skip]
-		let ident = syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
+		let ident =
+			syn::Ident::new_raw(attr_name, tag_name.to_token_stream().span());
 		quote! {
 			{
 				if let Ok(#ident) = #attr_maybe {

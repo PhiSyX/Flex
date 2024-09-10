@@ -66,10 +66,8 @@ impl PromptDerive
 {
 	pub const ATTRIBUTE_NAME: &'static str = "prompt";
 
-	fn parse_field<'a>(
-		&'a self,
-		field: &'a syn::Field,
-	) -> Result<'_, TokenStream2>
+	#[rustfmt::skip]
+	fn parse_field<'a>(&'a self, field: &'a syn::Field) -> Result<'a, TokenStream2>
 	{
 		let Some(attribute) = field.find_attribute(Self::ATTRIBUTE_NAME) else {
 			let field_name = &field.ident;
@@ -80,11 +78,7 @@ impl PromptDerive
 			});
 		};
 
-		#[rustfmt::skip]
-		let has_meta =matches!(
-			attribute.meta,
-			syn::Meta::Path(_) | syn::Meta::List(_)
-		);
+		let has_meta = matches!(attribute.meta, syn::Meta::Path(_) | syn::Meta::List(_));
 		if !has_meta {
 			return Err(PromptDeriveParserError {
 				span: attribute.span(),
@@ -190,18 +184,19 @@ impl Parser for PromptDerive
 			.map(|f| self.parse_field(f))
 			.collect::<Result<_>>()?;
 
-		#[rustfmt::skip]
-		let title = self.item_struct.find_attribute(Self::ATTRIBUTE_NAME)
-				.and_then(|attribute| {
-					if let Some(list) = attribute.metalist() {
-						let title_value = list.literal_value_nv("title");
-						Some(quote! {
-							println!(#title_value);
-						})
-					} else {
-						None
-					}
-				});
+		let title = self
+			.item_struct
+			.find_attribute(Self::ATTRIBUTE_NAME)
+			.and_then(|attribute| {
+				if let Some(list) = attribute.metalist() {
+					let title_value = list.literal_value_nv("title");
+					Some(quote! {
+						println!(#title_value);
+					})
+				} else {
+					None
+				}
+			});
 
 		let item_struct_name = &self.item_struct.ident;
 		let output = quote! {

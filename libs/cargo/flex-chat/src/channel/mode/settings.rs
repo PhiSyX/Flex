@@ -11,8 +11,6 @@
 use std::collections::HashMap;
 use std::fmt;
 
-use flex_secret::Secret;
-
 use super::ChannelModes;
 use crate::mode::ApplyMode;
 
@@ -20,6 +18,7 @@ use crate::mode::ApplyMode;
 // Interface //
 // --------- //
 
+#[rustfmt::skip]
 pub trait SettingsFlagInterface
 	: Clone
 	+ fmt::Debug
@@ -274,10 +273,8 @@ impl std::fmt::Display for ChannelModes<SettingsFlag>
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 	{
-		#[rustfmt::skip]
-		let mode_settings: String = self.modes.keys()
-			.map(|letter| letter.to_string())
-			.collect();
+		let mode_settings: String =
+			self.modes.keys().map(|letter| letter.to_string()).collect();
 		write!(f, "{}", mode_settings)
 	}
 }
@@ -292,6 +289,7 @@ impl std::fmt::Display for SettingsFlag
 
 impl SettingsFlagInterface for SettingsFlag
 {
+	#[rustfmt::skip]
 	fn letter(&self) -> char
 	{
 		match self {
@@ -299,7 +297,6 @@ impl SettingsFlagInterface for SettingsFlag
 			| Self::Limit(_) => CHANNEL_MODE_SETTINGS_LIMIT_MEMBERS,
 			| Self::InviteOnly => CHANNEL_MODE_SETTINGS_INVITE_ONLY,
 			| Self::Moderate => CHANNEL_MODE_SETTINGS_MODERATE,
-			#[rustfmt::skip]
 			| Self::NoExternalMessages => CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES,
 			| Self::NoTopic => CHANNEL_MODE_SETTINGS_NOTOPIC,
 			| Self::OperOnly => CHANNEL_MODE_SETTINGS_OPERONLY,

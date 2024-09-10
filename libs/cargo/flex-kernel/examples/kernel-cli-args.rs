@@ -10,17 +10,17 @@ use external_crate::AnyApplicationAdapter;
 use flex_kernel::{
 	ApplicationAdapterCLIInterface,
 	ApplicationCLIInterface,
-	UserApplicationCLIInterface,
 	ApplicationStartupExtension,
+	UserApplicationCLIInterface,
 };
 
 // -------- //
 // Constant //
 // -------- //
 
-const APPLICATION_NAME: &'static str = "flex-app";
-const APPLICATION_VERSION: &'static str = env!("CARGO_PKG_VERSION");
-const APPLICATION_ROOT_DIR: &'static str = env!("CARGO_MANIFEST_DIR");
+const APPLICATION_NAME: &str = "flex-app";
+const APPLICATION_VERSION: &str = env!("CARGO_PKG_VERSION");
+const APPLICATION_ROOT_DIR: &str = env!("CARGO_MANIFEST_DIR");
 
 // ---- //
 // Type //

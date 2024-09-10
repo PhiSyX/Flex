@@ -13,13 +13,15 @@ async_fn_in_trait = "allow"
 # dead_code = "allow"
 non_camel_case_types = "allow"
 # unsafe_code = "forbid"
+[workspace.lints.clippy]
+too_long_first_doc_paragraph = "allow"
 
 [workspace.dependencies]
 async-trait = "0.1.81"
 chrono = { version = "0.4.38", features = ["clock", "serde"] }
-clap = { version = "4.5.16", features = ["derive"] }
+clap = { version = "4.5.17", features = ["derive"] }
 console = { version = "0.15.8" }
-dashmap = { version = "6.0.1", features = ["serde"] }
+dashmap = { version = "6.1.0", features = ["serde"] }
 dns-lookup = "2.0.4"
 flex-cli = { path = "libs/cargo/flex-cli" }
 flex-crypto = { path = "libs/cargo/flex-crypto" }
@@ -28,11 +30,11 @@ flex-serde-validation = { path = "libs/cargo/flex-serde-validation" }
 flex-web-framework = { path = "libs/cargo/flex-web-framework" }
 log = { version = "0.4.22" }
 regex = { version = "1.10.6" }
-serde = { version = "1.0.209", features = ["derive"] }
-serde_json = { version = "1.0.127" }
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = { version = "1.0.128" }
 # Les versions 13+ de socketioxide semblent contenir des problèmes de performences.
 socketioxide = { version = "0.12.0", features = ["extensions", "state"] }
-sqlx = { version = "0.8.1", features = ["chrono", "postgres", "uuid"] }
+sqlx = { version = "0.8.2", features = ["chrono", "postgres", "uuid"] }
 syn = { version = "2.0.76", features = ["full"] }
 thiserror = { version = "1.0.63" }
 tokio = { version = "1.39.3", features = ["macros", "rt-multi-thread"] }

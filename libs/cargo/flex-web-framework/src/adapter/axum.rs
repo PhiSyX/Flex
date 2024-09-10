@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use console::style;
+use socketioxide::{extract, SocketIo};
 use time::Duration;
 use tower_http::cors::CorsLayer;
 use tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
@@ -116,8 +117,8 @@ impl<S, E, C> ApplicationCorsLayerInterface for AxumApplication<S, E, C>
 {
 	fn use_cors_layer(mut self) -> Self
 	{
-		let cors_settings =
-			match self.fetch_config::<CORSSettings>(CORSSettings::FILENAME) {
+		let cors_settings: CORSSettings =
+			match self.fetch_config(CORSSettings::FILENAME) {
 				| Ok(s) => s,
 				| Err(err) => {
 					self.signal()
@@ -172,15 +173,15 @@ impl<S, E, C> AsyncApplicationExtensionInterface for AxumApplication<S, E, C>
 		.await
 	}
 
-	async fn extension_with<Ext>(
+	async fn extension_with<Ex>(
 		mut self,
-		payload: impl Into<Ext::Payload>,
+		payload: impl Into<Ex::Payload>,
 	) -> Self
 	where
-		Ext: AsyncExtensionInterface,
+		Ex: AsyncExtensionInterface,
 	{
 		let payload = payload.into();
-		let instance = Ext::new(payload).await;
+		let instance = Ex::new(payload).await;
 		self.application_adapter.router.global = self
 			.application_adapter
 			.router
@@ -204,12 +205,10 @@ where
 			.state
 			.set_server_settings(self.application_adapter.settings.clone());
 
-		let config_filename = <F::Config as FeatureConfig>::FILENAME;
+		let config_filename = F::Config::FILENAME;
 
 		let router_collection =
-			<F::Router as RouterInterface<F::State>>::routes(
-				&self.application_adapter.state,
-			);
+			F::Router::routes(&self.application_adapter.state);
 
 		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 
@@ -217,8 +216,7 @@ where
 			scoped_router = scoped_router.merge(router);
 		}
 
-		let config: Config<<F as Feature>::Config> = match self
-			.fetch_config(config_filename)
+		let config: Config<F::Config> = match self.fetch_config(config_filename)
 		{
 			| Ok(c) => c,
 			| Err(err) => {
@@ -309,11 +307,10 @@ where
 			.state
 			.set_server_settings(self.application_adapter.settings.clone());
 
-		let config_filename = <F::Config as FeatureConfig>::FILENAME;
+		let config_filename = F::Config::FILENAME;
 
-		let router_collection = <F::Router as RouterInterface<
-			<F as Feature>::State,
-		>>::routes(&self.application_adapter.state);
+		let router_collection =
+			F::Router::routes(&self.application_adapter.state);
 
 		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 
@@ -321,8 +318,7 @@ where
 			scoped_router = scoped_router.merge(router);
 		}
 
-		let config: Config<<F as Feature>::Config> = match self
-			.fetch_config(config_filename)
+		let config: Config<F::Config> = match self.fetch_config(config_filename)
 		{
 			| Ok(c) => c,
 			| Err(err) => {
@@ -376,7 +372,7 @@ where
 			scoped_router,
 		);
 
-		let (layer, io) = socketioxide::SocketIo::builder()
+		let (layer, io) = SocketIo::builder()
 			.with_state(self.application_adapter.state.clone())
 			.with_state(<F as WebSocketFeature<S>>::State::default())
 			.req_path(F::ENDPOINT)
@@ -384,14 +380,12 @@ where
 
 		io.ns(
 			"/",
-			|socket: socketioxide::extract::SocketRef,
-			 server_state: socketioxide::extract::State<AxumState<S>>,
-			 user_state: socketioxide::extract::State<
-				<F as WebSocketFeature<S>>::State,
-			>,
-			 auth_data: socketioxide::extract::TryData<F::Auth>| {
-				<F::Handlers as WebSocketHandlersInterface>::listen(&socket);
-				<F::Handlers2 as WebSocketHandlers2Interface>::listen(&socket);
+			|socket: extract::SocketRef,
+			 server_state: extract::State<AxumState<S>>,
+			 user_state: extract::State<<F as WebSocketFeature<S>>::State>,
+			 auth_data: extract::TryData<F::Auth>| {
+				F::Handlers::listen(&socket);
+				F::Handlers2::listen(&socket);
 				F::on_connect(socket, server_state, user_state, auth_data);
 			},
 		);
@@ -444,12 +438,10 @@ where
 			.state
 			.set_server_settings(self.application_adapter.settings.clone());
 
-		let config_filename = <F::Config as FeatureConfig>::FILENAME;
+		let config_filename = F::Config::FILENAME;
 
 		let router_collection =
-			<F::Router as RouterInterface<F::State>>::routes(
-				&self.application_adapter.state,
-			);
+			F::Router::routes(&self.application_adapter.state);
 
 		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 
@@ -457,8 +449,7 @@ where
 			scoped_router = scoped_router.merge(router);
 		}
 
-		let config: Config<<F as AsyncFeature>::Config> = match self
-			.fetch_config(config_filename)
+		let config: Config<F::Config> = match self.fetch_config(config_filename)
 		{
 			| Ok(c) => c,
 			| Err(err) => {
@@ -553,11 +544,10 @@ where
 			.state
 			.set_server_settings(self.application_adapter.settings.clone());
 
-		let config_filename = <F::Config as FeatureConfig>::FILENAME;
+		let config_filename = F::Config::FILENAME;
 
-		let router_collection = <F::Router as RouterInterface<
-			<F as AsyncFeature>::State,
-		>>::routes(&self.application_adapter.state);
+		let router_collection =
+			F::Router::routes(&self.application_adapter.state);
 
 		let mut scoped_router = axum::Router::<AxumState<S>>::new();
 
@@ -565,8 +555,7 @@ where
 			scoped_router = scoped_router.merge(router);
 		}
 
-		let config: Config<<F as AsyncFeature>::Config> = match self
-			.fetch_config(config_filename)
+		let config: Config<F::Config> = match self.fetch_config(config_filename)
 		{
 			| Ok(c) => c,
 			| Err(err) => {
@@ -624,7 +613,7 @@ where
 		)
 		.await;
 
-		let (layer, io) = socketioxide::SocketIo::builder()
+		let (layer, io) = SocketIo::builder()
 			.with_state(self.application_adapter.state.clone())
 			.with_state(<F as WebSocketAsyncFeature<S>>::State::default())
 			.req_path(F::ENDPOINT)
@@ -632,12 +621,14 @@ where
 
 		io.ns(
 			"/",
-			|socket: socketioxide::extract::SocketRef,
-			 server_state: socketioxide::extract::State<AxumState<S>>,
-			 user_state: socketioxide::extract::State<
+			|socket: extract::SocketRef,
+			 server_state: extract::State<AxumState<S>>,
+			 user_state: extract::State<
 				<F as WebSocketAsyncFeature<S>>::State,
 			>,
-			 auth_data: socketioxide::extract::TryData<F::Auth>| {
+			 auth_data: extract::TryData<F::Auth>| {
+				F::Handlers::listen(&socket);
+				F::Handlers2::listen(&socket);
 				F::on_connect(socket, server_state, user_state, auth_data);
 			},
 		);

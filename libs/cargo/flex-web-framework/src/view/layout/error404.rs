@@ -42,7 +42,8 @@ impl ViewLayoutInterface for Error404HTMLLayout
 		}
 	}
 
-	fn set_title(&mut self, title: impl ToString) {
+	fn set_title(&mut self, title: impl ToString)
+	{
 		self.title = title.to_string();
 	}
 

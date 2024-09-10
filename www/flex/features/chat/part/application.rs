@@ -9,12 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat::channel::{Channel, ChannelInterface, ChannelsSessionInterface};
+use flex_chat::client::channel::responses::ChannelClientSocketErrorReplies;
 use flex_chat::client::{
 	ClientSocketInterface,
 	ClientsChannelSessionInterface,
 	Socket,
 };
-use flex_chat::client::channel::responses::ChannelClientSocketErrorReplies;
 use flex_chat::user::UserInterface;
 
 use super::{
@@ -138,8 +138,8 @@ impl PartChannelApplicationInterface for ChatApplication
 		member_client_socket: &Self::ClientSocket<'_>,
 	) -> Option<()>
 	{
-		#[rustfmt::skip]
-		self.clients.remove_channel_on_client(member_client_socket.cid(), channel_name);
+		self.clients
+			.remove_channel_on_client(member_client_socket.cid(), channel_name);
 		self.channels.remove_member_and_channel_if_empty(
 			channel_name,
 			member_client_socket.cid(),
@@ -154,8 +154,8 @@ impl PartChannelApplicationInterface for ChatApplication
 		S: std::ops::Deref<Target = str>,
 		S: Copy,
 	{
-		#[rustfmt::skip]
-		self.channels.remove_client_from_all_his_channels(client_socket.client());
+		self.channels
+			.remove_client_from_all_his_channels(client_socket.client());
 
 		for channel_room in client_socket.channels_rooms() {
 			let channel_name = &channel_room[8..];

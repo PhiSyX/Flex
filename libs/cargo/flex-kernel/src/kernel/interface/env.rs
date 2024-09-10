@@ -58,6 +58,7 @@ pub trait ApplicationAdapterEnvInterface
 }
 
 /// Interface pour la récupération des variables d'environnement.
+#[rustfmt::skip]
 pub trait UserApplicationEnvInterface
 	: Clone
 	+ Debug
