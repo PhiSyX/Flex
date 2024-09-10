@@ -49,6 +49,7 @@ pub trait HttpContextInterface: Send + Sync
 // Structure //
 // --------- //
 
+#[derive(Clone)]
 pub struct HttpContext<T>
 {
 	pub(crate) context: Arc<T>,

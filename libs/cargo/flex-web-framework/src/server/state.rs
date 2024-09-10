@@ -22,6 +22,7 @@ pub struct ServerState<UserState>
 	server_settings: ServerSettings,
 	user: Option<UserState>,
 	wsio: Option<socketioxide::SocketIo>,
+	json_rpc: Option<rpc_router::Router>,
 }
 
 // -------------- //
@@ -87,6 +88,19 @@ impl<S> ServerState<S>
 
 impl<S> ServerState<S>
 {
+	pub fn json_rpc(&self) -> &rpc_router::Router
+	{
+		self.json_rpc.as_ref().unwrap()
+	}
+
+	pub fn set_json_rpc(&mut self, router: rpc_router::Router)
+	{
+		self.json_rpc.replace(router);
+	}
+}
+
+impl<S> ServerState<S>
+{
 	pub fn state(&self) -> &S
 	{
 		self.user.as_ref().expect(
@@ -145,6 +159,19 @@ impl<S> axum::extract::FromRef<ServerState<S>> for tower_cookies::Key
 	}
 }
 
+impl<S> axum::extract::FromRef<ServerState<S>> for rpc_router::Router
+{
+	fn from_ref(state: &ServerState<S>) -> Self
+	{
+		state.json_rpc.clone().expect("RPC Router")
+	}
+}
+
+impl<S> axum::extract::FromRef<ServerState<S>> for ()
+{
+	fn from_ref(_: &ServerState<S>) -> Self {}
+}
+
 impl<S> Default for ServerState<S>
 {
 	fn default() -> Self
@@ -155,6 +182,7 @@ impl<S> Default for ServerState<S>
 			server_settings: Default::default(),
 			user: Default::default(),
 			wsio: Default::default(),
+			json_rpc: Default::default(),
 		}
 	}
 }

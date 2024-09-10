@@ -24,6 +24,7 @@ use crate::AxumState;
 
 pub struct Cookie<'c>(CookieBuilder<'c>);
 
+#[derive(Clone)]
 pub struct Cookies
 {
 	settings: CookieSettings,

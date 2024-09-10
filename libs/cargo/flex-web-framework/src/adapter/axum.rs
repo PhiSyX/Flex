@@ -15,6 +15,7 @@ use tower_http::cors::CorsLayer;
 use tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
 
 use crate::http::routing::HttpRouterInterface;
+use crate::json_rpc::routing::JsonRpcHandlersInterface;
 use crate::{
 	server,
 	ApplicationCookieLayerInterface,
@@ -32,7 +33,7 @@ use crate::{
 	ExtensionInterface,
 	Feature,
 	FeatureConfig,
-	HttpRouterInterface,
+	JsonRpcFeature,
 	WebSocketAsyncFeature,
 	WebSocketFeature,
 	WebSocketHandlers2Interface,
@@ -420,6 +421,37 @@ where
 			scoped_router.with_state(self.application_adapter.state.clone()),
 		);
 		self.application_adapter.router.extends(router_collection);
+
+		self
+	}
+
+	fn feature_json_rpc<F>(mut self) -> Self
+	where
+		F: JsonRpcFeature<S>,
+	{
+		let handlers = F::Handlers::handlers(&self.application_adapter.state);
+
+		let mut rpc_router = rpc_router::Router::builder();
+		for handler in handlers.all_owned() {
+			let rpc_route_builder = rpc_router::RouterBuilder::default()
+				.append_dyn(handler.name.leak(), handler.action);
+			rpc_router = rpc_router.extend(rpc_route_builder);
+		}
+
+		self.application_adapter
+			.state
+			.set_json_rpc(rpc_router.build());
+
+		let scoped_router = axum::Router::<AxumState<S>>::new().route(
+			F::ENDPOINT,
+			axum::routing::post(
+				crate::json_rpc::handler::JsonRpcHandler::handle,
+			),
+		);
+
+		self.application_adapter.router.merge(
+			scoped_router.with_state(self.application_adapter.state.clone()),
+		);
 
 		self
 	}

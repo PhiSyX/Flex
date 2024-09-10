@@ -8,27 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod json_rpc;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+use rpc_router::RpcHandlerWrapperTrait;
 
-pub use axum::{async_trait, middleware, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+use super::RpcRouter;
 
-pub use self::adapter::*;
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+// --------- //
+// Interface //
+// --------- //
+
+pub trait RpcRouterBuilder
+{
+	type State: 'static + Clone + Send + Sync;
+
+	fn name(
+		name: impl ToString,
+		action: Box<dyn RpcHandlerWrapperTrait>,
+	) -> Self;
+
+	fn build(self) -> RpcRouter<Self::State>;
+}

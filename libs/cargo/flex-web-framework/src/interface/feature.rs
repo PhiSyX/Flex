@@ -8,8 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod rpc;
 mod websocket;
 
+pub use self::rpc::*;
 pub use self::websocket::*;
 use crate::http::routing::HttpRouterInterface;
 use crate::settings::Config;
@@ -31,6 +33,11 @@ pub trait ApplicationFeatureInterface<UserState>
 	fn feature_ws<F>(self) -> Self
 	where
 		F: WebSocketFeature<UserState>;
+
+	/// Applique une feature RPC au serveur.
+	fn feature_json_rpc<F>(self) -> Self
+	where
+		F: JsonRpcFeature<UserState>;
 }
 
 /// Interface d'application Feature dans un contexte asynchrone.

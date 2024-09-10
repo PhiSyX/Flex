@@ -17,6 +17,7 @@ use tower_sessions::Session;
 // Structure //
 // --------- //
 
+#[derive(Clone)]
 pub struct HttpResponse<T>
 {
 	#[allow(dead_code)]

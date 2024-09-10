@@ -8,27 +8,65 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-mod adapter;
-mod database;
-mod extension;
-pub mod extract;
-pub mod http;
-mod interface;
-pub mod json_rpc;
-pub mod security;
-mod server;
-pub mod settings;
-pub mod types;
-pub mod view;
+use super::{RpcRouter, RpcRouterBuilder};
 
-pub use axum::{async_trait, middleware, Extension};
-pub use flex_web_framework_macro::{html, vite, View};
-pub use tower_sessions as sessions;
+// --------- //
+// Structure //
+// --------- //
 
-pub use self::adapter::*;
-pub use self::database::*;
-pub use self::extension::*;
-pub use self::interface::*;
-pub use self::server::ServerState as AxumState;
-pub use self::settings::*;
-pub use self::view::*;
+pub struct JsonRpcHandlerCollection<UserState>
+{
+	pub(crate) global: axum::Router<()>,
+	routers: Vec<RpcRouter<UserState>>,
+}
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+impl<S> JsonRpcHandlerCollection<S>
+{
+	/// Ajoute un router à la liste des routeurs.
+	#[allow(clippy::should_implement_trait)]
+	pub fn add(mut self, builder: impl RpcRouterBuilder<State = S>) -> Self
+	{
+		let route = builder.build();
+		self.routers.push(route);
+		self
+	}
+}
+
+impl<S> JsonRpcHandlerCollection<S>
+{
+	/// Liste les routeurs.
+	pub fn all(&self) -> impl Iterator<Item = &RpcRouter<S>> + '_
+	{
+		self.routers.iter()
+	}
+
+	pub fn all_owned(self) -> impl IntoIterator<Item = RpcRouter<S>>
+	{
+		self.routers.into_iter()
+	}
+
+	/// Extension d'un routeur vers celui-ci.
+	pub fn extends(&mut self, other: Self)
+	{
+		self.routers.extend(other.routers);
+	}
+}
+
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+impl<S> Default for JsonRpcHandlerCollection<S>
+{
+	fn default() -> Self
+	{
+		Self {
+			global: Default::default(),
+			routers: Default::default(),
+		}
+	}
+}
