@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::{RpcRouter, RpcRouterBuilder};
+use super::{JsonRpcRouter, JsonRpcRouterBuilder};
 
 // --------- //
 // Structure //
@@ -17,7 +17,7 @@ use super::{RpcRouter, RpcRouterBuilder};
 pub struct JsonRpcHandlerCollection<UserState>
 {
 	pub(crate) global: axum::Router<()>,
-	routers: Vec<RpcRouter<UserState>>,
+	routers: Vec<JsonRpcRouter<UserState>>,
 }
 
 // -------------- //
@@ -28,7 +28,7 @@ impl<S> JsonRpcHandlerCollection<S>
 {
 	/// Ajoute un router à la liste des routeurs.
 	#[allow(clippy::should_implement_trait)]
-	pub fn add(mut self, builder: impl RpcRouterBuilder<State = S>) -> Self
+	pub fn add(mut self, builder: impl JsonRpcRouterBuilder<State = S>) -> Self
 	{
 		let route = builder.build();
 		self.routers.push(route);
@@ -39,12 +39,12 @@ impl<S> JsonRpcHandlerCollection<S>
 impl<S> JsonRpcHandlerCollection<S>
 {
 	/// Liste les routeurs.
-	pub fn all(&self) -> impl Iterator<Item = &RpcRouter<S>> + '_
+	pub fn all(&self) -> impl Iterator<Item = &JsonRpcRouter<S>> + '_
 	{
 		self.routers.iter()
 	}
 
-	pub fn all_owned(self) -> impl IntoIterator<Item = RpcRouter<S>>
+	pub fn all_owned(self) -> impl IntoIterator<Item = JsonRpcRouter<S>>
 	{
 		self.routers.into_iter()
 	}

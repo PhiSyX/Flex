@@ -13,7 +13,7 @@ mod collection;
 mod interface;
 mod router;
 
-pub use rpc_router::Handler;
+pub use rpc_router::Handler as JsonRpcHandler;
 
 pub use self::builder::*;
 pub use self::collection::*;

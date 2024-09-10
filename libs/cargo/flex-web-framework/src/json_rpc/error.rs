@@ -8,47 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use rpc_router::RpcHandlerWrapperTrait;
+// ---- //
+// Type //
+// ---- //
 
-use super::JsonRpcRouterBuilder;
+pub type JsonRpcResult<T> = core::result::Result<T, JsonRpcError>;
 
-// --------- //
-// Structure //
-// --------- //
+// ----------- //
+// Énumération //
+// ----------- //
 
-pub struct JsonRpcRouter<UserState>
+#[derive(Debug)]
+#[derive(thiserror::Error, rpc_router::RpcHandlerError)]
+#[error(
+	"\n\t[{}]: erreur liée au système RPC. Raison: {0}",
+	std::any::type_name::<Self>()
+)]
+pub enum JsonRpcError
 {
-	/// Nom de la route.
-	pub name: String,
-	// Action associé au nom.
-	pub action: Box<dyn RpcHandlerWrapperTrait>,
-	_marker: std::marker::PhantomData<UserState>,
-}
-
-// -------------- //
-// Implémentation // -> Interface
-// -------------- //
-
-impl<S> JsonRpcRouterBuilder for JsonRpcRouter<S>
-where
-	S: Clone + Send + Sync + 'static,
-{
-	type State = S;
-
-	fn name(
-		name: impl ToString,
-		action: Box<dyn RpcHandlerWrapperTrait>,
-	) -> Self
-	{
-		Self {
-			name: name.to_string(),
-			action,
-			_marker: Default::default(),
-		}
-	}
-
-	fn build(self) -> JsonRpcRouter<Self::State>
-	{
-		self
-	}
+	SerdeJson(#[from] serde_json::Error),
 }

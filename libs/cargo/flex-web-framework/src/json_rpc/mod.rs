@@ -8,5 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+mod error;
 pub(crate) mod handler;
 pub mod routing;
+
+pub use rpc_router::{
+	RpcHandlerError as JsonRpcError,
+	RpcParams as JsonRpcParams,
+};
+
+pub use self::error::*;

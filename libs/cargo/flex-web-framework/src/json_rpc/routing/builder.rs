@@ -10,13 +10,13 @@
 
 use rpc_router::RpcHandlerWrapperTrait;
 
-use super::RpcRouter;
+use super::JsonRpcRouter;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait RpcRouterBuilder
+pub trait JsonRpcRouterBuilder
 {
 	type State: 'static + Clone + Send + Sync;
 
@@ -25,5 +25,5 @@ pub trait RpcRouterBuilder
 		action: Box<dyn RpcHandlerWrapperTrait>,
 	) -> Self;
 
-	fn build(self) -> RpcRouter<Self::State>;
+	fn build(self) -> JsonRpcRouter<Self::State>;
 }
