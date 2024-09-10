@@ -8,82 +8,54 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod commands;
+use flex_web_framework::http::response::Json;
+use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
 
-pub mod config
-{
-	pub mod chat;
-	pub mod env;
-}
-
-pub mod constant;
-
-mod features
-{
-	mod accounts;
-	mod auth;
-	mod avatars;
-	mod chat;
-	mod generate;
-	mod hello_world;
-	mod users;
-
-	pub use self::accounts::AccountsApplication;
-	pub use self::auth::AuthApplication;
-	pub use self::avatars::AvatarsApplication;
-	pub use self::chat::ChatApplication;
-	pub use self::generate::GenerateApplication;
-	pub use self::hello_world::HelloWorldApplication;
-	pub use self::users::UsersApplication;
-}
-
-mod templates
-{
-	pub mod layouts
-	{
-		mod base_layout;
-
-		pub use self::base_layout::*;
-	}
-}
-
-use flex_web_framework::http::request::FromRef;
-
-pub use self::features::*;
-
-// ---- //
-// Type //
-// ---- //
-
-pub type Flex = flex_web_framework::AxumApplication<
-	FlexState,
-	config::env::FlexEnv,
-	commands::FlexCLI,
->;
-pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
+use crate::FlexState;
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Clone)]
-pub enum FlexState
+pub struct HelloWorldApiController;
+
+// --------- //
+// Structure //
+// --------- //
+
+#[derive(serde::Serialize)]
+pub struct HelloWorldApiResponse
 {
-	Initial,
+	hello: String,
 }
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
+impl HelloWorldApiController
+{
+	pub async fn handle_api(_: HttpContext<Self>) -> Json<HelloWorldApiResponse>
+	{
+		Json(HelloWorldApiResponse {
+			hello: String::from("World"),
+		})
+	}
+}
+
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl FromRef<FlexApplicationState> for FlexState
+impl HttpContextInterface for HelloWorldApiController
 {
-	fn from_ref(axum_state: &FlexApplicationState) -> Self
+	type State = FlexState;
+
+	fn constructor(_: &Extensions, _: Self::State) -> Option<Self>
 	{
-		axum_state.state().clone()
+		Some(Self)
 	}
 }
+
+unsafe impl Send for HelloWorldApiController {}
+unsafe impl Sync for HelloWorldApiController {}

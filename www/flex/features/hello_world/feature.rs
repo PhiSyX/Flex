@@ -8,82 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-pub mod commands;
+use flex_web_framework::{Feature, JsonRpcFeature};
 
-pub mod config
-{
-	pub mod chat;
-	pub mod env;
-}
-
-pub mod constant;
-
-mod features
-{
-	mod accounts;
-	mod auth;
-	mod avatars;
-	mod chat;
-	mod generate;
-	mod hello_world;
-	mod users;
-
-	pub use self::accounts::AccountsApplication;
-	pub use self::auth::AuthApplication;
-	pub use self::avatars::AvatarsApplication;
-	pub use self::chat::ChatApplication;
-	pub use self::generate::GenerateApplication;
-	pub use self::hello_world::HelloWorldApplication;
-	pub use self::users::UsersApplication;
-}
-
-mod templates
-{
-	pub mod layouts
-	{
-		mod base_layout;
-
-		pub use self::base_layout::*;
-	}
-}
-
-use flex_web_framework::http::request::FromRef;
-
-pub use self::features::*;
-
-// ---- //
-// Type //
-// ---- //
-
-pub type Flex = flex_web_framework::AxumApplication<
-	FlexState,
-	config::env::FlexEnv,
-	commands::FlexCLI,
->;
-pub type FlexApplicationState = flex_web_framework::AxumState<FlexState>;
+use super::routes::{
+	HelloWorldApiRouter,
+	HelloWorldRpcRouter,
+	HelloWorldWebRouter,
+};
+use crate::FlexState;
 
 // --------- //
 // Structure //
 // --------- //
 
-#[derive(Clone)]
-pub enum FlexState
-{
-	Initial,
-}
-
-// -------------- //
-// Implémentation //
-// -------------- //
+pub struct HelloWorldApplication;
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl FromRef<FlexApplicationState> for FlexState
+impl Feature for HelloWorldApplication
 {
-	fn from_ref(axum_state: &FlexApplicationState) -> Self
-	{
-		axum_state.state().clone()
-	}
+	type Config = ();
+	type Router = (HelloWorldApiRouter, HelloWorldWebRouter);
+	type State = FlexState;
+
+	const NAME: &'static str = "HelloWorldApplication";
+}
+
+impl JsonRpcFeature<FlexState> for HelloWorldApplication
+{
+	type Handlers = (HelloWorldRpcRouter, ());
+
+	const ENDPOINT: &'static str = "/rpc/hello";
 }
