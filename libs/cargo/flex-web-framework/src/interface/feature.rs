@@ -11,8 +11,9 @@
 mod websocket;
 
 pub use self::websocket::*;
+use crate::http::routing::HttpRouterInterface;
 use crate::settings::Config;
-use crate::{AxumRouter, AxumState, RouterInterface};
+use crate::{AxumRouter, AxumState};
 
 // --------- //
 // Interface //
@@ -56,7 +57,7 @@ pub trait Feature
 	type Config: FeatureConfig;
 
 	/// Les routeurs de la feature.
-	type Router: RouterInterface<Self::State>;
+	type Router: HttpRouterInterface<Self::State>;
 
 	/// L'état de l'application.
 	type State;
@@ -107,7 +108,7 @@ pub trait AsyncFeature
 	type Config: FeatureConfig;
 
 	/// Les routeurs de la feature.
-	type Router: RouterInterface<Self::State>;
+	type Router: HttpRouterInterface<Self::State>;
 
 	/// L'état de l'application.
 	type State;

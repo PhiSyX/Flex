@@ -13,6 +13,7 @@ mod cookies;
 mod method;
 pub mod request;
 pub mod response;
+pub mod routing;
 
 pub use axum::body::Body;
 pub use axum::http::{

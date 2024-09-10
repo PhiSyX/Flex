@@ -8,11 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{
-	RouteIDInterface,
-	RouterGroupInterface,
-	RouterInterface,
+use flex_web_framework::http::routing::{
+	HttpRouteIDInterface,
+	HttpRouter,
+	HttpRouterBuilder,
+	HttpRouterCollection,
+	HttpRouterGroupInterface,
+	HttpRouterInterface,
 };
 
 use crate::features::avatars::controllers::api::v1::AvatarsController;
@@ -45,24 +47,24 @@ pub enum AvatarsApi_V1_RouteID<'a>
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for AvatarsApi_V1_Router
+impl HttpRouterGroupInterface for AvatarsApi_V1_Router
 {
 	const GROUP: &'static str = "/api/v1/avatars";
 }
 
-impl RouterInterface<FlexState> for AvatarsApi_V1_Router
+impl HttpRouterInterface<FlexState> for AvatarsApi_V1_Router
 {
-	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group()
 			.add(
-				Router::path(AvatarsApi_V1_RouteID::Show {
+				HttpRouter::path(AvatarsApi_V1_RouteID::Show {
 					user_id: ":user_id",
 				})
 				.get(AvatarsController::show),
 			)
 			.add(
-				Router::path(AvatarsApi_V1_RouteID::Update {
+				HttpRouter::path(AvatarsApi_V1_RouteID::Update {
 					user_id: ":user_id",
 				})
 				.put(AvatarsController::update),
@@ -70,7 +72,7 @@ impl RouterInterface<FlexState> for AvatarsApi_V1_Router
 	}
 }
 
-impl RouteIDInterface for AvatarsApi_V1_RouteID<'_>
+impl HttpRouteIDInterface for AvatarsApi_V1_RouteID<'_>
 {
 	fn fullpath(&self) -> impl ToString
 	{

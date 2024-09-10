@@ -14,7 +14,7 @@ mod extension;
 pub mod extract;
 pub mod http;
 mod interface;
-pub mod routing;
+mod rpc;
 pub mod security;
 mod server;
 pub mod settings;

@@ -10,8 +10,10 @@
 
 mod builder;
 mod collection;
+mod interface;
 mod router;
 
 pub use self::builder::*;
 pub use self::collection::*;
+pub use self::interface::*;
 pub use self::router::*;

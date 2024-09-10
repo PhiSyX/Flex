@@ -12,7 +12,6 @@ mod cookie;
 mod cors;
 mod extension;
 mod feature;
-mod router;
 mod state;
 mod view;
 
@@ -20,6 +19,5 @@ pub use self::cookie::*;
 pub use self::cors::*;
 pub use self::extension::*;
 pub use self::feature::*;
-pub use self::router::*;
 pub use self::state::*;
 pub use self::view::*;

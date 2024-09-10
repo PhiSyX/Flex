@@ -8,11 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{
-	RouteIDInterface,
-	RouterGroupInterface,
-	RouterInterface,
+use flex_web_framework::http::routing::{
+	HttpRouteIDInterface,
+	HttpRouter,
+	HttpRouterBuilder,
+	HttpRouterCollection,
+	HttpRouterGroupInterface,
+	HttpRouterInterface,
 };
 
 use super::controllers::UuidController;
@@ -39,28 +41,28 @@ pub enum GenerateRouteID
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for GenerateRouter
+impl HttpRouterGroupInterface for GenerateRouter
 {
 	const GROUP: &'static str = "/generate";
 }
 
-impl RouterInterface<FlexState> for GenerateRouter
+impl HttpRouterInterface<FlexState> for GenerateRouter
 {
-	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group()
 			.add(
-				Router::path(GenerateRouteID::UUID_V4)
+				HttpRouter::path(GenerateRouteID::UUID_V4)
 					.get(UuidController::uuid_v4),
 			)
 			.add(
-				Router::path(GenerateRouteID::UUID_V7)
+				HttpRouter::path(GenerateRouteID::UUID_V7)
 					.get(UuidController::uuid_v7),
 			)
 	}
 }
 
-impl RouteIDInterface for GenerateRouteID
+impl HttpRouteIDInterface for GenerateRouteID
 {
 	fn fullpath(&self) -> impl ToString
 	{

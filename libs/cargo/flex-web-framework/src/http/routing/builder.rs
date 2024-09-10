@@ -12,24 +12,20 @@ use std::fmt;
 
 use axum::response::IntoResponse;
 
-use super::Router;
-use crate::{AxumState, RouteIDInterface};
+use super::HttpRouter;
+use crate::http::routing::HttpRouteIDInterface;
+use crate::AxumState;
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait RouterBuilder
+pub trait HttpRouterBuilder
 {
-	#[rustfmt::skip]
-	type State
-		: 'static
-		+ Clone
-		+ Send + Sync
-		;
+	type State: 'static + Clone + Send + Sync;
 
 	/// Initialisation d'une route.
-	fn path(url_path: impl RouteIDInterface + fmt::Debug) -> Self;
+	fn path(url_path: impl HttpRouteIDInterface + fmt::Debug) -> Self;
 
 	/// Applique une route de n'importe quel type.
 	fn any<Action, ActionType>(self, action: Action) -> Self
@@ -86,26 +82,26 @@ pub trait RouterBuilder
 		ActionType: 'static;
 
 	fn middleware<L>(self, layer: L) -> Self
-		where
-			L: tower_layer::Layer<axum::routing::Route>
-				+ 'static
-				+ Clone
-				+ Send
-			,
-			L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
-				+ 'static
-				+ Clone
-				+ Send
-			,
-			<L::Service as tower_service::Service<axum::extract::Request>>::Response:
-				'static
-				+ IntoResponse
-			,
-			<L::Service as tower_service::Service<axum::extract::Request>>::Future:
-				'static
-				+ Send
-			,
-		;
+	where
+		L: tower_layer::Layer<axum::routing::Route>
+			+ 'static
+			+ Clone
+			+ Send
+		,
+		L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
+			+ 'static
+			+ Clone
+			+ Send
+		,
+		<L::Service as tower_service::Service<axum::extract::Request>>::Response:
+			'static
+			+ IntoResponse
+		,
+		<L::Service as tower_service::Service<axum::extract::Request>>::Future:
+			'static
+			+ Send
+		,
+	;
 
-	fn build(self) -> Router<Self::State>;
+	fn build(self) -> HttpRouter<Self::State>;
 }

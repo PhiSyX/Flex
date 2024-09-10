@@ -8,13 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{
-	middleware,
-	RouteIDInterface,
-	RouterGroupInterface,
-	RouterInterface,
+use flex_web_framework::http::routing::{
+	HttpRouteIDInterface,
+	HttpRouter,
+	HttpRouterBuilder,
+	HttpRouterCollection,
+	HttpRouterGroupInterface,
+	HttpRouterInterface,
 };
+use flex_web_framework::middleware;
 
 use crate::features::auth::controllers::{LoginController, SignupController};
 use crate::features::auth::middleware::GuestMiddleware;
@@ -41,30 +43,30 @@ pub enum AuthApi_V1_RouteID
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for AuthApi_V1_Router
+impl HttpRouterGroupInterface for AuthApi_V1_Router
 {
 	const GROUP: &'static str = "/api/v1/auth";
 }
 
-impl RouterInterface<FlexState> for AuthApi_V1_Router
+impl HttpRouterInterface<FlexState> for AuthApi_V1_Router
 {
-	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group()
 			.add(
-				Router::path(AuthApi_V1_RouteID::Identify)
+				HttpRouter::path(AuthApi_V1_RouteID::Identify)
 					.post(LoginController::handle)
 					.middleware(middleware::from_fn(GuestMiddleware::api)),
 			)
 			.add(
-				Router::path(AuthApi_V1_RouteID::Register)
+				HttpRouter::path(AuthApi_V1_RouteID::Register)
 					.post(SignupController::handle)
 					.middleware(middleware::from_fn(GuestMiddleware::api)),
 			)
 	}
 }
 
-impl RouteIDInterface for AuthApi_V1_RouteID
+impl HttpRouteIDInterface for AuthApi_V1_RouteID
 {
 	fn fullpath(&self) -> impl ToString
 	{

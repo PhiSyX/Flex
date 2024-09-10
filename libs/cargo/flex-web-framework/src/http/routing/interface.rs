@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::routing::RouterCollection;
+use crate::http::routing::HttpRouterCollection;
 use crate::AxumState;
 
 // ----- //
@@ -17,12 +17,12 @@ use crate::AxumState;
 
 macro_rules! impl_router_interface {
 	(
-		impl RouterInterface for
+		impl HttpRouterInterface for
 			$( | ( $( $generic:ident ),* ) )*
 			where
-				Self(..): RouterInterface,
+				Self(..): HttpRouterInterface,
 		{
-			fn routes() -> RouterCollection
+			fn routes() -> HttpRouterCollection
 			{
 				let mut router_collection = Self::collection();
 				for type GENERIC in Self(..) {
@@ -33,11 +33,11 @@ macro_rules! impl_router_interface {
 		}
 	) => {$(
 
-		impl<UserState, $($generic),* > RouterInterface<UserState> for ( $($generic),* )
+		impl<UserState, $($generic),* > $crate::http::routing::HttpRouterInterface<UserState> for ( $($generic),* )
 		where
-			   $( $generic : RouterInterface<UserState> ),*
+			   $( $generic : $crate::http::routing::HttpRouterInterface<UserState> ),*
 		{
-			fn routes(s: &$crate::AxumState<UserState>) -> $crate::routing::RouterCollection<UserState>
+			fn routes(s: &$crate::AxumState<UserState>) -> $crate::http::routing::HttpRouterCollection<UserState>
 			{
 				let mut router_collection = Self::collection();
 				$( router_collection.extends( $generic::routes(s) ); )*
@@ -52,32 +52,32 @@ macro_rules! impl_router_interface {
 // Interface //
 // --------- //
 
-pub trait RouterInterface<S>
+pub trait HttpRouterInterface<S>
 {
 	/// Collection de routeurs.
-	fn collection() -> RouterCollection<S>
+	fn collection() -> HttpRouterCollection<S>
 	{
-		RouterCollection::<S>::default()
+		HttpRouterCollection::<S>::default()
 	}
 
 	/// Collection de routeurs groupés.
-	fn group() -> RouterCollection<S>
+	fn group() -> HttpRouterCollection<S>
 	where
-		Self: RouterGroupInterface,
+		Self: HttpRouterGroupInterface,
 	{
-		RouterCollection::<S>::default().with_group(Self::GROUP)
+		HttpRouterCollection::<S>::default().with_group(Self::GROUP)
 	}
 
 	/// Alias vers la collection.
-	fn routes(state: &AxumState<S>) -> RouterCollection<S>;
+	fn routes(state: &AxumState<S>) -> HttpRouterCollection<S>;
 }
 
-pub trait RouterGroupInterface
+pub trait HttpRouterGroupInterface
 {
 	const GROUP: &'static str;
 }
 
-pub trait RouteIDInterface
+pub trait HttpRouteIDInterface
 {
 	/// Chemin d'une route préfixé du groupe.
 	fn fullpath(&self) -> impl ToString;
@@ -90,16 +90,16 @@ pub trait RouteIDInterface
 // Implémentation // -> Interface
 // -------------- //
 
-impl<S> RouterInterface<S> for ()
+impl<S> HttpRouterInterface<S> for ()
 {
-	fn routes(_: &AxumState<S>) -> RouterCollection<S>
+	fn routes(_: &AxumState<S>) -> HttpRouterCollection<S>
 	{
 		Self::collection()
 	}
 }
 
 impl_router_interface! {
-	impl RouterInterface for
+	impl HttpRouterInterface for
 		| (A, B)
 		| (A, B, C)
 		| (A, B, C, D)
@@ -126,9 +126,9 @@ impl_router_interface! {
 		| (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
 		| (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
 	where
-		Self(..): RouterInterface,
+		Self(..): HttpRouterInterface,
 	{
-		fn routes() -> RouterCollection
+		fn routes() -> HttpRouterCollection
 		{
 			let mut router_collection = Self::collection();
 			for type GENERIC in Self(..) {

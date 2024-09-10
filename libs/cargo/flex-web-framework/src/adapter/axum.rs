@@ -14,6 +14,7 @@ use time::Duration;
 use tower_http::cors::CorsLayer;
 use tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
 
+use crate::http::routing::HttpRouterInterface;
 use crate::{
 	server,
 	ApplicationCookieLayerInterface,
@@ -31,7 +32,7 @@ use crate::{
 	ExtensionInterface,
 	Feature,
 	FeatureConfig,
-	RouterInterface,
+	HttpRouterInterface,
 	WebSocketAsyncFeature,
 	WebSocketFeature,
 	WebSocketHandlers2Interface,

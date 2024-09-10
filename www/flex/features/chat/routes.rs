@@ -8,11 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{
-	RouteIDInterface,
-	RouterGroupInterface,
-	RouterInterface,
+use flex_web_framework::http::routing::{
+	HttpRouteIDInterface,
+	HttpRouter,
+	HttpRouterBuilder,
+	HttpRouterCollection,
+	HttpRouterGroupInterface,
+	HttpRouterInterface,
 };
 
 use crate::features::chat::connect::TokenController;
@@ -40,25 +42,25 @@ pub enum ChatRouteID
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for ChatRouter
+impl HttpRouterGroupInterface for ChatRouter
 {
 	const GROUP: &'static str = "/chat";
 }
 
-impl RouterInterface<FlexState> for ChatRouter
+impl HttpRouterInterface<FlexState> for ChatRouter
 {
-	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group()
-			.add(Router::path(ChatRouteID::Home).get(HomeController::view))
+			.add(HttpRouter::path(ChatRouteID::Home).get(HomeController::view))
 			.add(
-				Router::path(ChatRouteID::ConnectToken)
+				HttpRouter::path(ChatRouteID::ConnectToken)
 					.post(TokenController::token),
 			)
 	}
 }
 
-impl RouteIDInterface for ChatRouteID
+impl HttpRouteIDInterface for ChatRouteID
 {
 	fn fullpath(&self) -> impl ToString
 	{

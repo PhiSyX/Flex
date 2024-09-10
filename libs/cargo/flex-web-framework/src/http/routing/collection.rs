@@ -8,16 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::{Router, RouterBuilder};
+use super::{HttpRouter, HttpRouterBuilder};
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct RouterCollection<S>
+pub struct HttpRouterCollection<S>
 {
 	pub(crate) global: axum::Router<()>,
-	routers: Vec<Router<S>>,
+	routers: Vec<HttpRouter<S>>,
 	group: String,
 }
 
@@ -25,7 +25,7 @@ pub struct RouterCollection<S>
 // Implémentation //
 // -------------- //
 
-impl<S> RouterCollection<S>
+impl<S> HttpRouterCollection<S>
 {
 	/// Préfixe les URL's des routes par le nom donné.
 	pub fn with_group(mut self, name: impl ToString) -> Self
@@ -36,7 +36,7 @@ impl<S> RouterCollection<S>
 
 	/// Ajoute un router à la liste des routeurs.
 	#[allow(clippy::should_implement_trait)]
-	pub fn add(mut self, builder: impl RouterBuilder<State = S>) -> Self
+	pub fn add(mut self, builder: impl HttpRouterBuilder<State = S>) -> Self
 	{
 		let mut route = builder.build();
 		route.fullpath = format!("{}{}", self.group, route.fullpath);
@@ -45,10 +45,10 @@ impl<S> RouterCollection<S>
 	}
 }
 
-impl<S> RouterCollection<S>
+impl<S> HttpRouterCollection<S>
 {
 	/// Liste les routeurs.
-	pub fn all(&self) -> impl Iterator<Item = &Router<S>>
+	pub fn all(&self) -> impl Iterator<Item = &HttpRouter<S>>
 	{
 		self.routers.iter()
 	}
@@ -76,11 +76,11 @@ impl<S> RouterCollection<S>
 // Implémentation // -> Interface
 // -------------- //
 
-impl<S> Default for RouterCollection<S>
+impl<S> Default for HttpRouterCollection<S>
 {
 	fn default() -> Self
 	{
-		RouterCollection {
+		HttpRouterCollection {
 			global: Default::default(),
 			routers: Default::default(),
 			group: Default::default(),

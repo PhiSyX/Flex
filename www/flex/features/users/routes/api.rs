@@ -8,11 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{
-	RouteIDInterface,
-	RouterGroupInterface,
-	RouterInterface,
+use flex_web_framework::http::routing::{
+	HttpRouteIDInterface,
+	HttpRouter,
+	HttpRouterBuilder,
+	HttpRouterCollection,
+	HttpRouterGroupInterface,
+	HttpRouterInterface,
 };
 
 use crate::features::users::controllers::api::v1::UsersController;
@@ -42,28 +44,30 @@ pub enum UsersApi_V1_RouteID<'a>
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for UsersApi_V1_Router
+impl HttpRouterGroupInterface for UsersApi_V1_Router
 {
 	const GROUP: &'static str = "/api/v1/users";
 }
 
-impl RouterInterface<FlexState> for UsersApi_V1_Router
+impl HttpRouterInterface<FlexState> for UsersApi_V1_Router
 {
-	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group()
 			.add(
-				Router::path(UsersApi_V1_RouteID::Info { user_id: ":userid" })
-					.get(UsersController::get_user_info),
+				HttpRouter::path(UsersApi_V1_RouteID::Info {
+					user_id: ":userid",
+				})
+				.get(UsersController::get_user_info),
 			)
 			.add(
-				Router::path(UsersApi_V1_RouteID::Session)
+				HttpRouter::path(UsersApi_V1_RouteID::Session)
 					.get(UsersController::session),
 			)
 	}
 }
 
-impl RouteIDInterface for UsersApi_V1_RouteID<'_>
+impl HttpRouteIDInterface for UsersApi_V1_RouteID<'_>
 {
 	fn fullpath(&self) -> impl ToString
 	{

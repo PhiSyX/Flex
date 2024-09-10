@@ -8,13 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{
-	middleware,
-	RouteIDInterface,
-	RouterGroupInterface,
-	RouterInterface,
+use flex_web_framework::http::routing::{
+	HttpRouteIDInterface,
+	HttpRouter,
+	HttpRouterBuilder,
+	HttpRouterCollection,
+	HttpRouterGroupInterface,
+	HttpRouterInterface,
 };
+use flex_web_framework::middleware;
 
 use crate::features::auth::controllers::{
 	LoginController,
@@ -46,31 +48,31 @@ pub enum AuthRouteID
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for AuthRouter
+impl HttpRouterGroupInterface for AuthRouter
 {
 	const GROUP: &'static str = "/auth";
 }
 
-impl RouterInterface<FlexState> for AuthRouter
+impl HttpRouterInterface<FlexState> for AuthRouter
 {
-	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group()
 			.add(
-				Router::path(AuthRouteID::Login)
+				HttpRouter::path(AuthRouteID::Login)
 					.get(LoginController::view)
 					.post(LoginController::handle)
 					.middleware(middleware::from_fn(GuestMiddleware::redirect)),
 			)
 			.add(
-				Router::path(AuthRouteID::Logout)
+				HttpRouter::path(AuthRouteID::Logout)
 					.get(LogoutController::view)
 					.post(LogoutController::handle) // FIXME: method spoofing
 					.delete(LogoutController::handle)
 					.middleware(middleware::from_fn(AuthMiddleware::required)),
 			)
 			.add(
-				Router::path(AuthRouteID::Signup)
+				HttpRouter::path(AuthRouteID::Signup)
 					.get(SignupController::view)
 					.post(SignupController::handle)
 					.middleware(middleware::from_fn(GuestMiddleware::redirect)),
@@ -78,7 +80,7 @@ impl RouterInterface<FlexState> for AuthRouter
 	}
 }
 
-impl RouteIDInterface for AuthRouteID
+impl HttpRouteIDInterface for AuthRouteID
 {
 	fn fullpath(&self) -> impl ToString
 	{

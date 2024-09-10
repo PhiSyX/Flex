@@ -8,10 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::routing::{Router, RouterBuilder, RouterCollection};
-use flex_web_framework::{
-	middleware, RouteIDInterface, RouterGroupInterface, RouterInterface
+use flex_web_framework::http::routing::{
+	HttpRouteIDInterface,
+	HttpRouter,
+	HttpRouterBuilder,
+	HttpRouterCollection,
+	HttpRouterGroupInterface,
+	HttpRouterInterface,
 };
+use flex_web_framework::middleware;
 
 use crate::features::accounts::controllers::api::v1::AccountsController;
 use crate::features::auth::middleware::AuthMiddleware;
@@ -30,35 +35,42 @@ pub struct AccountsApi_V1_Router;
 #[derive(Debug)]
 pub enum AccountsApi_V1_RouteID<'a>
 {
-	Update { id: &'a str },
+	Update
+	{
+		id: &'a str
+	},
 }
 
 // -------------- //
 // Implémentation // -> Interface
 // -------------- //
 
-impl RouterGroupInterface for AccountsApi_V1_Router
+impl HttpRouterGroupInterface for AccountsApi_V1_Router
 {
 	const GROUP: &'static str = "/api/v1/accounts";
 }
 
-impl RouterInterface<FlexState> for AccountsApi_V1_Router
+impl HttpRouterInterface<FlexState> for AccountsApi_V1_Router
 {
-	fn routes(_: &FlexApplicationState) -> RouterCollection<FlexState>
+	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group().add(
-			Router::path(AccountsApi_V1_RouteID::Update { id: ":userid" })
+			HttpRouter::path(AccountsApi_V1_RouteID::Update { id: ":userid" })
 				.put(AccountsController::update)
 				.middleware(middleware::from_fn(AuthMiddleware::required)),
 		)
 	}
 }
 
-impl RouteIDInterface for AccountsApi_V1_RouteID<'_>
+impl HttpRouteIDInterface for AccountsApi_V1_RouteID<'_>
 {
 	fn fullpath(&self) -> impl ToString
 	{
-		format!("{}{}", AccountsApi_V1_Router::GROUP, self.path().to_string())
+		format!(
+			"{}{}",
+			AccountsApi_V1_Router::GROUP,
+			self.path().to_string()
+		)
 	}
 
 	fn path(&self) -> impl ToString

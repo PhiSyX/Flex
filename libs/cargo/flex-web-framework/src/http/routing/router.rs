@@ -13,14 +13,15 @@ use std::fmt;
 
 use axum::response::IntoResponse;
 
-use super::RouterBuilder;
-use crate::{http, AxumState, RouteIDInterface};
+use super::HttpRouterBuilder;
+use crate::http::routing::HttpRouteIDInterface;
+use crate::{http, AxumState};
 
 // --------- //
 // Structure //
 // --------- //
 
-pub struct Router<S>
+pub struct HttpRouter<S>
 {
 	/// Nom de la route.
 	pub name: String,
@@ -36,7 +37,7 @@ pub struct Router<S>
 // Implémentation //
 // -------------- //
 
-impl<S> Router<S>
+impl<S> HttpRouter<S>
 {
 	pub fn methods(&self) -> impl Iterator<Item = &http::Method>
 	{
@@ -48,13 +49,13 @@ impl<S> Router<S>
 // Implémentation // -> Interface
 // -------------- //
 
-impl<UserState> RouterBuilder for Router<UserState>
+impl<UserState> HttpRouterBuilder for HttpRouter<UserState>
 where
 	UserState: Clone + Send + Sync + 'static,
 {
 	type State = UserState;
 
-	fn path(url_path: impl RouteIDInterface + fmt::Debug) -> Self
+	fn path(url_path: impl HttpRouteIDInterface + fmt::Debug) -> Self
 	{
 		Self {
 			name: format!("{url_path:?}"),
@@ -188,17 +189,17 @@ where
 		self
 	}
 
-	fn build(self) -> Router<Self::State>
+	fn build(self) -> HttpRouter<Self::State>
 	{
 		self
 	}
 }
 
-impl<S> From<&Router<S>> for axum::Router<AxumState<S>>
+impl<S> From<&HttpRouter<S>> for axum::Router<AxumState<S>>
 where
 	S: Clone + Send + Sync + 'static,
 {
-	fn from(router: &Router<S>) -> Self
+	fn from(router: &HttpRouter<S>) -> Self
 	{
 		let mut r = Self::new();
 
