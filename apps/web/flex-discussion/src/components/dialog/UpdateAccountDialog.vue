@@ -59,7 +59,7 @@ async function submit_handler(evt: Event)
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists() && layer_unsafe.data" :to="teleport_id">
+	<Teleport v-if="dialog.exists() && layer_unsafe.data" defer :to="teleport_id">
 		<UpdateAccountDialogComponent
 			:layer-name="layer_name"
 			:city="layer_unsafe.data.city || null"

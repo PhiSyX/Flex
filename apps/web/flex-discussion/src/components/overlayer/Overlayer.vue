@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { CSSProperties, HTMLAttributes } from "vue";
 
-import { shallowRef as shallow_ref, watchEffect as watch_effect } from "vue";
-
 import { vTrap } from "@phisyx/flex-vue-directives";
-
+import { shallowRef, watchEffect } from "vue";
 import { use_overlayer_store } from "~/store";
-
 import { use_overlayer } from "./Overlayer.hooks";
+
+import UpdateAccountDialog from "~/components/dialog/UpdateAccountDialog.vue";
+import ModulesProgress from "~/components/progress/ModulesProgress.vue";
 
 // --------- //
 // Composant //
@@ -15,30 +15,41 @@ import { use_overlayer } from "./Overlayer.hooks";
 
 let overlayer_store = use_overlayer_store();
 
-let $overlayer = shallow_ref<HTMLDivElement>();
-let $teleport = shallow_ref<Array<HTMLDivElement>>();
+let $overlayer = shallowRef<HTMLDivElement>();
+let $teleport = shallowRef<Array<HTMLDivElement>>();
 
 const { destroy_handler } = use_overlayer();
 
-watch_effect(() => {
+watchEffect(() => {
 	if ($overlayer.value) {
 		overlayer_store.$overlayer_mut = $overlayer.value;
 	}
 
 	if ($teleport.value && $teleport.value.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: ;-)
-		overlayer_store.$teleport_mut = $teleport.value.pop()!.firstElementChild as HTMLDivElement;
+		overlayer_store.$teleport_mut = $teleport.value.pop()!
+			.firstElementChild as HTMLDivElement;
 		overlayer_store.update_all();
 	}
 });
 </script>
 
 <template>
+	<UpdateAccountDialog />
+	<ModulesProgress />
+
 	<Transition name="fade">
 		<div v-if="overlayer_store.has_layers" id="overlayer">
-			<div ref="$overlayer" class="overlay [ pos-f:full ]" @click="destroy_handler" />
+			<div
+				ref="$overlayer"
+				class="overlay [ pos-f:full ]"
+				@click="destroy_handler"
+			/>
 
-			<template v-for="[id, layer] of overlayer_store.layers" :key="`${id}_layer`">
+			<template
+				v-for="[id, layer] of overlayer_store.layers"
+				:key="`${id}_layer`"
+			>
 				<div v-trap:focus="layer.trap_focus">
 					<div
 						:id="`${id}_layer`"
@@ -83,7 +94,7 @@ watch_effect(() => {
 }
 
 .without-bg {
-	background-color: transparent!important;
+	background-color: transparent !important;
 }
 
 .layer {

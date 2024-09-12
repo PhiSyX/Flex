@@ -8,31 +8,52 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
-import type { Layer, OverlayerStore } from "../store";
+import { RememberMeStorage } from "../../localstorage/remember_me";
 
-// ---- //
-// Type //
-// ---- //
+// --------- //
+// Interface //
+// --------- //
 
-export interface DialogClass<T>
+interface DirectAccessFormDataInterface
 {
-	ID: string;
-
-	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
-
-	new (_: OverlayerStore): T;
+	alternative_nickname: string;
+	channels: ChannelID;
+	nickname: string;
+	password_server: string;
+	password_user: string;
+	realname: string;
+	remember_me: RememberMeStorage;
+	websocket_server_url: string;
 }
 
-export interface DialogInterface<R = unknown>
-{
-	exists(): boolean;
-	get(): Option<Layer<R>>;
-	get_unchecked(): Layer<R>;
-	destroy(): void;
-}
+// --------- //
+// Structure //
+// --------- //
 
-type Tail<T extends unknown[]> = T extends [infer H, ...infer T] ? T : never;
-export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
-	Parameters<D["create"]>
->;
+export class DirectAccessFormData implements DirectAccessFormDataInterface
+{
+	declare alternative_nickname: string;
+	declare channels: ChannelID;
+	declare nickname: string;
+	declare password_server: string;
+	declare password_user: string;
+	declare realname: string;
+	remember_me: RememberMeStorage = new RememberMeStorage();
+	declare websocket_server_url: string;
+
+	default(data: DirectAccessFormDataInterface)
+	{
+		for (let [key, value] of Object.entries(data)) {
+			// @ts-expect-error : corriger le type.
+			this[key] = value;
+		}
+	}
+
+	set(data: Partial<DirectAccessFormDataInterface>)
+	{
+		for (let [key, value] of Object.entries(data)) {
+			// @ts-expect-error : corriger le type.
+			this[key] = value;
+		}
+	}
+}

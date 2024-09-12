@@ -8,31 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
-import type { Layer, OverlayerStore } from "../store";
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 
-// ---- //
-// Type //
-// ---- //
+import { DirectAccessDataManager } from "./datamanager";
+import { DirectAccessInteractor } from "./interactor";
+import { DirectAccessPresenter } from "./presenter";
+import { DirectAccessView } from "./view";
 
-export interface DialogClass<T>
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class DirectAccessWireframe
 {
-	ID: string;
+	static create(
+		router_acl: RouterAntiCorruptionLayer,
+		datamanager: ChatStoreInterface & ChatStoreInterfaceExt
+	)
+	{
+		let view = new DirectAccessView();
 
-	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
+		let presenter = new DirectAccessPresenter().with_view(view);
+		let interactor = new DirectAccessInteractor()
+			.with_presenter(presenter)
+			.with_datamanager(new DirectAccessDataManager(datamanager));
 
-	new (_: OverlayerStore): T;
+		view.with_presenter(presenter).with_router(router_acl);
+		presenter.with_interactor(interactor);
+
+		return view;
+	}
+
+	declare _: number;
 }
-
-export interface DialogInterface<R = unknown>
-{
-	exists(): boolean;
-	get(): Option<Layer<R>>;
-	get_unchecked(): Layer<R>;
-	destroy(): void;
-}
-
-type Tail<T extends unknown[]> = T extends [infer H, ...infer T] ? T : never;
-export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
-	Parameters<D["create"]>
->;

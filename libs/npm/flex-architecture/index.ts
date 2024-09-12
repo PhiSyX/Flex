@@ -8,31 +8,4 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
-import type { Layer, OverlayerStore } from "../store";
-
-// ---- //
-// Type //
-// ---- //
-
-export interface DialogClass<T>
-{
-	ID: string;
-
-	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
-
-	new (_: OverlayerStore): T;
-}
-
-export interface DialogInterface<R = unknown>
-{
-	exists(): boolean;
-	get(): Option<Layer<R>>;
-	get_unchecked(): Layer<R>;
-	destroy(): void;
-}
-
-type Tail<T extends unknown[]> = T extends [infer H, ...infer T] ? T : never;
-export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
-	Parameters<D["create"]>
->;
+export * from "./src/router_acl";

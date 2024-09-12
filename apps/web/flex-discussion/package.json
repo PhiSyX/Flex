@@ -13,6 +13,7 @@
 		"test:e2e:report": "playwright show-report tests/e2e/report"
 	},
 	"dependencies": {
+		"@phisyx/flex-architecture": "workspace:",
 		"@phisyx/flex-asserts": "workspace:",
 		"@phisyx/flex-capitalization": "workspace:",
 		"@phisyx/flex-chat": "workspace:",
@@ -29,7 +30,7 @@
 		"pinia": "^2.2.2",
 		"socket.io-client": "^4.7.5",
 		"vue": "catalog:",
-		"vue-router": "^4.4.3"
+		"vue-router": "catalog:"
 	},
 	"devDependencies": {
 		"@histoire/plugin-vue": "^0.17.17",

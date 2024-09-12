@@ -17,51 +17,53 @@ import { View } from "@phisyx/flex-chat";
 // -------- //
 
 export const ROUTES: Array<RouteRecordRaw> = [
-    {
-        path: "/",
-        strict: true,
-        component: () => import("~/views/direct-access/DirectAccessView.vue"),
-        name: View.DirectAccess,
-    },
+	{
+		path: "/",
+		strict: true,
+		component: () => import("~/views/direct-access/DirectAccessView.vue"),
+		name: View.DirectAccess,
+	},
 
-    {
-        path: "/chat",
-        component: () => import("~/views/chat/ChatLayout.vue"),
-        children: [
-            {
-                path: "/server/:servername/channels",
-                component: () => import("~/views/chat/channel/ChannelListView.vue"),
-                name: View.ChannelList,
-            },
+	{
+		path: "/chat",
+		component: () => import("~/views/chat/ChatLayout.vue"),
+		children: [
+			{
+				path: "/server/:servername/channels",
+				component: () =>
+					import("~/views/chat/channel/ChannelListView.vue"),
+				name: View.ChannelList,
+			},
 
-            {
-                path: "/server/:servername/channel/:channelname",
-                component: () => import("~/views/chat/channel/ChannelView.vue"),
-                name: View.Channel,
-            },
+			{
+				path: "/server/:servername/channel/:channelname",
+				component: () => import("~/views/chat/channel/ChannelView.vue"),
+				name: View.Channel,
+			},
 
-            {
-                path: "/privates/",
-                component: () => import("~/views/chat/private/PrivateListView.vue"),
-                name: View.PrivateList,
-            },
-            {
-                path: "/private/:id",
-                component: () => import("~/views/chat/private/PrivateView.vue"),
-                name: View.Private,
-            },
+			{
+				path: "/privates/",
+				component: () =>
+					import("~/views/chat/private/PrivateListView.vue"),
+				name: View.PrivateList,
+			},
+			{
+				path: "/private/:id",
+				component: () => import("~/views/chat/private/PrivateView.vue"),
+				name: View.Private,
+			},
 
-            {
-                path: "/",
-                component: () => import("~/views/chat/ChatView.vue"),
-                name: View.Chat,
-            },
-        ],
-    },
+			{
+				path: "/",
+				component: () => import("~/views/chat/ChatView.vue"),
+				name: View.Chat,
+			},
+		],
+	},
 
-    {
-        path: "/settings",
-        component: () => import("~/views/settings/SettingsView.vue"),
-        name: View.Settings,
-    }
+	{
+		path: "/settings",
+		component: () => import("~/views/settings/SettingsView.vue"),
+		name: View.Settings,
+	},
 ];

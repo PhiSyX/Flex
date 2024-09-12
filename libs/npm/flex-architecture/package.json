@@ -1,0 +1,13 @@
+{
+	"name": "@phisyx/flex-architecture",
+	"description": "Flex Architecture",
+	"authors": "Mike 'PhiSyX' S.",
+	"version": "0.1.0",
+	"scripts": {
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"@phisyx/flex-code-quality": "workspace:",
+		"typescript": "catalog:"
+	}
+}

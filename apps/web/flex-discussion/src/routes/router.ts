@@ -8,31 +8,30 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
-import type { Layer, OverlayerStore } from "../store";
+import { useRouter } from "vue-router";
 
-// ---- //
-// Type //
-// ---- //
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 
-export interface DialogClass<T>
+// -------------- //
+// Implémentation // -> Interface
+// -------------- //
+
+export class VueRouter implements RouterAntiCorruptionLayer
 {
-	ID: string;
+	private vue_router = useRouter();
 
-	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
+	back()
+	{
+		this.vue_router.back();
+	}
 
-	new (_: OverlayerStore): T;
+	forward()
+	{
+		this.vue_router.forward();
+	}
+
+	goto(name: string)
+	{
+		this.vue_router.push({ name });
+	}
 }
-
-export interface DialogInterface<R = unknown>
-{
-	exists(): boolean;
-	get(): Option<Layer<R>>;
-	get_unchecked(): Layer<R>;
-	destroy(): void;
-}
-
-type Tail<T extends unknown[]> = T extends [infer H, ...infer T] ? T : never;
-export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
-	Parameters<D["create"]>
->;

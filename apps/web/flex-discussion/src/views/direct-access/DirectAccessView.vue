@@ -1,75 +1,45 @@
 <script setup lang="ts">
 import {
-	computed,
-	onMounted as on_mounted,
-	reactive,
-	ref,
-	watchEffect as watch_effect,
-} from "vue";
-import { useRouter as use_router } from "vue-router";
-
-import {
-	MAXLENGTH_NICKNAME,
-	PLACEHOLDER_NICKNAME,
+	type ChatStoreInterface,
+	type ChatStoreInterfaceExt,
+	DirectAccessView,
+	DirectAccessWireframe,
 	RememberMeStorage,
-	UpdateAccountDialog,
-	VALIDATION_NICKNAME_INFO,
-	View,
-	cast_to_channel_id,
 } from "@phisyx/flex-chat";
-import { Option } from "@phisyx/flex-safety";
 import {
 	ButtonIcon,
 	InputSwitch,
+	Match,
 	TextInput,
 	UiButton,
 	UiImage,
 } from "@phisyx/flex-vue-uikit";
-
-import { use_dialog } from "~/hooks/dialog";
-import { use_chat_store, use_user_store } from "~/store";
-
-import UpdateAccountDialogComponent from "~/components/dialog/UpdateAccountDialog.vue";
-import ModulesProgress from "~/components/progress/ModulesProgress.vue";
-import Match from "#/sys/match/Match.vue";
+import { computed, onMounted, reactive, watch } from "vue";
+import { VueRouter } from "~/routes/router";
+import { use_chat_store } from "~/store";
 
 // --------- //
 // Composant //
 // --------- //
 
-let router = use_router();
-let chat_store = use_chat_store();
-let user_store = use_user_store();
+let chat_store = use_chat_store().store;
+let router = new VueRouter();
 
-let user_session = computed(() => user_store.session());
+let view = reactive(
+	DirectAccessWireframe.create(
+		router,
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt
+	)
+);
 
-let advanced_info = ref(false);
-let display_password_user_field = ref(false);
-let login_form_data = reactive({
-	alternative_nickname: Option.from(import.meta.env.VITE_APP_NICKNAME)
-		.map((nick) => `${nick}_`)
-		.unwrap_or(""),
-	channels: import.meta.env.VITE_APP_CHANNELS || cast_to_channel_id(""),
-	nickname: Option.from(import.meta.env.VITE_APP_NICKNAME).unwrap_or(""),
-	realname: Option.from(import.meta.env.VITE_APP_REALNAME).unwrap_or(
-		"Flex Web App",
-	),
-	remember_me: new RememberMeStorage(),
-	password_server: import.meta.env.VITE_APP_PASSWORD_SERVER || null,
-	password_user: import.meta.env.VITE_APP_PASSWORD_USER || null,
-	websocket_server_url: import.meta.env.VITE_APP_WEBSOCKET_URL,
-});
-let errors = reactive({
-	nickname: null as string | null,
-	alternative_nickname: null as string | null,
-});
-let loader = ref(false);
+let user_session = computed(() => view.user_session);
 
+// TODO: déplacer le texte dans `DirectAccessView`.
 let image_title_attribute = computed(() => {
 	return user_session.value
 		.map((user) => {
 			return (
-				// biome-ignore lint/style/useTemplate: non merci.
+				// biome-ignore lint/style/useTemplate: je ne veux pas utiliser le template literal ici.
 				`Bonjour, tu es actuellement connecté en tant que ${user.name}.` +
 				"\n\nClique sur cette image pour modifier ton profil, si tu le souhaites."
 			);
@@ -77,120 +47,41 @@ let image_title_attribute = computed(() => {
 		.unwrap_or("");
 });
 
-// --------- //
-// Lifecycle // -> Hooks
-// --------- //
-
-on_mounted(() => {
-	if (login_form_data.remember_me.get()) {
-		submit_handler();
-	}
+onMounted(() => {
+	view.form_data.default({
+		alternative_nickname: `${import.meta.env.VITE_APP_NICKNAME}_`,
+		channels: import.meta.env.VITE_APP_CHANNELS,
+		nickname: import.meta.env.VITE_APP_NICKNAME,
+		password_server: import.meta.env.VITE_APP_PASSWORD_SERVER,
+		password_user: "",
+		realname: import.meta.env.VITE_APP_REALNAME,
+		remember_me: new RememberMeStorage(),
+		websocket_server_url: import.meta.env.VITE_APP_WEBSOCKET_URL,
+	});
 });
 
-watch_effect(() => {
+watch(user_session, () => {
 	if (user_session.value.is_none()) {
-		login_form_data.realname = Option.from(
-			import.meta.env.VITE_APP_REALNAME,
-		).unwrap_or("Flex Web App");
+		view.form_data.set({
+			realname: import.meta.env.VITE_APP_REALNAME,
+		});
 		return;
 	}
 
 	let user = user_session.value.unwrap();
-	login_form_data.nickname = user.name;
-	login_form_data.alternative_nickname = `${user.name}\``;
-	login_form_data.realname = `#${user.id} - ${user.role} - (${user.email})`;
+	view.form_data.set({
+		nickname: user.name,
+		alternative_nickname: `${user.name}\``,
+		realname: `#${user.id} - ${user.role} - (${user.email})`,
+	});
 });
-
-// ------- //
-// Handler //
-// ------- //
-
-const submit_handler = connect_submit();
-
-/**
- * Affiche les informations de connexion avancées.
- */
-function display_advanced_info_handler()
-{
-	advanced_info.value = true;
-}
-
-/**
- * Soumission du formulaire. S'occupe de se connecter au serveur de Chat.
- */
-function connect_submit()
-{
-	async function connect_submit_handler(evt?: Event)
-	{
-		evt?.preventDefault();
-
-		loader.value = true;
-
-		await chat_store.load_all_modules();
-
-		chat_store.connect(login_form_data);
-
-		chat_store.listen("RPL_WELCOME", () => reply_welcome_handler(), {
-			once: true,
-		});
-
-		chat_store.listen("ERR_NICKNAMEINUSE", (data) =>
-			error_nicknameinuse_handler(data),
-		);
-	}
-
-	return connect_submit_handler;
-}
-
-/**
- * Écoute de l'événement `RPL_WELCOME`.
- */
-function reply_welcome_handler()
-{
-	loader.value = false;
-
-	router.push({ name: View.Chat });
-
-	if (login_form_data.password_user) {
-		chat_store.send_message(
-			chat_store.room_manager().active().id(),
-			`/AUTH IDENTIFY ${login_form_data.nickname} ${login_form_data.password_user}`,
-		);
-	}
-}
-
-/**
- * Écoute de l'événement `ERR_NICKNAMEINUSE`.
- */
-function error_nicknameinuse_handler(data: GenericReply<"ERR_NICKNAMEINUSE">)
-{
-	if (data.nickname === login_form_data.alternative_nickname) {
-		errors.alternative_nickname = data.reason.slice(
-			login_form_data.alternative_nickname.length + 2,
-		);
-	} else {
-		errors.nickname = data.reason.slice(
-			login_form_data.nickname.length + 2,
-		);
-	}
-
-	loader.value = false;
-}
-
-function to_settings_view_handler()
-{
-	router.push({ name: View.Settings });
-}
-
-function update_account_handler()
-{
-	let { create_dialog } = use_dialog(UpdateAccountDialog);
-	create_dialog(user_store.session().unwrap());
-}
 </script>
 
 <template>
-	<main id="chat-login-view" class="[ scroll:y flex! flex/center:full m:a pos-r ]">
+	<main
+		id="chat-login-view"
+		class="[ scroll:y flex! flex/center:full m:a pos-r ]"
+	>
 		<section class="[ flex! gap=3 min-w=43 ]">
 			<h1 class="[ f-size=24px ]">Accès direct au Chat</h1>
 
@@ -199,11 +90,11 @@ function update_account_handler()
 				action="/chat/login"
 				method="POST"
 				class="[ ov:h flex! border/radius=1 ]"
-				@submit="submit_handler"
+				@submit="view.submit_form($event)"
 			>
 				<TextInput
-					v-show="advanced_info"
-					v-model="login_form_data.websocket_server_url"
+					v-show="view.advanced_form"
+					v-model="view.form_data.websocket_server_url"
 					label="url"
 					name="server"
 					placeholder="URL WebSocket du serveur de Chat"
@@ -211,8 +102,8 @@ function update_account_handler()
 				/>
 
 				<TextInput
-					v-show="advanced_info"
-					v-model="login_form_data.password_server"
+					v-show="view.advanced_form"
+					v-model="view.form_data.password_server"
 					label="password"
 					name="password_server"
 					placeholder="Mot de passe du serveur de Chat"
@@ -220,15 +111,15 @@ function update_account_handler()
 				/>
 
 				<TextInput
-					v-model="login_form_data.nickname"
+					v-model="view.form_data.nickname"
 					label="user"
 					name="nickname"
-					:error="errors.nickname"
-					:maxlength="MAXLENGTH_NICKNAME"
-					:placeholder="PLACEHOLDER_NICKNAME"
-					:title="VALIDATION_NICKNAME_INFO"
+					:error="view.error.nickname"
+					:maxlength="DirectAccessView.MAXLENGTH_NICKNAME"
+					:placeholder="DirectAccessView.PLACEHOLDER_NICKNAME"
+					:title="DirectAccessView.VALIDATION_NICKNAME_INFO"
 				>
-					<Match :maybe="user_session" >
+					<Match :maybe="user_session">
 						<template #some="{ data: user }">
 							<UiImage
 								v-if="user.avatar"
@@ -238,16 +129,16 @@ function update_account_handler()
 								:title="image_title_attribute"
 								size="3"
 								class="[ cursor:pointer ]"
-								@click="update_account_handler"
+								@click="view.update_account_handler()"
 							/>
 						</template>
 						<template #none>
 							<button
-								v-if="!display_password_user_field"
+								v-if="!view.shown_password_user_field"
 								type="button"
 								class="[ flex flex/center:full gap=1 f-size=12px ]"
 								title="Utiliser mon mot de passe (optionnel)"
-								@click="display_password_user_field = true"
+								@click="view.display_password_user_field()"
 							>
 								<span>Mot de passe</span>
 								<icon-password />
@@ -257,8 +148,10 @@ function update_account_handler()
 				</TextInput>
 
 				<TextInput
-					v-if="user_session.is_none() && display_password_user_field"
-					v-model="login_form_data.password_user"
+					v-if="
+						user_session.is_none() && view.shown_password_user_field
+					"
+					v-model="view.form_data.password_user"
 					label="password"
 					name="password_user"
 					placeholder="Mot de passe du compte"
@@ -266,36 +159,36 @@ function update_account_handler()
 				/>
 
 				<TextInput
-					v-show="advanced_info"
-					v-model="login_form_data.alternative_nickname"
+					v-show="view.advanced_form"
+					v-model="view.form_data.alternative_nickname"
 					label="user"
 					name="alternative_nickname"
-					:error="errors.alternative_nickname"
+					:error="view.error.alternative_nickname"
 					placeholder="Pseudonyme alternatif"
-					:maxlength="MAXLENGTH_NICKNAME"
-					:title="VALIDATION_NICKNAME_INFO"
+					:maxlength="DirectAccessView.MAXLENGTH_NICKNAME"
+					:title="DirectAccessView.VALIDATION_NICKNAME_INFO"
 				/>
 
 				<TextInput
-					v-show="advanced_info"
-					v-model="login_form_data.realname"
+					v-show="view.advanced_form"
+					v-model="view.form_data.realname"
 					label="user"
 					name="realname"
 					placeholder="Nom réel"
 				/>
 
 				<TextInput
-					v-model="login_form_data.channels"
+					v-model="view.form_data.channels"
 					label="channel"
 					name="channels"
 				/>
 			</form>
 
-			<div class="[ align-t:center ]" v-if="!advanced_info">
+			<div class="[ align-t:center ]" v-if="!view.advanced_form">
 				<ButtonIcon
 					icon="plus"
 					title="Afficher les champs avancés"
-					@click="display_advanced_info_handler"
+					@click="view.display_more_fields()"
 				/>
 			</div>
 
@@ -305,7 +198,7 @@ function update_account_handler()
 				</label>
 
 				<InputSwitch
-					v-model="login_form_data.remember_me.value"
+					v-model="view.form_data.remember_me.value"
 					label-n="Non"
 					label-y="Oui"
 					name="remember_me"
@@ -313,7 +206,7 @@ function update_account_handler()
 			</div>
 
 			<UiButton
-				:icon="loader ? 'loader' : undefined"
+				:icon="view.loader ? 'loader' : undefined"
 				position="right"
 				type="submit"
 				form="chat-login-form"
@@ -323,90 +216,12 @@ function update_account_handler()
 			</UiButton>
 		</section>
 
-		<UiButton icon="settings" class="settings-btn" @click="to_settings_view_handler" />
-
-		<ModulesProgress />
-		<UpdateAccountDialogComponent />
+		<UiButton
+			icon="settings"
+			class="settings-btn"
+			@click="view.goto_settings_view_handler()"
+		/>
 	</main>
 </template>
 
-<style lang="scss">
-@use "scss:~/flexsheets" as fx;
-
-body:has(#chat-login-view) {
-	--body-bg: var(--login-page-bg);
-}
-
-#chat-login-view {
-	form {
-		gap: 1px;
-		border: fx.space(1) solid var(--login-form-bg);
-		box-shadow: 2px 2px 4px var(--login-form-shadow);
-	}
-
-	form div {
-		background: var(--login-form-bg);
-	}
-
-	form input {
-		flex-grow: 1;
-
-		background: transparent;
-		border: 0;
-		outline: 0;
-		color: var(--login-form-color);
-
-		&:focus {
-			color: var(--login-form-hover-color);
-		}
-	}
-
-	form[id] ~ button[form][type="submit"] {
-		border-radius: 4px;
-		background: var(--login-button-submit-bg);
-		transition: background-color 200ms;
-		color: var(--login-button-submit-color);
-
-		svg {
-			max-width: fx.space(3);
-		}
-
-		&:focus-visible {
-			outline: 3px inset var(--login-button-submit-outline-color);
-		}
-
-		&:active {
-			outline: 3px outset var(--login-button-submit-outline-color);
-		}
-
-		&:hover {
-			--login-button-submit-bg: var(--login-button-submit-bg-hover);
-		}
-
-		&:disabled {
-			background: var(--disabled-bg);
-			color: var(--disabled-color);
-			pointer-events: none;
-		}
-	}
-}
-
-.remember-me {
-	line-height: 1.2;
-}
-
-.settings-btn {
-	position: absolute;
-	top: fx.space(1);
-	right: fx.space(1);
-
-	padding: 2px;
-	background: var(--login-button-submit-bg);
-	color: var(--default-text-color_alt);
-	border-radius: 4px;
-
-	&:hover {
-		background: var(--login-button-submit-bg-hover);
-	}
-}
-</style>
+<style src="./DirectAccessView.style.scss" />

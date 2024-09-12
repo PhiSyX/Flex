@@ -8,31 +8,64 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
-import type { Layer, OverlayerStore } from "../store";
+import type { DialogArgs, DialogClass, DialogInterface } from "../../dialogs/interface";
+import type { DirectAccessInteractor } from "./interactor";
+import type { DirectAccessRouter } from "./router";
+import type { DirectAccessView } from "./view";
 
-// ---- //
-// Type //
-// ---- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export interface DialogClass<T>
+export class DirectAccessPresenter
 {
-	ID: string;
+	view!: DirectAccessView;
+	interactor!: DirectAccessInteractor;
+	router!: DirectAccessRouter;
 
-	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
+	// ------- //
+	// Méthode // -> Instance
+	// ------- //
 
-	new (_: OverlayerStore): T;
+	with_interactor(interactor: DirectAccessInteractor): this
+	{
+		this.interactor = interactor;
+		return this;
+	}
+
+	with_view(view: DirectAccessView): this
+	{
+		this.view = view;
+		return this;
+	}
+
+	// ------- //
+	// Méthode // -> API Publique
+	// ------- //
+
+	async connect_chat_server()
+	{
+		await this.interactor.connect_chat();
+	}
+
+	create_dialog<
+		D extends DialogClass<DialogInterface<R>>,
+		R,
+	>(dialog: D, ...args: DialogArgs<D, R>)
+	{
+		this.interactor.create_dialog(dialog, ...args);
+	}
+
+	send_auth_command()
+	{
+		this.interactor.auth_user(
+			this.view.form_data.nickname,
+			this.view.form_data.password_user
+		);
+	}
+
+	user_session()
+	{
+		return this.interactor.fetch_user_session();
+	}
 }
-
-export interface DialogInterface<R = unknown>
-{
-	exists(): boolean;
-	get(): Option<Layer<R>>;
-	get_unchecked(): Layer<R>;
-	destroy(): void;
-}
-
-type Tail<T extends unknown[]> = T extends [infer H, ...infer T] ? T : never;
-export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
-	Parameters<D["create"]>
->;
