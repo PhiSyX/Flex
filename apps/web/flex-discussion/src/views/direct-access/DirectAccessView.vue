@@ -15,7 +15,7 @@ import {
 	UiImage,
 } from "@phisyx/flex-vue-uikit";
 import { computed, onMounted, reactive, watch } from "vue";
-import { VueRouter } from "~/routes/router";
+import { VueRouter } from "~/router";
 import { use_chat_store } from "~/store";
 
 // --------- //

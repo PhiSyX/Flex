@@ -11,11 +11,11 @@
 import type { App } from "vue";
 
 import {
-    createMemoryHistory as create_mem_history,
-    createRouter as create_router
+	createMemoryHistory as create_mem_history,
+	createRouter as create_router
 } from "vue-router";
 
-import { ROUTES } from "~/routes";
+import { ROUTES } from "~/router/routes";
 
 /**
  * Installe le plugin vue-router.
