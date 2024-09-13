@@ -9,36 +9,47 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+} from "../../store";
 
-import { Option } from "@phisyx/flex-safety";
-import { useRoute, useRouter } from "vue-router";
+import { ChannelChatManager } from "./datamanager/chat_data_manager";
+import { ChannelOverlayerManager } from "./datamanager/overlayer_data_manager";
+import { ChannelSettingsManager } from "./datamanager/settings_data_manager";
+import { ChannelInteractor } from "./interactor";
+import { ChannelPresenter } from "./presenter";
+import { ChannelView } from "./view";
 
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-export class VueRouter implements RouterAntiCorruptionLayer
-{
-	public inner = useRouter();
-	public current = useRoute();
+export class ChannelWireframe {
+	static create(
+		router_acl: RouterAntiCorruptionLayer,
+		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store: OverlayerStore,
+		settings_store: SettingsStore,
+	) {
+		let view = new ChannelView();
 
-	back()
-	{
-		this.inner.back();
+		let presenter = new ChannelPresenter().with_view(view);
+		let interactor = new ChannelInteractor()
+			.with_presenter(presenter)
+			.with_datamanager({
+				chat: new ChannelChatManager(chat_store),
+				overlayer: new ChannelOverlayerManager(overlayer_store),
+				settings: new ChannelSettingsManager(settings_store),
+			});
+
+		view.with_presenter(presenter).with_router(router_acl);
+		presenter.with_interactor(interactor);
+
+		return view;
 	}
 
-	forward()
-	{
-		this.inner.forward();
-	}
-
-	goto(name: string)
-	{
-		this.inner.push({ name });
-	}
-
-	param(name: string): Option<string>
-	{
-		return Option.from(this.current.params[name]).as<string>();
-	}
+	declare _: number;
 }

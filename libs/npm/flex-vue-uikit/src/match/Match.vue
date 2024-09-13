@@ -7,14 +7,12 @@ import { computed } from "vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	maybe: Option<T>;
 	clone?: boolean;
 }
 
-interface Slots
-{
+interface Slots {
 	some?: (props: { data: NonNullable<T> }) => NonNullable<T>;
 	none?: (props: unknown) => unknown;
 }
@@ -23,17 +21,13 @@ interface Slots
 // Composant //
 // --------- //
 
-const props= withDefaults(defineProps<Props>(), { clone: false });
+const { clone = false, maybe } = defineProps<Props>();
 defineSlots<Slots>();
 
-let maybe = computed(
-	() => props.clone && props.maybe.is_some()
-		? props.maybe.clone()
-		: props.maybe
-);
+let maybe_data = computed(() => (clone ? maybe.clone() : maybe));
 </script>
 
 <template>
-	<slot v-if="maybe.is_some()" v-bind:data="maybe.unwrap()" name="some" />
+	<slot v-if="maybe_data.is_some()" v-bind:data="maybe_data.unwrap()" name="some" />
 	<slot v-else name="none" />
 </template>

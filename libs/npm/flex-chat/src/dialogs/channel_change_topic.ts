@@ -27,17 +27,15 @@ export class ChannelChangeTopicLayer implements DialogInterface
 
 	static create(
 		overlayer_store: OverlayerStore,
-		payload: {
-			event: Event;
-			linked_element: HTMLElement | undefined;
-		},
+		event: Required<Layer["event"]>,
+		linked_element: Required<Layer["dom_element"]>,
 	)
 	{
 		overlayer_store.create({
 			id: ChannelChangeTopicLayer.ID,
 			destroyable: "manual",
-			event: payload.event,
-			dom_element: payload.linked_element,
+			event: event,
+			dom_element: linked_element,
 			trap_focus: false,
 		});
 

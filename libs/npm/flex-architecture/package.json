@@ -6,6 +6,9 @@
 	"scripts": {
 		"build": "tsc"
 	},
+	"dependencies": {
+		"@phisyx/flex-safety": "workspace:"
+	},
 	"devDependencies": {
 		"@phisyx/flex-code-quality": "workspace:",
 		"typescript": "catalog:"

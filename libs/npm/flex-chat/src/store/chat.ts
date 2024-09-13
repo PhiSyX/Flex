@@ -335,7 +335,7 @@ export interface ChatStoreInterface
 	/**
 	 * Définit l'utilisateur sélectionné d'un salon.
 	 */
-	set_selected_user(room: ChannelRoom, origin: Origin): void;
+	set_selected_user(channel_name: ChannelID, origin: Origin): void;
 
 	/**
 	 * (Dé-)sélectionne un utilisateur d'un salon.
@@ -355,7 +355,7 @@ export interface ChatStoreInterface
 	/**
 	 * Désélectionne un utilisateur d'un salon.
 	 */
-	unset_selected_user(room: ChannelRoom, origin: Origin): void;
+	unset_selected_user(channel_name: ChannelID, origin: Origin): void;
 
 	/**
 	 * Émet la commande /TOPIC vers le serveur.
@@ -644,9 +644,11 @@ export class ChatStore implements ChatStoreInterface
 		);
 	}
 
-	get_current_selected_channel_member(room: ChannelRoom): Option<ChannelMemberSelected>
+	get_current_selected_channel_member(
+		channel: ChannelRoom
+	): Option<ChannelMemberSelected>
 	{
-		return this.room_manager().get(room.id()).and_then((room) => {
+		return this.room_manager().get(channel.id()).and_then((room) => {
 			assert_channel_room(room);
 			return room.members.selected();
 		})
@@ -654,7 +656,7 @@ export class ChatStore implements ChatStoreInterface
 			let channel_member_selected = new ChannelMemberSelected(
 				member,
 				this.user_manager().is_blocked(member.id),
-			).with_banned(room.find_ban(member));
+			).with_banned(channel.find_ban(member));
 			return channel_member_selected;
 		});
 	}
@@ -950,23 +952,25 @@ export class ChatStore implements ChatStoreInterface
 		this.client().nickname = nickname;
 	}
 
-	set_selected_user(room: ChannelRoom, origin: Origin)
+	set_selected_user(channel_name: ChannelID, origin: Origin)
 	{
-		room.members.select(origin.id);
+		let channel = this.room_manager().get(channel_name).unwrap();
+		assert_channel_room(channel);
+		channel.members.select(origin.id);
 	}
 
-	toggle_select_channel_member(room: ChannelRoom, origin: Origin)
+	toggle_select_channel_member(channel: ChannelRoom, origin: Origin)
 	{
-		let maybe_selected_channel_member = this.get_current_selected_channel_member(room);
-		if (maybe_selected_channel_member.is_some()) {
-			let selected_channel_member = maybe_selected_channel_member.unwrap();
-			if (selected_channel_member.member.id === origin.id) {
-				this.unset_selected_user(room, origin);
+		let maybe_member = this.get_current_selected_channel_member(channel);
+		if (maybe_member.is_some()) {
+			let selected_member = maybe_member.unwrap();
+			if (selected_member.member.eq(origin.id)) {
+				this.unset_selected_user(channel.id(), origin);
 			} else {
-				this.set_selected_user(room, origin);
+				this.set_selected_user(channel.id(), origin);
 			}
 		} else {
-			this.set_selected_user(room, origin);
+			this.set_selected_user(channel.id(), origin);
 		}
 	}
 
@@ -987,9 +991,11 @@ export class ChatStore implements ChatStoreInterface
 		module.send({ nickname: `-${nickname}` });
 	}
 
-	unset_selected_user(room: ChannelRoom, origin: Origin)
+	unset_selected_user(channel_name: ChannelID, origin: Origin)
 	{
-		room.members.unselect(origin.id);
+		let channel = this.room_manager().get(channel_name).unwrap();
+		assert_channel_room(channel);
+		channel.members.unselect(origin.id);
 	}
 
 	update_topic(channel_name: ChannelID, topic?: string)

@@ -32,7 +32,7 @@ export interface DialogInterface<R = unknown>
 	destroy(): void;
 }
 
-type Tail<T extends unknown[]> = T extends [infer H, ...infer T] ? T : never;
+type Tail<T extends unknown[]> = T extends [infer _H, ...infer T] ? T : never;
 export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
 	Parameters<D["create"]>
 >;

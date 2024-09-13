@@ -92,8 +92,6 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 
 		assert_private_room(priv);
 
-		console.log(this.store.settings().get_private());
-
 		if (!this.store.settings().get_private().waiting_list) {
 			priv.marks_as_opened();
 			priv.set_pending(false);
@@ -107,7 +105,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 	handle_message(room: Room, data: GenericReply<"PRIVMSG">)
 	{
 		let has_mention = false;
-		
+
 		let is_current_client = this.store.is_current_client(data.origin);
 		if (!is_current_client && !room.is_active()) {
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
@@ -150,7 +148,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 			);
 
 			mentions_room.marks_as_opened();
-			
+
 			let event: RoomMessageEvent<"PRIVMSG"> = room.create_event(
 				data,
 				is_current_client,

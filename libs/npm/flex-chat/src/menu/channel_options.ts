@@ -24,7 +24,7 @@ export interface ChannelOptionsRecordMenu
 	// Salon actif
 	room: ChannelRoom;
 	// Le client courant, qui est membre du salon.
-	currentClientChannelMember: ChannelMember;
+	currentClientChannelMember: Option<ChannelMember>;
 }
 
 // -------------- //
@@ -41,15 +41,15 @@ export class ChannelOptionsMenu implements MenuInterface<ChannelOptionsRecordMen
 
 	static create(
 		overlayer_store: OverlayerStore,
-		event: MouseEvent,
-		data: ChannelOptionsRecordMenu,
+		event: Event,
+		record: ChannelOptionsRecordMenu,
 	)
 	{
 		overlayer_store.create({
 			id: ChannelOptionsMenu.ID,
 			background_color: true,
 			event,
-			data,
+			data: record,
 		});
 
 		return new ChannelOptionsMenu(overlayer_store);

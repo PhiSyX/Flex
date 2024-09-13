@@ -10,35 +10,19 @@
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 
-import { Option } from "@phisyx/flex-safety";
-import { useRoute, useRouter } from "vue-router";
-
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-export class VueRouter implements RouterAntiCorruptionLayer
-{
-	public inner = useRouter();
-	public current = useRoute();
+export class ChannelRouter {
+	static PARAM_CHANNELNAME = "channelname";
 
-	back()
-	{
-		this.inner.back();
-	}
+	constructor(private router_acl: RouterAntiCorruptionLayer) {}
 
-	forward()
-	{
-		this.inner.forward();
-	}
-
-	goto(name: string)
-	{
-		this.inner.push({ name });
-	}
-
-	param(name: string): Option<string>
-	{
-		return Option.from(this.current.params[name]).as<string>();
+	param_channelname(): ChannelID {
+		return this.router_acl
+			.param(ChannelRouter.PARAM_CHANNELNAME)
+			.as<ChannelID>()
+			.unwrap_unchecked();
 	}
 }

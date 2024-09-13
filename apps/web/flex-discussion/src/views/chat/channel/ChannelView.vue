@@ -1,37 +1,59 @@
 <script setup lang="ts">
-import type { ChannelRoom } from "@phisyx/flex-chat";
+import {
+	type ChannelView,
+	ChannelWireframe,
+	type ChatStoreInterface,
+	type ChatStoreInterfaceExt,
+	type OverlayerStore,
+	type SettingsStore,
+} from "@phisyx/flex-chat";
+import { computed, onMounted, reactive } from "vue";
+import { VueRouter } from "~/router";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+} from "~/store";
 
-import { onMounted as on_mounted, shallowRef as shallow_ref } from "vue";
-import { useRoute as use_route, } from "vue-router";
-
-import { None } from "@phisyx/flex-safety";
 import { Match } from "@phisyx/flex-vue-uikit";
-
-import { use_chat_store } from "~/store";
-
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
 
 // --------- //
 // Composant //
 // --------- //
 
-let route = use_route();
+let chat_store = use_chat_store().store;
+let overlayer_store = use_overlayer_store().store;
+let settings_store = use_settings_store().store;
 
-let chat_store = use_chat_store();
+let view = reactive(
+	ChannelWireframe.create(
+		new VueRouter(),
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store as OverlayerStore,
+		settings_store as SettingsStore
+	)
+) as ChannelView;
 
-let room = shallow_ref(None().as<ChannelRoom>());
+let maybe_channel = computed(() => view.maybe_channel);
 
-on_mounted(() => {
-	room.value = chat_store.room_manager()
-		.get(route.params.channelname as ChannelID || "")
-		.as<ChannelRoom>();
+// ---------- //
+// Life cycle //
+// ---------- //
+
+onMounted(() => {
+	view.set_channel_from_route_param();
 });
 </script>
 
 <template>
-	<Match :maybe="room">
-		<template #some="{ data: room }">
-			<ChannelRoomComponent :room="room" class="[ flex:full ]"/>
+	<Match :maybe="maybe_channel">
+		<template #some="{ data: channel }">
+			<ChannelRoomComponent
+				:room="channel"
+				:view="view"
+				class="[ flex:full ]"
+			/>
 		</template>
 	</Match>
 </template>

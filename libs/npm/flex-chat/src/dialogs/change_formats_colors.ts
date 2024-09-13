@@ -34,7 +34,7 @@ export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsC
 
 	static create(
 		overlayer_store: OverlayerStore,
-		event: MouseEvent,
+		event: Event,
 	)
 	{
 		overlayer_store.create({

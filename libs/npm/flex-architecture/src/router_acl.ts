@@ -8,9 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
+
 export abstract class RouterAntiCorruptionLayer
 {
 	abstract back(): void;
 	abstract forward(): void;
 	abstract goto(name: string): void;
+	abstract param(name: string): Option<string>;
 }

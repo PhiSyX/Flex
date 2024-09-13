@@ -20,46 +20,46 @@ import { SettingsStore, SettingsStoreData } from "@phisyx/flex-chat";
 // Implémentation //
 // -------------- //
 
-export class SettingsStoreVue 
+export class SettingsStoreVue
 {
 	// --------- //
 	// Propriété //
 	// --------- //
 
-	#store = new SettingsStore(reactive(new SettingsStoreData()) as SettingsStoreData)
+	private inner_store = new SettingsStore(reactive(new SettingsStoreData()) as SettingsStoreData)
 
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
 
-	get layout() 
+	get layout()
 	{
-		return computed(() => readonly(this.#store.get_layout()));
+		return computed(() => readonly(this.inner_store.get_layout()));
 	}
 
-	get notification() 
+	get notification()
 	{
-		return computed(() => readonly(this.#store.get_notification()));
+		return computed(() => readonly(this.inner_store.get_notification()));
 	}
 
-	get personalization() 
+	get personalization()
 	{
-		return computed(() => readonly(this.#store.get_personalization()));
+		return computed(() => readonly(this.inner_store.get_personalization()));
 	}
 
-	get priv4te() 
+	get priv4te()
 	{
-		return computed(() => readonly(this.#store.get_private()));
+		return computed(() => readonly(this.inner_store.get_private()));
 	}
 
 	get channel_userlist_display_mut()
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_layout().channel_userlist_display;
+				return this.inner_store.get_layout().channel_userlist_display;
 			},
 			set: ($1) => {
-				this.#store.mut_layout((current) => ({
+				this.inner_store.mut_layout((current) => ({
 					...current,
 					channel_userlist_display: $1,
 				}));
@@ -70,10 +70,10 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_layout().channel_userlist_position;
+				return this.inner_store.get_layout().channel_userlist_position;
 			},
 			set: ($1) => {
-				this.#store.mut_layout((current) => ({
+				this.inner_store.mut_layout((current) => ({
 					...current,
 					channel_userlist_position: $1,
 				}));
@@ -84,25 +84,25 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_layout().navigation_bar_position;
+				return this.inner_store.get_layout().navigation_bar_position;
 			},
 			set: ($1) => {
-				this.#store.mut_layout((current) => ({
+				this.inner_store.mut_layout((current) => ({
 					...current,
 					navigation_bar_position: $1,
 				}));
 			}
 		});
 	}
-	
+
 	get sounds_effect_enabled_mut()
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_notification().sounds.enabled;
+				return this.inner_store.get_notification().sounds.enabled;
 			},
 			set: ($1) => {
-				this.#store.mut_notification((current) => ({
+				this.inner_store.mut_notification((current) => ({
 					sounds: { ...current.sounds, enabled: $1 }
 				}));
 			}
@@ -112,10 +112,10 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_notification().sounds;
+				return this.inner_store.get_notification().sounds;
 			},
 			set: ($1) => {
-				this.#store.mut_notification((current) => ({
+				this.inner_store.mut_notification((current) => ({
 					sounds: { ...current.sounds, ...$1 }
 				}));
 			}
@@ -126,10 +126,10 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_personalization().formats.bold;
+				return this.inner_store.get_personalization().formats.bold;
 			},
 			set: ($1) => {
-				this.#store.mut_personalization((current) => ({
+				this.inner_store.mut_personalization((current) => ({
 					formats:{ ...current.formats, bold: $1 },
 				}));
 			}
@@ -139,10 +139,10 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_personalization().formats.italic;
+				return this.inner_store.get_personalization().formats.italic;
 			},
 			set: ($1) => {
-				this.#store.mut_personalization((current) => ({
+				this.inner_store.mut_personalization((current) => ({
 					formats: { ...current.formats, italic: $1 },
 				}));
 			}
@@ -152,10 +152,10 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_personalization().formats.underline;
+				return this.inner_store.get_personalization().formats.underline;
 			},
 			set: ($1) => {
-				this.#store.mut_personalization((current) => ({
+				this.inner_store.mut_personalization((current) => ({
 					formats:{ ...current.formats, underline: $1 },
 				}));
 			}
@@ -166,10 +166,10 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_personalization().colors.background;
+				return this.inner_store.get_personalization().colors.background;
 			},
 			set: ($1) => {
-				this.#store.mut_personalization((current) => ({
+				this.inner_store.mut_personalization((current) => ({
 					colors:{ ...current.formats, background: $1 },
 				}));
 			}
@@ -179,10 +179,10 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_personalization().colors.foreground;
+				return this.inner_store.get_personalization().colors.foreground;
 			},
 			set: ($1) => {
-				this.#store.mut_personalization((current) => ({
+				this.inner_store.mut_personalization((current) => ({
 					colors:{ ...current.formats, foreground: $1 },
 				}));
 			}
@@ -193,58 +193,63 @@ export class SettingsStoreVue
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_personalization().theme;
+				return this.inner_store.get_personalization().theme;
 			},
 			set: ($1) => {
-				this.#store.mut_personalization((current) => ({
+				this.inner_store.mut_personalization((current) => ({
 					...current,
 					theme: $1,
 				}));
 			}
 		});
 	}
-	
+
 	get waiting_private_list_mut()
 	{
 		return computed({
 			get: () => {
-				return this.#store.get_private().waiting_list;
+				return this.inner_store.get_private().waiting_list;
 			},
 			set: ($1) => {
-				this.#store.mut_private((_current) => ({
+				this.inner_store.mut_private((_current) => ({
 					waiting_list: $1,
 				}));
 			}
 		});
 	}
 
-	get_layout() 
+	get_layout()
 	{
-		return this.#store.get_layout();
+		return this.inner_store.get_layout();
 	}
 
-	get_notification() 
+	get_notification()
 	{
-		return this.#store.get_notification();
+		return this.inner_store.get_notification();
 	}
 
-	get_personalization() 
+	get_personalization()
 	{
-		return this.#store.get_personalization();
+		return this.inner_store.get_personalization();
 	}
 
-	get_private() 
+	get_private()
 	{
-		return this.#store.get_private();
+		return this.inner_store.get_private();
 	}
 
 	// ------- //
 	// Méthode // -> API Publique
 	// ------- //
 
+	real_store(): SettingsStore
+	{
+		return this.inner_store;
+	}
+
 	public persist()
 	{
-		this.#store.persist();
+		this.inner_store.persist();
 	}
 }
 
@@ -252,6 +257,8 @@ export const use_settings_store = define_store(SettingsStore.NAME, () => {
 	const store = new SettingsStoreVue();
 
 	return {
+		store: store.real_store(),
+
 		layout: store.layout,
 		notification: store.notification,
 		personalization: store.personalization,
@@ -265,18 +272,18 @@ export const use_settings_store = define_store(SettingsStore.NAME, () => {
 		channel_userlist_display_mut: store.channel_userlist_display_mut,
 		channel_userlist_position_mut: store.channel_userlist_position_mut,
 		navigation_bar_position_mut: store.navigation_bar_position_mut,
-		
+
 		sounds_effect_enabled_mut: store.sounds_effect_enabled_mut,
 		sounds_effect_mut: store.sounds_effect_mut,
-		
+
 		text_format_bold_mut: store.text_format_bold_mut,
 		text_format_italic_mut: store.text_format_italic_mut,
 		text_format_underline_mut: store.text_format_underline_mut,
 		text_color_background_mut: store.text_color_background_mut,
 		text_color_foreground_mut: store.text_color_foreground_mut,
-		
+
 		theme_mut: store.theme_mut,
-		
+
 		waiting_private_list_mut: store.waiting_private_list_mut,
 
 		persist: store.persist.bind(store),

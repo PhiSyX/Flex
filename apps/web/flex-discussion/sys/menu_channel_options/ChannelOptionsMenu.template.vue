@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
 
 import { UiMenu, UiMenuItem } from "@phisyx/flex-vue-uikit";
 
@@ -11,7 +12,7 @@ interface Props
 {
 	layerName: string;
 	room: ChannelRoom;
-	currentClientChannelMember: ChannelMember;
+	currentClientChannelMember: Option<ChannelMember>;
 }
 
 interface Emits
@@ -37,7 +38,10 @@ const part_channel_handler = () => emit("part-channel");
 
 <template>
 	<UiMenu class="menu/channel-options">
-		<UiMenuItem @click="open_channel_settings_handler">
+		<UiMenuItem
+			v-if="currentClientChannelMember.is_some()"
+			@click="open_channel_settings_handler"
+		>
 			Paramètres du salon
 		</UiMenuItem>
 
@@ -49,7 +53,7 @@ const part_channel_handler = () => emit("part-channel");
 		<UiMenuItem>Vérifier les logs d'un membre</UiMenuItem>
 		-->
 
-		<hr />
+		<hr v-if="currentClientChannelMember.is_some()" />
 
 		<UiMenuItem
 			icon="close"

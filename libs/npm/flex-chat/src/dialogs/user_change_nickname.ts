@@ -17,15 +17,11 @@ import type { DialogInterface } from "./interface";
 // Type //
 // ---- //
 
-export interface UserChangeNicknameRecordDialog
-{}
-
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class UserChangeNicknameDialog implements DialogInterface<UserChangeNicknameRecordDialog>
-{
+export class UserChangeNicknameDialog implements DialogInterface {
 	// ------ //
 	// Static //
 	// ------ //
@@ -34,9 +30,8 @@ export class UserChangeNicknameDialog implements DialogInterface<UserChangeNickn
 
 	static create(
 		overlayer_store: OverlayerStore,
-		{ event }: { event: MouseEvent },
-	)
-	{
+		event: Required<Layer["event"]>,
+	) {
 		overlayer_store.create({
 			id: UserChangeNicknameDialog.ID,
 			centered: true,
@@ -48,36 +43,27 @@ export class UserChangeNicknameDialog implements DialogInterface<UserChangeNickn
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(UserChangeNicknameDialog.ID);
 	}
 
-	get(): Option<Layer<UserChangeNicknameRecordDialog>>
-	{
-		return this.overlayer_store.get(UserChangeNicknameDialog.ID)
-			.as<Layer<UserChangeNicknameRecordDialog>>();
+	get(): Option<Layer> {
+		return this.overlayer_store
+			.get(UserChangeNicknameDialog.ID)
+			.as<Layer>();
 	}
 
-	get_unchecked(): Layer<UserChangeNicknameRecordDialog>
-	{
+	get_unchecked(): Layer {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(UserChangeNicknameDialog.ID);
-	}
-
-	with_data(data: UserChangeNicknameRecordDialog)
-	{
-		this.overlayer_store.update_data(UserChangeNicknameDialog.ID, data);
 	}
 }

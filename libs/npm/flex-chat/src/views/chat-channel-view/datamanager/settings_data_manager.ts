@@ -8,37 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
-
-import { Option } from "@phisyx/flex-safety";
-import { useRoute, useRouter } from "vue-router";
+import type { LayoutData } from "../../../localstorage/settings_layout";
+import type { PersonalizationData } from "../../../localstorage/settings_personalization";
+import type { SettingsStore } from "../../../store";
 
 // -------------- //
-// Implémentation // -> Interface
+// Implémentation //
 // -------------- //
 
-export class VueRouter implements RouterAntiCorruptionLayer
-{
-	public inner = useRouter();
-	public current = useRoute();
+export class ChannelSettingsManager {
+	constructor(private store: SettingsStore) {}
 
-	back()
-	{
-		this.inner.back();
+	layout_settings(): LayoutData {
+		return this.store.get_layout();
 	}
 
-	forward()
-	{
-		this.inner.forward();
-	}
-
-	goto(name: string)
-	{
-		this.inner.push({ name });
-	}
-
-	param(name: string): Option<string>
-	{
-		return Option.from(this.current.params[name]).as<string>();
+	personalization_settings(): PersonalizationData {
+		return this.store.get_personalization();
 	}
 }
