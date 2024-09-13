@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { ChannelOptionsRecordMenu, ChannelRoom, OverlayerStore } from "@phisyx/flex-chat";
+import type {
+	ChannelOptionsRecordMenu,
+	ChannelRoom,
+	OverlayerStore,
+} from "@phisyx/flex-chat";
 
 import { ChannelOptionsMenu, ChannelSettingsDialog } from "@phisyx/flex-chat";
 
@@ -15,15 +19,10 @@ import ChannelOptionsMenuComponent from "#/sys/menu_channel_options/ChannelOptio
 let chat_store = use_chat_store();
 let overlayer_store = use_overlayer_store();
 
-let {
-	close_menu,
-	menu,
-	teleport_id,
-	layer_name,
-	layer_unsafe,
-} = use_menu<ChannelOptionsMenu, ChannelOptionsRecordMenu>(
-	ChannelOptionsMenu
-);
+let { close_menu, menu, teleport_id, layer_name, layer_unsafe } = use_menu<
+	ChannelOptionsMenu,
+	ChannelOptionsRecordMenu
+>(ChannelOptionsMenu);
 
 // ------- //
 // Handler //
@@ -32,22 +31,20 @@ let {
 /**
  * Ouvre la boite de dialogue des paramètres du salon.
  */
-function open_channel_settings_handler()
-{
+function open_channel_settings_handler() {
 	if (!layer_unsafe.value.data) {
 		return;
 	}
 
 	ChannelSettingsDialog.create(
 		overlayer_store.store as OverlayerStore,
-		layer_unsafe.value.data,
+		layer_unsafe.value.data
 	);
 
 	close_menu();
 }
 
-function part_channel_handler()
-{
+function part_channel_handler() {
 	if (!layer_unsafe.value.data) {
 		return;
 	}
@@ -59,7 +56,7 @@ function part_channel_handler()
 </script>
 
 <template>
-	<Teleport v-if="menu.exists() && layer_unsafe.data" :to="teleport_id">
+	<Teleport v-if="menu.exists() && layer_unsafe.data" defer :to="teleport_id">
 		<ChannelOptionsMenuComponent
 			v-bind="layer_unsafe.data"
 			:layer-name="layer_name"

@@ -13,12 +13,14 @@ import ChangeFormatsColorsDialogComponent from "#/sys/dialog_change_formats_colo
 
 let settings_store = use_settings_store();
 
-let { teleport_id, dialog, update_dialog } = use_dialog(ChangeFormatsColorsDialog);
+let { teleport_id, dialog, update_dialog } = use_dialog(
+	ChangeFormatsColorsDialog
+);
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists()" :to="teleport_id">
-		<ChangeFormatsColorsDialogComponent 
+	<Teleport v-if="dialog.exists()" defer :to="teleport_id">
+		<ChangeFormatsColorsDialogComponent
 			v-model:bold="settings_store.text_format_bold_mut"
 			v-model:italic="settings_store.text_format_italic_mut"
 			v-model:underline="settings_store.text_format_underline_mut"

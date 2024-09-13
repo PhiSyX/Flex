@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { shallowRef as shallow_ref } from "vue";
-
 import {
 	MentionsCustomRoom,
 	NoticesCustomRoom,
-	ServerCustomRoom
+	ServerCustomRoom,
 } from "@phisyx/flex-chat";
-
+import { shallowRef } from "vue";
 import { use_chat_store } from "~/store";
 
 import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
@@ -19,7 +17,7 @@ import NoticesCustomRoomComponent from "#/sys/custom_room_notices/CustomRoomNoti
 
 let chat_store = use_chat_store();
 
-const custom_rooms_components = shallow_ref({
+const custom_rooms_components = shallowRef({
 	[NoticesCustomRoom.ID]: NoticesCustomRoomComponent,
 	[ServerCustomRoom.ID]: ServerCustomRoomComponent,
 	[MentionsCustomRoom.ID]: MentionsCustomRoomComponent,
@@ -29,14 +27,12 @@ const custom_rooms_components = shallow_ref({
 // Handler //
 // ------- //
 
-function join_channel_handler(name: ChannelID)
-{
+function join_channel_handler(name: ChannelID) {
 	chat_store.join_channel(name);
 	chat_store.change_room(name);
 }
 
-function close_room_handler(name: RoomID)
-{
+function close_room_handler(name: RoomID) {
 	chat_store.close_room(name);
 }
 </script>
@@ -48,7 +44,7 @@ function close_room_handler(name: RoomID)
 				<KeepAlive :key="room.type + '/' + room.id()">
 					<component
 						v-show="room.is_active() && !room.is_closed()"
-						:is="custom_rooms_components[room.id()]" 
+						:is="custom_rooms_components[room.id()]"
 						:room="(room as any)"
 						:data-room="room.name"
 						class="[ flex:full ]"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UpdateAccountRecordDialog } from "@phisyx/flex-chat";
 
-import { onMounted as on_mounted, shallowRef } from "vue";
+import { onMounted, shallowRef } from "vue";
 
 import { UpdateAccountDialog } from "@phisyx/flex-chat";
 
@@ -28,7 +28,7 @@ let countriesList = shallowRef<Array<{ code: string; country: string }>>([]);
 // Lifecycle //
 // --------- //
 
-on_mounted(() => {
+onMounted(() => {
 	fetch("/public/geo/countries.json")
 		.then((res) => res.json())
 		.then((res) => {
@@ -40,13 +40,11 @@ on_mounted(() => {
 // Handler //
 // ------- //
 
-function upload_file_handler(file: File)
-{
+function upload_file_handler(file: File) {
 	uploaded_file.value = file;
 }
 
-async function submit_handler(evt: Event)
-{
+async function submit_handler(evt: Event) {
 	if (!layer_unsafe.value.data) {
 		return;
 	}
@@ -59,7 +57,11 @@ async function submit_handler(evt: Event)
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists() && layer_unsafe.data" defer :to="teleport_id">
+	<Teleport
+		v-if="dialog.exists() && layer_unsafe.data"
+		defer
+		:to="teleport_id"
+	>
 		<UpdateAccountDialogComponent
 			:layer-name="layer_name"
 			:city="layer_unsafe.data.city || null"

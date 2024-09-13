@@ -12,7 +12,7 @@ import { use_overlayer_store } from "~/store";
 let overlayer_store = use_overlayer_store();
 
 let has_load_all_modules_layer = computed(() =>
-	overlayer_store.layers.has("load-all-modules"),
+	overlayer_store.layers.has("load-all-modules")
 );
 
 let load_all_modulesLayer = computed(() => {
@@ -25,7 +25,11 @@ let load_all_modulesLayer = computed(() => {
 </script>
 
 <template>
-	<Teleport v-if="has_load_all_modules_layer" defer to="#load-all-modules_teleport">
+	<Teleport
+		v-if="has_load_all_modules_layer"
+		defer
+		to="#load-all-modules_teleport"
+	>
 		<div
 			v-if="load_all_modulesLayer && load_all_modulesLayer.data"
 			class="[ align-t:center ]"

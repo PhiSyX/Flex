@@ -12,19 +12,14 @@ import ChannelJoinDialogComponent from "#/sys/dialog_channel_join/ChannelJoinDia
 
 let chat_store = use_chat_store();
 
-let {
-	dialog,
-	layer_name,
-	teleport_id,
-	close_dialog
-} = use_dialog(ChannelJoinDialog);
+let { dialog, layer_name, teleport_id, close_dialog } =
+	use_dialog(ChannelJoinDialog);
 
 // ------- //
 // Handler //
 // ------- //
 
-function join_channel_handler(channels: ChannelID, keys: string)
-{
+function join_channel_handler(channels: ChannelID, keys: string) {
 	if (!channels) {
 		return;
 	}
@@ -35,7 +30,7 @@ function join_channel_handler(channels: ChannelID, keys: string)
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists()" :to="teleport_id">
+	<Teleport v-if="dialog.exists()" defer :to="teleport_id">
 		<ChannelJoinDialogComponent
 			:layer-name="layer_name"
 			@close="close_dialog"

@@ -8,6 +8,13 @@ import { use_overlayer } from "./Overlayer.hooks";
 
 import UpdateAccountDialog from "~/components/dialog/UpdateAccountDialog.vue";
 import ModulesProgress from "~/components/progress/ModulesProgress.vue";
+import ChangeFormatsColorsDialog from "../dialog/ChangeFormatsColorsDialog.vue";
+import ChangeNickDialog from "../dialog/ChangeNickDialog.vue";
+import ChannelJoinDialog from "../dialog/ChannelJoinDialog.vue";
+import ChannelSettingsDialog from "../dialog/ChannelSettingsDialog.vue";
+import PrivatePendingRequestDialog from "../dialog/PrivatePendingRequestDialog.vue";
+import ClientError from "../error/ClientError.vue";
+import ChannelOptionsMenu from "../menu/ChannelOptionsMenu.vue";
 
 // --------- //
 // Composant //
@@ -22,10 +29,12 @@ const { destroy_handler } = use_overlayer();
 
 watchEffect(() => {
 	if ($overlayer.value) {
+		// @ts-expect-error - Pinia casse les yeuks.
 		overlayer_store.$overlayer_mut = $overlayer.value;
 	}
 
 	if ($teleport.value && $teleport.value.length > 0) {
+		// @ts-expect-error - Pinia casse les yeuks.
 		// biome-ignore lint/style/noNonNullAssertion: ;-)
 		overlayer_store.$teleport_mut = $teleport.value.pop()!
 			.firstElementChild as HTMLDivElement;
@@ -35,8 +44,23 @@ watchEffect(() => {
 </script>
 
 <template>
-	<UpdateAccountDialog />
+	<!--
+		TODO: Pour l'instant on met ça ici, mais à améliorer.
+	-->
+
+	<ChangeFormatsColorsDialog />
+	<ChangeNickDialog />
+	<ChannelJoinDialog />
+	<ChannelOptionsMenu />
+	<ChannelSettingsDialog />
+	<ClientError />
 	<ModulesProgress />
+	<PrivatePendingRequestDialog />
+	<UpdateAccountDialog />
+
+	<!--
+		TODO: Pour l'instant on met ça ici, mais à améliorer.
+	-->
 
 	<Transition name="fade">
 		<div v-if="overlayer_store.has_layers" id="overlayer">

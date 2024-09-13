@@ -14,15 +14,10 @@ import ChannelSettingsDialogComponent from "#/sys/dialog_channel_settings/Channe
 
 let chat_store = use_chat_store();
 
-let {
-	dialog,
-	close_dialog,
-	teleport_id,
-	layer_name,
-	layer_unsafe,
-} = use_dialog<ChannelSettingsDialog, ChannelSettingsRecordDialog>(
-	ChannelSettingsDialog
-);
+let { dialog, close_dialog, teleport_id, layer_name, layer_unsafe } =
+	use_dialog<ChannelSettingsDialog, ChannelSettingsRecordDialog>(
+		ChannelSettingsDialog
+	);
 
 // ------- //
 // Handler //
@@ -31,24 +26,27 @@ let {
 /**
  * Soumission du formulaire.
  */
-function submit_form_data_handler(modes_settings: Partial<Command<"MODE">["modes"]>)
-{
+function submit_form_data_handler(
+	modes_settings: Partial<Command<"MODE">["modes"]>
+) {
 	if (!layer_unsafe.value.data) {
 		return;
 	}
 
 	chat_store.apply_channel_settings(
 		layer_unsafe.value.data.room.name,
-		modes_settings as Command<"MODE">["modes"],
+		modes_settings as Command<"MODE">["modes"]
 	);
 }
 
 /**
  * Mise à jour du sujet.
  */
-function update_topic_handler(topic?: string)
-{
-	if (!layer_unsafe.value.data || layer_unsafe.value.data.room.topic.get() === topic) {
+function update_topic_handler(topic?: string) {
+	if (
+		!layer_unsafe.value.data ||
+		layer_unsafe.value.data.room.topic.get() === topic
+	) {
 		return;
 	}
 
@@ -57,7 +55,11 @@ function update_topic_handler(topic?: string)
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists() && layer_unsafe.data" :to="teleport_id">
+	<Teleport
+		v-if="dialog.exists() && layer_unsafe.data"
+		defer
+		:to="teleport_id"
+	>
 		<ChannelSettingsDialogComponent
 			v-bind="layer_unsafe.data"
 			:layer-name="layer_name"

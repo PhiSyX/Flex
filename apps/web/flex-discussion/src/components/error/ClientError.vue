@@ -15,7 +15,7 @@ let chat_store = use_chat_store();
 <template>
 	<Match :maybe="chat_store.client_error">
 		<template #some="{ data: error }">
-			<Teleport :to="`#${error.id}_teleport`">
+			<Teleport defer :to="`#${error.id}_teleport`">
 				<Alert type="error" :can-close="false" class="[ max-w=56 ]">
 					<h1 class="[ align-t:left ]">
 						<IconError class="[ size=4 align-v:top ]" />

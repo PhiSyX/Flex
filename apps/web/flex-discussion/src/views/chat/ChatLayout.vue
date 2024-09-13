@@ -6,15 +6,7 @@ import { AudioSound } from "@phisyx/flex-vue-uikit";
 
 import { use_chat_store, use_settings_store } from "~/store";
 
-import ClientError from "~/components/error/ClientError.vue";
 import Navigation from "~/components/navigation/Navigation.vue";
-
-import ChangeFormatsColorsDialog from "~/components/dialog/ChangeFormatsColorsDialog.vue";
-import ChangeNickDialog from "~/components/dialog/ChangeNickDialog.vue";
-import ChannelJoinDialog from "~/components/dialog/ChannelJoinDialog.vue";
-import ChannelSettingsDialog from "~/components/dialog/ChannelSettingsDialog.vue";
-import PrivatePendingRequestDialog from "~/components/dialog/PrivatePendingRequestDialog.vue";
-import ChannelOptionsMenu from "~/components/menu/ChannelOptionsMenu.vue";
 
 import connection_audio from "#/assets/audio/connection.mp3";
 import invite_audio from "#/assets/audio/invite.mp3";
@@ -44,8 +36,7 @@ let route = use_route();
 // Handler //
 // ------- //
 
-function reset_audio_src()
-{
+function reset_audio_src() {
 	audio_src.value = null;
 }
 </script>
@@ -92,17 +83,5 @@ function reset_audio_src()
 				@ended="reset_audio_src"
 			/>
 		</template>
-
-		<!-- Teleport -->
-
-		<ClientError />
-
-		<ChangeFormatsColorsDialog />
-		<ChangeNickDialog />
-		<ChannelJoinDialog />
-		<ChannelSettingsDialog />
-		<PrivatePendingRequestDialog />
-
-		<ChannelOptionsMenu />
 	</main>
 </template>

@@ -12,12 +12,9 @@ import ChangeNickDialog from "#/sys/dialog_change_nick/ChangeNickDialog.template
 
 let chat_store = use_chat_store();
 
-let {
-	layer_name,
-	dialog,
-	teleport_id,
-	close_dialog,
-} = use_dialog(UserChangeNicknameDialog);
+let { layer_name, dialog, teleport_id, close_dialog } = use_dialog(
+	UserChangeNicknameDialog
+);
 
 // ------- //
 // Handler //
@@ -26,15 +23,14 @@ let {
 /**
  * Envoie de la commande de changement de pseudo.
  */
-function send_change_nick_command_handler(nickname: string)
-{
+function send_change_nick_command_handler(nickname: string) {
 	chat_store.change_nick(nickname);
 	close_dialog();
 }
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists()" :to="teleport_id">
+	<Teleport v-if="dialog.exists()" defer :to="teleport_id">
 		<ChangeNickDialog
 			:layer-name="layer_name"
 			@close="close_dialog"
