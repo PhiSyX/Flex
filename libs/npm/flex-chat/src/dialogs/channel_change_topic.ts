@@ -17,8 +17,7 @@ import type { DialogInterface } from "./interface";
 // Implémentation //
 // -------------- //
 
-export class ChannelChangeTopicLayer implements DialogInterface
-{
+export class ChannelChangeTopicLayer implements DialogInterface {
 	// ------ //
 	// Static //
 	// ------ //
@@ -29,8 +28,7 @@ export class ChannelChangeTopicLayer implements DialogInterface
 		overlayer_store: OverlayerStore,
 		event: Required<Layer["event"]>,
 		linked_element: Required<Layer["dom_element"]>,
-	)
-	{
+	) {
 		overlayer_store.create({
 			id: ChannelChangeTopicLayer.ID,
 			destroyable: "manual",
@@ -42,38 +40,32 @@ export class ChannelChangeTopicLayer implements DialogInterface
 		return new ChannelChangeTopicLayer(overlayer_store);
 	}
 
-	static destroy(overlayer_store: OverlayerStore)
-	{
+	static destroy(overlayer_store: OverlayerStore) {
 		overlayer_store.destroy(ChannelChangeTopicLayer.ID);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(ChannelChangeTopicLayer.ID);
 	}
 
-	get(): Option<Layer>
-	{
+	get(): Option<Layer> {
 		return this.overlayer_store.get(ChannelChangeTopicLayer.ID);
 	}
 
-	get_unchecked(): Layer
-	{
+	get_unchecked(): Layer {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(ChannelChangeTopicLayer.ID);
 	}
 }

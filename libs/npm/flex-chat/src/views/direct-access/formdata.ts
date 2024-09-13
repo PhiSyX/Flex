@@ -14,8 +14,7 @@ import { RememberMeStorage } from "../../localstorage/remember_me";
 // Interface //
 // --------- //
 
-interface DirectAccessFormDataInterface
-{
+interface DirectAccessFormDataInterface {
 	alternative_nickname: string;
 	channels: ChannelID;
 	nickname: string;
@@ -30,8 +29,7 @@ interface DirectAccessFormDataInterface
 // Structure //
 // --------- //
 
-export class DirectAccessFormData implements DirectAccessFormDataInterface
-{
+export class DirectAccessFormData implements DirectAccessFormDataInterface {
 	declare alternative_nickname: string;
 	declare channels: ChannelID;
 	declare nickname: string;
@@ -41,16 +39,14 @@ export class DirectAccessFormData implements DirectAccessFormDataInterface
 	remember_me: RememberMeStorage = new RememberMeStorage();
 	declare websocket_server_url: string;
 
-	default(data: DirectAccessFormDataInterface)
-	{
+	default(data: DirectAccessFormDataInterface) {
 		for (let [key, value] of Object.entries(data)) {
 			// @ts-expect-error : corriger le type.
 			this[key] = value;
 		}
 	}
 
-	set(data: Partial<DirectAccessFormDataInterface>)
-	{
+	set(data: Partial<DirectAccessFormDataInterface>) {
 		for (let [key, value] of Object.entries(data)) {
 			// @ts-expect-error : corriger le type.
 			this[key] = value;

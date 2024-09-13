@@ -17,23 +17,22 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorBannedfromchanHandler
 	implements SocketEventInterface<"ERR_BANNEDFROMCHAN">
 {
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_BANNEDFROMCHAN", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">)
-	{
-		let room = this.store.room_manager().get(data.channel, {
-			where: {
-				state: "opened",
-				is_kicked: false,
-			},
-			fallbacks: [{ network: true }]
-		})
+	handle(data: GenericReply<"ERR_BANNEDFROMCHAN">) {
+		let room = this.store
+			.room_manager()
+			.get(data.channel, {
+				where: {
+					state: "opened",
+					is_kicked: false,
+				},
+				fallbacks: [{ network: true }],
+			})
 			.unwrap();
 		room.add_event(
 			"error:err_bannedfromchan",

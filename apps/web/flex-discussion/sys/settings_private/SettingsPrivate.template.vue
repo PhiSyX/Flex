@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import { InputSwitch } from '@phisyx/flex-vue-uikit';
+import { InputSwitch } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props
-{
-}
+interface Props {}
 
 // --------- //
 // Composant //
 // --------- //
 
-let waitingPrivateList = defineModel<boolean>("waitingList", { required: true });
+let waitingPrivateList = defineModel<boolean>("waitingList", {
+	required: true,
+});
 </script>
 
 <template>

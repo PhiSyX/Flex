@@ -13,8 +13,7 @@ let chat_store = use_chat_store();
 // Handler //
 // ------- //
 
-function open_pending_private_handler(priv: Origin)
-{
+function open_pending_private_handler(priv: Origin) {
 	chat_store.open_pending_private(priv);
 }
 </script>

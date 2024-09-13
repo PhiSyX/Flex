@@ -16,14 +16,14 @@ import { AppLocalStorage } from "./storage";
 /**
  * Clé localStorage paramètres "Personalization".
  */
-export const STORAGE_SETTINGS_PERSONALIZATION_KEY = "flex.settings.personalization";
+export const STORAGE_SETTINGS_PERSONALIZATION_KEY =
+	"flex.settings.personalization";
 
 // ---- //
 // Type //
 // ---- //
 
-export interface PersonalizationData
-{
+export interface PersonalizationData {
 	theme: keyof Theme;
 	formats: {
 		bold?: boolean;
@@ -33,7 +33,7 @@ export interface PersonalizationData
 	colors: {
 		background?: number | null;
 		foreground?: number | null;
-	}
+	};
 }
 
 // -------- //
@@ -58,16 +58,14 @@ const FORMATS_KEYS = ["bold", "italic", "underline"];
 // Implémentation //
 // -------------- //
 
-export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
-{
+export class PersonalizationStorage extends AppLocalStorage<PersonalizationData> {
 	// ------ //
 	// Static //
 	// ------ //
 
 	static readonly KEY = STORAGE_SETTINGS_PERSONALIZATION_KEY;
 
-	static default(): PersonalizationData
-	{
+	static default(): PersonalizationData {
 		return {
 			theme: "ice",
 			formats: DEFAULT_FORMATS,
@@ -78,8 +76,7 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): unknown | undefined
-	{
+	static fromJSON(key: string, value: string): unknown | undefined {
 		if (key !== "") {
 			let keys = [
 				"theme",
@@ -88,7 +85,7 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 				...FORMATS_KEYS,
 				...COLORS_KEYS,
 			];
-			
+
 			if (!keys.includes(key)) {
 				return;
 			}
@@ -105,11 +102,17 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 				return DEFAULT_THEME;
 			}
 
-			if (COLORS_KEYS.includes(key) && !(value === null || is_number(value))) {
+			if (
+				COLORS_KEYS.includes(key) &&
+				!(value === null || is_number(value))
+			) {
 				return null;
 			}
 
-			if (FORMATS_KEYS.includes(key) && !(value === null || is_boolean(value))) {
+			if (
+				FORMATS_KEYS.includes(key) &&
+				!(value === null || is_boolean(value))
+			) {
 				return null;
 			}
 		}
@@ -125,8 +128,7 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 	// Constructor //
 	// ----------- //
 
-	constructor()
-	{
+	constructor() {
 		super(
 			PersonalizationStorage.KEY,
 			PersonalizationStorage.fromJSON,
@@ -134,8 +136,7 @@ export class PersonalizationStorage extends AppLocalStorage<PersonalizationData>
 		);
 	}
 
-	persist()
-	{
+	persist() {
 		this.set({
 			theme: this.value.theme,
 			colors: this.value.colors,

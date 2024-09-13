@@ -14,29 +14,26 @@ import type { ChatStoreInterface, ChatStoreUUIDExt } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ReplySilenceHandler implements SocketEventInterface<"SILENCE">
-{
+export class ReplySilenceHandler implements SocketEventInterface<"SILENCE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface & ChatStoreUUIDExt)
-	{}
+	constructor(private store: ChatStoreInterface & ChatStoreUUIDExt) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("SILENCE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"SILENCE">)
-	{
+	handle(data: GenericReply<"SILENCE">) {
 		let room = this.store.room_manager().active();
 
 		if (data.updated) {
-			let message = "Votre liste des utilisateurs ignorés a été mis à jour";
+			let message =
+				"Votre liste des utilisateurs ignorés a été mis à jour";
 			let [random_uuid] = this.store.uuid(7).take(1);
 			data.tags.msgid = random_uuid;
 			room.add_connect_event(data, message);

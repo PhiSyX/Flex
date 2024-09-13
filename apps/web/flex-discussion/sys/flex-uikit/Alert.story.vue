@@ -6,8 +6,7 @@ import { Alert } from "@phisyx/flex-vue-uikit";
 // 	error: "Error",
 // };
 
-function default_state()
-{
+function default_state() {
 	return {
 		content:
 			"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt esse cumque enim modi dolorum, ex recusandae asperiores facilis! In adipisci maiores suscipit eum velit neque dolore dolorem veniam, odit deleniti.",
@@ -15,8 +14,7 @@ function default_state()
 	};
 }
 
-function lockable_state()
-{
+function lockable_state() {
 	return {
 		content:
 			"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt esse cumque enim modi dolorum, ex recusandae asperiores facilis! In adipisci maiores suscipit eum velit neque dolore dolorem veniam, odit deleniti.",
@@ -25,8 +23,7 @@ function lockable_state()
 	};
 }
 
-function left_content_state()
-{
+function left_content_state() {
 	return {
 		content:
 			"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt esse cumque enim modi dolorum, ex recusandae asperiores facilis! In adipisci maiores suscipit eum velit neque dolore dolorem veniam, odit deleniti.",
@@ -35,8 +32,7 @@ function left_content_state()
 	};
 }
 
-function delay_state()
-{
+function delay_state() {
 	return {
 		content:
 			"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt esse cumque enim modi dolorum, ex recusandae asperiores facilis! In adipisci maiores suscipit eum velit neque dolore dolorem veniam, odit deleniti.",

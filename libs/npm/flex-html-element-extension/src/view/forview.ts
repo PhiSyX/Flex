@@ -13,14 +13,13 @@ import type { Signal } from "@phisyx/flex-signal";
 import { is_array } from "@phisyx/flex-asserts";
 import { is_signal } from "@phisyx/flex-signal";
 
-import { HTMLElementExtension as HExt, } from "../extension";
+import { HTMLElementExtension as HExt } from "../extension";
 
 // TODO: use Computed
 export function forview<T>(
 	arr: Signal<Array<T>> | Array<T>,
 	shallow_view: (key: T) => HExt | Promise<HExt>,
-): HExt
-{
+): HExt {
 	let fragment = HExt.create_fragment() as HExt;
 
 	if (is_array<T>(arr)) {

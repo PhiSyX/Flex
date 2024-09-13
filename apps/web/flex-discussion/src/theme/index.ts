@@ -37,8 +37,7 @@ const DEFAULT_THEME: keyof Theme = "ice";
 // Fonction //
 // -------- //
 
-export function find_theme(fallback_theme = DEFAULT_THEME): ThemeRecord
-{
+export function find_theme(fallback_theme = DEFAULT_THEME): ThemeRecord {
 	let settings_store = use_settings_store();
 
 	let theme_ls = settings_store.personalization.theme || fallback_theme;
@@ -57,19 +56,16 @@ export function find_theme(fallback_theme = DEFAULT_THEME): ThemeRecord
 	};
 }
 
-export function set_theme_ls(name: keyof Theme)
-{
+export function set_theme_ls(name: keyof Theme) {
 	let settings_store = use_settings_store();
 	document.documentElement.dataset["scheme"] = name;
 	settings_store.theme_mut = name;
 }
 
-export function find_theme_name(fallback_theme = DEFAULT_THEME)
-{
+export function find_theme_name(fallback_theme = DEFAULT_THEME) {
 	return find_theme(fallback_theme).name;
 }
 
-export function use_theme()
-{
+export function use_theme() {
 	on_mounted(() => set_theme_ls(find_theme_name()));
 }

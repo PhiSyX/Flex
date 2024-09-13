@@ -24,7 +24,8 @@ export type UpdateAccountRecordDialog = UserSession;
 // Implémentation //
 // -------------- //
 
-export class UpdateAccountDialog implements DialogInterface<UpdateAccountRecordDialog>
+export class UpdateAccountDialog
+	implements DialogInterface<UpdateAccountRecordDialog>
 {
 	// ------ //
 	// Static //
@@ -35,8 +36,7 @@ export class UpdateAccountDialog implements DialogInterface<UpdateAccountRecordD
 	static create(
 		overlayer_store: OverlayerStore,
 		session: UpdateAccountRecordDialog,
-	)
-	{
+	) {
 		overlayer_store.create({
 			id: UpdateAccountDialog.ID,
 			centered: true,
@@ -46,39 +46,34 @@ export class UpdateAccountDialog implements DialogInterface<UpdateAccountRecordD
 		return new UpdateAccountDialog(overlayer_store);
 	}
 
-	static destroy(overlayer_store: OverlayerStore)
-	{
+	static destroy(overlayer_store: OverlayerStore) {
 		overlayer_store.destroy(UpdateAccountDialog.ID);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(UpdateAccountDialog.ID);
 	}
 
-	get(): Option<Layer<UpdateAccountRecordDialog>>
-	{
-		return this.overlayer_store.get(UpdateAccountDialog.ID)
+	get(): Option<Layer<UpdateAccountRecordDialog>> {
+		return this.overlayer_store
+			.get(UpdateAccountDialog.ID)
 			.as<Layer<UpdateAccountRecordDialog>>();
 	}
 
-	get_unchecked(): Layer<UpdateAccountRecordDialog>
-	{
+	get_unchecked(): Layer<UpdateAccountRecordDialog> {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(UpdateAccountDialog.ID);
 	}
 }

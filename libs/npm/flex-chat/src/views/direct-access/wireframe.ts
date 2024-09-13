@@ -41,8 +41,9 @@ export class DirectAccessWireframe {
 			.with_presenter(presenter)
 			.with_chat_datamanager(new DirectAccessChatManager(chat_store))
 			.with_user_datamanager(new DirectAccessUserManager(user_store))
-			.with_overlayer_datamanager(new DirectAccessOverlayerManager(overlayer_store))
-			;
+			.with_overlayer_datamanager(
+				new DirectAccessOverlayerManager(overlayer_store),
+			);
 
 		view.with_presenter(presenter).with_router(router_acl);
 		presenter.with_interactor(interactor);

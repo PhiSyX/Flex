@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { ChannelMember, ChannelRoom, User, UserFlag, cast_to_channel_id } from "@phisyx/flex-chat";
+import {
+	ChannelMember,
+	ChannelRoom,
+	User,
+	UserFlag,
+	cast_to_channel_id,
+} from "@phisyx/flex-chat";
 
 import ChannelSettingsDialog from "./ChannelSettingsDialog.template.vue";
 

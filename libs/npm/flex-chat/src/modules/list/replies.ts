@@ -14,25 +14,21 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST">
-{
+export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_LIST", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_LIST">)
-	{
+	handle(data: GenericReply<"RPL_LIST">) {
 		this.store.set_channel_list(data);
 	}
 }
@@ -43,20 +39,17 @@ export class ReplyListstartHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
 	}
 
-	handle(_: GenericReply<"RPL_LISTSTART">)
-	{
+	handle(_: GenericReply<"RPL_LISTSTART">) {
 		this.store.clear_channel_list();
 	}
 }
@@ -67,18 +60,15 @@ export class ReplyListendHandler
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_LISTEND", (data) => this.handle(data));
 	}
 
-	handle(_: GenericReply<"RPL_LISTEND">)
-	{}
+	handle(_: GenericReply<"RPL_LISTEND">) {}
 }

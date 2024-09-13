@@ -7,14 +7,12 @@ import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	layerName: string;
 	participant: PrivateParticipant;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "close"): void;
 	(event_name: "submit"): void;
 }

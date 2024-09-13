@@ -23,7 +23,8 @@ let overlayer_store = use_overlayer_store();
 let servername = shallow_ref(None().as<string>());
 
 on_mounted(() => {
-	servername.value = chat_store.room_manager()
+	servername.value = chat_store
+		.room_manager()
 		.get(route.params.servername as RoomID)
 		.map((r) => r.name);
 });
@@ -32,15 +33,15 @@ on_mounted(() => {
 // Handler //
 // ------- //
 
-function join_channel_handler(name: ChannelID)
-{
+function join_channel_handler(name: ChannelID) {
 	chat_store.join_channel(name);
 	chat_store.change_room(name);
 }
 
-function open_join_channel_dialog_handler(event: Event)
-{
-	ChannelJoinDialog.create(overlayer_store.store as OverlayerStore, { event });
+function open_join_channel_dialog_handler(event: Event) {
+	ChannelJoinDialog.create(overlayer_store.store as OverlayerStore, {
+		event,
+	});
 }
 </script>
 

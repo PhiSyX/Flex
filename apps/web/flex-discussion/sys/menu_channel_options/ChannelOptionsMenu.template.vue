@@ -8,15 +8,13 @@ import { UiMenu, UiMenuItem } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	layerName: string;
 	room: ChannelRoom;
 	currentClientChannelMember: Option<ChannelMember>;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "open-channel-settings"): void;
 	(event_name: "part-channel"): void;
 }

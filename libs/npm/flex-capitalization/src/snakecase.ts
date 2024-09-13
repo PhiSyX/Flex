@@ -48,8 +48,7 @@ const Default: Options = {
 // -------- //
 
 /// Transforme une chaîne de caractère en snakecase.
-function snakecase(text: string, user_options: Options = Default): string
-{
+function snakecase(text: string, user_options: Options = Default): string {
 	let options: Options = { ...Default, ...user_options };
 
 	let algo = (ch: string[number] /* char */, idx: number) => {

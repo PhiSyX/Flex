@@ -3,9 +3,8 @@
 // Interface //
 // --------- //
 
-interface Slots
-{
-	"topic": unknown;
+interface Slots {
+	topic: unknown;
 	"topic-action": unknown;
 }
 

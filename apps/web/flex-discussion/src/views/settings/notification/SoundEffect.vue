@@ -16,8 +16,7 @@ let settings_store = use_settings_store();
 // Handler //
 // ------- //
 
-function on_update(_: NotificationData["sounds"])
-{
+function on_update(_: NotificationData["sounds"]) {
 	settings_store.persist();
 }
 </script>

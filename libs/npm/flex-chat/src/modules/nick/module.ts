@@ -17,8 +17,7 @@ import { NickHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class NickModule implements Module<NickModule>
-{
+export class NickModule implements Module<NickModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -35,28 +34,24 @@ export class NickModule implements Module<NickModule>
 	constructor(
 		private command: NickCommand,
 		private handler: NickHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, nickname?: string)
-	{
+	input(_: string, nickname?: string) {
 		if (!nickname) {
 			return;
 		}
 		this.send({ nickname });
 	}
 
-	send(payload: Command<"NICK">)
-	{
+	send(payload: Command<"NICK">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }

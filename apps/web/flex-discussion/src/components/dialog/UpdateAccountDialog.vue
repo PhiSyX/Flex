@@ -18,7 +18,7 @@ let user_store = use_user_store();
 
 let { layer_name, dialog, teleport_id, close_dialog, layer_unsafe } =
 	use_dialog<UpdateAccountDialog, UpdateAccountRecordDialog>(
-		UpdateAccountDialog
+		UpdateAccountDialog,
 	);
 
 let uploaded_file = shallowRef<File>();

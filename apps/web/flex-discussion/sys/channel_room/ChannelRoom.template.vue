@@ -24,8 +24,7 @@ import Room from "#/sys/room/Room.template.vue";
 // Type //
 // ---- //
 
-export interface Props
-{
+export interface Props {
 	activities?: ChannelActivitiesView;
 	completionList?: Array<string>;
 	currentClientMember: Option<ChannelMember>;
@@ -41,8 +40,7 @@ export interface Props
 	useIconInsteadOfAvatar?: boolean;
 }
 
-export interface Emits
-{
+export interface Emits {
 	(event_name: "ban-member", member: ChannelMember): void;
 	(event_name: "ban-nick", member: ChannelMember): void;
 	(event_name: "change-nickname", event: MouseEvent): void;
@@ -80,8 +78,7 @@ export interface Emits
 	(event_name: "update-topic", topic: string): void;
 }
 
-interface Slots
-{
+interface Slots {
 	history: unknown;
 	"userlist-additional-info": (_: { member: ChannelMember }) => unknown;
 }

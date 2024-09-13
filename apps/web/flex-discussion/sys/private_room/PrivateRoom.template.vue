@@ -11,8 +11,7 @@ import Room from "#/sys/room/Room.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	completionList?: Array<string>;
 	currentClientUser: PrivateParticipant;
 	currentNickname: string;
@@ -26,8 +25,7 @@ interface Props
 	textColorForeground?: number | null;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "close"): void;
 	(event_name: "ignore-user", nickname: string): void;
@@ -37,9 +35,8 @@ interface Emits
 	(event_name: "unignore-user", nickname: string): void;
 }
 
-interface Slots
-{
-	"avatar": (_: { recipient: PrivateParticipant }) => unknown;
+interface Slots {
+	avatar: (_: { recipient: PrivateParticipant }) => unknown;
 }
 
 // --------- //
@@ -55,23 +52,24 @@ let is_current_client_participant_himself = computed(() =>
 	props.currentClientUser.partial_eq(props.recipient),
 );
 
-let ignore_btn_title_attribute = computed(
-	() => props.isRecipientBlocked
+let ignore_btn_title_attribute = computed(() =>
+	props.isRecipientBlocked
 		? `Ne plus ignorer ${props.recipient.nickname}`
-		: `Ignorer ${props.recipient.nickname}`
+		: `Ignorer ${props.recipient.nickname}`,
 );
 
 // ------- //
 // Handler //
 // ------- //
 
-const change_nickname_handler = (event: MouseEvent) => emit("change-nickname", event);
-const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
+const change_nickname_handler = (event: MouseEvent) =>
+	emit("change-nickname", event);
+const open_colors_box_handler = (event: MouseEvent) =>
+	emit("open-colors-box", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const send_message_handler = (message: string) => emit("send-message", message);
 
-function toggle_ignore_user_handler()
-{
+function toggle_ignore_user_handler() {
 	if (props.isRecipientBlocked) {
 		emit("unignore-user", props.recipient.nickname);
 	} else {

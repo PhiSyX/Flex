@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { PrivatePendingRequestDialog, type PrivateRoom } from "@phisyx/flex-chat";
+import {
+	PrivatePendingRequestDialog,
+	type PrivateRoom,
+} from "@phisyx/flex-chat";
 
 import {
 	onActivated as on_activated,
 	onDeactivated as on_deactivated,
 	onMounted as on_mounted,
-	shallowRef as shallow_ref
+	shallowRef as shallow_ref,
 } from "vue";
 import { useRoute as use_route } from "vue-router";
 

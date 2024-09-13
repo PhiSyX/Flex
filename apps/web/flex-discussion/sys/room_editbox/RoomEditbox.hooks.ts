@@ -18,22 +18,19 @@ import { $input, input_model } from "./RoomEditbox.state";
 // Hooks //
 // ----- //
 
-export function use_autocompletion(props: Props)
-{
+export function use_autocompletion(props: Props) {
 	let position_suggestion = ref(-1);
 	let position_word = ref(0);
 	let suggestions = ref([] as Array<string>);
 	let suggestion_input = ref("");
 
-	function apply_suggestion_handler()
-	{
+	function apply_suggestion_handler() {
 		input_model.value = suggestion_input.value;
 		suggestion_input.value = "";
 		$input.value?.focus();
 	}
 
-	function input_handler(evt: Event)
-	{
+	function input_handler(evt: Event) {
 		let el = evt.target as HTMLInputElement;
 		let word = get_word_by_position_cursor(el);
 
@@ -55,8 +52,7 @@ export function use_autocompletion(props: Props)
 		}
 	}
 
-	function keydown_handler(evt: KeyboardEvent)
-	{
+	function keydown_handler(evt: KeyboardEvent) {
 		if (input_model.value.length === 0) {
 			return;
 		}
@@ -108,8 +104,7 @@ export function use_autocompletion(props: Props)
 		input_completer(found, evt.shiftKey ? "ShiftTab" : "Tab");
 	}
 
-	function get_word_by_position_cursor(el: HTMLInputElement)
-	{
+	function get_word_by_position_cursor(el: HTMLInputElement) {
 		let cursor = el.selectionStart || 0;
 		let words = input_model.value.split(/\s/);
 
@@ -129,8 +124,7 @@ export function use_autocompletion(props: Props)
 		return word;
 	}
 
-	function input_completer(suggest = "", type = "input")
-	{
+	function input_completer(suggest = "", type = "input") {
 		let words = input_model.value.split(/\s/);
 		let parts = input_model.value.split(/\s/);
 		let word = parts[position_word.value] || "";
@@ -158,15 +152,13 @@ export function use_autocompletion(props: Props)
 		}
 	}
 
-	function word_completer(completion_list: Array<string>, word: string)
-	{
+	function word_completer(completion_list: Array<string>, word: string) {
 		return completion_list.filter(
 			(item) => !item.toLowerCase().indexOf(word.toLowerCase()),
 		);
 	}
 
-	function submit_handler()
-	{
+	function submit_handler() {
 		position_suggestion.value = -1;
 		position_word.value = 0;
 		suggestions.value = [];
@@ -182,17 +174,14 @@ export function use_autocompletion(props: Props)
 	};
 }
 
-export function use_input_history(props: Props)
-{
+export function use_input_history(props: Props) {
 	let position_arrow = ref(0);
 	let history = computed(() => props.room.input_history);
 
-	function keydown_handler(evt: KeyboardEvent)
-	{
+	function keydown_handler(evt: KeyboardEvent) {
 		if (!props.room.input_history) {
 			return;
 		}
-
 
 		evt.preventDefault();
 
@@ -209,8 +198,7 @@ export function use_input_history(props: Props)
 		input_model.value = v;
 	}
 
-	function submit_handler()
-	{
+	function submit_handler() {
 		position_arrow.value = 0;
 	}
 

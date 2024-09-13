@@ -60,13 +60,11 @@ const model_object_select: DirectiveModelObject = {
 	},
 };
 
-function get_value(el: HTMLOptionElement): string 
-{
+function get_value(el: HTMLOptionElement): string {
 	return Object.hasOwn(el, "_value") ? (el._value as string) : el.value;
 }
 
-function set_selected(el: HTMLSelectElement, value: { [o: string]: boolean })
-{
+function set_selected(el: HTMLSelectElement, value: { [o: string]: boolean }) {
 	if (el.multiple && !is_object(value)) {
 		warn(
 			"<select multiple v-model> expects an Object value for its ",
@@ -84,8 +82,7 @@ function set_selected(el: HTMLSelectElement, value: { [o: string]: boolean })
 	}
 }
 
-function get_model_assigner(vnode: VNode)
-{
+function get_model_assigner(vnode: VNode) {
 	return (value: unknown) => vnode.props?.["onUpdate:modelValue"]?.(value);
 }
 

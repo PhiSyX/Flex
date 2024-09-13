@@ -15,17 +15,18 @@ import {
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	layerName: string;
 	room: ChannelRoom;
 	currentClientChannelMember: Option<ChannelMember>;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "close"): void;
-	(event_name: "submit", modes_settings: Partial<Command<"MODE">["modes"]>): void;
+	(
+		event_name: "submit",
+		modes_settings: Partial<Command<"MODE">["modes"]>,
+	): void;
 	(event_name: "update-topic", topic?: string): void;
 }
 
@@ -70,15 +71,17 @@ let is_current_client_channel_member_channel_operator = computed(() =>
 // Les paramètres du salon.
 let settings = computed(() => Array.from(props.room.settings));
 let settings_str = computed(() => settings.value.join(""));
-let invite_only_settings = ref<boolean>(props.room.settings.has('i'));
-let moderate_settings = ref<boolean>(props.room.settings.has('m'));
-let operators_only_settings = ref<boolean>(props.room.settings.has('O'));
-let no_external_messages_settings = ref<boolean>(props.room.settings.has('n'));
-let secret_settings = ref<boolean>(props.room.settings.has('s'));
-let topic_settings = ref<boolean>(props.room.settings.has('t'));
+let invite_only_settings = ref<boolean>(props.room.settings.has("i"));
+let moderate_settings = ref<boolean>(props.room.settings.has("m"));
+let operators_only_settings = ref<boolean>(props.room.settings.has("O"));
+let no_external_messages_settings = ref<boolean>(props.room.settings.has("n"));
+let secret_settings = ref<boolean>(props.room.settings.has("s"));
+let topic_settings = ref<boolean>(props.room.settings.has("t"));
 
 let enabled_key_settings = ref(props.room.settings.has("k"));
-let key_settings = ref(props.room.settings.has("k") ? props.room.key.unwrap_or("") : undefined);
+let key_settings = ref(
+	props.room.settings.has("k") ? props.room.key.unwrap_or("") : undefined,
+);
 let limit_settings = ref(props.room.limit);
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
@@ -122,8 +125,7 @@ watch(active_access_control, () => {
 // Handler //
 // ------- //
 
-function submit_handler()
-{
+function submit_handler() {
 	if (is_current_client_channel_member_can_edit_topic.value) {
 		emit("update-topic", topic_model.value);
 	}
@@ -153,8 +155,7 @@ function submit_handler()
 	emit("close");
 }
 
-function delete_selected_masks_handler()
-{
+function delete_selected_masks_handler() {
 	if (
 		!is_current_client_channel_member_channel_operator.value &&
 		!is_current_client_global_operator.value
@@ -167,19 +168,22 @@ function delete_selected_masks_handler()
 
 	switch (active_access_control.value) {
 		case AccessControl.BanList:
-		{
-			list = "b";
-		} break;
+			{
+				list = "b";
+			}
+			break;
 
 		case AccessControl.BanListException:
-		{
-			list = "e";
-		} break;
+			{
+				list = "e";
+			}
+			break;
 
 		case AccessControl.InviteList:
-		{
-			list = "I";
-		} break;
+			{
+				list = "I";
+			}
+			break;
 	}
 
 	emit("submit", {

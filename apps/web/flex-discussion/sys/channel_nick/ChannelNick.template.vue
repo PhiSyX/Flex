@@ -15,8 +15,7 @@ import Avatar from "#/api/avatar/Avatar.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	member:
 		| ChannelMember
 		| ChannelMemberFiltered
@@ -37,14 +36,14 @@ const { member, tag = "span", withAvatar = true } = defineProps<Props>();
 let avatar_alt = computed(() =>
 	withAvatar && member.id
 		? `Avatar du compte de ${member.nickname}.`
-		: undefined
+		: undefined,
 );
 let avatar_or_span = computed(() =>
-	withAvatar && member.id ? Avatar : "span"
+	withAvatar && member.id ? Avatar : "span",
 );
 
 let hits = computed(() =>
-	Object.hasOwn(member, "search_hits") ? member.search_hits : []
+	Object.hasOwn(member, "search_hits") ? member.search_hits : [],
 );
 
 let symbol = computed(() => {

@@ -1,21 +1,16 @@
 <script setup lang="ts">
-import {
-	shallowRef as shallow_ref,
-	watchEffect as watch_effect
-} from "vue";
+import { shallowRef as shallow_ref, watchEffect as watch_effect } from "vue";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	src: string;
 	autoplay?: boolean;
 }
 
-interface Emits
-{
+interface Emits {
 	// biome-ignore lint/style/useShorthandFunctionType: ;-)
 	(event_name: "ended"): void;
 }

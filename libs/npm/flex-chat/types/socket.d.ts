@@ -12,8 +12,8 @@ declare interface SocketEventHandler {
 	listen(): void;
 }
 
-declare interface SocketEventInterface<R extends RepliesNames> extends SocketEventHandler
-{
+declare interface SocketEventInterface<R extends RepliesNames>
+	extends SocketEventHandler {
 	handle(data: GenericReply<R>, ...user_data: Array<unknown>): void;
 }
 
@@ -37,8 +37,7 @@ declare type ServerToClientEvent = {
 	) => void;
 };
 
-declare interface TypeSafeSocket
-{
+declare interface TypeSafeSocket {
 	emit<E extends keyof ClientToServerEvent>(
 		event_name: E,
 		...payload: Parameters<ClientToServerEvent[E]>

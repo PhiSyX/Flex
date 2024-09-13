@@ -17,39 +17,32 @@ let router = use_router();
 let chat_store = use_chat_store();
 let settings_store = use_settings_store();
 
-let navigation_bar_position = computed(
-	() => settings_store.layout.navigation_bar_position === "left"
-		? "ltl" 
-		: "rtl"
+let navigation_bar_position = computed(() =>
+	settings_store.layout.navigation_bar_position === "left" ? "ltl" : "rtl",
 );
 
 // ------- //
 // Handler //
 // ------- //
 
-function open_settings_view_handler()
-{
-	router.push({ name: View.Settings })
+function open_settings_view_handler() {
+	router.push({ name: View.Settings });
 }
 
-function change_room_handler(origin: Origin | RoomID)
-{
+function change_room_handler(origin: Origin | RoomID) {
 	chat_store.change_room(origin);
 }
 
-function close_room_handler(origin: Origin | RoomID)
-{
+function close_room_handler(origin: Origin | RoomID) {
 	chat_store.close_room(origin);
 }
 
-function open_channel_list_handler()
-{
+function open_channel_list_handler() {
 	chat_store.channel_list();
 }
 
-function open_private_list_view_handler()
-{
-	router.push({ name: View.PrivateList })
+function open_private_list_view_handler() {
+	router.push({ name: View.PrivateList });
 }
 </script>
 

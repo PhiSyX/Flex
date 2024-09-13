@@ -14,26 +14,23 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER">
-{
+export class OperHandler implements SocketEventInterface<"RPL_YOUREOPER"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_YOUREOPER", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_YOUREOPER">)
-	{
-		this.store.user_manager()
+	handle(data: GenericReply<"RPL_YOUREOPER">) {
+		this.store
+			.user_manager()
 			.upsert(data.origin)
 			.with_operator_flag(data.oper_type);
 

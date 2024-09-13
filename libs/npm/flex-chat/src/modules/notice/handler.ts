@@ -19,25 +19,21 @@ import { NoticesCustomRoom } from "../../custom_room/notices";
 // Implémentation //
 // -------------- //
 
-export class NoticeHandler implements SocketEventInterface<"NOTICE">
-{
+export class NoticeHandler implements SocketEventInterface<"NOTICE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
-	{}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("NOTICE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"NOTICE">)
-	{
+	handle(data: GenericReply<"NOTICE">) {
 		let is_current_client = this.store.is_current_client(data.origin);
 		let room = this.store.room_manager().active();
 
@@ -45,20 +41,18 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE">
 			data,
 			is_current_client,
 		);
-		let message = room.add_event(
-			"event:notice",
-			event,
-			data.text,
-		);
+		let message = room.add_event("event:notice", event, data.text);
 
 		if (
 			!is_current_client ||
 			(is_current_client && is_channel(data.target))
 		) {
-			let notice_room = this.store.room_manager().get_or_insert(
-				NoticesCustomRoom.ID,
-				() => new NoticesCustomRoom(),
-			);
+			let notice_room = this.store
+				.room_manager()
+				.get_or_insert(
+					NoticesCustomRoom.ID,
+					() => new NoticesCustomRoom(),
+				);
 
 			notice_room.marks_as_opened();
 
@@ -87,8 +81,7 @@ export class NoticeHandler implements SocketEventInterface<"NOTICE">
 		channel: ChannelRoom,
 		payload: RoomMessageEvent<"NOTICE">,
 		message: RoomMessage,
-	)
-	{
+	) {
 		channel.activities.upsert("notice", {
 			channel_id: channel.id(),
 			nickname: payload.origin.nickname,

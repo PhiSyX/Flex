@@ -10,13 +10,11 @@
 
 import { User } from "../user";
 
-export class PrivateParticipant extends User
-{
+export class PrivateParticipant extends User {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(user_origin: User | Origin)
-	{
+	constructor(user_origin: User | Origin) {
 		super(User.from(user_origin));
 	}
 
@@ -28,8 +26,7 @@ export class PrivateParticipant extends User
 	 * Comparaison partielle du pseudo privé.
 	 */
 	// @ts-expect-error : la ferme un peu -_-
-	override partial_eq(other: this): boolean
-	{
+	override partial_eq(other: this): boolean {
 		return other.id === this.id;
 	}
 }

@@ -15,19 +15,17 @@ import type { Layer, OverlayerStore } from "../store";
 // Type //
 // ---- //
 
-export interface MenuClass<T>
-{
+export interface MenuClass<T> {
 	ID: string;
 
 	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
 
-	new(_: OverlayerStore): T;
+	new (_: OverlayerStore): T;
 }
 
-export interface MenuInterface<R = unknown>
-{
+export interface MenuInterface<R = unknown> {
 	exists(): boolean;
-    get(): Option<Layer<R>>;
-    get_unchecked(): Layer<R>;
+	get(): Option<Layer<R>>;
+	get_unchecked(): Layer<R>;
 	destroy(): void;
 }

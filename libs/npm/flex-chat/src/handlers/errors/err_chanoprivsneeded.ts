@@ -17,23 +17,22 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorChanoprivsneededHandler
 	implements SocketEventInterface<"ERR_CHANOPRIVSNEEDED">
 {
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_CHANOPRIVSNEEDED", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_CHANOPRIVSNEEDED">)
-	{
-		let room = this.store.room_manager().get(data.channel, {
-			where: {
-				state: "opened",
-				is_kicked: false,
-			},
-			fallbacks: [{ network: true }]
-		})
+	handle(data: GenericReply<"ERR_CHANOPRIVSNEEDED">) {
+		let room = this.store
+			.room_manager()
+			.get(data.channel, {
+				where: {
+					state: "opened",
+					is_kicked: false,
+				},
+				fallbacks: [{ network: true }],
+			})
 			.unwrap();
 		room.add_event(
 			"error:err_chanoprivsneeded",

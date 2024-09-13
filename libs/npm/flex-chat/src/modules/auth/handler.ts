@@ -16,25 +16,21 @@ import { assert_channel_room, assert_private_room } from "../../asserts/room";
 // Implémentation //
 // -------------- //
 
-class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER">
-{
+class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("UPGRADE_USER", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"UPGRADE_USER">)
-	{
+	handle(data: GenericReply<"UPGRADE_USER">) {
 		if (this.store.is_current_client(data.old_client_id)) {
 			let client = this.store.client();
 			this.store.set_client({
@@ -45,15 +41,13 @@ class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER">
 			});
 		}
 
-		this.store.user_manager().change_id(
-			data.old_client_id,
-			data.new_client_id,
-		);
+		this.store
+			.user_manager()
+			.change_id(data.old_client_id, data.new_client_id);
 
-		this.store.user_manager().change_nickname(
-			data.old_nickname,
-			data.new_nickname,
-		);
+		this.store
+			.user_manager()
+			.change_nickname(data.old_nickname, data.new_nickname);
 
 		for (let room of this.store.room_manager().rooms()) {
 			if (room.type === "channel") {
@@ -69,7 +63,9 @@ class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER">
 			} else if (room.type === "private") {
 				assert_private_room(room);
 
-				let maybe_participant = room.get_participant(data.old_client_id);
+				let maybe_participant = room.get_participant(
+					data.old_client_id,
+				);
 				if (maybe_participant.is_none()) {
 					continue;
 				}
@@ -80,10 +76,9 @@ class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER">
 			}
 		}
 
-		this.store.room_manager().change_id(
-			data.old_client_id,
-			data.new_client_id,
-		);
+		this.store
+			.room_manager()
+			.change_id(data.old_client_id, data.new_client_id);
 	}
 }
 

@@ -23,8 +23,7 @@ import { GlobalCustomElement } from "./global";
 // biome-ignore lint/suspicious/noExplicitAny: ;-)
 type FIXME = any;
 
-interface CustomElementDecoratorOptions
-{
+interface CustomElementDecoratorOptions {
 	/**
 	 * Name of an native HTML element to be extended.
 	 */
@@ -37,44 +36,36 @@ interface CustomElementDecoratorOptions
 	 * Stylesheets of the custom elements
 	 */
 	styles?: Array<string>;
-};
+}
 
-function assert_shadow_root(_: FIXME): asserts _ is ShadowRoot
-{}
+function assert_shadow_root(_: FIXME): asserts _ is ShadowRoot {}
 
-export function customElement(options?: CustomElementDecoratorOptions)
-{
+export function customElement(options?: CustomElementDecoratorOptions) {
 	function Ctor<
 		UCE extends CustomElementConstructor<UCEInstance>,
 		UCEInstance extends CustomElementInterface,
-	>(UserCustomElement: UCE)
-	{
-		function custom_event_name(name: string): `handle${string}Event`
-		{
+	>(UserCustomElement: UCE) {
+		function custom_event_name(name: string): `handle${string}Event` {
 			let capitalized = camelcase(name, {
 				includes_separators: false,
 			});
 			return `handle${capitalized}Event`;
 		}
 
-		return class LocalCustomElement extends GlobalCustomElement
-		{
+		return class LocalCustomElement extends GlobalCustomElement {
 			public static options: ElementDefinitionOptions | undefined = {
 				extends: options?.extends,
 			};
 
-			static get observedAttributes(): Array<string>
-			{
+			static get observedAttributes(): Array<string> {
 				return UserCustomElement.props || [];
 			}
 
-			static get name()
-			{
+			static get name() {
 				return UserCustomElement.name;
 			}
 
-			static get TAG_NAME()
-			{
+			static get TAG_NAME() {
 				return kebabcase(UserCustomElement.name);
 			}
 
@@ -82,8 +73,7 @@ export function customElement(options?: CustomElementDecoratorOptions)
 
 			static STYLESHEETS: Map<string, CSSStyleSheet> = new Map();
 
-			constructor()
-			{
+			constructor() {
 				super(options?.mode || "closed");
 
 				this.element = new UserCustomElement(this);
@@ -140,15 +130,13 @@ export function customElement(options?: CustomElementDecoratorOptions)
 				}
 			}
 
-			render()
-			{
+			render() {
 				let $extension = this.element.render();
 				this.root.appendChild($extension.node());
 				return $extension;
 			}
 
-			update()
-			{
+			update() {
 				super.update();
 
 				if (this.root.firstChild) {
@@ -157,8 +145,7 @@ export function customElement(options?: CustomElementDecoratorOptions)
 				}
 			}
 
-			connectedCallback()
-			{
+			connectedCallback() {
 				this.element.mounted?.();
 
 				let $extension = this.render();
@@ -198,8 +185,7 @@ export function customElement(options?: CustomElementDecoratorOptions)
 				attribute_name: string,
 				attribute_old_value: string | null,
 				attribute_new_value: string | null,
-			)
-			{
+			) {
 				if (UserCustomElement.props?.includes(attribute_name)) {
 					let prop = (this.element as FIXME)[attribute_name];
 
@@ -226,8 +212,7 @@ export function customElement(options?: CustomElementDecoratorOptions)
 				);
 			}
 
-			disconnectedCallback()
-			{
+			disconnectedCallback() {
 				this.element.unmounted?.();
 			}
 		} as unknown as UCE;
@@ -236,19 +221,17 @@ export function customElement(options?: CustomElementDecoratorOptions)
 	return Ctor;
 }
 
-interface AttrDecoratorOptions
-{
+interface AttrDecoratorOptions {
 	parser?:
 		| (<T>(...args: FIXME[]) => T)
 		| BooleanConstructor
 		| StringConstructor
 		| NumberConstructor;
-};
+}
 
 export function attr<T extends CustomElementInterface>(
 	options?: AttrDecoratorOptions,
-)
-{
+) {
 	let default_parser = (v: unknown) => v;
 	let parser = options?.parser || default_parser;
 	return (_: T, property_name: string, descriptor: PropertyDescriptor) => {

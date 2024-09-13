@@ -15,13 +15,10 @@ import type { CommandInterface } from "../interface";
 // Implémentation //
 // -------------- //
 
-export class ListCommand implements CommandInterface<"LIST">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ListCommand implements CommandInterface<"LIST"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"LIST">)
-	{
+	send(payload: Command<"LIST">) {
 		this.store.emit("LIST", payload);
 	}
 }

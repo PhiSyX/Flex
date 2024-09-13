@@ -5,19 +5,16 @@ import type { Icons } from "../icons";
 // Interface //
 // --------- //
 
-interface Props
-{
+interface Props {
 	icon?: Icons;
 }
 
-interface Emits
-{
+interface Emits {
 	// biome-ignore lint/style/useShorthandFunctionType: tkt
 	(event_name: "click", event: Event): void;
 }
 
-interface Slots
-{
+interface Slots {
 	default: unknown;
 }
 

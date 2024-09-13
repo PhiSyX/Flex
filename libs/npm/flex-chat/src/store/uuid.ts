@@ -12,8 +12,7 @@
 // Type //
 // ---- //
 
-export interface ChatStoreUUIDExt
-{
+export interface ChatStoreUUIDExt {
 	uuid(version: UUIDVariant): UUIDStore;
 }
 
@@ -59,19 +58,16 @@ const MAX_NTIMES: u8r25 = 25;
 // Implémentation //
 // -------------- //
 
-export class UUIDStoreData
-{
+export class UUIDStoreData {
 	// ------ //
 	// Static //
 	// ------ //
-	
-	static v4(): UUIDStoreData
-    {
+
+	static v4(): UUIDStoreData {
 		return new UUIDStoreData(4);
 	}
 
-	static v7(): UUIDStoreData
-    {
+	static v7(): UUIDStoreData {
 		return new UUIDStoreData(7);
 	}
 
@@ -82,13 +78,11 @@ export class UUIDStoreData
 	constructor(
 		version: UUIDStoreData["version"] = UUID_V7,
 		ntimes: UUIDStoreData["ntimes"] = MAX_NTIMES,
-	)
-    {
+	) {
 		this.version = version;
 		this.ntimes = ntimes;
 	}
 
-	
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -98,8 +92,7 @@ export class UUIDStoreData
 	ntimes: u8r25;
 }
 
-export class UUIDStore
-{
+export class UUIDStore {
 	// ------ //
 	// Static //
 	// ------ //
@@ -111,8 +104,7 @@ export class UUIDStore
 	// Constructor //
 	// ----------- //
 
-	constructor(private data: UUIDStoreData)
-    {
+	constructor(private data: UUIDStoreData) {
 		this.populate();
 	}
 
@@ -120,8 +112,7 @@ export class UUIDStore
 	// Méthode //
 	// ------- //
 
-	populate()
-    {
+	populate() {
 		let UUID_URL_searchParams = new URLSearchParams();
 		UUID_URL_searchParams.set("ntimes", this.data.ntimes.toString());
 
@@ -135,8 +126,7 @@ export class UUIDStore
 		});
 	}
 
-	take(n?: u8r25): Array<UUID>
-    {
+	take(n?: u8r25): Array<UUID> {
 		let ntimes = Number(n) ?? 1;
 		let uuids = this.data.uuids.splice(0, ntimes) as Array<UUID>;
 		if (this.data.uuids.length < 5) {

@@ -8,7 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-interface ObjectConstructor
-{
-    hasOwn<T extends object>(o: object, v: keyof T): o is T;
+interface ObjectConstructor {
+	hasOwn<T extends object>(o: object, v: keyof T): o is T;
 }

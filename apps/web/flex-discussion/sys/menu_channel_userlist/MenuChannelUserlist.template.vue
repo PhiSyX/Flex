@@ -15,15 +15,13 @@ import ChannelUserlistOwnerMenu from "./MenuChannelUserlistAccessLevelQOP.vue";
 // Type //
 // ---- //
 
-export interface Props
-{
+export interface Props {
 	disabled?: boolean;
 	currentClientMember: ChannelMember;
 	selectedMember: ChannelMemberSelected;
 }
 
-export interface Emits
-{
+export interface Emits {
 	(event_name: "ban-member", member: ChannelMember): void;
 	(event_name: "ban-nick", member: ChannelMember): void;
 	(event_name: "ignore-user", user: Origin): void;
@@ -67,14 +65,19 @@ let is_current_client_member_have_vip = computed(() =>
 // Handler //
 // ------- //
 
-const ban_member_handler = () => emit("ban-member", props.selectedMember.member);
+const ban_member_handler = () =>
+	emit("ban-member", props.selectedMember.member);
 const ban_nick_handler = () => emit("ban-nick", props.selectedMember.member);
 const unban_member_handler = () => emit("unban-member", props.selectedMember);
 const unban_nick_handler = () => emit("unban-nick", props.selectedMember);
-const open_private_handler = () => emit("open-private", props.selectedMember.member);
-const ignore_user_handler = () => emit("ignore-user", props.selectedMember.member);
-const kick_member_handler = () => emit("kick-member", props.selectedMember.member);
-const unignore_user_handler = () => emit("unignore-user", props.selectedMember.member);
+const open_private_handler = () =>
+	emit("open-private", props.selectedMember.member);
+const ignore_user_handler = () =>
+	emit("ignore-user", props.selectedMember.member);
+const kick_member_handler = () =>
+	emit("kick-member", props.selectedMember.member);
+const unignore_user_handler = () =>
+	emit("unignore-user", props.selectedMember.member);
 const set_access_level_handler = (
 	member: ChannelMember,
 	access_level_flag: ChannelAccessLevelFlag,

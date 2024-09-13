@@ -40,23 +40,18 @@ export class ModeAccessControlModule
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private handler: ModeAccessControlHandler)
-	{}
+	constructor(private handler: ModeAccessControlHandler) {}
 
-	input()
-	{}
+	input() {}
 
-	send()
-	{}
+	send() {}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }
 
-export class BanModule implements Module<BanModule>
-{
+export class BanModule implements Module<BanModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -70,8 +65,7 @@ export class BanModule implements Module<BanModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: BanCommand)
-	{}
+	constructor(private command: BanCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -110,17 +104,14 @@ export class BanModule implements Module<BanModule>
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"BAN">)
-	{
+	send(payload: Command<"BAN">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class UnbanModule implements Module<UnbanModule>
-{
+export class UnbanModule implements Module<UnbanModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -134,8 +125,7 @@ export class UnbanModule implements Module<UnbanModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: UnbanCommand)
-	{}
+	constructor(private command: UnbanCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -174,17 +164,14 @@ export class UnbanModule implements Module<UnbanModule>
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"UNBAN">)
-	{
+	send(payload: Command<"UNBAN">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class BanExModule implements Module<BanExModule>
-{
+export class BanExModule implements Module<BanExModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -198,8 +185,7 @@ export class BanExModule implements Module<BanExModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: BanExCommand)
-	{}
+	constructor(private command: BanExCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -238,17 +224,14 @@ export class BanExModule implements Module<BanExModule>
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"BANEX">)
-	{
+	send(payload: Command<"BANEX">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class UnbanExModule implements Module<UnbanExModule>
-{
+export class UnbanExModule implements Module<UnbanExModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -262,8 +245,7 @@ export class UnbanExModule implements Module<UnbanExModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: UnbanExCommand)
-	{}
+	constructor(private command: UnbanExCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -302,33 +284,28 @@ export class UnbanExModule implements Module<UnbanExModule>
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"UNBANEX">)
-	{
+	send(payload: Command<"UNBANEX">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class InviteExModule implements Module<InviteExModule>
-{
+export class InviteExModule implements Module<InviteExModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "INVITEX";
 
-	static create(store: ChatStoreInterface): InviteExModule
-	{
+	static create(store: ChatStoreInterface): InviteExModule {
 		return new InviteExModule(new InviteExCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: InviteExCommand)
-	{}
+	constructor(private command: InviteExCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -367,33 +344,28 @@ export class InviteExModule implements Module<InviteExModule>
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"INVITEX">)
-	{
+	send(payload: Command<"INVITEX">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class UninviteExModule implements Module<UninviteExModule>
-{
+export class UninviteExModule implements Module<UninviteExModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "UNINVITEX";
 
-	static create(store: ChatStoreInterface): UninviteExModule
-	{
+	static create(store: ChatStoreInterface): UninviteExModule {
 		return new UninviteExModule(new UninviteExCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: UninviteExCommand)
-	{}
+	constructor(private command: UninviteExCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -432,11 +404,9 @@ export class UninviteExModule implements Module<UninviteExModule>
 		this.send({ channels, masks });
 	}
 
-	send(payload: Command<"UNINVITEX">)
-	{
+	send(payload: Command<"UNINVITEX">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }

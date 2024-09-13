@@ -3,11 +3,10 @@
 // Type //
 // ---- //
 
-interface Props
-{
-    age: number | null;
-    userFlag: string | null;
-    from: string | undefined;
+interface Props {
+	age: number | null;
+	userFlag: string | null;
+	from: string | undefined;
 }
 
 // --------- //

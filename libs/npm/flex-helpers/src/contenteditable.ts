@@ -12,8 +12,7 @@
 // Interface //
 // --------- //
 
-interface CaretPosition
-{
+interface CaretPosition {
 	start: number;
 	end: number;
 	selected_text: string;
@@ -26,10 +25,9 @@ interface CaretPosition
 function get_caret_contenteditable(
 	$el: HTMLElement,
 	{ doc }: { doc: Document } = { doc: document },
-): CaretPosition
-{
+): CaretPosition {
 	// biome-ignore lint/style/noNonNullAssertion: c'est ok
-	let dom_sel = doc.getSelection() !;
+	let dom_sel = doc.getSelection()!;
 	let range = dom_sel.getRangeAt(0);
 
 	let pre_range = range.cloneRange();
@@ -72,8 +70,7 @@ function set_caret_contenteditable(
 	pos: CaretPosition = { start: 0, end: 0, selected_text: "" },
 	new_content = "",
 	{ doc }: { doc: Document } = { doc: document },
-)
-{
+) {
 	let { start = 0, end = 0 } = pos;
 
 	let node: Node | undefined;

@@ -18,8 +18,7 @@ import { None } from "@phisyx/flex-safety";
 // Type //
 // ---- //
 
-export interface ChatStoreUserExt
-{
+export interface ChatStoreUserExt {
 	_user: Option<UserSession>;
 
 	user(): this["_user"];
@@ -35,8 +34,7 @@ const FETCH_OPTIONS: RequestInit = { credentials: "same-origin" };
 // Implémentation //
 // -------------- //
 
-export class UserStoreData
-{
+export class UserStoreData {
 	/**
 	 * Utilisateur connecté en session
 	 */
@@ -47,24 +45,20 @@ export class UserStoreData
 	// Méthode // -> API Publique
 	// ------- //
 
-	public get_session()
-	{
+	public get_session() {
 		return this._session;
 	}
 
-	public set_session(session: UserSession)
-	{
+	public set_session(session: UserSession) {
 		this._session.replace(session);
 	}
 
-	public unset_session()
-	{
+	public unset_session() {
 		this._session = None();
 	}
 }
 
-export class UserStore 
-{
+export class UserStore {
 	// ------ //
 	// Static //
 	// ------ //
@@ -75,15 +69,13 @@ export class UserStore
 	// Constructor //
 	// ----------- //
 
-	constructor(private data: UserStoreData)
-	{}
+	constructor(private data: UserStoreData) {}
 
 	// ------- //
 	// Méthode // -> API Publique
 	// ------- //
 
-	public async disconnect()
-	{
+	public async disconnect() {
 		const response = await fetch("/auth/logout", {
 			...FETCH_OPTIONS,
 			method: "DELETE",
@@ -101,8 +93,7 @@ export class UserStore
 		return await Promise.reject(response);
 	}
 
-	public async fetch(): Promise<UserSession>
-	{
+	public async fetch(): Promise<UserSession> {
 		let response = await fetch("/api/v1/users/@me", FETCH_OPTIONS);
 
 		if (response.ok) {
@@ -115,14 +106,13 @@ export class UserStore
 
 		return Promise.reject(response);
 	}
-	
-	public async patch(user_id: UUID, form_data: FormData)
-	{
+
+	public async patch(user_id: UUID, form_data: FormData) {
 		let avatar = form_data.get("avatar") as File | null;
 
 		let current_session = this.data.get_session().unwrap();
 
-		if (!avatar || avatar.name.length === 0)  {
+		if (!avatar || avatar.name.length === 0) {
 			form_data.delete("avatar");
 		} else {
 			let form_data = new FormData();
@@ -134,22 +124,23 @@ export class UserStore
 			});
 
 			if (response.ok) {
-				let data = await response.json() as { avatar: string };
+				let data = (await response.json()) as { avatar: string };
 				current_session.avatar = data.avatar;
 			}
-	
+
 			// TODO: gérer les erreurs, via une alert ou autre.
-			if (response.status >= 400 && response.status < 600) {}
+			if (response.status >= 400 && response.status < 600) {
+			}
 		}
 
-		let data = await fetch(`/api/v1/accounts/${user_id}`, {
+		let data = (await fetch(`/api/v1/accounts/${user_id}`, {
 			...FETCH_OPTIONS,
 			headers: {
 				"Content-type": "application/json",
 			},
 			method: "PUT",
 			body: JSON.stringify(Object.fromEntries(form_data.entries())),
-		}).then((res) => res.json()) as {
+		}).then((res) => res.json())) as {
 			city?: string;
 			country?: string;
 			firstname?: string;
@@ -157,7 +148,7 @@ export class UserStore
 			lastname?: string;
 		};
 
-		current_session.city = data.city
+		current_session.city = data.city;
 		current_session.country = data.country;
 		current_session.firstname = data.firstname;
 		current_session.gender = data.gender;
@@ -166,8 +157,7 @@ export class UserStore
 		this.data.set_session(current_session);
 	}
 
-	public session(user?: UserSession): UserStoreData["_session"]
-	{
+	public session(user?: UserSession): UserStoreData["_session"] {
 		if (user) {
 			this.data.set_session(user);
 		}

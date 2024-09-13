@@ -19,16 +19,13 @@ import type { OverlayerStore } from "../../../store/overlayer";
 // Implémentation //
 // -------------- //
 
-export class DirectAccessOverlayerManager
-{
-	constructor(private store: OverlayerStore)
-	{}
+export class DirectAccessOverlayerManager {
+	constructor(private store: OverlayerStore) {}
 
 	create_dialog<D extends DialogClass<DialogInterface<R>>, R>(
 		dialog: D,
 		...args: DialogArgs<D, R>
-	)
-	{
+	) {
 		dialog.create(this.store, ...args);
 	}
 }

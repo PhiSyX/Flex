@@ -15,68 +15,50 @@ import type { ChatStoreInterface } from "../../../store";
 // Implémentation //
 // -------------- //
 
-export class BanCommand implements CommandInterface<"BAN">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class BanCommand implements CommandInterface<"BAN"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"BAN">)
-	{
+	send(payload: Command<"BAN">) {
 		this.store.emit("BAN", payload);
 	}
 }
 
-export class UnbanCommand implements CommandInterface<"UNBAN">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class UnbanCommand implements CommandInterface<"UNBAN"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"UNBAN">)
-	{
+	send(payload: Command<"UNBAN">) {
 		this.store.emit("UNBAN", payload);
 	}
 }
 
-export class BanExCommand implements CommandInterface<"BANEX">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class BanExCommand implements CommandInterface<"BANEX"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"BANEX">)
-	{
+	send(payload: Command<"BANEX">) {
 		this.store.emit("BANEX", payload);
 	}
 }
 
-export class UnbanExCommand implements CommandInterface<"UNBANEX">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class UnbanExCommand implements CommandInterface<"UNBANEX"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"UNBANEX">)
-	{
+	send(payload: Command<"UNBANEX">) {
 		this.store.emit("UNBANEX", payload);
 	}
 }
 
-export class InviteExCommand implements CommandInterface<"INVITEX">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class InviteExCommand implements CommandInterface<"INVITEX"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"INVITEX">)
-	{
+	send(payload: Command<"INVITEX">) {
 		this.store.emit("INVITEX", payload);
 	}
 }
 
-export class UninviteExCommand implements CommandInterface<"UNINVITEX">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class UninviteExCommand implements CommandInterface<"UNINVITEX"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"UNINVITEX">)
-	{
+	send(payload: Command<"UNINVITEX">) {
 		this.store.emit("UNINVITEX", payload);
 	}
 }

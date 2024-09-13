@@ -10,8 +10,7 @@
 
 import { is_function } from "./fn";
 
-export function is_future<T>(value: unknown): value is Promise<T> 
-{
+export function is_future<T>(value: unknown): value is Promise<T> {
 	return value instanceof Promise;
 }
 

@@ -16,7 +16,7 @@ let chat_store = use_chat_store();
 
 let { layer_name, dialog, teleport_id, close_dialog, layer_unsafe } =
 	use_dialog<PrivatePendingRequestDialog, PrivatePendingRequestRecordDialog>(
-		PrivatePendingRequestDialog
+		PrivatePendingRequestDialog,
 	);
 
 // ------- //

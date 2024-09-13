@@ -15,16 +15,15 @@
 /**
  * Transforme un code ISO (3166-1 alpha-2) en point de code unicode
  */
-function iso_to_country_flag(code: string): string
-{
+function iso_to_country_flag(code: string): string {
 	console.assert(code.length >= 2, "Code ISO a une taille de moins de 2");
 
 	let codepoints = Array.from(
 		code.slice(0, 2),
-		(char_str) => (char_str.charCodeAt(0) % 32) + 0x1F1E5,
+		(char_str) => (char_str.charCodeAt(0) % 32) + 0x1f1e5,
 	);
 
-	return String.fromCodePoint(...codepoints)
+	return String.fromCodePoint(...codepoints);
 }
 
 // ------ //

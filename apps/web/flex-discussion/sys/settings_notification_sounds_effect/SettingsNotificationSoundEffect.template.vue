@@ -14,8 +14,7 @@ import query_audio from "#/assets/audio/query.wav";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	disabled?: boolean;
 }
 

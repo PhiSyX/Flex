@@ -23,9 +23,7 @@ let updated_by = computed(() => {
 });
 
 let settings_word = computed(() =>
-	data.target.startsWith("#")
-		? "Paramètres du salon"
-		: "Modes utilisateur"
+	data.target.startsWith("#") ? "Paramètres du salon" : "Modes utilisateur",
 );
 </script>
 

@@ -10,19 +10,18 @@
 
 import { HTMLElementExtension as Ext } from "../extension";
 
-export function link(...args: Ext.Args): Ext<HTMLLinkElement>
-{
+export function link(...args: Ext.Args): Ext<HTMLLinkElement> {
 	return Ext.create_element("link", args);
 }
 
-export function meta(...args: Ext.Args): Ext<HTMLMetaElement>
-{
+export function meta(...args: Ext.Args): Ext<HTMLMetaElement> {
 	return Ext.create_element("meta", args);
 }
 
-export function template_content(id: `#${string}`): Node
-{
-	let element = document.getElementById(id.slice(1)) as HTMLTemplateElement | null;
+export function template_content(id: `#${string}`): Node {
+	let element = document.getElementById(
+		id.slice(1),
+	) as HTMLTemplateElement | null;
 	if (element == null) {
 		return document.createElement("span");
 	}

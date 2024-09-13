@@ -17,39 +17,33 @@ import { QueryCommand } from "./command";
 // Implémentation //
 // -------------- //
 
-export class QueryModule implements Module<QueryModule>
-{
+export class QueryModule implements Module<QueryModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "QUERY";
 
-	static create(store: ChatStoreInterface): QueryModule
-	{
+	static create(store: ChatStoreInterface): QueryModule {
 		return new QueryModule(new QueryCommand(store));
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: QueryCommand)
-	{}
+	constructor(private command: QueryCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, nicknames_raw?: RoomID)
-	{
+	input(_: string, nicknames_raw?: RoomID) {
 		for (let nickname of nicknames_raw?.split(",") || []) {
 			this.command.handle(cast_to_room_id(nickname));
 		}
 	}
 
-	send()
-	{}
+	send() {}
 
-	listen()
-	{}
+	listen() {}
 }

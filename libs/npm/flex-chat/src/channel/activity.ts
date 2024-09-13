@@ -23,35 +23,30 @@ import { None } from "@phisyx/flex-safety";
 
 type ChannelActivityGroupName = "mention" | "notice";
 
-export interface ChannelActivitiesView
-{
+export interface ChannelActivitiesView {
 	groups: Array<ChannelActivityGroup>;
 }
 
-export interface ChannelActivity
-{
+export interface ChannelActivity {
 	channel: ChannelRoom;
 	member: Option<ChannelMember | User>;
 	message: Option<RoomMessage<ChannelID, { text: string }>>;
 	previousMessages: Array<ChannelActivity>;
 }
-export interface ChannelActivityRef
-{
+export interface ChannelActivityRef {
 	channel_id: ChannelID;
 	nickname: string;
 	message_id: RoomMessage["id"];
 	previous_messages_ids: Array<RoomMessage["id"]>;
 }
 
-export interface ChannelActivityGroup
-{
+export interface ChannelActivityGroup {
 	name: ChannelActivityGroupName;
 	createdAt: string;
 	updatedAt: Option<string>;
 	activities: Array<ChannelActivity>;
 }
-export interface ChannelActivityGroupRef
-{
+export interface ChannelActivityGroupRef {
 	created_at: Date;
 	updated_at: Option<Date>;
 	activities: Array<ChannelActivityRef>;
@@ -70,8 +65,7 @@ export type TupleActivitiesRef = [
 // Implémentation //
 // -------------- //
 
-export class ChannelActivities
-{
+export class ChannelActivities {
 	public groups: Array<TupleActivitiesRef> = [];
 
 	/**
@@ -84,8 +78,7 @@ export class ChannelActivities
 	upsert(
 		group: ChannelActivityGroupName,
 		payload: Optional<ChannelActivityRef, "previous_messages_ids">,
-	)
-	{
+	) {
 		let new_activity: ChannelActivityRef = {
 			channel_id: payload.channel_id,
 			nickname: payload.nickname,

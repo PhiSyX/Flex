@@ -15,13 +15,10 @@ import type { CommandInterface } from "../interface";
 // Implémentation //
 // -------------- //
 
-export class TopicCommand implements CommandInterface<"TOPIC">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class TopicCommand implements CommandInterface<"TOPIC"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"TOPIC">)
-	{
+	send(payload: Command<"TOPIC">) {
 		this.store.emit("TOPIC", payload);
 	}
 }

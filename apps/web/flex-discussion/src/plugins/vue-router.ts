@@ -12,7 +12,7 @@ import type { App } from "vue";
 
 import {
 	createMemoryHistory as create_mem_history,
-	createRouter as create_router
+	createRouter as create_router,
 } from "vue-router";
 
 import { ROUTES } from "~/router/routes";
@@ -20,10 +20,11 @@ import { ROUTES } from "~/router/routes";
 /**
  * Installe le plugin vue-router.
  */
-export function install(app: App<Element>)
-{
-	app.use(create_router({
-        history: create_mem_history(),
-        routes: ROUTES,
-    }));
+export function install(app: App<Element>) {
+	app.use(
+		create_router({
+			history: create_mem_history(),
+			routes: ROUTES,
+		}),
+	);
 }

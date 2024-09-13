@@ -17,16 +17,16 @@ import { PrivmsgHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class PrivmsgModule implements Module<PrivmsgModule>
-{
+export class PrivmsgModule implements Module<PrivmsgModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "PRIVMSG";
 
-	static create(store: ChatStoreInterface & ChatStoreInterfaceExt): PrivmsgModule 
-	{
+	static create(
+		store: ChatStoreInterface & ChatStoreInterfaceExt,
+	): PrivmsgModule {
 		return new PrivmsgModule(
 			new PrivmsgCommand(store),
 			new PrivmsgHandler(store),
@@ -39,8 +39,7 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 	constructor(
 		private command: PrivmsgCommand,
 		private handler: PrivmsgHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
@@ -52,9 +51,11 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 		colors: Commands["PRIVMSG"]["colors"],
 		targets_raw?: string,
 		...words: Array<string>
-	)
-	{
-		if (active_room_id.startsWith("#") || active_room_id.toLowerCase() === "flex") {
+	) {
+		if (
+			active_room_id.startsWith("#") ||
+			active_room_id.toLowerCase() === "flex"
+		) {
 			let targets = targets_raw?.split(",");
 			if (!targets) {
 				return;
@@ -69,13 +70,11 @@ export class PrivmsgModule implements Module<PrivmsgModule>
 		this.send({ formats, colors, targets, text });
 	}
 
-	send(payload: Command<"PRIVMSG">)
-	{
+	send(payload: Command<"PRIVMSG">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }

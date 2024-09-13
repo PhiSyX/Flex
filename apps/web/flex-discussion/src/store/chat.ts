@@ -26,14 +26,19 @@ import type {
 
 import {
 	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store
+	defineStore as define_store,
 } from "pinia";
 import { io } from "socket.io-client";
 import { computed, reactive } from "vue";
 import { useRouter as use_router } from "vue-router";
 
 import { is_string } from "@phisyx/flex-asserts";
-import { ChatStore, View, is_channel, is_private_room } from "@phisyx/flex-chat";
+import {
+	ChatStore,
+	View,
+	is_channel,
+	is_private_room,
+} from "@phisyx/flex-chat";
 import { None } from "@phisyx/flex-safety";
 
 import { use_overlayer_store } from "./overlayer";
@@ -45,9 +50,9 @@ import { useUUIDv4Store, useUUIDv7Store } from "./uuid";
 // Implémentation //
 // -------------- //
 
-export class ChatStoreVue extends ChatStore implements
-	ChatStoreInterfaceExt,
-	ChatStoreUUIDExt
+export class ChatStoreVue
+	extends ChatStore
+	implements ChatStoreInterfaceExt, ChatStoreUUIDExt
 {
 	audio_src: ChatStoreInterfaceExt["audio_src"] = null;
 
@@ -60,8 +65,7 @@ export class ChatStoreVue extends ChatStore implements
 	private _uuidv4 = useUUIDv4Store() as unknown as UUIDStore;
 	private _uuidv7 = useUUIDv7Store() as unknown as UUIDStore;
 
-	static default(): ChatStoreVue
-	{
+	static default(): ChatStoreVue {
 		let cs = reactive(new ChatStoreVue()) as ChatStoreVue;
 		cs.room_manager().set_on_change((room_id) => {
 			let servername = cs.network_name();
@@ -94,8 +98,7 @@ export class ChatStoreVue extends ChatStore implements
 	// Méthode // -> ChatStoreInterfaceExt
 	// ------- //
 
-	connect(connect_user_info: ConnectUserInfo)
-	{
+	connect(connect_user_info: ConnectUserInfo) {
 		this.set_connect_user_info(connect_user_info);
 		this.connect_websocket(connect_user_info.websocket_server_url);
 
@@ -145,8 +148,7 @@ export class ChatStoreVue extends ChatStore implements
 		});
 	}
 
-	connect_websocket(websocket_server_url: string)
-	{
+	connect_websocket(websocket_server_url: string) {
 		console.info(
 			"Connexion au serveur de WebSocket « %s »",
 			websocket_server_url,
@@ -158,7 +160,10 @@ export class ChatStoreVue extends ChatStore implements
 		let client_id = this._client_id_storage.maybe().unwrap_or("") as
 			| string
 			| null;
-		let user_id = this.user().session().map((u) => u.id).unwrap_or("") as string | null;
+		let user_id = this.user()
+			.session()
+			.map((u) => u.id)
+			.unwrap_or("") as string | null;
 
 		if (client_id?.length === 0) {
 			client_id = null;
@@ -184,8 +189,7 @@ export class ChatStoreVue extends ChatStore implements
 		this._ws.replace(wsio);
 	}
 
-	disconnect_error(comment: GenericReply<"ERROR"> | string)
-	{
+	disconnect_error(comment: GenericReply<"ERROR"> | string) {
 		this._overlayer.create({
 			id: "error-layer",
 			centered: true,
@@ -201,9 +205,9 @@ export class ChatStoreVue extends ChatStore implements
 		});
 	}
 
-	async load_all_modules()
-	{
-		let total_loaded = this._handler_manager.size + this._module_manager.size;
+	async load_all_modules() {
+		let total_loaded =
+			this._handler_manager.size + this._module_manager.size;
 		let loaded = 0;
 
 		type LayerData = {
@@ -234,7 +238,10 @@ export class ChatStoreVue extends ChatStore implements
 			}
 
 			for (let [handler_name, handler_constructor] of handlers) {
-				this._handler_manager.set(handler_name, new handler_constructor(this));
+				this._handler_manager.set(
+					handler_name,
+					new handler_constructor(this),
+				);
 
 				loaded += 1;
 
@@ -288,8 +295,7 @@ export class ChatStoreVue extends ChatStore implements
 		this._overlayer.destroy("load-all-modules");
 	}
 
-	play_audio(src: this["audio_src"])
-	{
+	play_audio(src: this["audio_src"]) {
 		let settings_notification = this.settings().notification;
 
 		if (settings_notification.sounds.enabled === false) {
@@ -300,14 +306,16 @@ export class ChatStoreVue extends ChatStore implements
 
 		switch (src) {
 			case "connection":
-			{
-				key = "connection";
-			} break;
+				{
+					key = "connection";
+				}
+				break;
 
 			case "query":
-			{
-				key = "queries";
-			} break;
+				{
+					key = "queries";
+				}
+				break;
 		}
 
 		// @ts-expect-error
@@ -319,10 +327,9 @@ export class ChatStoreVue extends ChatStore implements
 		this.audio_src = src;
 	}
 
-	send_message(name: RoomID, message: string)
-	{
+	send_message(name: RoomID, message: string) {
 		let maybe_room = this.room_manager().get(name, {
-			where:{
+			where: {
 				state: "opened",
 				is_kicked: false,
 			},
@@ -340,34 +347,46 @@ export class ChatStoreVue extends ChatStore implements
 			let words = message.split(" ");
 
 			if (room.name.startsWith("#")) {
-				let module = this.module_manager().get("PUBMSG")
+				let module = this.module_manager()
+					.get("PUBMSG")
 					.expect("Récupération du module `PUBMSG`");
 				module.input(
 					room.name,
 					{
-						format_bold: this._settings.personalization.formats.bold,
-						format_italic: this._settings.personalization.formats.italic,
-						format_underline: this._settings.personalization.formats.underline,
+						format_bold:
+							this._settings.personalization.formats.bold,
+						format_italic:
+							this._settings.personalization.formats.italic,
+						format_underline:
+							this._settings.personalization.formats.underline,
 					},
 					{
-						color_background: this._settings.personalization.colors.background,
-						color_foreground: this._settings.personalization.colors.foreground,
+						color_background:
+							this._settings.personalization.colors.background,
+						color_foreground:
+							this._settings.personalization.colors.foreground,
 					},
 					...words,
 				);
 			} else {
-				let module = this.module_manager().get("PRIVMSG")
+				let module = this.module_manager()
+					.get("PRIVMSG")
 					.expect("Récupération du module `PRIVMSG`");
 				module.input(
 					room.name,
 					{
-						format_bold: this._settings.personalization.formats.bold,
-						format_italic: this._settings.personalization.formats.italic,
-						format_underline: this._settings.personalization.formats.underline,
+						format_bold:
+							this._settings.personalization.formats.bold,
+						format_italic:
+							this._settings.personalization.formats.italic,
+						format_underline:
+							this._settings.personalization.formats.underline,
 					},
 					{
-						color_background: this._settings.personalization.colors.background,
-						color_foreground: this._settings.personalization.colors.foreground,
+						color_background:
+							this._settings.personalization.colors.background,
+						color_foreground:
+							this._settings.personalization.colors.foreground,
 					},
 					...words,
 				);
@@ -389,33 +408,41 @@ export class ChatStoreVue extends ChatStore implements
 			);
 
 			let [random_uuid] = this.uuid(7).take(1);
-			this.room_manager().active().add_error_event(
-				{
-					origin: this.client(),
-					tags: { msgid: random_uuid },
-				},
-				`La commande "/${command_name}" n'a pas été traité.`
-			);
+			this.room_manager()
+				.active()
+				.add_error_event(
+					{
+						origin: this.client(),
+						tags: { msgid: random_uuid },
+					},
+					`La commande "/${command_name}" n'a pas été traité.`,
+				);
 			return;
 		}
 
 		let module = maybe_module.unwrap();
 
-		if (command_name_upper === "PUBMSG" || command_name_upper === "PRIVMSG")
-		{
+		if (
+			command_name_upper === "PUBMSG" ||
+			command_name_upper === "PRIVMSG"
+		) {
 			args = [
 				// @ts-expect-error : à corriger
 				{
 					format_bold: this._settings.personalization.formats.bold,
-					format_italic: this._settings.personalization.formats.italic,
-					format_underline: this._settings.personalization.formats.underline,
+					format_italic:
+						this._settings.personalization.formats.italic,
+					format_underline:
+						this._settings.personalization.formats.underline,
 				},
 				// @ts-expect-error : à corriger
 				{
-					color_background: this._settings.personalization.colors.background,
-					color_foreground: this._settings.personalization.colors.foreground,
+					color_background:
+						this._settings.personalization.colors.background,
+					color_foreground:
+						this._settings.personalization.colors.foreground,
 				},
-				...args
+				...args,
 			];
 		}
 
@@ -426,24 +453,20 @@ export class ChatStoreVue extends ChatStore implements
 	// Redirect //
 	// -------- //
 
-	overlayer()
-	{
+	overlayer() {
 		return this._overlayer;
 	}
 
-	router(): Router
-	{
+	router(): Router {
 		return this._router;
 	}
 
 	// @ts-expect-error - type à corriger
-	settings()
-	{
+	settings() {
 		return this._settings;
 	}
 
-	user(): UserStore
-	{
+	user(): UserStore {
 		return this._user;
 	}
 
@@ -451,8 +474,7 @@ export class ChatStoreVue extends ChatStore implements
 	// Méthode // -> ChatStoreUUIDExt
 	// ------- //
 
-	uuid(version: UUIDVariant): UUIDStore
-	{
+	uuid(version: UUIDVariant): UUIDStore {
 		if (version === 4) {
 			return this._uuidv4;
 		}
@@ -474,18 +496,21 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	// Le pseudo du client courant.
 	let current_client_nickname = computed(() => current_client.value.nickname);
 
-
 	// Toutes les chambres.
 	let rooms = computed(() => store.room_manager().rooms());
 
 	// Toutes les chambres privés en attente
 	let privates_waiting: ComputedRef<Array<PrivateRoom>> = computed(
-		() => store.room_manager().rooms().filter((room) => {
-			if (!is_private_room(room)) {
-				return false;
-			}
-			return room.is_pending() && room.is_closed();
-		}) as Array<PrivateRoom>
+		() =>
+			store
+				.room_manager()
+				.rooms()
+				.filter((room) => {
+					if (!is_private_room(room)) {
+						return false;
+					}
+					return room.is_pending() && room.is_closed();
+				}) as Array<PrivateRoom>,
 	);
 
 	let servers = computed(() => {
@@ -508,8 +533,7 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	/**
 	 * Émet la commande /LIST vers le serveur et redirige vers sa vue.
 	 */
-	function channel_list(channels?: Array<string>)
-	{
+	function channel_list(channels?: Array<string>) {
 		store.channel_list(channels || []);
 
 		router.push({
@@ -547,7 +571,8 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		client: store.client.bind(store),
 		close_room: store.close_room.bind(store),
 		connect: store.connect.bind(store),
-		get_current_selected_channel_member: store.get_current_selected_channel_member.bind(store),
+		get_current_selected_channel_member:
+			store.get_current_selected_channel_member.bind(store),
 		ignore_user: store.ignore_user.bind(store),
 		is_connected: store.is_connected.bind(store),
 		join_channel: store.join_channel.bind(store),
@@ -562,7 +587,8 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		send_message: store.send_message.bind(store),
 		send_set_access_level: store.send_set_access_level.bind(store),
 		send_unset_access_level: store.send_unset_access_level.bind(store),
-		toggle_select_channel_member: store.toggle_select_channel_member.bind(store),
+		toggle_select_channel_member:
+			store.toggle_select_channel_member.bind(store),
 		unban_channel_member_mask: store.unban_channel_member_mask.bind(store),
 		unignore_user: store.unignore_user.bind(store),
 		update_topic: store.update_topic.bind(store),

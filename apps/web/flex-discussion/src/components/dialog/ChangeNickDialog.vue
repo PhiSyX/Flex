@@ -13,7 +13,7 @@ import ChangeNickDialog from "#/sys/dialog_change_nick/ChangeNickDialog.template
 let chat_store = use_chat_store();
 
 let { layer_name, dialog, teleport_id, close_dialog } = use_dialog(
-	UserChangeNicknameDialog
+	UserChangeNicknameDialog,
 );
 
 // ------- //

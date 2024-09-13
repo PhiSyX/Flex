@@ -10,7 +10,6 @@
 
 import type { ChatStoreInterface } from "../../store";
 
-
 // ---- //
 // Type //
 // ---- //
@@ -21,37 +20,35 @@ type S = SocketEventInterface<"ERR_CHANNELISFULL">;
 // Implémentation //
 // -------------- //
 
-export class ErrorChannelisfullHandler implements S
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ErrorChannelisfullHandler implements S {
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_CHANNELISFULL", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_CHANNELISFULL">)
-	{
-		let room = this.store.room_manager().get(data.channel, {
-			where: {
-				state: "opened",
-				is_kicked: false,
-			},
-			fallbacks: [
-				{
-					active: {
-						where: { is_kicked: false },
-					},
+	handle(data: GenericReply<"ERR_CHANNELISFULL">) {
+		let room = this.store
+			.room_manager()
+			.get(data.channel, {
+				where: {
+					state: "opened",
+					is_kicked: false,
 				},
-				{ network: true },
-			]
-		})
+				fallbacks: [
+					{
+						active: {
+							where: { is_kicked: false },
+						},
+					},
+					{ network: true },
+				],
+			})
 			.unwrap();
 		room.add_event(
 			"error:err_channelisfull",
 			room.create_event(data),
-			data.reason
+			data.reason,
 		);
 	}
 }

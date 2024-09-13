@@ -16,33 +16,28 @@ import type { ChatStoreInterface } from "../../../store";
 // Implémentation //
 // -------------- //
 
-export class ModeSettingsHandler implements SocketEventInterface<"MODE">
-{
+export class ModeSettingsHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"MODE">)
-	{
+	handle(data: GenericReply<"MODE">) {
 		if (this.store.is_current_client(data.target)) {
 			return;
-		};
+		}
 		this.handle_channel(data);
 	}
 
-	handle_channel(data: GenericReply<"MODE">)
-	{
+	handle_channel(data: GenericReply<"MODE">) {
 		let maybe_room = this.store.room_manager().get(data.target);
 		if (maybe_room.is_none()) {
 			return;
@@ -65,9 +60,12 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 				}
 
 				channel.set_setting_mode(letter);
-				if (letter === "k"  && Object.hasOwn(mode.flag, "key")) {
+				if (letter === "k" && Object.hasOwn(mode.flag, "key")) {
 					channel.key.replace(mode.flag.key);
-				} else if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
+				} else if (
+					letter === "l" &&
+					Object.hasOwn(mode.flag, "limit")
+				) {
 					channel.set_limit(mode.flag.limit);
 				} else if (letter === "t") {
 					channel.topic.set_editable(false);
@@ -82,9 +80,12 @@ export class ModeSettingsHandler implements SocketEventInterface<"MODE">
 				}
 
 				channel.unset_setting_mode(letter);
-				if (letter === "k"  && Object.hasOwn(mode.flag, "key")) {
+				if (letter === "k" && Object.hasOwn(mode.flag, "key")) {
 					channel.key = None();
-				} else if (letter === "l" && Object.hasOwn(mode.flag, "limit")) {
+				} else if (
+					letter === "l" &&
+					Object.hasOwn(mode.flag, "limit")
+				) {
 					channel.set_limit(mode.flag.limit);
 				} else if (letter === "t") {
 					channel.topic.set_editable(true);

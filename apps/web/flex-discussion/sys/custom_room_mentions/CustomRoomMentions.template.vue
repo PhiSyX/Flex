@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { MentionsCustomRoom } from "@phisyx/flex-chat";
 
-
 import { ButtonIcon } from "@phisyx/flex-vue-uikit";
 
 import Room from "#/sys/room/Room.template.vue";
@@ -10,13 +9,11 @@ import Room from "#/sys/room/Room.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	room: MentionsCustomRoom;
 }
 
-interface Emits
-{
+interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "close"): void;

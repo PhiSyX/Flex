@@ -20,18 +20,14 @@ type S = SocketEventInterface<"ERR_NOTONCHANNEL">;
 // Implémentation //
 // -------------- //
 
-export class ErrorNotonchannelHandler implements S
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ErrorNotonchannelHandler implements S {
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_NOTONCHANNEL", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NOTONCHANNEL">)
-	{
+	handle(data: GenericReply<"ERR_NOTONCHANNEL">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_notonchannel",

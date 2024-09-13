@@ -16,8 +16,7 @@ import { AwayCommand } from "./command";
 // Implémentation //
 // -------------- //
 
-export class AwayModule implements Module<AwayModule>
-{
+export class AwayModule implements Module<AwayModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -31,29 +30,24 @@ export class AwayModule implements Module<AwayModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AwayCommand)
-	{}
+	constructor(private command: AwayCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, ...text: Array<string>)
-	{
+	input(_: string, ...text: Array<string>) {
 		this.send({ text: text.join(" ") });
 	}
 
-	send(payload: Command<"AWAY">)
-	{
+	send(payload: Command<"AWAY">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class BackModule implements Module<BackModule>
-{
+export class BackModule implements Module<BackModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -67,23 +61,19 @@ export class BackModule implements Module<BackModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AwayCommand)
-	{}
+	constructor(private command: AwayCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string)
-	{
+	input(_: string) {
 		this.send({ text: "" });
 	}
 
-	send(payload: Command<"AWAY">)
-	{
+	send(payload: Command<"AWAY">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }

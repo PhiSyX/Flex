@@ -8,13 +8,11 @@ import PrivatesWaitingItem from "./PrivatesWaitingItem.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	list: Array<PrivateRoom>;
 }
 
-interface Emits
-{
+interface Emits {
 	// biome-ignore lint/style/useShorthandFunctionType: chut
 	(event_name: "open-private", priv: Origin): void;
 }
@@ -27,8 +25,8 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 let input_placeholder_attribute = computed(() => {
-	let plural = (props.list.length === 1) ? "" : "s";
-	return `Filtrer: ${props.list.length} privé${plural}...`
+	let plural = props.list.length === 1 ? "" : "s";
+	return `Filtrer: ${props.list.length} privé${plural}...`;
 });
 
 // ------- //

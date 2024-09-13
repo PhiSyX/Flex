@@ -8,8 +8,7 @@ import Match from "../match/Match.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	activity: ChannelActivity;
 }
 

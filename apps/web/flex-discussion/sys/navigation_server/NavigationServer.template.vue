@@ -9,8 +9,7 @@ import NavigationRoom from "#/sys/navigation_room/NavigationRoom.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	active: boolean;
 	connected: boolean;
 	containerFolded?: boolean;
@@ -24,8 +23,7 @@ interface Props
 // Type //
 // ---- //
 
-export interface Emits
-{
+export interface Emits {
 	(event_name: "change-room", origin: Origin | RoomID): void;
 	(event_name: "close-room", origin: Origin | RoomID): void;
 }
@@ -48,8 +46,7 @@ const open_room_handler = (origin: Origin | RoomID) =>
 const close_room_handler = (origin: Origin | RoomID) =>
 	emit("close-room", origin);
 
-function should_be_listed_in_nav(room: Room)
-{
+function should_be_listed_in_nav(room: Room) {
 	return [
 		"channel",
 		"private",
@@ -58,15 +55,13 @@ function should_be_listed_in_nav(room: Room)
 	].includes(room.type);
 }
 
-function change_room_handler(evt: Event)
-{
+function change_room_handler(evt: Event) {
 	evt.preventDefault();
 	evt.stopPropagation();
 	open_room_handler(props.id);
 }
 
-function toggle_fold_handler()
-{
+function toggle_fold_handler() {
 	folded.value = !folded.value;
 }
 </script>

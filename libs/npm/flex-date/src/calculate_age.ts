@@ -21,8 +21,7 @@ const UNIX_EPOCH_YEAR: number = 1970;
 /**
  * Retourne un âge en fonction d'une date.
  */
-function calculate_age(nsd: number | string | Date): number
-{
+function calculate_age(nsd: number | string | Date): number {
 	let date = new Date(nsd);
 	let diff = Date.now() - date.getTime();
 	let age = new Date(diff);

@@ -18,8 +18,7 @@ import type { DialogInterface } from "./interface";
 // Type //
 // ---- //
 
-export interface ChannelSettingsRecordDialog
-{
+export interface ChannelSettingsRecordDialog {
 	// Salon actif
 	room: ChannelRoom;
 	// Le client courant, qui est membre du salon.
@@ -30,7 +29,8 @@ export interface ChannelSettingsRecordDialog
 // Implémentation //
 // -------------- //
 
-export class ChannelSettingsDialog implements DialogInterface<ChannelSettingsRecordDialog>
+export class ChannelSettingsDialog
+	implements DialogInterface<ChannelSettingsRecordDialog>
 {
 	// ------ //
 	// Static //
@@ -41,8 +41,7 @@ export class ChannelSettingsDialog implements DialogInterface<ChannelSettingsRec
 	static create(
 		overlayer_store: OverlayerStore,
 		data: ChannelSettingsRecordDialog,
-	)
-	{
+	) {
 		overlayer_store.create({
 			id: ChannelSettingsDialog.ID,
 			destroyable: "manual",
@@ -56,36 +55,31 @@ export class ChannelSettingsDialog implements DialogInterface<ChannelSettingsRec
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(ChannelSettingsDialog.ID);
 	}
 
-	get(): Option<Layer<ChannelSettingsRecordDialog>>
-	{
-		return this.overlayer_store.get(ChannelSettingsDialog.ID)
+	get(): Option<Layer<ChannelSettingsRecordDialog>> {
+		return this.overlayer_store
+			.get(ChannelSettingsDialog.ID)
 			.as<Layer<ChannelSettingsRecordDialog>>();
 	}
 
-	get_unchecked(): Layer<ChannelSettingsRecordDialog>
-	{
+	get_unchecked(): Layer<ChannelSettingsRecordDialog> {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(ChannelSettingsDialog.ID);
 	}
 
-	with_data(data: ChannelSettingsRecordDialog)
-	{
+	with_data(data: ChannelSettingsRecordDialog) {
 		this.overlayer_store.update_data(ChannelSettingsDialog.ID, data);
 	}
 }

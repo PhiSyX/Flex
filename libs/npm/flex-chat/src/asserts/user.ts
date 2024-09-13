@@ -14,8 +14,7 @@ import { User } from "../user";
 /**
  * Certifie que la donnée passée en argument est un utilisateur.
  */
-export function is_user(user: unknown): user is User
-{
+export function is_user(user: unknown): user is User {
 	// NOTE: étant donné que `ChannelMember` étend de `User`, et que nous
 	// voulons différencier ces deux types (= être précis) sur cette fonction,
 	// nous ne vérifions en plus si l'argument ne correspond pas à ce premier.

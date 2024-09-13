@@ -2,11 +2,7 @@
 import type { ChannelActivitiesView } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 
-import {
-	ChannelMember,
-	ChannelRoom,
-	RoomMessage,
-} from "@phisyx/flex-chat";
+import { ChannelMember, ChannelRoom, RoomMessage } from "@phisyx/flex-chat";
 import { format_date } from "@phisyx/flex-date";
 import { None, Some } from "@phisyx/flex-safety";
 

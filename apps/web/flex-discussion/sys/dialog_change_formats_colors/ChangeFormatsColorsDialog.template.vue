@@ -18,8 +18,8 @@ let background_selected = defineModel<number | null>("background");
 let foreground_selected = defineModel<number | null>("foreground");
 
 let reveal_background_box = ref(false);
-let reveal_icon = computed(
-	() => reveal_background_box.value ? "icon-arrow-up" : "icon-arrow-down"
+let reveal_icon = computed(() =>
+	reveal_background_box.value ? "icon-arrow-up" : "icon-arrow-down",
 );
 </script>
 

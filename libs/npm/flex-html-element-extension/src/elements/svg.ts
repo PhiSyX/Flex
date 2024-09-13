@@ -17,16 +17,14 @@ import {
 export function svg(
 	size: [w: number, h: number],
 	...args: Ext.Args
-): Ext<SVGSVGElement>
-{
+): Ext<SVGSVGElement> {
 	return Ext.create_element("svg", args)
 		.width(size[0])
 		.height(size[1])
 		.viewBox(`0 0 ${size[0]} ${size[1]}`);
 }
 
-export function path(d: string, ...args: Ext.Args): Ext<SVGPathElement>
-{
+export function path(d: string, ...args: Ext.Args): Ext<SVGPathElement> {
 	return Ext.create_element("path", args).d(d).fill("currentColor");
 }
 
@@ -35,16 +33,14 @@ export function circle(
 	cy: number,
 	r: number,
 	...args: Ext.Args
-): CircleSVGElementExtension
-{
+): CircleSVGElementExtension {
 	return CircleSVGElementExtension.make(args).cx(cx).cy(cy).r(r);
 }
 
 export function animateTransform(
 	attributeName: string,
 	...args: Ext.Args
-): AnimateTransformSVGElementExtension
-{
+): AnimateTransformSVGElementExtension {
 	return AnimateTransformSVGElementExtension.make(args).attributeName(
 		attributeName,
 	);

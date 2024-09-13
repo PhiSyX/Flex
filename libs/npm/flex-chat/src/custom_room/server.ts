@@ -10,8 +10,7 @@
 
 import { Room } from "../room";
 
-export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room">
-{
+export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room"> {
 	/**
 	 * ID de la chambre personnalisée.
 	 */
@@ -22,8 +21,7 @@ export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room">
 	// Constructor //
 	// ----------- //
 
-	constructor()
-	{
+	constructor() {
 		super("server-custom-room", ServerCustomRoom.NAME);
 		this.with_id(ServerCustomRoom.ID);
 	}
@@ -44,16 +42,14 @@ export class ServerCustomRoom extends Room<CustomRoomID, "server-custom-room">
 	/**
 	 * Est-ce que le serveur est connecté?
 	 */
-	is_connected(): boolean
-	{
+	is_connected(): boolean {
 		return this.connected;
 	}
 
 	/**
 	 * Définit le serveur comme étant connecté ou non.
 	 */
-	set_connected(bool: boolean)
-	{
+	set_connected(bool: boolean) {
 		this.connected = bool;
 	}
 }

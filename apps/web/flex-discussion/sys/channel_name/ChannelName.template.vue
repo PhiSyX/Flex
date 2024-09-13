@@ -7,8 +7,7 @@ import { computed } from "vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	name: string;
 	highestAccessLevel?: Partial<HighestAccessLevelOutput>;
 	tag?: keyof HTMLElementTagNameMap;

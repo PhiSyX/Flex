@@ -17,22 +17,18 @@ import {
 } from "@phisyx/flex-html-element-extension";
 
 @customElement({ mode: "open" })
-export default class LabelIcon
-{
+export default class LabelIcon {
 	@attr()
-	get for(): string 
-	{
+	get for(): string {
 		return "<for-attr>";
 	}
 
 	@attr()
-	get icon(): string
-	{
+	get icon(): string {
 		return "<icon-attr>";
 	}
 
-	render() 
-	{
+	render() {
 		let $icon = template_content(`#icon-${this.icon}`);
 		return label($icon).for(`#${this.for}`);
 	}
@@ -43,8 +39,7 @@ export function labelIcon(
 	iconAttr: LabelIcon["icon"],
 	nativeAttrs?: Partial<HTMLLabelElement>,
 	...args: HExt.Args
-)
-{
+) {
 	return use(
 		LabelIcon,
 		{ for: forAttr, icon: iconAttr },

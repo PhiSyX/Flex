@@ -98,16 +98,16 @@ type SVGKeyTimes = number | `${number};${number}`;
 // Implémentation //
 // -------------- //
 
-class SVGElementExtension<E extends SVGElement = FIXME> extends ElementExtension<E>
-{
+class SVGElementExtension<
+	E extends SVGElement = FIXME,
+> extends ElementExtension<E> {
 	public static create_element<
 		T extends keyof SVGElementTagNameMap,
 		NE extends SVGElementTagNameMap[T],
 	>(
 		tagName: T,
 		args: Array<SVGElementExtension.Arg>,
-	): SVGElementExtension<NE>
-	{
+	): SVGElementExtension<NE> {
 		let $nativeElement = document.createElementNS(
 			"http://www.w3.org/2000/svg",
 			tagName,
@@ -120,22 +120,19 @@ class SVGElementExtension<E extends SVGElement = FIXME> extends ElementExtension
 	 * Public API
 	 */
 
-	d(value: string): this
-	{
+	d(value: string): this {
 		this.set_attribute("d", value);
 		return this;
 	}
 
 	fill(value: "currentColor"): this;
 	fill(value: "none"): this;
-	fill(value: string): this
-	{
+	fill(value: string): this {
 		this.set_attribute("fill", value);
 		return this;
 	}
 
-	height(h: number): this
-	{
+	height(h: number): this {
 		this.set_attribute("height", h);
 		return this;
 	}
@@ -154,84 +151,74 @@ class SVGElementExtension<E extends SVGElement = FIXME> extends ElementExtension
 		type: FIXME,
 		listener: SVGElementExtension.ChooseGoodEvent<E, FIXME>,
 		options?: boolean | AddEventListenerOptions,
-	): this
-	{
-		this.native_element.addEventListener(type, listener.bind(this), options);
+	): this {
+		this.native_element.addEventListener(
+			type,
+			listener.bind(this),
+			options,
+		);
 		return this;
 	}
 
-	onClick(fn: (evt: MouseEvent) => void): this
-	{
+	onClick(fn: (evt: MouseEvent) => void): this {
 		this.native_element.addEventListener("click", fn);
 		return this;
 	}
 
-	preserveAspectRatio(aspectRatio: SVGPreserveAspectRatio): this
-	{
+	preserveAspectRatio(aspectRatio: SVGPreserveAspectRatio): this {
 		this.set_attribute("preserveAspectRatio", aspectRatio);
 		return this;
 	}
 
-	stroke(color: `#${string}`): this
-	{
+	stroke(color: `#${string}`): this {
 		this.set_attribute("stroke", color);
 		return this;
 	}
 
-	strokeDashArray(da: string): this
-	{
+	strokeDashArray(da: string): this {
 		this.set_attribute("stroke-dasharray", da);
 		return this;
 	}
 
-	strokeDashOffset(dof: string): this
-	{
+	strokeDashOffset(dof: string): this {
 		this.set_attribute("stroke-dashoffset", dof);
 		return this;
 	}
 
-	strokeLineCap(lc: SVGStrokeLineCap): this
-	{
+	strokeLineCap(lc: SVGStrokeLineCap): this {
 		this.set_attribute("stroke-linecap", lc);
 		return this;
 	}
 
-	strokeWidth(width: number): this
-	{
+	strokeWidth(width: number): this {
 		this.set_attribute("stroke-width", width);
 		return this;
 	}
 
-	viewBox(box: string): this
-	{
+	viewBox(box: string): this {
 		this.set_attribute("viewBox", box);
 		return this;
 	}
 
-	width(w: number): this
-	{
+	width(w: number): this {
 		this.set_attribute("width", w);
 		return this;
 	}
 
-	xmlns_1999_xlink(): this
-	{
+	xmlns_1999_xlink(): this {
 		this.set_attribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 		return this;
 	}
 }
 
-export class AnimateTransformSVGElementExtension extends SVGElementExtension<SVGAnimateTransformElement>
-{
+export class AnimateTransformSVGElementExtension extends SVGElementExtension<SVGAnimateTransformElement> {
 	static make(
 		args: SVGElementExtension.Args,
-	): AnimateTransformSVGElementExtension
-	{
+	): AnimateTransformSVGElementExtension {
 		return new AnimateTransformSVGElementExtension(args);
 	}
 
-	constructor(args: SVGElementExtension.Args)
-	{
+	constructor(args: SVGElementExtension.Args) {
 		super(
 			document.createElementNS(
 				"http://www.w3.org/2000/svg",
@@ -245,52 +232,43 @@ export class AnimateTransformSVGElementExtension extends SVGElementExtension<SVG
 	 * Public API
 	 */
 
-	attributeName(name: string): this
-	{
+	attributeName(name: string): this {
 		this.set_attribute("attributeName", name);
 		return this;
 	}
 
-	dur(value: SVGDur): this
-	{
+	dur(value: SVGDur): this {
 		this.set_attribute("dur", value);
 		return this;
 	}
 
-	keyTimes(value: SVGKeyTimes): this
-	{
+	keyTimes(value: SVGKeyTimes): this {
 		this.set_attribute("keyTimes", value);
 		return this;
 	}
 
-	repeatCount(value: SVGRepeatCount): this
-	{
+	repeatCount(value: SVGRepeatCount): this {
 		this.set_attribute("repeatCount", value);
 		return this;
 	}
 
-	type(value: SVGType): this
-	{
+	type(value: SVGType): this {
 		this.set_attribute("type", value);
 		return this;
 	}
 
-	values(value: string): this
-	{
+	values(value: string): this {
 		this.set_attribute("values", value);
 		return this;
 	}
 }
 
-export class CircleSVGElementExtension extends SVGElementExtension<SVGCircleElement>
-{
-	static make(args: SVGElementExtension.Args): CircleSVGElementExtension
-	{
+export class CircleSVGElementExtension extends SVGElementExtension<SVGCircleElement> {
+	static make(args: SVGElementExtension.Args): CircleSVGElementExtension {
 		return new CircleSVGElementExtension(args);
 	}
 
-	constructor(args: SVGElementExtension.Args)
-	{
+	constructor(args: SVGElementExtension.Args) {
 		super(
 			document.createElementNS("http://www.w3.org/2000/svg", "circle"),
 			args,
@@ -301,20 +279,17 @@ export class CircleSVGElementExtension extends SVGElementExtension<SVGCircleElem
 	 * Public API
 	 */
 
-	cx(value: number): this
-	{
+	cx(value: number): this {
 		this.set_attribute("cx", value);
 		return this;
 	}
 
-	cy(value: number): this
-	{
+	cy(value: number): this {
 		this.set_attribute("cy", value);
 		return this;
 	}
 
-	r(value: number): this
-	{
+	r(value: number): this {
 		this.set_attribute("r", value);
 		return this;
 	}

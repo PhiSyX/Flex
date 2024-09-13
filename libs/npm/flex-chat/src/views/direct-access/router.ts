@@ -14,13 +14,10 @@ import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 // Implémentation //
 // -------------- //
 
-export class DirectAccessRouter
-{
-	constructor(private router_acl: RouterAntiCorruptionLayer)
-	{}
+export class DirectAccessRouter {
+	constructor(private router_acl: RouterAntiCorruptionLayer) {}
 
-	goto(opt: { name: string })
-	{
+	goto(opt: { name: string }) {
 		this.router_acl.goto(opt.name);
 	}
 }

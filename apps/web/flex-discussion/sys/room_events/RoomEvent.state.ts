@@ -14,8 +14,7 @@ import { computed } from "vue";
 // Type //
 // ---- //
 
-export interface Props<R extends RepliesNames>
-{
+export interface Props<R extends RepliesNames> {
 	data: GenericReply<R>;
 	id: UUID;
 	archived: boolean;

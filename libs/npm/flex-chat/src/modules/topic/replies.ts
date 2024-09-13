@@ -16,25 +16,21 @@ import { assert_channel_room } from "../../asserts/room";
 // Implémentation //
 // -------------- //
 
-export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC">
-{
+export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_TOPIC", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_TOPIC">)
-	{
+	handle(data: GenericReply<"RPL_TOPIC">) {
 		let maybe_channel = this.store.room_manager().get(data.channel);
 		if (maybe_channel.is_none()) {
 			return;
@@ -44,32 +40,33 @@ export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC">
 		channel.set_topic(data.topic);
 
 		// @ts-expect-error : type à corriger
-		channel.add_event("event:topic", channel.create_event(
-			data,
-			this.store.is_current_client(data.origin)),
+		channel.add_event(
+			"event:topic",
+			channel.create_event(
+				data,
+				this.store.is_current_client(data.origin),
+			),
 		);
 	}
 }
 
-export class ReplyNotopicHandler implements SocketEventInterface<"RPL_NOTOPIC">
+export class ReplyNotopicHandler
+	implements SocketEventInterface<"RPL_NOTOPIC">
 {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_NOTOPIC", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_NOTOPIC">)
-	{
+	handle(data: GenericReply<"RPL_NOTOPIC">) {
 		let maybe_channel = this.store.room_manager().get(data.channel);
 		if (maybe_channel.is_none()) {
 			return;

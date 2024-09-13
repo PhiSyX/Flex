@@ -10,16 +10,14 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	disabled?: boolean;
 	isSameMember: boolean;
 	currentClientMember: ChannelMember;
 	selectedMember: ChannelMemberSelected;
 }
 
-interface Emits
-{
+interface Emits {
 	(
 		event_name: "set-access-level",
 		member: ChannelMember,

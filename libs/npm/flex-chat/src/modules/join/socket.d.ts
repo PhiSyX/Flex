@@ -8,8 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-declare interface ErrorReplies
-{
+declare interface ErrorReplies {
 	ERR_BADCHANNELKEY: { channel: ChannelID };
 	ERR_CHANNELISFULL: { channel: ChannelID };
 }

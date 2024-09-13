@@ -35,8 +35,7 @@ export function use(
 		| Promise<{ default: FIXME }>
 		| (() => Promise<{ default: FIXME }>),
 	...args: Ext.Args
-): Ext | Promise<Ext>
-{
+): Ext | Promise<Ext> {
 	let render = (custom_tag_name: string) => {
 		let custom_element = Ext.create_element(
 			custom_tag_name as keyof HTMLElementTagNameMap,

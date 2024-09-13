@@ -7,8 +7,7 @@ import { Badge, ButtonIcon } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	active: boolean;
 	id: RoomID;
 	name: RoomID;
@@ -18,16 +17,14 @@ interface Props
 	totalUnreadMessages?: number;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "open-room", origin: Origin | RoomID): void;
 	(event_name: "close-room", origin: Origin | RoomID): void;
 }
 
-interface Slots
-{
-	"icon": unknown;
-	"extra": unknown;
+interface Slots {
+	icon: unknown;
+	extra: unknown;
 }
 
 // --------- //

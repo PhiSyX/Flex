@@ -15,24 +15,18 @@ import type { CommandInterface } from "../interface";
 // Implémentation //
 // -------------- //
 
-export class PartCommand implements CommandInterface<"PART">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class PartCommand implements CommandInterface<"PART"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"PART">)
-	{
+	send(payload: Command<"PART">) {
 		this.store.emit("PART", payload);
 	}
 }
 
-export class SapartCommand implements CommandInterface<"SAPART">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class SapartCommand implements CommandInterface<"SAPART"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"SAPART">)
-	{
+	send(payload: Command<"SAPART">) {
 		this.store.emit("SAPART", payload);
 	}
 }

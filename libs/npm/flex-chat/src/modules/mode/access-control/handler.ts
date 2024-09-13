@@ -16,33 +16,28 @@ import { assert_channel_room } from "../../../asserts/room";
 // Implémentation //
 // -------------- //
 
-export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
-{
+export class ModeAccessControlHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"MODE">)
-	{
+	handle(data: GenericReply<"MODE">) {
 		if (this.store.is_current_client(data.target)) {
 			return;
 		}
 		this.handle_channel(data);
 	}
 
-	handle_channel(data: GenericReply<"MODE">)
-	{
+	handle_channel(data: GenericReply<"MODE">) {
 		let maybe_room = this.store.room_manager().get(data.target);
 		if (maybe_room.is_none()) {
 			return;
@@ -56,7 +51,10 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 			// biome-ignore lint/suspicious/noExplicitAny: ?
 			mode: ModeApplyFlag<any>,
 		): mode is ModeApplyFlag<AccessControlMode> {
-			return ["b", "e", "I"].includes(letter) && Object.hasOwn(mode.flag, "mask");
+			return (
+				["b", "e", "I"].includes(letter) &&
+				Object.hasOwn(mode.flag, "mask")
+			);
 		}
 
 		if (data.added) {
@@ -66,17 +64,25 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 				}
 
 				let mask_addr = [
-					mode.flag.mask.nick,  "!",
-					mode.flag.mask.ident, "@",
-					mode.flag.mask.host
+					mode.flag.mask.nick,
+					"!",
+					mode.flag.mask.ident,
+					"@",
+					mode.flag.mask.host,
 				].join("") as MaskAddr;
 
 				if (letter === "b") {
 					channel.access_control.banlist.set(mask_addr, mode);
 				} else if (letter === "e") {
-					channel.access_control.banlist_exception.set(mask_addr, mode);
+					channel.access_control.banlist_exception.set(
+						mask_addr,
+						mode,
+					);
 				} else if (letter === "I") {
-					channel.access_control.invitelist_exception.set(mask_addr, mode);
+					channel.access_control.invitelist_exception.set(
+						mask_addr,
+						mode,
+					);
 				}
 			}
 		}
@@ -88,9 +94,11 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 				}
 
 				let mask_addr = [
-					mode.flag.mask.nick,  "!",
-					mode.flag.mask.ident, "@",
-					mode.flag.mask.host
+					mode.flag.mask.nick,
+					"!",
+					mode.flag.mask.ident,
+					"@",
+					mode.flag.mask.host,
 				].join("") as MaskAddr;
 
 				if (letter === "b") {
@@ -98,7 +106,9 @@ export class ModeAccessControlHandler implements SocketEventInterface<"MODE">
 				} else if (letter === "e") {
 					channel.access_control.banlist_exception.delete(mask_addr);
 				} else if (letter === "I") {
-					channel.access_control.invitelist_exception.delete(mask_addr);
+					channel.access_control.invitelist_exception.delete(
+						mask_addr,
+					);
 				}
 			}
 		}

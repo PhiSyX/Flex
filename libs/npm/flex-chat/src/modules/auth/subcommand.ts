@@ -12,8 +12,7 @@
 // Énumération //
 // ----------- //
 
-export enum AuthSubCommand
-{
+export enum AuthSubCommand {
 	IDENTIFY = "IDENTIFY",
 	REGISTER = "REGISTER",
 }

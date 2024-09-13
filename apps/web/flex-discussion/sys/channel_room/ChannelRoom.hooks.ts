@@ -11,11 +11,7 @@
 import type { ComputedRef, Ref } from "vue";
 import type { Emits, Props } from "./ChannelRoom.template.vue";
 
-import {
-	computed,
-	nextTick as next_tick,
-	ref,
-} from "vue";
+import { computed, nextTick as next_tick, ref } from "vue";
 
 // -------- //
 // Fonction //
@@ -35,10 +31,8 @@ function submit_topic(
 		topic_input: Ref<string>;
 		current_client_member_can_edit_topic: ComputedRef<boolean>;
 	},
-)
-{
-	function submit_topic_handler(evt: Event)
-	{
+) {
+	function submit_topic_handler(evt: Event) {
 		topic_edit_mode.value = false;
 
 		emit("create-topic-layer", {
@@ -75,10 +69,8 @@ function enable_topic_edit_mode(
 		topic_edit_mode: Ref<boolean>;
 		current_client_member_can_edit_topic: ComputedRef<boolean>;
 	},
-)
-{
-	function enable_topic_edit_mode_handler(evt: Event)
-	{
+) {
+	function enable_topic_edit_mode_handler(evt: Event) {
 		if (!current_client_member_can_edit_topic.value) {
 			return;
 		}
@@ -102,15 +94,14 @@ function enable_topic_edit_mode(
 // Hooks //
 // ----- //
 
-export function use_channel_topic(props: Props, emit: Emits)
-{
+export function use_channel_topic(props: Props, emit: Emits) {
 	let $topic = ref<HTMLInputElement>();
 	let topic_edit_mode = ref(false);
 	let topic_input = ref(props.room.topic.get());
 
 	// Est-ce que le client courant peut éditer le sujet.
-	let current_client_member_can_edit_topic = computed(
-		() => props.currentClientMember
+	let current_client_member_can_edit_topic = computed(() =>
+		props.currentClientMember
 			.map((member) => props.room.can_edit_topic(member))
 			.unwrap_or(false),
 	);

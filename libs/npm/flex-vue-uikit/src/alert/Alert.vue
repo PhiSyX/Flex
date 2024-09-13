@@ -7,24 +7,21 @@ import { ButtonIcon } from "../icons";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	canClose?: boolean;
 	contentCenter?: boolean;
 	closeAfterSeconds?: number;
 	type: "warning" | "error";
 }
 
-interface Emits
-{
+interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "close"): void;
 }
 
-interface Slots
-{
-	"default": unknown;
+interface Slots {
+	default: unknown;
 }
 
 // --------- //
@@ -56,8 +53,7 @@ on_mounted(() => {
 // Handler //
 // ------- //
 
-function close_handler()
-{
+function close_handler() {
 	displaying.value = false;
 	emit("close");
 }

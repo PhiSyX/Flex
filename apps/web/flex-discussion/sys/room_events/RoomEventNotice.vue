@@ -15,7 +15,7 @@ const target = computed(() =>
 		? is_current_client
 			? data.target
 			: data.origin.nickname
-		: `${data.origin.nickname}:${data.target}`
+		: `${data.origin.nickname}:${data.target}`,
 );
 </script>
 

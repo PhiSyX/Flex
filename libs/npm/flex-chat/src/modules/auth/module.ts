@@ -11,7 +11,7 @@
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	ChatStoreUUIDExt
+	ChatStoreUUIDExt,
 } from "../../store";
 import type { Module } from "../interface";
 import { AuthCommand } from "./command";
@@ -23,20 +23,16 @@ import { AuthSubCommand } from "./subcommand";
 // Implémentation //
 // -------------- //
 
-export class AuthModule implements Module<AuthModule>
-{
+export class AuthModule implements Module<AuthModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "AUTH";
 
-	static create(store:
-		& ChatStoreInterface 
-		& ChatStoreInterfaceExt 
-		& ChatStoreUUIDExt
-	): AuthModule
-	{
+	static create(
+		store: ChatStoreInterface & ChatStoreInterfaceExt & ChatStoreUUIDExt,
+	): AuthModule {
 		return new AuthModule(
 			new AuthCommand(store, new AuthApiHTTPClient()),
 			new UpgradeUserHandler(store),
@@ -49,15 +45,13 @@ export class AuthModule implements Module<AuthModule>
 	constructor(
 		private command: AuthCommand,
 		private upgrade_user_handler: UpgradeUserHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_room_id: RoomID, ...args: Array<string>)
-	{
+	input(_room_id: RoomID, ...args: Array<string>) {
 		let size = args.length;
 		if (size < 1) {
 			return;
@@ -75,34 +69,35 @@ export class AuthModule implements Module<AuthModule>
 
 		switch (sub_command) {
 			case AuthSubCommand.IDENTIFY:
-			{
-				if (size < 3) {
-					return;
-				}
+				{
+					if (size < 3) {
+						return;
+					}
 
-				let [identifier, password] = args;
-				this.command.send_identify({ identifier, password });
-			} break;
+					let [identifier, password] = args;
+					this.command.send_identify({ identifier, password });
+				}
+				break;
 
 			case AuthSubCommand.REGISTER:
-			{
-				if (size < 4) {
-					return;
-				}
+				{
+					if (size < 4) {
+						return;
+					}
 
-				let [username, password, email_address] = args;
-				this.command.send_register({
-					username,
-					email_address,
-					password,
-					password_confirmation: password,
-				});
-			} break;
+					let [username, password, email_address] = args;
+					this.command.send_register({
+						username,
+						email_address,
+						password,
+						password_confirmation: password,
+					});
+				}
+				break;
 		}
 	}
 
-	listen()
-	{
+	listen() {
 		this.upgrade_user_handler.listen();
 	}
 }

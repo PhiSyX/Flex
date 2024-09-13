@@ -10,7 +10,7 @@
 
 import {
 	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store
+	defineStore as define_store,
 } from "pinia";
 import { computed, reactive, readonly } from "vue";
 
@@ -20,40 +20,36 @@ import { SettingsStore, SettingsStoreData } from "@phisyx/flex-chat";
 // Implémentation //
 // -------------- //
 
-export class SettingsStoreVue
-{
+export class SettingsStoreVue {
 	// --------- //
 	// Propriété //
 	// --------- //
 
-	private inner_store = new SettingsStore(reactive(new SettingsStoreData()) as SettingsStoreData)
+	private inner_store = new SettingsStore(
+		reactive(new SettingsStoreData()) as SettingsStoreData,
+	);
 
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
 
-	get layout()
-	{
+	get layout() {
 		return computed(() => readonly(this.inner_store.get_layout()));
 	}
 
-	get notification()
-	{
+	get notification() {
 		return computed(() => readonly(this.inner_store.get_notification()));
 	}
 
-	get personalization()
-	{
+	get personalization() {
 		return computed(() => readonly(this.inner_store.get_personalization()));
 	}
 
-	get priv4te()
-	{
+	get priv4te() {
 		return computed(() => readonly(this.inner_store.get_private()));
 	}
 
-	get channel_userlist_display_mut()
-	{
+	get channel_userlist_display_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_layout().channel_userlist_display;
@@ -63,11 +59,10 @@ export class SettingsStoreVue
 					...current,
 					channel_userlist_display: $1,
 				}));
-			}
+			},
 		});
 	}
-	get channel_userlist_position_mut()
-	{
+	get channel_userlist_position_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_layout().channel_userlist_position;
@@ -77,11 +72,10 @@ export class SettingsStoreVue
 					...current,
 					channel_userlist_position: $1,
 				}));
-			}
+			},
 		});
 	}
-	get navigation_bar_position_mut()
-	{
+	get navigation_bar_position_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_layout().navigation_bar_position;
@@ -91,52 +85,48 @@ export class SettingsStoreVue
 					...current,
 					navigation_bar_position: $1,
 				}));
-			}
+			},
 		});
 	}
 
-	get sounds_effect_enabled_mut()
-	{
+	get sounds_effect_enabled_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_notification().sounds.enabled;
 			},
 			set: ($1) => {
 				this.inner_store.mut_notification((current) => ({
-					sounds: { ...current.sounds, enabled: $1 }
+					sounds: { ...current.sounds, enabled: $1 },
 				}));
-			}
+			},
 		});
 	}
-	get sounds_effect_mut()
-	{
+	get sounds_effect_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_notification().sounds;
 			},
 			set: ($1) => {
 				this.inner_store.mut_notification((current) => ({
-					sounds: { ...current.sounds, ...$1 }
+					sounds: { ...current.sounds, ...$1 },
 				}));
-			}
+			},
 		});
 	}
 
-	get text_format_bold_mut()
-	{
+	get text_format_bold_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_personalization().formats.bold;
 			},
 			set: ($1) => {
 				this.inner_store.mut_personalization((current) => ({
-					formats:{ ...current.formats, bold: $1 },
+					formats: { ...current.formats, bold: $1 },
 				}));
-			}
+			},
 		});
 	}
-	get text_format_italic_mut()
-	{
+	get text_format_italic_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_personalization().formats.italic;
@@ -145,52 +135,48 @@ export class SettingsStoreVue
 				this.inner_store.mut_personalization((current) => ({
 					formats: { ...current.formats, italic: $1 },
 				}));
-			}
+			},
 		});
 	}
-	get text_format_underline_mut()
-	{
+	get text_format_underline_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_personalization().formats.underline;
 			},
 			set: ($1) => {
 				this.inner_store.mut_personalization((current) => ({
-					formats:{ ...current.formats, underline: $1 },
+					formats: { ...current.formats, underline: $1 },
 				}));
-			}
+			},
 		});
 	}
 
-	get text_color_background_mut()
-	{
+	get text_color_background_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_personalization().colors.background;
 			},
 			set: ($1) => {
 				this.inner_store.mut_personalization((current) => ({
-					colors:{ ...current.formats, background: $1 },
+					colors: { ...current.formats, background: $1 },
 				}));
-			}
+			},
 		});
 	}
-	get text_color_foreground_mut()
-	{
+	get text_color_foreground_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_personalization().colors.foreground;
 			},
 			set: ($1) => {
 				this.inner_store.mut_personalization((current) => ({
-					colors:{ ...current.formats, foreground: $1 },
+					colors: { ...current.formats, foreground: $1 },
 				}));
-			}
+			},
 		});
 	}
 
-	get theme_mut()
-	{
+	get theme_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_personalization().theme;
@@ -200,12 +186,11 @@ export class SettingsStoreVue
 					...current,
 					theme: $1,
 				}));
-			}
+			},
 		});
 	}
 
-	get waiting_private_list_mut()
-	{
+	get waiting_private_list_mut() {
 		return computed({
 			get: () => {
 				return this.inner_store.get_private().waiting_list;
@@ -214,27 +199,23 @@ export class SettingsStoreVue
 				this.inner_store.mut_private((_current) => ({
 					waiting_list: $1,
 				}));
-			}
+			},
 		});
 	}
 
-	get_layout()
-	{
+	get_layout() {
 		return this.inner_store.get_layout();
 	}
 
-	get_notification()
-	{
+	get_notification() {
 		return this.inner_store.get_notification();
 	}
 
-	get_personalization()
-	{
+	get_personalization() {
 		return this.inner_store.get_personalization();
 	}
 
-	get_private()
-	{
+	get_private() {
 		return this.inner_store.get_private();
 	}
 
@@ -242,13 +223,11 @@ export class SettingsStoreVue
 	// Méthode // -> API Publique
 	// ------- //
 
-	real_store(): SettingsStore
-	{
+	real_store(): SettingsStore {
 		return this.inner_store;
 	}
 
-	public persist()
-	{
+	public persist() {
 		this.inner_store.persist();
 	}
 }
@@ -291,5 +270,7 @@ export const use_settings_store = define_store(SettingsStore.NAME, () => {
 });
 
 if (import.meta.hot) {
-	import.meta.hot.accept(accept_hmr_update(use_settings_store, import.meta.hot));
+	import.meta.hot.accept(
+		accept_hmr_update(use_settings_store, import.meta.hot),
+	);
 }

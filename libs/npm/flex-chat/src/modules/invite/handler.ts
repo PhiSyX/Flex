@@ -14,26 +14,23 @@ import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class InviteHandler implements SocketEventInterface<"INVITE">
-{
+export class InviteHandler implements SocketEventInterface<"INVITE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
-	{}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("INVITE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"INVITE">)
-	{
-		let room = this.store.room_manager()
+	handle(data: GenericReply<"INVITE">) {
+		let room = this.store
+			.room_manager()
 			.get(data.channel, {
 				where: {
 					state: "opened",
@@ -58,13 +55,13 @@ export class InviteHandler implements SocketEventInterface<"INVITE">
 					},
 					{
 						network: true,
-					}
-				]
+					},
+				],
 			})
 			.unwrap();
 
 		room.add_event(
-			"event:invite", 
+			"event:invite",
 			room.create_event(data, this.store.is_current_client(data.origin)),
 		);
 

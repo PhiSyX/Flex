@@ -14,15 +14,12 @@ import { HTMLElementExtension } from "./html";
 // Implémentation //
 // -------------- //
 
-export class SlotHTMLElementExtension extends HTMLElementExtension<HTMLSlotElement>
-{
-	static make(args: HTMLElementExtension.Args): SlotHTMLElementExtension
-	{
+export class SlotHTMLElementExtension extends HTMLElementExtension<HTMLSlotElement> {
+	static make(args: HTMLElementExtension.Args): SlotHTMLElementExtension {
 		return new SlotHTMLElementExtension(args);
 	}
 
-	constructor(args: HTMLElementExtension.Args)
-	{
+	constructor(args: HTMLElementExtension.Args) {
 		super(document.createElement("slot"), args);
 	}
 
@@ -30,8 +27,7 @@ export class SlotHTMLElementExtension extends HTMLElementExtension<HTMLSlotEleme
 	 * Public API
 	 */
 
-	name(value: HTMLSlotElement["name"]): this
-	{
+	name(value: HTMLSlotElement["name"]): this {
 		this.set_attribute("name", value);
 		return this;
 	}

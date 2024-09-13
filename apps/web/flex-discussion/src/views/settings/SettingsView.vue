@@ -24,8 +24,7 @@ let settings_store = use_settings_store();
 // Handler //
 // ------- //
 
-function save_and_exit_handler()
-{
+function save_and_exit_handler() {
 	settings_store.persist();
 
 	if (chat_store.is_connected()) {

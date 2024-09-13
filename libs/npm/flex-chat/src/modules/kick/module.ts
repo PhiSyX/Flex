@@ -17,16 +17,14 @@ import { KickHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class KickModule implements Module<KickModule>
-{
+export class KickModule implements Module<KickModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "KICK";
 
-	static create(store: ChatStoreInterface): KickModule
-	{
+	static create(store: ChatStoreInterface): KickModule {
 		return new KickModule(new KickCommand(store), new KickHandler(store));
 	}
 
@@ -36,8 +34,7 @@ export class KickModule implements Module<KickModule>
 	constructor(
 		private command: KickCommand,
 		private handler: KickHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
@@ -58,13 +55,11 @@ export class KickModule implements Module<KickModule>
 		this.send({ channels, knicks, comment });
 	}
 
-	send(payload: Command<"KICK">)
-	{
+	send(payload: Command<"KICK">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }

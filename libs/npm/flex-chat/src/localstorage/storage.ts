@@ -14,8 +14,7 @@ import { None, Option } from "@phisyx/flex-safety";
 // Implémentation //
 // -------------- //
 
-export class AppLocalStorage<T>
-{
+export class AppLocalStorage<T> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
@@ -25,8 +24,7 @@ export class AppLocalStorage<T>
 		// biome-ignore lint/suspicious/noExplicitAny: ?
 		reviver?: (a: string, b: string) => any | undefined,
 		private with_defaults?: T,
-	)
-	{
+	) {
 		if (with_defaults !== undefined) {
 			this.item = Option.from(with_defaults);
 		}
@@ -57,13 +55,11 @@ export class AppLocalStorage<T>
 	// Getter | Setter //
 	// --------------- //
 
-	get value(): T
-	{
+	get value(): T {
 		return this.get();
 	}
 
-	set value($1: T)
-	{
+	set value($1: T) {
 		this.set($1 as NonNullable<T>);
 	}
 
@@ -71,13 +67,11 @@ export class AppLocalStorage<T>
 	// Méthode //
 	// ------- //
 
-	maybe()
-	{
+	maybe() {
 		return this.item;
 	}
 
-	get(): T
-	{
+	get(): T {
 		if (this.item.is_none() && this.with_defaults !== undefined) {
 			return this.item.unwrap_or(this.with_defaults as NonNullable<T>);
 		}
@@ -87,15 +81,13 @@ export class AppLocalStorage<T>
 		);
 	}
 
-	save()
-	{
+	save() {
 		try {
 			localStorage.setItem(this.key, JSON.stringify(this.toString()));
 		} catch {}
 	}
 
-	set($1: NonNullable<T>)
-	{
+	set($1: NonNullable<T>) {
 		if ($1 == null && this.with_defaults !== undefined) {
 			this.item = Option.from(this.with_defaults);
 		} else {
@@ -105,8 +97,7 @@ export class AppLocalStorage<T>
 		this.save();
 	}
 
-	toString(): string 
-	{
+	toString(): string {
 		return this.value as string;
 	}
 }

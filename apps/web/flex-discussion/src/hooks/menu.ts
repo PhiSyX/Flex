@@ -8,7 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { MenuClass, MenuInterface, OverlayerStore } from "@phisyx/flex-chat";
+import type {
+	MenuClass,
+	MenuInterface,
+	OverlayerStore,
+} from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
@@ -22,30 +26,30 @@ export function use_menu<
 	T extends MenuInterface<R>,
 	R,
 	// R extends MenuInterface<R>[""]
->(menu_cls: MenuClass<T>)
-{
+>(menu_cls: MenuClass<T>) {
 	let overlayer_store = use_overlayer_store();
 
 	let layer_name: string = menu_cls.ID;
 	let teleport_id = computed(() => `#${layer_name}_teleport`);
 
-	let menu = computed(() => new menu_cls(overlayer_store.store as OverlayerStore));
+	let menu = computed(
+		() => new menu_cls(overlayer_store.store as OverlayerStore),
+	);
 
 	let layer = computed(() => menu.value.get());
 	let layer_unsafe = computed(() => menu.value.get_unchecked());
 
-	function create_menu(...args: Array<Parameters<MenuClass<T>["create"]>[1]>)
-	{
+	function create_menu(
+		...args: Array<Parameters<MenuClass<T>["create"]>[1]>
+	) {
 		menu_cls.create(overlayer_store.store as OverlayerStore, ...args);
 	}
 
-	function close_menu()
-	{
+	function close_menu() {
 		menu.value.destroy();
 	}
 
-	function update_menu()
-	{
+	function update_menu() {
 		overlayer_store.update(layer_name);
 	}
 
@@ -54,11 +58,11 @@ export function use_menu<
 		menu,
 
 		layer,
-        layer_name,
+		layer_name,
 		layer_unsafe,
 
 		create_menu,
 		close_menu,
 		update_menu,
-	}
+	};
 }

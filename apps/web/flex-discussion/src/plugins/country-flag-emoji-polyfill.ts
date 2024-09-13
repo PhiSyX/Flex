@@ -12,7 +12,6 @@ import { polyfillCountryFlagEmojis as polyfill_country_flag_emojis } from "count
 
 // NOTE: Polyfill pour afficher les drapeaux en émoji sous les navigateurs
 // basés sur Chromium sous Windows.
-export function install()
-{
+export function install() {
 	polyfill_country_flag_emojis();
 }

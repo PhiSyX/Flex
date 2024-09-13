@@ -8,8 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export class ChannelAccessControl
-{
+export class ChannelAccessControl {
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -22,10 +21,12 @@ export class ChannelAccessControl
 	/**
 	 * Liste des exceptions de bans du salon.
 	 */
-	banlist_exception: Map<MaskAddr, ModeApplyFlag<AccessControlMode>> = new Map();
+	banlist_exception: Map<MaskAddr, ModeApplyFlag<AccessControlMode>> =
+		new Map();
 
 	/**
 	 * Liste des des exceptions du mode d'invitation du salon.
 	 */
-	invitelist_exception: Map<MaskAddr, ModeApplyFlag<AccessControlMode>> = new Map();
+	invitelist_exception: Map<MaskAddr, ModeApplyFlag<AccessControlMode>> =
+		new Map();
 }

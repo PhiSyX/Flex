@@ -12,13 +12,11 @@ import PrivateNick from "../private_nick/PrivateNick.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	priv: PrivateRoom;
 }
 
-interface Emits
-{
+interface Emits {
 	// biome-ignore lint/style/useShorthandFunctionType: chut
 	(event_name: "open-private", priv: Origin): void;
 }
@@ -41,9 +39,7 @@ let lastMessage = computed(() => {
 	return priv.last_message.map((msg) => msg.message).unwrap_or("");
 });
 
-let user = computed(() =>
-	priv.get_participant_unchecked(priv.id())
-);
+let user = computed(() => priv.get_participant_unchecked(priv.id()));
 let open_private_title_attribute = computed(() => {
 	return `Ouvrir le privé de ${user.value.nickname}.`;
 });

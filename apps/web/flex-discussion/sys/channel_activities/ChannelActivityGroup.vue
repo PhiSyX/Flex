@@ -18,8 +18,7 @@ import ChannelActivity from "./ChannelActivity.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	name: ChannelActivitiesView["groups"][number]["name"];
 	group: ChannelActivitiesView["groups"][number];
 }

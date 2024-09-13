@@ -17,8 +17,7 @@ import type { DialogInterface } from "./interface";
 // Implémentation //
 // -------------- //
 
-export class ChannelJoinDialog implements DialogInterface
-{
+export class ChannelJoinDialog implements DialogInterface {
 	// ------ //
 	// Static //
 	// ------ //
@@ -30,8 +29,7 @@ export class ChannelJoinDialog implements DialogInterface
 		payload: {
 			event: Event;
 		},
-	)
-	{
+	) {
 		overlayer_store.create({
 			id: ChannelJoinDialog.ID,
 			centered: true,
@@ -41,38 +39,32 @@ export class ChannelJoinDialog implements DialogInterface
 		return new ChannelJoinDialog(overlayer_store);
 	}
 
-	static destroy(overlayer_store: OverlayerStore)
-	{
+	static destroy(overlayer_store: OverlayerStore) {
 		overlayer_store.destroy(ChannelJoinDialog.ID);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(ChannelJoinDialog.ID);
 	}
 
-	get(): Option<Layer>
-	{
+	get(): Option<Layer> {
 		return this.overlayer_store.get(ChannelJoinDialog.ID);
 	}
 
-	get_unchecked(): Layer
-	{
+	get_unchecked(): Layer {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(ChannelJoinDialog.ID);
 	}
 }

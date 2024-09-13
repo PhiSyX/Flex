@@ -1,11 +1,14 @@
 <script lang="ts">
 const IMAGE_FALLBACK = "/public/img/default-avatar.png";
 const IMAGE_SIZE_FALLBACK = "4"; // 8 * 4
-const IMAGE_CACHE = new Map<string, {
-	expires: Date,
-	loaded: boolean;
-	source: string;
-}>();
+const IMAGE_CACHE = new Map<
+	string,
+	{
+		expires: Date;
+		loaded: boolean;
+		source: string;
+	}
+>();
 const IMAGE_CACHE_MINUTE = import.meta.env.DEV ? 1 : 30;
 </script>
 

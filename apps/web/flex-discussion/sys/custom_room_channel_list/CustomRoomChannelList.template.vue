@@ -8,14 +8,12 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	servername: string;
-	channels: Array<GenericReply<"RPL_LIST">>,
+	channels: Array<GenericReply<"RPL_LIST">>;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "join-channel", name: ChannelID): void;
 	(event_name: "create-channel-dialog", event: MouseEvent): void;
 }
@@ -44,8 +42,7 @@ let filtered_channels = computed(() => {
 // Handlers //
 // -------- //
 
-function join_selected_channels()
-{
+function join_selected_channels() {
 	for (let channel of selected_channels.value) {
 		join_channel_handler(channel);
 	}
@@ -53,8 +50,9 @@ function join_selected_channels()
 	selected_channels.value.clear();
 }
 
-const join_channel_handler = (name: ChannelID) 	=> emit("join-channel", name);
-const create_channel_dialog_handler = (event: MouseEvent) 	=> emit("create-channel-dialog", event);
+const join_channel_handler = (name: ChannelID) => emit("join-channel", name);
+const create_channel_dialog_handler = (event: MouseEvent) =>
+	emit("create-channel-dialog", event);
 </script>
 
 <template>

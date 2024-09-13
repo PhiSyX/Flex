@@ -20,17 +20,14 @@ import { ChannelMember } from "../../channel/member";
 export class ReplyNamreplyHandler
 	implements SocketEventInterface<"RPL_NAMREPLY">
 {
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_NAMREPLY", (data) => this.handle(data));
 		// this.store.on("RPL_ENDOFNAMES", (_data) => {});
 	}
 
-	handle(data: GenericReply<"RPL_NAMREPLY">)
-	{
+	handle(data: GenericReply<"RPL_NAMREPLY">) {
 		let maybe_channel = this.store.room_manager().get(data.channel);
 		if (maybe_channel.is_none()) {
 			return;
@@ -40,7 +37,9 @@ export class ReplyNamreplyHandler
 		assert_channel_room(channel);
 
 		for (let user_origin of data.users) {
-			let user = this.store.user_manager().add(user_origin)
+			let user = this.store
+				.user_manager()
+				.add(user_origin)
 				.with_channel(channel.id());
 
 			let new_member = new ChannelMember(user)
@@ -49,7 +48,10 @@ export class ReplyNamreplyHandler
 
 			let maybe_channel_member = channel.get_member(user.id);
 			if (maybe_channel_member.is_some()) {
-				channel.upgrade_member(maybe_channel_member.unwrap(), new_member);
+				channel.upgrade_member(
+					maybe_channel_member.unwrap(),
+					new_member,
+				);
 			} else {
 				channel.add_member(new_member);
 			}

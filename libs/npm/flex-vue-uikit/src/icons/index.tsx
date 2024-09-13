@@ -53,15 +53,13 @@ export const ICON_NAMES = [
 
 export type Icons = (typeof ICON_NAMES)[number];
 
-interface ButtonProps
-{
+interface ButtonProps {
 	disabled?: boolean;
 	icon: Icons;
 	iconAttrs?: object;
 }
 
-interface LabelProps
-{
+interface LabelProps {
 	for: string;
 	icon: Icons;
 	iconAttrs?: object;
@@ -72,11 +70,9 @@ interface LabelProps
 // -------- //
 
 // HACK(phisyx): Apparemment le type de `<IconName />` est incorrect :^)
-function assert_icon(_value: unknown): asserts _value is string
-{}
+function assert_icon(_value: unknown): asserts _value is string {}
 
-export function ButtonIcon(props: ButtonProps): JSX.Element
-{
+export function ButtonIcon(props: ButtonProps): JSX.Element {
 	const IconName = resolveComponent(`icon-${props.icon}`);
 	assert_icon(IconName);
 	const { iconAttrs, ...attrs } = props;
@@ -87,8 +83,7 @@ export function ButtonIcon(props: ButtonProps): JSX.Element
 	);
 }
 
-export function LabelIcon(props: LabelProps): JSX.Element
-{
+export function LabelIcon(props: LabelProps): JSX.Element {
 	const IconName = resolveComponent(`icon-${props.icon}`);
 	assert_icon(IconName);
 	const { iconAttrs, ...attrs } = props;

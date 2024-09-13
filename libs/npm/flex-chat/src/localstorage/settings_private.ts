@@ -21,8 +21,7 @@ export const STORAGE_SETTINGS_PRIVATE_KEY = "flex.settings.private";
 // Type //
 // ---- //
 
-export interface PrivateData
-{
+export interface PrivateData {
 	waiting_list: boolean;
 }
 
@@ -36,16 +35,14 @@ const DEFAULT_WAITING_LIST = true;
 // Implémentation //
 // -------------- //
 
-export class PrivateStorage extends AppLocalStorage<PrivateData>
-{
+export class PrivateStorage extends AppLocalStorage<PrivateData> {
 	// ------ //
 	// Static //
 	// ------ //
 
 	static readonly KEY = STORAGE_SETTINGS_PRIVATE_KEY;
 
-	static default(): PrivateData
-	{
+	static default(): PrivateData {
 		return {
 			waiting_list: DEFAULT_WAITING_LIST,
 		};
@@ -54,13 +51,10 @@ export class PrivateStorage extends AppLocalStorage<PrivateData>
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): unknown | undefined
-	{
+	static fromJSON(key: string, value: string): unknown | undefined {
 		if (key !== "") {
-			let keys = [
-				"waiting_list",
-			];
-			
+			let keys = ["waiting_list"];
+
 			if (!keys.includes(key)) {
 				return;
 			}
@@ -81,8 +75,7 @@ export class PrivateStorage extends AppLocalStorage<PrivateData>
 	// Constructor //
 	// ----------- //
 
-	constructor()
-	{
+	constructor() {
 		super(
 			PrivateStorage.KEY,
 			PrivateStorage.fromJSON,
@@ -90,8 +83,7 @@ export class PrivateStorage extends AppLocalStorage<PrivateData>
 		);
 	}
 
-	persist()
-	{
+	persist() {
 		this.set({
 			waiting_list: this.value.waiting_list,
 		});

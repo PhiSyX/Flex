@@ -3,20 +3,19 @@ import { ChannelAccessLevel, ChannelAccessLevelFlag } from "@phisyx/flex-chat";
 
 import ChannelName from "./ChannelName.template.vue";
 
-function init_state()
-{
+function init_state() {
 	let owner = new ChannelAccessLevel().with(ChannelAccessLevelFlag.Owner);
 
 	let admin_operator = new ChannelAccessLevel().with(
-		ChannelAccessLevelFlag.AdminOperator
+		ChannelAccessLevelFlag.AdminOperator,
 	);
 
 	let operator = new ChannelAccessLevel().with(
-		ChannelAccessLevelFlag.Operator
+		ChannelAccessLevelFlag.Operator,
 	);
 
 	let half_operator = new ChannelAccessLevel().with(
-		ChannelAccessLevelFlag.HalfOperator
+		ChannelAccessLevelFlag.HalfOperator,
 	);
 
 	let vip_user = new ChannelAccessLevel().with(ChannelAccessLevelFlag.Vip);

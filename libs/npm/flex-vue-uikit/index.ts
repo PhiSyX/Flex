@@ -50,8 +50,7 @@ export type { Icons } from "./src/icons";
 
 // NOTE(phisyx): plugin Vue.
 export default {
-	install(app: App<Element>)
-	{
+	install(app: App<Element>) {
 		for (let [icon_component_name, icon_component] of icons_components) {
 			app.component(
 				icon_component_name,

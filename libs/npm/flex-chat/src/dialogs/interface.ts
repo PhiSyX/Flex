@@ -15,8 +15,7 @@ import type { Layer, OverlayerStore } from "../store";
 // Type //
 // ---- //
 
-export interface DialogClass<T>
-{
+export interface DialogClass<T> {
 	ID: string;
 
 	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): void;
@@ -24,8 +23,7 @@ export interface DialogClass<T>
 	new (_: OverlayerStore): T;
 }
 
-export interface DialogInterface<R = unknown>
-{
+export interface DialogInterface<R = unknown> {
 	exists(): boolean;
 	get(): Option<Layer<R>>;
 	get_unchecked(): Layer<R>;

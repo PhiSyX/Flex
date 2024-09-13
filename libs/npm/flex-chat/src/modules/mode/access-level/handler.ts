@@ -15,33 +15,28 @@ import type { ChatStoreInterface } from "../../../store";
 // Implémentation //
 // -------------- //
 
-export class ModeAccessLevelHandler implements SocketEventInterface<"MODE">
-{
+export class ModeAccessLevelHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"MODE">)
-	{
+	handle(data: GenericReply<"MODE">) {
 		if (this.store.is_current_client(data.target)) {
 			return;
 		}
 		this.handle_channel(data);
 	}
 
-	handle_channel(data: GenericReply<"MODE">)
-	{
+	handle_channel(data: GenericReply<"MODE">) {
 		let maybe_room = this.store.room_manager().get(data.target);
 		if (maybe_room.is_none()) {
 			return;

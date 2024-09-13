@@ -19,8 +19,7 @@ import type { MenuInterface } from "./interface";
 // Type //
 // ---- //
 
-export interface ChannelOptionsRecordMenu
-{
+export interface ChannelOptionsRecordMenu {
 	// Salon actif
 	room: ChannelRoom;
 	// Le client courant, qui est membre du salon.
@@ -31,7 +30,8 @@ export interface ChannelOptionsRecordMenu
 // Implémentation //
 // -------------- //
 
-export class ChannelOptionsMenu implements MenuInterface<ChannelOptionsRecordMenu>
+export class ChannelOptionsMenu
+	implements MenuInterface<ChannelOptionsRecordMenu>
 {
 	// ------ //
 	// Static //
@@ -43,8 +43,7 @@ export class ChannelOptionsMenu implements MenuInterface<ChannelOptionsRecordMen
 		overlayer_store: OverlayerStore,
 		event: Event,
 		record: ChannelOptionsRecordMenu,
-	)
-	{
+	) {
 		overlayer_store.create({
 			id: ChannelOptionsMenu.ID,
 			background_color: true,
@@ -58,36 +57,31 @@ export class ChannelOptionsMenu implements MenuInterface<ChannelOptionsRecordMen
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(ChannelOptionsMenu.ID);
 	}
 
-	get(): Option<Layer<ChannelOptionsRecordMenu>>
-	{
-		return this.overlayer_store.get(ChannelOptionsMenu.ID)
+	get(): Option<Layer<ChannelOptionsRecordMenu>> {
+		return this.overlayer_store
+			.get(ChannelOptionsMenu.ID)
 			.as<Layer<ChannelOptionsRecordMenu>>();
 	}
 
-	get_unchecked(): Layer<ChannelOptionsRecordMenu>
-	{
+	get_unchecked(): Layer<ChannelOptionsRecordMenu> {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(ChannelOptionsMenu.ID);
 	}
 
-	with_data(data: ChannelOptionsRecordMenu)
-	{
+	with_data(data: ChannelOptionsRecordMenu) {
 		this.overlayer_store.update_data(ChannelOptionsMenu.ID, data);
 	}
 }

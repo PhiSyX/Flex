@@ -18,8 +18,7 @@ import { Option } from "@phisyx/flex-safety";
 // Type //
 // ---- //
 
-export interface Layer<D = unknown>
-{
+export interface Layer<D = unknown> {
 	id: string;
 	centered?: boolean;
 	data?: D;
@@ -38,7 +37,7 @@ export interface Layer<D = unknown>
 		left: CSSHoudiniUnitValue;
 	}>;
 	trap_focus?: boolean;
-};
+}
 
 // -------- //
 // Constant //
@@ -56,8 +55,7 @@ const MOUSE_POSITION_PADDING: number = 4;
 // Implémentation //
 // -------------- //
 
-export class OverlayerData
-{
+export class OverlayerData {
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -68,14 +66,12 @@ export class OverlayerData
 	// Getter | Setter //
 	// --------------- //
 
-	get has_layers(): boolean
-	{
+	get has_layers(): boolean {
 		return this.layers.size > 0;
 	}
 }
 
-export class OverlayerStore
-{
+export class OverlayerStore {
 	// ------ //
 	// Static //
 	// ------ //
@@ -86,9 +82,7 @@ export class OverlayerStore
 	// Constructor //
 	// ----------- //
 
-	constructor(protected data: OverlayerData)
-	{
-	}
+	constructor(protected data: OverlayerData) {}
 
 	// --------- //
 	// Propriété //
@@ -101,14 +95,12 @@ export class OverlayerStore
 	// Méthode //
 	// ------- //
 
-	create<D = unknown>(payload: Layer<D>): Layer<D>
-	{
+	create<D = unknown>(payload: Layer<D>): Layer<D> {
 		payload.destroyable ||= "background";
 		payload.trap_focus ??= true;
 
-		let dom_element = (payload.dom_element || (
-			payload.event?.currentTarget
-		)) as HTMLElement | undefined;
+		let dom_element = (payload.dom_element ||
+			payload.event?.currentTarget) as HTMLElement | undefined;
 
 		if (!dom_element) {
 			this.data.layers.set(payload.id, { ...payload });
@@ -141,7 +133,9 @@ export class OverlayerStore
 			right: to_px(dom_position_element.right + MOUSE_POSITION_PADDING),
 			bottom: to_px(dom_position_element.bottom - MOUSE_POSITION_PADDING),
 			left: to_px(dom_position_element.left - MOUSE_POSITION_PADDING),
-			width: to_px(dom_position_element.width + MOUSE_POSITION_PADDING * 2),
+			width: to_px(
+				dom_position_element.width + MOUSE_POSITION_PADDING * 2,
+			),
 			height: to_px(
 				dom_position_element.height + MOUSE_POSITION_PADDING * 2,
 			),
@@ -165,8 +159,7 @@ export class OverlayerStore
 		return this.data.layers.get(payload.id) as Layer<D>;
 	}
 
-	destroy(layer_id: Layer["id"])
-	{
+	destroy(layer_id: Layer["id"]) {
 		let layer = this.data.layers.get(layer_id);
 
 		if (!layer) {
@@ -182,8 +175,7 @@ export class OverlayerStore
 		this.data.layers.delete(layer_id);
 	}
 
-	destroy_all(options: { force: boolean } = { force: false })
-	{
+	destroy_all(options: { force: boolean } = { force: false }) {
 		for (let [id, layer] of this.data.layers) {
 			if (options.force) {
 				this.destroy(id);
@@ -198,23 +190,19 @@ export class OverlayerStore
 		}
 	}
 
-	get(layer_id: Layer["id"])
-	{
+	get(layer_id: Layer["id"]) {
 		return Option.from(this.data.layers.get(layer_id));
 	}
 
-	get_unchecked(layer_id: Layer["id"])
-	{
+	get_unchecked(layer_id: Layer["id"]) {
 		return this.data.layers.get(layer_id);
 	}
 
-	has(layer_id: Layer["id"])
-	{
+	has(layer_id: Layer["id"]) {
 		return this.data.layers.has(layer_id);
 	}
 
-	update(layer_id: Layer["id"])
-	{
+	update(layer_id: Layer["id"]) {
 		let layer = this.data.layers.get(layer_id);
 
 		if (!layer) {
@@ -231,26 +219,40 @@ export class OverlayerStore
 			right: to_px(dom_position_element.right + MOUSE_POSITION_PADDING),
 			bottom: to_px(dom_position_element.bottom - MOUSE_POSITION_PADDING),
 			left: to_px(dom_position_element.left - MOUSE_POSITION_PADDING),
-			width: to_px(dom_position_element.width + MOUSE_POSITION_PADDING * 2),
+			width: to_px(
+				dom_position_element.width + MOUSE_POSITION_PADDING * 2,
+			),
 			height: to_px(
 				dom_position_element.height + MOUSE_POSITION_PADDING * 2,
 			),
 		};
 
-		let mouse_position: Layer["mouse_position"] = layer.mouse_position || {};
+		let mouse_position: Layer["mouse_position"] =
+			layer.mouse_position || {};
 
-		if (!layer.centered && layer.dom_element && this.$overlayer && this.$teleport) {
+		if (
+			!layer.centered &&
+			layer.dom_element &&
+			this.$overlayer &&
+			this.$teleport
+		) {
 			let overlayer_rect = this.$overlayer.getBoundingClientRect();
 			let dom_element_rect = layer.dom_element.getBoundingClientRect();
 			let teleport_rect = this.$teleport.getBoundingClientRect();
 
-			let val_top = dom_element_rect.top - (MOUSE_POSITION_PADDING * 2);
-			let min_top = overlayer_rect.top + (MOUSE_POSITION_PADDING * 2);
-			let max_top = (overlayer_rect.height - teleport_rect.height) - (MOUSE_POSITION_PADDING * 2);
+			let val_top = dom_element_rect.top - MOUSE_POSITION_PADDING * 2;
+			let min_top = overlayer_rect.top + MOUSE_POSITION_PADDING * 2;
+			let max_top =
+				overlayer_rect.height -
+				teleport_rect.height -
+				MOUSE_POSITION_PADDING * 2;
 
-			let val_left = dom_element_rect.left - (MOUSE_POSITION_PADDING * 2);
-			let min_left = overlayer_rect.left + (MOUSE_POSITION_PADDING * 2);
-			let max_left = (overlayer_rect.width - teleport_rect.width) - (MOUSE_POSITION_PADDING * 2);
+			let val_left = dom_element_rect.left - MOUSE_POSITION_PADDING * 2;
+			let min_left = overlayer_rect.left + MOUSE_POSITION_PADDING * 2;
+			let max_left =
+				overlayer_rect.width -
+				teleport_rect.width -
+				MOUSE_POSITION_PADDING * 2;
 
 			let top = minmax(val_top, min_top, max_top);
 			let left = minmax(val_left, min_left, max_left);
@@ -262,8 +264,7 @@ export class OverlayerStore
 		this.data.layers.set(layer_id, { ...layer, style, mouse_position });
 	}
 
-	update_data<D = unknown>(layer_id: Layer<D>["id"], data: D)
-	{
+	update_data<D = unknown>(layer_id: Layer<D>["id"], data: D) {
 		let layer = this.data.layers.get(layer_id);
 		if (!layer) {
 			return;
@@ -271,8 +272,7 @@ export class OverlayerStore
 		layer.data = data;
 	}
 
-	update_all()
-	{
+	update_all() {
 		for (let [id, _] of this.data.layers) {
 			this.update(id);
 		}

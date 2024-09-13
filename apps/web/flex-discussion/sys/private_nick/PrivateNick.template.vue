@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import type { PrivateParticipant } from '@phisyx/flex-chat';
+import type { PrivateParticipant } from "@phisyx/flex-chat";
 
 // ---- //
 // Type //
 // ---- //
 
-interface Props
-{
-	participant: PrivateParticipant,
+interface Props {
+	participant: PrivateParticipant;
 	prefix?: string;
 	suffix?: string;
 	tag?: keyof HTMLElementTagNameMap;

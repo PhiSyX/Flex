@@ -20,25 +20,23 @@ type S = SocketEventInterface<"ERR_CANNOTSENDTOCHAN">;
 // Implémentation //
 // -------------- //
 
-export class ErrorCannotsendtochanHandler implements S
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ErrorCannotsendtochanHandler implements S {
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_CANNOTSENDTOCHAN", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_CANNOTSENDTOCHAN">)
-	{
-		let room = this.store.room_manager().get(data.channel_name, {
-			where: {
-				state: "opened",
-				is_kicked: false,
-			},
-			fallbacks: [{ network: true }]
-		})
+	handle(data: GenericReply<"ERR_CANNOTSENDTOCHAN">) {
+		let room = this.store
+			.room_manager()
+			.get(data.channel_name, {
+				where: {
+					state: "opened",
+					is_kicked: false,
+				},
+				fallbacks: [{ network: true }],
+			})
 			.unwrap();
 		room.add_event(
 			"error:err_cannotsendtochan",

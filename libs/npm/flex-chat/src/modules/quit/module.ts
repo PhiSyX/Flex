@@ -17,8 +17,7 @@ import { QuitHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class QuitModule implements Module<QuitModule>
-{
+export class QuitModule implements Module<QuitModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -35,25 +34,21 @@ export class QuitModule implements Module<QuitModule>
 	constructor(
 		private command: QuitCommand,
 		private handler: QuitHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, ...words: Array<string>)
-	{
+	input(_: string, ...words: Array<string>) {
 		this.send({ reason: words.join(" ") });
 	}
 
-	send(payload: Command<"QUIT">)
-	{
+	send(payload: Command<"QUIT">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }

@@ -16,8 +16,7 @@ import { ChannelAccessLevel, ChannelAccessLevelFlag } from "./access_level";
 // Implémentation //
 // -------------- //
 
-export class ChannelMember extends User
-{
+export class ChannelMember extends User {
 	/**
 	 * Les niveaux d'accès du pseudo.
 	 */
@@ -30,8 +29,7 @@ export class ChannelMember extends User
 	/**
 	 * Les classes CSS qu'il faut appliquer aux éléments de pseudo de salon.
 	 */
-	get class_name(): string
-	{
+	get class_name(): string {
 		return `${super.class_name} ${this.access_level.highest.class_name}`;
 	}
 
@@ -43,8 +41,7 @@ export class ChannelMember extends User
 	 * Est-ce que le membre a dans ses niveaux d'accès, un niveau d'accès
 	 * minimal donné.
 	 */
-	ge_access_level(level: ChannelAccessLevelFlag): boolean
-	{
+	ge_access_level(level: ChannelAccessLevelFlag): boolean {
 		return this.access_level.ge(level);
 	}
 
@@ -52,14 +49,12 @@ export class ChannelMember extends User
 	 * Est-ce que le membre est opérateur du salon avec le niveau d'accès
 	 * minimal à demi-opérateur.
 	 */
-	is_channel_operator(): boolean
-	{
+	is_channel_operator(): boolean {
 		return this.ge_access_level(ChannelAccessLevelFlag.HalfOperator);
 	}
 
 	// @ts-expect-error ;-)
-	override partial_eq(user: this): boolean
-	{
+	override partial_eq(user: this): boolean {
 		if (is_channel_member(user)) {
 			return user.nickname.toLowerCase() === this.nickname.toLowerCase();
 		}
@@ -70,8 +65,7 @@ export class ChannelMember extends User
 	/**
 	 * Définit le niveau d'accès du pseudo.
 	 */
-	with_access_level(...levels: Array<ChannelAccessLevelFlag | string>): this
-	{
+	with_access_level(...levels: Array<ChannelAccessLevelFlag | string>): this {
 		for (let level of levels) {
 			if (typeof level === "string") {
 				this.access_level.add(this.access_level.parse_one(level));

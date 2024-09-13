@@ -12,14 +12,12 @@ import NavigationServer from "#/sys/navigation_server/NavigationServer.template.
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	servers: Array<Server>;
 	totalPrivatesWaiting?: number;
 }
 
-interface Server
-{
+interface Server {
 	active: boolean;
 	connected: boolean;
 	folded: boolean;
@@ -28,8 +26,7 @@ interface Server
 	rooms: Array<Room>;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "change-room", origin: Origin | RoomID): void;
 	(event_name: "close-room", origin: Origin | RoomID): void;
 	(event_name: "open-channel-list"): void;
@@ -52,20 +49,23 @@ defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 let folded = ref(false);
-let nav_width_ref = ref(folded.value ? `${DEFAULT_MIN_SIZE}px` : `${DEFAULT_MAX_SIZE}px`);
+let nav_width_ref = ref(
+	folded.value ? `${DEFAULT_MIN_SIZE}px` : `${DEFAULT_MAX_SIZE}px`,
+);
 
 // ------- //
 // Handler //
 // ------- //
 
-const change_room_handler = (origin: Origin | RoomID) => emit("change-room", origin);
-const close_room_handler = (origin: Origin | RoomID) => emit("close-room", origin);
+const change_room_handler = (origin: Origin | RoomID) =>
+	emit("change-room", origin);
+const close_room_handler = (origin: Origin | RoomID) =>
+	emit("close-room", origin);
 const open_channel_list_handler = () => emit("open-channel-list");
 const open_private_list_handler = () => emit("open-private-list");
 const open_settings_view_handler = () => emit("open-settings-view");
 
-function toggle_navigation_handler()
-{
+function toggle_navigation_handler() {
 	let nav_width = Number.parseInt(nav_width_ref.value, 10);
 
 	if (folded.value || nav_width < DEFAULT_MAX_SIZE / 2) {
@@ -77,8 +77,7 @@ function toggle_navigation_handler()
 	folded.value = !folded.value;
 }
 
-function resize_handler(entries: Array<ResizeObserverEntry>)
-{
+function resize_handler(entries: Array<ResizeObserverEntry>) {
 	let [entry] = entries;
 
 	nav_width_ref.value = `${entry.contentRect.width}px`;

@@ -9,13 +9,11 @@ import RoomMessageComponent from "#/sys/room_message/RoomMessage.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	messages: Array<RoomMessage>;
 }
 
-interface Emits
-{
+interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "open-room", room_id: RoomID): void;
@@ -43,27 +41,25 @@ on_activated(() => scroll());
 
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 
-function scroll_handler()
-{
+function scroll_handler() {
 	if (!$root.value) {
 		return;
 	}
 
-	container_needs_scroll.value = $root.value.clientHeight
-								 + $root.value.scrollTop + 150 >= $root.value.scrollHeight;
+	container_needs_scroll.value =
+		$root.value.clientHeight + $root.value.scrollTop + 150 >=
+		$root.value.scrollHeight;
 
 	scroll_to_bottom();
 }
 
-function scroll_to_bottom()
-{
+function scroll_to_bottom() {
 	if (container_needs_scroll.value) {
 		scroll();
 	}
 }
 
-function scroll()
-{
+function scroll() {
 	if (!$root.value) {
 		return;
 	}

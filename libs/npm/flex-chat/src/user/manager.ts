@@ -12,8 +12,7 @@ import { Option } from "@phisyx/flex-safety";
 
 import { User } from "./index";
 
-export class UserManager
-{
+export class UserManager {
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -41,8 +40,7 @@ export class UserManager
 	/**
 	 * Ajoute un nouvel utilisateur au Store.
 	 */
-	add(user_origin: User | Origin): User
-	{
+	add(user_origin: User | Origin): User {
 		let user: User = User.from(user_origin);
 
 		let maybe_found_user = this.find(user.id).or_else(() =>
@@ -73,24 +71,21 @@ export class UserManager
 	/**
 	 * Ajoute un pseudonyme à la liste des utilisateurs connus par pseudonyme.
 	 */
-	add_nickname(nickname: string, user_id: UserID)
-	{
+	add_nickname(nickname: string, user_id: UserID) {
 		this._nicks.set(nickname.toLowerCase(), user_id);
 	}
 
 	/**
 	 * Ajoute un utilisateur à la liste des utilisateurs bloqués.
 	 */
-	add_to_block(user_id: UserID)
-	{
+	add_to_block(user_id: UserID) {
 		this._blocked.add(user_id);
 	}
 
 	/**
 	 * Change un ID utilisateur par un nouveau.
 	 */
-	change_id(old_user_id: UserID, new_user_id: UserID)
-	{
+	change_id(old_user_id: UserID, new_user_id: UserID) {
 		if (this.remove_to_block(old_user_id)) {
 			this.add_to_block(new_user_id);
 		}
@@ -99,7 +94,7 @@ export class UserManager
 		if (maybe_user.is_none()) {
 			return;
 		}
-		
+
 		let user = maybe_user.unwrap();
 		user.id = new_user_id;
 		this.add(user);
@@ -108,8 +103,7 @@ export class UserManager
 	/**
 	 * Change le pseudonyme d'un utilisateur.
 	 */
-	change_nickname(old_nickname: string, new_nickname: string)
-	{
+	change_nickname(old_nickname: string, new_nickname: string) {
 		let maybe_user = this.find_by_nickname(old_nickname);
 		let nick_id = this._nicks.get(old_nickname.toLowerCase());
 		if (nick_id) {
@@ -126,12 +120,11 @@ export class UserManager
 	/**
 	 * Supprime un utilisateur de la liste des utilisateurs.
 	 */
-	del(user_id: UserID): Option<User>
-	{
+	del(user_id: UserID): Option<User> {
 		let user = this.find(user_id);
 		user.then((user) => {
 			this.remove_nickname(user.nickname);
-			this._users.delete(user_id)
+			this._users.delete(user_id);
 		});
 		return user;
 	}
@@ -139,24 +132,23 @@ export class UserManager
 	/**
 	 * Cherche un utilisateur en fonction d'un ID.
 	 */
-	find(user_id: UserID): Option<User>
-	{
+	find(user_id: UserID): Option<User> {
 		return Option.from(this._users.get(user_id));
 	}
 
 	/**
 	 * Cherche un utilisateur en fonction d'un pseudonyme.
 	 */
-	find_by_nickname(nickname: string): Option<User>
-	{
+	find_by_nickname(nickname: string): Option<User> {
 		if (this._nicks.has(nickname.toLowerCase())) {
 			let user_id = this._nicks.get(nickname.toLowerCase()) as UserID;
 			return this.find(user_id);
 		}
 
 		let maybe_user = Option.from(
-			Array.from(this._users.values())
-				.find((user) => user.partial_eq(nickname)),
+			Array.from(this._users.values()).find((user) =>
+				user.partial_eq(nickname),
+			),
 		);
 
 		maybe_user.then((user) => {
@@ -169,32 +161,28 @@ export class UserManager
 	/**
 	 * Vérifie qu'un utilisateur est dans la liste des utilisateurs bloqués.
 	 */
-	is_blocked(user_id: UserID): boolean
-	{
+	is_blocked(user_id: UserID): boolean {
 		return this._blocked.has(user_id);
 	}
 
 	/**
 	 * Supprime un pseudonyme de la liste des utilisateurs connus par pseudonyme.
 	 */
-	remove_nickname(nickname: string): boolean
-	{
+	remove_nickname(nickname: string): boolean {
 		return this._nicks.delete(nickname.toLowerCase());
 	}
 
 	/**
 	 * Supprime un utilisateur de la liste des utilisateurs bloqués.
 	 */
-	remove_to_block(user_id: UserID): boolean
-	{
+	remove_to_block(user_id: UserID): boolean {
 		return this._blocked.delete(user_id);
 	}
 
 	/**
 	 * Supprime un salon d'un utilisateur.
 	 */
-	remove_channel(user_id: UserID, channel_id: ChannelID)
-	{
+	remove_channel(user_id: UserID, channel_id: ChannelID) {
 		let found_user = this.find(user_id);
 		found_user.then((user) => user.channels.delete(channel_id));
 	}
@@ -203,8 +191,7 @@ export class UserManager
 	 * Met à jour l'utilisateur de la liste des utilisateurs du client ou
 	 * l'ajoute à la liste des utilisateurs.
 	 */
-	upsert(user_origin: User | Origin): User
-	{
+	upsert(user_origin: User | Origin): User {
 		let user: User = User.from(user_origin);
 
 		let found_user = this._users.get(user.id);

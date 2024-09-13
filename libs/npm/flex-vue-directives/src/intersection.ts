@@ -25,17 +25,15 @@ type DirectiveIntersection = Directive<
 
 /// Directive `v-intersection`.
 const intersection: DirectiveIntersection = {
-	mounted(el, binding) 
-    {
+	mounted(el, binding) {
 		const observer = new IntersectionObserver(
-            intersection_handler(binding.value)
-        );
+			intersection_handler(binding.value),
+		);
 		observer.observe(el);
 		el.__observer__ = observer;
 	},
 
-	beforeUnmount(el) 
-    {
+	beforeUnmount(el) {
 		el.__observer__?.disconnect();
 	},
 };
@@ -45,14 +43,12 @@ const intersection: DirectiveIntersection = {
 // -------- //
 
 // FIXME
-function intersection_handler(callback: IntersectionObserverCallback)
-{
+function intersection_handler(callback: IntersectionObserverCallback) {
 	return function (
 		this: IntersectionObserverCallback,
-        entries: Array<IntersectionObserverEntry>,
-        observer: IntersectionObserver,
-	)
-	{
+		entries: Array<IntersectionObserverEntry>,
+		observer: IntersectionObserver,
+	) {
 		callback.call(this, entries, observer);
 	};
 }

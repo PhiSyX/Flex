@@ -11,8 +11,7 @@ import RoomTopic from "#/sys/room_topic/RoomTopic.template.vue";
 // Type //
 // ---- //
 
-export interface Props
-{
+export interface Props {
 	completionList?: Array<string>;
 	currentClientNickname?: string;
 	displayInput?: boolean;
@@ -26,8 +25,7 @@ export interface Props
 	textColorForeground?: number | null;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "dblclick-main", event: MouseEvent): void;
 	(event_name: "open-colors-box", event: MouseEvent): void;
@@ -36,14 +34,13 @@ interface Emits
 	(event_name: "send-message", message: string): void;
 }
 
-interface Slots
-{
+interface Slots {
 	"room-info": unknown;
-	"topic": unknown;
+	topic: unknown;
 	"topic-action": unknown;
 	"after-topic-before-main": unknown;
 	"before-history": unknown;
-	"history": unknown;
+	history: unknown;
 	"after-history": unknown;
 }
 
@@ -58,19 +55,21 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 defineSlots<Slots>();
 
-let input_placeholder = computed(
-	() => props.disableInput
+let input_placeholder = computed(() =>
+	props.disableInput
 		? `La chambre « ${props.room.name} » est en mode lecture uniquement.`
-		: "Commence à taper / pour obtenir la liste des commandes disponibles..."
+		: "Commence à taper / pour obtenir la liste des commandes disponibles...",
 );
 
 // ------- //
 // Handler //
 // ------- //
 
-const change_nick_handler = (event: MouseEvent) => emit("change-nickname", event);
+const change_nick_handler = (event: MouseEvent) =>
+	emit("change-nickname", event);
 const dblclick_main_handler = (evt: MouseEvent) => emit("dblclick-main", evt);
-const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
+const open_colors_box_handler = (event: MouseEvent) =>
+	emit("open-colors-box", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const open_private_handler = (origin: Origin) => emit("open-private", origin);
 const send_message_handler = (message: string) => emit("send-message", message);

@@ -37,18 +37,14 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
-let is_current_client_member_global_operator = computed(
-	() => props.currentClientMember.is_global_operator()
+let is_current_client_member_global_operator = computed(() =>
+	props.currentClientMember.is_global_operator(),
 );
-let is_current_client_member_owner = computed(
-	() => props.currentClientMember.access_level.eq(
-		ChannelAccessLevelFlag.Owner
-	)
+let is_current_client_member_owner = computed(() =>
+	props.currentClientMember.access_level.eq(ChannelAccessLevelFlag.Owner),
 );
-let is_selected_member_owner = computed(
-	() => props.selectedMember.member.access_level.eq(
-		ChannelAccessLevelFlag.Owner
-	)
+let is_selected_member_owner = computed(() =>
+	props.selectedMember.member.access_level.eq(ChannelAccessLevelFlag.Owner),
 );
 
 // ------- //

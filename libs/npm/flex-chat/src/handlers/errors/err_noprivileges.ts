@@ -17,16 +17,13 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorNoprivilegesHandler
 	implements SocketEventInterface<"ERR_NOPRIVILEGES">
 {
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_NOPRIVILEGES", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NOPRIVILEGES">)
-	{
+	handle(data: GenericReply<"ERR_NOPRIVILEGES">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_noprivileges",

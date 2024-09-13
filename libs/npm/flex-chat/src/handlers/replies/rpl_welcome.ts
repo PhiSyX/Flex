@@ -17,11 +17,9 @@ import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 export class ReplyWelcomeHandler
 	implements SocketEventInterface<"RPL_WELCOME">
 {
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
-	{}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
-	listen()
-	{
+	listen() {
 		this.store.once("RPL_WELCOME", (data) => {
 			this.handle(data, {
 				channels: this.store.get_auto_join_channels(),
@@ -64,7 +62,9 @@ export class ReplyWelcomeHandler
 		let room = this.store.network();
 		room.add_connect_event(data, data.message);
 
-		let module = this.store.module_manager().get("JOIN")
+		let module = this.store
+			.module_manager()
+			.get("JOIN")
 			.expect("Récupération du module `JOIN`");
 		module.send({ channels });
 

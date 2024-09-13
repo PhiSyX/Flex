@@ -16,8 +16,7 @@ import { ref } from "vue";
 // Type //
 // ---- //
 
-export interface Props
-{
+export interface Props {
 	completionList?: Array<string>;
 	currentClientNickname?: string;
 	disableInput?: boolean;

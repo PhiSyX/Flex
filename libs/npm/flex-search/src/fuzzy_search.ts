@@ -23,8 +23,7 @@ const STATIC_CACHE = new Map();
 // Fonction //
 // -------- //
 
-function memcache<Key, Value>(key: Key, value_fn: () => Value): Value
-{
+function memcache<Key, Value>(key: Key, value_fn: () => Value): Value {
 	if (!STATIC_CACHE.has(key)) {
 		STATIC_CACHE.set(key, value_fn());
 	}
@@ -36,18 +35,16 @@ function memcache<Key, Value>(key: Key, value_fn: () => Value): Value
 // Type //
 // ---- //
 
-interface FuzzySearchRecord
-{
+interface FuzzySearchRecord {
 	type: FuzzySearchType;
 	word: string;
-};
+}
 
 // ----------- //
 // Énumération //
 // ----------- //
 
-enum FuzzySearchType
-{
+enum FuzzySearchType {
 	Hit = "HIT",
 	Text = "TEXT",
 }
@@ -80,8 +77,7 @@ const push_to_result = (
 function fuzzy_search(
 	needle: string,
 	haystack: string,
-): Option<Array<FuzzySearchRecord>>
-{
+): Option<Array<FuzzySearchRecord>> {
 	return memcache(haystack + needle, () => {
 		let search_size = needle.length;
 		let in_str_len = haystack.length;
@@ -115,8 +111,8 @@ function fuzzy_search(
 		return search_size !== 0 &&
 			in_str_len !== 0 &&
 			pattern_idx === search_size
-				? Some(matches)
-				: None();
+			? Some(matches)
+			: None();
 	});
 }
 

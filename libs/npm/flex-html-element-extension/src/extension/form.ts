@@ -22,15 +22,12 @@ type FormMethod = "get" | "post" | "dialog";
 // Implémentation //
 // -------------- //
 
-export class FormHTMLElementExtension extends HTMLElementExtension<HTMLFormElement>
-{
-	static make(args: HTMLElementExtension.Args): FormHTMLElementExtension
-	{
+export class FormHTMLElementExtension extends HTMLElementExtension<HTMLFormElement> {
+	static make(args: HTMLElementExtension.Args): FormHTMLElementExtension {
 		return new FormHTMLElementExtension(args);
 	}
 
-	constructor(args: HTMLElementExtension.Args)
-	{
+	constructor(args: HTMLElementExtension.Args) {
 		super(document.createElement("form"), args);
 	}
 
@@ -38,22 +35,19 @@ export class FormHTMLElementExtension extends HTMLElementExtension<HTMLFormEleme
 	 * Public API
 	 */
 
-	action(uri: FormAction): this
-	{
+	action(uri: FormAction): this {
 		this.set_attribute("action", uri);
 		return this;
 	}
 
 	method<Verb extends FormMethod>(http_verb: Uppercase<Verb>): this;
 	method<Verb extends FormMethod>(http_verb: Lowercase<Verb>): this;
-	method(http_verb: string): this
-	{
+	method(http_verb: string): this {
 		this.set_attribute("method", http_verb);
 		return this;
 	}
 
-	on_submit(fn: (evt: SubmitEvent) => void): this
-	{
+	on_submit(fn: (evt: SubmitEvent) => void): this {
 		return this.on("submit", fn);
 	}
 
@@ -61,8 +55,7 @@ export class FormHTMLElementExtension extends HTMLElementExtension<HTMLFormEleme
 		success?: (evt: SubmitEvent, res: Response) => void;
 		failure?: (evt: SubmitEvent, err: unknown) => void;
 		xhr_options?: Omit<RequestInit, "method" | "body">;
-	}): this
-	{
+	}): this {
 		return this.on_submit(function (this: HTMLFormElement, evt) {
 			let body: BodyInit | undefined = undefined;
 
@@ -83,15 +76,12 @@ export class FormHTMLElementExtension extends HTMLElementExtension<HTMLFormEleme
 	}
 }
 
-export class InputHTMLElementExtension extends HTMLElementExtension<HTMLInputElement>
-{
-	static make(args: HTMLElementExtension.Args): InputHTMLElementExtension
-	{
+export class InputHTMLElementExtension extends HTMLElementExtension<HTMLInputElement> {
+	static make(args: HTMLElementExtension.Args): InputHTMLElementExtension {
 		return new InputHTMLElementExtension(args);
 	}
 
-	constructor(args: HTMLElementExtension.Args)
-	{
+	constructor(args: HTMLElementExtension.Args) {
 		super(document.createElement("input"), args);
 	}
 
@@ -99,14 +89,12 @@ export class InputHTMLElementExtension extends HTMLElementExtension<HTMLInputEle
 	 * Public API
 	 */
 
-	form(id?: string): this
-	{
+	form(id?: string): this {
 		this.set_attribute("form", id);
 		return this;
 	}
 
-	model<M extends HTMLElementExtension.Primitives>(signal: Signal<M>): this
-	{
+	model<M extends HTMLElementExtension.Primitives>(signal: Signal<M>): this {
 		signal.watch((model) => this.handle_signal(model), { immediate: true });
 
 		this.on("input", (evt) => {
@@ -119,28 +107,23 @@ export class InputHTMLElementExtension extends HTMLElementExtension<HTMLInputEle
 		return this;
 	}
 
-	name(user: string): this
-	{
+	name(user: string): this {
 		this.set_attribute("name", user);
 		return this;
 	}
 
-	value(userValue: unknown): this
-	{
+	value(userValue: unknown): this {
 		this.set_attribute("value", String(userValue));
 		return this;
 	}
 }
 
-export class LabelHTMLElementExtension extends HTMLElementExtension<HTMLLabelElement>
-{
-	static make(args: HTMLElementExtension.Args): LabelHTMLElementExtension
-	{
+export class LabelHTMLElementExtension extends HTMLElementExtension<HTMLLabelElement> {
+	static make(args: HTMLElementExtension.Args): LabelHTMLElementExtension {
 		return new LabelHTMLElementExtension(args);
 	}
 
-	constructor(args: HTMLElementExtension.Args)
-	{
+	constructor(args: HTMLElementExtension.Args) {
 		super(document.createElement("label"), args);
 	}
 
@@ -148,8 +131,7 @@ export class LabelHTMLElementExtension extends HTMLElementExtension<HTMLLabelEle
 	 * Public API
 	 */
 
-	for(id: `#${string}`): this
-	{
+	for(id: `#${string}`): this {
 		this.set_attribute("for", id.slice(1));
 		return this;
 	}

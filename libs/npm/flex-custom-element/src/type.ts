@@ -19,8 +19,7 @@ import type { GlobalCustomElement } from "./global";
 // Interface //
 // --------- //
 
-export interface CustomElementConstructor<I extends CustomElementInterface>
-{
+export interface CustomElementConstructor<I extends CustomElementInterface> {
 	new (_: GlobalCustomElement): I;
 
 	/**
@@ -34,8 +33,7 @@ export interface CustomElementConstructor<I extends CustomElementInterface>
 	events?: Array<string>;
 }
 
-export interface CustomElementInterface
-{
+export interface CustomElementInterface {
 	customElement?: GlobalCustomElement;
 
 	mounted?: () => void;

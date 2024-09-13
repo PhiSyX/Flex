@@ -16,25 +16,21 @@ import { assert_channel_room } from "../../asserts/room";
 // Implémentation //
 // -------------- //
 
-export class ModeHandler implements SocketEventInterface<"MODE">
-{
+export class ModeHandler implements SocketEventInterface<"MODE"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("MODE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"MODE">)
-	{
+	handle(data: GenericReply<"MODE">) {
 		if (this.store.is_current_client(data.target)) {
 			this.handle_client_itself(data);
 			return;
@@ -43,14 +39,12 @@ export class ModeHandler implements SocketEventInterface<"MODE">
 		this.handle_channel(data);
 	}
 
-	handle_client_itself(data: GenericReply<"MODE">)
-	{
+	handle_client_itself(data: GenericReply<"MODE">) {
 		let room = this.store.network();
 		room.add_event("event:mode", room.create_event(data));
 	}
 
-	handle_channel(data: GenericReply<"MODE">)
-	{
+	handle_channel(data: GenericReply<"MODE">) {
 		let maybe_room = this.store.room_manager().get(data.target);
 		if (maybe_room.is_none()) {
 			return;
@@ -60,9 +54,12 @@ export class ModeHandler implements SocketEventInterface<"MODE">
 		assert_channel_room(room);
 
 		if (data.updated) {
-			room.add_event("event:mode", room.create_event(
-				data,
-				this.store.is_current_client(data.origin)),
+			room.add_event(
+				"event:mode",
+				room.create_event(
+					data,
+					this.store.is_current_client(data.origin),
+				),
 			);
 		}
 	}

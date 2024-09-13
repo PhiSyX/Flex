@@ -11,8 +11,7 @@ import ChannelNicklistItem from "#/sys/channel_nicklist/ChannelNicklistItem.vue"
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	filterInput: string;
 	moderators: {
 		original: Array<ChannelMember>;
@@ -29,14 +28,12 @@ interface Props
 	useIconInsteadOfAvatar?: boolean;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "select-member", origin: Origin): void;
 }
 
-interface Slots
-{
+interface Slots {
 	"user-info": (_: { member: ChannelMember }) => unknown;
 }
 
@@ -48,58 +45,57 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 defineSlots<Slots>();
 
-let moderators_list = computed<Array<
-	| ChannelMember
-	| ChannelMemberFiltered
-	| ChannelMemberUnfiltered
->>(
-	() => props.moderators.filtered.length > 0
+let moderators_list = computed<
+	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
+>(() =>
+	props.moderators.filtered.length > 0
 		? props.moderators.filtered
-		: props.moderators.original
+		: props.moderators.original,
 );
 
-let vips_list = computed<Array<
-	| ChannelMember
-	| ChannelMemberFiltered
-	| ChannelMemberUnfiltered
->>(
-	() => props.vips.filtered.length > 0
-		? props.vips.filtered
-		: props.vips.original
+let vips_list = computed<
+	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
+>(() =>
+	props.vips.filtered.length > 0 ? props.vips.filtered : props.vips.original,
 );
 
-let users_list = computed<Array<
-	| ChannelMember
-	| ChannelMemberFiltered
-	| ChannelMemberUnfiltered
->>(
-	() => props.users.filtered.length > 0
+let users_list = computed<
+	Array<ChannelMember | ChannelMemberFiltered | ChannelMemberUnfiltered>
+>(() =>
+	props.users.filtered.length > 0
 		? props.users.filtered
-		: props.users.original
+		: props.users.original,
 );
 
-let has_filtered_moderators = computed(() => props.moderators
-	.filtered.some((member) => member instanceof ChannelMemberFiltered)
+let has_filtered_moderators = computed(() =>
+	props.moderators.filtered.some(
+		(member) => member instanceof ChannelMemberFiltered,
+	),
 );
-let has_filtered_vips = computed(() => props.vips
-	.filtered.some((member) => member instanceof ChannelMemberFiltered)
+let has_filtered_vips = computed(() =>
+	props.vips.filtered.some(
+		(member) => member instanceof ChannelMemberFiltered,
+	),
 );
-let has_filtered_users = computed(() => props.users
-	.filtered.some((member) => member instanceof ChannelMemberFiltered)
+let has_filtered_users = computed(() =>
+	props.users.filtered.some(
+		(member) => member instanceof ChannelMemberFiltered,
+	),
 );
 
-let has_filters = computed(() => (
-	has_filtered_moderators.value ||
-	has_filtered_vips.value ||
-	has_filtered_users.value
-));
+let has_filters = computed(
+	() =>
+		has_filtered_moderators.value ||
+		has_filtered_vips.value ||
+		has_filtered_users.value,
+);
 
 // -------- //
 // Handlers //
 // -------- //
 
 const open_private_handler = (member: Origin) => emit("open-private", member);
-const select_user_handler  = (member: Origin) => emit("select-member", member);
+const select_user_handler = (member: Origin) => emit("select-member", member);
 </script>
 
 <template>

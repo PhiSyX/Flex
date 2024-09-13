@@ -12,8 +12,7 @@
 // Énumération //
 // ----------- //
 
-export enum View
-{
+export enum View {
 	Chat = "ChatView",
 	ChannelList = "ChannelListView",
 	Channel = "ChannelView",

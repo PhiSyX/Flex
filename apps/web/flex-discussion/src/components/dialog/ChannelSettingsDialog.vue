@@ -16,7 +16,7 @@ let chat_store = use_chat_store();
 
 let { dialog, close_dialog, teleport_id, layer_name, layer_unsafe } =
 	use_dialog<ChannelSettingsDialog, ChannelSettingsRecordDialog>(
-		ChannelSettingsDialog
+		ChannelSettingsDialog,
 	);
 
 // ------- //
@@ -27,7 +27,7 @@ let { dialog, close_dialog, teleport_id, layer_name, layer_unsafe } =
  * Soumission du formulaire.
  */
 function submit_form_data_handler(
-	modes_settings: Partial<Command<"MODE">["modes"]>
+	modes_settings: Partial<Command<"MODE">["modes"]>,
 ) {
 	if (!layer_unsafe.value.data) {
 		return;
@@ -35,7 +35,7 @@ function submit_form_data_handler(
 
 	chat_store.apply_channel_settings(
 		layer_unsafe.value.data.room.name,
-		modes_settings as Command<"MODE">["modes"]
+		modes_settings as Command<"MODE">["modes"],
 	);
 }
 

@@ -5,22 +5,19 @@ import { computed, watchEffect as watch_effect } from "vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	name: string;
 	disabled?: boolean;
 	position?: "left" | "right";
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "on"): void;
 	(event_name: "off"): void;
 }
 
-interface Slots
-{
-	"default": unknown;
+interface Slots {
+	default: unknown;
 }
 
 // --------- //

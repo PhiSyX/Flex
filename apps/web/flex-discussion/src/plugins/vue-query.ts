@@ -15,7 +15,6 @@ import { VueQueryPlugin } from "@tanstack/vue-query";
 /**
  * Installe le plugin vue-router.
  */
-export function install(app: App<Element>)
-{
+export function install(app: App<Element>) {
 	app.use(VueQueryPlugin);
 }

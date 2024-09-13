@@ -20,18 +20,14 @@ type S = SocketEventInterface<"ERR_NOSUCHNICK">;
 // Implémentation //
 // -------------- //
 
-export class ErrorNosuchnickHandler implements S
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ErrorNosuchnickHandler implements S {
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_NOSUCHNICK", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NOSUCHNICK">)
-	{
+	handle(data: GenericReply<"ERR_NOSUCHNICK">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_nosuchnick",

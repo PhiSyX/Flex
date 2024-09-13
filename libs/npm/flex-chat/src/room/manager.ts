@@ -26,18 +26,17 @@ type GetOptions = {
 		is_custom?: boolean;
 	};
 	fallbacks?: Array<{
-		active?: GetOptions,
-		latest?: GetOptions,
-		network?: boolean,
-	}>,
+		active?: GetOptions;
+		latest?: GetOptions;
+		network?: boolean;
+	}>;
 };
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class RoomManager
-{
+export class RoomManager {
 	_last_room: Option<RoomID> = None();
 	_current_room: Option<RoomID> = None();
 	_rooms: Map<RoomID, Room> = new Map();
@@ -46,10 +45,11 @@ export class RoomManager
 	/**
 	 * Récupère la chambre courante.
 	 */
-	active(options: GetOptions = {
-		where: { state: "opened" },
-	}): Room
-	{
+	active(
+		options: GetOptions = {
+			where: { state: "opened" },
+		},
+	): Room {
 		return this._current_room
 			.and_then((current_room) => this.get(current_room, options))
 			.expect("La chambre courante");
@@ -58,8 +58,7 @@ export class RoomManager
 	/**
 	 * Change un ID par un nouveau.
 	 */
-	change_id(old_room_id: RoomID, new_room_id: RoomID): void
-	{
+	change_id(old_room_id: RoomID, new_room_id: RoomID): void {
 		let is_current_room = this.current().id() === old_room_id;
 		let maybe_room = this.remove(old_room_id);
 		if (maybe_room.is_none()) {
@@ -76,8 +75,7 @@ export class RoomManager
 	/**
 	 * Ferme une chambre à partir de son ID.
 	 */
-	close(room_id: RoomID, options?: GetOptions): Option<Room>
-	{
+	close(room_id: RoomID, options?: GetOptions): Option<Room> {
 		if (this._current_room.is_some()) {
 			if (this.current().eq(room_id)) {
 				this.unset_current();
@@ -98,18 +96,19 @@ export class RoomManager
 	/**
 	 * Définit les rooms de la classe à partir d'un itérable.
 	 */
-	extends(rooms: Iterable<[RoomID, Room]>)
-	{
+	extends(rooms: Iterable<[RoomID, Room]>) {
 		for (let [current_room_id, room] of rooms) {
-			this._rooms.set(cast_to_room_id(current_room_id.toLowerCase()), room);
+			this._rooms.set(
+				cast_to_room_id(current_room_id.toLowerCase()),
+				room,
+			);
 		}
 	}
 
 	/**
 	 * Chambre courante
 	 */
-	current(): Room
-	{
+	current(): Room {
 		return this._current_room
 			.and_then((current_room) => this.get(current_room))
 			.expect("La chambre courante");
@@ -118,8 +117,7 @@ export class RoomManager
 	/**
 	 * Récupère un salon à partir de son ID.
 	 */
-	get(room_id: RoomID, options?: GetOptions): Option<Room>
-	{
+	get(room_id: RoomID, options?: GetOptions): Option<Room> {
 		let maybe_room = Option.from(
 			this._rooms.get(cast_to_room_id(room_id.toLowerCase())),
 		);
@@ -132,8 +130,10 @@ export class RoomManager
 					}
 
 					switch (options.where.state) {
-						case "closed": return room.is_closed();
-						case "opened": return !room.is_closed();
+						case "closed":
+							return room.is_closed();
+						case "opened":
+							return !room.is_closed();
 					}
 				})
 				.filter((room) => {
@@ -153,7 +153,7 @@ export class RoomManager
 						return room.id().startsWith("@");
 					}
 
-					return true
+					return true;
 				});
 		}
 
@@ -187,8 +187,7 @@ export class RoomManager
 	 * Récupère une chambre en fonction de son ID ou insère une nouvelle chambre
 	 * si la chambre demandée n'existe pas.
 	 */
-	get_or_insert(room_id: RoomID, fallback: () => Room): Room
-	{
+	get_or_insert(room_id: RoomID, fallback: () => Room): Room {
 		return this.get(room_id)
 			.or_else(() => {
 				let room = fallback();
@@ -201,18 +200,19 @@ export class RoomManager
 	/**
 	 * Vérifie qu'une chambre existe.
 	 */
-	has(room_id: RoomID, options: GetOptions = {
-		where: { state: "opened" },
-	}): boolean
-	{
+	has(
+		room_id: RoomID,
+		options: GetOptions = {
+			where: { state: "opened" },
+		},
+	): boolean {
 		return this.get(room_id, options).is_some();
 	}
 
 	/**
 	 * Ajoute une nouvelle chambre.
 	 */
-	insert(new_room_id: RoomID, new_room: Room): Room
-	{
+	insert(new_room_id: RoomID, new_room: Room): Room {
 		this._rooms.set(cast_to_room_id(new_room_id.toLowerCase()), new_room);
 		return new_room;
 	}
@@ -220,60 +220,63 @@ export class RoomManager
 	/**
 	 * Récupère la dernière chambre ouverte (safe).
 	 */
-	last(options: GetOptions = {
-		where: { state: "opened" },
-	}): Option<Room>
-	{
-		return this._last_room.and_then(
-			(last_room) => this.get(last_room, options)
+	last(
+		options: GetOptions = {
+			where: { state: "opened" },
+		},
+	): Option<Room> {
+		return this._last_room.and_then((last_room) =>
+			this.get(last_room, options),
 		);
 	}
 
 	/**
 	 * Récupère la chambre courante (SAFE).
 	 */
-	maybe_active(options: GetOptions = {
-		where: { state: "opened" },
-	}): Option<Room>
-	{
-		return this._current_room.and_then(
-			(current_room) => this.get(current_room, options)
+	maybe_active(
+		options: GetOptions = {
+			where: { state: "opened" },
+		},
+	): Option<Room> {
+		return this._current_room.and_then((current_room) =>
+			this.get(current_room, options),
 		);
 	}
 
 	/**
 	 * Récupère le chambre réseau.
 	 */
-	network(): Option<Room>
-	{
+	network(): Option<Room> {
 		return this.get(ServerCustomRoom.ID);
 	}
 
 	/**
 	 * Supprime une chambre à partir de son ID.
 	 */
-	remove(room_id: RoomID, options: GetOptions = {
-		where: { state: "opened" },
-	}): Option<Room>
-	{
+	remove(
+		room_id: RoomID,
+		options: GetOptions = {
+			where: { state: "opened" },
+		},
+	): Option<Room> {
 		let maybe_room = this.get(room_id, options);
-		maybe_room.then(() => this._rooms.delete(cast_to_room_id(room_id.toLowerCase())));
+		maybe_room.then(() =>
+			this._rooms.delete(cast_to_room_id(room_id.toLowerCase())),
+		);
 		return maybe_room;
 	}
 
 	/**
 	 * Toutes les chambres.
 	 */
-	rooms(): Array<Room>
-	{
+	rooms(): Array<Room> {
 		return Array.from(this._rooms.values());
 	}
 
 	/**
 	 * Définit une chambre courante.
 	 */
-	set_current(room_id: RoomID)
-	{
+	set_current(room_id: RoomID) {
 		this._last_room = this._current_room.clone();
 
 		if (this._current_room.is_some()) {
@@ -301,23 +304,20 @@ export class RoomManager
 	/**
 	 * Définit la chambre courante à la dernière chambre.
 	 */
-	set_current_to_last()
-	{
+	set_current_to_last() {
 		let rooms = this.rooms().filter((room) => !room.is_closed());
 		let maybe_last_room_id = Option.from(rooms.at(-1));
 		maybe_last_room_id.then((room) => this.set_current(room.id()));
 	}
 
-	set_on_change(cb: this["_on_change"])
-	{
+	set_on_change(cb: this["_on_change"]) {
 		this._on_change = cb;
 	}
 
 	/**
 	 * Définit la chambre courante comme vide.
 	 */
-	unset_current()
-	{
+	unset_current() {
 		this._last_room = this._current_room.clone();
 		this._current_room = None();
 	}

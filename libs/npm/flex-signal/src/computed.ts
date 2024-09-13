@@ -19,37 +19,32 @@ type FIXME = any;
 
 type ComputedWatchCallback<R = FIXME, T = FIXME> = (_: T) => R;
 
-export interface ComputedWatchFnOptions
-{
+export interface ComputedWatchFnOptions {
 	immediate?: boolean;
-};
+}
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class Computed<R = FIXME> 
-{
+export class Computed<R = FIXME> {
 	#return_fn: ComputedWatchCallback<R>;
 
 	constructor(
 		public signal: Signal,
 		return_fn: ComputedWatchCallback<R>,
-	)
-	{
+	) {
 		this.#return_fn = return_fn;
 	}
 
-	valueOf(): R
-	{
+	valueOf(): R {
 		return this.#return_fn(this.signal.valueOf());
 	}
 
 	watch(
 		callback: (value: FIXME, old_value: FIXME) => void,
 		options?: ComputedWatchFnOptions,
-	)
-	{
+	) {
 		this.signal.add_callback((old_value, new_value) => {
 			if (old_value !== new_value) {
 				callback(this.#return_fn(new_value), old_value);
@@ -66,7 +61,6 @@ export class Computed<R = FIXME>
 // Fonction //
 // -------- //
 
-export function is_computed(value: unknown): value is Computed 
-{
+export function is_computed(value: unknown): value is Computed {
 	return value instanceof Computed;
 }

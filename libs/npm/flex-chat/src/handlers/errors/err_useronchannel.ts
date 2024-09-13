@@ -20,18 +20,14 @@ type S = SocketEventInterface<"ERR_USERONCHANNEL">;
 // Implémentation //
 // -------------- //
 
-export class ErrorUsernotinchannelHandler implements S
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ErrorUsernotinchannelHandler implements S {
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_USERONCHANNEL", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_USERONCHANNEL">)
-	{
+	handle(data: GenericReply<"ERR_USERONCHANNEL">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_useronchannel",

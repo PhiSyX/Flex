@@ -15,8 +15,7 @@ export class ModuleManager {
 	private _sets: Set<() => Promise<unknown>> = new Set();
 	private _maps: Map<string, { listen(): void }> = new Map();
 
-	get size()
-	{
+	get size() {
 		return this._sets.size;
 	}
 
@@ -42,30 +41,26 @@ export class ModuleManager {
 
 	get_unchecked<T extends CommandsNames = CommandsNames>(
 		module_id: T,
-	): ModuleInterface & CommandInterface<T> | undefined {
+	): (ModuleInterface & CommandInterface<T>) | undefined {
 		let maybe_module = this._maps.get(module_id) as
 			| (ModuleInterface & CommandInterface<T>)
 			| undefined;
 		return maybe_module;
 	}
 
-	set(module_id: string, module: ModuleInterface & CommandInterface)
-	{
+	set(module_id: string, module: ModuleInterface & CommandInterface) {
 		return this._maps.set(module_id, module);
 	}
 
-	free()
-	{
+	free() {
 		this._sets.clear();
 	}
 
-	sets()
-	{
+	sets() {
 		return this._sets;
 	}
 
-	modules()
-	{
+	modules() {
 		return this._maps;
 	}
 }

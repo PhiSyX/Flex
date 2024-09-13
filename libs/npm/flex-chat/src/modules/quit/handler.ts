@@ -18,25 +18,21 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class QuitHandler implements SocketEventInterface<"QUIT">
-{
+export class QuitHandler implements SocketEventInterface<"QUIT"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("QUIT", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"QUIT">)
-	{
+	handle(data: GenericReply<"QUIT">) {
 		if (this.store.is_current_client(data.origin)) {
 			return;
 		}
@@ -54,8 +50,7 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 		this.store.user_manager().del(data.origin.id);
 	}
 
-	handle_channel(channel: ChannelRoom, data: GenericReply<"QUIT">)
-	{
+	handle_channel(channel: ChannelRoom, data: GenericReply<"QUIT">) {
 		if (!channel.members.has(data.origin.id)) {
 			return;
 		}
@@ -65,8 +60,7 @@ export class QuitHandler implements SocketEventInterface<"QUIT">
 		channel.remove_member(data.origin.id);
 	}
 
-	handle_private(priv: PrivateRoom, data: GenericReply<"QUIT">)
-	{
+	handle_private(priv: PrivateRoom, data: GenericReply<"QUIT">) {
 		if (!priv.participants.has(data.origin.id)) {
 			return;
 		}

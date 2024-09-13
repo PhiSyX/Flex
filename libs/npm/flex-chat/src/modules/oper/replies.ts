@@ -22,25 +22,21 @@ type S3 = SocketEventInterface<"ERR_OPERONLY">;
 // Implémentation //
 // -------------- //
 
-export class ErrorNooperhostHandler implements S1
-{
+export class ErrorNooperhostHandler implements S1 {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_NOOPERHOST", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NOOPERHOST">)
-	{
+	handle(data: GenericReply<"ERR_NOOPERHOST">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_nooperhost",
@@ -50,25 +46,21 @@ export class ErrorNooperhostHandler implements S1
 	}
 }
 
-export class ErrorPasswdmismatchHandler implements S2
-{
+export class ErrorPasswdmismatchHandler implements S2 {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_PASSWDMISMATCH", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_PASSWDMISMATCH">)
-	{
+	handle(data: GenericReply<"ERR_PASSWDMISMATCH">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_passwdmismatch",
@@ -78,25 +70,21 @@ export class ErrorPasswdmismatchHandler implements S2
 	}
 }
 
-export class ErrorOperonlyHandler implements S3
-{
+export class ErrorOperonlyHandler implements S3 {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_OPERONLY", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_OPERONLY">)
-	{
+	handle(data: GenericReply<"ERR_OPERONLY">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_operonly",

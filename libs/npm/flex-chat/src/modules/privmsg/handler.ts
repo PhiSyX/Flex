@@ -22,25 +22,21 @@ import { RoomMessage } from "../../room/message";
 // Implémentation //
 // -------------- //
 
-export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
-{
+export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
-	{}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("PRIVMSG", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"PRIVMSG">)
-	{
+	handle(data: GenericReply<"PRIVMSG">) {
 		if (this.store.is_current_client(data.origin)) {
 			this.handle_client_itself(data);
 			return;
@@ -49,9 +45,10 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 		this.handle_user(data);
 	}
 
-	handle_client_itself(data: GenericReply<"PRIVMSG">)
-	{
-		let user = this.store.user_manager().find_by_nickname(data.target)
+	handle_client_itself(data: GenericReply<"PRIVMSG">) {
+		let user = this.store
+			.user_manager()
+			.find_by_nickname(data.target)
 			.expect(`"L'utilisateur cible ${data.target}."`);
 		let maybe_room = this.store.room_manager().get(user.id);
 		if (maybe_room.is_none()) {
@@ -61,34 +58,34 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 		this.handle_message(room, data);
 	}
 
-	handle_user(data: GenericReply<"PRIVMSG">)
-	{
-		let priv = this.store.room_manager().get_or_insert(data.origin.id, () => {
-			let active_room = this.store.room_manager().active();
+	handle_user(data: GenericReply<"PRIVMSG">) {
+		let priv = this.store
+			.room_manager()
+			.get_or_insert(data.origin.id, () => {
+				let active_room = this.store.room_manager().active();
 
-			// @ts-expect-error : type à corriger
-			active_room.add_event("event:query", active_room.create_event(
-				data,
-				false,
-			));
+				// @ts-expect-error : type à corriger
+				active_room.add_event(
+					"event:query",
+					active_room.create_event(data, false),
+				);
 
-			let room = new PrivateRoom(data.origin.nickname)
-				.with_id(data.origin.id)
-				.marks_as_closed();
+				let room = new PrivateRoom(data.origin.nickname)
+					.with_id(data.origin.id)
+					.marks_as_closed();
 
-			if (room.is_closed()) {
-				this.store.play_audio("query");
-			}
+				if (room.is_closed()) {
+					this.store.play_audio("query");
+				}
 
-			room.add_participant(
-				new PrivateParticipant(data.origin)
-			);
-			room.add_participant(
-				new PrivateParticipant(this.store.client())
-					.with_is_current_client(true),
-			);
-			return room;
-		});
+				room.add_participant(new PrivateParticipant(data.origin));
+				room.add_participant(
+					new PrivateParticipant(
+						this.store.client(),
+					).with_is_current_client(true),
+				);
+				return room;
+			});
 
 		assert_private_room(priv);
 
@@ -102,8 +99,7 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 		this.handle_message(priv, data);
 	}
 
-	handle_message(room: Room, data: GenericReply<"PRIVMSG">)
-	{
+	handle_message(room: Room, data: GenericReply<"PRIVMSG">) {
 		let has_mention = false;
 
 		let is_current_client = this.store.is_current_client(data.origin);
@@ -111,16 +107,20 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 			// NOTE: Vérifie le pseudo du client courant est mentionné dans le
 			// message.
 			let current_client_nickname = this.store.nickname();
-			if (data.text.toLowerCase()
-					.indexOf(current_client_nickname.toLowerCase()) >= 0) {
+			if (
+				data.text
+					.toLowerCase()
+					.indexOf(current_client_nickname.toLowerCase()) >= 0
+			) {
 				has_mention = true;
 				room.set_highlighted(has_mention);
 			}
 		}
 
-		let nickname = room.type === "channel" || room.type === "private"
-			? data.origin.nickname
-			: "*";
+		let nickname =
+			room.type === "channel" || room.type === "private"
+				? data.origin.nickname
+				: "*";
 
 		room.add_message(
 			new RoomMessage(data.text)
@@ -142,10 +142,12 @@ export class PrivmsgHandler implements SocketEventInterface<"PRIVMSG">
 		);
 
 		if (has_mention && !is_current_client) {
-			let mentions_room = this.store.room_manager().get_or_insert(
-				MentionsCustomRoom.ID,
-				() => new MentionsCustomRoom(),
-			);
+			let mentions_room = this.store
+				.room_manager()
+				.get_or_insert(
+					MentionsCustomRoom.ID,
+					() => new MentionsCustomRoom(),
+				);
 
 			mentions_room.marks_as_opened();
 

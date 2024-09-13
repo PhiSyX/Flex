@@ -7,17 +7,15 @@ import { LabelIcon } from "../icons";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	error?: string | null;
 	label: Icons;
 	name: string;
 }
 
-interface Slots
-{
-	"default": unknown;
-	"icon": unknown;
+interface Slots {
+	default: unknown;
+	icon: unknown;
 }
 
 // --------- //

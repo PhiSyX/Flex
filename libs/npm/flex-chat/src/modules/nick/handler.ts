@@ -15,29 +15,24 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class NickHandler implements SocketEventInterface<"NICK">
-{
+export class NickHandler implements SocketEventInterface<"NICK"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("NICK", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"NICK">)
-	{
-		this.store.user_manager().change_nickname(
-			data.old_nickname,
-			data.new_nickname,
-		);
+	handle(data: GenericReply<"NICK">) {
+		this.store
+			.user_manager()
+			.change_nickname(data.old_nickname, data.new_nickname);
 
 		let is_current_client = this.store.is_current_client(data.origin);
 		if (is_current_client) {
@@ -48,15 +43,16 @@ export class NickHandler implements SocketEventInterface<"NICK">
 		}
 
 		for (let room of this.store.room_manager().rooms()) {
-			room.add_event("event:nick", room.create_event(
-				data,
-				is_current_client,
-			));
+			room.add_event(
+				"event:nick",
+				room.create_event(data, is_current_client),
+			);
 
 			if (room.type === "channel") {
 				assert_channel_room(room);
 
-				let user = this.store.user_manager()
+				let user = this.store
+					.user_manager()
 					.find_by_nickname(data.new_nickname)
 					.expect(`L'utilisateur ${data.new_nickname}.`);
 

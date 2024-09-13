@@ -84,8 +84,7 @@ const SHORT_MONTHS_LANG_FR = [
  *
  * - `w` -> Jour de la semaine au format numérique. `z` -> Jour de l'année.
  */
-function day_formats(this: Date): DateKeyFormat
-{
+function day_formats(this: Date): DateKeyFormat {
 	let date = this.getDate();
 	let day = this.getDay();
 	let year = this.getFullYear();
@@ -121,8 +120,7 @@ function day_formats(this: Date): DateKeyFormat
 		 * 2 : 'd'  pour "le second"
 		 * 3 : 'e'  pour "le troisième"
 		 */
-		S: () =>
-		{
+		S: () => {
 			let dm10 = date % 10;
 			let one = dm10 === 1 && date !== 11;
 			let two = dm10 === 2 && date !== 12;
@@ -151,13 +149,11 @@ function day_formats(this: Date): DateKeyFormat
  *
  * @exemple 42 (la 42e semaine de l'année)
  */
-function week_formats(this: Date): DateKeyFormat
-{
+function week_formats(this: Date): DateKeyFormat {
 	let day = this.getDay();
 
 	return {
-		W: () =>
-		{
+		W: () => {
 			let day_nr = (day + 6) % 7;
 
 			let target = new Date(this.valueOf());
@@ -192,8 +188,7 @@ function week_formats(this: Date): DateKeyFormat
  *
  * - `t` -> Nombre de jours dans le mois.
  */
-function month_formats(this: Date): DateKeyFormat
-{
+function month_formats(this: Date): DateKeyFormat {
 	let year = this.getFullYear();
 	let month = this.getMonth();
 
@@ -211,8 +206,7 @@ function month_formats(this: Date): DateKeyFormat
 		/**
 		 * 'Jan' à 'Dec'
 		 */
-		M: () =>
-		{
+		M: () => {
 			let monthName = LONG_MONTHS_LANG_FR[month];
 			let shortMonthEnds = monthName.indexOf("Jui") >= 0 ? 4 : 3;
 			return monthName.slice(0, shortMonthEnds);
@@ -226,8 +220,7 @@ function month_formats(this: Date): DateKeyFormat
 		/**
 		 * 28 à 31
 		 */
-		t: () =>
-		{
+		t: () => {
 			let next_month = month + 1;
 
 			if (next_month === 12) {
@@ -256,8 +249,7 @@ function month_formats(this: Date): DateKeyFormat
  *
  * - `y` -> Année sur 2 chiffres.
  */
-function year_formats(this: Date): DateKeyFormat
-{
+function year_formats(this: Date): DateKeyFormat {
 	let year = this.getFullYear();
 	let day = this.getDay();
 
@@ -267,8 +259,7 @@ function year_formats(this: Date): DateKeyFormat
 		 */
 		L: () => ~~(year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)),
 
-		o: () =>
-		{
+		o: () => {
 			let target = new Date(this.valueOf());
 			target.setDate(target.getDate() - ((day + 6) % 7) + 3);
 			return target.getFullYear();
@@ -304,8 +295,7 @@ function year_formats(this: Date): DateKeyFormat
  *
  * - `u` -> Microsecondes.
  */
-function hour_formats(this: Date): DateKeyFormat
-{
+function hour_formats(this: Date): DateKeyFormat {
 	let hours = this.getHours();
 	let minutes = this.getMinutes();
 	let seconds = this.getSeconds();
@@ -316,17 +306,19 @@ function hour_formats(this: Date): DateKeyFormat
 
 		A: () => "H",
 
-		B: () => Math.floor(
-			(((
-				(this.getUTCHours() + 1) % 24)
-				+ this.getUTCMinutes() / 60
-				+ this.getUTCSeconds() / 3600
-			) * 1000 ) / 24,
-		),
+		B: () =>
+			Math.floor(
+				((((this.getUTCHours() + 1) % 24) +
+					this.getUTCMinutes() / 60 +
+					this.getUTCSeconds() / 3600) *
+					1000) /
+					24,
+			),
 
 		g: () => hours % 12 || 12,
 		G: () => hours,
-		h: () => Number(((hours % 12 || 12) < 10 ? "0" : "") + (hours % 12 || 12)),
+		h: () =>
+			Number(((hours % 12 || 12) < 10 ? "0" : "") + (hours % 12 || 12)),
 		H: () => Number((hours < 10 ? "0" : "") + hours),
 		i: () => Number((minutes < 10 ? "0" : "") + minutes),
 		s: () => Number((seconds < 10 ? "0" : "") + seconds),
@@ -353,36 +345,30 @@ function hour_formats(this: Date): DateKeyFormat
  * - `Z` ->  Décalage horaire en secondes. Le décalage des zones à l'ouest de la
  *   zone UTC est négative, et à l'est, il est positif.
  */
-function tz_formats(this: Date): DateKeyFormat
-{
+function tz_formats(this: Date): DateKeyFormat {
 	let offset = this.getTimezoneOffset();
 	return {
 		e: () => (/\((.*)\)/.exec(new Date().toString()) || [])[1],
-		
-		I: () =>
-		{
+
+		I: () => {
 			let winter_offset = new Date(0).getTimezoneOffset();
 			return ~~(offset !== winter_offset);
 		},
-		
-		O: () =>
-		{
+
+		O: () => {
 			let offsetD60 = Math.abs(offset / 60);
 			let offsetM60 = Math.abs(offset % 60);
 			return (
 				(-offset < 0 ? "-" : "+") +
 				(offsetD60 < 10 ? "0" : "") +
 				Math.floor(offsetD60) +
-				(
-					offsetM60 === 0
-						? "00"
-						: (offsetM60 < 10 ? "0" : "") + offsetM60
-				)
+				(offsetM60 === 0
+					? "00"
+					: (offsetM60 < 10 ? "0" : "") + offsetM60)
 			);
 		},
 
-		P: () =>
-		{
+		P: () => {
 			let offsetD60 = Math.abs(offset / 60);
 			let offsetM60 = Math.abs(offset % 60);
 			return (
@@ -391,11 +377,9 @@ function tz_formats(this: Date): DateKeyFormat
 				(offsetD60 < 10 ? "0" : "") +
 				Math.floor(offsetD60) +
 				":" +
-				(
-					offsetM60 === 0
-						? "00"
-						: (offsetM60 < 10 ? "0" : "") + offsetM60
-				)
+				(offsetM60 === 0
+					? "00"
+					: (offsetM60 < 10 ? "0" : "") + offsetM60)
 			);
 		},
 
@@ -415,8 +399,7 @@ function tz_formats(this: Date): DateKeyFormat
  *
  * - `U` -> Secondes depuis l'époque Unix (1er Janvier 1970, 0h00 00s GMT).
  */
-function full_time_formats(this: Date): DateKeyFormat
-{
+function full_time_formats(this: Date): DateKeyFormat {
 	return {
 		c: () => format_date("Y-m-d\\TH:i:sP", this),
 		r: () => this.toString(),
@@ -424,8 +407,7 @@ function full_time_formats(this: Date): DateKeyFormat
 	};
 }
 
-function zero_padding(str: number | string): string
-{
+function zero_padding(str: number | string): string {
 	let $str = String(str);
 	return $str.length === 1 ? `0${$str}` : $str;
 }
@@ -433,8 +415,7 @@ function zero_padding(str: number | string): string
 /**
  * Converti un objet de type Date en un format passé par le premier argument.
  */
-function format_date(format = "[H:i:s]", time: Date = new Date()): string
-{
+function format_date(format = "[H:i:s]", time: Date = new Date()): string {
 	let replace_chars = {
 		...day_formats.apply(time),
 		...week_formats.apply(time),
@@ -455,14 +436,13 @@ function format_date(format = "[H:i:s]", time: Date = new Date()): string
 function get_long_month_from(
 	nmonth: number,
 	opt: { to_lower?: boolean } = {},
-): string
-{
+): string {
 	opt.to_lower ||= false;
 
 	let month = LONG_MONTHS_LANG_FR.at(nmonth - 1) || "";
 
 	if (opt.to_lower) {
-		month = month.toLowerCase()
+		month = month.toLowerCase();
 	}
 
 	return month;
@@ -470,14 +450,13 @@ function get_long_month_from(
 function get_short_month_from(
 	nmonth: number,
 	opt: { to_lower?: boolean } = {},
-): string
-{
+): string {
 	opt.to_lower ||= false;
 
 	let month = SHORT_MONTHS_LANG_FR.at(nmonth - 1) || "";
 
 	if (opt.to_lower) {
-		month = month.toLowerCase()
+		month = month.toLowerCase();
 	}
 
 	return month;

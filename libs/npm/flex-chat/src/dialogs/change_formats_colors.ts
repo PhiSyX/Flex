@@ -17,14 +17,14 @@ import type { DialogInterface } from "./interface";
 // Type //
 // ---- //
 
-export interface ChangeFormatsColorsRecordDialog
-{}
+export interface ChangeFormatsColorsRecordDialog {}
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsColorsRecordDialog>
+export class ChangeFormatsColorsDialog
+	implements DialogInterface<ChangeFormatsColorsRecordDialog>
 {
 	// ------ //
 	// Static //
@@ -32,11 +32,7 @@ export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsC
 
 	static ID = "change-formats-colors-dialog";
 
-	static create(
-		overlayer_store: OverlayerStore,
-		event: Event,
-	)
-	{
+	static create(overlayer_store: OverlayerStore, event: Event) {
 		overlayer_store.create({
 			id: ChangeFormatsColorsDialog.ID,
 			event,
@@ -47,36 +43,31 @@ export class ChangeFormatsColorsDialog implements DialogInterface<ChangeFormatsC
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(ChangeFormatsColorsDialog.ID);
 	}
 
-	get(): Option<Layer<ChangeFormatsColorsRecordDialog>>
-	{
-		return this.overlayer_store.get(ChangeFormatsColorsDialog.ID)
+	get(): Option<Layer<ChangeFormatsColorsRecordDialog>> {
+		return this.overlayer_store
+			.get(ChangeFormatsColorsDialog.ID)
 			.as<Layer<ChangeFormatsColorsRecordDialog>>();
 	}
 
-	get_unchecked(): Layer<ChangeFormatsColorsRecordDialog>
-	{
+	get_unchecked(): Layer<ChangeFormatsColorsRecordDialog> {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(ChangeFormatsColorsDialog.ID);
 	}
 
-	with_data(data: ChangeFormatsColorsRecordDialog)
-	{
+	with_data(data: ChangeFormatsColorsRecordDialog) {
 		this.overlayer_store.update_data(ChangeFormatsColorsDialog.ID, data);
 	}
 }

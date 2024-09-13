@@ -12,7 +12,7 @@ import { use_overlayer_store } from "~/store";
 let overlayer_store = use_overlayer_store();
 
 let has_load_all_modules_layer = computed(() =>
-	overlayer_store.layers.has("load-all-modules")
+	overlayer_store.layers.has("load-all-modules"),
 );
 
 let load_all_modulesLayer = computed(() => {

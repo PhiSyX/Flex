@@ -17,42 +17,38 @@ type DirectiveMutation = Directive<
 
 /// Directive `v-mutation`.
 const mutation: DirectiveMutation = {
-	mounted(el, binding)
-	{
-        let handler = binding.value;
+	mounted(el, binding) {
+		let handler = binding.value;
 		let observer = new MutationObserver(mutation_handler(handler));
 
-        let options: MutationObserverInit = {};
+		let options: MutationObserverInit = {};
 
-        if (binding.arg ==="opt") {
-            if (binding.modifiers["attributes"]) {
-                options.attributes = true;
-            }
+		if (binding.arg === "opt") {
+			if (binding.modifiers["attributes"]) {
+				options.attributes = true;
+			}
 
-            if (binding.modifiers["children"]) {
-                options.childList = true;
-            }
-        }
+			if (binding.modifiers["children"]) {
+				options.childList = true;
+			}
+		}
 
 		observer.observe(el, options);
 		el.__observer__ = observer;
 	},
 
-	beforeUnmount(el)
-	{
+	beforeUnmount(el) {
 		el.__observer__?.disconnect();
 	},
 };
 
 // FIXME
-function mutation_handler(callback: MutationCallback)
-{
+function mutation_handler(callback: MutationCallback) {
 	return function (
 		this: MutationCallback,
-        records: Array<MutationRecord>,
-        observer: MutationObserver,
-	)
-	{
+		records: Array<MutationRecord>,
+		observer: MutationObserver,
+	) {
 		callback.call(this, records, observer);
 	};
 }

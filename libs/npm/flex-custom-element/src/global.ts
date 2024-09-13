@@ -18,12 +18,10 @@ export type AttachShadowMode = "open" | "closed";
 // Implémentation //
 // -------------- //
 
-export class GlobalCustomElement extends HTMLElement
-{
+export class GlobalCustomElement extends HTMLElement {
 	public root!: ShadowRoot | DocumentFragment;
 
-	constructor(protected mode: AttachShadowMode)
-	{
+	constructor(protected mode: AttachShadowMode) {
 		super();
 
 		if (mode === "open") {
@@ -33,8 +31,7 @@ export class GlobalCustomElement extends HTMLElement
 		}
 	}
 
-	emit(key: string, value: unknown)
-	{
+	emit(key: string, value: unknown) {
 		let new_event = new CustomEvent(key, { detail: value });
 		this.dispatchEvent(new_event);
 	}

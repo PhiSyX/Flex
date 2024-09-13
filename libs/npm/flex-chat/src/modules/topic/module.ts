@@ -17,8 +17,7 @@ import { TopicCommand } from "./command";
 // Implémentation //
 // -------------- //
 
-export class TopicModule implements Module<TopicModule>
-{
+export class TopicModule implements Module<TopicModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -32,15 +31,13 @@ export class TopicModule implements Module<TopicModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: TopicCommand)
-	{}
+	constructor(private command: TopicCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_raw?: string, ...words: Array<string>)
-	{
+	input(room_id: RoomID, channel_raw?: string, ...words: Array<string>) {
 		let channel_r = channel_raw;
 
 		if (channel_r) {
@@ -60,11 +57,9 @@ export class TopicModule implements Module<TopicModule>
 		this.send({ channel: channel_r, topic });
 	}
 
-	send(payload: Command<"TOPIC">)
-	{
+	send(payload: Command<"TOPIC">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }

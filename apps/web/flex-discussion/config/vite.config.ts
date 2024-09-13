@@ -21,16 +21,14 @@ import yaml from "yaml";
 /**
  * Résout les chemins à partir de la racine du projet.
  */
-function resolve_paths_from_flex(...paths: Array<string>) 
-{
+function resolve_paths_from_flex(...paths: Array<string>) {
 	return path.resolve("..", "..", "..", ...paths);
 }
 
 /**
  * Récupère les paramètres du serveur backend.
  */
-async function get_flex_server_settings(): Promise<ServerSettings> 
-{
+async function get_flex_server_settings(): Promise<ServerSettings> {
 	let filepath = resolve_paths_from_flex("config", "flex", "server.yml");
 	let raw_content = await fs.readFile(filepath);
 	let settings = yaml.parse(raw_content.toString("utf8"));

@@ -20,8 +20,7 @@ export const STORAGE_SETTINGS_LAYOUT_KEY = "flex.settings.layout";
 // Type //
 // ---- //
 
-export interface LayoutData
-{
+export interface LayoutData {
 	channel_userlist_display?: boolean;
 	channel_userlist_position?: "left" | "right";
 	navigation_bar_position?: "left" | "right";
@@ -40,16 +39,14 @@ const DEFAULT_CHANNEL_USERLIST_DISPLAY = true;
 // Implémentation //
 // -------------- //
 
-export class LayoutStorage extends AppLocalStorage<LayoutData>
-{
+export class LayoutStorage extends AppLocalStorage<LayoutData> {
 	// ------ //
 	// Static //
 	// ------ //
 
 	static readonly KEY = STORAGE_SETTINGS_LAYOUT_KEY;
 
-	static default(): LayoutData
-	{
+	static default(): LayoutData {
 		return {
 			channel_userlist_display: DEFAULT_CHANNEL_USERLIST_DISPLAY,
 			channel_userlist_position: DEFAULT_CHANNEL_USERLIST_POSITION,
@@ -60,15 +57,14 @@ export class LayoutStorage extends AppLocalStorage<LayoutData>
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): unknown | undefined
-	{
+	static fromJSON(key: string, value: string): unknown | undefined {
 		if (key !== "") {
 			let keys = [
 				"channel_userlist_display",
 				"channel_userlist_position",
 				"navigation_bar_position",
 			];
-			
+
 			if (!keys.includes(key)) {
 				return;
 			}
@@ -77,11 +73,17 @@ export class LayoutStorage extends AppLocalStorage<LayoutData>
 				return DEFAULT_CHANNEL_USERLIST_DISPLAY;
 			}
 
-			if (key === "channel_userlist_position" && !POSITIONS.includes(value)) {
+			if (
+				key === "channel_userlist_position" &&
+				!POSITIONS.includes(value)
+			) {
 				return DEFAULT_CHANNEL_USERLIST_POSITION;
 			}
 
-			if (key === "navigation_bar_position" && !POSITIONS.includes(value)) {
+			if (
+				key === "navigation_bar_position" &&
+				!POSITIONS.includes(value)
+			) {
 				return DEFAULT_NAVIGATION_BAR_POSITION;
 			}
 		}
@@ -97,8 +99,7 @@ export class LayoutStorage extends AppLocalStorage<LayoutData>
 	// Constructor //
 	// ----------- //
 
-	constructor()
-	{
+	constructor() {
 		super(
 			LayoutStorage.KEY,
 			LayoutStorage.fromJSON,
@@ -106,8 +107,7 @@ export class LayoutStorage extends AppLocalStorage<LayoutData>
 		);
 	}
 
-	persist()
-	{
+	persist() {
 		this.set({
 			channel_userlist_display: this.value.channel_userlist_display,
 			channel_userlist_position: this.value.channel_userlist_position,

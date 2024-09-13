@@ -13,7 +13,6 @@ import { PrivateParticipant } from "../private/participant";
 /**
  * Certifie que la donnée passée en argument est un participant à un privé.
  */
-export function is_participant(user: unknown): user is PrivateParticipant
-{
+export function is_participant(user: unknown): user is PrivateParticipant {
 	return user instanceof PrivateParticipant;
 }

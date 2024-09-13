@@ -8,28 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function is_bigint(value: unknown): value is bigint 
-{
+export function is_bigint(value: unknown): value is bigint {
 	return typeof value === "bigint";
 }
 
-export function is_boolean(value: unknown): value is boolean 
-{
+export function is_boolean(value: unknown): value is boolean {
 	return typeof value === "boolean";
 }
 
-export function is_number(value: unknown): value is number 
-{
+export function is_number(value: unknown): value is number {
 	return typeof value === "number";
 }
 
-export function is_string(value: unknown): value is string 
-{
+export function is_string(value: unknown): value is string {
 	return typeof value === "string";
 }
 
-export function is_primitive<K>(value: K): value is K & boolean 
-{
+export function is_primitive<K>(value: K): value is K & boolean {
 	return (
 		is_bigint(value) ||
 		is_boolean(value) ||

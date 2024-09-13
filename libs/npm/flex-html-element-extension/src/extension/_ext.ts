@@ -61,14 +61,12 @@ namespace ElementExtension {
 // Implémentation //
 // -------------- //
 
-class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
-{
+class ElementExtension<E extends HTMLElement | SVGElement = FIXME> {
 	public static create_fragment(
 		children: Array<
 			string | ElementExtension | DocumentFragment | Node
 		> = [],
-	): ElementExtension
-	{
+	): ElementExtension {
 		let $native_fragment = document.createDocumentFragment();
 
 		for (let child of children) {
@@ -89,8 +87,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return new ElementExtension($native_fragment, []);
 	}
 
-	public static create_text(text: ElementExtension.Arg): ElementExtension
-	{
+	public static create_text(text: ElementExtension.Arg): ElementExtension {
 		let $native_element = document.createElement(
 			"output",
 		) as unknown as HTMLElement;
@@ -119,8 +116,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 	#children_CE: Array<HTMLElement> = [];
 	parent?: ElementExtension;
 
-	constructor(native_element: E, args: Array<ElementExtension.Arg>)
-	{
+	constructor(native_element: E, args: Array<ElementExtension.Arg>) {
 		this.native_element = native_element;
 		// @ts-expect-error
 		this.native_element.extension = this;
@@ -135,8 +131,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		this.#handle_args();
 	}
 
-	observer = (records: Array<MutationRecord>) =>
-	{
+	observer = (records: Array<MutationRecord>) => {
 		let added_nodes = (node: ElementExtension.NodeExtension) => {
 			let extension = node.extension;
 
@@ -181,8 +176,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		}
 	};
 
-	#handle_args(args: ElementExtension.Args = this.#args)
-	{
+	#handle_args(args: ElementExtension.Args = this.#args) {
 		for (let arg of args) {
 			let create_element = this.#create_element_by_types[typeof arg];
 			create_element.call(this, arg);
@@ -192,8 +186,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 	#create_element_from_primitive(
 		arg: ElementExtension.Primitives,
 		replace?: boolean,
-	): boolean
-	{
+	): boolean {
 		let str = arg.toString();
 
 		if (str.startsWith("&") && str.endsWith(";")) {
@@ -213,8 +206,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return true;
 	}
 
-	#create_element_from_object(obj: object): boolean
-	{
+	#create_element_from_object(obj: object): boolean {
 		if (is_computed(obj)) {
 			return this.#handle_computed(obj);
 		}
@@ -259,8 +251,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return true;
 	}
 
-	#handle_computed(arg: Computed): boolean
-	{
+	#handle_computed(arg: Computed): boolean {
 		let value = arg.valueOf();
 
 		if (is_element_extension(value)) {
@@ -275,14 +266,14 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 
 		this.native_element.append($ext.node());
 
-		let update_dom = (value: { toString(): string }) => $ext.replace_text(value);
+		let update_dom = (value: { toString(): string }) =>
+			$ext.replace_text(value);
 		arg.watch(update_dom);
 
 		return true;
 	}
 
-	protected handle_signal(signal: Signal): boolean
-	{
+	protected handle_signal(signal: Signal): boolean {
 		if (is_dom_input(this.native_element)) {
 			this.native_element.value = signal.toString();
 			return true;
@@ -291,7 +282,9 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		let value = signal.valueOf();
 
 		if (is_primitive(value)) {
-			signal.add_trigger_element(document.createTextNode(value.toString()));
+			signal.add_trigger_element(
+				document.createTextNode(value.toString()),
+			);
 		}
 
 		this.native_element.append(signal.last_triggered_element());
@@ -299,34 +292,29 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return true;
 	}
 
-	#handle_self(arg: ElementExtension): boolean
-	{
+	#handle_self(arg: ElementExtension): boolean {
 		this.native_element.append(arg.native_element);
 		return true;
 	}
 
-	#handle_dom_element(arg: HTMLElement): boolean
-	{
+	#handle_dom_element(arg: HTMLElement): boolean {
 		this.#children_CE.push(arg);
 		this.native_element.append(arg);
 		return true;
 	}
 
-	#handle_dom_node(arg: Node): boolean
-	{
+	#handle_dom_node(arg: Node): boolean {
 		this.native_element.append(arg);
 		return true;
 	}
 
-	#create_element_from_function(arg_function: () => unknown): boolean
-	{
+	#create_element_from_function(arg_function: () => unknown): boolean {
 		let arg = arg_function();
 		let create_element = this.#create_element_by_types[typeof arg];
 		return create_element.call(this, arg);
 	}
 
-	defineEventsOnCustomElements(events: Array<string>)
-	{
+	defineEventsOnCustomElements(events: Array<string>) {
 		this.#events = events;
 
 		for (let event_name of this.#events) {
@@ -341,21 +329,18 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		}
 	}
 
-	protected set_attribute(key: string, value: unknown): this
-	{
+	protected set_attribute(key: string, value: unknown): this {
 		if (value) {
 			this.native_element.setAttribute(key.toLowerCase(), String(value));
 		}
 		return this;
 	}
 
-	node(): E
-	{
+	node(): E {
 		return this.native_element;
 	}
 
-	append(self: ElementExtension<E> | Promise<ElementExtension<E>>)
-	{
+	append(self: ElementExtension<E> | Promise<ElementExtension<E>>) {
 		let create_element = this.#create_element_by_types[typeof self];
 		create_element.call(this, self);
 	}
@@ -367,8 +352,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 	display_when(sig: Signal<boolean>): this;
 	display_when(sig: Computed<boolean>): this;
 	display_when(sig: boolean): this;
-	display_when(sig: unknown): this
-	{
+	display_when(sig: unknown): this {
 		let update_display = (when: boolean) => {
 			if (when) {
 				this.native_element.style.display = "block";
@@ -392,8 +376,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return this;
 	}
 
-	extends_attrs(attrs: NamedNodeMap): this
-	{
+	extends_attrs(attrs: NamedNodeMap): this {
 		let excludes_attributes = ["model", "style"];
 
 		for (let attr of attrs) {
@@ -406,8 +389,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return this;
 	}
 
-	class(raw_class_name: string | Record<PropertyKey, unknown>): this
-	{
+	class(raw_class_name: string | Record<PropertyKey, unknown>): this {
 		if (is_string(raw_class_name)) {
 			let class_names = raw_class_name.split(" ");
 			this.native_element.classList.add(...class_names);
@@ -427,8 +409,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return this;
 	}
 
-	data(dataset: Record<string, string | Option<string>>): this
-	{
+	data(dataset: Record<string, string | Option<string>>): this {
 		for (let [key, value] of Object.entries(dataset)) {
 			if (is_option(value)) {
 				if (value.is_some()) {
@@ -441,33 +422,28 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 		return this;
 	}
 
-	id(id: `#${string}`): this
-	{
+	id(id: `#${string}`): this {
 		this.native_element.id = id.slice(1);
 		return this;
 	}
 
-	only_if(condition: boolean): this
-	{
+	only_if(condition: boolean): this {
 		// @ts-expect-error à corriger
 		if (!condition) this.native_element.lastElementChild.remove();
 		return this;
 	}
 
-	replace_text($1: { toString(): string }): this
-	{
+	replace_text($1: { toString(): string }): this {
 		this.native_element.textContent = $1.toString();
 		return this;
 	}
 
-	slot(name: string): this
-	{
+	slot(name: string): this {
 		this.set_attribute("slot", name);
 		return this;
 	}
 
-	title(value: { toString(): string }): this
-	{
+	title(value: { toString(): string }): this {
 		this.set_attribute("title", value.toString());
 		return this;
 	}
@@ -477,8 +453,7 @@ class ElementExtension<E extends HTMLElement | SVGElement = FIXME>
 // Fonction //
 // -------- //
 
-function is_element_extension(value: unknown): value is ElementExtension
-{
+function is_element_extension(value: unknown): value is ElementExtension {
 	return value instanceof ElementExtension;
 }
 

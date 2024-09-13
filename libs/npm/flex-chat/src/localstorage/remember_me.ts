@@ -20,8 +20,7 @@ export const STORAGE_REMEMBER_ME_KEY = "flex.remember_me";
 // Implémentation //
 // -------------- //
 
-export class RememberMeStorage extends AppLocalStorage<boolean>
-{
+export class RememberMeStorage extends AppLocalStorage<boolean> {
 	// ------ //
 	// Static //
 	// ------ //
@@ -31,8 +30,7 @@ export class RememberMeStorage extends AppLocalStorage<boolean>
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): boolean | undefined
-	{
+	static fromJSON(key: string, value: string): boolean | undefined {
 		if (!(key.length === 0 && is_boolean(value))) {
 			return;
 		}
@@ -43,8 +41,7 @@ export class RememberMeStorage extends AppLocalStorage<boolean>
 	// Constructor //
 	// ----------- //
 
-	constructor()
-	{
+	constructor() {
 		super(RememberMeStorage.KEY, RememberMeStorage.fromJSON);
 	}
 
@@ -52,8 +49,7 @@ export class RememberMeStorage extends AppLocalStorage<boolean>
 	// Override //
 	// -------- //
 
-	override get()
-	{
+	override get() {
 		return this.item.unwrap_or(false);
 	}
 }

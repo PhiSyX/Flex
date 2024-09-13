@@ -25,8 +25,7 @@ import { ChannelTopic } from "./topic";
 // Implémentation //
 // -------------- //
 
-export class ChannelRoom extends Room<ChannelID, "channel">
-{
+export class ChannelRoom extends Room<ChannelID, "channel"> {
 	// ------ //
 	// Static //
 	// ------ //
@@ -36,16 +35,17 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Crée un salon avec un propriétaire.
 	 */
-	static create_with_owner(name: ChannelID, user: User | Origin): ChannelRoom
-	{
+	static create_with_owner(
+		name: ChannelID,
+		user: User | Origin,
+	): ChannelRoom {
 		return new ChannelRoom(name).with_id(name).with_owner(user);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(name: ChannelID)
-	{
+	constructor(name: ChannelID) {
 		super(ChannelRoom.type, name);
 	}
 
@@ -100,8 +100,7 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Ajoute un membre à la liste des membres.
 	 */
-	add_member(member: ChannelMember | User): ChannelMember
-	{
+	add_member(member: ChannelMember | User): ChannelMember {
 		if (is_user(member)) {
 			let new_member = new ChannelMember(member);
 			this.members.add(new_member);
@@ -115,8 +114,7 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Est-ce que le pseudo PEUT éditer le topic en fonction de ses modes.
 	 */
-	can_edit_topic(member: ChannelMember): boolean
-	{
+	can_edit_topic(member: ChannelMember): boolean {
 		return (
 			this.topic.is_editable() ||
 			member.is_global_operator() ||
@@ -127,11 +125,14 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Cherche si membre se trouve dans la liste des bans.
 	 */
-	find_ban(member: ChannelMember): Option<[MaskAddr, AccessControlMode["mask"]]>
-	{
+	find_ban(
+		member: ChannelMember,
+	): Option<[MaskAddr, AccessControlMode["mask"]]> {
 		let ban_list = this.access_control.banlist;
 
-		let get = (addr: MaskAddr): Option<[MaskAddr, AccessControlMode["mask"]]> => {
+		let get = (
+			addr: MaskAddr,
+		): Option<[MaskAddr, AccessControlMode["mask"]]> => {
 			return Option.from(ban_list.get(addr)).map((mode) => [
 				addr,
 				mode.flag.mask,
@@ -155,72 +156,63 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Récupère un utilisateur du salon de son ID.
 	 */
-	get_member(id: UserID): Option<ChannelMember>
-	{
+	get_member(id: UserID): Option<ChannelMember> {
 		return this.members.get(id);
 	}
 
 	/**
 	 * Récupère un utilisateur du salon en fonction de son pseudo.
 	 */
-	get_member_by_nickname(nickname: string): Option<ChannelMember>
-	{
+	get_member_by_nickname(nickname: string): Option<ChannelMember> {
 		return this.members.get_by_nickname(nickname);
 	}
 
 	/**
 	 * Supprime un utilisateur du salon.
 	 */
-	remove_member(id: UserID): boolean
-	{
+	remove_member(id: UserID): boolean {
 		return this.members.remove(id).is_some();
 	}
 
 	/**
 	 * Définit (ou non) le salon comme étant en sanctionné.
 	 */
-	set_kicked(bool: boolean)
-	{
+	set_kicked(bool: boolean) {
 		this.kicked = bool;
 	}
 
 	/**
 	 * Définit un paramètre de salon.
 	 */
-	set_setting_mode(mode: string)
-	{
+	set_setting_mode(mode: string) {
 		this.settings.add(mode);
 	}
 
 	/**
 	 * Définit le nombre de limite des utilisateurs autorisés sur le salon.
 	 */
-	set_limit(limit: number)
-	{
+	set_limit(limit: number) {
 		this.limit = limit;
 	}
 
 	/**
 	 * Définit le sujet d'un salon.
 	 */
-	set_topic(topic: string)
-	{
+	set_topic(topic: string) {
 		this.topic.set(topic, { force: true });
 	}
 
 	/**
 	 * Définit un sujet vide pour le salon.
 	 */
-	unset_topic()
-	{
+	unset_topic() {
 		this.topic.unset({ force: true });
 	}
 
 	/**
 	 * Met à jour un utilisateur.
 	 */
-	upgrade_member(old_member: ChannelMember, new_member: ChannelMember)
-	{
+	upgrade_member(old_member: ChannelMember, new_member: ChannelMember) {
 		this.members.remove(old_member.id);
 		new_member.access_level.highest; // NOTE: compute access level
 		this.members.add(new_member);
@@ -229,19 +221,18 @@ export class ChannelRoom extends Room<ChannelID, "channel">
 	/**
 	 * Retire un paramètre de salon.
 	 */
-	unset_setting_mode(mode: string)
-	{
+	unset_setting_mode(mode: string) {
 		this.settings.delete(mode);
 	}
 
 	/**
 	 * Méthode d'instanciation de classe avec un propriétaire.
 	 */
-	with_owner(user: User | Origin): this
-	{
+	with_owner(user: User | Origin): this {
 		this.add_member(
-			new ChannelMember(user)
-				.with_access_level(ChannelAccessLevelFlag.Owner),
+			new ChannelMember(user).with_access_level(
+				ChannelAccessLevelFlag.Owner,
+			),
 		);
 		return this;
 	}

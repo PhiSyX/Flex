@@ -9,13 +9,11 @@ import Room from "#/sys/room/Room.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	room: NoticesCustomRoom;
 }
 
-interface Emits
-{
+interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "close"): void;

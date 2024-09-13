@@ -32,8 +32,7 @@ on_activated(() => {
 // Handler //
 // ------- //
 
-function update_theme_handler(name: string)
-{
+function update_theme_handler(name: string) {
 	set_theme_ls(name as keyof Theme);
 	selected_theme.value = find_theme();
 }

@@ -19,7 +19,7 @@ import {
 	ref,
 	shallowRef as shallow_ref,
 	watch,
-	watchEffect as watch_effect
+	watchEffect as watch_effect,
 } from "vue";
 
 import {
@@ -44,8 +44,7 @@ export enum UserlistModeView {
 
 function sort(
 	list: Array<ChannelMemberFiltered | ChannelMemberUnfiltered>,
-): Array<ChannelMemberFiltered | ChannelMemberUnfiltered>
-{
+): Array<ChannelMemberFiltered | ChannelMemberUnfiltered> {
 	list.sort((l, r) => {
 		let lf = l instanceof ChannelMemberFiltered;
 		let rf = r instanceof ChannelMemberFiltered;
@@ -63,8 +62,7 @@ function sort(
 	return list;
 }
 
-export function use_inputfilter_userlist(props: Props)
-{
+export function use_inputfilter_userlist(props: Props) {
 	let filter_nick = ref("");
 
 	let moderators_filtered = ref(props.members.moderators) as unknown as Ref<
@@ -151,30 +149,28 @@ export function use_inputfilter_userlist(props: Props)
 		filter_nick,
 		moderators_filtered,
 		vips_filtered,
-		users_filtered
+		users_filtered,
 	};
 }
 
-export function use_filter_view()
-{
+export function use_filter_view() {
 	let filter_view = ref(UserlistModeView.Default);
 	let view = shallow_ref(ChannelNicklistComponent);
 
 	watch(filter_view, (new_value) => {
 		switch (new_value) {
 			case UserlistModeView.Default:
-			{
-				view.value = ChannelNicklistComponent;
-			} break;
+				{
+					view.value = ChannelNicklistComponent;
+				}
+				break;
 		}
 	});
 
 	return { filter_view, view };
 }
 
-function map_search_record(is_symbol: boolean)
-{
-	return (records: Array<FuzzySearchRecord>) => records.map((record) => (
-		{ ...record, is_symbol })
-	);
+function map_search_record(is_symbol: boolean) {
+	return (records: Array<FuzzySearchRecord>) =>
+		records.map((record) => ({ ...record, is_symbol }));
 }

@@ -39,8 +39,7 @@ const Default: Options = {
 function camelcase<T extends string>(
 	text: T,
 	user_options: Options = Default,
-): Capitalize<T>
-{
+): Capitalize<T> {
 	let options: Options = { ...Default, ...user_options };
 
 	let algo = (word: string) => {

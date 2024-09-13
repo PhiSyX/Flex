@@ -16,8 +16,7 @@ import { SilenceCommand } from "./command";
 // Implémentation //
 // -------------- //
 
-export class SilenceModule implements Module<SilenceModule>
-{
+export class SilenceModule implements Module<SilenceModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -31,15 +30,13 @@ export class SilenceModule implements Module<SilenceModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: SilenceCommand)
-	{}
+	constructor(private command: SilenceCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(_: string, nickname?: string)
-	{
+	input(_: string, nickname?: string) {
 		if (
 			!nickname ||
 			(!nickname.startsWith("-") && !nickname.startsWith("+"))
@@ -50,11 +47,9 @@ export class SilenceModule implements Module<SilenceModule>
 		this.send({ nickname });
 	}
 
-	send(payload: Command<"SILENCE">)
-	{
+	send(payload: Command<"SILENCE">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }

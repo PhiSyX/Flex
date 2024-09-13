@@ -11,26 +11,21 @@ import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	list: Array<
-		| ChannelMemberFiltered
-		| ChannelMemberUnfiltered
-		| ChannelMember
+		ChannelMemberFiltered | ChannelMemberUnfiltered | ChannelMember
 	>;
 	title: string;
 	open?: boolean;
 	useIconInsteadOfAvatar?: boolean;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "select-member", origin: Origin): void;
 }
 
-interface Slots
-{
+interface Slots {
 	"user-info": (_: { member: Props["list"][number] }) => unknown;
 }
 

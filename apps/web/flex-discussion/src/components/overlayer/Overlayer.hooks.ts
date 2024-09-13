@@ -21,12 +21,10 @@ import { use_overlayer_store } from "~/store";
 // Hooks //
 // ----- //
 
-export function use_overlayer()
-{
+export function use_overlayer() {
 	let overlayer_store = use_overlayer_store();
 
-	function destroy_handler(_: Event, id?: Layer["id"])
-	{
+	function destroy_handler(_: Event, id?: Layer["id"]) {
 		if (id) {
 			overlayer_store.destroy(id);
 		} else {
@@ -34,15 +32,13 @@ export function use_overlayer()
 		}
 	}
 
-	function keydown_handler(evt: KeyboardEvent)
-	{
+	function keydown_handler(evt: KeyboardEvent) {
 		if (evt.code === "Escape") {
 			overlayer_store.destroy_all();
 		}
 	}
 
-	function resize_handler()
-	{
+	function resize_handler() {
 		overlayer_store.update_all();
 	}
 

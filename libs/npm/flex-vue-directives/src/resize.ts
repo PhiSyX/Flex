@@ -17,29 +17,25 @@ type DirectiveResize = Directive<
 
 /// Directive `v-resize`.
 const resize: DirectiveResize = {
-	mounted(el, binding)
-	{
+	mounted(el, binding) {
 		let handler = binding.value;
 		let observer = new ResizeObserver(resize_handler(handler));
 		observer.observe(el);
 		el.__observer__ = observer;
 	},
 
-	beforeUnmount(el)
-	{
+	beforeUnmount(el) {
 		el.__observer__?.disconnect();
 	},
 };
 
 // FIXME
-function resize_handler(callback: ResizeObserverCallback)
-{
+function resize_handler(callback: ResizeObserverCallback) {
 	return function (
 		this: ResizeObserver,
 		entries: Array<ResizeObserverEntry>,
 		observer: ResizeObserver,
-	)
-	{
+	) {
 		callback.call(this, entries, observer);
 	};
 }

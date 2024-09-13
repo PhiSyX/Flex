@@ -18,13 +18,11 @@ import PrivateNick from "#/sys/private_nick/PrivateNick.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	message: RoomMessage<unknown, object>;
 }
 
-interface Emits
-{
+interface Emits {
 	// biome-ignore lint/style/useShorthandFunctionType: tkt
 	(event_name: "open-room", room_id: RoomID): void;
 }
@@ -40,16 +38,16 @@ const emit = defineEmits<Emits>();
 let events_components = inject<Array<string>>("events_components");
 
 let _is_channel = computed(
-	() => message.nickname !== "*" && is_channel(message.target)
+	() => message.nickname !== "*" && is_channel(message.target),
 );
 
 let _is_private = computed(
-	() => message.nickname !== "*" && !_is_channel.value
+	() => message.nickname !== "*" && !_is_channel.value,
 );
 
 let maybe_channel_member = computed(() => {
 	let member = new ChannelMember(message.data.origin).with_is_current_client(
-		message.is_current_client
+		message.is_current_client,
 	);
 
 	if (Object.hasOwn(message.data.origin, "access_level")) {
@@ -63,10 +61,10 @@ let maybe_private_nick = computed(() =>
 	_is_private.value
 		? Some(
 				new PrivateParticipant(
-					message.data.origin
-				).with_is_current_client(message.is_current_client)
-		  )
-		: None()
+					message.data.origin,
+				).with_is_current_client(message.is_current_client),
+			)
+		: None(),
 );
 
 let is_event = computed(() => message.type.startsWith("event:"));
@@ -108,7 +106,7 @@ let is_external_message = computed(() => {
 let is_event_or_error = computed(
 	() =>
 		message.type.startsWith("error:err_") ||
-		message.type.startsWith("event:rpl_")
+		message.type.startsWith("event:rpl_"),
 );
 
 // ------- //

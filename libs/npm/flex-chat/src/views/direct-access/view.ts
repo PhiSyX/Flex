@@ -23,8 +23,7 @@ import { DirectAccessRouter } from "./router";
 // Implémentation //
 // -------------- //
 
-export class DirectAccessView
-{
+export class DirectAccessView {
 	private presenter!: DirectAccessPresenter;
 
 	/**
@@ -67,8 +66,7 @@ respecter, un format précis, les conditions suivantes :
 	// Getter | Setter //
 	// --------------- //
 
-	get user_session(): Option<UserSession>
-	{
+	get user_session(): Option<UserSession> {
 		return this.presenter.user_session();
 	}
 
@@ -76,14 +74,12 @@ respecter, un format précis, les conditions suivantes :
 	// Méthode // -> Instance
 	// ------- //
 
-	with_presenter(presenter: DirectAccessPresenter): this
-	{
+	with_presenter(presenter: DirectAccessPresenter): this {
 		this.presenter = presenter;
 		return this;
 	}
 
-	with_router(router_acl: RouterAntiCorruptionLayer): this
-	{
+	with_router(router_acl: RouterAntiCorruptionLayer): this {
 		this.presenter.router = new DirectAccessRouter(router_acl);
 		return this;
 	}
@@ -95,42 +91,36 @@ respecter, un format précis, les conditions suivantes :
 	/**
 	 * Active le loader.
 	 */
-	show_loader()
-	{
+	show_loader() {
 		this.loader = true;
 	}
 
 	/**
 	 * Désactive le loader
 	 */
-	hide_loader()
-	{
+	hide_loader() {
 		this.loader = false;
 	}
 
 	/**
 	 * Affiche plus de champ de connexion du formulaire (avancé).
 	 */
-	display_more_fields()
-	{
+	display_more_fields() {
 		this.advanced_form = true;
 	}
 
-	display_password_user_field()
-	{
+	display_password_user_field() {
 		this.shown_password_user_field = true;
 	}
 
-	goto_settings_view_handler()
-	{
+	goto_settings_view_handler() {
 		this.presenter.router.goto({ name: View.Settings });
 	}
 
 	/**
 	 * Soumission du formulaire. Se connecte à notre serveur de Chat.
 	 */
-	async submit_form(evt: Event)
-	{
+	async submit_form(evt: Event) {
 		evt.preventDefault();
 
 		this.show_loader();
@@ -138,8 +128,7 @@ respecter, un format précis, les conditions suivantes :
 		await this.presenter.connect_chat_server();
 	}
 
-	update_account_handler()
-	{
+	update_account_handler() {
 		this.presenter.create_dialog(
 			UpdateAccountDialog,
 			this.user_session.unwrap(),
@@ -149,8 +138,7 @@ respecter, un format précis, les conditions suivantes :
 	/**
 	 * Gère l'événement de succès `RPL_WELCOME`.
 	 */
-	handle_reply_welcome()
-	{
+	handle_reply_welcome() {
 		this.loader = false;
 
 		this.presenter.router.goto({ name: View.Chat });
@@ -163,8 +151,7 @@ respecter, un format précis, les conditions suivantes :
 	/**
 	 * Gère l'événement d'erreur `ERR_NICKNAMEINUSE`.
 	 */
-	handle_reply_nicknameinuse(error: GenericErrorReply<"ERR_NICKNAMEINUSE">)
-	{
+	handle_reply_nicknameinuse(error: GenericErrorReply<"ERR_NICKNAMEINUSE">) {
 		if (error.nickname === this.form_data.alternative_nickname) {
 			this.error.alternative_nickname = error.reason.slice(
 				this.form_data.alternative_nickname.length + 2,

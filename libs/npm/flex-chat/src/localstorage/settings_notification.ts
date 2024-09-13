@@ -20,16 +20,15 @@ export const STORAGE_SETTINGS_NOTIFICATION_KEY = "flex.settings.notification";
 // Type //
 // ---- //
 
-export interface NotificationData
-{
-    sounds: {
+export interface NotificationData {
+	sounds: {
 		enabled?: boolean;
-        connection?: boolean;
-        invites?: boolean;
-        mentions?: boolean;
-        notices?: boolean;
-        queries?: boolean;
-    };
+		connection?: boolean;
+		invites?: boolean;
+		mentions?: boolean;
+		notices?: boolean;
+		queries?: boolean;
+	};
 }
 
 // -------- //
@@ -44,7 +43,7 @@ const DEFAULT_SOUNDS: NotificationData["sounds"] = {
 	notices: true,
 	queries: true,
 };
-const DEFAULT_SOUNDS_KEYS: Array<(keyof NotificationData["sounds"]) | string> = [
+const DEFAULT_SOUNDS_KEYS: Array<keyof NotificationData["sounds"] | string> = [
 	"enabled",
 	"connection",
 	"invites",
@@ -57,32 +56,26 @@ const DEFAULT_SOUNDS_KEYS: Array<(keyof NotificationData["sounds"]) | string> = 
 // Implémentation //
 // -------------- //
 
-export class NotificationStorage extends AppLocalStorage<NotificationData>
-{
+export class NotificationStorage extends AppLocalStorage<NotificationData> {
 	// ------ //
 	// Static //
 	// ------ //
 
 	static readonly KEY = STORAGE_SETTINGS_NOTIFICATION_KEY;
 
-	static default(): NotificationData
-	{
+	static default(): NotificationData {
 		return {
-            sounds: DEFAULT_SOUNDS,
+			sounds: DEFAULT_SOUNDS,
 		};
 	}
 
 	/**
 	 * Validation du JSON
 	 */
-	static fromJSON(key: string, value: string): unknown | undefined
-	{
+	static fromJSON(key: string, value: string): unknown | undefined {
 		if (key !== "") {
-			let keys = [
-                "sounds",
-                ...DEFAULT_SOUNDS_KEYS,
-			];
-			
+			let keys = ["sounds", ...DEFAULT_SOUNDS_KEYS];
+
 			if (!keys.includes(key)) {
 				return;
 			}
@@ -103,8 +96,7 @@ export class NotificationStorage extends AppLocalStorage<NotificationData>
 	// Constructor //
 	// ----------- //
 
-	constructor()
-	{
+	constructor() {
 		super(
 			NotificationStorage.KEY,
 			NotificationStorage.fromJSON,
@@ -112,8 +104,7 @@ export class NotificationStorage extends AppLocalStorage<NotificationData>
 		);
 	}
 
-	persist()
-	{
+	persist() {
 		this.set({ sounds: this.value.sounds });
 	}
 }

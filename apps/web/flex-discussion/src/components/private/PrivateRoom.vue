@@ -3,9 +3,16 @@ import type { OverlayerStore, PrivateRoom } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
 
-import { ChangeFormatsColorsDialog, UserChangeNicknameDialog } from "@phisyx/flex-chat";
+import {
+	ChangeFormatsColorsDialog,
+	UserChangeNicknameDialog,
+} from "@phisyx/flex-chat";
 
-import { use_chat_store, use_overlayer_store, use_settings_store } from "~/store";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+} from "~/store";
 
 import Avatar from "#/api/avatar/Avatar.vue";
 import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
@@ -14,8 +21,7 @@ import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	// Chambre privée.
 	room: PrivateRoom;
 }
@@ -56,9 +62,8 @@ let completion_list = computed(() => chat_store.all_commands(props.room));
 /**
  * Ouvre la boite de dialogue de changement de pseudonyme.
  */
-function open_change_nickname_dialog_handler(event: MouseEvent)
-{
-	UserChangeNicknameDialog.create(overlayer_store.store  as OverlayerStore, {
+function open_change_nickname_dialog_handler(event: MouseEvent) {
+	UserChangeNicknameDialog.create(overlayer_store.store as OverlayerStore, {
 		event,
 	});
 }
@@ -66,16 +71,14 @@ function open_change_nickname_dialog_handler(event: MouseEvent)
 /**
  * Ferme la chambre privée.
  */
-function close_private_handler()
-{
+function close_private_handler() {
 	chat_store.close_room(recipient.value.id);
 }
 
 /**
  * Ouvre la boite de couleur du champ de saisie.
  */
- function open_colors_box_handler(event: MouseEvent)
-{
+function open_colors_box_handler(event: MouseEvent) {
 	overlayer_store.create({
 		id: ChangeFormatsColorsDialog.ID,
 		event,
@@ -85,31 +88,28 @@ function close_private_handler()
 /**
  * Ouvre une chambre.
  */
-function open_room_handler(room_id: RoomID)
-{
+function open_room_handler(room_id: RoomID) {
 	chat_store.open_room(room_id);
 }
 
 /**
  * Envoie du message au destinataire.
  */
-function send_message_handler(message: string)
-{
+function send_message_handler(message: string) {
 	chat_store.send_message(recipient.value.id, message);
 }
 
 /**
  * Envoie de la commande /SILENCE.
  */
-const send_silence_user_command_handler = (apply_state: "+" | "-") => (
-	nickname: string
-) => {
-	if (apply_state === "+") {
-		chat_store.ignore_user(nickname);
-	} else {
-		chat_store.unignore_user(nickname);
-	}
-};
+const send_silence_user_command_handler =
+	(apply_state: "+" | "-") => (nickname: string) => {
+		if (apply_state === "+") {
+			chat_store.ignore_user(nickname);
+		} else {
+			chat_store.unignore_user(nickname);
+		}
+	};
 </script>
 
 <template>

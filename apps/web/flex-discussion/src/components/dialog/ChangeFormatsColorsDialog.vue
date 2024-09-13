@@ -14,7 +14,7 @@ import ChangeFormatsColorsDialogComponent from "#/sys/dialog_change_formats_colo
 let settings_store = use_settings_store();
 
 let { teleport_id, dialog, update_dialog } = use_dialog(
-	ChangeFormatsColorsDialog
+	ChangeFormatsColorsDialog,
 );
 </script>
 

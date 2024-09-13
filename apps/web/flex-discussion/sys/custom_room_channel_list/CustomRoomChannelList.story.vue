@@ -16,10 +16,10 @@ let channels = [
 			id: "" as UserID,
 			ident: "ident",
 			nickname: "nickname",
-			host: {cloaked: "cloaked"},
+			host: { cloaked: "cloaked" },
 		},
-		tags: { msgid: "uuid" as UUID }
-	}
+		tags: { msgid: "uuid" as UUID },
+	},
 ] satisfies Array<GenericReply<"RPL_LIST">>;
 </script>
 

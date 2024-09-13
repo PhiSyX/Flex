@@ -10,16 +10,14 @@ import { UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	disabled?: boolean;
 	isSameMember: boolean;
 	currentClientMember: ChannelMember;
 	selectedMember: ChannelMemberSelected;
 }
 
-interface Emits
-{
+interface Emits {
 	(
 		event_name: "set-access-level",
 		member: ChannelMember,
@@ -39,30 +37,28 @@ interface Emits
 const props = withDefaults(defineProps<Props>(), { disabled: false });
 const emit = defineEmits<Emits>();
 
-let is_current_client_member_global_operator = computed(
-	() => props.currentClientMember .is_global_operator()
+let is_current_client_member_global_operator = computed(() =>
+	props.currentClientMember.is_global_operator(),
 );
-let is_current_client_member_owner = computed(
-	() => props.currentClientMember.access_level.eq(
-		ChannelAccessLevelFlag.Owner
-	)
+let is_current_client_member_owner = computed(() =>
+	props.currentClientMember.access_level.eq(ChannelAccessLevelFlag.Owner),
 );
-let is_current_client_member_admin = computed(
-	() => props.currentClientMember.access_level.eq(
-		ChannelAccessLevelFlag.AdminOperator
-	)
+let is_current_client_member_admin = computed(() =>
+	props.currentClientMember.access_level.eq(
+		ChannelAccessLevelFlag.AdminOperator,
+	),
 );
-let is_selected_member_admin = computed(
-	() => props.selectedMember.member.access_level.eq(
-		ChannelAccessLevelFlag.AdminOperator
-	)
+let is_selected_member_admin = computed(() =>
+	props.selectedMember.member.access_level.eq(
+		ChannelAccessLevelFlag.AdminOperator,
+	),
 );
 
 // ------- //
 // Handler //
 // ------- //
 
-const set_access_level_handler   = (flag: ChannelAccessLevelFlag) =>
+const set_access_level_handler = (flag: ChannelAccessLevelFlag) =>
 	emit("set-access-level", props.selectedMember.member, flag);
 const unset_access_level_handler = (flag: ChannelAccessLevelFlag) =>
 	emit("unset-access-level", props.selectedMember.member, flag);

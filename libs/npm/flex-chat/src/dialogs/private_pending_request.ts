@@ -24,7 +24,8 @@ export type PrivatePendingRequestRecordDialog = PrivateParticipant;
 // Implémentation //
 // -------------- //
 
-export class PrivatePendingRequestDialog implements DialogInterface<PrivatePendingRequestRecordDialog>
+export class PrivatePendingRequestDialog
+	implements DialogInterface<PrivatePendingRequestRecordDialog>
 {
 	// ------ //
 	// Static //
@@ -35,8 +36,7 @@ export class PrivatePendingRequestDialog implements DialogInterface<PrivatePendi
 	static create(
 		overlayer_store: OverlayerStore,
 		participant: PrivateParticipant,
-	)
-	{
+	) {
 		let $nav = document.querySelector(".navigation-area ") as HTMLElement;
 
 		overlayer_store.create({
@@ -50,39 +50,34 @@ export class PrivatePendingRequestDialog implements DialogInterface<PrivatePendi
 		return new PrivatePendingRequestDialog(overlayer_store);
 	}
 
-	static destroy(overlayer_store: OverlayerStore)
-	{
+	static destroy(overlayer_store: OverlayerStore) {
 		overlayer_store.destroy(PrivatePendingRequestDialog.ID);
 	}
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private overlayer_store: OverlayerStore)
-	{}
+	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	destroy()
-	{
+	destroy() {
 		this.overlayer_store.destroy(PrivatePendingRequestDialog.ID);
 	}
 
-	get(): Option<Layer<PrivatePendingRequestRecordDialog>>
-	{
-		return this.overlayer_store.get(PrivatePendingRequestDialog.ID)
+	get(): Option<Layer<PrivatePendingRequestRecordDialog>> {
+		return this.overlayer_store
+			.get(PrivatePendingRequestDialog.ID)
 			.as<Layer<PrivatePendingRequestRecordDialog>>();
 	}
 
-	get_unchecked(): Layer<PrivatePendingRequestRecordDialog>
-	{
+	get_unchecked(): Layer<PrivatePendingRequestRecordDialog> {
 		return this.get().unwrap_unchecked();
 	}
 
-	exists(): boolean
-	{
+	exists(): boolean {
 		return this.overlayer_store.has(PrivatePendingRequestDialog.ID);
 	}
 }

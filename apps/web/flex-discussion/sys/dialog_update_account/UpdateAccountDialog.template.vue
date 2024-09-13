@@ -10,8 +10,7 @@ import Avatar from "#/api/avatar/Avatar.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	layerName: string;
 	userId: UUID;
 	username: string;
@@ -23,8 +22,7 @@ interface Props
 	countriesList: Array<{ code: string; country: string }>;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "close"): void;
 	(event_name: "upload", file: File): void;
 	(event_name: "submit", evt: Event): void;

@@ -22,11 +22,11 @@ import { PrivateStorage } from "../localstorage/settings_private";
 // Implémentation //
 // -------------- //
 
-export class SettingsStoreData
-{
+export class SettingsStoreData {
 	public layout: LayoutStorage = new LayoutStorage();
 	public notification: NotificationStorage = new NotificationStorage();
-	public personalization: PersonalizationStorage = new PersonalizationStorage();
+	public personalization: PersonalizationStorage =
+		new PersonalizationStorage();
 	public priv4te: PrivateStorage = new PrivateStorage();
 
 	// ------- //
@@ -34,8 +34,7 @@ export class SettingsStoreData
 	// ------- //
 }
 
-export class SettingsStore
-{
+export class SettingsStore {
 	// ------ //
 	// Static //
 	// ------ //
@@ -46,89 +45,67 @@ export class SettingsStore
 	// Constructor //
 	// ----------- //
 
-	constructor(private data: SettingsStoreData)
-	{
-	}
+	constructor(private data: SettingsStoreData) {}
 
 	// ------- //
 	// Méthode // -> API Publique
 	// ------- //
 
-	public get_layout()
-	{
+	public get_layout() {
 		return this.data.layout.get();
 	}
 
-	public get_notification()
-	{
+	public get_notification() {
 		return this.data.notification.get();
 	}
 
-	public get_personalization()
-	{
+	public get_personalization() {
 		return this.data.personalization.get();
 	}
 
-	public get_private()
-	{
+	public get_private() {
 		return this.data.priv4te.get();
 	}
 
-	public mut_layout(
-		set: (
-			current: LayoutData
-		) => LayoutData
-	)
-	{
+	public mut_layout(set: (current: LayoutData) => LayoutData) {
 		let readonly_value = this.get_layout();
 		this.data.layout.value = {
 			...readonly_value,
-			...set(readonly_value)
+			...set(readonly_value),
 		};
 	}
 
 	public mut_notification<T extends keyof NotificationData>(
-		set: (
-			current: NotificationData
-		) => Record<T, NotificationData[T]>
-	)
-	{
+		set: (current: NotificationData) => Record<T, NotificationData[T]>,
+	) {
 		let readonly_value = this.get_notification();
 		this.data.notification.value = {
 			...readonly_value,
-			...set(readonly_value)
+			...set(readonly_value),
 		};
 	}
 
 	public mut_personalization<T extends keyof PersonalizationData>(
 		set: (
-			current: PersonalizationData
-		) => Record<T, PersonalizationData[T]>
-	)
-	{
+			current: PersonalizationData,
+		) => Record<T, PersonalizationData[T]>,
+	) {
 		let readonly_value = this.get_personalization();
 		this.data.personalization.value = {
 			...readonly_value,
-			...set(readonly_value)
+			...set(readonly_value),
 		};
 	}
 
-	public mut_private(
-		set: (
-			current: PrivateData
-		) => PrivateData
-	)
-	{
+	public mut_private(set: (current: PrivateData) => PrivateData) {
 		let readonly_value = this.get_private();
 		this.data.priv4te.value = {
 			...readonly_value,
-			...set(readonly_value)
+			...set(readonly_value),
 		};
 	}
 
-
-	public persist()
-	{
+	public persist() {
 		this.data.layout.persist();
 		this.data.notification.persist();
 		this.data.personalization.persist();

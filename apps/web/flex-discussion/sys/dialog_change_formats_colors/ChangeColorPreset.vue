@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-
 // ---- //
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	preset: number;
 	type: string;
 }
@@ -16,10 +14,10 @@ interface Props
 // Composant //
 // --------- //
 
-const props =defineProps<Props>();
+const props = defineProps<Props>();
 let selected = defineModel<number | null>();
 
-let variant = computed(() => props.type === "foreground" ? "fg" : "bg");
+let variant = computed(() => (props.type === "foreground" ? "fg" : "bg"));
 </script>
 
 <template>

@@ -23,25 +23,20 @@ import {
 import scss from "./button-icon.scss?url";
 
 @customElement({ mode: "open", styles: [scss] })
-export default class ButtonIcon
-{
-	constructor(public customElement: GlobalCustomElement)
-	{}
+export default class ButtonIcon {
+	constructor(public customElement: GlobalCustomElement) {}
 
 	@attr({ parser: Boolean })
-	get disabled(): boolean
-	{
+	get disabled(): boolean {
 		return false;
 	}
 
 	@attr()
-	get icon(): string
-	{
+	get icon(): string {
 		return "<icon-attr>";
 	}
 
-	render()
-	{
+	render() {
 		let $icon = template_content(`#icon-${this.icon}`);
 		return button($icon)
 			.extends_attrs(this.customElement.attributes)
@@ -54,7 +49,6 @@ export function buttonIcon(
 	iconAttr: ButtonIcon["icon"],
 	nativeAttrs?: Partial<HTMLButtonElement>,
 	...args: HExt.Args
-)
-{
+) {
 	return use(ButtonIcon, { icon: iconAttr }, nativeAttrs, ...args);
 }

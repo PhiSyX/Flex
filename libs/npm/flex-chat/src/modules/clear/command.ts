@@ -14,13 +14,10 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ClearCommand
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ClearCommand {
+	constructor(private store: ChatStoreInterface) {}
 
-	handle(room_id: RoomID)
-	{
+	handle(room_id: RoomID) {
 		let maybe_room = this.store.room_manager().get(room_id);
 		if (maybe_room.is_none()) {
 			return;
@@ -30,13 +27,10 @@ export class ClearCommand
 	}
 }
 
-export class ClearallCommand
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class ClearallCommand {
+	constructor(private store: ChatStoreInterface) {}
 
-	handle()
-	{
+	handle() {
 		for (let room of this.store.room_manager().rooms()) {
 			room.clear_messages();
 		}

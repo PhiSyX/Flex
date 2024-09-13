@@ -10,7 +10,7 @@
 
 import {
 	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store
+	defineStore as define_store,
 } from "pinia";
 import { reactive } from "vue";
 

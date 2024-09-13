@@ -14,8 +14,10 @@ import { Room } from "../room";
 // Implémentation //
 // -------------- //
 
-export class MentionsCustomRoom extends Room<CustomRoomID, "mentions-custom-room">
-{
+export class MentionsCustomRoom extends Room<
+	CustomRoomID,
+	"mentions-custom-room"
+> {
 	/**
 	 * ID de la chambre personnalisée.
 	 */
@@ -25,8 +27,7 @@ export class MentionsCustomRoom extends Room<CustomRoomID, "mentions-custom-room
 	// Constructor //
 	// ----------- //
 
-	constructor()
-	{
+	constructor() {
 		super("mentions-custom-room", "Mentions");
 		this.with_id(MentionsCustomRoom.ID);
 	}

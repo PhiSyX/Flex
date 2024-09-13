@@ -17,11 +17,9 @@ import type { ChatStoreInterface } from "../../store";
 // -------------- //
 
 export class QueryCommand {
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
-	handle(room_id: RoomID)
-	{
+	handle(room_id: RoomID) {
 		let maybe_user = this.store.user_manager().find_by_nickname(room_id);
 		if (maybe_user.is_none()) {
 			return;
@@ -31,8 +29,9 @@ export class QueryCommand {
 		let room = this.store.room_manager().get_or_insert(user.id, () => {
 			let priv = new PrivateRoom(user.nickname).with_id(user.id);
 			priv.add_participant(
-				new PrivateParticipant(this.store.client())
-					.with_is_current_client(true)
+				new PrivateParticipant(
+					this.store.client(),
+				).with_is_current_client(true),
 			);
 			priv.add_participant(new PrivateParticipant(user));
 			return priv;

@@ -8,8 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-interface DirectAccessFormErrorInterface
-{
+interface DirectAccessFormErrorInterface {
 	nickname: string;
 	alternative_nickname: string;
 }
@@ -18,8 +17,7 @@ interface DirectAccessFormErrorInterface
 // Structure //
 // --------- //
 
-export class DirectAccessFormError implements DirectAccessFormErrorInterface
-{
+export class DirectAccessFormError implements DirectAccessFormErrorInterface {
 	declare nickname: string;
 	declare alternative_nickname: string;
 }

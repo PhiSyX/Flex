@@ -3,14 +3,12 @@
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	value: string;
 }
 
-interface Slots
-{
-	"default": unknown;
+interface Slots {
+	default: unknown;
 }
 
 // --------- //

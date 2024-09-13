@@ -15,13 +15,10 @@ import type { CommandInterface } from "../interface";
 // Implémentation //
 // -------------- //
 
-export class QuitCommand implements CommandInterface<"QUIT">
-{
-	constructor(private store: ChatStoreInterface)
-	{}
+export class QuitCommand implements CommandInterface<"QUIT"> {
+	constructor(private store: ChatStoreInterface) {}
 
-	send(payload: Command<"QUIT">)
-	{
+	send(payload: Command<"QUIT">) {
 		this.store.emit("QUIT", payload);
 	}
 }

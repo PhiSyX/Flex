@@ -17,16 +17,13 @@ import type { ChatStoreInterface } from "../../store";
 export class ErrorNicknameinuseHandler
 	implements SocketEventInterface<"ERR_NICKNAMEINUSE">
 {
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_NICKNAMEINUSE", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_NICKNAMEINUSE">)
-	{
+	handle(data: GenericReply<"ERR_NICKNAMEINUSE">) {
 		if (!this.store.is_connected()) {
 			if (
 				data.nickname ===

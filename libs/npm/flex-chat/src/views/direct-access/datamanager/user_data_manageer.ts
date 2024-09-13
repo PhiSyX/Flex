@@ -17,13 +17,10 @@ import type { UserSession } from "../../../user/session";
 // Implémentation //
 // -------------- //
 
-export class DirectAccessUserManager
-{
-	constructor(private store: UserStore)
-	{}
+export class DirectAccessUserManager {
+	constructor(private store: UserStore) {}
 
-	get_user_session(): Option<UserSession>
-	{
+	get_user_session(): Option<UserSession> {
 		return this.store.session();
 	}
 }

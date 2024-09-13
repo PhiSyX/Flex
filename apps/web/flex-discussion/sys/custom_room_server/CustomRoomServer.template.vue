@@ -7,8 +7,7 @@ import Room from "#/sys/room/Room.template.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	forumUrl: string;
 	vademecumUrl: string;
 	currentNickname: string;
@@ -20,8 +19,7 @@ interface Props
 	textColorForeground?: number | null;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "open-room", room_id: RoomID): void;
@@ -39,8 +37,10 @@ const emit = defineEmits<Emits>();
 // Fonction //
 // -------- //
 
-const change_nickname_request_handler = (event: MouseEvent) => emit("change-nickname", event);
-const open_colors_box_handler = (event: MouseEvent) => emit("open-colors-box", event);
+const change_nickname_request_handler = (event: MouseEvent) =>
+	emit("change-nickname", event);
+const open_colors_box_handler = (event: MouseEvent) =>
+	emit("open-colors-box", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const send_message_handler = (message: string) => emit("send-message", message);
 </script>

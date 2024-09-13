@@ -24,19 +24,17 @@ export type Participants = Map<string, PrivateParticipant>;
 // Implémentation //
 // -------------- //
 
-export class PrivateRoom extends Room<UserID, "private">
-{
+export class PrivateRoom extends Room<UserID, "private"> {
 	// ------ //
 	// Static //
 	// ------ //
-	
+
 	public static type = "private" as const;
 
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(name: string)
-	{
+	constructor(name: string) {
 		super(PrivateRoom.type, name);
 	}
 
@@ -45,7 +43,7 @@ export class PrivateRoom extends Room<UserID, "private">
 	// --------- //
 
 	closed = true;
-	
+
 	/**
 	 * Liste des participant de la chambre privé.
 	 */
@@ -60,13 +58,12 @@ export class PrivateRoom extends Room<UserID, "private">
 	// Méthode // -> Override
 	// ------- //
 
-	override clear_messages()
-	{
+	override clear_messages() {
 		if (!this.pending) {
 			super.clear_messages();
 		}
 	}
-	
+
 	// ------- //
 	// Méthode //
 	// ------- //
@@ -74,8 +71,7 @@ export class PrivateRoom extends Room<UserID, "private">
 	/**
 	 * Ajoute un participant à la chambre privé.
 	 */
-	add_participant(participant: PrivateParticipant | Origin)
-	{
+	add_participant(participant: PrivateParticipant | Origin) {
 		if (is_participant(participant)) {
 			this.participants.set(participant.id, participant);
 		} else {
@@ -87,39 +83,33 @@ export class PrivateRoom extends Room<UserID, "private">
 	/**
 	 * Supprime un participant de la chambre privé.
 	 */
-	del_participant(participant_id: string)
-	{
+	del_participant(participant_id: string) {
 		this.participants.delete(participant_id);
 	}
 
 	/**
 	 * Récupère un participant de la chambre privé.
 	 */
-	get_participant(participant_id: string): Option<PrivateParticipant>
-	{
+	get_participant(participant_id: string): Option<PrivateParticipant> {
 		return Option.from(this.participants.get(participant_id));
 	}
 
 	/**
 	 * Récupère un participant de la chambre privé.
 	 */
-	get_participant_unchecked(participant_id: string): PrivateParticipant
-	{
+	get_participant_unchecked(participant_id: string): PrivateParticipant {
 		return this.get_participant(participant_id).unwrap_unchecked();
 	}
 
-	override is_readonly(): boolean
-	{
+	override is_readonly(): boolean {
 		return this.is_pending() || super.is_readonly();
 	}
 
-	is_pending()
-	{
+	is_pending() {
 		return this.pending;
 	}
 
-	set_pending(bool: boolean)
-	{
+	set_pending(bool: boolean) {
 		this.pending = bool;
 	}
 }

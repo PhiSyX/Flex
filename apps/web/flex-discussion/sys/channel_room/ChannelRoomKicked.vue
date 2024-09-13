@@ -7,13 +7,11 @@ import { computed, ref, toRaw } from "vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	lastMessage: RoomMessage;
 }
 
-interface Emits
-{
+interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "join-channel", channel_name: string): void;
@@ -47,7 +45,8 @@ let reason = computed(() => to_raw_last_message.data.reason);
 // Handler //
 // ------- //
 
-const join_channel_handler = () => emit("join-channel", to_raw_last_message.data.channel);
+const join_channel_handler = () =>
+	emit("join-channel", to_raw_last_message.data.channel);
 </script>
 
 <template>

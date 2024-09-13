@@ -5,28 +5,25 @@ import UiButton from "../button/Button.vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	open?: boolean;
 	closeLabeled?: boolean;
 	withoutClose?: boolean;
 	withoutHeader?: boolean;
 }
 
-interface Emits
-{
+interface Emits {
 	// NOTE: cette règle n'est pas concevable pour le cas présent.
 	// biome-ignore lint/style/useShorthandFunctionType: Lire NOTE ci-haut.
 	(event_name: "close", evt: MouseEvent): void;
 }
 
-interface Slots
-{
-	"default": unknown;
+interface Slots {
+	default: unknown;
 	"left-content": unknown;
-	"label": unknown;
-	"actions": unknown;
-	"footer": unknown;
+	label: unknown;
+	actions: unknown;
+	footer: unknown;
 	"right-content": unknown;
 }
 

@@ -8,7 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-
 import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../../store";
 import type { DirectAccessFormData } from "../formdata";
 
@@ -16,10 +15,8 @@ import type { DirectAccessFormData } from "../formdata";
 // Implémentation //
 // -------------- //
 
-export class DirectAccessChatManager
-{
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
-	{}
+export class DirectAccessChatManager {
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	connect(
 		form_data: DirectAccessFormData,
@@ -29,8 +26,7 @@ export class DirectAccessChatManager
 				error: GenericErrorReply<"ERR_NICKNAMEINUSE">,
 			) => void;
 		},
-	)
-	{
+	) {
 		this.store.connect(form_data);
 
 		this.store.listen("RPL_WELCOME", () => response.welcome(), {
@@ -42,13 +38,11 @@ export class DirectAccessChatManager
 		);
 	}
 
-	async load_all_modules()
-	{
+	async load_all_modules() {
 		return this.store.load_all_modules();
 	}
 
-	send_active_room(message: string)
-	{
+	send_active_room(message: string) {
 		this.store.send_message(
 			this.store.room_manager().active().id(),
 			message,

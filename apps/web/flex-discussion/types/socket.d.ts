@@ -12,19 +12,19 @@
 // Interface //
 // --------- //
 
-declare interface SocketEventHandler
-{
+declare interface SocketEventHandler {
 	listen(): void;
 }
 
-declare interface SocketEventInterface<R extends RepliesNames> extends SocketEventHandler
-{
+declare interface SocketEventInterface<R extends RepliesNames>
+	extends SocketEventHandler {
 	handle(data: GenericReply<R>, ...user_data: Array<unknown>): void;
 }
 
 // Socket Event
 
-type SocketDisconnectReason = import("socket.io-client").Socket.DisconnectReason;
+type SocketDisconnectReason =
+	import("socket.io-client").Socket.DisconnectReason;
 
 type SocketDisconnectDescription =
 	| Error
@@ -57,11 +57,8 @@ type SocketIOClientSocket<
 	C extends SocketEventsMap,
 > = import("socket.io-client").Socket<S, C>;
 
-declare interface TypeSafeSocket extends SocketIOClientSocket<
-	ServerToClientEvent,
-	ClientToServerEvent
->
-{
+declare interface TypeSafeSocket
+	extends SocketIOClientSocket<ServerToClientEvent, ClientToServerEvent> {
 	emit<E extends keyof ClientToServerEvent>(
 		event_name: E,
 		...payload: Parameters<ClientToServerEvent[E]>

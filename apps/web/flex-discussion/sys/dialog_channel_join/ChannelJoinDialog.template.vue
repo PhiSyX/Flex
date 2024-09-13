@@ -9,13 +9,11 @@ import { Alert, Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	layerName: string;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "close"): void;
 	(event_name: "submit", channels: ChannelID, keys: string): void;
 }
@@ -34,8 +32,7 @@ let keys_request = ref("");
 // Handler //
 // ------- //
 
-function create_channel_handler()
-{
+function create_channel_handler() {
 	emit("submit", channels_request.value, keys_request.value);
 }
 </script>

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { use_settings_store } from "~/store";
 
 import SettingsPrivate from "#/sys/settings_private/SettingsPrivate.template.vue";

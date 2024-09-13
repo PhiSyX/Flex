@@ -20,25 +20,21 @@ type S = SocketEventInterface<"ERR_CANNOTKICKGLOBOPS">;
 // Implémentation //
 // -------------- //
 
-export class ErrorCannotkickglobopsHandler implements S
-{
+export class ErrorCannotkickglobopsHandler implements S {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_CANNOTKICKGLOBOPS", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_CANNOTKICKGLOBOPS">)
-	{
+	handle(data: GenericReply<"ERR_CANNOTKICKGLOBOPS">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_cannotkickglobops",

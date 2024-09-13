@@ -6,7 +6,11 @@ import { computed, onActivated as on_activated } from "vue";
 
 import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
-import { change_nick, on_submit, open_colors_box } from "./RoomEditbox.handlers";
+import {
+	change_nick,
+	on_submit,
+	open_colors_box,
+} from "./RoomEditbox.handlers";
 import { use_autocompletion, use_input_history } from "./RoomEditbox.hooks";
 import { $input, input_model } from "./RoomEditbox.state";
 
@@ -30,7 +34,7 @@ let form_action = computed(() => {
 
 const {
 	keydown_handler: history_keydown_handler,
-	submit_handler: history_submit_handler
+	submit_handler: history_submit_handler,
 } = use_input_history(props);
 const {
 	apply_suggestion_handler,
@@ -51,8 +55,7 @@ on_activated(() => {
 const change_nick_handler = change_nick(emit);
 const open_colors_box_handler = open_colors_box(emit);
 
-function submit_handler()
-{
+function submit_handler() {
 	history_submit_handler();
 	autocompletion_submit_handler();
 	on_submit(emit, props)();

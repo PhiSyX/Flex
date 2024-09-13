@@ -12,13 +12,12 @@ import { onMounted as on_mounted } from "vue";
 
 import { use_user_store } from "~/store";
 
-export function use_check_auth()
-{
-    let user_store = use_user_store();
+export function use_check_auth() {
+	let user_store = use_user_store();
 
-    on_mounted(() => {
-        user_store.fetch().then((current_user) => {
-            user_store.session(current_user);
-        });
-    });
+	on_mounted(() => {
+		user_store.fetch().then((current_user) => {
+			user_store.session(current_user);
+		});
+	});
 }

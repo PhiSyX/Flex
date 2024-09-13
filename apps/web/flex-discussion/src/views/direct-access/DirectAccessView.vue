@@ -34,8 +34,8 @@ let view = reactive(
 		router,
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
 		user_store as unknown as UserStore,
-		overlayer_store as unknown as OverlayerStore
-	)
+		overlayer_store as unknown as OverlayerStore,
+	),
 );
 
 let user_session = computed(() => view.user_session);

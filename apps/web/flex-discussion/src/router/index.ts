@@ -17,28 +17,23 @@ import { useRoute, useRouter } from "vue-router";
 // Implémentation // -> Interface
 // -------------- //
 
-export class VueRouter implements RouterAntiCorruptionLayer
-{
+export class VueRouter implements RouterAntiCorruptionLayer {
 	public inner = useRouter();
 	public current = useRoute();
 
-	back()
-	{
+	back() {
 		this.inner.back();
 	}
 
-	forward()
-	{
+	forward() {
 		this.inner.forward();
 	}
 
-	goto(name: string)
-	{
+	goto(name: string) {
 		this.inner.push({ name });
 	}
 
-	param(name: string): Option<string>
-	{
+	param(name: string): Option<string> {
 		return Option.from(this.current.params[name]).as<string>();
 	}
 }

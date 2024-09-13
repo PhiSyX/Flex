@@ -19,8 +19,7 @@ type unsafe<T> = T | null | undefined;
 // Énumération //
 // ----------- //
 
-export enum OptionVariant
-{
+export enum OptionVariant {
 	Some = "Some",
 	None = "None",
 }
@@ -29,24 +28,21 @@ export enum OptionVariant
 // Implémentation //
 // -------------- //
 
-class Option<T>
-{
+class Option<T> {
 	// ------ //
 	// Static //
 	// ------ //
 
 	static None = <T = never>(): Option<T> => new this<T>(OptionVariant.None);
 
-	static Some = <T>(value: T): Option<NonNullable<T>> =>
-	{
+	static Some = <T>(value: T): Option<NonNullable<T>> => {
 		if (value == null) {
 			return this.None();
 		}
 		return new this(OptionVariant.Some, value);
 	};
 
-	static from = <T>(value: T): Option<NonNullable<T>> =>
-	{
+	static from = <T>(value: T): Option<NonNullable<T>> => {
 		if (value == null) {
 			return this.None();
 		}
@@ -60,24 +56,20 @@ class Option<T>
 	constructor(
 		public type: OptionVariant,
 		private value?: unsafe<T>,
-	)
-	{}
+	) {}
 
-	as<U>(): Option<U>
-	{
+	as<U>(): Option<U> {
 		return this as unknown as Option<U>;
 	}
 
-	expect(msg: string): safe<T>
-	{
+	expect(msg: string): safe<T> {
 		if (this.is_some()) {
 			return this.value as safe<T>;
 		}
 		throw new Error(`EXPECT: ${msg}`);
 	}
 
-	and_then<U>(f: (value: T) => Option<U>): Option<U>
-	{
+	and_then<U>(f: (value: T) => Option<U>): Option<U> {
 		if (this.is_some()) {
 			return f(this.unwrap());
 		}
@@ -87,21 +79,18 @@ class Option<T>
 	/**
 	 * La valeur de l'option est safe.
 	 */
-	is_some(): this is Option<safe<T>>
-	{
+	is_some(): this is Option<safe<T>> {
 		return this.value != null;
 	}
 
 	/**
 	 * La valeur de l'option n'est pas safe.
 	 */
-	is_none(): this is Option<never>
-	{
+	is_none(): this is Option<never> {
 		return this.value == null;
 	}
 
-	clone(): Option<T>
-	{
+	clone(): Option<T> {
 		if (this.is_some()) {
 			return Some(this.value) as unknown as Option<T>;
 		}
@@ -111,8 +100,7 @@ class Option<T>
 	/**
 	 * Filtre la valeur contenue dans Some.
 	 */
-	filter(predicate: (value: safe<T>) => boolean): Option<T>
-	{
+	filter(predicate: (value: safe<T>) => boolean): Option<T> {
 		if (this.is_some()) {
 			let value = this.unwrap();
 			if (predicate(value)) {
@@ -132,8 +120,7 @@ class Option<T>
 	 * });
 	 * ```
 	 */
-	filter_map<U>(f: (value: safe<T>) => Option<U>): Option<U>
-	{
+	filter_map<U>(f: (value: safe<T>) => Option<U>): Option<U> {
 		if (this.is_some()) {
 			let value = this.unwrap();
 			return f(value);
@@ -145,8 +132,7 @@ class Option<T>
 	/**
 	 * Applique une nouvelle valeur, sur la valeur contenue dans [`Some`].
 	 */
-	map<U>(f: (_: safe<T>) => U): Option<U>
-	{
+	map<U>(f: (_: safe<T>) => U): Option<U> {
 		try {
 			return Some(f(this.unwrap()));
 		} catch {
@@ -162,8 +148,7 @@ class Option<T>
 	 * maybe_str.or(Some("Hello World"));
 	 * ```
 	 */
-	or(or_value: Option<T>): Option<T>
-	{
+	or(or_value: Option<T>): Option<T> {
 		if (this.is_none()) {
 			return or_value;
 		}
@@ -178,8 +163,7 @@ class Option<T>
 	 * maybe_str.or_else(() => Some("Hello World"));
 	 * ```
 	 */
-	or_else(f: () => Option<T>): Option<T>
-	{
+	or_else(f: () => Option<T>): Option<T> {
 		if (this.is_none()) {
 			return f();
 		}
@@ -189,8 +173,7 @@ class Option<T>
 	/**
 	 * Remplace la valeur de l'instance actuelle.
 	 */
-	replace<U extends safe<T>>(value: U): Option<U>
-	{
+	replace<U extends safe<T>>(value: U): Option<U> {
 		if (value == null) {
 			return None();
 		}
@@ -201,8 +184,7 @@ class Option<T>
 	}
 
 	// biome-ignore lint/suspicious/noThenProperty: euh, je fais ce que je veux?
-	then(f: (value: T) => void)
-	{
+	then(f: (value: T) => void) {
 		if (this.is_some()) {
 			f(this.unwrap());
 		}
@@ -211,9 +193,9 @@ class Option<T>
 	/**
 	 * Retourne la valeur contenue dans [Some]
 	 */
-	unwrap(): safe<T>
-	{
-		const ERROR_MESSAGE: string = "La fonction `.unwrap()` est appelée sur une valeur `None`.";
+	unwrap(): safe<T> {
+		const ERROR_MESSAGE: string =
+			"La fonction `.unwrap()` est appelée sur une valeur `None`.";
 		return this.expect(ERROR_MESSAGE);
 	}
 
@@ -221,16 +203,14 @@ class Option<T>
 	 * Retourne la valeur contenue dans [Some]. Peut retourner une valeur
 	 * unsafe.
 	 */
-	unwrap_unchecked(): T
-	{
+	unwrap_unchecked(): T {
 		return this.value as T;
 	}
 
 	/**
 	 * Retourne la valeur contenue dans [Some] ou une valeur par défaut.
 	 */
-	unwrap_or<U>(def: safe<U>): safe<T> | safe<U>
-	{
+	unwrap_or<U>(def: safe<U>): safe<T> | safe<U> {
 		try {
 			return this.unwrap();
 		} catch {
@@ -242,8 +222,7 @@ class Option<T>
 	 * Retourne la valeur contenue dans [Some] ou une valeur par défaut avec
 	 * l'utilisation d'une fonction de retour.
 	 */
-	unwrap_or_else<U>(fn: () => safe<U>): safe<T> | safe<U>
-	{
+	unwrap_or_else<U>(fn: () => safe<U>): safe<T> | safe<U> {
 		try {
 			return this.unwrap();
 		} catch {
@@ -255,8 +234,7 @@ class Option<T>
 	 * Combine deux Some ensemble, et retourne un tuple de taille 2 des valeurs
 	 * qui sont contenues dans leur propre Some.
 	 */
-	zip<U>(other: Option<U>): Option<[T, U]>
-	{
+	zip<U>(other: Option<U>): Option<[T, U]> {
 		if (this.is_some() && other.is_some()) {
 			let v = this.unwrap();
 			let u = other.unwrap();
@@ -271,8 +249,7 @@ class Option<T>
 // Fonction //
 // -------- //
 
-function is_option<T>(value: unknown): value is Option<T>
-{
+function is_option<T>(value: unknown): value is Option<T> {
 	return value instanceof Option;
 }
 

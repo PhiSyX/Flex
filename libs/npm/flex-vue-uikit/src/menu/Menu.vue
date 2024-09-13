@@ -3,9 +3,8 @@
 // Interface //
 // --------- //
 
-interface Slots
-{
-	"default": unknown;
+interface Slots {
+	default: unknown;
 }
 
 // --------- //

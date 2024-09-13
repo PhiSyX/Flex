@@ -10,7 +10,7 @@
 
 import {
 	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store
+	defineStore as define_store,
 } from "pinia";
 import { computed, reactive, readonly } from "vue";
 
@@ -20,35 +20,30 @@ import { OverlayerData, OverlayerStore } from "@phisyx/flex-chat";
 // Implémentation //
 // -------------- //
 
-class OverlayerStoreVue extends OverlayerStore
-{
-	get layers()
-	{
-		return computed(() => readonly(this.data.layers))
+class OverlayerStoreVue extends OverlayerStore {
+	get layers() {
+		return computed(() => readonly(this.data.layers));
 	}
 
-	get has_layers()
-	{
+	get has_layers() {
 		return computed(() => this.data.has_layers);
 	}
 
-	get $overlayer_mut()
-	{
+	get $overlayer_mut() {
 		return computed({
 			get: () => this.$overlayer,
 			set: ($1) => {
-				this.$overlayer = $1
-			}
+				this.$overlayer = $1;
+			},
 		});
 	}
 
-	get $teleport_mut()
-	{
+	get $teleport_mut() {
 		return computed({
 			get: () => this.$teleport,
 			set: ($1) => {
-				this.$teleport = $1
-			}
+				this.$teleport = $1;
+			},
 		});
 	}
 }
@@ -86,5 +81,7 @@ export const use_overlayer_store = define_store(OverlayerStore.NAME, () => {
 });
 
 if (import.meta.hot) {
-	import.meta.hot.accept(accept_hmr_update(use_overlayer_store, import.meta.hot));
+	import.meta.hot.accept(
+		accept_hmr_update(use_overlayer_store, import.meta.hot),
+	);
 }

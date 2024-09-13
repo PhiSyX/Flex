@@ -19,8 +19,7 @@ import { is_user } from "../asserts/user";
 // Énumération //
 // ----------- //
 
-export enum UserFlag
-{
+export enum UserFlag {
 	/**
 	 * Drapeau Opérateur Local
 	 */
@@ -35,10 +34,8 @@ export enum UserFlag
 // Implémentation //
 // -------------- //
 
-export class User
-{
-	static from(user_origin: Origin | User): User
-	{
+export class User {
+	static from(user_origin: Origin | User): User {
 		let user: User;
 
 		if (is_user(user_origin)) {
@@ -53,8 +50,7 @@ export class User
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(user: Origin | User)
-	{
+	constructor(user: Origin | User) {
 		this.id = user.id;
 		this.nickname = user.nickname;
 		this.ident = user.ident;
@@ -112,24 +108,21 @@ export class User
 	/**
 	 * Nom d'hôte de l'utilisateur.
 	 */
-	get hostname()
-	{
+	get hostname() {
 		return this.host.vhost || this.host.cloaked;
 	}
 
 	/**
 	 * Les classes CSS de l'utilisateur à appliquer aux composants de pseudo.
 	 */
-	get class_name(): string
-	{
+	get class_name(): string {
 		if (this.away) {
 			return "is-away";
 		}
 		return "";
 	}
 
-	get full_address(): MaskAddr
-	{
+	get full_address(): MaskAddr {
 		return `${this.nickname}!${this.ident}@${this.hostname}` as MaskAddr;
 	}
 
@@ -151,12 +144,10 @@ export class User
 			| "nick!*@*.hostname"
 			| "nick!*@*"
 			| "*!*@*",
-	): MaskAddr
-	{
+	): MaskAddr {
 		let tmp: MaskAddr | string = this.full_address;
 
-		switch (ty)
-		{
+		switch (ty) {
 			case "*!ident@hostname":
 				tmp = `*!${this.ident}@${this.hostname}`;
 				break;
@@ -213,10 +204,8 @@ export class User
 	/**
 	 * Analyse d'un drapeau.
 	 */
-	parse_flag(flag: string): Option<UserFlag>
-	{
-		switch (flag.toLowerCase())
-		{
+	parse_flag(flag: string): Option<UserFlag> {
+		switch (flag.toLowerCase()) {
 			case "localoperator":
 				return Some(UserFlag.LocalOperator);
 			case "globaloperator":
@@ -232,10 +221,8 @@ export class User
 	/**
 	 * Est-ce que l'utilisateur donné correspond à celui de l'instance.
 	 */
-	eq(other: this | string): boolean
-	{
-		if (is_string(other))
-			{
+	eq(other: this | string): boolean {
+		if (is_string(other)) {
 			return (
 				other === this.id ||
 				other === this.nickname ||
@@ -255,16 +242,14 @@ export class User
 	/**
 	 * Englobe l'instance dans un type Option.Some
 	 */
-	into_some(): Option<this>
-	{
-		return Some(this)
+	into_some(): Option<this> {
+		return Some(this);
 	}
 
 	/**
 	 * Est-ce que l'utilisateur est un opérateur local?
 	 */
-	is_local_operator()
-	{
+	is_local_operator() {
 		return this.operator
 			.filter((flag) => flag === UserFlag.LocalOperator)
 			.is_some();
@@ -273,8 +258,7 @@ export class User
 	/**
 	 * Est-ce que l'utilisateur est un opérateur global?
 	 */
-	is_global_operator()
-	{
+	is_global_operator() {
 		return this.operator
 			.filter((flag) => flag === UserFlag.GlobalOperator)
 			.is_some();
@@ -283,24 +267,21 @@ export class User
 	/**
 	 * Est-ce que l'utilisateur est un opérateur local ou global?
 	 */
-	is_operator()
-	{
+	is_operator() {
 		return this.is_local_operator() || this.is_global_operator();
 	}
 
 	/**
 	 * Marque l'utilisateur comme étant absent.
 	 */
-	marks_as_away()
-	{
+	marks_as_away() {
 		this.away = true;
 	}
 
 	/**
 	 * Marque l'utilisateur comme n'étant plus absent.
 	 */
-	marks_as_no_longer_away()
-	{
+	marks_as_no_longer_away() {
 		this.away = false;
 	}
 
@@ -308,10 +289,9 @@ export class User
 	 * Est-ce que l'utilisateur donné correspond à celui de l'instance,
 	 * comparaison partielle
 	 */
-	partial_eq(user: this): boolean
+	partial_eq(user: this): boolean;
 	partial_eq(nickname: string): boolean;
-	partial_eq(other: unknown): boolean
-	{
+	partial_eq(other: unknown): boolean {
 		if (is_string(other)) {
 			return other.toLowerCase() === this.nickname.toLowerCase();
 		}
@@ -326,13 +306,11 @@ export class User
 	/**
 	 * Définit un nouveau pseudonyme pour l'utilisateur.
 	 */
-	set_nickname(nickname: string)
-	{
+	set_nickname(nickname: string) {
 		this.nickname = nickname;
 	}
 
-	with_id(id: this["id"]): this
-	{
+	with_id(id: this["id"]): this {
 		this.id = id;
 		return this;
 	}
@@ -340,8 +318,7 @@ export class User
 	/**
 	 * Ajoute des salons à l'utilisateur.
 	 */
-	with_channel(channel_id: ChannelID): this
-	{
+	with_channel(channel_id: ChannelID): this {
 		this.channels.add(channel_id);
 		return this;
 	}
@@ -350,8 +327,7 @@ export class User
 	 * Définit le pseudo comme étant celui actuellement connecté en tant que
 	 * client.
 	 */
-	with_is_current_client(bool: boolean): this
-	{
+	with_is_current_client(bool: boolean): this {
 		this.is_current_client = bool;
 		return this;
 	}
@@ -359,8 +335,7 @@ export class User
 	/**
 	 * Ajoute des drapeaux d'opérateurs à l'utilisateur.
 	 */
-	with_operator_flag(flag: UserFlag | string): this
-	{
+	with_operator_flag(flag: UserFlag | string): this {
 		if (is_string(flag)) {
 			this.operator = this.parse_flag(flag);
 		} else {

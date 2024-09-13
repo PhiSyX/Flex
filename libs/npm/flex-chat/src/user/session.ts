@@ -8,8 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export interface UserSession
-{
+export interface UserSession {
 	id: UUID;
 	name: string;
 	email: string;
@@ -22,8 +21,7 @@ export interface UserSession
 	city?: string;
 }
 
-export enum UserRole
-{
+export enum UserRole {
 	User = "User",
 	Moderator = "Moderator",
 	Admin = "Admin",

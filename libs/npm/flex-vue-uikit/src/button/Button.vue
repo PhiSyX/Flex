@@ -7,8 +7,7 @@ import { computed } from "vue";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	icon?: Icons;
 	position?: "left" | "right";
 	withOpacity?: boolean;
@@ -20,9 +19,8 @@ interface Props
 	variant?: "primary" | "secondary" | "danger";
 }
 
-interface Slots
-{
-	"default": unknown;
+interface Slots {
+	default: unknown;
 }
 
 // --------- //
@@ -47,13 +45,11 @@ let is_selected = computed(() => {
 	return value$.value === props.selected;
 });
 
-
 // ------- //
 // Handler //
 // ------- //
 
-function click_handler(_: MouseEvent)
-{
+function click_handler(_: MouseEvent) {
 	if (value$.value == null && props.selected == null) {
 		return;
 	}

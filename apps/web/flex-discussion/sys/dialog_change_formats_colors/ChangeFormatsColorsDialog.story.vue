@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import ChangeFormatsColorsDialog from "./ChangeFormatsColorsDialog.template.vue";
 
-function init_state()
-{
+function init_state() {
 	return {
 		background: null,
 		bold: false,
 		foreground: 4,
 		italic: false,
 		underline: false,
-	}
+	};
 }
 </script>
 

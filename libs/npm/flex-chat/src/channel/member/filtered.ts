@@ -16,8 +16,7 @@ import { ChannelMember } from "../member";
 // Type //
 // ---- //
 
-export interface ChannelMemberSearchHits
-{
+export interface ChannelMemberSearchHits {
 	is_symbol: boolean;
 	type: FuzzySearchType;
 	word: string;
@@ -27,8 +26,7 @@ export interface ChannelMemberSearchHits
 // Implémentation //
 // -------------- //
 
-export class ChannelMemberFiltered extends ChannelMember
-{
+export class ChannelMemberFiltered extends ChannelMember {
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -44,8 +42,7 @@ export class ChannelMemberFiltered extends ChannelMember
 	constructor(
 		member: ChannelMember,
 		search_hits: Array<ChannelMemberSearchHits>,
-	)
-	{
+	) {
 		super(member);
 
 		this.access_level = member.access_level;
@@ -55,8 +52,7 @@ export class ChannelMemberFiltered extends ChannelMember
 	}
 }
 
-export class ChannelMemberUnfiltered extends ChannelMember
-{
+export class ChannelMemberUnfiltered extends ChannelMember {
 	// --------- //
 	// Propriété //
 	// --------- //
@@ -66,16 +62,14 @@ export class ChannelMemberUnfiltered extends ChannelMember
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(member: ChannelMember)
-	{
+	constructor(member: ChannelMember) {
 		super(member);
 
 		this.access_level = member.access_level;
 		this.is_current_client = member.is_current_client;
 	}
 
-	get class_name()
-	{
+	get class_name() {
 		let cls = super.class_name;
 		cls += " opacity=0.75";
 		return cls;

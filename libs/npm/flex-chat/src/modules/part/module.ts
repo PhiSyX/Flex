@@ -8,7 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { cast_to_channel_id, cast_to_channels_id, is_channel } from "../../asserts/room";
+import {
+	cast_to_channel_id,
+	cast_to_channels_id,
+	is_channel,
+} from "../../asserts/room";
 import type { ChatStoreInterface } from "../../store";
 import type { Module } from "../interface";
 import { PartCommand, SapartCommand } from "./command";
@@ -18,8 +22,7 @@ import { PartHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class PartModule implements Module<PartModule>
-{
+export class PartModule implements Module<PartModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -36,15 +39,13 @@ export class PartModule implements Module<PartModule>
 	constructor(
 		private command: PartCommand,
 		private handler: PartHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channels_raw?: ChannelID, ...words: Array<string>)
-	{
+	input(room_id: RoomID, channels_raw?: ChannelID, ...words: Array<string>) {
 		let channels_r = channels_raw;
 
 		if (channels_r) {
@@ -65,19 +66,16 @@ export class PartModule implements Module<PartModule>
 		this.send({ channels: chans, message });
 	}
 
-	send(payload: Command<"PART">)
-	{
+	send(payload: Command<"PART">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }
 
-export class SapartModule implements Module<SapartModule>
-{
+export class SapartModule implements Module<SapartModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -91,8 +89,7 @@ export class SapartModule implements Module<SapartModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: SapartCommand)
-	{}
+	constructor(private command: SapartCommand) {}
 
 	// ------- //
 	// Méthode //
@@ -113,11 +110,9 @@ export class SapartModule implements Module<SapartModule>
 		this.send({ nicknames, channels: chans, message });
 	}
 
-	send(payload: Command<"SAPART">)
-	{
+	send(payload: Command<"SAPART">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }

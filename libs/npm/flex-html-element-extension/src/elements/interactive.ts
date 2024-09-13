@@ -14,18 +14,15 @@ import {
 	HTMLElementExtension as Ext,
 } from "../extension";
 
-export function a(...args: Ext.Args): AnchorHTMLElementExtension
-{
+export function a(...args: Ext.Args): AnchorHTMLElementExtension {
 	return AnchorHTMLElementExtension.make(args);
 }
 
-export function button(...args: Ext.Args): ButtonHTMLElementExtension
-{
+export function button(...args: Ext.Args): ButtonHTMLElementExtension {
 	return ButtonHTMLElementExtension.make(args);
 }
 
 type Details = Ext<HTMLDetailsElement>;
-export function details(...args: Ext.Args): Details
-{
+export function details(...args: Ext.Args): Details {
 	return Ext.create_element("details", args);
 }

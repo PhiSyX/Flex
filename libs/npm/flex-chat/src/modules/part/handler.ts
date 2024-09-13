@@ -16,25 +16,21 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class PartHandler implements SocketEventInterface<"PART">
-{
+export class PartHandler implements SocketEventInterface<"PART"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("PART", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"PART">)
-	{
+	handle(data: GenericReply<"PART">) {
 		let maybe_channel = this.store.room_manager().get(data.channel);
 
 		if (maybe_channel.is_none()) {
@@ -52,16 +48,14 @@ export class PartHandler implements SocketEventInterface<"PART">
 		this.handle_user(data, channel);
 	}
 
-	handle_client_itself(_: GenericReply<"PART">, channel: ChannelRoom)
-	{
+	handle_client_itself(_: GenericReply<"PART">, channel: ChannelRoom) {
 		this.store.room_manager().close(channel.name);
 		// FIXME(phisyx): Définir la chambre courante à la chambre juste au
 		// dessus ou en au dessous de la chambre venant d'être fermée.
 		this.store.room_manager().set_current_to_last();
 	}
 
-	handle_user(data: GenericReply<"PART">, channel: ChannelRoom)
-	{
+	handle_user(data: GenericReply<"PART">, channel: ChannelRoom) {
 		channel.add_event("event:part", channel.create_event(data, false));
 		channel.remove_member(data.origin.id);
 	}

@@ -20,25 +20,21 @@ import { RoomMessage } from "../../room/message";
 // Implémentation //
 // -------------- //
 
-export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
-{
+export class PubmsgHandler implements SocketEventInterface<"PUBMSG"> {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
-	{}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("PUBMSG", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"PUBMSG">)
-	{
+	handle(data: GenericReply<"PUBMSG">) {
 		let maybe_channel = this.store.room_manager().get(data.channel);
 		if (maybe_channel.is_none()) {
 			return;
@@ -48,8 +44,7 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 		this.handle_message(channel, data);
 	}
 
-	handle_message(room: ChannelRoom, data: GenericReply<"PUBMSG">)
-	{
+	handle_message(room: ChannelRoom, data: GenericReply<"PUBMSG">) {
 		let has_mention = false;
 
 		let is_current_client = this.store.is_current_client(data.origin);
@@ -59,7 +54,8 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 			// message.
 			let current_client_nickname = this.store.nickname();
 			if (
-				data.text.toLowerCase()
+				data.text
+					.toLowerCase()
 					.indexOf(current_client_nickname.toLowerCase()) >= 0
 			) {
 				has_mention = true;
@@ -75,25 +71,26 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 			.slice(-2)
 			.map((msg) => msg.id);
 
-		let message = room.add_message(
-			new RoomMessage(data.text)
-				.with_colors({
-					background: data.tags.color_background,
-					foreground: data.tags.color_foreground,
-				})
-				.with_formats({
-					bold: data.tags.format_bold,
-					italic: data.tags.format_italic,
-					underline: data.tags.format_underline,
-				})
-				.with_id(data.tags.msgid)
-				.with_nickname(data.origin.nickname)
-				.with_target(data.channel)
-				.with_type("pubmsg")
-				.with_data(data)
-				.with_is_current_client(is_current_client)
-				.with_mention(has_mention),
-		)
+		let message = room
+			.add_message(
+				new RoomMessage(data.text)
+					.with_colors({
+						background: data.tags.color_background,
+						foreground: data.tags.color_foreground,
+					})
+					.with_formats({
+						bold: data.tags.format_bold,
+						italic: data.tags.format_italic,
+						underline: data.tags.format_underline,
+					})
+					.with_id(data.tags.msgid)
+					.with_nickname(data.origin.nickname)
+					.with_target(data.channel)
+					.with_type("pubmsg")
+					.with_data(data)
+					.with_is_current_client(is_current_client)
+					.with_mention(has_mention),
+			)
 			.unwrap();
 
 		if (has_mention && !is_current_client) {
@@ -104,12 +101,14 @@ export class PubmsgHandler implements SocketEventInterface<"PUBMSG">
 				previous_messages_ids,
 			});
 
-			let mentions_room = this.store.room_manager().get_or_insert(
-				MentionsCustomRoom.ID,
-				() => new MentionsCustomRoom(),
-			);
+			let mentions_room = this.store
+				.room_manager()
+				.get_or_insert(
+					MentionsCustomRoom.ID,
+					() => new MentionsCustomRoom(),
+				);
 			mentions_room.marks_as_opened();
-			
+
 			let event: RoomMessageEvent<"PUBMSG"> = room.create_event(
 				data,
 				is_current_client,

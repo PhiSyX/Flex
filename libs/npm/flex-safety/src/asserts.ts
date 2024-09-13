@@ -11,8 +11,7 @@
 export function assert<T>(
 	condition: boolean,
 	reason?: string,
-): asserts condition is boolean & T 
-{
+): asserts condition is boolean & T {
 	if (!condition) {
 		throw new Error(reason || "L'assertion ne remplie par la condition");
 	}
@@ -21,8 +20,7 @@ export function assert<T>(
 export function assert_non_null<T>(
 	value: T,
 	reason?: string,
-): asserts value is NonNullable<T> 
-{
+): asserts value is NonNullable<T> {
 	if (value == null) {
 		throw new Error(reason || "L'assertion est nil");
 	}

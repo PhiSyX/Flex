@@ -11,8 +11,7 @@ import {
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	disabled?: boolean;
 	form?: string;
 	name: string;
@@ -36,8 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 let input_model = defineModel<number>({ required: true });
 
-function decrement_handler(evt: Event & { shiftKey: boolean })
-{
+function decrement_handler(evt: Event & { shiftKey: boolean }) {
 	evt.preventDefault();
 	if (props.disabled) {
 		return;
@@ -46,8 +44,7 @@ function decrement_handler(evt: Event & { shiftKey: boolean })
 	input_model.value = minmax(input_model.value - step, props.min, props.max);
 }
 
-function increment_handler(evt: Event & { shiftKey: boolean })
-{
+function increment_handler(evt: Event & { shiftKey: boolean }) {
 	evt.preventDefault();
 	if (props.disabled) {
 		return;
@@ -56,13 +53,14 @@ function increment_handler(evt: Event & { shiftKey: boolean })
 	input_model.value = minmax(input_model.value + step, props.min, props.max);
 }
 
-function input_handler(evt: Event)
-{
+function input_handler(evt: Event) {
 	let target = evt.target as HTMLOutputElement & { value: string };
 	let pos = get_caret_contenteditable(target);
 
 	let fallback = () => {
-		target.value = (Number.parseInt(input_model.value.toFixed(), 10) || 0).toFixed();
+		target.value = (
+			Number.parseInt(input_model.value.toFixed(), 10) || 0
+		).toFixed();
 
 		set_caret_contenteditable(target, {
 			start: pos.start,

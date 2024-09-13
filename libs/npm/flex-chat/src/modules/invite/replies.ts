@@ -14,51 +14,49 @@ import type { ChatStoreInterface } from "../../store";
 // Implémentation //
 // -------------- //
 
-export class ReplyInvitingHandler implements SocketEventInterface<"RPL_INVITING">
+export class ReplyInvitingHandler
+	implements SocketEventInterface<"RPL_INVITING">
 {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("RPL_INVITING", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"RPL_INVITING">)
-	{
-		this.store.network().add_connect_event(
-			data,
-			`* ${data.nick} a été invité sur ${data.channel}`,
-		);
+	handle(data: GenericReply<"RPL_INVITING">) {
+		this.store
+			.network()
+			.add_connect_event(
+				data,
+				`* ${data.nick} a été invité sur ${data.channel}`,
+			);
 	}
 }
 
-export class ErrorInviteonlychanHandler implements SocketEventInterface<"ERR_INVITEONLYCHAN">
+export class ErrorInviteonlychanHandler
+	implements SocketEventInterface<"ERR_INVITEONLYCHAN">
 {
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface)
-	{}
+	constructor(private store: ChatStoreInterface) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	listen()
-	{
+	listen() {
 		this.store.on("ERR_INVITEONLYCHAN", (data) => this.handle(data));
 	}
 
-	handle(data: GenericReply<"ERR_INVITEONLYCHAN">)
-	{
+	handle(data: GenericReply<"ERR_INVITEONLYCHAN">) {
 		let room = this.store.room_manager().active();
 		room.add_event(
 			"error:err_inviteonlychan",

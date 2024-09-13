@@ -12,8 +12,7 @@
 // Fonction //
 // -------- //
 
-function minmax(val: number, min: number, max: number): number
-{
+function minmax(val: number, min: number, max: number): number {
 	return Math.min(Math.max(min, val), max);
 }
 

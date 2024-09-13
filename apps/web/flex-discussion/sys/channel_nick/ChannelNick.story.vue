@@ -16,19 +16,19 @@ let user = User.from({
 let def = new ChannelMember(user);
 let myself = new ChannelMember(user).with_is_current_client(true);
 let owner = new ChannelMember(user).with_access_level(
-	ChannelAccessLevelFlag.Owner
+	ChannelAccessLevelFlag.Owner,
 );
 let admin_operator = new ChannelMember(user).with_access_level(
-	ChannelAccessLevelFlag.AdminOperator
+	ChannelAccessLevelFlag.AdminOperator,
 );
 let operator = new ChannelMember(user).with_access_level(
-	ChannelAccessLevelFlag.Operator
+	ChannelAccessLevelFlag.Operator,
 );
 let half_operator = new ChannelMember(user).with_access_level(
-	ChannelAccessLevelFlag.HalfOperator
+	ChannelAccessLevelFlag.HalfOperator,
 );
 let vip_user = new ChannelMember(user).with_access_level(
-	ChannelAccessLevelFlag.Vip
+	ChannelAccessLevelFlag.Vip,
 );
 let member = new ChannelMember(user);
 let member_away = new ChannelMember(user);

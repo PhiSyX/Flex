@@ -16,8 +16,7 @@ import { ModeSettingsHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class ModeSettingsModule implements Module<ModeSettingsModule>
-{
+export class ModeSettingsModule implements Module<ModeSettingsModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -31,17 +30,13 @@ export class ModeSettingsModule implements Module<ModeSettingsModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private handler: ModeSettingsHandler)
-	{}
+	constructor(private handler: ModeSettingsHandler) {}
 
-	input()
-	{}
+	input() {}
 
-	send()
-	{}
+	send() {}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }

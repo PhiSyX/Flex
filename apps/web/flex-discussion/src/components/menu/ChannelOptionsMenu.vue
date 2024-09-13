@@ -38,7 +38,7 @@ function open_channel_settings_handler() {
 
 	ChannelSettingsDialog.create(
 		overlayer_store.store as OverlayerStore,
-		layer_unsafe.value.data
+		layer_unsafe.value.data,
 	);
 
 	close_menu();

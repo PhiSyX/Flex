@@ -29,8 +29,7 @@ import { ModeAccessLevelHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class ModeAccessLevelModule implements Module<ModeAccessLevelModule>
-{
+export class ModeAccessLevelModule implements Module<ModeAccessLevelModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -44,23 +43,18 @@ export class ModeAccessLevelModule implements Module<ModeAccessLevelModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private handler: ModeAccessLevelHandler)
-	{}
+	constructor(private handler: ModeAccessLevelHandler) {}
 
-	input()
-	{}
+	input() {}
 
-	send()
-	{}
+	send() {}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }
 
-export class AccessLevelQOPModule implements Module<AccessLevelQOPModule>
-{
+export class AccessLevelQOPModule implements Module<AccessLevelQOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -74,15 +68,13 @@ export class AccessLevelQOPModule implements Module<AccessLevelQOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelQOPCommand)
-	{}
+	constructor(private command: AccessLevelQOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -101,17 +93,14 @@ export class AccessLevelQOPModule implements Module<AccessLevelQOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"QOP">)
-	{
+	send(payload: Command<"QOP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelAOPModule implements Module<AccessLevelAOPModule>
-{
+export class AccessLevelAOPModule implements Module<AccessLevelAOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -125,15 +114,13 @@ export class AccessLevelAOPModule implements Module<AccessLevelAOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelAOPCommand)
-	{}
+	constructor(private command: AccessLevelAOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -152,17 +139,14 @@ export class AccessLevelAOPModule implements Module<AccessLevelAOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"AOP">)
-	{
+	send(payload: Command<"AOP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelOPModule implements Module<AccessLevelOPModule>
-{
+export class AccessLevelOPModule implements Module<AccessLevelOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -176,15 +160,13 @@ export class AccessLevelOPModule implements Module<AccessLevelOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelOPCommand)
-	{}
+	constructor(private command: AccessLevelOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -203,17 +185,14 @@ export class AccessLevelOPModule implements Module<AccessLevelOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"OP">)
-	{
+	send(payload: Command<"OP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelHOPModule implements Module<AccessLevelHOPModule>
-{
+export class AccessLevelHOPModule implements Module<AccessLevelHOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -227,15 +206,13 @@ export class AccessLevelHOPModule implements Module<AccessLevelHOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelHOPCommand)
-	{}
+	constructor(private command: AccessLevelHOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -254,17 +231,14 @@ export class AccessLevelHOPModule implements Module<AccessLevelHOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"HOP">)
-	{
+	send(payload: Command<"HOP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelVIPModule implements Module<AccessLevelVIPModule>
-{
+export class AccessLevelVIPModule implements Module<AccessLevelVIPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -278,15 +252,13 @@ export class AccessLevelVIPModule implements Module<AccessLevelVIPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelVIPCommand)
-	{}
+	constructor(private command: AccessLevelVIPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -305,17 +277,14 @@ export class AccessLevelVIPModule implements Module<AccessLevelVIPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"VIP">)
-	{
+	send(payload: Command<"VIP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelDEQOPModule implements Module<AccessLevelDEQOPModule>
-{
+export class AccessLevelDEQOPModule implements Module<AccessLevelDEQOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -329,15 +298,13 @@ export class AccessLevelDEQOPModule implements Module<AccessLevelDEQOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelDEQOPCommand)
-	{}
+	constructor(private command: AccessLevelDEQOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -356,17 +323,14 @@ export class AccessLevelDEQOPModule implements Module<AccessLevelDEQOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"DEQOP">)
-	{
+	send(payload: Command<"DEQOP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelDEAOPModule implements Module<AccessLevelDEAOPModule>
-{
+export class AccessLevelDEAOPModule implements Module<AccessLevelDEAOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -380,15 +344,13 @@ export class AccessLevelDEAOPModule implements Module<AccessLevelDEAOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelDEAOPCommand)
-	{}
+	constructor(private command: AccessLevelDEAOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -407,17 +369,14 @@ export class AccessLevelDEAOPModule implements Module<AccessLevelDEAOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"DEAOP">)
-	{
+	send(payload: Command<"DEAOP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelDEOPModule implements Module<AccessLevelDEOPModule>
-{
+export class AccessLevelDEOPModule implements Module<AccessLevelDEOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -431,15 +390,13 @@ export class AccessLevelDEOPModule implements Module<AccessLevelDEOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelDEOPCommand)
-	{}
+	constructor(private command: AccessLevelDEOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -458,17 +415,14 @@ export class AccessLevelDEOPModule implements Module<AccessLevelDEOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"DEOP">)
-	{
+	send(payload: Command<"DEOP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelDEHOPModule implements Module<AccessLevelDEHOPModule>
-{
+export class AccessLevelDEHOPModule implements Module<AccessLevelDEHOPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -482,15 +436,13 @@ export class AccessLevelDEHOPModule implements Module<AccessLevelDEHOPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelDEHOPCommand)
-	{}
+	constructor(private command: AccessLevelDEHOPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -509,17 +461,14 @@ export class AccessLevelDEHOPModule implements Module<AccessLevelDEHOPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"DEHOP">)
-	{
+	send(payload: Command<"DEHOP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }
 
-export class AccessLevelDEVIPModule implements Module<AccessLevelDEVIPModule>
-{
+export class AccessLevelDEVIPModule implements Module<AccessLevelDEVIPModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
@@ -533,15 +482,13 @@ export class AccessLevelDEVIPModule implements Module<AccessLevelDEVIPModule>
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private command: AccessLevelDEVIPCommand)
-	{}
+	constructor(private command: AccessLevelDEVIPCommand) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string)
-	{
+	input(room_id: RoomID, channel_name_raw?: string, nicknames_raw?: string) {
 		let channel = channel_name_raw;
 		let nicknames_r = nicknames_raw;
 
@@ -560,16 +507,13 @@ export class AccessLevelDEVIPModule implements Module<AccessLevelDEVIPModule>
 		this.send({ channel, nicknames });
 	}
 
-	send(payload: Command<"DEVIP">)
-	{
+	send(payload: Command<"DEVIP">) {
 		this.command.send(payload);
 	}
 
-	send_unset(payload: Command<"DEVIP">)
-	{
+	send_unset(payload: Command<"DEVIP">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{}
+	listen() {}
 }

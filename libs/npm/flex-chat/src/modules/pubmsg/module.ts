@@ -18,16 +18,16 @@ import { PubmsgHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class PubmsgModule implements Module<PubmsgModule>
-{
+export class PubmsgModule implements Module<PubmsgModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "PUBMSG";
 
-	static create(store: ChatStoreInterface & ChatStoreInterfaceExt): PubmsgModule
-	{
+	static create(
+		store: ChatStoreInterface & ChatStoreInterfaceExt,
+	): PubmsgModule {
 		return new PubmsgModule(
 			new PubmsgCommand(store),
 			new PubmsgHandler(store),
@@ -40,8 +40,7 @@ export class PubmsgModule implements Module<PubmsgModule>
 	constructor(
 		private command: PubmsgCommand,
 		private handler: PubmsgHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
@@ -53,8 +52,7 @@ export class PubmsgModule implements Module<PubmsgModule>
 		colors: Commands["PUBMSG"]["colors"],
 		channels_raw?: ChannelID,
 		...words: Array<string>
-	)
-	{
+	) {
 		if (!room_id.startsWith("#")) {
 			let channels = channels_raw?.split(",") as
 				| Array<ChannelID>
@@ -87,13 +85,11 @@ export class PubmsgModule implements Module<PubmsgModule>
 		this.send({ formats, colors, channels, text });
 	}
 
-	send(payload: Command<"PUBMSG">)
-	{
+	send(payload: Command<"PUBMSG">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }

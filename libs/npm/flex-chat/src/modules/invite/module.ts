@@ -19,16 +19,14 @@ import { InviteHandler } from "./handler";
 // Implémentation //
 // -------------- //
 
-export class InviteModule implements Module<InviteModule>
-{
+export class InviteModule implements Module<InviteModule> {
 	// ------ //
 	// STATIC //
 	// ------ //
 
 	static NAME = "INVITE";
 
-	static create(store: ChatStoreInterface): InviteModule
-	{
+	static create(store: ChatStoreInterface): InviteModule {
 		return new InviteModule(
 			new InviteCommand(store),
 			new InviteHandler(store),
@@ -41,15 +39,13 @@ export class InviteModule implements Module<InviteModule>
 	constructor(
 		private command: InviteCommand,
 		private handler: InviteHandler,
-	)
-	{}
+	) {}
 
 	// ------- //
 	// Méthode //
 	// ------- //
 
-	input(room_id: RoomID, nickname?: string, channel_raw?: ChannelID)
-	{
+	input(room_id: RoomID, nickname?: string, channel_raw?: ChannelID) {
 		if (!nickname) {
 			return;
 		}
@@ -66,13 +62,11 @@ export class InviteModule implements Module<InviteModule>
 		this.send({ nickname, channel });
 	}
 
-	send(payload: Command<"INVITE">)
-	{
+	send(payload: Command<"INVITE">) {
 		this.command.send(payload);
 	}
 
-	listen()
-	{
+	listen() {
 		this.handler.listen();
 	}
 }

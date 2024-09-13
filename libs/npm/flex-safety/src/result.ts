@@ -21,8 +21,7 @@ type unsafe<T> = T | null | undefined;
 // Énumération //
 // ----------- //
 
-export enum ResultVariant
-{
+export enum ResultVariant {
 	Ok = "Ok",
 	Err = "Err",
 }
@@ -31,27 +30,23 @@ export enum ResultVariant
 // Implémentation //
 // -------------- //
 
-class Result<T, E extends Error>
-{
+class Result<T, E extends Error> {
 	// ------ //
 	// Static //
 	// ------ //
 
-	static Err = <E extends Error>(err: E) =>
-	{
+	static Err = <E extends Error>(err: E) => {
 		return new Result<never, E>(ResultVariant.Err, null, err);
 	};
 
-	static Ok = <T>(value: T) =>
-	{
+	static Ok = <T>(value: T) => {
 		if (value == null) {
 			return Err(Error("null value"));
 		}
 		return new Result<T, never>(ResultVariant.Ok, value);
 	};
 
-	static from = <T>(value: T) =>
-	{
+	static from = <T>(value: T) => {
 		if (value == null) {
 			return this.Err(Error("null value"));
 		}
@@ -66,11 +61,9 @@ class Result<T, E extends Error>
 		public type: ResultVariant,
 		private value?: unsafe<T>,
 		private error?: E,
-	)
-	{}
+	) {}
 
-	expect(msg: string): safe<T>
-	{
+	expect(msg: string): safe<T> {
 		if (this.is_ok()) {
 			return this.value as safe<T>;
 		}
@@ -80,24 +73,21 @@ class Result<T, E extends Error>
 	/**
 	 * Retourne `true` si le résultat est [`Err`].
 	 */
-	is_err(): this is Result<never, E>
-	{
+	is_err(): this is Result<never, E> {
 		return this.error != null;
 	}
 
 	/**
 	 * Retourne `true` si le résultat est [`Ok`].
 	 */
-	is_ok(): this is Result<T, never>
-	{
+	is_ok(): this is Result<T, never> {
 		return this.value != null;
 	}
 
 	/**
 	 * Convertis de `Result<T, E>` en [`Option<T>`].
 	 */
-	ok(): Option<safe<T>>
-	{
+	ok(): Option<safe<T>> {
 		try {
 			return Some(this.unwrap());
 		} catch {
@@ -108,8 +98,7 @@ class Result<T, E extends Error>
 	/**
 	 * Modifie la valeur contenue dans [`Ok`].
 	 */
-	map<U>(f: (fn_once: safe<T>) => U): Result<U, E>
-	{
+	map<U>(f: (fn_once: safe<T>) => U): Result<U, E> {
 		try {
 			return Ok(f(this.unwrap())) as Result<U, E>;
 		} catch {
@@ -122,8 +111,7 @@ class Result<T, E extends Error>
 	 *
 	 * Cette méthode peut échouer.
 	 */
-	unwrap(): safe<T>
-	{
+	unwrap(): safe<T> {
 		if (this.is_ok()) {
 			return this.value as safe<T>;
 		}
@@ -142,8 +130,7 @@ class Result<T, E extends Error>
 	 * Retourne la valeur contenue dans [`Ok`] ou une valeur par défaut
 	 * si [`Err`].
 	 */
-	unwrap_or<X>(value_in_err_case: T | X): T | X
-	{
+	unwrap_or<X>(value_in_err_case: T | X): T | X {
 		try {
 			return this.unwrap();
 		} catch {
@@ -157,8 +144,7 @@ class Result<T, E extends Error>
 	 */
 	unwrap_or_else<X>(
 		callback_return_value_in_err_case: (fn_once: E) => T | X,
-	): T | X
-	{
+	): T | X {
 		try {
 			return this.unwrap();
 		} catch {

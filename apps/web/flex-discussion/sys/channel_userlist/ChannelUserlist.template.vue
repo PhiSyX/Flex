@@ -13,21 +13,18 @@ import {
 // Type //
 // ---- //
 
-export interface Props
-{
+export interface Props {
 	name: string;
 	members: ChannelMembers;
 	useIconInsteadOfAvatar?: boolean;
 }
 
-interface Emits
-{
+interface Emits {
 	(event_name: "open-private", origin: Origin): void;
 	(event_name: "select-member", origin: Origin): void;
 }
 
-interface Slots
-{
+interface Slots {
 	"user-info": (_: { member: ChannelMember }) => unknown;
 }
 
