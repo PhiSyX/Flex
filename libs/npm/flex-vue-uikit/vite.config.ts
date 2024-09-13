@@ -19,7 +19,7 @@ export default defineConfig({
 	build: {
 		lib: {
 			entry: path.resolve("index.ts"),
-			name: "flex-uikit",
+			name: "flex-vue-uikit",
 			fileName: "index",
 		},
 		rollupOptions: {
