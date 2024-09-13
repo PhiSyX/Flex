@@ -1,18 +1,7 @@
 <script setup lang="ts">
-import type { OverlayerStore, PrivateRoom } from "@phisyx/flex-chat";
+import type { PrivateView } from "@phisyx/flex-chat";
 
 import { computed } from "vue";
-
-import {
-	ChangeFormatsColorsDialog,
-	UserChangeNicknameDialog,
-} from "@phisyx/flex-chat";
-
-import {
-	use_chat_store,
-	use_overlayer_store,
-	use_settings_store,
-} from "~/store";
 
 import Avatar from "#/api/avatar/Avatar.vue";
 import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
@@ -22,116 +11,47 @@ import PrivateRoomComponent from "#/sys/private_room/PrivateRoom.template.vue";
 // ---- //
 
 interface Props {
-	// Chambre privée.
-	room: PrivateRoom;
+	view: PrivateView;
 }
 
 // --------- //
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
-let overlayer_store = use_overlayer_store();
-let settings_store = use_settings_store();
+const { view } = defineProps<Props>();
 
-const props = defineProps<Props>();
-
-// Client courant, qui est un participant de la chambre privée.
-let current_client_user = computed(() =>
-	props.room.get_participant(chat_store.current_client.id).unwrap(),
-);
-
-// Participant de la chambre.
-let recipient = computed(() =>
-	props.room.get_participant(props.room.id()).unwrap(),
-);
-
-// Est-ce que le participant est bloqué?
-let is_recipient_blocked = computed(() =>
-	// @ts-expect-error : à corriger.
-	chat_store.check_user_is_blocked(recipient.value),
-);
-
-// La liste de la complétion de la boite de saisie.
-let completion_list = computed(() => chat_store.all_commands(props.room));
-
-// ------- //
-// Handler //
-// ------- //
-
-/**
- * Ouvre la boite de dialogue de changement de pseudonyme.
- */
-function open_change_nickname_dialog_handler(event: MouseEvent) {
-	UserChangeNicknameDialog.create(overlayer_store.store as OverlayerStore, {
-		event,
-	});
-}
-
-/**
- * Ferme la chambre privée.
- */
-function close_private_handler() {
-	chat_store.close_room(recipient.value.id);
-}
-
-/**
- * Ouvre la boite de couleur du champ de saisie.
- */
-function open_colors_box_handler(event: MouseEvent) {
-	overlayer_store.create({
-		id: ChangeFormatsColorsDialog.ID,
-		event,
-	});
-}
-
-/**
- * Ouvre une chambre.
- */
-function open_room_handler(room_id: RoomID) {
-	chat_store.open_room(room_id);
-}
-
-/**
- * Envoie du message au destinataire.
- */
-function send_message_handler(message: string) {
-	chat_store.send_message(recipient.value.id, message);
-}
-
-/**
- * Envoie de la commande /SILENCE.
- */
-const send_silence_user_command_handler =
-	(apply_state: "+" | "-") => (nickname: string) => {
-		if (apply_state === "+") {
-			chat_store.ignore_user(nickname);
-		} else {
-			chat_store.unignore_user(nickname);
-		}
-	};
+let current_client_user = computed(() => view.current_client_user);
+let current_client_nickname = computed(() => view.current_client_nickname);
+let recipient = computed(() => view.recipient);
+let is_recipient_blocked = computed(() => view.is_recipient_blocked);
+let completion_list = computed(() => view.completion_list);
+let text_format_bold = computed(() => view.text_format.bold);
+let text_format_italic = computed(() => view.text_format.italic);
+let text_format_underline = computed(() => view.text_format.underline);
+let text_colors_background = computed(() => view.text_colors.background);
+let text_colors_foreground = computed(() => view.text_colors.foreground);
 </script>
 
 <template>
 	<PrivateRoomComponent
 		:completion-list="completion_list"
 		:current-client-user="current_client_user"
-		:current-nickname="chat_store.current_client_nickname"
+		:current-nickname="current_client_nickname"
 		:is-recipient-blocked="is_recipient_blocked"
 		:recipient="recipient"
-		:room="room"
-		:text-format-bold="settings_store.personalization.formats.bold"
-		:text-format-italic="settings_store.personalization.formats.italic"
-		:text-format-underline="settings_store.personalization.formats.underline"
-		:text-color-background="settings_store.personalization.colors.background"
-		:text-color-foreground="settings_store.personalization.colors.foreground"
-		@change-nickname="open_change_nickname_dialog_handler"
-		@close="close_private_handler"
-		@ignore-user="(o) => send_silence_user_command_handler('+')(o)"
-		@open-colors-box="open_colors_box_handler"
-		@open-room="open_room_handler"
-		@send-message="send_message_handler"
-		@unignore-user="(o) => send_silence_user_command_handler('-')(o)"
+		:room="view.priv"
+		:text-format-bold="text_format_bold"
+		:text-format-italic="text_format_italic"
+		:text-format-underline="text_format_underline"
+		:text-color-background="text_colors_background"
+		:text-color-foreground="text_colors_foreground"
+		@change-nickname="view.open_change_nickname_dialog_handler"
+		@close="view.close_handler"
+		@ignore-user="view.send_ignore_user_command_handler"
+		@open-colors-box="view.open_colors_box_handler"
+		@open-room="view.open_room_handler"
+		@send-message="view.send_message_handler"
+		@unignore-user="view.send_unignore_user_command_handler"
 	>
 		<template #avatar="{ recipient }">
 			<Avatar

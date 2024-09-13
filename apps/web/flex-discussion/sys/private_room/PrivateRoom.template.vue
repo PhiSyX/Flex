@@ -28,11 +28,11 @@ interface Props {
 interface Emits {
 	(event_name: "change-nickname", event: MouseEvent): void;
 	(event_name: "close"): void;
-	(event_name: "ignore-user", nickname: string): void;
+	(event_name: "ignore-user", origin: Origin): void;
 	(event_name: "open-colors-box", event: MouseEvent): void;
 	(event_name: "open-room", room_id: RoomID): void;
 	(event_name: "send-message", message: string): void;
-	(event_name: "unignore-user", nickname: string): void;
+	(event_name: "unignore-user", origin: Origin): void;
 }
 
 interface Slots {
@@ -71,9 +71,9 @@ const send_message_handler = (message: string) => emit("send-message", message);
 
 function toggle_ignore_user_handler() {
 	if (props.isRecipientBlocked) {
-		emit("unignore-user", props.recipient.nickname);
+		emit("unignore-user", props.recipient);
 	} else {
-		emit("ignore-user", props.recipient.nickname);
+		emit("ignore-user", props.recipient);
 	}
 }
 </script>

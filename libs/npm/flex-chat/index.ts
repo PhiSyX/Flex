@@ -45,3 +45,4 @@ export * from "./src/user/session";
 export * from "./src/view";
 export * from "./src/views/chat-channel-view";
 export * from "./src/views/direct-access";
+export * from "./src/views/chat-private-view";

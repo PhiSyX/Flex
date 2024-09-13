@@ -121,7 +121,7 @@ export interface ChatStoreInterface {
 	/**
 	 * Vérifie si un utilisateur est bloqué.
 	 */
-	check_user_is_blocked(user: User): boolean;
+	is_user_blocked(user: User): boolean;
 
 	/**
 	 * Ferme une chambre. Dans le cas d'un salon, cette fonction émet la
@@ -563,7 +563,7 @@ export class ChatStore implements ChatStoreInterface {
 			.send({ channels });
 	}
 
-	check_user_is_blocked(user: User): boolean {
+	is_user_blocked(user: User): boolean {
 		return this.user_manager().is_blocked(user.id);
 	}
 
