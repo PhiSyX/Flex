@@ -9,7 +9,6 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Option } from "@phisyx/flex-safety";
-
 import type { ChannelMember } from "../channel/member";
 import type { ChannelRoom } from "../channel/room";
 import type { Layer, OverlayerStore } from "../store";
@@ -24,7 +23,7 @@ export interface ChannelSettingsRecordDialog
 	// Salon actif
 	room: ChannelRoom;
 	// Le client courant, qui est membre du salon.
-	currentClientChannelMember: ChannelMember;
+	currentClientChannelMember: Option<ChannelMember>;
 }
 
 // -------------- //

@@ -92,15 +92,9 @@ export class ChannelPresenter {
 	open_channel_settings_dialog() {
 		assert_non_null(this.view.channel);
 
-		if (this.view.current_client_channel_member.is_none()) {
-			// TODO: alerter l'utilisateur de quelque chose d'imprévue?
-			return;
-		}
-
 		let channel_settings_record = {
 			room: this.view.channel,
-			currentClientChannelMember:
-				this.view.current_client_channel_member.unwrap(),
+			currentClientChannelMember: this.view.current_client_channel_member,
 		};
 
 		this.interactor.create_channel_settings_dialog(channel_settings_record);

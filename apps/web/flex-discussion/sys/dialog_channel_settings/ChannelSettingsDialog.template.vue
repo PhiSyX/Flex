@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
+import type { Option } from "@phisyx/flex-safety";
 
 import { computed, ref, watch } from "vue";
 
@@ -18,7 +19,7 @@ interface Props
 {
 	layerName: string;
 	room: ChannelRoom;
-	currentClientChannelMember: ChannelMember;
+	currentClientChannelMember: Option<ChannelMember>;
 }
 
 interface Emits
@@ -46,18 +47,24 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 // Est-ce que le client courant a les droits d'édition du sujet?
-let is_current_client_channel_member_can_edit_topic = computed(
-	() => props.room.can_edit_topic(props.currentClientChannelMember)
+let is_current_client_channel_member_can_edit_topic = computed(() =>
+	props.currentClientChannelMember
+		.map(props.room.can_edit_topic)
+		.unwrap_or(false),
 );
 
 // Est-ce que le client courant est opérateur global?
-let is_current_client_global_operator = computed(
-	() => props.currentClientChannelMember.is_global_operator()
+let is_current_client_global_operator = computed(() =>
+	props.currentClientChannelMember
+		.map((m) => m.is_global_operator())
+		.unwrap_or(false),
 );
 
 // Est-ce que le client courant opérateur du salon?
-let is_current_client_channel_member_channel_operator = computed(
-	() => props.currentClientChannelMember.is_channel_operator()
+let is_current_client_channel_member_channel_operator = computed(() =>
+	props.currentClientChannelMember
+		.map((m) => m.is_channel_operator())
+		.unwrap_or(false),
 );
 
 // Les paramètres du salon.
