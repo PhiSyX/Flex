@@ -658,7 +658,7 @@ export class ChatStore implements ChatStoreInterface
 			return channel_member_selected;
 		});
 	}
-	
+
 	handler_manager(): HandlerManager
 	{
 		return this._handler_manager;
@@ -747,7 +747,7 @@ export class ChatStore implements ChatStoreInterface
 	{
 		return this.client().nickname;
 	}
-	
+
 
 	off<K extends keyof ServerToClientEvent>(event_name: K)
 	{

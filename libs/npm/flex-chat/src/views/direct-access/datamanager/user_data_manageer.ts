@@ -8,29 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import {
-	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store
-} from "pinia";
-import { reactive } from "vue";
+import type { Option } from "@phisyx/flex-safety";
 
-import { UserStore, UserStoreData } from "@phisyx/flex-chat";
+import type { UserStore } from "../../../store/user";
+import type { UserSession } from "../../../user/session";
 
-// ----- //
-// Store //
-// ----- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export const use_user_store = define_store(UserStore.NAME, () => {
-	const store = new UserStore(reactive(new UserStoreData()) as UserStoreData);
-	return {
-		store,
-		disconnect: store.disconnect.bind(store),
-		fetch: store.fetch.bind(store),
-		patch: store.patch.bind(store),
-		session: store.session.bind(store),
-	};
-});
+export class DirectAccessUserManager
+{
+	constructor(private store: UserStore)
+	{}
 
-if (import.meta.hot) {
-	import.meta.hot.accept(accept_hmr_update(use_user_store, import.meta.hot));
+	get_user_session(): Option<UserSession>
+	{
+		return this.store.session();
+	}
 }

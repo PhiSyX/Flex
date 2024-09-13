@@ -8,29 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import {
-	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store
-} from "pinia";
-import { reactive } from "vue";
+import type {
+	DialogArgs,
+	DialogClass,
+	DialogInterface,
+} from "../../../dialogs";
+import type { OverlayerStore } from "../../../store/overlayer";
 
-import { UserStore, UserStoreData } from "@phisyx/flex-chat";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-// ----- //
-// Store //
-// ----- //
+export class DirectAccessOverlayerManager
+{
+	constructor(private store: OverlayerStore)
+	{}
 
-export const use_user_store = define_store(UserStore.NAME, () => {
-	const store = new UserStore(reactive(new UserStoreData()) as UserStoreData);
-	return {
-		store,
-		disconnect: store.disconnect.bind(store),
-		fetch: store.fetch.bind(store),
-		patch: store.patch.bind(store),
-		session: store.session.bind(store),
-	};
-});
-
-if (import.meta.hot) {
-	import.meta.hot.accept(accept_hmr_update(use_user_store, import.meta.hot));
+	create_dialog<D extends DialogClass<DialogInterface<R>>, R>(
+		dialog: D,
+		...args: DialogArgs<D, R>
+	)
+	{
+		dialog.create(this.store, ...args);
+	}
 }

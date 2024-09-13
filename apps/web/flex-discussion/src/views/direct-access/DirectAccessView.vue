@@ -4,7 +4,9 @@ import {
 	type ChatStoreInterfaceExt,
 	DirectAccessView,
 	DirectAccessWireframe,
+	type OverlayerStore,
 	RememberMeStorage,
+	type UserStore,
 } from "@phisyx/flex-chat";
 import {
 	ButtonIcon,
@@ -16,19 +18,23 @@ import {
 } from "@phisyx/flex-vue-uikit";
 import { computed, onMounted, reactive, watch } from "vue";
 import { VueRouter } from "~/router";
-import { use_chat_store } from "~/store";
+import { use_chat_store, use_overlayer_store, use_user_store } from "~/store";
 
 // --------- //
 // Composant //
 // --------- //
 
 let chat_store = use_chat_store().store;
+let user_store = use_user_store().store;
+let overlayer_store = use_overlayer_store().store;
 let router = new VueRouter();
 
 let view = reactive(
 	DirectAccessWireframe.create(
 		router,
-		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		user_store as unknown as UserStore,
+		overlayer_store as unknown as OverlayerStore
 	)
 );
 

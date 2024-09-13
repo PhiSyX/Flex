@@ -283,8 +283,6 @@ export class ChatStoreVue extends ChatStore implements
 			}
 		}
 
-
-
 		this._handler_manager.free();
 		this._module_manager.free();
 		this._overlayer.destroy("load-all-modules");

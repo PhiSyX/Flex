@@ -9,7 +9,9 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { DialogArgs, DialogClass, DialogInterface } from "../../dialogs/interface";
-import type { DirectAccessDataManager } from "./datamanager";
+import type { DirectAccessChatManager } from "./datamanager/chat_data_manager";
+import type { DirectAccessOverlayerManager } from "./datamanager/overlay_data_manager";
+import type { DirectAccessUserManager } from "./datamanager/user_data_manageer";
 import type { DirectAccessPresenter } from "./presenter";
 
 // -------------- //
@@ -19,7 +21,9 @@ import type { DirectAccessPresenter } from "./presenter";
 export class DirectAccessInteractor
 {
 	private presenter!: DirectAccessPresenter;
-	private datamanager!: DirectAccessDataManager;
+	private chat_manager!: DirectAccessChatManager;
+	private user_manager!: DirectAccessUserManager;
+	private overlayer_manager!: DirectAccessOverlayerManager;
 
 	// ------- //
 	// Méthode // -> Instance
@@ -31,9 +35,21 @@ export class DirectAccessInteractor
 		return this;
 	}
 
-	with_datamanager(datamanager: DirectAccessDataManager): this
+	with_chat_datamanager(datamanager: DirectAccessChatManager): this
 	{
-		this.datamanager = datamanager;
+		this.chat_manager = datamanager;
+		return this;
+	}
+
+	with_user_datamanager(datamanager: DirectAccessUserManager): this
+	{
+		this.user_manager = datamanager;
+		return this;
+	}
+
+	with_overlayer_datamanager(datamanager: DirectAccessOverlayerManager): this
+	{
+		this.overlayer_manager = datamanager;
 		return this;
 	}
 
@@ -43,7 +59,7 @@ export class DirectAccessInteractor
 
 	auth_user(nickname: string, password: string)
 	{
-		this.datamanager.send_active_room(
+		this.chat_manager.send_active_room(
 			`/AUTH IDENTIFY ${nickname} ${password}`
 		);
 	}
@@ -53,13 +69,13 @@ export class DirectAccessInteractor
 		R,
 	>(dialog: D, ...args: DialogArgs<D, R>)
 	{
-		this.datamanager.create_dialog(dialog, ...args);
+		this.overlayer_manager.create_dialog(dialog, ...args);
 	}
 
 	async connect_chat()
 	{
-		await this.datamanager.load_all_modules();
-		this.datamanager.connect(this.presenter.view.form_data, {
+		await this.chat_manager.load_all_modules();
+		this.chat_manager.connect(this.presenter.view.form_data, {
 			welcome: () => this.presenter.view.handle_reply_welcome(),
 			nicknameinuse: (data) =>
 				this.presenter.view.handle_reply_nicknameinuse(data),
@@ -68,6 +84,6 @@ export class DirectAccessInteractor
 
 	fetch_user_session()
 	{
-		return this.datamanager.get_user_session();
+		return this.user_manager.get_user_session();
 	}
 }

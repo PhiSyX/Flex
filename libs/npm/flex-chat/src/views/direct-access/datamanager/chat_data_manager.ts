@@ -8,18 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
 
-import type { DialogArgs, DialogClass, DialogInterface } from "../../dialogs";
-import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
-import type { UserSession } from "../../user/session";
-import type { DirectAccessFormData } from "./formdata";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../../store";
+import type { DirectAccessFormData } from "../formdata";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class DirectAccessDataManager
+export class DirectAccessChatManager
 {
 	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt)
 	{}
@@ -48,19 +45,6 @@ export class DirectAccessDataManager
 	async load_all_modules()
 	{
 		return this.store.load_all_modules();
-	}
-
-	create_dialog<
-		D extends DialogClass<DialogInterface<R>>,
-		R,
-	>(dialog: D, ...args: DialogArgs<D, R>)
-	{
-		dialog.create(this.store.overlayer(), ...args);
-	}
-
-	get_user_session(): Option<UserSession>
-	{
-		return this.store.user().session();
 	}
 
 	send_active_room(message: string)

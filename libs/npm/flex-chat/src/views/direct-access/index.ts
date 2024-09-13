@@ -9,5 +9,4 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 export * from "./wireframe";
-export * from "./datamanager";
 export * from "./view";
