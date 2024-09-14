@@ -8,12 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./interface";
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export * from "./change_formats_colors";
-export * from "./channel_join";
-export * from "./channel_settings";
-export * from "./private_pending_request";
-export * from "./update_account";
-export * from "./user_change_nickname";
-
+// biome-ignore lint/complexity/noStaticOnlyClass: ok
+export class ChannelChangeTopicLayer {
+	static ID = "channel-change-topic-layer";
+}

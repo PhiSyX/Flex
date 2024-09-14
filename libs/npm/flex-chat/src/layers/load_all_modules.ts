@@ -8,64 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
+// --------- //
+// Interface //
+// --------- //
 
-import type { Layer, OverlayerStore } from "../store";
-import type { DialogInterface } from "./interface";
+export interface LoadAllModulesRecordLayer {
+	module_name?: string;
+	total_loaded: number;
+	loaded: number;
+}
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelChangeTopicLayer implements DialogInterface {
-	// ------ //
-	// Static //
-	// ------ //
-
-	static ID = "channel-change-topic-layer";
-
-	static create(
-		overlayer_store: OverlayerStore,
-		event: Required<Layer["event"]>,
-		linked_element: Required<Layer["dom_element"]>,
-	) {
-		overlayer_store.create({
-			id: ChannelChangeTopicLayer.ID,
-			destroyable: "manual",
-			event: event,
-			dom_element: linked_element,
-			trap_focus: false,
-		});
-
-		return new ChannelChangeTopicLayer(overlayer_store);
-	}
-
-	static destroy(overlayer_store: OverlayerStore) {
-		overlayer_store.destroy(ChannelChangeTopicLayer.ID);
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private overlayer_store: OverlayerStore) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	destroy() {
-		this.overlayer_store.destroy(ChannelChangeTopicLayer.ID);
-	}
-
-	get(): Option<Layer> {
-		return this.overlayer_store.get(ChannelChangeTopicLayer.ID);
-	}
-
-	get_unchecked(): Layer {
-		return this.get().unwrap_unchecked();
-	}
-
-	exists(): boolean {
-		return this.overlayer_store.has(ChannelChangeTopicLayer.ID);
-	}
+// biome-ignore lint/complexity/noStaticOnlyClass: ok
+export class LoadAllModulesLayer {
+	static ID = "load-all-modules-layer";
 }
