@@ -13,11 +13,20 @@ import type { Option } from "@phisyx/flex-safety";
 import type { Layer, OverlayerStore } from "../store";
 import type { DialogInterface } from "./interface";
 
+export interface ChannelJoinRecordDialog {
+	names?: string;
+	keys?: string;
+	marksKeysFieldAsError?: boolean;
+	withNotice?: boolean;
+}
+
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelJoinDialog implements DialogInterface {
+export class ChannelJoinDialog
+	implements DialogInterface<ChannelJoinRecordDialog>
+{
 	// ------ //
 	// Static //
 	// ------ //
@@ -26,14 +35,14 @@ export class ChannelJoinDialog implements DialogInterface {
 
 	static create(
 		overlayer_store: OverlayerStore,
-		payload: {
-			event: Event;
-		},
+		event?: Event,
+		record?: ChannelJoinRecordDialog,
 	) {
 		overlayer_store.create({
 			id: ChannelJoinDialog.ID,
 			centered: true,
-			event: payload.event,
+			event: event,
+			data: record,
 		});
 
 		return new ChannelJoinDialog(overlayer_store);
@@ -56,11 +65,13 @@ export class ChannelJoinDialog implements DialogInterface {
 		this.overlayer_store.destroy(ChannelJoinDialog.ID);
 	}
 
-	get(): Option<Layer> {
-		return this.overlayer_store.get(ChannelJoinDialog.ID);
+	get(): Option<Layer<ChannelJoinRecordDialog>> {
+		return this.overlayer_store
+			.get(ChannelJoinDialog.ID)
+			.as<Layer<ChannelJoinRecordDialog>>();
 	}
 
-	get_unchecked(): Layer {
+	get_unchecked(): Layer<ChannelJoinRecordDialog> {
 		return this.get().unwrap_unchecked();
 	}
 

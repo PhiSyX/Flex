@@ -8,7 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
+
+import { ChannelJoinDialog } from "../../dialogs/channel_join";
 
 // ---- //
 // Type //
@@ -21,7 +23,7 @@ type S = SocketEventInterface<"ERR_BADCHANNELKEY">;
 // -------------- //
 
 export class ErrorBadchannelkeyHandler implements S {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	listen() {
 		this.store.on("ERR_BADCHANNELKEY", (data) => this.handle(data));
@@ -45,10 +47,20 @@ export class ErrorBadchannelkeyHandler implements S {
 				],
 			})
 			.unwrap();
+
 		room.add_event(
 			"error:err_badchannelkey",
 			room.create_event(data),
 			data.reason,
 		);
+
+		setTimeout(() => {
+			ChannelJoinDialog.create(this.store.overlayer(), undefined, {
+				keys: "",
+				names: data.channel,
+				marksKeysFieldAsError: true,
+				withNotice: false,
+			});
+		}, 1_000);
 	}
 }

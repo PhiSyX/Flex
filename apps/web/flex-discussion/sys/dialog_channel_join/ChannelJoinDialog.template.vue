@@ -11,6 +11,10 @@ import { Alert, Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 
 interface Props {
 	layerName: string;
+	names?: string;
+	keys?: string;
+	marksKeysFieldAsError?: boolean;
+	withNotice?: boolean;
 }
 
 interface Emits {
@@ -22,11 +26,16 @@ interface Emits {
 // Composant //
 // --------- //
 
-defineProps<Props>();
+const {
+	names = "",
+	keys = "",
+	withNotice = true,
+	marksKeysFieldAsError = false,
+} = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-let channels_request = ref<ChannelID>(cast_to_channel_id(""));
-let keys_request = ref("");
+let channels_request = ref<ChannelID>(cast_to_channel_id(names));
+let keys_request = ref(keys);
 
 // ------- //
 // Handler //
@@ -43,7 +52,8 @@ function create_channel_handler() {
 
 		<template #footer>
 			<em class="[ f-size=12px ]">
-				Les champs ayant un <strong>*</strong>asterisk sont obligatoires.
+				Les champs ayant un <strong>*</strong>asterisk sont
+				obligatoires.
 			</em>
 
 			<UiButton
@@ -58,7 +68,12 @@ function create_channel_handler() {
 		</template>
 
 		<section class="[ flex! gap=1 ]">
-			<Alert type="warning" :can-close="false" :content-center="false">
+			<Alert
+				v-if="withNotice"
+				type="warning"
+				:can-close="false"
+				:content-center="false"
+			>
 				Tu es sur le point de rejoindre un salon OU de le créer.
 
 				<br />
@@ -75,13 +90,26 @@ function create_channel_handler() {
 				te suffira de le donner avec le nom du salon à tes contacts.
 			</Alert>
 
+			<Alert
+				v-if="marksKeysFieldAsError"
+				type="error"
+				:can-close="false"
+				:content-center="false"
+			>
+				Une clé d'accès est requise pour pouvoir entrer sur ce salon (
+				<em>{{ names }}</em>
+				).
+			</Alert>
+
 			<form
 				:id="`${layerName}_form`"
 				action="/chat/join/channel"
 				method="post"
 				@submit.prevent="create_channel_handler"
 			>
-				<fieldset class="[ w:full flex flex/center:full gap=1 p=0 m=0 ]">
+				<fieldset
+					class="[ w:full flex flex/center:full gap=1 p=0 m=0 ]"
+				>
 					<p class="flex:shrink=0">
 						<strong>* </strong>
 						<label for="channels">Noms des salons:</label>
@@ -97,7 +125,12 @@ function create_channel_handler() {
 					/>
 				</fieldset>
 
-				<fieldset class="[ w:full flex flex/center:full gap=1 p=0 m=0 ]">
+				<fieldset
+					class="[ w:full flex flex/center:full gap=1 p=0 m=0 ]"
+					:class="{
+						'is-error': marksKeysFieldAsError,
+					}"
+				>
 					<p class="flex:shrink=0">
 						<strong style="visibility: hidden">* </strong>
 						<label for="keys">Clés d'accès: </label>
@@ -138,8 +171,15 @@ em {
 	vertical-align: text-bottom;
 }
 
+.is-error,
 strong {
 	color: var(--color-red500);
+}
+
+.is-error {
+	input {
+		border: 1px dashed var(--color-red500);
+	}
 }
 
 span {

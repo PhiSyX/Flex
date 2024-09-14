@@ -39,9 +39,7 @@ function join_channel_handler(name: ChannelID) {
 }
 
 function open_join_channel_dialog_handler(event: Event) {
-	ChannelJoinDialog.create(overlayer_store.store as OverlayerStore, {
-		event,
-	});
+	ChannelJoinDialog.create(overlayer_store.store as OverlayerStore, event);
 }
 </script>
 
