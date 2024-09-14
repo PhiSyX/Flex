@@ -31,11 +31,11 @@ import { ChannelAccessLevelFlag } from "../channel/access_level";
 import { ChannelMemberSelected } from "../channel/member/selected";
 import { ServerCustomRoom } from "../custom_room/server";
 import { HandlerManager } from "../handlers/manager";
-import { ClientIDStorage } from "../localstorage/client_id";
 import { ModuleManager } from "../modules/manager";
 import { PrivateParticipant } from "../private/participant";
 import { PrivateRoom } from "../private/room";
 import { RoomManager } from "../room/manager";
+import { ClientIDStorage } from "../sessionstorage/client_id";
 import { UserManager } from "../user/manager";
 
 // -------- //

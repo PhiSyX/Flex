@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { AppLocalStorage } from "./storage";
+import { AppSessionStorage } from "./storage";
 
 /**
- * Clé localStorage de l'ID du client courant connecté.
+ * Clé sessionStorage de l'ID du client courant connecté.
  */
 export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
 
@@ -19,7 +19,7 @@ export const STORAGE_CLIENT_ID_KEY = "flex.client_id";
 // Implémentation //
 // -------------- //
 
-export class ClientIDStorage extends AppLocalStorage<string> {
+export class ClientIDStorage extends AppSessionStorage<string> {
 	// ------ //
 	// Static //
 	// ------ //
