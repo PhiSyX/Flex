@@ -9,11 +9,14 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Option } from "@phisyx/flex-safety";
-import type { ChannelAccessLevelFlag } from "../../../channel/access_level";
+import type { CommandInterface } from "../../../modules/interface";
 import type { ChannelMember } from "../../../channel/member";
 import type { ChannelMemberSelected } from "../../../channel/member/selected";
 import type { ChannelRoom } from "../../../channel/room";
 import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../../store";
+
+import { None } from "@phisyx/flex-safety";
+import { ChannelAccessLevelFlag } from "../../../channel/access_level";
 
 // -------------- //
 // Implémentation //
@@ -23,10 +26,18 @@ export class ChannelChatManager {
 	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	ban_mask(channel: ChannelRoom, mask: MaskAddr) {
-		this.store.ban_channel_member_mask(channel, mask);
+		let module = this.store
+			.module_manager()
+			.get("BAN")
+			.expect("Récupération du module `BAN`");
+		module.send({ channels: [channel.name], masks: [mask] });
 	}
 	unban_mask(channel: ChannelRoom, mask: MaskAddr) {
-		this.store.unban_channel_member_mask(channel, mask);
+		let module = this.store
+			.module_manager()
+			.get("UNBAN")
+			.expect("Récupération du module `UNBAN`");
+		module.send({ channels: [channel.name], masks: [mask] });
 	}
 
 	close(channel_name: ChannelID) {
@@ -82,7 +93,33 @@ export class ChannelChatManager {
 		member: ChannelMember,
 		access_level_flag: ChannelAccessLevelFlag,
 	) {
-		this.store.send_set_access_level(channel, member, access_level_flag);
+		let payload = { channel: channel.name, nicknames: [member.nickname] };
+
+		let maybe_module: Option<CommandInterface<"OP">> = None();
+
+		switch (access_level_flag) {
+			case ChannelAccessLevelFlag.Owner:
+				maybe_module = this.store.module_manager().get("QOP");
+				break;
+			case ChannelAccessLevelFlag.AdminOperator:
+				maybe_module = this.store.module_manager().get("AOP");
+				break;
+			case ChannelAccessLevelFlag.Operator:
+				maybe_module = this.store.module_manager().get("OP");
+				break;
+			case ChannelAccessLevelFlag.HalfOperator:
+				maybe_module = this.store.module_manager().get("HOP");
+				break;
+			case ChannelAccessLevelFlag.Vip:
+				maybe_module = this.store.module_manager().get("VIP");
+				break;
+		}
+
+		let module = maybe_module.expect(
+			`Récupération du module \`AccessLevel (${access_level_flag})\``,
+		);
+
+		module.send(payload);
 	}
 
 	unset_access_level(
@@ -90,7 +127,33 @@ export class ChannelChatManager {
 		member: ChannelMember,
 		access_level_flag: ChannelAccessLevelFlag,
 	) {
-		this.store.send_unset_access_level(channel, member, access_level_flag);
+		let payload = { channel: channel.name, nicknames: [member.nickname] };
+
+		let maybe_module: Option<CommandInterface<"OP">> = None();
+
+		switch (access_level_flag) {
+			case ChannelAccessLevelFlag.Owner:
+				maybe_module = this.store.module_manager().get("DEQOP");
+				break;
+			case ChannelAccessLevelFlag.AdminOperator:
+				maybe_module = this.store.module_manager().get("DEAOP");
+				break;
+			case ChannelAccessLevelFlag.Operator:
+				maybe_module = this.store.module_manager().get("DEOP");
+				break;
+			case ChannelAccessLevelFlag.HalfOperator:
+				maybe_module = this.store.module_manager().get("DEHOP");
+				break;
+			case ChannelAccessLevelFlag.Vip:
+				maybe_module = this.store.module_manager().get("DEVIP");
+				break;
+		}
+
+		let module = maybe_module.expect(
+			`Récupération du module \`AccessLevel (${access_level_flag})\``,
+		);
+
+		module?.send(payload);
 	}
 
 	ignore(nickname: Origin["nickname"]) {
@@ -100,11 +163,23 @@ export class ChannelChatManager {
 		this.store.unignore_user(nickname);
 	}
 
-	kick(channel: ChannelRoom, member: ChannelMember, comment?: string) {
-		this.store.kick_channel_member(channel, member, comment);
+	kick(channel: ChannelRoom, member: ChannelMember, comment = "Kick.") {
+		let module = this.store
+			.module_manager()
+			.get("KICK")
+			.expect("Récupération du module `KICK`");
+		module.send({
+			channels: [channel.name],
+			knicks: [member.nickname],
+			comment,
+		});
 	}
 
 	update_topic(channel_name: ChannelID, topic: string) {
-		this.store.update_topic(channel_name, topic);
+		let module = this.store
+			.module_manager()
+			.get("TOPIC")
+			.expect("Récupération du module `TOPIC`");
+		module.send({ channel: channel_name, topic });
 	}
 }

@@ -8,33 +8,54 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
 import type { PrivateParticipant } from "../../../private/participant";
-import type { Layer, OverlayerStore } from "../../../store";
-
-import { ChangeFormatsColorsDialog } from "../../../dialogs/change_formats_colors";
-import { PrivatePendingRequestDialog } from "../../../dialogs/private_pending_request";
-import { UserChangeNicknameDialog } from "../../../dialogs/user_change_nickname";
+import type { PrivateRoom } from "../../../private/room";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class PrivateOverlayerManager {
-	constructor(private store: OverlayerStore) {}
+export class PrivateChatManager {
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
-	create_colors_box(evt: Event) {
-		ChangeFormatsColorsDialog.create(this.store, evt);
+	close(id: UserID) {
+		this.store.close_room(id);
 	}
 
-	create_private_pending_request_dialog(participant: PrivateParticipant) {
-		PrivatePendingRequestDialog.create(this.store, participant);
+	is_recipient_blocked(recipient: PrivateParticipant): boolean {
+		return this.store.user_manager().is_blocked(recipient.id);
 	}
 
-	destroy_private_pending_request_dialog() {
-		PrivatePendingRequestDialog.destroy(this.store);
+	get(private_id: UserID): Option<PrivateRoom> {
+		return this.store.room_manager().get(private_id).as<PrivateRoom>();
 	}
 
-	create_user_change_nickname_dialog(evt: Required<Layer["event"]>) {
-		UserChangeNicknameDialog.create(this.store, evt);
+	get_all_commands(priv: PrivateRoom): Array<string> {
+		return this.store.all_commands(priv);
+	}
+
+	get_current_client_id(): UserID {
+		return this.store.client_id();
+	}
+
+	get_current_client_nickname(): string {
+		return this.store.nickname();
+	}
+
+	open_room(room_id: RoomID) {
+		this.store.open_room(room_id);
+	}
+
+	send_to(id: UserID, message: string) {
+		this.store.send_message(id, message);
+	}
+
+	ignore(nickname: Origin["nickname"]) {
+		this.store.ignore_user(nickname);
+	}
+	unignore(nickname: Origin["nickname"]) {
+		this.store.unignore_user(nickname);
 	}
 }

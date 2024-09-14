@@ -17,11 +17,11 @@ import type {
 } from "../../store";
 
 import { DirectAccessChatManager } from "./datamanager/chat_data_manager";
-import { DirectAccessUserManager } from "./datamanager/user_data_manageer";
+import { DirectAccessOverlayerManager } from "./datamanager/overlay_data_manager";
+import { DirectAccessUserManager } from "./datamanager/user_data_manager";
 import { DirectAccessInteractor } from "./interactor";
 import { DirectAccessPresenter } from "./presenter";
 import { DirectAccessView } from "./view";
-import { DirectAccessOverlayerManager } from "./datamanager/overlay_data_manager";
 
 // -------------- //
 // Implémentation //
@@ -39,11 +39,11 @@ export class DirectAccessWireframe {
 		let presenter = new DirectAccessPresenter().with_view(view);
 		let interactor = new DirectAccessInteractor()
 			.with_presenter(presenter)
-			.with_chat_datamanager(new DirectAccessChatManager(chat_store))
-			.with_user_datamanager(new DirectAccessUserManager(user_store))
-			.with_overlayer_datamanager(
-				new DirectAccessOverlayerManager(overlayer_store),
-			);
+			.with_datamanager({
+				chat: new DirectAccessChatManager(chat_store),
+				user: new DirectAccessUserManager(user_store),
+				overlayer: new DirectAccessOverlayerManager(overlayer_store),
+			});
 
 		view.with_presenter(presenter).with_router(router_acl);
 		presenter.with_interactor(interactor);

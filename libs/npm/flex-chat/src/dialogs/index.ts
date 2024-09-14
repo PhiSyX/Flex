@@ -16,4 +16,3 @@ export * from "./channel_settings";
 export * from "./private_pending_request";
 export * from "./update_account";
 export * from "./user_change_nickname";
-

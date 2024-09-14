@@ -10,11 +10,8 @@
 
 import type { Option } from "@phisyx/flex-safety";
 
-import type { ChannelMember } from "../channel/member";
 import type { ChannelRoom } from "../channel/room";
-import type { CommandInterface } from "../modules/interface";
 import type { Room } from "../room";
-import type { User } from "../user";
 import type { OverlayerStore } from "./overlayer";
 import type { SettingsStore } from "./settings";
 import type { UserStore } from "./user";
@@ -27,10 +24,8 @@ import {
 	assert_private_room,
 	is_channel,
 } from "../asserts/room";
-import { ChannelAccessLevelFlag } from "../channel/access_level";
 import { ChannelMemberSelected } from "../channel/member/selected";
 import { ServerCustomRoom } from "../custom_room/server";
-import { HandlerManager } from "../handlers/manager";
 import { ModuleManager } from "../modules/manager";
 import { PrivateParticipant } from "../private/participant";
 import { PrivateRoom } from "../private/room";
@@ -38,16 +33,8 @@ import { RoomManager } from "../room/manager";
 import { ClientIDStorage } from "../sessionstorage/client_id";
 import { UserManager } from "../user/manager";
 
-// -------- //
-// Constant //
-// -------- //
-
-// @ts-ignore : Vite
-const HANDLERS = import.meta.glob("../handlers/*/*.ts");
 // @ts-ignore : Vite
 const MODULES = import.meta.glob("../modules/**/module.ts");
-// @ts-ignore : Vite
-const MODULES_REPLIES_HANDLERS = import.meta.glob("../modules/**/replies.ts");
 
 // ---- //
 // Type //
@@ -99,11 +86,6 @@ export interface ChatStoreInterface {
 	): void;
 
 	/**
-	 * Émet la commande /BAN vers le serveur.
-	 */
-	ban_channel_member_mask(channel: ChannelRoom, mask: MaskAddr): void;
-
-	/**
 	 * Change le pseudonyme de l'utilisateur actuel.
 	 */
 	change_nick(new_nick: string): void;
@@ -117,11 +99,6 @@ export interface ChatStoreInterface {
 	 * Émet la commande /LIST vers le serveur.
 	 */
 	channel_list(targets: Array<string>): void;
-
-	/**
-	 * Vérifie si un utilisateur est bloqué.
-	 */
-	is_user_blocked(user: User): boolean;
 
 	/**
 	 * Ferme une chambre. Dans le cas d'un salon, cette fonction émet la
@@ -175,11 +152,6 @@ export interface ChatStoreInterface {
 	): Option<ChannelMemberSelected>;
 
 	/**
-	 * Gestion des handlers.
-	 */
-	handler_manager(): HandlerManager;
-
-	/**
 	 * Émet la commande /SILENCE +nickname vers le serveur.
 	 */
 	ignore_user(nickname: string): void;
@@ -201,15 +173,6 @@ export interface ChatStoreInterface {
 	join_channel(channels_raw: ChannelID, keys_raw?: string): void;
 
 	/**
-	 * Émet la commande /KICK vers le serveur.
-	 */
-	kick_channel_member(
-		channel: ChannelRoom,
-		member: ChannelMember,
-		comment?: string,
-	): void;
-
-	/**
 	 * Écoute un événement donnée.
 	 */
 	listen<K extends keyof ServerToClientEvent>(
@@ -217,11 +180,6 @@ export interface ChatStoreInterface {
 		listener: ServerToClientEvent[K],
 		options?: { once: boolean },
 	): void;
-
-	/**
-	 * Gestion des modules.
-	 */
-	module_manager(): ModuleManager;
 
 	/**
 	 * La chambre personnalisée du serveur.
@@ -281,22 +239,9 @@ export interface ChatStoreInterface {
 	room_manager(): RoomManager;
 
 	/**
-	 * Émet les commandes liées aux niveaux d'accès vers le serveur.
+	 * Gestion des modules.
 	 */
-	send_set_access_level(
-		channel: ChannelRoom,
-		member: ChannelMember,
-		access_level: ChannelAccessLevelFlag,
-	): void;
-
-	/**
-	 * Émet les commandes liées aux niveaux d'accès vers le serveur.
-	 */
-	send_unset_access_level(
-		channel: ChannelRoom,
-		member: ChannelMember,
-		access_level: ChannelAccessLevelFlag,
-	): void;
+	module_manager(): ModuleManager;
 
 	/**
 	 * Définit les informations de connexion du formulaire d'accès direct au
@@ -345,11 +290,6 @@ export interface ChatStoreInterface {
 	toggle_select_channel_member(room: ChannelRoom, origin: Origin): void;
 
 	/**
-	 * Émet la commande /UNBAN vers le serveur.
-	 */
-	unban_channel_member_mask(channel: ChannelRoom, mask: MaskAddr): void;
-
-	/**
 	 * Émet la commande /SILENCE - vers le serveur.
 	 */
 	unignore_user(nickname: string): void;
@@ -358,11 +298,6 @@ export interface ChatStoreInterface {
 	 * Désélectionne un utilisateur d'un salon.
 	 */
 	unset_selected_user(channel_name: ChannelID, origin: Origin): void;
-
-	/**
-	 * Émet la commande /TOPIC vers le serveur.
-	 */
-	update_topic(channel_name: ChannelID, topic?: string): void;
 
 	/**
 	 * Gestion des utilisateurs.
@@ -377,11 +312,6 @@ export interface ChatStoreInterface {
 
 export interface ChatStoreInterfaceExt {
 	audio_src: "connection" | "invite" | "mention" | "notice" | "query" | null;
-
-	/**
-	 * Se connecte au serveur de Chat.
-	 */
-	connect(connect_user_info: ConnectUserInfo): void;
 
 	/**
 	 * Connexion au serveur de Chat WebSocket.
@@ -444,15 +374,9 @@ export class ChatStore implements ChatStoreInterface {
 	protected _ws: Option<TypeSafeSocket> = None();
 	private _user_manager: UserManager = new UserManager();
 
-	protected _handler_manager = new HandlerManager();
-	protected _module_manager = new ModuleManager();
+	protected _module_manager = new ModuleManager().extends(MODULES);
 
 	constructor() {
-		this._handler_manager
-			.extends(HANDLERS)
-			.extends(MODULES_REPLIES_HANDLERS);
-		this._module_manager.extends(MODULES);
-
 		let this_server = new ServerCustomRoom();
 
 		this.set_network_name(this_server.id());
@@ -526,13 +450,6 @@ export class ChatStore implements ChatStoreInterface {
 		module.send({ target, modes: modes_settings });
 	}
 
-	ban_channel_member_mask(channel: ChannelRoom, mask: MaskAddr) {
-		let module = this.module_manager()
-			.get("BAN")
-			.expect("Récupération du module `BAN`");
-		module.send({ channels: [channel.name], masks: [mask] });
-	}
-
 	change_nick(new_nick: string) {
 		let module = this.module_manager()
 			.get("NICK")
@@ -561,10 +478,6 @@ export class ChatStore implements ChatStoreInterface {
 			.get("LIST")
 			.expect("Module `LIST`")
 			.send({ channels });
-	}
-
-	is_user_blocked(user: User): boolean {
-		return this.user_manager().is_blocked(user.id);
 	}
 
 	close_room(target: Origin | RoomID, message?: string) {
@@ -642,8 +555,8 @@ export class ChatStore implements ChatStoreInterface {
 			});
 	}
 
-	handler_manager(): HandlerManager {
-		return this._handler_manager;
+	module_manager(): ModuleManager {
+		return this._module_manager;
 	}
 
 	ignore_user(nickname: string) {
@@ -677,21 +590,6 @@ export class ChatStore implements ChatStoreInterface {
 		module.send({ channels, keys });
 	}
 
-	kick_channel_member(
-		channel: ChannelRoom,
-		member: ChannelMember,
-		comment = "Kick.",
-	) {
-		let module = this.module_manager()
-			.get("KICK")
-			.expect("Récupération du module `KICK`");
-		module.send({
-			channels: [channel.name],
-			knicks: [member.nickname],
-			comment,
-		});
-	}
-
 	listen<K extends keyof ServerToClientEvent>(
 		event_name: K,
 		listener: ServerToClientEvent[K],
@@ -702,10 +600,6 @@ export class ChatStore implements ChatStoreInterface {
 		} else {
 			this.on(event_name, listener);
 		}
-	}
-
-	module_manager(): ModuleManager {
-		return this._module_manager;
 	}
 
 	network(): ServerCustomRoom {
@@ -813,74 +707,6 @@ export class ChatStore implements ChatStoreInterface {
 		return this._room_manager;
 	}
 
-	send_set_access_level(
-		channel: ChannelRoom,
-		member: ChannelMember,
-		access_level: ChannelAccessLevelFlag,
-	) {
-		let payload = { channel: channel.name, nicknames: [member.nickname] };
-
-		let maybe_module: Option<CommandInterface<"OP">> = None();
-
-		switch (access_level) {
-			case ChannelAccessLevelFlag.Owner:
-				maybe_module = this.module_manager().get("QOP");
-				break;
-			case ChannelAccessLevelFlag.AdminOperator:
-				maybe_module = this.module_manager().get("AOP");
-				break;
-			case ChannelAccessLevelFlag.Operator:
-				maybe_module = this.module_manager().get("OP");
-				break;
-			case ChannelAccessLevelFlag.HalfOperator:
-				maybe_module = this.module_manager().get("HOP");
-				break;
-			case ChannelAccessLevelFlag.Vip:
-				maybe_module = this.module_manager().get("VIP");
-				break;
-		}
-
-		let module = maybe_module.expect(
-			`Récupération du module \`AccessLevel (${access_level})\``,
-		);
-
-		module.send(payload);
-	}
-
-	send_unset_access_level(
-		channel: ChannelRoom,
-		member: ChannelMember,
-		access_level: ChannelAccessLevelFlag,
-	) {
-		let payload = { channel: channel.name, nicknames: [member.nickname] };
-
-		let maybe_module: Option<CommandInterface<"OP">> = None();
-
-		switch (access_level) {
-			case ChannelAccessLevelFlag.Owner:
-				maybe_module = this.module_manager().get("DEQOP");
-				break;
-			case ChannelAccessLevelFlag.AdminOperator:
-				maybe_module = this.module_manager().get("DEAOP");
-				break;
-			case ChannelAccessLevelFlag.Operator:
-				maybe_module = this.module_manager().get("DEOP");
-				break;
-			case ChannelAccessLevelFlag.HalfOperator:
-				maybe_module = this.module_manager().get("DEHOP");
-				break;
-			case ChannelAccessLevelFlag.Vip:
-				maybe_module = this.module_manager().get("DEVIP");
-				break;
-		}
-
-		let module = maybe_module.expect(
-			`Récupération du module \`AccessLevel (${access_level})\``,
-		);
-
-		module?.send(payload);
-	}
-
 	set_channel_list(list: GenericReply<"RPL_LIST">) {
 		this._channel_list.push(list);
 	}
@@ -930,16 +756,6 @@ export class ChatStore implements ChatStoreInterface {
 		}
 	}
 
-	/**
-	 * Émet la commande /UNBAN vers le serveur.
-	 */
-	unban_channel_member_mask(channel: ChannelRoom, mask: MaskAddr) {
-		let module = this.module_manager()
-			.get("UNBAN")
-			.expect("Récupération du module `UNBAN`");
-		module.send({ channels: [channel.name], masks: [mask] });
-	}
-
 	unignore_user(nickname: string) {
 		let module = this.module_manager()
 			.get("SILENCE")
@@ -951,13 +767,6 @@ export class ChatStore implements ChatStoreInterface {
 		let channel = this.room_manager().get(channel_name).unwrap();
 		assert_channel_room(channel);
 		channel.members.unselect(origin.id);
-	}
-
-	update_topic(channel_name: ChannelID, topic?: string) {
-		let module = this.module_manager()
-			.get("TOPIC")
-			.expect("Récupération du module `TOPIC`");
-		module.send({ channel: channel_name, topic });
 	}
 
 	user_manager(): UserManager {

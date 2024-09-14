@@ -8,11 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	DialogArgs,
-	DialogClass,
-	DialogInterface,
-} from "../../dialogs/interface";
+import type { UserSession } from "../../user/session";
 import type { DirectAccessInteractor } from "./interactor";
 import type { DirectAccessRouter } from "./router";
 import type { DirectAccessView } from "./view";
@@ -48,11 +44,8 @@ export class DirectAccessPresenter {
 		await this.interactor.connect_chat();
 	}
 
-	create_dialog<D extends DialogClass<DialogInterface<R>>, R>(
-		dialog: D,
-		...args: DialogArgs<D, R>
-	) {
-		this.interactor.create_dialog(dialog, ...args);
+	create_update_account_dialog(user_session: UserSession) {
+		this.interactor.create_update_account_dialog(user_session);
 	}
 
 	send_auth_command() {

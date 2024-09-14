@@ -8,14 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	DialogArgs,
-	DialogClass,
-	DialogInterface,
-} from "../../dialogs/interface";
+import type { LoadAllModulesRecordLayer } from "../../layers/load_all_modules";
+import type { UserSession } from "../../user/session";
 import type { DirectAccessChatManager } from "./datamanager/chat_data_manager";
 import type { DirectAccessOverlayerManager } from "./datamanager/overlay_data_manager";
-import type { DirectAccessUserManager } from "./datamanager/user_data_manageer";
+import type { DirectAccessUserManager } from "./datamanager/user_data_manager";
 import type { DirectAccessPresenter } from "./presenter";
 
 // -------------- //
@@ -23,10 +20,10 @@ import type { DirectAccessPresenter } from "./presenter";
 // -------------- //
 
 export class DirectAccessInteractor {
-	private presenter!: DirectAccessPresenter;
-	private chat_manager!: DirectAccessChatManager;
-	private user_manager!: DirectAccessUserManager;
-	private overlayer_manager!: DirectAccessOverlayerManager;
+	presenter!: DirectAccessPresenter;
+	chat_manager!: DirectAccessChatManager;
+	user_manager!: DirectAccessUserManager;
+	overlayer_manager!: DirectAccessOverlayerManager;
 
 	// ------- //
 	// Méthode // -> Instance
@@ -37,20 +34,23 @@ export class DirectAccessInteractor {
 		return this;
 	}
 
-	with_chat_datamanager(datamanager: DirectAccessChatManager): this {
-		this.chat_manager = datamanager;
+	with_datamanager(datamanager: {
+		chat: DirectAccessChatManager;
+		user: DirectAccessUserManager;
+		overlayer: DirectAccessOverlayerManager;
+	}): this {
+		this.chat_manager = datamanager.chat;
+		this.chat_manager.interactor = this;
+		this.user_manager = datamanager.user;
+		this.overlayer_manager = datamanager.overlayer;
 		return this;
 	}
 
-	with_user_datamanager(datamanager: DirectAccessUserManager): this {
-		this.user_manager = datamanager;
+	with_user_datamanager(): this {
 		return this;
 	}
 
-	with_overlayer_datamanager(
-		datamanager: DirectAccessOverlayerManager,
-	): this {
-		this.overlayer_manager = datamanager;
+	with_overlayer_datamanager(): this {
 		return this;
 	}
 
@@ -64,11 +64,16 @@ export class DirectAccessInteractor {
 		);
 	}
 
-	create_dialog<D extends DialogClass<DialogInterface<R>>, R>(
-		dialog: D,
-		...args: DialogArgs<D, R>
-	) {
-		this.overlayer_manager.create_dialog(dialog, ...args);
+	create_module_layer(record: { loaded: number; total_loaded: number }) {
+		this.overlayer_manager.create_module_layer(record);
+	}
+
+	destroy_module_layer() {
+		this.overlayer_manager.destroy_module_layer();
+	}
+
+	update_data_module_layer(record: LoadAllModulesRecordLayer) {
+		this.overlayer_manager.update_data_module_layer(record);
 	}
 
 	async connect_chat() {
@@ -78,6 +83,10 @@ export class DirectAccessInteractor {
 			nicknameinuse: (data) =>
 				this.presenter.view.handle_reply_nicknameinuse(data),
 		});
+	}
+
+	create_update_account_dialog(user_session: UserSession) {
+		this.overlayer_manager.create_update_account_dialog(user_session);
 	}
 
 	fetch_user_session() {

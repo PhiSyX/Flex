@@ -14,9 +14,6 @@ import type { Router } from "vue-router";
 import type {
 	ChatStoreInterfaceExt,
 	ChatStoreUUIDExt,
-	CommandInterface,
-	ConnectUserInfo,
-	Module,
 	OverlayerStore,
 	PrivateRoom,
 	UUIDStore,
@@ -98,56 +95,6 @@ export class ChatStoreVue
 	// Méthode // -> ChatStoreInterfaceExt
 	// ------- //
 
-	connect(connect_user_info: ConnectUserInfo) {
-		this.set_connect_user_info(connect_user_info);
-		this.connect_websocket(connect_user_info.websocket_server_url);
-
-		if (import.meta.env.DEV) {
-			this.websocket().onAnyOutgoing((event_name, ...payload) => {
-				console.groupCollapsed("> Event %s", event_name);
-				console.debug("Données envoyées:");
-				console.table(payload);
-				console.groupEnd();
-			});
-
-			this.websocket().onAny((event_name, ...payload) => {
-				console.groupCollapsed("< Event %s", event_name);
-				console.debug("Données reçues:");
-				console.table(payload);
-				console.groupEnd();
-			});
-		}
-
-		this.websocket().once("connect", () => {
-			for (let [_, handler] of this.handler_manager().handlers()) {
-				handler.listen();
-			}
-			for (let [_, module] of this.module_manager().modules()) {
-				module.listen();
-			}
-
-			if (connect_user_info.password_server) {
-				this.emit("PASS", {
-					password: connect_user_info.password_server,
-				});
-			}
-
-			this.emit("NICK (unregistered)", {
-				nickname: connect_user_info.nickname,
-			});
-
-			this.emit("USER", {
-				user: connect_user_info.nickname,
-				mode: 1 << 3,
-				realname: connect_user_info.realname,
-			});
-
-			this.websocket().once("disconnect", (reason) => {
-				setTimeout(() => this.disconnect_error(reason), 1_500);
-			});
-		});
-	}
-
 	connect_websocket(websocket_server_url: string) {
 		console.info(
 			"Connexion au serveur de WebSocket « %s »",
@@ -203,96 +150,6 @@ export class ChatStoreVue
 			id: "error-layer",
 			data: comment,
 		});
-	}
-
-	async load_all_modules() {
-		let total_loaded =
-			this._handler_manager.size + this._module_manager.size;
-		let loaded = 0;
-
-		type LayerData = {
-			module_name?: string;
-			total_loaded: number;
-			loaded: number;
-		};
-
-		this._overlayer.create<LayerData>({
-			id: "load-all-modules",
-			centered: true,
-			destroyable: "manual",
-			data: { loaded, total_loaded },
-		});
-
-		total_loaded = this._handler_manager.size;
-
-		for (let handler of this._handler_manager.sets()) {
-			let handler_constructors = (await handler()) as Record<
-				string,
-				{ new (store: ChatStore): SocketEventHandler }
-			>;
-
-			let handlers = Object.entries(handler_constructors);
-			let handlers_size = handlers.length;
-			if (handlers_size > 1) {
-				total_loaded += handlers_size - 1;
-			}
-
-			for (let [handler_name, handler_constructor] of handlers) {
-				this._handler_manager.set(
-					handler_name,
-					new handler_constructor(this),
-				);
-
-				loaded += 1;
-
-				this._overlayer.update_data<LayerData>("load-all-modules", {
-					loaded,
-					total_loaded: total_loaded,
-					module_name: handler_name,
-				});
-			}
-		}
-
-		total_loaded += this._module_manager.size;
-		for (let module of this.module_manager().sets()) {
-			let module_constructors = (await module()) as Record<
-				string,
-				{
-					new (): Module & CommandInterface;
-					create(store: ChatStore): Module & CommandInterface;
-					NAME: string;
-				}
-			>;
-
-			let modules = Object.entries(module_constructors);
-			let modules_size = modules.length;
-			if (modules_size > 1) {
-				total_loaded += modules_size - 1;
-			}
-
-			for (let [module_name, module_constructor] of modules) {
-				console.info(
-					"Le module « %s » est maintenant en écoute.",
-					module_name,
-				);
-				this.module_manager().set(
-					module_constructor.NAME.toUpperCase(),
-					module_constructor.create(this),
-				);
-
-				loaded += 1;
-
-				this._overlayer.update_data<LayerData>("load-all-modules", {
-					loaded,
-					total_loaded,
-					module_name,
-				});
-			}
-		}
-
-		this._handler_manager.free();
-		this._module_manager.free();
-		this._overlayer.destroy("load-all-modules");
 	}
 
 	play_audio(src: this["audio_src"]) {
@@ -563,21 +420,16 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		decline_participant: store.decline_participant.bind(store),
 		all_commands: store.all_commands.bind(store),
 		apply_channel_settings: store.apply_channel_settings.bind(store),
-		ban_channel_member_mask: store.ban_channel_member_mask.bind(store),
 		change_nick: store.change_nick.bind(store),
 		change_room: store.change_room.bind(store),
 		channel_list,
 		client: store.client.bind(store),
 		close_room: store.close_room.bind(store),
-		connect: store.connect.bind(store),
 		get_current_selected_channel_member:
 			store.get_current_selected_channel_member.bind(store),
 		ignore_user: store.ignore_user.bind(store),
 		is_connected: store.is_connected.bind(store),
-		is_user_blocked: store.is_user_blocked.bind(store),
 		join_channel: store.join_channel.bind(store),
-		kick_channel_member: store.kick_channel_member.bind(store),
-		load_all_modules: store.load_all_modules.bind(store),
 		listen: store.listen.bind(store),
 		network: store.network.bind(store),
 		open_private_or_create: store.open_private_or_create.bind(store),
@@ -585,13 +437,9 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		open_room: store.open_room.bind(store),
 		room_manager: store.room_manager.bind(store),
 		send_message: store.send_message.bind(store),
-		send_set_access_level: store.send_set_access_level.bind(store),
-		send_unset_access_level: store.send_unset_access_level.bind(store),
 		toggle_select_channel_member:
 			store.toggle_select_channel_member.bind(store),
-		unban_channel_member_mask: store.unban_channel_member_mask.bind(store),
 		unignore_user: store.unignore_user.bind(store),
-		update_topic: store.update_topic.bind(store),
 	};
 });
 

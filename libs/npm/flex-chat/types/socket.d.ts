@@ -56,6 +56,13 @@ declare interface TypeSafeSocket {
 	): this;
 	on(event_name: unknown, listener: unknown): this;
 
+	onAny(
+		callback: (event_name: string, ...payload: Array<unknown>) => void,
+	): this;
+	onAnyOutgoing(
+		callback: (event_name: string, ...payload: Array<unknown>) => void,
+	): this;
+
 	once<K extends keyof ServerToClientEvent>(
 		event_name: K,
 		listener: ServerToClientEvent[K],

@@ -13,7 +13,6 @@ import type { Option } from "@phisyx/flex-safety";
 import type { UserSession } from "../../user/session";
 import type { DirectAccessPresenter } from "./presenter";
 
-import { UpdateAccountDialog } from "../../dialogs/update_account";
 import { View } from "../../view";
 import { DirectAccessFormData } from "./formdata";
 import { DirectAccessFormError } from "./formerror";
@@ -129,10 +128,7 @@ respecter, un format précis, les conditions suivantes :
 	}
 
 	update_account_handler() {
-		this.presenter.create_dialog(
-			UpdateAccountDialog,
-			this.user_session.unwrap(),
-		);
+		this.presenter.create_update_account_dialog(this.user_session.unwrap());
 	}
 
 	/**
