@@ -8,67 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { OverlayerStore } from "../../../store";
+
+import { ChannelJoinDialog } from "../../../dialogs";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+export class ChannelListOverlayerManager {
+	constructor(private store: OverlayerStore) {}
 
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LIST", (data) => this.handle(data));
+	create_join_channel_dialog(evt: Event) {
+		this.store.create({
+			id: ChannelJoinDialog.ID,
+			centered: true,
+			event: evt,
+		});
 	}
-
-	handle(data: GenericReply<"RPL_LIST">) {
-		this.store.add_channels_list(data);
-	}
-}
-
-export class ReplyListstartHandler
-	implements SocketEventInterface<"RPL_LISTSTART">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
-	}
-
-	handle(_: GenericReply<"RPL_LISTSTART">) {
-		this.store.clear_channels_list();
-	}
-}
-
-export class ReplyListendHandler
-	implements SocketEventInterface<"RPL_LISTEND">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTEND", (data) => this.handle(data));
-	}
-
-	handle(_: GenericReply<"RPL_LISTEND">) {}
 }

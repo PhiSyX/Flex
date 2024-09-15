@@ -8,67 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+export class ChannelListRouter {
+	static PARAM_SERVERNAME = "servername";
 
-	// ------- //
-	// Méthode //
-	// ------- //
+	constructor(private router_acl: RouterAntiCorruptionLayer) {}
 
-	listen() {
-		this.store.on("RPL_LIST", (data) => this.handle(data));
+	servername_param() {
+		return this.router_acl
+			.param(ChannelListRouter.PARAM_SERVERNAME)
+			.expect(
+				`Le paramètre d'URL "${ChannelListRouter.PARAM_SERVERNAME}".`,
+			);
 	}
-
-	handle(data: GenericReply<"RPL_LIST">) {
-		this.store.add_channels_list(data);
-	}
-}
-
-export class ReplyListstartHandler
-	implements SocketEventInterface<"RPL_LISTSTART">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
-	}
-
-	handle(_: GenericReply<"RPL_LISTSTART">) {
-		this.store.clear_channels_list();
-	}
-}
-
-export class ReplyListendHandler
-	implements SocketEventInterface<"RPL_LISTEND">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTEND", (data) => this.handle(data));
-	}
-
-	handle(_: GenericReply<"RPL_LISTEND">) {}
 }

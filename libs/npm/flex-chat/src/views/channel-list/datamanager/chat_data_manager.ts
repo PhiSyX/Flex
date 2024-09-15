@@ -8,67 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { Option } from "@phisyx/flex-safety";
+import type { ChatStoreInterface } from "../../../store";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
+export class ChannelListChatManager {
 	constructor(private store: ChatStoreInterface) {}
 
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LIST", (data) => this.handle(data));
+	get_channels_list() {
+		return this.store.get_channels_list();
 	}
 
-	handle(data: GenericReply<"RPL_LIST">) {
-		this.store.add_channels_list(data);
-	}
-}
-
-export class ReplyListstartHandler
-	implements SocketEventInterface<"RPL_LISTSTART">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
+	get_room_name(from: string): Option<RoomID> {
+		return this.store
+			.room_manager()
+			.get(from as RoomID)
+			.map((r) => r.name);
 	}
 
-	handle(_: GenericReply<"RPL_LISTSTART">) {
-		this.store.clear_channels_list();
+	join_channel(name: ChannelID) {
+		this.store.join_channel(name);
+		this.store.change_room(name);
 	}
-}
-
-export class ReplyListendHandler
-	implements SocketEventInterface<"RPL_LISTEND">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTEND", (data) => this.handle(data));
-	}
-
-	handle(_: GenericReply<"RPL_LISTEND">) {}
 }

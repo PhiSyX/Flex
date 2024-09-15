@@ -8,67 +8,55 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChannelListChatManager } from "./datamanager/chat_data_manager";
+import type { ChannelListOverlayerManager } from "./datamanager/overlayer_data_manager";
+import type { ChannelListPresenter } from "./presenter";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+export class ChannelListInteractor {
+	constructor(
+		presenter: ChannelListPresenter,
+		datamanager: [
+			chat: ChannelListChatManager,
+			overlayer: ChannelListOverlayerManager,
+		],
+	) {
+		this.presenter = presenter;
+		this.presenter.interactor = this;
 
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LIST", (data) => this.handle(data));
+		this.chat_manager = datamanager[0];
+		this.overlayer_manager = datamanager[1];
 	}
 
-	handle(data: GenericReply<"RPL_LIST">) {
-		this.store.add_channels_list(data);
-	}
-}
+	// --------- //
+	// Propriété //
+	// --------- //
 
-export class ReplyListstartHandler
-	implements SocketEventInterface<"RPL_LISTSTART">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	presenter: ChannelListPresenter;
+
+	private chat_manager!: ChannelListChatManager;
+	private overlayer_manager!: ChannelListOverlayerManager;
 
 	// ------- //
-	// Méthode //
+	// Méthode // -> API Publique
 	// ------- //
 
-	listen() {
-		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
+	get_channels_list() {
+		return this.chat_manager.get_channels_list();
 	}
 
-	handle(_: GenericReply<"RPL_LISTSTART">) {
-		this.store.clear_channels_list();
-	}
-}
-
-export class ReplyListendHandler
-	implements SocketEventInterface<"RPL_LISTEND">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTEND", (data) => this.handle(data));
+	get_room_name(from: string) {
+		return this.chat_manager.get_room_name(from);
 	}
 
-	handle(_: GenericReply<"RPL_LISTEND">) {}
+	create_join_channel_dialog(evt: Event) {
+		this.overlayer_manager.create_join_channel_dialog(evt);
+	}
+
+	join_channel(name: ChannelID) {
+		this.chat_manager.join_channel(name);
+	}
 }

@@ -8,67 +8,56 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { Option } from "@phisyx/flex-safety";
+import type { ChannelListPresenter } from "./presenter";
+
+import { None } from "@phisyx/flex-safety";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+export class ChannelListView {
+	// --------- //
+	// Propriété //
+	// --------- //
 
-	// ------- //
-	// Méthode //
-	// ------- //
+	private presenter_ref: Option<ChannelListPresenter> = None();
 
-	listen() {
-		this.store.on("RPL_LIST", (data) => this.handle(data));
+	maybe_servername: Option<RoomID> = None();
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get presenter(): ChannelListPresenter {
+		return this.presenter_ref.unwrap();
+	}
+	set presenter($1: ChannelListPresenter) {
+		this.presenter_ref.replace($1);
 	}
 
-	handle(data: GenericReply<"RPL_LIST">) {
-		this.store.add_channels_list(data);
-	}
-}
-
-export class ReplyListstartHandler
-	implements SocketEventInterface<"RPL_LISTSTART">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
+	// Liste des salons (récupérés préalablement via /LIST)
+	get list() {
+		return this.presenter.get_channels_list();
 	}
 
-	handle(_: GenericReply<"RPL_LISTSTART">) {
-		this.store.clear_channels_list();
-	}
-}
-
-export class ReplyListendHandler
-	implements SocketEventInterface<"RPL_LISTEND">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
 	// ------- //
-	// Méthode //
+	// Méthode // -> API Publique
 	// ------- //
 
-	listen() {
-		this.store.on("RPL_LISTEND", (data) => this.handle(data));
+	set_servername_from_route_param() {
+		this.maybe_servername = this.presenter.get_server_room_name();
 	}
+	// ------- //
+	// Méthode // -> Handler
+	// ------- //
 
-	handle(_: GenericReply<"RPL_LISTEND">) {}
+	join_channel_handler = (name: ChannelID) => {
+		this.presenter.join_channel(name);
+	};
+
+	open_join_channel_dialog_handler = (evt: Event) => {
+		this.presenter.open_join_channel_dialog(evt);
+	};
 }

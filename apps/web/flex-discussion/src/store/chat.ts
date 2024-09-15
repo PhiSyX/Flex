@@ -384,9 +384,6 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		];
 	});
 
-	// Liste des salons (récupérés préalablement via /LIST)
-	let channels_list_arr = computed(() => store.get_channel_list());
-
 	/**
 	 * Émet la commande /LIST vers le serveur et redirige vers sa vue.
 	 */
@@ -404,7 +401,6 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 	return {
 		store,
 
-		channels_list_arr,
 		client_error,
 		current_client,
 		current_client_nickname,

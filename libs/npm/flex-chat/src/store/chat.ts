@@ -109,7 +109,7 @@ export interface ChatStoreInterface {
 	/**
 	 * Supprime la liste des salons du serveur.
 	 */
-	clear_channel_list(): void;
+	clear_channels_list(): void;
 
 	/**
 	 * ID du client actuellement connecté à l'application.
@@ -137,7 +137,7 @@ export interface ChatStoreInterface {
 	/**
 	 * Supprime la liste des salons du serveur.
 	 */
-	get_channel_list(): Array<GenericReply<"RPL_LIST">>;
+	get_channels_list(): Array<GenericReply<"RPL_LIST">>;
 
 	/**
 	 * Récupère les informations de connexion de l'utilisateur.
@@ -257,7 +257,7 @@ export interface ChatStoreInterface {
 	/**
 	 * Définit la liste des salons.
 	 */
-	set_channel_list(list: GenericReply<"RPL_LIST">): void;
+	add_channels_list(list: GenericReply<"RPL_LIST">): void;
 
 	/**
 	 * Définit le nom du serveur.
@@ -362,7 +362,7 @@ export class ChatStore implements ChatStoreInterface {
 		problems?: HttpProblemErrorResponse["errors"];
 		data: unknown;
 	}> = None();
-	private _channel_list: Array<GenericReply<"RPL_LIST">> = [];
+	private _channels_list: Array<GenericReply<"RPL_LIST">> = [];
 	protected _client_id_storage: ClientIDStorage = new ClientIDStorage();
 	private _network: Option<CustomRoomID> = None();
 	private _room_manager: RoomManager = new RoomManager();
@@ -496,8 +496,8 @@ export class ChatStore implements ChatStoreInterface {
 			});
 	}
 
-	clear_channel_list() {
-		this._channel_list = [];
+	clear_channels_list() {
+		this._channels_list = [];
 	}
 
 	client_id(): UserID {
@@ -522,8 +522,8 @@ export class ChatStore implements ChatStoreInterface {
 		return channels.split(",") as Array<ChannelID>;
 	}
 
-	get_channel_list(): Array<GenericReply<"RPL_LIST">> {
-		return this._channel_list;
+	get_channels_list(): Array<GenericReply<"RPL_LIST">> {
+		return this._channels_list;
 	}
 
 	get_connect_user_info(): ConnectUserInfo {
@@ -690,8 +690,8 @@ export class ChatStore implements ChatStoreInterface {
 		return this._room_manager;
 	}
 
-	set_channel_list(list: GenericReply<"RPL_LIST">) {
-		this._channel_list.push(list);
+	add_channels_list(list: GenericReply<"RPL_LIST">) {
+		this._channels_list.push(list);
 	}
 
 	set_connect_user_info(connect_user_info: ConnectUserInfo) {

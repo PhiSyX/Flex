@@ -8,67 +8,59 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { Option } from "@phisyx/flex-safety";
+import type { ChannelListInteractor } from "./interactor";
+import type { ChannelListRouter } from "./router";
+import type { ChannelListView } from "./view";
+
+import { None } from "@phisyx/flex-safety";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ReplyListHandler implements SocketEventInterface<"RPL_LIST"> {
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LIST", (data) => this.handle(data));
+export class ChannelListPresenter {
+	constructor(
+		public router: ChannelListRouter,
+		public view: ChannelListView,
+	) {
+		this.view.presenter = this;
 	}
 
-	handle(data: GenericReply<"RPL_LIST">) {
-		this.store.add_channels_list(data);
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	private interactor_ref: Option<ChannelListInteractor> = None();
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get interactor(): ChannelListInteractor {
+		return this.interactor_ref.unwrap();
 	}
-}
-
-export class ReplyListstartHandler
-	implements SocketEventInterface<"RPL_LISTSTART">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	listen() {
-		this.store.on("RPL_LISTSTART", (data) => this.handle(data));
+	set interactor($1: ChannelListInteractor) {
+		this.interactor_ref.replace($1);
 	}
 
-	handle(_: GenericReply<"RPL_LISTSTART">) {
-		this.store.clear_channels_list();
-	}
-}
-
-export class ReplyListendHandler
-	implements SocketEventInterface<"RPL_LISTEND">
-{
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
-
 	// ------- //
-	// Méthode //
+	// Méthode // -> API Publique
 	// ------- //
 
-	listen() {
-		this.store.on("RPL_LISTEND", (data) => this.handle(data));
+	get_channels_list() {
+		return this.interactor.get_channels_list();
 	}
 
-	handle(_: GenericReply<"RPL_LISTEND">) {}
+	get_server_room_name() {
+		return this.interactor.get_room_name(this.router.servername_param());
+	}
+
+	join_channel(name: ChannelID) {
+		this.interactor.join_channel(name);
+	}
+
+	open_join_channel_dialog(evt: Event) {
+		this.interactor.create_join_channel_dialog(evt);
+	}
 }
