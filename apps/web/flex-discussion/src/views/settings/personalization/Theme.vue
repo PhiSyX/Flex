@@ -1,49 +1,53 @@
 <script lang="ts" setup>
-import { onActivated as on_activated, shallowRef as shallow_ref } from "vue";
+import type { SettingsView, ThemeRecord } from "@phisyx/flex-chat";
 
+import { computed, onActivated } from "vue";
+
+import Match from "#/sys/match/Match.vue";
 import SettingsPersonalizationTheme from "#/sys/settings_personalization_theme/SettingsPersonalizationTheme.template.vue";
 
-import {
-	THEMES,
-	type Theme,
-	type ThemeRecord,
-	find_theme,
-	set_theme_ls,
-} from "~/theme";
+import { THEMES } from "~/theme";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props {
+	view: SettingsView;
+}
 
 // --------- //
 // Composant //
 // --------- //
 
+const { view } = defineProps<Props>();
+view.define_themes(THEMES);
+
 let themes = Object.entries(THEMES) as Array<
-	[ThemeRecord["name"], ThemeRecord["src"]]
+	[name: ThemeRecord["name"], src: ThemeRecord["src"]]
 >;
-let selected_theme = shallow_ref(find_theme());
 
-// --------- //
-// Lifecycle // -> Hooks
-// --------- //
+let maybe_selected_theme = computed(() => view.maybe_selected_theme);
 
-on_activated(() => {
-	selected_theme.value = find_theme();
+// ---------- //
+// Life cycle //
+// ---------- //
+
+onActivated(() => {
+	view.set_current_theme();
 });
-
-// ------- //
-// Handler //
-// ------- //
-
-function update_theme_handler(name: string) {
-	set_theme_ls(name as keyof Theme);
-	selected_theme.value = find_theme();
-}
 </script>
 
 <template>
 	<h2>Choisir son thème</h2>
 
-	<SettingsPersonalizationTheme
-		:list="themes"
-		:selected="selected_theme"
-		@update="update_theme_handler"
-	/>
+	<Match :maybe="maybe_selected_theme">
+		<template #some="{ data: selected_theme }">
+			<SettingsPersonalizationTheme
+				:list="themes"
+				:selected="selected_theme"
+				@update="view.update_theme_handler"
+			/>
+		</template>
+	</Match>
 </template>

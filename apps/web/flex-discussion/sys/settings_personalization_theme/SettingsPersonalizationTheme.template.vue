@@ -1,12 +1,14 @@
 <script lang="ts" setup>
+import type { Theme } from '@phisyx/flex-chat';
+
 interface Props {
 	selected: { name: string; src: string };
-	list: Array<[name: string, src: string]>;
+	list: Array<[name: keyof Theme, src: string]>;
 }
 
 interface Emits {
 	// biome-ignore lint/style/useShorthandFunctionType: ?
-	(event_name: "update", name: string): void;
+	(event_name: "update", name: keyof Theme): void;
 }
 
 // --------- //

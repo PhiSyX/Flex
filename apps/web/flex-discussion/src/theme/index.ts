@@ -13,6 +13,7 @@ import type { Theme, ThemeRecord } from "@phisyx/flex-chat";
 import { onMounted as on_mounted } from "vue";
 
 import { use_settings_store } from "~/store";
+
 import theme_dark_image from "#/assets/img/theme-dark.jpg";
 import theme_ice_image from "#/assets/img/theme-ice.jpg";
 import theme_light_image from "#/assets/img/theme-light.jpg";

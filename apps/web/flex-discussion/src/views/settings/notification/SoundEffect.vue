@@ -1,30 +1,33 @@
 <script lang="ts" setup>
-import type { NotificationData } from "@phisyx/flex-chat";
+import type { SettingsView } from "@phisyx/flex-chat";
 
-import { use_settings_store } from "~/store";
+import { computed } from "vue";
 
 import { InputSwitchV2 } from "@phisyx/flex-vue-uikit";
+
 import SettingsNotificationSoundEffect from "#/sys/settings_notification_sounds_effect/SettingsNotificationSoundEffect.template.vue";
+
+// ---- //
+// Type //
+// ---- //
+
+interface Props {
+	view: SettingsView;
+}
 
 // --------- //
 // Composant //
 // --------- //
 
-let settings_store = use_settings_store();
+const { view } = defineProps<Props>();
 
-// ------- //
-// Handler //
-// ------- //
-
-function on_update(_: NotificationData["sounds"]) {
-	settings_store.persist();
-}
+let sounds_effect_enabled = computed(() => view.sounds_effect_enabled);
 </script>
 
 <template>
 	<h2>
 		<InputSwitchV2
-			v-model="settings_store.sounds_effect_enabled_mut"
+			v-model="view.sounds_effect_enabled_mut"
 			name="enabled_sounds_effects"
 			position="right"
 		>
@@ -33,8 +36,8 @@ function on_update(_: NotificationData["sounds"]) {
 	</h2>
 
 	<SettingsNotificationSoundEffect
-		v-model:sounds="settings_store.sounds_effect_mut"
-		:disabled="!settings_store.notification.sounds.enabled"
-		@vue:updated="on_update"
+		v-model:sounds="view.sounds_effect_mut"
+		:disabled="!sounds_effect_enabled"
+		@vue:updated="view.save"
 	/>
 </template>

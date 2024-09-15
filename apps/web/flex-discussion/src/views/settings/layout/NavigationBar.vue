@@ -1,15 +1,25 @@
 <script lang="ts" setup>
+import type { SettingsView } from "@phisyx/flex-chat";
+
 import SettingsLayoutNavigationBar from "#/sys/settings_layout_navigation_bar/SettingsLayoutNavigationBar.template.vue";
 
-import { use_settings_store } from "~/store";
+// ---- //
+// Type //
+// ---- //
 
-let settings_store = use_settings_store();
+interface Props {
+	view: SettingsView;
+}
+
+// --------- //
+// Composant //
+// --------- //
+
+defineProps<Props>();
 </script>
 
 <template>
 	<h2>Barre de navigation</h2>
 
-	<SettingsLayoutNavigationBar
-		v-model="settings_store.navigation_bar_position_mut"
-	/>
+	<SettingsLayoutNavigationBar v-model="view.navigation_bar_position_mut" />
 </template>

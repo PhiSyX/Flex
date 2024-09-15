@@ -50,3 +50,5 @@ export * from "./src/views/channel-list";
 export * from "./src/views/direct-access";
 export * from "./src/views/private";
 export * from "./src/views/private-list";
+export * from "./src/views/settings";
+

@@ -1,16 +1,28 @@
 <script lang="ts" setup>
+import type { SettingsView } from "@phisyx/flex-chat";
+
 import SettingsLayoutChannelUserlist from "#/sys/settings_layout_channel_userlist/SettingsLayoutChannelUserlist.template.vue";
 
-import { use_settings_store } from "~/store";
+// ---- //
+// Type //
+// ---- //
 
-let settings_store = use_settings_store();
+interface Props {
+	view: SettingsView;
+}
+
+// --------- //
+// Composant //
+// --------- //
+
+defineProps<Props>();
 </script>
 
 <template>
 	<h2>Liste des utilisateurs de salon</h2>
 
 	<SettingsLayoutChannelUserlist
-		v-model:display="settings_store.channel_userlist_display_mut"
-		v-model:position="settings_store.channel_userlist_position_mut"
+		v-model:display="view.channel_userlist_display_mut"
+		v-model:position="view.channel_userlist_position_mut"
 	/>
 </template>

@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { useRouter as use_router } from "vue-router";
+import { reactive } from "vue";
 
-import { ServerCustomRoom, View } from "@phisyx/flex-chat";
+import {
+	SettingsWireframe,
+	type ChatStoreInterface,
+	type ChatStoreInterfaceExt,
+	type SettingsStore,
+	type SettingsView,
+} from "@phisyx/flex-chat";
 import { UiButton } from "@phisyx/flex-vue-uikit";
 
+import { VueRouter } from "~/router";
 import { use_chat_store, use_settings_store } from "~/store";
 
 import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
@@ -16,32 +23,22 @@ import SettingsPrivate from "./private/SettingsPrivate.vue";
 // Composant //
 // --------- //
 
-let router = use_router();
-let chat_store = use_chat_store();
-let settings_store = use_settings_store();
+let chat_store = use_chat_store().store;
+let settings_store = use_settings_store().store;
 
-// ------- //
-// Handler //
-// ------- //
-
-function save_and_exit_handler() {
-	settings_store.persist();
-
-	if (chat_store.is_connected()) {
-		if (chat_store.room_manager().active().id() === ServerCustomRoom.ID) {
-			router.replace({ name: View.Chat });
-			return;
-		}
-	}
-
-	router.back();
-}
+let view = reactive(
+	SettingsWireframe.create(
+		new VueRouter(),
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		settings_store as SettingsStore
+	)
+) as SettingsView;
 </script>
 
 <template>
 	<main id="settings-view" class="[ flex w:full h:full ]">
 		<div class="sidebar [ p=1 ]">
-			<UiButton icon="arrow-left" @click="save_and_exit_handler">
+			<UiButton icon="arrow-left" @click="view.save_and_exit_handler">
 				Retour
 			</UiButton>
 		</div>
@@ -50,26 +47,26 @@ function save_and_exit_handler() {
 			<details open>
 				<summary class="[ pos-s ]">Personnalisation</summary>
 
-				<SettingsPersonalizationTheme />
+				<SettingsPersonalizationTheme :view="view" />
 			</details>
 
 			<details open>
 				<summary class="[ pos-s ]">Disposition</summary>
 
-				<SettingsLayoutNavigationBar />
-				<SettingsLayoutChannelUserlist />
+				<SettingsLayoutNavigationBar :view="view" />
+				<SettingsLayoutChannelUserlist :view="view" />
 			</details>
-			
+
 			<details open>
 				<summary class="[ pos-s ]">Notification</summary>
 
-				<SettingsNotificationSoundEffect />
+				<SettingsNotificationSoundEffect :view="view" />
 			</details>
-			
+
 			<details open>
 				<summary class="[ pos-s ]">Privé</summary>
 
-				<SettingsPrivate />
+				<SettingsPrivate :view="view" />
 			</details>
 		</div>
 	</main>
