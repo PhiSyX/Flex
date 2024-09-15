@@ -433,7 +433,6 @@ export const use_chat_store = define_store(ChatStoreVue.NAME, () => {
 		listen: store.listen.bind(store),
 		network: store.network.bind(store),
 		open_private_or_create: store.open_private_or_create.bind(store),
-		open_pending_private: store.open_pending_private.bind(store),
 		open_room: store.open_room.bind(store),
 		room_manager: store.room_manager.bind(store),
 		send_message: store.send_message.bind(store),

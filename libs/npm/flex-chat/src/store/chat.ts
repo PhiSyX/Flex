@@ -218,11 +218,6 @@ export interface ChatStoreInterface {
 	): void;
 
 	/**
-	 * Ouvre un privé qui est en attente.
-	 */
-	open_pending_private(origin: Origin): void;
-
-	/**
 	 * Ouvre un privé ou le crée.
 	 */
 	open_private_or_create(origin: Origin): void;
@@ -639,18 +634,6 @@ export class ChatStore implements ChatStoreInterface {
 		this._ws
 			.expect("Instance WebSocket connecté au serveur")
 			.once(event_name, listener);
-	}
-
-	open_pending_private(origin: Origin) {
-		let maybe_priv = this.room_manager().get(origin.id, {
-			where: { state: "closed" },
-		});
-		if (maybe_priv.is_none()) {
-			return;
-		}
-		let priv = maybe_priv.unwrap();
-		priv.marks_as_opened();
-		this.room_manager().set_current(priv.id());
 	}
 
 	open_private_or_create(origin: Origin) {

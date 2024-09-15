@@ -32,7 +32,7 @@ export class ChannelInteractor {
 			chat: ChannelChatManager,
 			overlayer: ChannelOverlayerManager,
 			settings: ChannelSettingsManager,
-		 ],
+		],
 	) {
 		this.presenter = presenter;
 		this.presenter.interactor = this;
@@ -75,7 +75,7 @@ export class ChannelInteractor {
 		this.overlayer_manager.create_colors_box(evt);
 	}
 
-	create_user_change_nickname_dialog(event: Required<Layer[ "event" ]>) {
+	create_user_change_nickname_dialog(event: Required<Layer["event"]>) {
 		this.overlayer_manager.create_user_change_nickname_dialog(event);
 	}
 

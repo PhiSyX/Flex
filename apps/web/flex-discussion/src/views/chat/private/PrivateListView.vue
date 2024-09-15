@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { computed, reactive } from "vue";
+
+import {
+	type ChatStoreInterface,
+	type ChatStoreInterfaceExt,
+	type PrivateListView,
+	PrivateListWireframe,
+} from "@phisyx/flex-chat";
 import { use_chat_store } from "~/store";
 
 import PrivatesWaiting from "#/sys/privates_waiting/PrivatesWaiting.template.vue";
@@ -7,23 +15,19 @@ import PrivatesWaiting from "#/sys/privates_waiting/PrivatesWaiting.template.vue
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
+let chat_store = use_chat_store().store;
+let view = reactive(
+	PrivateListWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+	),
+) as PrivateListView;
 
-// ------- //
-// Handler //
-// ------- //
-
-function open_pending_private_handler(priv: Origin) {
-	chat_store.open_pending_private(priv);
-}
+let privates_waiting = computed(() => view.privates_waiting);
 </script>
 
 <template>
-	<PrivatesWaiting 
-		:list="chat_store.privates_waiting" 
-		@open-private="open_pending_private_handler"
+	<PrivatesWaiting
+		:list="privates_waiting"
+		@open-private="view.open_pending_private_handler"
 	/>
 </template>
-
-<style scoped>
-</style>

@@ -48,4 +48,4 @@ export * from "./src/view";
 export * from "./src/views/channel";
 export * from "./src/views/direct-access";
 export * from "./src/views/private";
-
+export * from "./src/views/private-list";
