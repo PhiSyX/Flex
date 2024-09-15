@@ -8,11 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
 
+import { ChannelUserlistUserInfoAPIManager } from "./datamanager/api_data_manager";
+import { ChannelUserlistUserInfoInteractor } from "./interactor";
+import { ChannelUserlistUserInfoPresenter } from "./presenter";
+import { ChannelUserlistUserInfoView } from "./view";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ChannelUserlistUserInfoWireframe {
+	static create() {
+		let interactor = new ChannelUserlistUserInfoInteractor(
+			new ChannelUserlistUserInfoPresenter(
+				new ChannelUserlistUserInfoView(),
+			),
+			[new ChannelUserlistUserInfoAPIManager()],
+		);
+
+		return interactor.presenter.view;
+	}
+
+	declare _: number;
+}

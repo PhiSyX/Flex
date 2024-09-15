@@ -8,11 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import { } from "@tanstack/query-core";
+import type { UserInfo } from "../entities/user_info";
+import type { ChannelUserlistUserInfoViewProps } from "../view";
 
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ChannelUserlistUserInfoAPIManager {
+	// TODO: Récupérer l'URL depuis une les points d'entrées du site.
+	static API_V1_USER_INFO_ENDPOINT: ChannelUserlistUserInfoViewProps["endpoint"] =
+		"/api/v1/users/:userid/info";
+
+	async user_fetcher(
+		props: Required<ChannelUserlistUserInfoViewProps>,
+	): Promise<UserInfo> {
+		let endpoint = props.endpoint.replaceAll(":userid", props.userId);
+		let res = await fetch(`${endpoint}?privacy=${props.privacy}`, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "same-origin",
+		});
+		return res.json();
+	}
+}

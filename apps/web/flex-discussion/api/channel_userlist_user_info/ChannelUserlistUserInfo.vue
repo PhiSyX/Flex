@@ -1,99 +1,50 @@
-<script lang="ts">
-// TODO: Récupérer l'URL depuis une les points d'entrées du site.
-const API_V1_USER_INFO_ENDPOINT = "/api/v1/users/:userid/info";
-
-const CACHE_MINUTE = import.meta.env.DEV ? 5 : 60;
-</script>
-
 <script setup lang="ts">
-import { computed } from "vue";
-import { useQuery } from "@tanstack/vue-query";
+import type { ChannelUserlistUserInfoViewProps } from "@phisyx/flex-chat-ui";
 
-import { calculate_age } from "@phisyx/flex-date";
-import { iso_to_country_flag } from "@phisyx/flex-helpers";
+import {
+	ChannelUserlistUserInfoView,
+	ChannelUserlistUserInfoWireframe,
+} from "@phisyx/flex-chat-ui";
+import { useQuery } from "@tanstack/vue-query";
+import { computed, reactive, watch } from "vue";
 
 import ChannelUserlistUserInfo from "#/sys/channel_userlist/ChannelUserlistUserInfo.vue";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props
-{
-	userId: string;
-	// TODO: "private" avec un jeton.
-	privacy: "public";
-	// NOTE: principalement pour pouvoir mock.
-	endpoint?: string;
-}
-
-interface UserInfo
-{
-	birthday?: string;
-	country?: string;
-	city?: string;
-}
 
 // --------- //
 // Composant //
 // --------- //
 
-const props = withDefaults(defineProps<Props>(), {
-	privacy: "public",
-	endpoint: API_V1_USER_INFO_ENDPOINT,
+const {
+	privacy = "public",
+	endpoint = ChannelUserlistUserInfoView.API_V1_USER_INFO_ENDPOINT,
+	userId,
+} = defineProps<ChannelUserlistUserInfoViewProps>();
+
+let view = reactive(
+	ChannelUserlistUserInfoWireframe.create()
+) as ChannelUserlistUserInfoView;
+
+view.define_props({
+	// @ts-expect-error - il y a une valeur par défaut.
+	endpoint,
+	privacy,
+	userId,
 });
 
-async function fetcher(): Promise<UserInfo> {
-	let res = await fetch(
-		// TODO: Créer un URL builder
-		`${props.endpoint.replace(":userid", props.userId)}?privacy=${
-			props.privacy
-		}`,
-		{
-			headers: {
-				"Content-Type": "application/json",
-			},
-			// signal: AbortSignal.any([abort_ctrl.signal, timeout_sig]),
-			credentials: "same-origin",
-		}
-	);
-	return res.json();
-}
+let age = computed(() => view.age);
+let country_from = computed(() => view.country_from);
+let user_flag = computed(() => view.user_flag);
 
-const { data: user_info, isLoading } = useQuery({
-	queryKey: [`user_info${props.userId}${props.privacy}`],
-	queryFn: fetcher,
-	retry: 5,
-	retryDelay: 10e3,
-	staleTime: CACHE_MINUTE * 6e4,
-	refetchInterval: CACHE_MINUTE * 6e4 + 1,
-});
+const { data, isLoading } = useQuery(view.query_api_user());
 
-let age = computed(() => {
-	return user_info.value?.birthday
-		? calculate_age(user_info.value.birthday)
-		: null;
-});
-
-let user_flag = computed(() => {
-	if (user_info.value?.country) {
-		return iso_to_country_flag(user_info.value.country);
-	}
-	if (user_info.value?.city) {
-		return user_info.value.city
-			.split(/[\s-]/g)
-			.map((w) => w.slice(0, 1))
-			.join("");
-	}
-	return null;
-});
+watch(data, (new_data) => view.set_response_from_api_user({ data: new_data }));
 </script>
 
 <template>
 	<ChannelUserlistUserInfo
 		v-if="!isLoading"
 		:age="age"
-		:from="user_info?.country || user_info?.city"
+		:from="country_from"
 		:user-flag="user_flag"
 	/>
 </template>
