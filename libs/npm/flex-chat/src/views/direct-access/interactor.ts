@@ -20,39 +20,31 @@ import type { DirectAccessPresenter } from "./presenter";
 // -------------- //
 
 export class DirectAccessInteractor {
-	presenter!: DirectAccessPresenter;
-	chat_manager!: DirectAccessChatManager;
-	user_manager!: DirectAccessUserManager;
-	overlayer_manager!: DirectAccessOverlayerManager;
-
-	// ------- //
-	// Méthode // -> Instance
-	// ------- //
-
-	with_presenter(presenter: DirectAccessPresenter): this {
+	constructor(
+		presenter: DirectAccessPresenter,
+		datamanager: [
+			chat: DirectAccessChatManager,
+			overlayer: DirectAccessOverlayerManager,
+			user: DirectAccessUserManager,
+		],
+	) {
 		this.presenter = presenter;
-		return this;
-	}
+		this.presenter.interactor = this;
 
-	with_datamanager(datamanager: {
-		chat: DirectAccessChatManager;
-		user: DirectAccessUserManager;
-		overlayer: DirectAccessOverlayerManager;
-	}): this {
-		this.chat_manager = datamanager.chat;
+		this.chat_manager = datamanager[0];
 		this.chat_manager.interactor = this;
-		this.user_manager = datamanager.user;
-		this.overlayer_manager = datamanager.overlayer;
-		return this;
+		this.overlayer_manager = datamanager[1];
+		this.user_manager = datamanager[2];
 	}
 
-	with_user_datamanager(): this {
-		return this;
-	}
+	// --------- //
+	// Propriété //
+	// --------- //
 
-	with_overlayer_datamanager(): this {
-		return this;
-	}
+	presenter: DirectAccessPresenter;
+	private chat_manager!: DirectAccessChatManager;
+	private user_manager!: DirectAccessUserManager;
+	private overlayer_manager!: DirectAccessOverlayerManager;
 
 	// ------- //
 	// Méthode // -> API Publique

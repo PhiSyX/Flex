@@ -8,32 +8,40 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { Option } from "@phisyx/flex-safety";
 import type { UserSession } from "../../user/session";
 import type { DirectAccessInteractor } from "./interactor";
-import type { DirectAccessRouter } from "./router";
 import type { DirectAccessView } from "./view";
+
+import { None } from "@phisyx/flex-safety";
+import { DirectAccessRouter } from "./router";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class DirectAccessPresenter {
-	view!: DirectAccessView;
-	interactor!: DirectAccessInteractor;
-	router!: DirectAccessRouter;
-
-	// ------- //
-	// Méthode // -> Instance
-	// ------- //
-
-	with_interactor(interactor: DirectAccessInteractor): this {
-		this.interactor = interactor;
-		return this;
+	constructor(router_acl: RouterAntiCorruptionLayer, view: DirectAccessView) {
+		this.router = new DirectAccessRouter(router_acl);
+		this.view = view;
+		this.view.presenter = this;
 	}
 
-	with_view(view: DirectAccessView): this {
-		this.view = view;
-		return this;
+	private interactor_ref: Option<DirectAccessInteractor> = None();
+
+	view: DirectAccessView;
+	router: DirectAccessRouter;
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get interactor(): DirectAccessInteractor {
+		return this.interactor_ref.unwrap();
+	}
+	set interactor($1: DirectAccessInteractor) {
+		this.interactor_ref.replace($1);
 	}
 
 	// ------- //

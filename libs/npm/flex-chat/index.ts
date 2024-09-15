@@ -45,7 +45,7 @@ export * from "./src/user";
 export * from "./src/user/manager";
 export * from "./src/user/session";
 export * from "./src/view";
-export * from "./src/views/chat-channel";
-export * from "./src/views/chat-private";
+export * from "./src/views/channel";
 export * from "./src/views/direct-access";
+export * from "./src/views/private";
 

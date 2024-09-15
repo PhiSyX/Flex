@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 import type { Option } from "@phisyx/flex-safety";
 import type { ChannelAccessLevelFlag } from "../../channel/access_level";
 import type { ChannelMember } from "../../channel/member";
@@ -15,33 +16,40 @@ import type { ChannelMemberSelected } from "../../channel/member/selected";
 import type { ChannelRoom } from "../../channel/room";
 import type { Layer } from "../../store";
 import type { ChannelInteractor } from "./interactor";
-import type { ChannelRouter } from "./router";
 import type { ChannelView } from "./view";
 
-import { assert_non_null } from "@phisyx/flex-safety";
+import { assert_non_null, None } from "@phisyx/flex-safety";
 import { NoticesCustomRoom } from "../../custom_room";
+import { ChannelRouter } from "./router";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class ChannelPresenter {
-	view!: ChannelView;
-	interactor!: ChannelInteractor;
-	router!: ChannelRouter;
-
-	// ------- //
-	// Méthode // -> Instance
-	// ------- //
-
-	with_interactor(interactor: ChannelInteractor): this {
-		this.interactor = interactor;
-		return this;
+	constructor(router_acl: RouterAntiCorruptionLayer, view: ChannelView) {
+		this.router = new ChannelRouter(router_acl);
+		this.view = view;
+		this.view.presenter = this;
 	}
 
-	with_view(view: ChannelView): this {
-		this.view = view;
-		return this;
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	private interactor_ref: Option<ChannelInteractor> = None();
+	view: ChannelView;
+	router: ChannelRouter;
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get interactor(): ChannelInteractor {
+		return this.interactor_ref.unwrap();
+	}
+	set interactor($1: ChannelInteractor) {
+		this.interactor_ref.replace($1);
 	}
 
 	// ------- //

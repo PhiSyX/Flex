@@ -16,39 +16,33 @@ import type {
 	SettingsStore,
 } from "../../store";
 
-import { PrivateChatManager } from "./datamanager/chat_data_manager";
-import { PrivateOverlayerManager } from "./datamanager/overlayer_data_manager";
-import { PrivateSettingsManager } from "./datamanager/settings_data_manager";
-import { PrivateInteractor } from "./interactor";
-import { PrivatePresenter } from "./presenter";
-import { PrivateView } from "./view";
+import { ChannelChatManager } from "./datamanager/chat_data_manager";
+import { ChannelOverlayerManager } from "./datamanager/overlayer_data_manager";
+import { ChannelSettingsManager } from "./datamanager/settings_data_manager";
+import { ChannelInteractor } from "./interactor";
+import { ChannelPresenter } from "./presenter";
+import { ChannelView } from "./view";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class PrivateWireframe {
+export class ChannelWireframe {
 	static create(
 		router_acl: RouterAntiCorruptionLayer,
 		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store: OverlayerStore,
 		settings_store: SettingsStore,
 	) {
-		let view = new PrivateView();
-
-		let presenter = new PrivatePresenter().with_view(view);
-		let interactor = new PrivateInteractor()
-			.with_presenter(presenter)
-			.with_datamanager({
-				chat: new PrivateChatManager(chat_store),
-				overlayer: new PrivateOverlayerManager(overlayer_store),
-				settings: new PrivateSettingsManager(settings_store),
-			});
-
-		view.with_presenter(presenter).with_router(router_acl);
-		presenter.with_interactor(interactor);
-
-		return view;
+		let interactor = new ChannelInteractor(
+			new ChannelPresenter(router_acl, new ChannelView()),
+			[
+				new ChannelChatManager(chat_store),
+				new ChannelOverlayerManager(overlayer_store),
+				new ChannelSettingsManager(settings_store),
+			],
+		);
+		return interactor.presenter.view;
 	}
 
 	declare _: number;

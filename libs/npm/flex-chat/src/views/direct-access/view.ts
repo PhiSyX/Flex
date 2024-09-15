@@ -13,6 +13,7 @@ import type { Option } from "@phisyx/flex-safety";
 import type { UserSession } from "../../user/session";
 import type { DirectAccessPresenter } from "./presenter";
 
+import { None } from "@phisyx/flex-safety";
 import { View } from "../../view";
 import { DirectAccessFormData } from "./formdata";
 import { DirectAccessFormError } from "./formerror";
@@ -23,7 +24,9 @@ import { DirectAccessRouter } from "./router";
 // -------------- //
 
 export class DirectAccessView {
-	private presenter!: DirectAccessPresenter;
+	// ------ //
+	// Static //
+	// ------ //
 
 	/**
 	 * Attribut `maxlength` de l'élément `<input name="nickname">`.
@@ -55,6 +58,11 @@ respecter, un format précis, les conditions suivantes :
 	- Il peut contenir les caractères spéciaux suivants: []\`_^{|}
 `.trim();
 
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	private presenter_ref: Option<DirectAccessPresenter> = None();
 	advanced_form = false;
 	shown_password_user_field = false;
 	loader = false;
@@ -64,6 +72,13 @@ respecter, un format précis, les conditions suivantes :
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
+
+	get presenter(): DirectAccessPresenter {
+		return this.presenter_ref.unwrap();
+	}
+	set presenter($1: DirectAccessPresenter) {
+		this.presenter_ref.replace($1);
+	}
 
 	get user_session(): Option<UserSession> {
 		return this.presenter.user_session();

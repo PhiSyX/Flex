@@ -8,27 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 import type { Option } from "@phisyx/flex-safety";
 import type { PrivateRoom } from "../../private/room";
 import type { Layer } from "../../store";
 import type { PrivatePresenter } from "./presenter";
 
 import { None } from "@phisyx/flex-safety";
-import { PrivateRouter } from "./router";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class PrivateView {
-	private presenter!: PrivatePresenter;
+	private presenter_ref: Option<PrivatePresenter> = None();
 
 	maybe_private: Option<PrivateRoom> = None();
 
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
+
+	get presenter(): PrivatePresenter {
+		return this.presenter_ref.unwrap();
+	}
+	set presenter($1: PrivatePresenter) {
+		this.presenter_ref.replace($1);
+	}
 
 	get priv() {
 		return this.maybe_private.unwrap();
@@ -75,20 +80,6 @@ export class PrivateView {
 
 	get text_colors() {
 		return this.presenter.personalization_settings().colors;
-	}
-
-	// ------- //
-	// Méthode // -> Instance
-	// ------- //
-
-	with_presenter(presenter: PrivatePresenter): this {
-		this.presenter = presenter;
-		return this;
-	}
-
-	with_router(router_acl: RouterAntiCorruptionLayer): this {
-		this.presenter.router = new PrivateRouter(router_acl);
-		return this;
 	}
 
 	// ------- //

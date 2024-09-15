@@ -8,37 +8,45 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 import type { Option } from "@phisyx/flex-safety";
 import type { PrivateParticipant } from "../../private/participant";
 import type { PrivateRoom } from "../../private/room";
 import type { Layer } from "../../store";
 import type { PrivateInteractor } from "./interactor";
-import type { PrivateRouter } from "./router";
 import type { PrivateView } from "./view";
 
-import { assert_non_null } from "@phisyx/flex-safety";
+import { assert_non_null, None } from "@phisyx/flex-safety";
+import { PrivateRouter } from "./router";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class PrivatePresenter {
-	view!: PrivateView;
-	interactor!: PrivateInteractor;
-	router!: PrivateRouter;
-
-	// ------- //
-	// Méthode // -> Instance
-	// ------- //
-
-	with_interactor(interactor: PrivateInteractor): this {
-		this.interactor = interactor;
-		return this;
+	constructor(router_acl: RouterAntiCorruptionLayer, view: PrivateView) {
+		this.router = new PrivateRouter(router_acl);
+		this.view = view;
+		this.view.presenter = this;
 	}
 
-	with_view(view: PrivateView): this {
-		this.view = view;
-		return this;
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	private interactor_ref: Option<PrivateInteractor> = None();
+	view: PrivateView;
+	router: PrivateRouter;
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get interactor(): PrivateInteractor {
+		return this.interactor_ref.unwrap();
+	}
+	set interactor($1: PrivateInteractor) {
+		this.interactor_ref.replace($1);
 	}
 
 	// ------- //

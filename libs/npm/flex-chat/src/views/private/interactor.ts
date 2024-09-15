@@ -17,34 +17,47 @@ import type { PrivateOverlayerManager } from "./datamanager/overlayer_data_manag
 import type { PrivateSettingsManager } from "./datamanager/settings_data_manager";
 import type { PrivatePresenter } from "./presenter";
 
+import { None } from "@phisyx/flex-safety";
+
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class PrivateInteractor {
-	private presenter!: PrivatePresenter;
+	constructor(
+		presenter: PrivatePresenter,
+		datamanager: [
+			chat: PrivateChatManager,
+			overlayer: PrivateOverlayerManager,
+			settings: PrivateSettingsManager,
+		],
+	) {
+		this.presenter = presenter;
+		this.presenter.interactor = this;
+
+		this.chat_manager = datamanager[0];
+		this.overlayer_manager = datamanager[1];
+		this.settings_manager = datamanager[2];
+	}
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	private presenter_ref: Option<PrivatePresenter> = None();
 	private chat_manager!: PrivateChatManager;
 	private overlayer_manager!: PrivateOverlayerManager;
 	private settings_manager!: PrivateSettingsManager;
 
-	// ------- //
-	// Méthode // -> Instance
-	// ------- //
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
 
-	with_presenter(presenter: PrivatePresenter): this {
-		this.presenter = presenter;
-		return this;
+	get presenter(): PrivatePresenter {
+		return this.presenter_ref.unwrap();
 	}
-
-	with_datamanager(datamanager: {
-		chat: PrivateChatManager;
-		overlayer: PrivateOverlayerManager;
-		settings: PrivateSettingsManager;
-	}): this {
-		this.chat_manager = datamanager.chat;
-		this.overlayer_manager = datamanager.overlayer;
-		this.settings_manager = datamanager.settings;
-		return this;
+	set presenter($1: PrivatePresenter) {
+		this.presenter_ref.replace($1);
 	}
 
 	// ------- //

@@ -8,11 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Option } from "@phisyx/flex-safety";
 import type { CommandInterface, Module } from "../../../modules/interface";
 import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../../store";
 import type { DirectAccessFormData } from "../formdata";
 import type { DirectAccessInteractor } from "../interactor";
 
+import { None } from "@phisyx/flex-safety";
 import { HandlerManager } from "../../../handlers/manager";
 
 // @ts-ignore : Vite
@@ -27,13 +29,32 @@ const MODULES_REPLIES_HANDLERS = import.meta.glob(
 // -------------- //
 
 export class DirectAccessChatManager {
-	interactor!: DirectAccessInteractor;
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	private interactor_ref: Option<DirectAccessInteractor> = None();
 
 	private handler_manager = new HandlerManager()
 		.extends(HANDLERS)
 		.extends(MODULES_REPLIES_HANDLERS);
 
-	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get interactor(): DirectAccessInteractor {
+		return this.interactor_ref.unwrap();
+	}
+	set interactor($1: DirectAccessInteractor) {
+		this.interactor_ref.replace($1);
+	}
+
+	// ------- //
+	// Méthode // -> API Publique
+	// ------- //
 
 	connect(
 		form_data: DirectAccessFormData,

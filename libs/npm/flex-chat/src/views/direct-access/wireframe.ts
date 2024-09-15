@@ -34,21 +34,16 @@ export class DirectAccessWireframe {
 		user_store: UserStore,
 		overlayer_store: OverlayerStore,
 	) {
-		let view = new DirectAccessView();
+		let interactor = new DirectAccessInteractor(
+			new DirectAccessPresenter(router_acl, new DirectAccessView()),
+			[
+				new DirectAccessChatManager(chat_store),
+				new DirectAccessOverlayerManager(overlayer_store),
+				new DirectAccessUserManager(user_store),
+			],
+		);
 
-		let presenter = new DirectAccessPresenter().with_view(view);
-		let interactor = new DirectAccessInteractor()
-			.with_presenter(presenter)
-			.with_datamanager({
-				chat: new DirectAccessChatManager(chat_store),
-				user: new DirectAccessUserManager(user_store),
-				overlayer: new DirectAccessOverlayerManager(overlayer_store),
-			});
-
-		view.with_presenter(presenter).with_router(router_acl);
-		presenter.with_interactor(interactor);
-
-		return view;
+		return interactor.presenter.view;
 	}
 
 	declare _: number;

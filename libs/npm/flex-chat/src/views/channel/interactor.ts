@@ -26,30 +26,31 @@ import type { ChannelPresenter } from "./presenter";
 // -------------- //
 
 export class ChannelInteractor {
-	private presenter!: ChannelPresenter;
+	constructor(
+		presenter: ChannelPresenter,
+		datamanager: [
+			chat: ChannelChatManager,
+			overlayer: ChannelOverlayerManager,
+			settings: ChannelSettingsManager,
+		 ],
+	) {
+		this.presenter = presenter;
+		this.presenter.interactor = this;
+
+		this.chat_manager = datamanager[0];
+		this.overlayer_manager = datamanager[1];
+		this.settings_manager = datamanager[2];
+	}
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	presenter: ChannelPresenter;
+
 	private chat_manager!: ChannelChatManager;
 	private overlayer_manager!: ChannelOverlayerManager;
 	private settings_manager!: ChannelSettingsManager;
-
-	// ------- //
-	// Méthode // -> Instance
-	// ------- //
-
-	with_presenter(presenter: ChannelPresenter): this {
-		this.presenter = presenter;
-		return this;
-	}
-
-	with_datamanager(datamanager: {
-		chat: ChannelChatManager;
-		overlayer: ChannelOverlayerManager;
-		settings: ChannelSettingsManager;
-	}): this {
-		this.chat_manager = datamanager.chat;
-		this.overlayer_manager = datamanager.overlayer;
-		this.settings_manager = datamanager.settings;
-		return this;
-	}
 
 	// ------- //
 	// Méthode // -> API Publique
@@ -74,7 +75,7 @@ export class ChannelInteractor {
 		this.overlayer_manager.create_colors_box(evt);
 	}
 
-	create_user_change_nickname_dialog(event: Required<Layer["event"]>) {
+	create_user_change_nickname_dialog(event: Required<Layer[ "event" ]>) {
 		this.overlayer_manager.create_user_change_nickname_dialog(event);
 	}
 

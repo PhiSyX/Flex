@@ -8,9 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 import type { Option } from "@phisyx/flex-safety";
-
 import type { ChannelAccessLevelFlag } from "../../channel/access_level";
 import type {
 	ChannelActivitiesView,
@@ -26,20 +24,29 @@ import type { ChannelPresenter } from "./presenter";
 
 import { format_date } from "@phisyx/flex-date";
 import { None, assert_non_null } from "@phisyx/flex-safety";
-import { ChannelRouter } from "./router";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class ChannelView {
-	private presenter!: ChannelPresenter;
+	// --------- //
+	// Propriété //
+	// --------- //
 
+	private presenter_ref: Option<ChannelPresenter> = None();
 	maybe_channel: Option<ChannelRoom> = None();
 
 	// --------------- //
 	// Getter | Setter //
 	// --------------- //
+
+	get presenter(): ChannelPresenter {
+		return this.presenter_ref.unwrap();
+	}
+	set presenter($1: ChannelPresenter) {
+		this.presenter_ref.replace($1);
+	}
 
 	// Les activités liées au salon courant (maybe_channel).
 	get activities(): ChannelActivitiesView {
@@ -138,16 +145,6 @@ export class ChannelView {
 	// ------- //
 	// Méthode // -> Instance
 	// ------- //
-
-	with_presenter(presenter: ChannelPresenter): this {
-		this.presenter = presenter;
-		return this;
-	}
-
-	with_router(router_acl: RouterAntiCorruptionLayer): this {
-		this.presenter.router = new ChannelRouter(router_acl);
-		return this;
-	}
 
 	// ------- //
 	// Méthode // -> API Publique
