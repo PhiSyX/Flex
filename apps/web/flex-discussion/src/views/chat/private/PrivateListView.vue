@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { computed, reactive } from "vue";
+import type { ChatStoreInterface } from "@phisyx/flex-chat";
+import type { PrivateListView } from "@phisyx/flex-chat-ui";
 
-import {
-	type ChatStoreInterface,
-	type ChatStoreInterfaceExt,
-	type PrivateListView,
-	PrivateListWireframe,
-} from "@phisyx/flex-chat";
+import { PrivateListWireframe } from "@phisyx/flex-chat-ui";
+import { computed, reactive } from "vue";
 import { use_chat_store } from "~/store";
 
 import PrivatesWaiting from "#/sys/privates_waiting/PrivatesWaiting.template.vue";
@@ -17,9 +14,7 @@ import PrivatesWaiting from "#/sys/privates_waiting/PrivatesWaiting.template.vue
 
 let chat_store = use_chat_store().store;
 let view = reactive(
-	PrivateListWireframe.create(
-		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
-	),
+	PrivateListWireframe.create(chat_store as unknown as ChatStoreInterface),
 ) as PrivateListView;
 
 let privates_waiting = computed(() => view.privates_waiting);

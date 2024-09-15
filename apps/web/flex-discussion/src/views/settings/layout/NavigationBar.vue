@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SettingsView } from "@phisyx/flex-chat";
+import type { SettingsView } from "@phisyx/flex-chat-ui";
 
 import SettingsLayoutNavigationBar from "#/sys/settings_layout_navigation_bar/SettingsLayoutNavigationBar.template.vue";
 

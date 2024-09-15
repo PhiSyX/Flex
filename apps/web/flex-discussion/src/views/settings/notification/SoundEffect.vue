@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SettingsView } from "@phisyx/flex-chat";
+import type { SettingsView } from "@phisyx/flex-chat-ui";
 
 import { computed } from "vue";
 

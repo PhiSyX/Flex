@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {
-	type ChannelView,
-	ChannelWireframe,
-	type ChatStoreInterface,
-	type ChatStoreInterfaceExt,
-	type OverlayerStore,
-	type SettingsStore,
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
 } from "@phisyx/flex-chat";
+import type { ChannelView } from "@phisyx/flex-chat-ui";
+
+import { ChannelWireframe } from "@phisyx/flex-chat-ui";
 import { computed, onMounted, reactive } from "vue";
 import { VueRouter } from "~/router";
 import {

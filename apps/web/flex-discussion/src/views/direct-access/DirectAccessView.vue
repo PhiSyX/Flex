@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import {
-	type ChatStoreInterface,
-	type ChatStoreInterfaceExt,
-	DirectAccessView,
-	DirectAccessWireframe,
-	type OverlayerStore,
-	RememberMeStorage,
-	type UserStore,
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	UserStore,
 } from "@phisyx/flex-chat";
+
+import {
+	HANDLERS,
+	MODULES_REPLIES_HANDLERS,
+	RememberMeStorage,
+} from "@phisyx/flex-chat";
+import { DirectAccessView, DirectAccessWireframe } from "@phisyx/flex-chat-ui";
 import {
 	ButtonIcon,
 	InputSwitch,
@@ -35,6 +39,8 @@ let view = reactive(
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
 		user_store as unknown as UserStore,
 		overlayer_store as unknown as OverlayerStore,
+		HANDLERS,
+		MODULES_REPLIES_HANDLERS,
 	),
 );
 

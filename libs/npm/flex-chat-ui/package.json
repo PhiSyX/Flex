@@ -1,0 +1,19 @@
+{
+	"name": "@phisyx/flex-chat-ui",
+	"description": "Flex Chat UI",
+	"authors": "Mike 'PhiSyX' S.",
+	"version": "0.1.0",
+	"scripts": {
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@phisyx/flex-architecture": "workspace:",
+		"@phisyx/flex-chat": "workspace:",
+		"@phisyx/flex-date": "workspace:",
+		"@phisyx/flex-safety": "workspace:"
+	},
+	"devDependencies": {
+		"@phisyx/flex-code-quality": "workspace:",
+		"typescript": "catalog:"
+	}
+}

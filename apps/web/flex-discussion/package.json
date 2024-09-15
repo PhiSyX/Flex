@@ -17,6 +17,7 @@
 		"@phisyx/flex-asserts": "workspace:",
 		"@phisyx/flex-capitalization": "workspace:",
 		"@phisyx/flex-chat": "workspace:",
+		"@phisyx/flex-chat-ui": "workspace:",
 		"@phisyx/flex-css": "workspace:",
 		"@phisyx/flex-date": "workspace:",
 		"@phisyx/flex-helpers": "workspace:",

@@ -26,15 +26,13 @@ import {
 } from "../asserts/room";
 import { ChannelMemberSelected } from "../channel/member/selected";
 import { ServerCustomRoom } from "../custom_room/server";
+import { MODULES } from "../modules";
 import { ModuleManager } from "../modules/manager";
 import { PrivateParticipant } from "../private/participant";
 import { PrivateRoom } from "../private/room";
 import { RoomManager } from "../room/manager";
 import { ClientIDStorage } from "../sessionstorage/client_id";
 import { UserManager } from "../user/manager";
-
-// @ts-ignore : Vite
-const MODULES = import.meta.glob("../modules/**/module.ts");
 
 // ---- //
 // Type //

@@ -28,6 +28,7 @@ export * from "./src/localstorage/remember_me";
 export * from "./src/localstorage/settings_layout";
 export * from "./src/localstorage/settings_notification";
 export * from "./src/localstorage/settings_personalization";
+export * from "./src/localstorage/settings_private";
 export * from "./src/localstorage/storage";
 export * from "./src/menu";
 export * from "./src/modules/interface";
@@ -45,10 +46,7 @@ export * from "./src/user";
 export * from "./src/user/manager";
 export * from "./src/user/session";
 export * from "./src/view";
-export * from "./src/views/channel";
-export * from "./src/views/channel-list";
-export * from "./src/views/direct-access";
-export * from "./src/views/private";
-export * from "./src/views/private-list";
-export * from "./src/views/settings";
+
+export * from "./src/handlers";
+export * from "./src/modules";
 

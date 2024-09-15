@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import {
-	type ChatStoreInterface,
-	type ChatStoreInterfaceExt,
-	type OverlayerStore,
-	type PrivateView,
-	PrivateWireframe,
-	type SettingsStore,
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
 } from "@phisyx/flex-chat";
+import type { PrivateView } from "@phisyx/flex-chat-ui";
 
+import { PrivateWireframe } from "@phisyx/flex-chat-ui";
 import { computed, onActivated, onDeactivated, onMounted, reactive } from "vue";
-
+import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
+import { VueRouter } from "~/router";
 import {
 	use_chat_store,
 	use_overlayer_store,
 	use_settings_store,
 } from "~/store";
-
-import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
-import { VueRouter } from "~/router";
 
 // --------- //
 // Composant //
