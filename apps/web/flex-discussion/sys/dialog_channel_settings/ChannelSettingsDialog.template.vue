@@ -50,7 +50,7 @@ const emit = defineEmits<Emits>();
 // Est-ce que le client courant a les droits d'édition du sujet?
 let is_current_client_channel_member_can_edit_topic = computed(() =>
 	props.currentClientChannelMember
-		.map(props.room.can_edit_topic)
+		.map((m) => props.room.can_edit_topic(m))
 		.unwrap_or(false),
 );
 
