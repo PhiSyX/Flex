@@ -35,9 +35,14 @@ let age = computed(() => view.age);
 let country_from = computed(() => view.country_from);
 let user_flag = computed(() => view.user_flag);
 
-const { data, isLoading } = useQuery(view.query_api_user());
+const { data, isLoading, isError } = useQuery(view.query_api_user());
 
-watch(data, (new_data) => view.set_response_from_api_user({ data: new_data }));
+watch(data, (new_data) => {
+	if (isError) {
+		return;
+	}
+	view.set_response_from_api_user({ data: new_data })
+});
 </script>
 
 <template>
