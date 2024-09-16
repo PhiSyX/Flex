@@ -127,6 +127,27 @@ class Result<T, E extends Error> {
 	}
 
 	/**
+	 * Retourne l'erreur contenue dans [`Err`].
+	 *
+	 * Cette méthode peut échouer.
+	 */
+	unwrap_err(): E {
+		let panic = (this.error?.constructor as ErrorConstructor) || Error;
+		let message = this.error?.message ? `: "${this.error.message}"` : "";
+
+		if (this.is_ok()) {
+			throw new panic(
+				// biome-ignore lint/style/useTemplate: pas envie.
+				"La fonction `.unwrap_err()` est appelée sur une valeur `Ok`: " +
+					message,
+			);
+		}
+
+		// biome-ignore lint/style/noNonNullAssertion: pas envie.
+		return this.error!;
+	}
+
+	/**
 	 * Retourne la valeur contenue dans [`Ok`] ou une valeur par défaut
 	 * si [`Err`].
 	 */

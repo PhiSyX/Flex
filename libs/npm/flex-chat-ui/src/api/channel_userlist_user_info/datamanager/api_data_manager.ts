@@ -8,8 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { } from "@tanstack/query-core";
-import type { UserInfo } from "../entities/user_info";
+import type { UserInfoResponse } from "../entities/user_info";
 import type { ChannelUserlistUserInfoViewProps } from "../view";
 
 // -------------- //
@@ -21,9 +20,9 @@ export class ChannelUserlistUserInfoAPIManager {
 	static API_V1_USER_INFO_ENDPOINT: ChannelUserlistUserInfoViewProps["endpoint"] =
 		"/api/v1/users/:userid/info";
 
-	async user_fetcher(
+	async query_api_user_fetcher(
 		props: Required<ChannelUserlistUserInfoViewProps>,
-	): Promise<UserInfo> {
+	): Promise<UserInfoResponse> {
 		let endpoint = props.endpoint.replaceAll(":userid", props.userId);
 		let res = await fetch(`${endpoint}?privacy=${props.privacy}`, {
 			headers: {

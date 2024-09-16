@@ -8,13 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { UserInfo } from "./entities/user_info";
+import type { Option } from "@phisyx/flex-safety";
+import type { UserInfoResponse } from "./entities/user_info";
 import type { ChannelUserlistUserInfoPresenter } from "./presenter";
 
-import { calculate_age } from "@phisyx/flex-date";
-import { iso_to_country_flag } from "@phisyx/flex-helpers";
-import { None, Option, Some } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety";
 import { ChannelUserlistUserInfoAPIManager } from "./datamanager/api_data_manager";
+import { UserInfo } from "./entities/user_info";
 
 // ---- //
 // Type //
@@ -48,7 +48,7 @@ export class ChannelUserlistUserInfoView {
 
 	declare props: Required<ChannelUserlistUserInfoViewProps>;
 
-	response_api_user: Option<UserInfo> = None();
+	maybe_user_info: Option<UserInfo> = None();
 
 	// --------------- //
 	// Getter | Setter //
@@ -61,47 +61,23 @@ export class ChannelUserlistUserInfoView {
 		this.presenter_ref.replace($1);
 	}
 
-	get query_api_user_key() {
-		return this.presenter.query_api_user_key();
-	}
-
 	get age() {
 		return (
-			this.response_api_user
-				.and_then((user_info) => {
-					return user_info.birthday
-						? Some(calculate_age(user_info.birthday))
-						: None();
-				})
+			this.maybe_user_info
+				.and_then((user_info) => user_info.age())
 				.unwrap_or("") || null
 		);
 	}
 
 	get country_from() {
-		return this.response_api_user
-			.and_then((user_info) => {
-				return Option.from(user_info.country || user_info.city);
-			})
+		return this.maybe_user_info
+			.and_then((user_info) => user_info.comes_from())
 			.unwrap_or("");
 	}
 
 	get user_flag() {
-		return this.response_api_user
-			.and_then((user_info) => {
-				if (user_info.country) {
-					return Some(iso_to_country_flag(user_info.country));
-				}
-				if (user_info.city) {
-					return Some(
-						user_info.city
-							.split(/[\s-]/g)
-							.map((w) => w.slice(0, 1))
-							.join(""),
-					);
-				}
-
-				return None();
-			})
+		return this.maybe_user_info
+			.and_then((user_info) => user_info.comes_from_initials())
 			.unwrap_or("");
 	}
 
@@ -118,9 +94,16 @@ export class ChannelUserlistUserInfoView {
 	}
 
 	set_response_from_api_user(response: {
-		data: UserInfo | undefined;
+		data: UserInfoResponse | undefined;
 	}) {
-		this.response_api_user = Option.from(response.data);
+		let maybe_data = UserInfo.parse(response.data);
+
+		if (maybe_data.is_err()) {
+			console.error(maybe_data.unwrap_err());
+			return;
+		}
+
+		this.maybe_user_info = maybe_data.ok();
 	}
 
 	// ------- //

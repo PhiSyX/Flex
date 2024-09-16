@@ -52,13 +52,16 @@ export class ChannelUserlistUserInfoPresenter {
 	// Méthode // -> API Publique
 	// ------- //
 
-	query_api_user_key() {
-		return `user_info${this.view.props.userId}${this.view.props.privacy}`;
+	query_api_user_key(
+		privacy: ChannelUserlistUserInfoViewProps["privacy"],
+		userId: ChannelUserlistUserInfoViewProps["userId"],
+	) {
+		return `user_info${userId}${privacy}`;
 	}
 
 	query_api_user(props: Required<ChannelUserlistUserInfoViewProps>) {
 		return {
-			queryKey: [this.view.query_api_user_key],
+			queryKey: [this.query_api_user_key(props.privacy, props.userId)],
 			queryFn: () => this.interactor.query_api_user(props),
 			retry: 5,
 			retryDelay: 10e3,

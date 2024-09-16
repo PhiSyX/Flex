@@ -11,7 +11,8 @@
 		"@phisyx/flex-chat": "workspace:",
 		"@phisyx/flex-date": "workspace:",
 		"@phisyx/flex-helpers": "workspace:",
-		"@phisyx/flex-safety": "workspace:"
+		"@phisyx/flex-safety": "workspace:",
+		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@phisyx/flex-code-quality": "workspace:",

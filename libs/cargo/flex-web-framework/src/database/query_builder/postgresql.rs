@@ -169,9 +169,13 @@ impl<R> SQLQueryUpdateBuilder<DatabaseService<PostgreSQLDatabase>, R>
 
 		let mut q = sqlx::query_as(&sql);
 
-		for binding in self.props.values() {
-			if !binding.ends_with("()") {
-				q = q.bind(binding);
+		for maybe_binding in self.props.values() {
+			if let Some(binding) = maybe_binding {
+				if !binding.ends_with("()") {
+					q = q.bind(binding);
+				}
+			} else {
+				q = q.bind(None as Option<&str>);
 			}
 		}
 

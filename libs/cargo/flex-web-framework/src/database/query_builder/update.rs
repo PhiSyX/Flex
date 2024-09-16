@@ -8,9 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use std::{collections::BTreeMap, marker::PhantomData};
+use std::collections::BTreeMap;
+use std::marker::PhantomData;
 
-use super::{wheres::{Where, WhereAnd, WhereOr}, SQLQuerySelectAllFields};
+use super::wheres::{Where, WhereAnd, WhereOr};
+use super::SQLQuerySelectAllFields;
 
 // --------- //
 // Structure //
@@ -21,13 +23,13 @@ pub struct SQLQueryUpdateBuilder<D, R>
 {
 	pub(crate) table: String,
 	pub(crate) db: D,
-	pub(crate) props: BTreeMap<String, String>,
+	pub(crate) props: BTreeMap<String, Option<String>>,
 	pub(crate) wheres: Vec<Where>,
 	pub(crate) returning: Vec<String>,
 	pub(crate) _phantom: PhantomData<R>,
 }
 
-pub struct UpdateProps(pub BTreeMap<String, String>);
+pub struct UpdateProps(pub BTreeMap<String, Option<String>>);
 
 // -------------- //
 // Implémentation //
@@ -39,7 +41,8 @@ impl<D, R> SQLQueryUpdateBuilder<D, R>
 	where
 		R: SQLQuerySelectAllFields,
 	{
-		self.returning.extend(R::fields().into_iter().map(Into::into));
+		self.returning
+			.extend(R::fields().into_iter().map(Into::into));
 		self
 	}
 
@@ -73,7 +76,7 @@ where
 {
 	fn from((k, v): (K, V)) -> Self
 	{
-		Self(BTreeMap::from_iter([(k.to_string(), v.to_string())]))
+		Self(BTreeMap::from_iter([(k.to_string(), Some(v.to_string()))]))
 	}
 }
 
@@ -84,9 +87,13 @@ where
 {
 	fn from(props: [(K, V); N]) -> Self
 	{
-		Self(BTreeMap::from_iter(
-			props.iter().map(|(k, v)| (k.to_string(), v.to_string())),
-		))
+		Self(BTreeMap::from_iter(props.iter().map(|(k, v)| {
+			let v = v.to_string();
+			if v.is_empty() {
+				return (k.to_string(), None);
+			}
+			(k.to_string(), Some(v))
+		})))
 	}
 }
 
@@ -97,8 +104,12 @@ where
 {
 	fn from(props: &[(K, V)]) -> Self
 	{
-		Self(BTreeMap::from_iter(
-			props.iter().map(|(k, v)| (k.to_string(), v.to_string())),
-		))
+		Self(BTreeMap::from_iter(props.iter().map(|(k, v)| {
+			let v = v.to_string();
+			if v.is_empty() {
+				return (k.to_string(), None);
+			}
+			(k.to_string(), Some(v))
+		})))
 	}
 }

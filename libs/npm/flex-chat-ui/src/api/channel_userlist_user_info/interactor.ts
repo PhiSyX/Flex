@@ -53,6 +53,6 @@ export class ChannelUserlistUserInfoInteractor {
 	// ------- //
 
 	query_api_user(props: Required<ChannelUserlistUserInfoViewProps>) {
-		return this.api_manager.user_fetcher(props);
+		return this.api_manager.query_api_user_fetcher(props);
 	}
 }
