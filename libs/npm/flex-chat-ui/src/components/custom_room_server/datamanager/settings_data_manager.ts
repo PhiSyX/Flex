@@ -8,13 +8,24 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/components/custom_room_server";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/chat";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import type {
+	LayoutData,
+	PersonalizationData,
+	SettingsStore,
+} from "@phisyx/flex-chat";
 
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class CustomRoomServerSettingsManager {
+	constructor(private store: SettingsStore) {}
+
+	layout_settings(): LayoutData {
+		return this.store.get_layout();
+	}
+
+	personalization_settings(): PersonalizationData {
+		return this.store.get_personalization();
+	}
+}

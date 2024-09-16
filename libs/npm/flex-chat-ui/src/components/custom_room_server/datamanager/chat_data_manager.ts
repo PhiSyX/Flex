@@ -8,13 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/components/custom_room_server";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/chat";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	Room,
+} from "@phisyx/flex-chat";
 
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class CustomRoomServerChatManager {
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
+
+	get_all_commands(room: Room): Array<string> {
+		return this.store.all_commands(room);
+	}
+
+	get_current_client_nickname(): string {
+		return this.store.nickname();
+	}
+
+	open_room(room_id: RoomID) {
+		this.store.open_room(room_id);
+	}
+
+	send_to(room_id: RoomID, message: string) {
+		this.store.send_message(room_id, message);
+	}
+}

@@ -8,13 +8,40 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/components/custom_room_server";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/chat";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+} from "@phisyx/flex-chat";
 
+import { CustomRoomServerChatManager } from "./datamanager/chat_data_manager";
+import { CustomRoomServerOverlayerManager } from "./datamanager/overlayer_data_manager";
+import { CustomRoomServerSettingsManager } from "./datamanager/settings_data_manager";
+import { CustomRoomServerInteractor } from "./interactor";
+import { CustomRoomServerPresenter } from "./presenter";
+import { CustomRoomServerView } from "./view";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class CustomRoomServerWireframe {
+	static create(
+		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store: OverlayerStore,
+		settings_store: SettingsStore,
+	) {
+		let interactor = new CustomRoomServerInteractor(
+			new CustomRoomServerPresenter(new CustomRoomServerView()),
+			[
+				new CustomRoomServerChatManager(chat_store),
+				new CustomRoomServerOverlayerManager(overlayer_store),
+				new CustomRoomServerSettingsManager(settings_store),
+			],
+		);
+		return interactor.presenter.view;
+	}
+
+	declare _: number;
+}
