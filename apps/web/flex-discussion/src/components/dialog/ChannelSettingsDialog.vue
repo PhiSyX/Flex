@@ -1,6 +1,5 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat";
-
 import { ChannelSettingsDialog } from "@phisyx/flex-chat";
 
 import { use_dialog } from "~/hooks/dialog";
@@ -50,19 +49,19 @@ function update_topic_handler(topic?: string) {
 		return;
 	}
 
-	chat_store.update_topic(layer_unsafe.value.data.room.name, topic);
+	layer_unsafe.value.data.view.update_topic(topic);
 }
 </script>
 
 <template>
 	<Teleport
 		v-if="dialog.exists() && layer_unsafe.data"
-		defer
 		:to="teleport_id"
+		defer
 	>
 		<ChannelSettingsDialogComponent
-			v-bind="layer_unsafe.data"
 			:layer-name="layer_name"
+			v-bind="layer_unsafe.data"
 			@close="close_dialog"
 			@submit="submit_form_data_handler"
 			@update-topic="update_topic_handler"

@@ -21,6 +21,9 @@ import type { DialogInterface } from "./interface";
 export interface ChannelSettingsRecordDialog {
 	// Salon actif
 	room: ChannelRoom;
+	view: {
+		update_topic: (topic?: string) => void;
+	};
 	// Le client courant, qui est membre du salon.
 	currentClientChannelMember: Option<ChannelMember>;
 }
@@ -38,6 +41,11 @@ export class ChannelSettingsDialog
 
 	static ID = "channel-settings-layer";
 
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private overlayer_store: OverlayerStore) {}
+
 	static create(
 		overlayer_store: OverlayerStore,
 		data: ChannelSettingsRecordDialog,
@@ -51,11 +59,6 @@ export class ChannelSettingsDialog
 
 		return new ChannelSettingsDialog(overlayer_store);
 	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private overlayer_store: OverlayerStore) {}
 
 	// ------- //
 	// Méthode //

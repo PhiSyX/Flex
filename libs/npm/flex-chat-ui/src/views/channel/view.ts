@@ -18,12 +18,13 @@ import type {
 	ChannelRoom,
 	Layer,
 	Room,
+	RoomMessage,
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
+import { assert_non_null, None } from "@phisyx/flex-safety";
 import type { ChannelPresenter } from "./presenter";
 
 import { format_date } from "@phisyx/flex-date";
-import { None, assert_non_null } from "@phisyx/flex-safety";
 
 // -------------- //
 // Implémentation //
@@ -44,6 +45,7 @@ export class ChannelView {
 	get presenter(): ChannelPresenter {
 		return this.presenter_ref.unwrap();
 	}
+
 	set presenter($1: ChannelPresenter) {
 		this.presenter_ref.replace($1);
 	}
@@ -326,6 +328,10 @@ export class ChannelView {
 	/**
 	 * Envoie la commande de mise à jour du salon.
 	 */
+	update_topic = (topic = "") => {
+		this.presenter.update_topic(topic);
+	};
+
 	send_update_topic_handler = (topic: string) => {
 		this.presenter.update_topic(topic);
 	};
@@ -347,9 +353,9 @@ export class ChannelView {
 	): ChannelActivity {
 		let member = this.channel.get_member_by_nickname(activity.nickname);
 
-		// @ts-expect-error : type à corriger.
-		let message: Option<RoomMessage<ChannelID, { text: string }>> =
-			room.get_message<{ text: string }>(activity.message_id);
+		let message = room
+			.get_message<{ text: string }>(activity.message_id)
+			.as<RoomMessage<ChannelID, { text: string }>>();
 
 		let previous_messages = activity.previous_messages_ids
 			.map((msgid) => {
@@ -368,7 +374,7 @@ export class ChannelView {
 		return {
 			channel: this.channel,
 			member,
-			message: message,
+			message,
 			previousMessages: previous_messages,
 		};
 	}

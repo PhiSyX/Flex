@@ -104,6 +104,7 @@ export class ChannelPresenter {
 
 		let channel_settings_record = {
 			room: this.view.channel,
+			view: this.view,
 			currentClientChannelMember: this.view.current_client_channel_member,
 		};
 
