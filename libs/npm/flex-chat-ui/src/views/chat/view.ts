@@ -8,12 +8,47 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/chat";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import type { Option } from "@phisyx/flex-safety";
+import type { ChatPresenter } from "./presenter";
 
+import { None } from "@phisyx/flex-safety";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ChatView {
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	private presenter_ref: Option<ChatPresenter> = None();
+
+	// --------------- //
+	// Getter | Setter //
+	// --------------- //
+
+	get presenter(): ChatPresenter {
+		return this.presenter_ref.unwrap();
+	}
+
+	set presenter($1: ChatPresenter) {
+		this.presenter_ref.replace($1);
+	}
+
+	get rooms() {
+		return this.presenter.get_all_rooms();
+	}
+
+	// ------- //
+	// Méthode // -> Handler
+	// ------- //
+
+	join_channel_handler = (name: ChannelID) => {
+		this.presenter.join(name);
+	};
+
+	close_room_handler = (name: RoomID) => {
+		this.presenter.close(name);
+	};
+}

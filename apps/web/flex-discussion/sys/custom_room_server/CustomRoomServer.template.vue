@@ -10,6 +10,7 @@ import Room from "#/sys/room/Room.template.vue";
 interface Props {
 	forumUrl: string;
 	vademecumUrl: string;
+	completionList?: Array<string>;
 	currentNickname: string;
 	room: ServerCustomRoom;
 	textFormatBold?: boolean | null;
@@ -48,6 +49,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 <template>
 	<div class="room/custom:server [ flex! ov:h ]">
 		<Room
+			:completion-list="completionList"
 			:current-client-nickname="currentNickname"
 			:room="room"
 			:text-format-bold="textFormatBold"

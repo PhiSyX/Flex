@@ -8,12 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/chat";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+} from "@phisyx/flex-chat";
 
+import { ChannelChatManager } from "./datamanager/chat_data_manager";
+import { ChatInteractor } from "./interactor";
+import { ChatPresenter } from "./presenter";
+import { ChatView } from "./view";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ChatWireframe {
+	static create(chat_store: ChatStoreInterface & ChatStoreInterfaceExt) {
+		let interactor = new ChatInteractor(new ChatPresenter(new ChatView()), [
+			new ChannelChatManager(chat_store),
+		]);
+		return interactor.presenter.view;
+	}
+
+	declare _: number;
+}

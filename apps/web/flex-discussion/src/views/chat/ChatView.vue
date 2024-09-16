@@ -1,45 +1,48 @@
 <script setup lang="ts">
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+} from "@phisyx/flex-chat";
+import type { ChatView } from "@phisyx/flex-chat-ui";
+
 import {
 	MentionsCustomRoom,
 	NoticesCustomRoom,
 	ServerCustomRoom,
 } from "@phisyx/flex-chat";
-import { shallowRef } from "vue";
+import { ChatWireframe } from "@phisyx/flex-chat-ui";
+import { computed, reactive, shallowRef } from "vue";
+
 import { use_chat_store } from "~/store";
 
-import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
 import MentionsCustomRoomComponent from "#/sys/custom_room_mentions/CustomRoomMentions.template.vue";
 import NoticesCustomRoomComponent from "#/sys/custom_room_notices/CustomRoomNotices.template.vue";
+import ServerCustomRoomComponent from "~/components/custom_room/ServerCustomRoom.vue";
 
 // --------- //
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
+let chat_store = use_chat_store().store;
 
-const custom_rooms_components = shallowRef({
+let view = reactive(
+	ChatWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt
+	)
+) as ChatView;
+
+let custom_rooms_components = shallowRef({
+	[MentionsCustomRoom.ID]: MentionsCustomRoomComponent,
 	[NoticesCustomRoom.ID]: NoticesCustomRoomComponent,
 	[ServerCustomRoom.ID]: ServerCustomRoomComponent,
-	[MentionsCustomRoom.ID]: MentionsCustomRoomComponent,
 } as const);
 
-// ------- //
-// Handler //
-// ------- //
-
-function join_channel_handler(name: ChannelID) {
-	chat_store.join_channel(name);
-	chat_store.change_room(name);
-}
-
-function close_room_handler(name: RoomID) {
-	chat_store.close_room(name);
-}
+let rooms = computed(() => view.rooms);
 </script>
 
 <template>
 	<div class="room [ flex:full flex ]">
-		<template v-for="room in chat_store.rooms" :key="room.id()">
+		<template v-for="room in rooms" :key="room.id()">
 			<template v-if="custom_rooms_components[room.id()]">
 				<KeepAlive :key="room.type + '/' + room.id()">
 					<component
@@ -48,8 +51,8 @@ function close_room_handler(name: RoomID) {
 						:room="(room as any)"
 						:data-room="room.name"
 						class="[ flex:full ]"
-						@join-channel="join_channel_handler"
-						@close="() => close_room_handler(room.id())"
+						@join-channel="view.join_channel_handler"
+						@close="() => view.close_room_handler(room.id())"
 					/>
 				</KeepAlive>
 			</template>

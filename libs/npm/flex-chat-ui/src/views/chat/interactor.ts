@@ -8,12 +8,44 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/chat";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import type { ChannelChatManager } from "./datamanager/chat_data_manager";
+import type { ChatPresenter } from "./presenter";
 
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class ChatInteractor {
+	constructor(
+		presenter: ChatPresenter,
+		datamanager: [chat: ChannelChatManager],
+	) {
+		this.presenter = presenter;
+		this.presenter.interactor = this;
+
+		this.chat_manager = datamanager[0];
+	}
+
+	// --------- //
+	// Propriété //
+	// --------- //
+
+	presenter: ChatPresenter;
+
+	private chat_manager!: ChannelChatManager;
+
+	// ------- //
+	// Méthode // -> API Publique
+	// ------- //
+
+	close(name: RoomID) {
+		this.chat_manager.close(name);
+	}
+	join(name: ChannelID) {
+		this.chat_manager.join(name);
+	}
+
+	get_all_rooms() {
+		return this.chat_manager.get_all_rooms();
+	}
+}

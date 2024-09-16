@@ -12,8 +12,7 @@ import { UiImage } from "@phisyx/flex-vue-uikit";
 // Type //
 // ---- //
 
-interface Props
-{
+interface Props {
 	alt?: HTMLImageElement["alt"];
 	editable?: boolean;
 	form?: string;
@@ -23,16 +22,13 @@ interface Props
 	endpoint?: string;
 }
 
-interface Emits
-{
+interface Emits {
 	// biome-ignore lint/style/useShorthandFunctionType: chut
 	(event_name: "upload", file: File): void;
 }
 
-
-interface Slots
-{
-	"default": unknown;
+interface Slots {
+	default: unknown;
 }
 
 // --------- //
@@ -58,8 +54,7 @@ let image_alt = computed(() => props.alt || `Avatar #${props.id}`);
 // Handler //
 // ------- //
 
-function click_handler()
-{
+function click_handler() {
 	if (!props.editable) {
 		return;
 	}
@@ -67,8 +62,7 @@ function click_handler()
 	$upload.value?.click();
 }
 
-function on_upload_image_handler(evt: Event)
-{
+function on_upload_image_handler(evt: Event) {
 	let target = evt.currentTarget as HTMLInputElement;
 
 	if (!target.validity.valid) {
