@@ -38,7 +38,7 @@ let user_flag = computed(() => view.user_flag);
 const { data, isLoading, isError } = useQuery(view.query_api_user());
 
 watch(data, (new_data) => {
-	if (isError) {
+	if (isError.value) {
 		return;
 	}
 	view.set_response_from_api_user({ data: new_data });

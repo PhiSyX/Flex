@@ -30,6 +30,9 @@ export class ChannelUserlistUserInfoAPIManager {
 			},
 			credentials: "same-origin",
 		});
+		if (!res.ok) {
+			return Promise.reject(res);
+		}
 		return res.json();
 	}
 }
