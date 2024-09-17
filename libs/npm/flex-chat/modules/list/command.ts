@@ -8,17 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
 import type { CommandInterface } from "../interface";
+
+import { View } from "../../view";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class ListCommand implements CommandInterface<"LIST"> {
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	send(payload: Command<"LIST">) {
 		this.store.emit("LIST", payload);
+		this.store.router().goto(View.ChannelList);
 	}
 }
