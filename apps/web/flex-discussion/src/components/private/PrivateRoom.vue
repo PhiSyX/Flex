@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrivateView } from "@phisyx/flex-chat-ui";
+import type { PrivateView } from "@phisyx/flex-chat-ui/views/private";
 
 import { computed } from "vue";
 

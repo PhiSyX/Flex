@@ -5,9 +5,9 @@ import type {
 	OverlayerStore,
 	SettingsStore,
 } from "@phisyx/flex-chat";
-import type { PrivateView } from "@phisyx/flex-chat-ui";
+import type { PrivateView } from "@phisyx/flex-chat-ui/views/private";
 
-import { PrivateWireframe } from "@phisyx/flex-chat-ui";
+import { PrivateWireframe } from "@phisyx/flex-chat-ui/views/private";
 import { computed, onActivated, onDeactivated, onMounted, reactive } from "vue";
 import PrivateRoomComponent from "~/components/private/PrivateRoom.vue";
 import { VueRouter } from "~/router";

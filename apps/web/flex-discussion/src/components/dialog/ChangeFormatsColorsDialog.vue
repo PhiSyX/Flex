@@ -6,10 +6,10 @@ import type {
 	SettingsStore,
 	UserStore,
 } from "@phisyx/flex-chat";
-import type { DialogView } from "@phisyx/flex-chat-ui";
+import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
 
 import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat";
-import { DialogWireframe } from "@phisyx/flex-chat-ui";
+import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
 import { vMutation } from "@phisyx/flex-vue-directives";
 import { computed, reactive } from "vue";
 import {

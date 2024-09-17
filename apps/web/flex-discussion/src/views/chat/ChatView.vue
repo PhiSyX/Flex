@@ -3,14 +3,14 @@ import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 } from "@phisyx/flex-chat";
-import type { ChatView } from "@phisyx/flex-chat-ui";
+import type { ChatView } from "@phisyx/flex-chat-ui/views/chat";
 
 import {
 	MentionsCustomRoom,
 	NoticesCustomRoom,
 	ServerCustomRoom,
 } from "@phisyx/flex-chat";
-import { ChatWireframe } from "@phisyx/flex-chat-ui";
+import { ChatWireframe } from "@phisyx/flex-chat-ui/views/chat";
 import { computed, reactive, shallowRef } from "vue";
 
 import { use_chat_store } from "~/store";

@@ -8,9 +8,9 @@ import type {
 import type {
 	CustomRoomServerView,
 	CustomRoomServerViewProps,
-} from "@phisyx/flex-chat-ui";
+} from "@phisyx/flex-chat-ui/components/custom_room_server";
 
-import { CustomRoomServerWireframe } from "@phisyx/flex-chat-ui";
+import { CustomRoomServerWireframe } from "@phisyx/flex-chat-ui/components/custom_room_server";
 import { computed, reactive } from "vue";
 import {
 	use_chat_store,

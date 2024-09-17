@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ChannelRoom } from "@phisyx/flex-chat";
-import type { ChannelView } from "@phisyx/flex-chat-ui";
+import type { ChannelView } from "@phisyx/flex-chat-ui/views/channel";
 
 import { computed } from "vue";
 

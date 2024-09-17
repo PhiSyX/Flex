@@ -7,11 +7,11 @@ import type {
 	SettingsStore,
 	UserStore,
 } from "@phisyx/flex-chat";
-import type { MenuView } from "@phisyx/flex-chat-ui";
+import type { MenuView } from "@phisyx/flex-chat-ui/components/menu";
 import type { ComputedRef } from "vue";
 
 import { ChannelOptionsMenu } from "@phisyx/flex-chat";
-import { MenuWireframe } from "@phisyx/flex-chat-ui";
+import { MenuWireframe } from "@phisyx/flex-chat-ui/components/menu";
 import { computed, reactive } from "vue";
 import {
 	use_chat_store,

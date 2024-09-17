@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ChannelUserlistUserInfoViewProps } from "@phisyx/flex-chat-ui";
+import type { ChannelUserlistUserInfoViewProps } from "@phisyx/flex-chat-ui/api/channel_userlist_user_info";
 
 import {
 	ChannelUserlistUserInfoView,
 	ChannelUserlistUserInfoWireframe,
-} from "@phisyx/flex-chat-ui";
+} from "@phisyx/flex-chat-ui/api/channel_userlist_user_info";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, reactive, watch } from "vue";
 
@@ -21,7 +21,7 @@ const {
 } = defineProps<ChannelUserlistUserInfoViewProps>();
 
 let view = reactive(
-	ChannelUserlistUserInfoWireframe.create(),
+	ChannelUserlistUserInfoWireframe.create()
 ) as ChannelUserlistUserInfoView;
 
 view.define_props({

@@ -5,9 +5,9 @@ import type {
 	OverlayerStore,
 	SettingsStore,
 } from "@phisyx/flex-chat";
-import type { ChannelView } from "@phisyx/flex-chat-ui";
+import type { ChannelView } from "@phisyx/flex-chat-ui/views/channel";
 
-import { ChannelWireframe } from "@phisyx/flex-chat-ui";
+import { ChannelWireframe } from "@phisyx/flex-chat-ui/views/channel";
 import { computed, onMounted, reactive } from "vue";
 import { VueRouter } from "~/router";
 import {

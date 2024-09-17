@@ -6,10 +6,10 @@ import type {
 	SettingsStore,
 	UserStore,
 } from "@phisyx/flex-chat";
-import type { DialogView } from "@phisyx/flex-chat-ui";
+import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
 
 import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
-import { DialogWireframe } from "@phisyx/flex-chat-ui";
+import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
 import { computed, reactive } from "vue";
 import {
 	use_chat_store,

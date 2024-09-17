@@ -6,9 +6,9 @@ import type {
 	ChatStoreInterfaceExt,
 	SettingsStore,
 } from "@phisyx/flex-chat";
-import type { SettingsView } from "@phisyx/flex-chat-ui";
+import type { SettingsView } from "@phisyx/flex-chat-ui/views/settings";
 
-import { SettingsWireframe } from "@phisyx/flex-chat-ui";
+import { SettingsWireframe } from "@phisyx/flex-chat-ui/views/settings";
 import { UiButton } from "@phisyx/flex-vue-uikit";
 import { VueRouter } from "~/router";
 import { use_chat_store, use_settings_store } from "~/store";

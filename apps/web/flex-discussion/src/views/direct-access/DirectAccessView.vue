@@ -11,7 +11,7 @@ import {
 	MODULES_REPLIES_HANDLERS,
 	RememberMeStorage,
 } from "@phisyx/flex-chat";
-import { DirectAccessView, DirectAccessWireframe } from "@phisyx/flex-chat-ui";
+import { DirectAccessView, DirectAccessWireframe } from "@phisyx/flex-chat-ui/views/direct_access";
 import {
 	ButtonIcon,
 	InputSwitch,
