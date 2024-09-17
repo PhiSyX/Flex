@@ -8,13 +8,22 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import {
-	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store,
-} from "pinia";
-import { computed, reactive, readonly } from "vue";
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { computed, defineAsyncComponent, reactive, readonly } from "vue";
 
-import { OverlayerData, OverlayerStore } from "@phisyx/flex-chat";
+import {
+	ChangeFormatsColorsDialog,
+	ChannelJoinDialog,
+	ChannelOptionsMenu,
+	ChannelSettingsDialog,
+	ClientErrorLayer,
+	LoadAllModulesLayer,
+	OverlayerData,
+	OverlayerStore,
+	PrivatePendingRequestDialog,
+	UpdateAccountDialog,
+	UserChangeNicknameDialog,
+} from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //
@@ -46,13 +55,83 @@ class OverlayerStoreVue extends OverlayerStore {
 			},
 		});
 	}
+
+	get_dyn_components() {
+		const ChangeFormatsColorsDialogComponent = defineAsyncComponent(
+			() => import("~/components/dialog/ChangeFormatsColorsDialog.vue"),
+		);
+		const UserChangeNickDialogComponent = defineAsyncComponent(
+			() => import("~/components/dialog/ChangeNickDialog.vue"),
+		);
+		const ChannelJoinDialogComponent = defineAsyncComponent(
+			() => import("~/components/dialog/ChannelJoinDialog.vue"),
+		);
+		const ChannelSettingsDialogComponent = defineAsyncComponent(
+			() => import("~/components/dialog/ChannelSettingsDialog.vue"),
+		);
+		const PrivatePendingRequestDialogComponent = defineAsyncComponent(
+			() => import("~/components/dialog/PrivatePendingRequestDialog.vue"),
+		);
+		const UpdateAccountDialogComponent = defineAsyncComponent(
+			() => import("~/components/dialog/UpdateAccountDialog.vue"),
+		);
+		const ChannelOptionsMenuComponent = defineAsyncComponent(
+			() => import("~/components/menu/ChannelOptionsMenu.vue"),
+		);
+		const ClientErrorComponent = defineAsyncComponent(
+			() => import("~/components/error/ClientError.vue"),
+		);
+		const ModulesProgressComponent = defineAsyncComponent(
+			() => import("~/components/progress/ModulesProgress.vue"),
+		);
+
+		return Array.from(this.data.layers.keys()).map((layer_id) => {
+			switch (layer_id) {
+				// Dialogs
+
+				case ChangeFormatsColorsDialog.ID:
+					return ChangeFormatsColorsDialogComponent;
+
+				case UserChangeNicknameDialog.ID:
+					return UserChangeNickDialogComponent;
+
+				case ChannelJoinDialog.ID:
+					return ChannelJoinDialogComponent;
+
+				case ChannelSettingsDialog.ID:
+					return ChannelSettingsDialogComponent;
+
+				case PrivatePendingRequestDialog.ID:
+					return PrivatePendingRequestDialogComponent;
+
+				case UpdateAccountDialog.ID:
+					return UpdateAccountDialogComponent;
+
+				// Menus
+
+				case ChannelOptionsMenu.ID:
+					return ChannelOptionsMenuComponent;
+
+				// General
+				case ClientErrorLayer.ID:
+					return ClientErrorComponent;
+
+				case LoadAllModulesLayer.ID:
+					return ModulesProgressComponent;
+			}
+
+			return {
+				err: `besoin de bind ${layer_id} dans get_dyn_components ;-)`,
+			};
+		});
+	}
 }
 
 // ----- //
 // Store //
 // ----- //
 
-export const use_overlayer_store = define_store(OverlayerStore.NAME, () => {
+export const use_overlayer_store = defineStore(OverlayerStore.NAME, () => {
 	const store = new OverlayerStoreVue(reactive(new OverlayerData()));
 
 	return {
@@ -72,6 +151,7 @@ export const use_overlayer_store = define_store(OverlayerStore.NAME, () => {
 		destroy: store.destroy.bind(store),
 		destroy_all: store.destroy_all.bind(store),
 		get: store.get.bind(store),
+		get_dyn_components: store.get_dyn_components.bind(store),
 		get_unchecked: store.get_unchecked.bind(store),
 		has: store.has.bind(store),
 		update: store.update.bind(store),
@@ -82,6 +162,6 @@ export const use_overlayer_store = define_store(OverlayerStore.NAME, () => {
 
 if (import.meta.hot) {
 	import.meta.hot.accept(
-		accept_hmr_update(use_overlayer_store, import.meta.hot),
+		acceptHMRUpdate(use_overlayer_store, import.meta.hot),
 	);
 }

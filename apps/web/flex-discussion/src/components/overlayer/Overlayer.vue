@@ -1,29 +1,10 @@
 <script setup lang="ts">
 import type { CSSProperties, HTMLAttributes } from "vue";
 
-import {
-	ChangeFormatsColorsDialog,
-	ChannelJoinDialog,
-	ChannelOptionsMenu,
-	ChannelSettingsDialog,
-	PrivatePendingRequestDialog,
-	UpdateAccountDialog,
-	UserChangeNicknameDialog,
-} from "@phisyx/flex-chat";
 import { vTrap } from "@phisyx/flex-vue-directives";
-import { shallowRef, watchEffect } from "vue";
+import { computed, shallowRef, watchEffect } from "vue";
 import { use_overlayer_store } from "~/store";
 import { use_overlayer } from "./Overlayer.hooks";
-
-import ChangeFormatsColorsDialogComponent from "../dialog/ChangeFormatsColorsDialog.vue";
-import ChangeNickDialogComponent from "../dialog/ChangeNickDialog.vue";
-import ChannelJoinDialogComponent from "../dialog/ChannelJoinDialog.vue";
-import ChannelSettingsDialogComponent from "../dialog/ChannelSettingsDialog.vue";
-import PrivatePendingRequestDialogComponent from "../dialog/PrivatePendingRequestDialog.vue";
-import UpdateAccountDialogComponent from "../dialog/UpdateAccountDialog.vue";
-import ClientError from "../error/ClientError.vue";
-import ChannelOptionsMenuComponent from "../menu/ChannelOptionsMenu.vue";
-import ModulesProgress from "../progress/ModulesProgress.vue";
 
 // --------- //
 // Composant //
@@ -35,6 +16,8 @@ let $overlayer = shallowRef<HTMLDivElement>();
 let $teleport = shallowRef<Array<HTMLDivElement>>();
 
 const { destroy_handler } = use_overlayer();
+
+let layers = computed(() => overlayer_store.get_dyn_components());
 
 watchEffect(() => {
 	if ($overlayer.value) {
@@ -53,37 +36,9 @@ watchEffect(() => {
 </script>
 
 <template>
-	<!--
-		TODO: Pour l'instant on met ça ici, mais à améliorer.
-	-->
-
-	<ChangeFormatsColorsDialogComponent
-		v-if="overlayer_store.has(ChangeFormatsColorsDialog.ID)"
-	/>
-	<ChangeNickDialogComponent
-		v-if="overlayer_store.has(UserChangeNicknameDialog.ID)"
-	/>
-	<ChannelJoinDialogComponent
-		v-if="overlayer_store.has(ChannelJoinDialog.ID)"
-	/>
-	<ChannelOptionsMenuComponent
-		v-if="overlayer_store.has(ChannelOptionsMenu.ID)"
-	/>
-	<ChannelSettingsDialogComponent
-		v-if="overlayer_store.has(ChannelSettingsDialog.ID)"
-	/>
-	<ClientError />
-	<ModulesProgress />
-	<PrivatePendingRequestDialogComponent
-		v-if="overlayer_store.has(PrivatePendingRequestDialog.ID)"
-	/>
-	<UpdateAccountDialogComponent
-		v-if="overlayer_store.has(UpdateAccountDialog.ID)"
-	/>
-
-	<!--
-		TODO: Pour l'instant on met ça ici, mais à améliorer.
-	-->
+	<template v-for="layer of layers">
+		<component :is="layer" />
+	</template>
 
 	<Transition name="fade">
 		<div v-if="overlayer_store.has_layers" id="overlayer">

@@ -23,6 +23,7 @@ export * from "./src/custom_room";
 export * from "./src/dialogs";
 export * from "./src/handlers/manager";
 export * from "./src/layers/channel_change_topic";
+export * from "./src/layers/client_error";
 export * from "./src/layers/load_all_modules";
 export * from "./src/localstorage/remember_me";
 export * from "./src/localstorage/settings_layout";

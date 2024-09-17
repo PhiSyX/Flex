@@ -11,6 +11,7 @@
 import type { Option } from "@phisyx/flex-safety";
 
 import type { ChannelRoom } from "../channel/room";
+import type { ClientErrorRecordLayer } from "../layers/client_error";
 import type { Room } from "../room";
 import type { OverlayerStore } from "./overlayer";
 import type { SettingsStore } from "./settings";
@@ -353,13 +354,7 @@ export class ChatStore implements ChatStoreInterface {
 
 	private _connect_user_info: Option<ConnectUserInfo> = None();
 	private _client: Option<Origin> = None();
-	public client_error: Option<{
-		id: string;
-		title?: string;
-		subtitle?: string;
-		problems?: HttpProblemErrorResponse["errors"];
-		data: unknown;
-	}> = None();
+	public client_error: Option<ClientErrorRecordLayer> = None();
 	private _channels_list: Array<GenericReply<"RPL_LIST">> = [];
 	protected _client_id_storage: ClientIDStorage = new ClientIDStorage();
 	private _network: Option<CustomRoomID> = None();

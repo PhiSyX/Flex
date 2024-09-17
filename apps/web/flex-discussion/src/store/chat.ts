@@ -32,6 +32,7 @@ import { useRouter as use_router } from "vue-router";
 import { is_string } from "@phisyx/flex-asserts";
 import {
 	ChatStore,
+	ClientErrorLayer,
 	View,
 	is_channel,
 	is_private_room,
@@ -138,7 +139,7 @@ export class ChatStoreVue
 
 	disconnect_error(comment: GenericReply<"ERROR"> | string) {
 		this._overlayer.create({
-			id: "error-layer",
+			id: ClientErrorLayer.ID,
 			centered: true,
 			on_close: () => {
 				this.client_error = None();
@@ -147,7 +148,7 @@ export class ChatStoreVue
 		});
 
 		this.client_error.replace({
-			id: "error-layer",
+			id: ClientErrorLayer.ID,
 			data: comment,
 		});
 	}
