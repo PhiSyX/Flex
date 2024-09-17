@@ -11,8 +11,7 @@
 import type {
 	DialogClass,
 	DialogInterface,
-	Layer,
-	ServerCustomRoom,
+	Layer
 } from "@phisyx/flex-chat";
 import type { Option } from "@phisyx/flex-safety";
 import type { DialogPresenter } from "./presenter";
@@ -22,11 +21,6 @@ import { None } from "@phisyx/flex-safety";
 // ---- //
 // Type //
 // ---- //
-
-export interface DialogViewProps {
-	// La chambre du serveur.
-	room: ServerCustomRoom;
-}
 
 type FIXME = any;
 

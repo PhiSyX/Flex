@@ -8,15 +8,44 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/api/channel_userlist_user_info";
-export * from "./src/components/custom_room_server";
-export * from "./src/components/dialog";
-export * from "./src/components/menu";
-export * from "./src/views/channel";
-export * from "./src/views/channel_list";
-export * from "./src/views/chat";
-export * from "./src/views/direct_access";
-export * from "./src/views/private";
-export * from "./src/views/private_list";
-export * from "./src/views/settings";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+	UserStore,
+} from "@phisyx/flex-chat";
 
+import { MenuChatManager } from "./datamanager/chat_data_manager";
+import { MenuOverlayerManager } from "./datamanager/overlayer_data_manager";
+import { MenuSettingsManager } from "./datamanager/settings_data_manager";
+import { MenuUserManager } from "./datamanager/user_data_manager";
+import { MenuInteractor } from "./interactor";
+import { MenuPresenter } from "./presenter";
+import { MenuView } from "./view";
+
+// -------------- //
+// Implémentation //
+// -------------- //
+
+export class MenuWireframe {
+	static create(
+		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store: OverlayerStore,
+		settings_store: SettingsStore,
+		user_store: UserStore,
+	) {
+		let interactor = new MenuInteractor(
+			new MenuPresenter(new MenuView()),
+			[
+				new MenuChatManager(chat_store),
+				new MenuOverlayerManager(overlayer_store),
+				new MenuSettingsManager(settings_store),
+				new MenuUserManager(user_store),
+			],
+		);
+		return interactor.presenter.view;
+	}
+
+	declare _: number;
+}

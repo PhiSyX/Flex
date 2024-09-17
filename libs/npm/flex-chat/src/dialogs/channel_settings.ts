@@ -21,9 +21,6 @@ import type { DialogInterface } from "./interface";
 export interface ChannelSettingsRecordDialog {
 	// Salon actif
 	room: ChannelRoom;
-	view: {
-		update_topic: (topic?: string) => void;
-	};
 	// Le client courant, qui est membre du salon.
 	currentClientChannelMember: Option<ChannelMember>;
 }

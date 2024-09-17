@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import type {
 	ChannelOptionsRecordMenu,
-	ChannelRoom,
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
 	OverlayerStore,
+	SettingsStore,
+	UserStore,
 } from "@phisyx/flex-chat";
+import type { MenuView } from "@phisyx/flex-chat-ui";
+import type { ComputedRef } from "vue";
 
-import { ChannelOptionsMenu, ChannelSettingsDialog } from "@phisyx/flex-chat";
-
-import { use_menu } from "~/hooks/menu";
-import { use_chat_store, use_overlayer_store } from "~/store";
+import { ChannelOptionsMenu } from "@phisyx/flex-chat";
+import { MenuWireframe } from "@phisyx/flex-chat-ui";
+import { computed, reactive } from "vue";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+	use_user_store,
+} from "~/store";
 
 import ChannelOptionsMenuComponent from "#/sys/menu_channel_options/ChannelOptionsMenu.template.vue";
 
@@ -16,52 +26,35 @@ import ChannelOptionsMenuComponent from "#/sys/menu_channel_options/ChannelOptio
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
-let overlayer_store = use_overlayer_store();
+let chat_store = use_chat_store().store;
+let overlayer_store = use_overlayer_store().store;
+let settings_store = use_settings_store().store;
+let user_store = use_user_store().store;
 
-let { close_menu, menu, teleport_id, layer_name, layer_unsafe } = use_menu<
-	ChannelOptionsMenu,
-	ChannelOptionsRecordMenu
->(ChannelOptionsMenu);
+let view = reactive(
+	MenuWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store as OverlayerStore,
+		settings_store as SettingsStore,
+		user_store as UserStore
+	) as MenuView
+);
 
-// ------- //
-// Handler //
-// ------- //
+view.define_menu(ChannelOptionsMenu);
 
-/**
- * Ouvre la boite de dialogue des paramètres du salon.
- */
-function open_channel_settings_handler() {
-	if (!layer_unsafe.value.data) {
-		return;
-	}
-
-	ChannelSettingsDialog.create(
-		overlayer_store.store as OverlayerStore,
-		layer_unsafe.value.data,
-	);
-
-	close_menu();
-}
-
-function part_channel_handler() {
-	if (!layer_unsafe.value.data) {
-		return;
-	}
-
-	let room: ChannelRoom = layer_unsafe.value.data.room;
-	chat_store.close_room(room.name);
-	close_menu();
-}
+let layer_name = computed(() => view.layer_name);
+let teleport_id = computed(() => view.teleport_id);
+let has_data = computed(() => view.has_data);
+let data: ComputedRef<ChannelOptionsRecordMenu> = computed(() => view.data);
 </script>
 
 <template>
-	<Teleport v-if="menu.exists() && layer_unsafe.data" defer :to="teleport_id">
+	<Teleport v-if="has_data" defer :to="teleport_id">
 		<ChannelOptionsMenuComponent
-			v-bind="layer_unsafe.data"
 			:layer-name="layer_name"
-			@open-channel-settings="open_channel_settings_handler"
-			@part-channel="part_channel_handler"
+			v-bind="data"
+			@open-channel-settings="view.open_channel_settings_handler"
+			@part-channel="view.part_channel_handler"
 		/>
 	</Teleport>
 </template>
