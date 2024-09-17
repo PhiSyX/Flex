@@ -62,7 +62,7 @@ export class CustomRoomServerView {
 	// L'URL du forum.
 	get forum_url() {
 		// @ts-expect-error - Vite env
-	 	return import.meta.env.VITE_APP_FORUM_URL || "#";
+		return import.meta.env.VITE_APP_FORUM_URL || "#";
 	}
 	// L'URL du vademecum.
 	get vademecum_url() {

@@ -1,8 +1,22 @@
 <script setup lang="ts">
-import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+	UserStore,
+} from "@phisyx/flex-chat";
+import type { DialogView } from "@phisyx/flex-chat-ui";
 
-import { use_dialog } from "~/hooks/dialog";
-import { use_chat_store } from "~/store";
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
+import { DialogWireframe } from "@phisyx/flex-chat-ui";
+import { computed, reactive } from "vue";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+	use_user_store,
+} from "~/store";
 
 import ChangeNickDialog from "#/sys/dialog_change_nick/ChangeNickDialog.template.vue";
 
@@ -10,31 +24,32 @@ import ChangeNickDialog from "#/sys/dialog_change_nick/ChangeNickDialog.template
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
+let chat_store = use_chat_store().store;
+let overlayer_store = use_overlayer_store().store;
+let settings_store = use_settings_store().store;
+let user_store = use_user_store().store;
 
-let { layer_name, dialog, teleport_id, close_dialog } = use_dialog(
-	UserChangeNicknameDialog,
+let view = reactive(
+	DialogWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store as OverlayerStore,
+		settings_store as SettingsStore,
+		user_store as UserStore,
+	) as DialogView,
 );
 
-// ------- //
-// Handler //
-// ------- //
+view.define_dialog(UserChangeNicknameDialog);
 
-/**
- * Envoie de la commande de changement de pseudo.
- */
-function send_change_nick_command_handler(nickname: string) {
-	chat_store.change_nick(nickname);
-	close_dialog();
-}
+let layer_name = computed(() => view.layer_name);
+let teleport_id = computed(() => view.teleport_id);
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists()" defer :to="teleport_id">
+	<Teleport defer :to="teleport_id">
 		<ChangeNickDialog
 			:layer-name="layer_name"
-			@close="close_dialog"
-			@submit="send_change_nick_command_handler"
+			@close="view.close_dialog"
+			@submit="view.send_change_nick_command_handler"
 		/>
 	</Teleport>
 </template>

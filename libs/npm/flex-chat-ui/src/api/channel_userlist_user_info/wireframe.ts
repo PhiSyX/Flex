@@ -8,7 +8,6 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-
 import { ChannelUserlistUserInfoAPIManager } from "./datamanager/api_data_manager";
 import { ChannelUserlistUserInfoInteractor } from "./interactor";
 import { ChannelUserlistUserInfoPresenter } from "./presenter";

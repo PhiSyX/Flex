@@ -21,7 +21,7 @@ const {
 } = defineProps<ChannelUserlistUserInfoViewProps>();
 
 let view = reactive(
-	ChannelUserlistUserInfoWireframe.create()
+	ChannelUserlistUserInfoWireframe.create(),
 ) as ChannelUserlistUserInfoView;
 
 view.define_props({
@@ -41,7 +41,7 @@ watch(data, (new_data) => {
 	if (isError) {
 		return;
 	}
-	view.set_response_from_api_user({ data: new_data })
+	view.set_response_from_api_user({ data: new_data });
 });
 </script>
 

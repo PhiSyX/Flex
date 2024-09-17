@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import type { PrivatePendingRequestRecordDialog } from "@phisyx/flex-chat";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	PrivatePendingRequestRecordDialog,
+	SettingsStore,
+	UserStore,
+} from "@phisyx/flex-chat";
+import type { DialogView } from "@phisyx/flex-chat-ui";
+import type { ComputedRef } from "vue";
 
 import { PrivatePendingRequestDialog } from "@phisyx/flex-chat";
-
-import { use_dialog } from "~/hooks/dialog";
-import { use_chat_store } from "~/store";
+import { DialogWireframe } from "@phisyx/flex-chat-ui";
+import { computed, reactive } from "vue";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+	use_user_store,
+} from "~/store";
 
 import PrivatePendingRequestDialogComponent from "#/sys/dialog_pending_request/PrivatePendingRequestDialog.template.vue";
 
@@ -12,50 +26,37 @@ import PrivatePendingRequestDialogComponent from "#/sys/dialog_pending_request/P
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
+let chat_store = use_chat_store().store;
+let overlayer_store = use_overlayer_store().store;
+let settings_store = use_settings_store().store;
+let user_store = use_user_store().store;
 
-let { layer_name, dialog, teleport_id, close_dialog, layer_unsafe } =
-	use_dialog<PrivatePendingRequestDialog, PrivatePendingRequestRecordDialog>(
-		PrivatePendingRequestDialog,
-	);
+let view = reactive(
+	DialogWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store as OverlayerStore,
+		settings_store as SettingsStore,
+		user_store as UserStore,
+	) as DialogView,
+);
 
-// ------- //
-// Handler //
-// ------- //
+view.define_dialog(PrivatePendingRequestDialog);
 
-/**
- * Envoie de la commande de changement de pseudo.
- */
-function accept() {
-	if (!layer_unsafe.value.data) {
-		return;
-	}
-
-	chat_store.accept_participant(layer_unsafe.value.data);
-	close_dialog();
-}
-
-function decline() {
-	if (!layer_unsafe.value.data) {
-		return;
-	}
-
-	chat_store.decline_participant(layer_unsafe.value.data);
-	close_dialog();
-}
+let layer_name = computed(() => view.layer_name);
+let teleport_id = computed(() => view.teleport_id);
+let has_data = computed(() => view.has_data);
+let data: ComputedRef<PrivatePendingRequestRecordDialog> = computed(
+	() => view.data,
+);
 </script>
 
 <template>
-	<Teleport
-		v-if="dialog.exists() && layer_unsafe.data"
-		defer
-		:to="teleport_id"
-	>
+	<Teleport v-if="has_data" defer :to="teleport_id">
 		<PrivatePendingRequestDialogComponent
 			:layer-name="layer_name"
-			:participant="layer_unsafe.data"
-			@submit="accept"
-			@close="decline"
+			:participant="data"
+			@submit="view.accept"
+			@close="view.decline"
 		/>
 	</Teleport>
 </template>

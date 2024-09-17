@@ -8,21 +8,46 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	PrivateParticipant,
+} from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class CustomRoomServerRouter {
-	static PARAM_CHANNELNAME = "channelname";
+export class DialogChatManager {
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
-	constructor(private router_acl: RouterAntiCorruptionLayer) {}
+	join(names: ChannelID, keys: string) {
+		this.store.join_channel(names, keys);
+	}
 
-	param_channelname(): ChannelID {
-		return this.router_acl
-			.param(CustomRoomServerRouter.PARAM_CHANNELNAME)
-			.as<ChannelID>()
-			.unwrap_unchecked();
+	change_nick(nickname: string) {
+		this.store.change_nick(nickname);
+	}
+
+	apply_channel_settings(
+		target: string,
+		modes_settings: Command<"MODE">["modes"],
+	) {
+		this.store.apply_channel_settings(target, modes_settings);
+	}
+
+	accept_participant(participant: PrivateParticipant) {
+		this.store.accept_participant(participant);
+	}
+	decline_participant(participant: PrivateParticipant) {
+		this.store.decline_participant(participant);
+	}
+
+	update_topic(channel_name: ChannelID, topic?: string) {
+		let module = this.store
+			.module_manager()
+			.get("TOPIC")
+			.expect("Récupération du module `TOPIC`");
+		module.send({ channel: channel_name, topic });
 	}
 }

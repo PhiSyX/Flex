@@ -27,8 +27,8 @@ let chat_store = use_chat_store().store;
 
 let view = reactive(
 	ChatWireframe.create(
-		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt
-	)
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+	),
 ) as ChatView;
 
 let custom_rooms_components = shallowRef({

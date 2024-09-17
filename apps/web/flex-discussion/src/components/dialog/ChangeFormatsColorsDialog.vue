@@ -1,9 +1,23 @@
 <script setup lang="ts">
-import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat";
-import { vMutation } from "@phisyx/flex-vue-directives";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+	UserStore,
+} from "@phisyx/flex-chat";
+import type { DialogView } from "@phisyx/flex-chat-ui";
 
-import { use_dialog } from "~/hooks/dialog";
-import { use_settings_store } from "~/store";
+import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat";
+import { DialogWireframe } from "@phisyx/flex-chat-ui";
+import { vMutation } from "@phisyx/flex-vue-directives";
+import { computed, reactive } from "vue";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+	use_user_store,
+} from "~/store";
 
 import ChangeFormatsColorsDialogComponent from "#/sys/dialog_change_formats_colors/ChangeFormatsColorsDialog.template.vue";
 
@@ -11,22 +25,34 @@ import ChangeFormatsColorsDialogComponent from "#/sys/dialog_change_formats_colo
 // Composant //
 // --------- //
 
-let settings_store = use_settings_store();
+let chat_store = use_chat_store().store;
+let overlayer_store = use_overlayer_store().store;
+let settings_store = use_settings_store().store;
+let user_store = use_user_store().store;
 
-let { teleport_id, dialog, update_dialog } = use_dialog(
-	ChangeFormatsColorsDialog,
+let view = reactive(
+	DialogWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store as OverlayerStore,
+		settings_store as SettingsStore,
+		user_store as UserStore,
+	) as DialogView,
 );
+
+view.define_dialog(ChangeFormatsColorsDialog);
+
+let teleport_id = computed(() => view.teleport_id);
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists()" defer :to="teleport_id">
+	<Teleport defer :to="teleport_id">
 		<ChangeFormatsColorsDialogComponent
-			v-model:bold="settings_store.text_format_bold_mut"
-			v-model:italic="settings_store.text_format_italic_mut"
-			v-model:underline="settings_store.text_format_underline_mut"
-			v-model:background="settings_store.text_color_background_mut"
-			v-model:foreground="settings_store.text_color_foreground_mut"
-			v-mutation:opt.attributes.children="update_dialog"
+			v-model:bold="view.text_format.bold"
+			v-model:italic="view.text_format.italic"
+			v-model:underline="view.text_format.underline"
+			v-model:background="view.text_colors.background"
+			v-model:foreground="view.text_colors.foreground"
+			v-mutation:opt.attributes.children="view.update_dialog"
 		/>
 	</Teleport>
 </template>

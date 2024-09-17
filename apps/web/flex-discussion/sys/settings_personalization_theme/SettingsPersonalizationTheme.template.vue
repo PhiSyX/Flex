@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Theme } from '@phisyx/flex-chat';
+import type { Theme } from "@phisyx/flex-chat";
 
 interface Props {
 	selected: { name: string; src: string };

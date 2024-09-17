@@ -1,20 +1,29 @@
 <script setup lang="ts">
 import type { CSSProperties, HTMLAttributes } from "vue";
 
+import {
+	ChangeFormatsColorsDialog,
+	ChannelJoinDialog,
+	ChannelOptionsMenu,
+	ChannelSettingsDialog,
+	PrivatePendingRequestDialog,
+	UpdateAccountDialog,
+	UserChangeNicknameDialog,
+} from "@phisyx/flex-chat";
 import { vTrap } from "@phisyx/flex-vue-directives";
 import { shallowRef, watchEffect } from "vue";
 import { use_overlayer_store } from "~/store";
 import { use_overlayer } from "./Overlayer.hooks";
 
-import UpdateAccountDialog from "~/components/dialog/UpdateAccountDialog.vue";
-import ModulesProgress from "~/components/progress/ModulesProgress.vue";
-import ChangeFormatsColorsDialog from "../dialog/ChangeFormatsColorsDialog.vue";
-import ChangeNickDialog from "../dialog/ChangeNickDialog.vue";
-import ChannelJoinDialog from "../dialog/ChannelJoinDialog.vue";
-import ChannelSettingsDialog from "../dialog/ChannelSettingsDialog.vue";
-import PrivatePendingRequestDialog from "../dialog/PrivatePendingRequestDialog.vue";
+import ChangeFormatsColorsDialogComponent from "../dialog/ChangeFormatsColorsDialog.vue";
+import ChangeNickDialogComponent from "../dialog/ChangeNickDialog.vue";
+import ChannelJoinDialogComponent from "../dialog/ChannelJoinDialog.vue";
+import ChannelSettingsDialogComponent from "../dialog/ChannelSettingsDialog.vue";
+import PrivatePendingRequestDialogComponent from "../dialog/PrivatePendingRequestDialog.vue";
+import UpdateAccountDialogComponent from "../dialog/UpdateAccountDialog.vue";
 import ClientError from "../error/ClientError.vue";
-import ChannelOptionsMenu from "../menu/ChannelOptionsMenu.vue";
+import ChannelOptionsMenuComponent from "../menu/ChannelOptionsMenu.vue";
+import ModulesProgress from "../progress/ModulesProgress.vue";
 
 // --------- //
 // Composant //
@@ -48,15 +57,29 @@ watchEffect(() => {
 		TODO: Pour l'instant on met ça ici, mais à améliorer.
 	-->
 
-	<ChangeFormatsColorsDialog />
-	<ChangeNickDialog />
-	<ChannelJoinDialog />
-	<ChannelOptionsMenu />
-	<ChannelSettingsDialog />
+	<ChangeFormatsColorsDialogComponent
+		v-if="overlayer_store.has(ChangeFormatsColorsDialog.ID)"
+	/>
+	<ChangeNickDialogComponent
+		v-if="overlayer_store.has(UserChangeNicknameDialog.ID)"
+	/>
+	<ChannelJoinDialogComponent
+		v-if="overlayer_store.has(ChannelJoinDialog.ID)"
+	/>
+	<ChannelOptionsMenuComponent
+		v-if="overlayer_store.has(ChannelOptionsMenu.ID)"
+	/>
+	<ChannelSettingsDialogComponent
+		v-if="overlayer_store.has(ChannelSettingsDialog.ID)"
+	/>
 	<ClientError />
 	<ModulesProgress />
-	<PrivatePendingRequestDialog />
-	<UpdateAccountDialog />
+	<PrivatePendingRequestDialogComponent
+		v-if="overlayer_store.has(PrivatePendingRequestDialog.ID)"
+	/>
+	<UpdateAccountDialogComponent
+		v-if="overlayer_store.has(UpdateAccountDialog.ID)"
+	/>
 
 	<!--
 		TODO: Pour l'instant on met ça ici, mais à améliorer.

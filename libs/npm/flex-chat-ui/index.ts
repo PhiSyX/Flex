@@ -10,6 +10,7 @@
 
 export * from "./src/api/channel_userlist_user_info";
 export * from "./src/components/custom_room_server";
+export * from "./src/components/dialog";
 export * from "./src/views/channel";
 export * from "./src/views/channel_list";
 export * from "./src/views/chat";

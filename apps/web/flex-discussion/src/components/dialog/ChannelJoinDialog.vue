@@ -1,9 +1,24 @@
 <script setup lang="ts">
-import type { ChannelJoinRecordDialog } from "@phisyx/flex-chat";
+import type {
+	ChannelJoinRecordDialog,
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+	UserStore,
+} from "@phisyx/flex-chat";
+import type { DialogView } from "@phisyx/flex-chat-ui";
+import type { ComputedRef } from "vue";
 
 import { ChannelJoinDialog } from "@phisyx/flex-chat";
-import { use_dialog } from "~/hooks/dialog";
-import { use_chat_store } from "~/store";
+import { DialogWireframe } from "@phisyx/flex-chat-ui";
+import { computed, reactive } from "vue";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+	use_user_store,
+} from "~/store";
 
 import ChannelJoinDialogComponent from "#/sys/dialog_channel_join/ChannelJoinDialog.template.vue";
 
@@ -11,32 +26,34 @@ import ChannelJoinDialogComponent from "#/sys/dialog_channel_join/ChannelJoinDia
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
+let chat_store = use_chat_store().store;
+let overlayer_store = use_overlayer_store().store;
+let settings_store = use_settings_store().store;
+let user_store = use_user_store().store;
 
-let { dialog, layer_name, layer_unsafe, teleport_id, close_dialog } =
-	use_dialog<ChannelJoinDialog, ChannelJoinRecordDialog>(ChannelJoinDialog);
+let view = reactive(
+	DialogWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store as OverlayerStore,
+		settings_store as SettingsStore,
+		user_store as UserStore,
+	) as DialogView,
+);
 
-// ------- //
-// Handler //
-// ------- //
+view.define_dialog(ChannelJoinDialog);
 
-function join_channel_handler(channels: ChannelID, keys: string) {
-	if (!channels) {
-		return;
-	}
-
-	chat_store.join_channel(channels, keys);
-	close_dialog();
-}
+let layer_name = computed(() => view.layer_name);
+let teleport_id = computed(() => view.teleport_id);
+let data: ComputedRef<ChannelJoinRecordDialog> = computed(() => view.data);
 </script>
 
 <template>
-	<Teleport v-if="dialog.exists()" defer :to="teleport_id">
+	<Teleport defer :to="teleport_id">
 		<ChannelJoinDialogComponent
 			:layer-name="layer_name"
-			v-bind="layer_unsafe.data || {}"
-			@close="close_dialog"
-			@submit="join_channel_handler"
+			v-bind="data"
+			@close="view.close_dialog"
+			@submit="view.join_channel_handler"
 		/>
 	</Teleport>
 </template>

@@ -30,8 +30,8 @@ let view = reactive(
 	SettingsWireframe.create(
 		new VueRouter(),
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
-		settings_store as SettingsStore
-	)
+		settings_store as SettingsStore,
+	),
 ) as SettingsView;
 </script>
 

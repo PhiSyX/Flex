@@ -34,8 +34,8 @@ let view = reactive(
 	CustomRoomServerWireframe.create(
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store as OverlayerStore,
-		settings_store as SettingsStore
-	)
+		settings_store as SettingsStore,
+	),
 ) as CustomRoomServerView;
 
 view.define_props({ room });
@@ -48,7 +48,7 @@ let vademecum_url = computed(() => view.vademecum_url);
 let completion_list = computed(() => view.completion_list);
 
 let current_client_user_nickname = computed(
-	() => view.current_client_user_nickname
+	() => view.current_client_user_nickname,
 );
 
 let text_format_bold = computed(() => view.text_format.bold);

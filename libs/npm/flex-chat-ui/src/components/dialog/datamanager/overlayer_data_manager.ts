@@ -8,29 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
-import type { Layer, OverlayerStore } from "../store";
+import type { OverlayerStore } from "@phisyx/flex-chat";
 
-// ---- //
-// Type //
-// ---- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export interface DialogClass<T> {
-	ID: string;
+export class DialogOverlayerManager {
+	constructor(public store: OverlayerStore) {}
 
-	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): T;
+	destroy_dialog(id: string) {
+		return this.store.destroy(id);
+	}
 
-	new (_: OverlayerStore): T;
+	has_data_dialog(id: string) {
+		return this.store.get(id).unwrap().data != null;
+	}
+
+	get_data_dialog(id: string) {
+		return this.store.get(id).unwrap().data || {};
+	}
+
+	is_dialog_exists(id: string) {
+		return this.store.has(id);
+	}
+
+	update_dialog(id: string) {
+		return this.store.update(id);
+	}
 }
-
-export interface DialogInterface<R = unknown> {
-	exists(): boolean;
-	get(): Option<Layer<R>>;
-	get_unchecked(): Layer<R>;
-	destroy(): void;
-}
-
-type Tail<T extends unknown[]> = T extends [infer _H, ...infer T] ? T : never;
-export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
-	Parameters<D["create"]>
->;

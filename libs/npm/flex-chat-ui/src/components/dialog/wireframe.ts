@@ -8,74 +8,44 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+	UserStore,
+} from "@phisyx/flex-chat";
 
-import type { Layer, OverlayerStore } from "../store";
-import type { DialogInterface } from "./interface";
-
-export interface ChannelJoinRecordDialog {
-	names?: string;
-	keys?: string;
-	marksKeysFieldAsError?: boolean;
-	withNotice?: boolean;
-}
+import { DialogChatManager } from "./datamanager/chat_data_manager";
+import { DialogOverlayerManager } from "./datamanager/overlayer_data_manager";
+import { DialogSettingsManager } from "./datamanager/settings_data_manager";
+import { DialogUserManager } from "./datamanager/user_data_manager";
+import { DialogInteractor } from "./interactor";
+import { DialogPresenter } from "./presenter";
+import { DialogView } from "./view";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class ChannelJoinDialog
-	implements DialogInterface<ChannelJoinRecordDialog>
-{
-	// ------ //
-	// Static //
-	// ------ //
-
-	static ID = "channel-join";
-
+export class DialogWireframe {
 	static create(
+		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store: OverlayerStore,
-		event?: Event,
-		record?: ChannelJoinRecordDialog,
+		settings_store: SettingsStore,
+		user_store: UserStore,
 	) {
-		overlayer_store.create({
-			id: ChannelJoinDialog.ID,
-			centered: true,
-			event: event,
-			data: record,
-		});
-
-		return new ChannelJoinDialog(overlayer_store);
+		let interactor = new DialogInteractor(
+			new DialogPresenter(new DialogView()),
+			[
+				new DialogChatManager(chat_store),
+				new DialogOverlayerManager(overlayer_store),
+				new DialogSettingsManager(settings_store),
+				new DialogUserManager(user_store),
+			],
+		);
+		return interactor.presenter.view;
 	}
 
-	static destroy(overlayer_store: OverlayerStore) {
-		overlayer_store.destroy(ChannelJoinDialog.ID);
-	}
-
-	// ----------- //
-	// Constructor //
-	// ----------- //
-	constructor(private overlayer_store: OverlayerStore) {}
-
-	// ------- //
-	// Méthode //
-	// ------- //
-
-	destroy() {
-		this.overlayer_store.destroy(ChannelJoinDialog.ID);
-	}
-
-	get(): Option<Layer<ChannelJoinRecordDialog>> {
-		return this.overlayer_store
-			.get(ChannelJoinDialog.ID)
-			.as<Layer<ChannelJoinRecordDialog>>();
-	}
-
-	get_unchecked(): Layer<ChannelJoinRecordDialog> {
-		return this.get().unwrap_unchecked();
-	}
-
-	exists(): boolean {
-		return this.overlayer_store.has(ChannelJoinDialog.ID);
-	}
+	declare _: number;
 }

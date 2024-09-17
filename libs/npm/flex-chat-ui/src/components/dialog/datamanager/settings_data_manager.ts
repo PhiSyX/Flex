@@ -8,29 +8,20 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
-import type { Layer, OverlayerStore } from "../store";
+import type { SettingsStore } from "@phisyx/flex-chat";
 
-// ---- //
-// Type //
-// ---- //
+// -------------- //
+// Implémentation //
+// -------------- //
 
-export interface DialogClass<T> {
-	ID: string;
+export class DialogSettingsManager {
+	constructor(public store: SettingsStore) {}
 
-	create(overlayer_store: OverlayerStore, ...args: Array<unknown>): T;
+	layout_settings() {
+		return this.store.get_layout();
+	}
 
-	new (_: OverlayerStore): T;
+	personalization_settings() {
+		return this.store.get_personalization();
+	}
 }
-
-export interface DialogInterface<R = unknown> {
-	exists(): boolean;
-	get(): Option<Layer<R>>;
-	get_unchecked(): Layer<R>;
-	destroy(): void;
-}
-
-type Tail<T extends unknown[]> = T extends [infer _H, ...infer T] ? T : never;
-export type DialogArgs<D extends DialogClass<DialogInterface<R>>, R> = Tail<
-	Parameters<D["create"]>
->;

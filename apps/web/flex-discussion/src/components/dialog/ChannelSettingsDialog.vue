@@ -1,9 +1,24 @@
 <script lang="ts" setup>
-import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat";
-import { ChannelSettingsDialog } from "@phisyx/flex-chat";
+import type {
+	ChannelSettingsRecordDialog,
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+	OverlayerStore,
+	SettingsStore,
+	UserStore,
+} from "@phisyx/flex-chat";
+import type { DialogView } from "@phisyx/flex-chat-ui";
+import type { ComputedRef } from "vue";
 
-import { use_dialog } from "~/hooks/dialog";
-import { use_chat_store } from "~/store";
+import { ChannelSettingsDialog } from "@phisyx/flex-chat";
+import { DialogWireframe } from "@phisyx/flex-chat-ui";
+import { computed, reactive } from "vue";
+import {
+	use_chat_store,
+	use_overlayer_store,
+	use_settings_store,
+	use_user_store,
+} from "~/store";
 
 import ChannelSettingsDialogComponent from "#/sys/dialog_channel_settings/ChannelSettingsDialog.template.vue";
 
@@ -11,60 +26,36 @@ import ChannelSettingsDialogComponent from "#/sys/dialog_channel_settings/Channe
 // Composant //
 // --------- //
 
-let chat_store = use_chat_store();
+let chat_store = use_chat_store().store;
+let overlayer_store = use_overlayer_store().store;
+let settings_store = use_settings_store().store;
+let user_store = use_user_store().store;
 
-let { dialog, close_dialog, teleport_id, layer_name, layer_unsafe } =
-	use_dialog<ChannelSettingsDialog, ChannelSettingsRecordDialog>(
-		ChannelSettingsDialog,
-	);
+let view = reactive(
+	DialogWireframe.create(
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
+		overlayer_store as OverlayerStore,
+		settings_store as SettingsStore,
+		user_store as UserStore,
+	) as DialogView,
+);
 
-// ------- //
-// Handler //
-// ------- //
+view.define_dialog(ChannelSettingsDialog);
 
-/**
- * Soumission du formulaire.
- */
-function submit_form_data_handler(
-	modes_settings: Partial<Command<"MODE">["modes"]>,
-) {
-	if (!layer_unsafe.value.data) {
-		return;
-	}
-
-	chat_store.apply_channel_settings(
-		layer_unsafe.value.data.room.name,
-		modes_settings as Command<"MODE">["modes"],
-	);
-}
-
-/**
- * Mise à jour du sujet.
- */
-function update_topic_handler(topic?: string) {
-	if (
-		!layer_unsafe.value.data ||
-		layer_unsafe.value.data.room.topic.get() === topic
-	) {
-		return;
-	}
-
-	layer_unsafe.value.data.view.update_topic(topic);
-}
+let layer_name = computed(() => view.layer_name);
+let teleport_id = computed(() => view.teleport_id);
+let has_data = computed(() => view.has_data);
+let data: ComputedRef<ChannelSettingsRecordDialog> = computed(() => view.data);
 </script>
 
 <template>
-	<Teleport
-		v-if="dialog.exists() && layer_unsafe.data"
-		:to="teleport_id"
-		defer
-	>
+	<Teleport v-if="has_data" :to="teleport_id" defer>
 		<ChannelSettingsDialogComponent
 			:layer-name="layer_name"
-			v-bind="layer_unsafe.data"
-			@close="close_dialog"
-			@submit="submit_form_data_handler"
-			@update-topic="update_topic_handler"
+			v-bind="data"
+			@close="view.close_dialog"
+			@submit="view.submit_form_data_handler"
+			@update-topic="view.update_topic_handler"
 		/>
 	</Teleport>
 </template>
