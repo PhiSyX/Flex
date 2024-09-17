@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 import type { Option } from "@phisyx/flex-safety";
-
 import type { ChannelRoom } from "../channel/room";
 import type { ClientErrorRecordLayer } from "../layers/client_error";
 import type { Room } from "../room";
@@ -326,6 +326,8 @@ export interface ChatStoreInterfaceExt {
 	 * Joue un audio.
 	 */
 	play_audio(src: this["audio_src"]): void;
+
+	router(): RouterAntiCorruptionLayer;
 
 	/**
 	 * Émet les commandes au serveur.

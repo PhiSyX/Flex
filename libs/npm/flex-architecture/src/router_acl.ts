@@ -13,6 +13,6 @@ import type { Option } from "@phisyx/flex-safety";
 export abstract class RouterAntiCorruptionLayer {
 	abstract back(): void;
 	abstract forward(): void;
-	abstract goto(name: string): void;
+	abstract goto(name: string, params?: object): void;
 	abstract param(name: string): Option<string>;
 }

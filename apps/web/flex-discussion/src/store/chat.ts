@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import type {
 	ChatStoreInterfaceExt,
@@ -18,7 +19,6 @@ import type {
 	UserStore,
 } from "@phisyx/flex-chat/store";
 import type { ComputedRef } from "vue";
-import type { Router } from "vue-router";
 
 import { is_string } from "@phisyx/flex-asserts";
 import { is_channel, is_private_room } from "@phisyx/flex-chat/asserts/room";
@@ -33,6 +33,7 @@ import {
 import { io } from "socket.io-client";
 import { computed, reactive } from "vue";
 import { useRouter as use_router } from "vue-router";
+import { VueRouter } from "~/router";
 import { use_overlayer_store } from "./overlayer";
 import { use_settings_store } from "./settings";
 import { use_user_store } from "./user";
@@ -48,7 +49,7 @@ export class ChatStoreVue
 {
 	audio_src: ChatStoreInterfaceExt["audio_src"] = null;
 
-	private _router = use_router();
+	private _router = new VueRouter();
 
 	private _overlayer = use_overlayer_store() as unknown as OverlayerStore;
 	private _user = use_user_store() as unknown as UserStore;
@@ -63,24 +64,20 @@ export class ChatStoreVue
 			let servername = cs.network_name();
 
 			if (is_channel(room_id)) {
-				cs.router().push({
-					name: View.Channel,
+				cs.router().goto(View.Channel, {
 					params: {
 						servername,
 						channelname: room_id,
 					},
 				});
 			} else if (is_string(room_id) && !room_id.startsWith("@")) {
-				cs.router().push({
-					name: View.Private,
+				cs.router().goto(View.Private, {
 					params: {
 						id: room_id,
 					},
 				});
 			} else {
-				cs.router().push({
-					name: View.Chat,
-				});
+				cs.router().goto(View.Chat);
 			}
 		});
 		return cs;
@@ -309,7 +306,7 @@ export class ChatStoreVue
 		return this._overlayer;
 	}
 
-	router(): Router {
+	router(): RouterAntiCorruptionLayer {
 		return this._router;
 	}
 

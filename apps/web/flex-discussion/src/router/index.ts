@@ -29,8 +29,8 @@ export class VueRouter implements RouterAntiCorruptionLayer {
 		this.inner.forward();
 	}
 
-	goto(name: string) {
-		this.inner.push({ name });
+	goto(name: string, opt: object = {}) {
+		this.inner.push({ name, ...opt });
 	}
 
 	param(name: string): Option<string> {
