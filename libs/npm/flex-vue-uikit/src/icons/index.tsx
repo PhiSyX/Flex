@@ -77,7 +77,11 @@ export function ButtonIcon(props: ButtonProps): JSX.Element {
 	assert_icon(IconName);
 	const { iconAttrs, ...attrs } = props;
 	return (
-		<button type="button" {...attrs} class="btn flex:shrink=0">
+		<button
+			type="button"
+			{...attrs}
+			class="btn flex:shrink=0"
+		>
 			<IconName {...iconAttrs} />
 		</button>
 	);

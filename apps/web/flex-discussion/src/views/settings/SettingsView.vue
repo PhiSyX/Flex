@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-
+import type { SettingsView } from "@phisyx/flex-chat-ui/views/settings";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 	SettingsStore,
-} from "@phisyx/flex-chat";
-import type { SettingsView } from "@phisyx/flex-chat-ui/views/settings";
+} from "@phisyx/flex-chat/store";
 
 import { SettingsWireframe } from "@phisyx/flex-chat-ui/views/settings";
 import { UiButton } from "@phisyx/flex-vue-uikit";
+import { reactive } from "vue";
 import { VueRouter } from "~/router";
 import { use_chat_store, use_settings_store } from "~/store";
 

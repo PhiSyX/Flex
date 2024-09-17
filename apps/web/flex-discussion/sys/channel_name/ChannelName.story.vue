@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { ChannelAccessLevel, ChannelAccessLevelFlag } from "@phisyx/flex-chat";
+import {
+	ChannelAccessLevel,
+	ChannelAccessLevelFlag,
+} from "@phisyx/flex-chat/channel/access_level";
 
 import ChannelName from "./ChannelName.template.vue";
 

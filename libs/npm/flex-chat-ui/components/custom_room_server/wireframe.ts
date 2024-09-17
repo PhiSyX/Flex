@@ -13,8 +13,7 @@ import type {
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
-} from "@phisyx/flex-chat";
-
+} from "@phisyx/flex-chat/store";
 import { CustomRoomServerChatManager } from "./datamanager/chat_data_manager";
 import { CustomRoomServerOverlayerManager } from "./datamanager/overlayer_data_manager";
 import { CustomRoomServerSettingsManager } from "./datamanager/settings_data_manager";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrivateParticipant } from "@phisyx/flex-chat";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 
 import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 

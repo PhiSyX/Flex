@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ThemeRecord } from "@phisyx/flex-chat";
 import type { SettingsView } from "@phisyx/flex-chat-ui/views/settings";
+import type { ThemeRecord } from "@phisyx/flex-chat/theme";
 
 import { computed, onActivated } from "vue";
 

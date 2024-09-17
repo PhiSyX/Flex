@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import {
-	type ChannelMember,
-	type ChannelMemberFiltered,
-	type ChannelMemberUnfiltered,
-	type User,
-	is_channel_member,
-} from "@phisyx/flex-chat";
-
+import { is_channel_member } from "@phisyx/flex-chat/asserts/room";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type {
+	ChannelMemberFiltered,
+	ChannelMemberUnfiltered,
+} from "@phisyx/flex-chat/channel/member/filtered";
+import type { User } from "@phisyx/flex-chat/user";
 import { computed } from "vue";
 
 import Avatar from "#/api/avatar/Avatar.vue";

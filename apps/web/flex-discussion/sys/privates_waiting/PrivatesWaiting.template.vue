@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrivateRoom } from "@phisyx/flex-chat";
+import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
 import { computed } from "vue";
 import PrivatesWaitingItem from "./PrivatesWaitingItem.vue";

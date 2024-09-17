@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { RememberMeStorage } from "@phisyx/flex-chat";
+import { RememberMeStorage } from "@phisyx/flex-chat/localstorage/remember_me";
 
 // --------- //
 // Interface //

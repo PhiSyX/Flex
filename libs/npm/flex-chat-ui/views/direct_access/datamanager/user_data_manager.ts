@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { UserStore } from "@phisyx/flex-chat/store";
+import type { UserSession } from "@phisyx/flex-chat/user/session";
 import type { Option } from "@phisyx/flex-safety";
-
-import type { UserSession, UserStore } from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //

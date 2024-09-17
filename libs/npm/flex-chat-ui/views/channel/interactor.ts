@@ -8,15 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	ChannelAccessLevelFlag,
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelOptionsRecordMenu,
-	ChannelRoom,
-	ChannelSettingsRecordDialog,
-	Layer,
-} from "@phisyx/flex-chat";
+import type { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
+import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs";
+import type { ChannelOptionsRecordMenu } from "@phisyx/flex-chat/menu";
+import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 import type { ChannelChatManager } from "./datamanager/chat_data_manager";
 import type { ChannelOverlayerManager } from "./datamanager/overlayer_data_manager";

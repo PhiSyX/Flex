@@ -10,7 +10,7 @@
 
 import type { RouteRecordRaw } from "vue-router";
 
-import { View } from "@phisyx/flex-chat";
+import { View } from "@phisyx/flex-chat/view";
 
 // -------- //
 // Constant //

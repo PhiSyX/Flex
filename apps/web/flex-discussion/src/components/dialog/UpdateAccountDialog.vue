@@ -1,17 +1,17 @@
 <script setup lang="ts">
+import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
+import type { UpdateAccountRecordDialog } from "@phisyx/flex-chat/dialogs/update_account";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
-	UpdateAccountRecordDialog,
 	UserStore,
-} from "@phisyx/flex-chat";
-import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
+} from "@phisyx/flex-chat/store";
 import type { ComputedRef } from "vue";
 
-import { UpdateAccountDialog } from "@phisyx/flex-chat";
 import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
+import { UpdateAccountDialog } from "@phisyx/flex-chat/dialogs/update_account";
 import { computed, onMounted, reactive } from "vue";
 import {
 	use_chat_store,

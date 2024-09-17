@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PrivateParticipant } from "@phisyx/flex-chat";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 
 // ---- //
 // Type //

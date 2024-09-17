@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Option } from "@phisyx/flex-safety";
 
 import { UiMenu, UiMenuItem } from "@phisyx/flex-vue-uikit";

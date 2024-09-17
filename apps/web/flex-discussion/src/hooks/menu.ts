@@ -11,8 +11,8 @@
 import type {
 	MenuClass,
 	MenuInterface,
-	OverlayerStore,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/menu/interface";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 
 import { computed } from "vue";
 

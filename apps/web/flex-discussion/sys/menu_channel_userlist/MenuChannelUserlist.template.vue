@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import type { ChannelMember, ChannelMemberSelected } from "@phisyx/flex-chat";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
 
+import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
 import { computed } from "vue";
 
-import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
 import { UiButton } from "@phisyx/flex-vue-uikit";
-
 import ChannelUserlistAdminOperatorMenu from "./MenuChannelUserlistAccessLevelAOP.vue";
 import ChannelUserlistHalfOperatorMenu from "./MenuChannelUserlistAccessLevelHOP.vue";
 import ChannelUserlistOperatorMenu from "./MenuChannelUserlistAccessLevelOP.vue";
 import ChannelUserlistOwnerMenu from "./MenuChannelUserlistAccessLevelQOP.vue";
-
 // ---- //
 // Type //
 // ---- //

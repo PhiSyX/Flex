@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat";
+import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs";
 import type { MenuChatManager } from "./datamanager/chat_data_manager";
 import type { MenuOverlayerManager } from "./datamanager/overlayer_data_manager";
 import type { MenuSettingsManager } from "./datamanager/settings_data_manager";

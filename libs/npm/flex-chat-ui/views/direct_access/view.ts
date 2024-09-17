@@ -9,11 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
-import type { UserSession } from "@phisyx/flex-chat";
+import type { UserSession } from "@phisyx/flex-chat/user/session";
 import type { Option } from "@phisyx/flex-safety";
 import type { DirectAccessPresenter } from "./presenter";
 
-import { View } from "@phisyx/flex-chat";
+import { View } from "@phisyx/flex-chat/view";
 import { None } from "@phisyx/flex-safety";
 import { DirectAccessFormData } from "./formdata";
 import { DirectAccessFormError } from "./formerror";

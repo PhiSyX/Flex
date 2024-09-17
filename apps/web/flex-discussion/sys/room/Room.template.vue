@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Room } from "@phisyx/flex-chat";
+import type { Room } from "@phisyx/flex-chat/room";
 
 import { computed } from "vue";
 

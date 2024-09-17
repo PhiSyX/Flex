@@ -4,14 +4,15 @@ import type {
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	UserStore,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store";
 
 import {
-	HANDLERS,
-	MODULES_REPLIES_HANDLERS,
-	RememberMeStorage,
-} from "@phisyx/flex-chat";
-import { DirectAccessView, DirectAccessWireframe } from "@phisyx/flex-chat-ui/views/direct_access";
+	DirectAccessView,
+	DirectAccessWireframe,
+} from "@phisyx/flex-chat-ui/views/direct_access";
+import { HANDLERS } from "@phisyx/flex-chat/handlers";
+import { RememberMeStorage } from "@phisyx/flex-chat/localstorage/remember_me";
+import { MODULES_REPLIES_HANDLERS } from "@phisyx/flex-chat/modules";
 import {
 	ButtonIcon,
 	InputSwitch,

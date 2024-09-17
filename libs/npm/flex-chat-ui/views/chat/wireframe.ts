@@ -11,7 +11,7 @@
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store";
 
 import { ChannelChatManager } from "./datamanager/chat_data_manager";
 import { ChatInteractor } from "./interactor";

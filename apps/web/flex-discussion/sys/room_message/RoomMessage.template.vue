@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { computed, inject } from "vue";
+import type { RoomMessage } from "@phisyx/flex-chat/room/message";
 
 import { camelcase, kebabcase } from "@phisyx/flex-capitalization";
-import {
-	ChannelMember,
-	PrivateParticipant,
-	type RoomMessage,
-	is_channel,
-} from "@phisyx/flex-chat";
+import { is_channel } from "@phisyx/flex-chat/asserts/room";
+import { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import { None, Some } from "@phisyx/flex-safety";
+import { computed, inject } from "vue";
 
 import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";
 import Match from "#/sys/match/Match.vue";

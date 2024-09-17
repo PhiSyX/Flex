@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import type {
-	ChannelOptionsRecordMenu,
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	OverlayerStore,
-	SettingsStore,
-	UserStore,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
+
 import type { MenuView } from "@phisyx/flex-chat-ui/components/menu";
+import type { ChannelOptionsRecordMenu } from "@phisyx/flex-chat/menu/channel_options";
 import type { ComputedRef } from "vue";
 
-import { ChannelOptionsMenu } from "@phisyx/flex-chat";
 import { MenuWireframe } from "@phisyx/flex-chat-ui/components/menu";
+import { ChannelOptionsMenu } from "@phisyx/flex-chat/menu/channel_options";
 import { computed, reactive } from "vue";
 import {
 	use_chat_store,
@@ -36,8 +37,8 @@ let view = reactive(
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store as OverlayerStore,
 		settings_store as SettingsStore,
-		user_store as UserStore
-	) as MenuView
+		user_store as UserStore,
+	) as MenuView,
 );
 
 view.define_menu(ChannelOptionsMenu);

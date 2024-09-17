@@ -9,7 +9,10 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
-import type { ChatStoreInterface, OverlayerStore } from "@phisyx/flex-chat";
+import type {
+	ChatStoreInterface,
+	OverlayerStore,
+} from "@phisyx/flex-chat/store";
 
 import { ChannelListChatManager } from "./datamanager/chat_data_manager";
 import { ChannelListOverlayerManager } from "./datamanager/overlayer_data_manager";

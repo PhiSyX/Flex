@@ -14,8 +14,7 @@ import type {
 	OverlayerStore,
 	SettingsStore,
 	UserStore,
-} from "@phisyx/flex-chat";
-
+} from "@phisyx/flex-chat/store";
 import { MenuChatManager } from "./datamanager/chat_data_manager";
 import { MenuOverlayerManager } from "./datamanager/overlayer_data_manager";
 import { MenuSettingsManager } from "./datamanager/settings_data_manager";
@@ -35,15 +34,12 @@ export class MenuWireframe {
 		settings_store: SettingsStore,
 		user_store: UserStore,
 	) {
-		let interactor = new MenuInteractor(
-			new MenuPresenter(new MenuView()),
-			[
-				new MenuChatManager(chat_store),
-				new MenuOverlayerManager(overlayer_store),
-				new MenuSettingsManager(settings_store),
-				new MenuUserManager(user_store),
-			],
-		);
+		let interactor = new MenuInteractor(new MenuPresenter(new MenuView()), [
+			new MenuChatManager(chat_store),
+			new MenuOverlayerManager(overlayer_store),
+			new MenuSettingsManager(settings_store),
+			new MenuUserManager(user_store),
+		]);
 		return interactor.presenter.view;
 	}
 

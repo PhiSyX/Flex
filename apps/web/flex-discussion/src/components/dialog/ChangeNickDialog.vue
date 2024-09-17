@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
 	UserStore,
-} from "@phisyx/flex-chat";
-import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
+} from "@phisyx/flex-chat/store";
 
-import { UserChangeNicknameDialog } from "@phisyx/flex-chat";
 import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat/dialogs/user_change_nickname";
 import { computed, reactive } from "vue";
 import {
 	use_chat_store,

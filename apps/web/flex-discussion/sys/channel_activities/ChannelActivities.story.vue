@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import type { ChannelActivitiesView } from "@phisyx/flex-chat";
+import type { ChannelActivitiesView } from "@phisyx/flex-chat/channel/activity";
 import type { Option } from "@phisyx/flex-safety";
 
-import { ChannelMember, ChannelRoom, RoomMessage } from "@phisyx/flex-chat";
+import { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import { ChannelRoom } from "@phisyx/flex-chat/channel/room";
+import { RoomMessage } from "@phisyx/flex-chat/room/message";
 import { format_date } from "@phisyx/flex-date";
 import { None, Some } from "@phisyx/flex-safety";
 

@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import type {
-	ChannelActivitiesView,
-	ChannelMember,
-	ChannelRoom,
-} from "@phisyx/flex-chat";
+import type { ChannelActivitiesView } from "@phisyx/flex-chat/channel/activity";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Option } from "@phisyx/flex-safety";
 
-import { computed, inject } from "vue";
-
 import { camelcase } from "@phisyx/flex-capitalization";
+import { computed, inject } from "vue";
 
 import ChannelName from "../channel_name/ChannelName.template.vue";
 import Match from "../match/Match.vue";

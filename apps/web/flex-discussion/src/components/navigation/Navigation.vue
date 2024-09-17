@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useRouter as use_router } from "vue-router";
 
-import { View } from "@phisyx/flex-chat";
+import { View } from "@phisyx/flex-chat/view";
 
 import { use_chat_store, use_settings_store } from "~/store";
 

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ChannelMember, ChannelMemberSelected, User } from "@phisyx/flex-chat";
+import { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
+import { User } from "@phisyx/flex-chat/user";
 
 import ChannelUserlistMenu from "./MenuChannelUserlist.template.vue";
 

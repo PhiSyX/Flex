@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type {
-	ChannelMember,
 	ChannelMemberFiltered,
 	ChannelMemberUnfiltered,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/channel/member/filtered";
 
 import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";
 

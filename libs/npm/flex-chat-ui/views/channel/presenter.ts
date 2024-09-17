@@ -9,18 +9,16 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
-import type {
-	ChannelAccessLevelFlag,
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelRoom,
-	Layer,
-} from "@phisyx/flex-chat";
+import type { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
+import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 import type { ChannelInteractor } from "./interactor";
 import type { ChannelView } from "./view";
 
-import { NoticesCustomRoom } from "@phisyx/flex-chat";
+import { NoticesCustomRoom } from "@phisyx/flex-chat/custom_room/notices";
 import { assert_non_null, None } from "@phisyx/flex-safety";
 import { ChannelRouter } from "./router";
 

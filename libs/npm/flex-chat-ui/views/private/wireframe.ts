@@ -14,7 +14,7 @@ import type {
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store";
 
 import { PrivateChatManager } from "./datamanager/chat_data_manager";
 import { PrivateOverlayerManager } from "./datamanager/overlayer_data_manager";

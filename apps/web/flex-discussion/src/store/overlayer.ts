@@ -14,16 +14,15 @@ import { computed, defineAsyncComponent, reactive, readonly } from "vue";
 import {
 	ChangeFormatsColorsDialog,
 	ChannelJoinDialog,
-	ChannelOptionsMenu,
 	ChannelSettingsDialog,
-	ClientErrorLayer,
-	LoadAllModulesLayer,
-	OverlayerData,
-	OverlayerStore,
 	PrivatePendingRequestDialog,
 	UpdateAccountDialog,
 	UserChangeNicknameDialog,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/dialogs";
+import { ClientErrorLayer } from "@phisyx/flex-chat/layers/client_error";
+import { LoadAllModulesLayer } from "@phisyx/flex-chat/layers/load_all_modules";
+import { ChannelOptionsMenu } from "@phisyx/flex-chat/menu/channel_options";
+import { OverlayerData, OverlayerStore } from "@phisyx/flex-chat/store";
 
 // -------------- //
 // Implémentation //

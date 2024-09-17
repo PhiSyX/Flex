@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
 	UserStore,
-} from "@phisyx/flex-chat";
-import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
+} from "@phisyx/flex-chat/store";
 
-import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat";
 import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
+import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat/dialogs/change_formats_colors";
 import { vMutation } from "@phisyx/flex-vue-directives";
 import { computed, reactive } from "vue";
 import {

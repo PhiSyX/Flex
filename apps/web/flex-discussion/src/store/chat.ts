@@ -8,19 +8,24 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ComputedRef } from "vue";
-import type { Router } from "vue-router";
-
+import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import type {
 	ChatStoreInterfaceExt,
 	ChatStoreUUIDExt,
 	OverlayerStore,
-	PrivateRoom,
 	UUIDStore,
 	UUIDVariant,
 	UserStore,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store";
+import type { ComputedRef } from "vue";
+import type { Router } from "vue-router";
 
+import { is_string } from "@phisyx/flex-asserts";
+import { is_channel, is_private_room } from "@phisyx/flex-chat/asserts/room";
+import { ClientErrorLayer } from "@phisyx/flex-chat/layers/client_error";
+import { ChatStore } from "@phisyx/flex-chat/store";
+import { View } from "@phisyx/flex-chat/view";
+import { None } from "@phisyx/flex-safety";
 import {
 	acceptHMRUpdate as accept_hmr_update,
 	defineStore as define_store,
@@ -28,17 +33,6 @@ import {
 import { io } from "socket.io-client";
 import { computed, reactive } from "vue";
 import { useRouter as use_router } from "vue-router";
-
-import { is_string } from "@phisyx/flex-asserts";
-import {
-	ChatStore,
-	ClientErrorLayer,
-	View,
-	is_channel,
-	is_private_room,
-} from "@phisyx/flex-chat";
-import { None } from "@phisyx/flex-safety";
-
 import { use_overlayer_store } from "./overlayer";
 import { use_settings_store } from "./settings";
 import { use_user_store } from "./user";

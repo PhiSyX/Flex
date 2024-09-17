@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Layer } from "@phisyx/flex-chat";
+import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 import type { CustomRoomServerInteractor } from "./interactor";
 import type { CustomRoomServerView } from "./view";

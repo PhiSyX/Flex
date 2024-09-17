@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import type {
-	ChannelAccessLevelFlag,
-	ChannelActivitiesView,
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelRoom,
-} from "@phisyx/flex-chat";
+import type { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
+import type { ChannelActivitiesView } from "@phisyx/flex-chat/channel/activity";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Option } from "@phisyx/flex-safety";
 
 import { computed, ref } from "vue";
-
-import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
-
 import { use_channel_topic } from "./ChannelRoom.hooks";
 
 import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
@@ -19,6 +14,7 @@ import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue
 import Match from "#/sys/match/Match.vue";
 import MenuChannelUserlist from "#/sys/menu_channel_userlist/MenuChannelUserlist.template.vue";
 import Room from "#/sys/room/Room.template.vue";
+import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //

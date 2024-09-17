@@ -9,16 +9,18 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type {
-	ChatStoreInterface,
-	ChatStoreInterfaceExt,
 	CommandInterface,
 	Module,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/modules/interface";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+} from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 import type { DirectAccessFormData } from "../formdata";
 import type { DirectAccessInteractor } from "../interactor";
 
-import { HandlerManager } from "@phisyx/flex-chat";
+import { HandlerManager } from "@phisyx/flex-chat/handlers/manager";
 import { None } from "@phisyx/flex-safety";
 
 // -------------- //

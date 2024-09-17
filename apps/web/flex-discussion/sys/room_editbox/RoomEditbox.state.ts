@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Room } from "@phisyx/flex-chat";
+import type { Room } from "@phisyx/flex-chat/room";
 
 import { ref } from "vue";
 

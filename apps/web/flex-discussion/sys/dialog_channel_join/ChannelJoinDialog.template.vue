@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import { cast_to_channel_id } from "@phisyx/flex-chat/asserts/room";
 import { ref } from "vue";
-
-import { cast_to_channel_id } from "@phisyx/flex-chat";
 
 import { Alert, Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 

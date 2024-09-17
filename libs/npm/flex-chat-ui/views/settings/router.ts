@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
-import type { View } from "@phisyx/flex-chat";
+import type { View } from "@phisyx/flex-chat/view";
 
 // -------------- //
 // Implémentation //

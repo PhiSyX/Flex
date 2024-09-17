@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { PrivateView } from "@phisyx/flex-chat-ui/views/private";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
-} from "@phisyx/flex-chat";
-import type { PrivateView } from "@phisyx/flex-chat-ui/views/private";
+} from "@phisyx/flex-chat/store";
 
 import { PrivateWireframe } from "@phisyx/flex-chat-ui/views/private";
 import { computed, onActivated, onDeactivated, onMounted, reactive } from "vue";

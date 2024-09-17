@@ -8,17 +8,17 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
+import type { CommandInterface } from "@phisyx/flex-chat/modules/interface";
 import type {
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelRoom,
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	CommandInterface,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 
-import { ChannelAccessLevelFlag } from "@phisyx/flex-chat";
+import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
 import { None } from "@phisyx/flex-safety";
 
 // -------------- //

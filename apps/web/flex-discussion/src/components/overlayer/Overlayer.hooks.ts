@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Layer } from "@phisyx/flex-chat";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 
 import {
 	onBeforeMount as on_before_mount,

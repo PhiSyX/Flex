@@ -8,23 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
 import type {
-	ChannelAccessLevelFlag,
 	ChannelActivitiesView,
 	ChannelActivity,
 	ChannelActivityRef,
-	ChannelMember,
-	ChannelMemberSelected,
-	ChannelRoom,
-	Layer,
-	Room,
-	RoomMessage,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/channel/activity";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
+import type { Room } from "@phisyx/flex-chat/room";
+import type { RoomMessage } from "@phisyx/flex-chat/room/message";
+import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
-import { assert_non_null, None } from "@phisyx/flex-safety";
 import type { ChannelPresenter } from "./presenter";
 
 import { format_date } from "@phisyx/flex-date";
+import { assert_non_null, None } from "@phisyx/flex-safety";
 
 // -------------- //
 // Implémentation //

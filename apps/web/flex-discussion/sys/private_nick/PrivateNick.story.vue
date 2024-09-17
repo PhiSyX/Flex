@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { PrivateParticipant, User } from "@phisyx/flex-chat";
+import { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
+import { User } from "@phisyx/flex-chat/user";
 
 import PrivateNick from "./PrivateNick.template.vue";
 

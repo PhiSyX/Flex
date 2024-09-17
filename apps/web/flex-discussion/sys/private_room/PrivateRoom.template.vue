@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { PrivateParticipant, PrivateRoom } from "@phisyx/flex-chat";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
+import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
 import { computed } from "vue";
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { ChannelMember, ChannelMembers } from "@phisyx/flex-chat";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMembers } from "@phisyx/flex-chat/channel/member/list";
 
 import { UiButton } from "@phisyx/flex-vue-uikit";
 

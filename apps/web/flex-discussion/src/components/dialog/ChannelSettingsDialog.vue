@@ -1,17 +1,17 @@
 <script lang="ts" setup>
+import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
+import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs/channel_settings";
 import type {
-	ChannelSettingsRecordDialog,
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
 	UserStore,
-} from "@phisyx/flex-chat";
-import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
+} from "@phisyx/flex-chat/store";
 import type { ComputedRef } from "vue";
 
-import { ChannelSettingsDialog } from "@phisyx/flex-chat";
 import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
+import { ChannelSettingsDialog } from "@phisyx/flex-chat/dialogs/channel_settings";
 import { computed, reactive } from "vue";
 import {
 	use_chat_store,

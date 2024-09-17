@@ -9,7 +9,10 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
-import type { ChatStoreInterface, SettingsStore } from "@phisyx/flex-chat";
+import type {
+	ChatStoreInterface,
+	SettingsStore,
+} from "@phisyx/flex-chat/store";
 
 import { SettingsChatManager } from "./datamanager/chat_data_manager";
 import { SettingsSettingsManager } from "./datamanager/settings_data_manager";

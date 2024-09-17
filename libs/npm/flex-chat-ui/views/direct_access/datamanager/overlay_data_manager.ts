@@ -8,13 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	LoadAllModulesRecordLayer,
-	OverlayerStore,
-	UserSession,
-} from "@phisyx/flex-chat";
+import type { LoadAllModulesRecordLayer } from "@phisyx/flex-chat/layers/load_all_modules";
+import type { OverlayerStore } from "@phisyx/flex-chat/store";
+import type { UserSession } from "@phisyx/flex-chat/user/session";
 
-import { LoadAllModulesLayer, UpdateAccountDialog } from "@phisyx/flex-chat";
+import { UpdateAccountDialog } from "@phisyx/flex-chat/dialogs";
+import { LoadAllModulesLayer } from "@phisyx/flex-chat/layers/load_all_modules";
 
 // -------------- //
 // Implémentation //

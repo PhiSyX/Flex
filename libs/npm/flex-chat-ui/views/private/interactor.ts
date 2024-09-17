@@ -8,7 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Layer, PrivateParticipant, PrivateRoom } from "@phisyx/flex-chat";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
+import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
+import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 import type { PrivateChatManager } from "./datamanager/chat_data_manager";
 import type { PrivateOverlayerManager } from "./datamanager/overlayer_data_manager";

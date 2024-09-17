@@ -8,7 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { LoadAllModulesRecordLayer, UserSession } from "@phisyx/flex-chat";
+import type { LoadAllModulesRecordLayer } from "@phisyx/flex-chat/layers/load_all_modules";
+import type { UserSession } from "@phisyx/flex-chat/user/session";
 import type { DirectAccessChatManager } from "./datamanager/chat_data_manager";
 import type { DirectAccessOverlayerManager } from "./datamanager/overlay_data_manager";
 import type { DirectAccessUserManager } from "./datamanager/user_data_manager";

@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import {
-	ChannelAccessLevelFlag,
-	ChannelMember,
-	ChannelMemberFiltered,
-	User,
-} from "@phisyx/flex-chat";
+import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
+import { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import { ChannelMemberFiltered } from "@phisyx/flex-chat/channel/member/filtered";
+import { User } from "@phisyx/flex-chat/user";
 
 import UserlistUserInfo from "../channel_userlist/ChannelUserlistUserInfo.vue";
 import ChannelNicklist from "./ChannelNicklist.template.vue";
@@ -88,11 +86,7 @@ let users = {
 				:use-icon-instead-of-avatar="true"
 			>
 				<template #user-info="{ member: _ }">
-					<UserlistUserInfo
-						:age="24"
-						from="Italie"
-						user-flag="IT"
-					/>
+					<UserlistUserInfo :age="24" from="Italie" user-flag="IT" />
 				</template>
 			</ChannelNicklist>
 		</Variant>

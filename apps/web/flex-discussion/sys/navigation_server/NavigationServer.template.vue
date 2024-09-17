@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Room } from "@phisyx/flex-chat";
+import type { Room } from "@phisyx/flex-chat/room";
 
 import Avatar from "#/api/avatar/Avatar.vue";
 import Match from "#/sys/match/Match.vue";
@@ -152,7 +152,7 @@ function toggle_fold_handler() {
 									:class="{
 										[`bgo-color${message.colors.background}`]: message.colors.background != null,
 										[`fg-color${message.colors.foreground}`]: message.colors.foreground != null,
-										
+
 									}"
 								>
 									{{ message }}

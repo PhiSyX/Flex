@@ -8,10 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Theme, ThemeRecord } from "@phisyx/flex-chat";
-
-import { onMounted as on_mounted } from "vue";
-
+import type { Theme, ThemeRecord } from "@phisyx/flex-chat/theme";
+import { onMounted } from "vue";
 import { use_settings_store } from "~/store";
 
 import theme_dark_image from "#/assets/img/theme-dark.jpg";
@@ -68,5 +66,5 @@ export function find_theme_name(fallback_theme = DEFAULT_THEME) {
 }
 
 export function use_theme() {
-	on_mounted(() => set_theme_ls(find_theme_name()));
+	onMounted(() => set_theme_ls(find_theme_name()));
 }

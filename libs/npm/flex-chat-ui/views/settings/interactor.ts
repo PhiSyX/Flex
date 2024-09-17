@@ -8,12 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	LayoutData,
-	NotificationData,
-	PrivateData,
-	Theme,
-} from "@phisyx/flex-chat";
+import type { LayoutData } from "@phisyx/flex-chat/localstorage/settings_layout";
+import type { NotificationData } from "@phisyx/flex-chat/localstorage/settings_notification";
+import type { PrivateData } from "@phisyx/flex-chat/localstorage/settings_private";
+import type { Theme } from "@phisyx/flex-chat/theme";
 import type { Option } from "@phisyx/flex-safety";
 import type { SettingsChatManager } from "./datamanager/chat_data_manager";
 import type { SettingsSettingsManager } from "./datamanager/settings_data_manager";

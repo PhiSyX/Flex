@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ChannelActivity } from "@phisyx/flex-chat";
+import type { ChannelActivity } from "@phisyx/flex-chat/channel/activity";
 
 import ChannelNick from "../channel_nick/ChannelNick.template.vue";
 import Match from "../match/Match.vue";

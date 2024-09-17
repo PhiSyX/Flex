@@ -9,12 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import {
-	acceptHMRUpdate as accept_hmr_update,
-	defineStore as define_store,
-} from "pinia";
+	SettingsStore,
+	SettingsStoreData,
+} from "@phisyx/flex-chat/store/settings";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, reactive, readonly } from "vue";
-
-import { SettingsStore, SettingsStoreData } from "@phisyx/flex-chat";
 
 // -------------- //
 // Implémentation //
@@ -232,7 +231,7 @@ export class SettingsStoreVue {
 	}
 }
 
-export const use_settings_store = define_store(SettingsStore.NAME, () => {
+export const use_settings_store = defineStore(SettingsStore.NAME, () => {
 	const store = new SettingsStoreVue();
 
 	return {
@@ -271,6 +270,6 @@ export const use_settings_store = define_store(SettingsStore.NAME, () => {
 
 if (import.meta.hot) {
 	import.meta.hot.accept(
-		accept_hmr_update(use_settings_store, import.meta.hot),
+		acceptHMRUpdate(use_settings_store, import.meta.hot),
 	);
 }

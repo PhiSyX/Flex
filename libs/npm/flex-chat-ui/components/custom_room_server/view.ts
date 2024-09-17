@@ -8,10 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Layer, ServerCustomRoom } from "@phisyx/flex-chat";
+import type { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
+import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
-import { None } from "@phisyx/flex-safety";
 import type { CustomRoomServerPresenter } from "./presenter";
+
+import { None } from "@phisyx/flex-safety";
 
 // ---- //
 // Type //

@@ -8,7 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelMember, ChannelRoom } from "@phisyx/flex-chat";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Option } from "@phisyx/flex-safety";
 import type { MenuInteractor } from "./interactor";
 import type { MenuView } from "./view";

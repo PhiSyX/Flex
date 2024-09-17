@@ -8,17 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	Layer,
-	OverlayerStore,
-	PrivateParticipant,
-} from "@phisyx/flex-chat";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
+import type { Layer, OverlayerStore } from "@phisyx/flex-chat/store";
 
 import {
 	ChangeFormatsColorsDialog,
 	PrivatePendingRequestDialog,
 	UserChangeNicknameDialog,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/dialogs";
 
 // -------------- //
 // Implémentation //

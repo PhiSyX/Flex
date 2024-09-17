@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { HighestAccessLevelOutput } from "@phisyx/flex-chat";
+import type { HighestAccessLevelOutput } from "@phisyx/flex-chat/channel/access_level";
 
 import { computed } from "vue";
 

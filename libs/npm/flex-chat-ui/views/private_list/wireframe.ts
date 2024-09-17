@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "@phisyx/flex-chat";
+import type { ChatStoreInterface } from "@phisyx/flex-chat/store";
 
 import { PrivateListChatManager } from "./datamanager/chat_data_manager";
 import { PrivateListInteractor } from "./interactor";

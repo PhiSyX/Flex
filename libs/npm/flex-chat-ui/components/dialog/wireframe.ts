@@ -14,8 +14,7 @@ import type {
 	OverlayerStore,
 	SettingsStore,
 	UserStore,
-} from "@phisyx/flex-chat";
-
+} from "@phisyx/flex-chat/store";
 import { DialogChatManager } from "./datamanager/chat_data_manager";
 import { DialogOverlayerManager } from "./datamanager/overlayer_data_manager";
 import { DialogSettingsManager } from "./datamanager/settings_data_manager";

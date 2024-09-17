@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { Room } from "@phisyx/flex-chat";
-
-import { ref } from "vue";
+import type { Room } from "@phisyx/flex-chat/room";
 
 import { vResize } from "@phisyx/flex-vue-directives";
-import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
+import { ref } from "vue";
 
 import NavigationServer from "#/sys/navigation_server/NavigationServer.template.vue";
+import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -141,7 +140,7 @@ function resize_handler(entries: Array<ResizeObserverEntry>) {
 				<ButtonIcon
 					icon="settings"
 					title="Paramètres globaux du Chat"
-					@click="open_settings_view_handler" 
+					@click="open_settings_view_handler"
 				/>
 			</div>
 		</footer>

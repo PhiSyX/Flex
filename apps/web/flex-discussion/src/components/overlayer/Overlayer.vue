@@ -2,7 +2,7 @@
 import type { CSSProperties, HTMLAttributes } from "vue";
 
 import { vTrap } from "@phisyx/flex-vue-directives";
-import { computed, shallowRef, watchEffect } from "vue";
+import { computed, shallowRef } from "vue";
 import { use_overlayer_store } from "~/store";
 import { use_overlayer } from "./Overlayer.hooks";
 
@@ -16,10 +16,9 @@ let $overlayer = shallowRef<HTMLDivElement>();
 let $teleport = shallowRef<Array<HTMLDivElement>>();
 
 const { destroy_handler } = use_overlayer();
+const layers = computed(() => overlayer_store.get_dyn_components());
 
-let layers = computed(() => overlayer_store.get_dyn_components());
-
-watchEffect(() => {
+function update_all_layers() {
 	if ($overlayer.value) {
 		// @ts-expect-error - Pinia casse les yeuks.
 		overlayer_store.$overlayer_mut = $overlayer.value;
@@ -32,12 +31,12 @@ watchEffect(() => {
 			.firstElementChild as HTMLDivElement;
 		overlayer_store.update_all();
 	}
-});
+}
 </script>
 
 <template>
 	<template v-for="layer of layers">
-		<component :is="layer" />
+		<component :is="layer" @vue:updated="update_all_layers()" />
 	</template>
 
 	<Transition name="fade">

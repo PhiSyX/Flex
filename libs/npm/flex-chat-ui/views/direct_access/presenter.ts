@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
-import type { UserSession } from "@phisyx/flex-chat";
+import type { UserSession } from "@phisyx/flex-chat/user/session";
 import type { Option } from "@phisyx/flex-safety";
 import type { DirectAccessInteractor } from "./interactor";
 import type { DirectAccessView } from "./view";

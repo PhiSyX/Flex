@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ServerCustomRoom } from "@phisyx/flex-chat";
+import type { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
 
 import Room from "#/sys/room/Room.template.vue";
 

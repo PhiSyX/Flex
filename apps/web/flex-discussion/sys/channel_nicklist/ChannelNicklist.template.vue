@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { ChannelMember, ChannelMemberUnfiltered } from "@phisyx/flex-chat";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { ChannelMemberUnfiltered } from "@phisyx/flex-chat/channel/member/filtered";
 
+import { ChannelMemberFiltered } from "@phisyx/flex-chat/channel/member/filtered";
 import { computed } from "vue";
-
-import { ChannelMemberFiltered } from "@phisyx/flex-chat";
 
 import ChannelNicklistItem from "#/sys/channel_nicklist/ChannelNicklistItem.vue";
 

@@ -11,7 +11,7 @@
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store";
 
 // -------------- //
 // Implémentation //

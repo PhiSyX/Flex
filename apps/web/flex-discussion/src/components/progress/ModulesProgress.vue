@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Layer } from "@phisyx/flex-chat";
-import { LoadAllModulesLayer } from "@phisyx/flex-chat";
+import { LoadAllModulesLayer } from "@phisyx/flex-chat/layers/load_all_modules";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 
 import { computed } from "vue";
 

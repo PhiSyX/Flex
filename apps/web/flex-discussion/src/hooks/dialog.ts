@@ -11,8 +11,8 @@
 import type {
 	DialogClass,
 	DialogInterface,
-	OverlayerStore,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/dialogs/interface";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 
 import { computed } from "vue";
 

@@ -1,14 +1,11 @@
 <script setup lang="ts">
+import { cast_to_channel_id } from "@phisyx/flex-chat/asserts/room";
+import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
+import { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import { ChannelRoom } from "@phisyx/flex-chat/channel/room";
+import { RoomMessage } from "@phisyx/flex-chat/room/message";
+import { User } from "@phisyx/flex-chat/user";
 import { None, Some } from "@phisyx/flex-safety";
-
-import {
-	ChannelAccessLevelFlag,
-	ChannelMember,
-	ChannelRoom,
-	RoomMessage,
-	User,
-	cast_to_channel_id,
-} from "@phisyx/flex-chat";
 
 import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
 import ChannelRoomComponent from "./ChannelRoom.template.vue";
@@ -102,9 +99,7 @@ chan.members.add(
 				:use-icon-instead-of-avatar="true"
 			>
 				<template #history>
-					<ChannelRoomKicked
-						:last-message="chan.messages.at(-1)!"
-					/>
+					<ChannelRoomKicked :last-message="chan.messages.at(-1)!" />
 				</template>
 			</ChannelRoomComponent>
 		</Variant>

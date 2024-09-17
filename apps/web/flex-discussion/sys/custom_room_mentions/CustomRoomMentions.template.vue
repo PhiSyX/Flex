@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MentionsCustomRoom } from "@phisyx/flex-chat";
+import type { MentionsCustomRoom } from "@phisyx/flex-chat/custom_room/mentions";
 
 import { ButtonIcon } from "@phisyx/flex-vue-uikit";
 

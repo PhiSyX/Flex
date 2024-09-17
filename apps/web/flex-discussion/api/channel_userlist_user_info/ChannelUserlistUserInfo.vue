@@ -21,7 +21,7 @@ const {
 } = defineProps<ChannelUserlistUserInfoViewProps>();
 
 let view = reactive(
-	ChannelUserlistUserInfoWireframe.create()
+	ChannelUserlistUserInfoWireframe.create(),
 ) as ChannelUserlistUserInfoView;
 
 view.define_props({

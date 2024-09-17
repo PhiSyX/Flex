@@ -8,12 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
+import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	PrivateParticipant,
-	PrivateRoom,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 
 // -------------- //

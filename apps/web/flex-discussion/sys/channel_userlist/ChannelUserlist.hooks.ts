@@ -10,7 +10,7 @@
 
 import type { Ref } from "vue";
 
-import type { ChannelMember } from "@phisyx/flex-chat";
+import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { FuzzySearchRecord } from "@phisyx/flex-search";
 
 import type { Props } from "./ChannelUserlist.template.vue";
@@ -25,7 +25,7 @@ import {
 import {
 	ChannelMemberFiltered,
 	ChannelMemberUnfiltered,
-} from "@phisyx/flex-chat";
+} from "@phisyx/flex-chat/channel/member/filtered";
 import { fuzzy_search } from "@phisyx/flex-search";
 
 import ChannelNicklistComponent from "#/sys/channel_nicklist/ChannelNicklist.template.vue";

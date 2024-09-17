@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type {
-	ChatStoreInterface,
-	ChatStoreInterfaceExt,
-	OverlayerStore,
-	SettingsStore,
-} from "@phisyx/flex-chat";
-import type {
 	CustomRoomServerView,
 	CustomRoomServerViewProps,
 } from "@phisyx/flex-chat-ui/components/custom_room_server";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt,
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
 
 import { CustomRoomServerWireframe } from "@phisyx/flex-chat-ui/components/custom_room_server";
 import { computed, reactive } from "vue";
