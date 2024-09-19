@@ -8,7 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "../../store";
+import type {
+	ChatStoreInterface,
+	ChatStoreInterfaceExt
+} from "../../store";
 
 import { assert_channel_room, assert_private_room } from "../../asserts/room";
 
@@ -16,11 +19,13 @@ import { assert_channel_room, assert_private_room } from "../../asserts/room";
 // Implémentation //
 // -------------- //
 
-class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER"> {
+export class UpgradeUserHandler
+	implements SocketEventInterface<"UPGRADE_USER">
+{
 	// ----------- //
 	// Constructor //
 	// ----------- //
-	constructor(private store: ChatStoreInterface) {}
+	constructor(private store: ChatStoreInterface & ChatStoreInterfaceExt) {}
 
 	// ------- //
 	// Méthode //
@@ -39,6 +44,10 @@ class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER"> {
 				host: client.host,
 				ident: client.ident,
 			});
+
+			if (data.user_session) {
+				this.store.user().session(data.user_session);
+			}
 		}
 
 		this.store
@@ -73,13 +82,10 @@ class UpgradeUserHandler implements SocketEventInterface<"UPGRADE_USER"> {
 				let participant = maybe_participant.unwrap();
 				room.del_participant(data.old_client_id);
 				room.add_participant(participant.with_id(data.new_client_id));
+				this.store
+					.room_manager()
+					.change_id(data.old_client_id, data.new_client_id);
 			}
 		}
-
-		this.store
-			.room_manager()
-			.change_id(data.old_client_id, data.new_client_id);
 	}
 }
-
-export default UpgradeUserHandler;

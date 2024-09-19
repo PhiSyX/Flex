@@ -59,16 +59,20 @@ export class RoomManager {
 	 * Change un ID par un nouveau.
 	 */
 	change_id(old_room_id: RoomID, new_room_id: RoomID): void {
-		let is_current_room = this.current().id() === old_room_id;
+		let is_current_room = this._current_room
+			.map((rid) => rid.toLowerCase() === old_room_id.toLowerCase())
+			.unwrap_or(false);
+
 		let maybe_room = this.remove(old_room_id);
 		if (maybe_room.is_none()) {
 			return;
 		}
 		let room = maybe_room.unwrap();
-		room.with_id(new_room_id);
-		this.insert(new_room_id, room);
+		this.insert(new_room_id, room.with_id(new_room_id));
 		if (is_current_room) {
-			this.set_current(new_room_id);
+			this._current_room.replace(
+				cast_to_room_id(new_room_id.toLowerCase()),
+			);
 		}
 	}
 

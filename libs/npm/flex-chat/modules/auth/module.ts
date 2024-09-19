@@ -14,9 +14,10 @@ import type {
 	ChatStoreUUIDExt,
 } from "../../store";
 import type { Module } from "../interface";
+
 import { AuthCommand } from "./command";
 import { AuthApiHTTPClient } from "./feign/api";
-import UpgradeUserHandler from "./handler";
+import { UpgradeUserHandler } from "./handler";
 import { AuthSubCommand } from "./subcommand";
 
 // -------------- //
@@ -100,4 +101,39 @@ export class AuthModule implements Module<AuthModule> {
 	listen() {
 		this.upgrade_user_handler.listen();
 	}
+}
+
+export class AuthLogoutModule implements Module<AuthLogoutModule> {
+	// ------ //
+	// STATIC //
+	// ------ //
+
+	static NAME = "LOGOUT";
+
+	static create(
+		store: ChatStoreInterface & ChatStoreInterfaceExt & ChatStoreUUIDExt,
+	): AuthLogoutModule {
+		return new AuthLogoutModule(
+			new AuthCommand(store, new AuthApiHTTPClient()),
+		);
+	}
+
+	// ----------- //
+	// Constructor //
+	// ----------- //
+	constructor(private command: AuthCommand) {}
+
+	// ------- //
+	// Méthode //
+	// ------- //
+
+	input(_room_id: RoomID, ...args: Array<string>) {
+		this.command.send_logout(true);
+	}
+
+	send(f = false) {
+		this.command.send_logout(f);
+	}
+
+	listen() {}
 }

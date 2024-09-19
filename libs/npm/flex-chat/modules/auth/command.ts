@@ -165,4 +165,16 @@ export class AuthCommand {
 			.then(on_success)
 			.catch(on_failure);
 	}
+
+	send_logout(f: boolean) {
+		let client_id = this.store.client_id();
+		this.store.emit("LOGOUT", {
+			client_id,
+			// @ts-expect-error : à corriger/changer
+			user_session: this.store.user().session().unwrap_or(null),
+		});
+		if (f) {
+			this.store.user().disconnect();
+		}
+	}
 }

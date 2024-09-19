@@ -17,6 +17,8 @@ use flex_chat::client::{
 };
 use flex_chat::macros::command_response;
 
+use crate::features::users::dto::UserSessionDTO;
+
 command_response! {
 	struct UPGRADE_USER<'n>
 	{
@@ -28,6 +30,7 @@ command_response! {
 		old_nickname: &'n str,
 		/// Nouveau pseudonyme
 		new_nickname: &'n str,
+		user_session: Option<&'n UserSessionDTO>,
 	}
 }
 
@@ -45,6 +48,7 @@ pub trait IdentifyCommandResponseInterface: ClientSocketInterface
 		new_user_id: <Self::Client as ClientInterface>::ClientID,
 		old_nickname: &str,
 		new_nickname: &str,
+		user_session: Option<&UserSessionDTO>,
 	);
 }
 
@@ -61,6 +65,7 @@ impl<'s> IdentifyCommandResponseInterface for Socket<'s>
 		new_user_id: <Self::Client as ClientInterface>::ClientID,
 		old_nickname: &str,
 		new_nickname: &str,
+		user_session: Option<&UserSessionDTO>,
 	)
 	{
 		let origin = Origin::from(self.client());
@@ -72,6 +77,7 @@ impl<'s> IdentifyCommandResponseInterface for Socket<'s>
 			new_client_id: new_user_id,
 			old_nickname,
 			new_nickname,
+			user_session,
 		};
 
 		let channel_room = format!("channel:{}", channel_name);

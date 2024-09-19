@@ -104,6 +104,10 @@ export class UserManager {
 	 * Change le pseudonyme d'un utilisateur.
 	 */
 	change_nickname(old_nickname: string, new_nickname: string) {
+		if (old_nickname.toLowerCase() === new_nickname.toLowerCase()) {
+			return;
+		}
+
 		let maybe_user = this.find_by_nickname(old_nickname);
 		let nick_id = this._nicks.get(old_nickname.toLowerCase());
 		if (nick_id) {

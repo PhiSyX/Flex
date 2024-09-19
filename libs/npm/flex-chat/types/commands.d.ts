@@ -109,6 +109,8 @@ declare interface Commands {
 	SILENCE: { nickname: string };
 
 	TOPIC: { channel: ChannelID; topic?: string };
+
+	LOGOUT: { client_id: UserID; user_session: object };
 }
 
 declare type CommandsNames = keyof Commands;

@@ -8,22 +8,21 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-flex_kernel::import! {
-	pub mod application use *;
+use flex_chat::client::ClientID;
 
-	pub mod forms use {
-		pub mod logout_form use *;
-	};
-	pub mod handlers use {
-		pub mod logout_handler use *;
-		pub mod identify_handler use *;
-	};
+use crate::features::users::dto::UserSessionDTO;
 
-	mod responses use {
-		pub mod identify_command_response use *;
-	};
+// --------- //
+// Structure //
+// --------- //
 
-	mod sessions use {
-		pub mod auth_clients_session use *;
-	};
+/// Envoyée lors de la (re)connexion au WebSocket.
+#[derive(Debug)]
+#[derive(serde::Deserialize)]
+pub struct AuthLogoutFormData
+{
+	/// ID d'un client.
+	pub client_id: ClientID,
+	/// Utilisateur en session
+	pub user_session: Option<UserSessionDTO>,
 }

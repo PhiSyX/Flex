@@ -116,6 +116,18 @@ declare interface CommandResponsesFromServer {
 		new_client_id: UserID;
 		old_nickname: string;
 		new_nickname: string;
+		user_session?: {
+			id: UUID;
+			name: string;
+			email: string;
+			role: UserRole;
+			avatar?: string;
+			firstname?: string;
+			lastname?: string;
+			gender?: string;
+			country?: string;
+			city?: string;
+		};
 	};
 }
 

@@ -80,6 +80,7 @@ impl WebSocketFeature<FlexState> for ChatApplication
 		ModeChannelSettingsHandler,
 		/* Auth */
 		AuthIdentifyHandler,
+		AuthLogoutHandler,
 	);
 	type Handlers2 = (
 		/* Channel Access Control */
