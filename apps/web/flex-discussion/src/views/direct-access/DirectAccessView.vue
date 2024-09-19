@@ -194,6 +194,7 @@ watch(user_session, () => {
 					v-model="view.form_data.channels"
 					label="channel"
 					name="channels"
+					placeholder="Salons à rejoindre (#chan1,#chan2)"
 				/>
 			</form>
 

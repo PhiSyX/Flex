@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::collections::HashSet;
+
 use flex_chat::client::ClientSocketInterface;
 use flex_chat::user::UserInterface;
 use flex_web_framework::WebSocketHandler;
@@ -54,11 +56,9 @@ impl WebSocketHandler for AuthIdentifyHandler
 		let new_client_id = *client_socket.cid();
 		let new_nickname = client_socket.user().nickname().to_owned();
 
-		for channel_room in client_socket.channels_rooms() {
-			let channel_id = &channel_room["channel:".len()..];
-
+		for channel_id in client_socket.channels_rooms_set() {
 			client_socket.emit_upgrade_user(
-				channel_id,
+				&channel_id,
 				old_client_id,
 				new_client_id,
 				&old_nickname,

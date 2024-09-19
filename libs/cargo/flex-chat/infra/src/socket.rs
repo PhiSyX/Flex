@@ -8,6 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use std::collections::HashSet;
+
 use flex_chat::channel::{Channel, ChannelInterface, ChannelMemberInterface};
 use flex_chat::client::channel::errors::{
 	ErrChanoprivsneededError,
@@ -70,6 +72,20 @@ impl<'a> Socket<'a>
 				room.starts_with("channel:").then_some(room.to_string())
 			})
 			.collect()
+	}
+
+	/// Les salons de la socket sans doublons (à cause des symboles).
+	pub fn channels_rooms_set(&self) -> HashSet<String>
+	{
+		let mut channels = HashSet::new();
+		let channel_rooms = self.channels_rooms();
+		for channel_room in channel_rooms.as_slice() {
+			let channel_id = channel_room
+				.trim_start_matches("channel:")
+				.trim_start_matches(['~', '&', '@', '&', '%', '+']);
+			channels.insert(channel_id.to_owned());
+		}
+		channels
 	}
 
 	/// Vérifie si le pseudonyme donné est le même que celui sauvegardé dans

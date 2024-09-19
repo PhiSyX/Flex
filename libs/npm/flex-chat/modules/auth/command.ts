@@ -96,6 +96,10 @@ export class AuthCommand {
 
 	send_register(payload: AuthRegisterFormData) {
 		const on_success = (response: AuthRegisterHttpResponse) => {
+			// FIXME: type à corriger
+			if (!response.message) {
+				return;
+			}
 			let connect_data = {
 				origin: this.store.client(),
 				tags: { msgid: response.id },
