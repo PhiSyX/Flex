@@ -142,9 +142,9 @@ function close_handler() {
 		<div
 			class="[ ov:c flex align-ji:center gap=1 select:none f-size=13px ]"
 		>
-			<p class="[ flex:full p:reset ]">
+			<div class="[ flex:full p:reset p=1 ]">
 				<slot />
-			</p>
+			</div>
 
 			<ButtonIcon
 				v-if="canClose"

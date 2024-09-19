@@ -46,7 +46,7 @@ defineSlots<Slots>();
 			'p=1': withPadding,
 		}"
 	>
-		<header v-if="$slots.heading" class="panel/title [ p=1 ]">
+		<header v-if="$slots.heading" class="panel/title [ flex! gap=1 p=1 ]">
 			<slot name="heading" />
 		</header>
 
@@ -76,18 +76,18 @@ defineSlots<Slots>();
 
 @include fx.class("panel") {
 	background: var(--panel-bg, var(--color-white));
-	color: var(--panel-color);
+	color: var(--panel-color, var(--default-text-color_alt));
 }
-@include fx.class("panel/body") {
+@include fx.class("panel/title") {
 	background: var(--panel-heading-bg);
-	color: var(--panel-color);
+	color: var(--panel-color, var(--default-text-color_alt));
 }
 @include fx.class("panel/body") {
 	background: var(--panel-body-bg);
-	color: var(--panel-color);
+	color: var(--panel-color, var(--default-text-color_alt));
 }
 @include fx.class("panel/footer") {
 	background: var(--panel-footer-bg);
-	color: var(--panel-color);
+	color: var(--panel-color, var(--default-text-color_alt));
 }
 </style>

@@ -17,6 +17,7 @@ import type { AuthApiHTTPClient } from "./feign/api";
 
 import { Err, None, Ok, type Result } from "@phisyx/flex-safety";
 
+import { ClientErrorLayer } from "../../layers/client_error";
 import { AuthSubCommand } from "./subcommand";
 
 // -------------- //
@@ -109,7 +110,7 @@ export class AuthCommand {
 
 		const on_failure = (problem: HttpProblemErrorResponse) => {
 			this.store.overlayer().create({
-				id: "authserv-register-error",
+				id: ClientErrorLayer.ID,
 				centered: true,
 				on_close: () => {
 					this.store.client_error = None();
@@ -134,7 +135,7 @@ export class AuthCommand {
 			);
 
 			this.store.client_error.replace({
-				id: "authserv-register-error",
+				id: ClientErrorLayer.ID,
 				title: "L'inscription est impossible",
 				subtitle: problem.title,
 				problems: problem.errors || [],
