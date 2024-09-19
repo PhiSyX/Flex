@@ -71,6 +71,7 @@ onMounted(() => {
 			:user-id="data.id"
 			:username="data.name"
 			@close="view.close_dialog"
+			@logout="view.logout_handler"
 			@upload="view.upload_file_handler"
 			@submit="view.update_account_submit_handler"
 		/>

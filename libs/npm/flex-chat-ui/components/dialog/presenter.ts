@@ -105,4 +105,8 @@ export class DialogPresenter {
 	patch_user_account(user_id: UserSession["id"], form_data: FormData) {
 		this.interactor.patch_user_account(user_id, form_data);
 	}
+
+	unset_session_user() {
+		this.interactor.unset_session_user();
+	}
 }

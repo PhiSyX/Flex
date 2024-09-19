@@ -82,7 +82,7 @@ export class UserStore {
 		});
 
 		if (response.ok) {
-			this.data.unset_session();
+			this.unset_session();
 			return response;
 		}
 
@@ -162,5 +162,9 @@ export class UserStore {
 			this.data.set_session(user);
 		}
 		return this.data.get_session();
+	}
+
+	public unset_session() {
+		this.data.unset_session();
 	}
 }

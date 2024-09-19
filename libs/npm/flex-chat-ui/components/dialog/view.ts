@@ -181,4 +181,8 @@ export class DialogView {
 		this.presenter.patch_user_account(this.data.id, form_data);
 		this.close_dialog();
 	};
+
+	logout_handler = () => {
+		this.presenter.unset_session_user();
+	};
 }

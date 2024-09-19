@@ -111,4 +111,8 @@ export class DialogInteractor {
 	patch_user_account(user_id: UserSession["id"], form_data: FormData) {
 		this.user_manager.patch_account(user_id, form_data);
 	}
+
+	unset_session_user() {
+		this.user_manager.unset_session_user();
+	}
 }

@@ -21,4 +21,8 @@ export class DialogUserManager {
 	patch_account(user_id: UserSession["id"], form_data: FormData) {
 		this.store.patch(user_id, form_data);
 	}
+
+	unset_session_user() {
+		this.store.unset_session();
+	}
 }

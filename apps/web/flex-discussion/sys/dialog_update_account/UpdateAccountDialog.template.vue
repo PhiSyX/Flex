@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { iso_to_country_flag } from "@phisyx/flex-helpers";
 import { computed, ref } from "vue";
 
-import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
+import { Dialog, FormLink, UiButton } from "@phisyx/flex-vue-uikit";
 
-import { iso_to_country_flag } from "@phisyx/flex-helpers";
 import Avatar from "#/api/avatar/Avatar.vue";
 
 // ---- //
@@ -24,6 +24,7 @@ interface Props {
 
 interface Emits {
 	(event_name: "close"): void;
+	(event_name: "logout"): void;
 	(event_name: "upload", file: File): void;
 	(event_name: "submit", evt: Event): void;
 }
@@ -45,65 +46,64 @@ let flag_country = computed(() => iso_to_country_flag(selected_country.value));
 // ------- //
 
 const close_dialog_handler = () => emit("close");
+const logout_handler = () => {
+	emit("logout");
+	emit("close");
+};
 const upload_file_handler = (file: File) => emit("upload", file);
 const submit_handler = (evt: Event) => emit("submit", evt);
 </script>
 
 <template>
 	<Dialog @close="close_dialog_handler">
-		<template #label> Modifier le profil de {{ username }} </template>
-
-		<template #footer>
-			<em class="[ f-size=12px ]">
-				Les champs ayant un <strong>*</strong>asterisk sont
-				obligatoires.
-			</em>
-
-			<UiButton
-				:form="form"
-				type="submit"
-				variant="primary"
-				class="[ ml=1 mt=1 ]"
-			>
-				OK
-			</UiButton>
-
-			<UiButton
-				:form="form"
-				type="button"
-				variant="secondary"
-				class="[ ml=1 mt=1 ]"
-				@click="close_dialog_handler"
-			>
-				Annuler
-			</UiButton>
-		</template>
-
 		<template #left-content>
-			<div class="[ flex:shrink=0 ]">
-				<Avatar
-					:form="form"
-					:id="userId"
-					vertical
-					editable
-					:size="14"
-					name="avatar"
-					class="[ mt=8 ]"
-					@upload="upload_file_handler"
-				/>
+			<div class="[ flex! py=2 ]">
+				<div class="[ flex:full flex:shrink=0 ]">
+					<Avatar
+						:form="form"
+						:id="userId"
+						vertical
+						editable
+						:size="14"
+						name="avatar"
+						class="[ mt=8 ]"
+						@upload="upload_file_handler"
+					/>
+				</div>
+
+				<FormLink
+					class="logout"
+					href="/auth/logout"
+					method="DELETE"
+					@success="logout_handler"
+				>
+					Se déconnecter
+				</FormLink>
 			</div>
 		</template>
+
+		<template #label> Modifier le profil de {{ username }} </template>
 
 		<form method="post" :id="form" @submit.prevent="submit_handler">
 			<fieldset class="[ flex gap=2 ]" name="name">
 				<div class="[ flex! gap=1 ]">
 					<label for="firstname">Prénom :</label>
-					<input type="text" name="firstname" id="firstname" :value="firstname" />
+					<input
+						type="text"
+						name="firstname"
+						id="firstname"
+						:value="firstname"
+					/>
 				</div>
 
 				<div class="[ flex! gap=1 ]">
 					<label for="lastname">Nom :</label>
-					<input type="text" name="lastname" id="lastname" :value="lastname" />
+					<input
+						type="text"
+						name="lastname"
+						id="lastname"
+						:value="lastname"
+					/>
 				</div>
 			</fieldset>
 
@@ -153,6 +153,32 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 				</div>
 			</fieldset>
 		</form>
+
+		<template #footer>
+			<em class="[ f-size=12px ]">
+				Les champs ayant un <strong>*</strong>asterisk sont
+				obligatoires.
+			</em>
+
+			<UiButton
+				:form="form"
+				type="submit"
+				variant="primary"
+				class="[ ml=1 mt=1 ]"
+			>
+				OK
+			</UiButton>
+
+			<UiButton
+				:form="form"
+				type="reset"
+				variant="secondary"
+				class="[ ml=1 mt=1 ]"
+				@click="close_dialog_handler"
+			>
+				Annuler
+			</UiButton>
+		</template>
 	</Dialog>
 </template>
 
@@ -165,6 +191,11 @@ dialog {
 
 fieldset {
 	border-color: transparent;
+}
+
+.logout {
+	border-radius: 4px;
+	outline: 0;
 }
 
 em {
@@ -201,7 +232,7 @@ button[type="submit"] {
 	}
 }
 
-button[type="cancel"] {
+button[type="reset"] {
 	padding: fx.space(1) fx.space(2);
 	border-radius: 2px;
 	&:hover {
