@@ -4,7 +4,13 @@ import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
 import { computed } from "vue";
 
-import { Alert, ButtonIcon, UiButton, UiImage } from "@phisyx/flex-vue-uikit";
+import {
+	ActionBar,
+	Alert,
+	ButtonIcon,
+	UiButton,
+	UiImage,
+} from "@phisyx/flex-vue-uikit";
 
 import Room from "#/sys/room/Room.template.vue";
 
@@ -50,13 +56,13 @@ defineSlots<Slots>();
 
 // Est-ce que le client courant est le participant lui-même?
 let is_current_client_participant_himself = computed(() =>
-	props.currentClientUser.partial_eq(props.recipient),
+	props.currentClientUser.partial_eq(props.recipient)
 );
 
 let ignore_btn_title_attribute = computed(() =>
 	props.isRecipientBlocked
 		? `Ne plus ignorer ${props.recipient.nickname}`
-		: `Ignorer ${props.recipient.nickname}`,
+		: `Ignorer ${props.recipient.nickname}`
 );
 
 // ------- //
@@ -97,37 +103,39 @@ function toggle_ignore_user_handler() {
 			@change-nickname="change_nickname_handler"
 			@send-message="send_message_handler"
 		>
-			<template #topic>
-				<p class="[ flex flex/center:full h:full my=0 select:none ]">
-					Discussion privée avec {{ recipient.nickname }}
-				</p>
-			</template>
+			<template #before-main>
+				<ActionBar>
+					<p
+						class="[ flex flex/center:full h:full my=0 select:none ]"
+					>
+						Discussion privée avec {{ recipient.nickname }}
+					</p>
 
-			<template #topic-action>
-				<slot name="avatar" :recipient="recipient">
-					<UiImage
-						src="/img/default-avatar.png"
-						:title="`Avatar du compte de ${recipient.nickname}.`"
-					/>
-				</slot>
+					<template #actions>
+						<slot name="avatar" :recipient="recipient">
+							<UiImage
+								src="/img/default-avatar.png"
+								:title="`Avatar du compte de ${recipient.nickname}.`"
+							/>
+						</slot>
 
-				<UiButton
-					v-if="!is_current_client_participant_himself"
-					icon="user-block"
-					:selected="isRecipientBlocked"
-					:false-value="false"
-					:true-value="true"
-					:title="ignore_btn_title_attribute"
-					@click="toggle_ignore_user_handler"
-				/>
-				<ButtonIcon
-					icon="close"
-					title="Fermer la chambre active"
-					@click="emit('close')"
-				/>
-			</template>
+						<UiButton
+							v-if="!is_current_client_participant_himself"
+							icon="user-block"
+							:selected="isRecipientBlocked"
+							:false-value="false"
+							:true-value="true"
+							:title="ignore_btn_title_attribute"
+							@click="toggle_ignore_user_handler"
+						/>
+						<ButtonIcon
+							icon="close"
+							title="Fermer la chambre active"
+							@click="emit('close')"
+						/>
+					</template>
+				</ActionBar>
 
-			<template #after-topic-before-main>
 				<Alert type="warning" :close-after-seconds="15">
 					Ne communique <strong>jamais</strong> tes coordonnées
 					personnelles (nom, adresse, n° de téléphone...), ni tes

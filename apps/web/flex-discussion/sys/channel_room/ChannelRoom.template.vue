@@ -7,14 +7,20 @@ import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Option } from "@phisyx/flex-safety";
 
 import { computed, ref } from "vue";
-import { use_channel_topic } from "./ChannelRoom.hooks";
+
+import {
+	ActionBar,
+	Alert,
+	ButtonIcon,
+	TextEditable,
+	UiButton,
+} from "@phisyx/flex-vue-uikit";
 
 import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
 import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue";
 import Match from "#/sys/match/Match.vue";
 import MenuChannelUserlist from "#/sys/menu_channel_userlist/MenuChannelUserlist.template.vue";
 import Room from "#/sys/room/Room.template.vue";
-import { Alert, ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -87,14 +93,13 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 defineSlots<Slots>();
 
-let {
-	$topic,
-	current_client_member_can_edit_topic,
-	enable_topic_edit_mode_handler,
-	submit_topic_handler,
-	topic_edit_mode,
-	topic_input,
-} = use_channel_topic(props, emit);
+let topic_input = ref(props.room.topic.get());
+// Est-ce que le client courant peut éditer le sujet.
+let current_client_member_can_edit_topic = computed(() =>
+	props.currentClientMember
+		.map((member) => props.room.can_edit_topic(member))
+		.unwrap_or(false),
+);
 
 let display_userlist = ref(props.userlistDisplayedByDefault);
 
@@ -110,6 +115,13 @@ let toggle_nicklist_title_attribute = computed(() => {
 
 // Étendre la page d'activité pour afficher toutes les activités liées au salon.
 let expand_activities = ref(false);
+
+let room_topic_placeholder = computed(() => {
+	if (!current_client_member_can_edit_topic.value) {
+		return "Aucun sujet";
+	}
+	return "Appuie deux fois sur cette section pour mettre à jour le sujet";
+});
 
 // -------- //
 // Handlers //
@@ -148,6 +160,17 @@ const unset_access_level_handler = (
 	member: ChannelMember,
 	flag: ChannelAccessLevelFlag,
 ) => emit("unset-access-level", member, flag);
+
+const submit_topic_handler = () => {
+	emit("update-topic", topic_input.value);
+};
+const enable_topic_edit_mode_handler = (payload: {
+	event: Event;
+	linked_element: HTMLInputElement | undefined;
+	mode: boolean;
+}) => {
+	emit("create-topic-layer", payload);
+};
 </script>
 
 <template>
@@ -169,68 +192,42 @@ const unset_access_level_handler = (
 			@send-message="send_message_handler"
 			@dblclick-main="open_channel_settings_handler"
 		>
-			<template #topic>
-				<input
-					v-if="topic_edit_mode"
-					ref="$topic"
-					v-model="topic_input"
-					class="[ input:reset size:full ]"
-					type="text"
-					@blur="submit_topic_handler"
-					@keydown.enter="submit_topic_handler"
-					@keydown.esc="submit_topic_handler"
-				/>
-				<output
-					v-else-if="room.topic.get().length > 0"
-					class="[ display-ib size:full p=1 select:none cursor:default ]"
-					:class="{
-						'cursor:pointer': current_client_member_can_edit_topic,
-					}"
-					@dblclick="enable_topic_edit_mode_handler"
-				>
-					{{ room.topic.get() }}
-				</output>
+			<template #before-main>
+				<ActionBar class="room/topic">
+					<TextEditable
+						v-model="topic_input"
+						:content="room.topic.get()"
+						:locked="!current_client_member_can_edit_topic"
+						:with-layer="true"
+						:placeholder="room_topic_placeholder"
+						@layer="enable_topic_edit_mode_handler"
+						@submit="submit_topic_handler"
+					/>
 
-				<p
-					v-else-if="current_client_member_can_edit_topic"
-					class="[ flex flex/center:full h:full my=0 select:none cursor:pointer ]"
-					@dblclick="enable_topic_edit_mode_handler"
-				>
-					Appuie deux fois sur cette section pour mettre à jour le
-					sujet.
-				</p>
-				<p
-					v-else
-					class="[ flex flex/center:full h:full my=0 select:none cursor:default ]"
-				>
-					Aucun sujet
-				</p>
-			</template>
+					<template #actions>
+						<ButtonIcon
+							icon="ellipsis"
+							title="Ouvrir le menu d'options du salon..."
+							@click="open_menu_channel_options_handler"
+						/>
 
-			<template #topic-action>
-				<ButtonIcon
-					icon="ellipsis"
-					title="Ouvrir le menu d'options du salon..."
-					@click="open_menu_channel_options_handler"
-				/>
+						<UiButton
+							v-model:selected="display_userlist"
+							:true-value="true"
+							:false-value="false"
+							icon="users"
+							:title="toggle_nicklist_title_attribute"
+						/>
 
-				<UiButton
-					v-model:selected="display_userlist"
-					:true-value="true"
-					:false-value="false"
-					icon="users"
-					:title="toggle_nicklist_title_attribute"
-				/>
+						<ButtonIcon
+							class="close"
+							icon="close"
+							title="Fermer la chambre active"
+							@click="close_room_handler"
+						/>
+					</template>
+				</ActionBar>
 
-				<ButtonIcon
-					class="close"
-					icon="close"
-					title="Fermer la chambre active"
-					@click="close_room_handler"
-				/>
-			</template>
-
-			<template #after-topic-before-main>
 				<Alert type="warning" :close-after-seconds="15">
 					Ne communique <strong>jamais</strong> tes coordonnées
 					personnelles (nom, adresse, n° de téléphone...), ni tes

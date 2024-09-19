@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NoticesCustomRoom } from "@phisyx/flex-chat/custom_room/notices";
 
-import { ButtonIcon } from "@phisyx/flex-vue-uikit";
+import { ActionBar, ButtonIcon } from "@phisyx/flex-vue-uikit";
 
 import Room from "#/sys/room/Room.template.vue";
 
@@ -30,18 +30,22 @@ const emit = defineEmits<Emits>();
 <template>
 	<div class="room/custom:notices [ flex! ov:h ]">
 		<Room :display-input="false" :room="room">
-			<template #topic>
-				<p class="[ flex flex/center:full h:full m=0 p=0 select:none ]">
-					Liste des notices reçues
-				</p>
-			</template>
+			<template #before-main>
+				<ActionBar>
+					<p
+						class="[ flex flex/center:full h:full m=0 p=0 select:none ]"
+					>
+						Liste des notices reçues
+					</p>
 
-			<template #topic-action>
-				<ButtonIcon
-					icon="close"
-					title="Fermer la chambre active"
-					@click="emit('close')"
-				/>
+					<template #actions>
+						<ButtonIcon
+							icon="close"
+							title="Fermer la chambre active"
+							@click="emit('close')"
+						/>
+					</template>
+				</ActionBar>
 			</template>
 		</Room>
 	</div>

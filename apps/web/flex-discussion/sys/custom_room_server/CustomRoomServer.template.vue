@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
 
+import { ActionBar } from "@phisyx/flex-vue-uikit";
+
 import Room from "#/sys/room/Room.template.vue";
 
 // ---- //
@@ -62,13 +64,15 @@ const send_message_handler = (message: string) => emit("send-message", message);
 			@open-room="open_room_handler"
 			@send-message="send_message_handler"
 		>
-			<template #topic>
-				<p class="[ flex flex/center:full h:full m=0 p=0 select:none ]">
-					Bienvenue sur le Chat de {{ room.name }} !
-				</p>
-			</template>
+			<template #before-main>
+				<ActionBar>
+					<p
+						class="[ flex flex/center:full h:full m=0 p=0 select:none ]"
+					>
+						Bienvenue sur le Chat de {{ room.name }} !
+					</p>
+				</ActionBar>
 
-			<template #after-topic-before-main>
 				<header class="[ flex align-jc:center gap=3 my=1 ]">
 					<a :href="vademecumUrl">
 						<strong>VADEMECUM</strong>

@@ -5,7 +5,6 @@ import { computed } from "vue";
 
 import RoomEditbox from "#/sys/room_editbox/RoomEditbox.template.vue";
 import RoomHistoryLogs from "#/sys/room_history_logs/RoomHistoryLogs.template.vue";
-import RoomTopic from "#/sys/room_topic/RoomTopic.template.vue";
 
 // ---- //
 // Type //
@@ -36,9 +35,7 @@ interface Emits {
 
 interface Slots {
 	"room-info": unknown;
-	topic: unknown;
-	"topic-action": unknown;
-	"after-topic-before-main": unknown;
+	"before-main": unknown;
 	"before-history": unknown;
 	history: unknown;
 	"after-history": unknown;
@@ -78,16 +75,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 <template>
 	<slot name="room-info" />
 	<div class="room/area [ flex:full ov:a flex! ]">
-		<RoomTopic>
-			<template #topic>
-				<slot name="topic" />
-			</template>
-			<template #topic-action>
-				<slot name="topic-action" />
-			</template>
-		</RoomTopic>
-
-		<slot name="after-topic-before-main" />
+		<slot name="before-main" />
 
 		<div class="room/main [ flex:full ov:h flex h:full ]">
 			<slot name="before-history" />
@@ -124,3 +112,15 @@ const send_message_handler = (message: string) => emit("send-message", message);
 		/>
 	</div>
 </template>
+
+<style scoped lang="scss">
+@use "scss:~/flexsheets" as fx;
+
+@include fx.class("room/topic") {
+	background: var(--room-topic-bg);
+
+	p:not([contenteditable]) {
+		color: var(--room-placeholder);
+	}
+}
+</style>
