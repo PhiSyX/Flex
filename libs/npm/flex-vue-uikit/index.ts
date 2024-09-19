@@ -10,7 +10,7 @@
 
 import type { App } from "vue";
 
-import { defineAsyncComponent as define_async_component } from "vue";
+import { defineAsyncComponent } from "vue";
 
 // biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
 const icons_imports = import.meta.glob<{ default: any }>(
@@ -31,6 +31,7 @@ let icons_components = Object.entries(icons_imports).map(
 	},
 );
 
+export { default as ActionBar } from "./src/actionbar/ActionBar.vue";
 export { default as Alert } from "./src/alert/Alert.vue";
 export { default as AudioSound } from "./src/audio-sound/AudioSound.vue";
 export { default as Badge } from "./src/badge/Badge.vue";
@@ -45,7 +46,7 @@ export { default as UiMenu } from "./src/menu/Menu.vue";
 export { default as UiMenuItem } from "./src/menu/MenuItem.vue";
 export { default as TextInput } from "./src/textinput/TextInput.vue";
 
-export { ButtonIcon, LabelIcon, ICON_NAMES } from "./src/icons";
+export { ButtonIcon, ICON_NAMES, LabelIcon } from "./src/icons";
 export type { Icons } from "./src/icons";
 
 // NOTE(phisyx): plugin Vue.
@@ -54,7 +55,7 @@ export default {
 		for (let [icon_component_name, icon_component] of icons_components) {
 			app.component(
 				icon_component_name,
-				define_async_component(icon_component),
+				defineAsyncComponent(icon_component),
 			);
 		}
 	},
