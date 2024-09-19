@@ -44,6 +44,7 @@ export { default as InputSwitchV2 } from "./src/inputswitch/InputSwitchV2.vue";
 export { default as Match } from "./src/match/Match.vue";
 export { default as UiMenu } from "./src/menu/Menu.vue";
 export { default as UiMenuItem } from "./src/menu/MenuItem.vue";
+export { default as Panel, PanelFooterPosition } from "./src/panel/Panel.vue";
 export { default as TextEditable } from "./src/texteditable/TextEditable.vue";
 export { default as TextInput } from "./src/textinput/TextInput.vue";
 
