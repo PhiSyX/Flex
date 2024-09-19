@@ -106,7 +106,7 @@ export class DialogPresenter {
 		this.interactor.patch_user_account(user_id, form_data);
 	}
 
-	unset_session_user() {
-		this.interactor.unset_session_user();
+	logout_user() {
+		this.interactor.logout_user();
 	}
 }

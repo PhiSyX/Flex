@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { PrivateOptionsRecordMenu } from "@phisyx/flex-chat/menu/private_options";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import type { Layer } from "@phisyx/flex-chat/store";
@@ -54,7 +55,9 @@ export class PrivatePresenter {
 	// ------- //
 
 	is_recipient_blocked(): boolean {
-		return this.interactor.is_recipient_blocked(this.recipient());
+		return this.recipient()
+			.map(this.interactor.is_recipient_blocked)
+			.unwrap_or(false);
 	}
 
 	close() {
@@ -83,6 +86,10 @@ export class PrivatePresenter {
 			.unwrap();
 	}
 
+	is_current_client_authenticated() {
+		return this.interactor.is_current_client_authenticated();
+	}
+
 	open_colors_box(evt: Event) {
 		this.interactor.create_colors_box(evt);
 	}
@@ -102,6 +109,13 @@ export class PrivatePresenter {
 		this.interactor.create_user_change_nickname_dialog(evt);
 	}
 
+	open_private_options_menu(
+		evt: Required<Layer["event"]>,
+		record: PrivateOptionsRecordMenu,
+	) {
+		this.interactor.create_private_options_menu(evt, record);
+	}
+
 	get_priv_from_route(): Option<PrivateRoom> {
 		return this.interactor.find_by_id(this.router.param_id());
 	}
@@ -119,7 +133,7 @@ export class PrivatePresenter {
 	}
 
 	recipient() {
-		return this.view.priv.get_participant(this.view.priv.id()).unwrap();
+		return this.view.priv.get_participant(this.view.priv.id());
 	}
 
 	send(message: string) {

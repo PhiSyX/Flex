@@ -112,6 +112,13 @@ export class DialogInteractor {
 		this.user_manager.patch_account(user_id, form_data);
 	}
 
+	logout_user() {
+		if (this.chat_manager.is_connected()) {
+			this.chat_manager.send_logout();
+		}
+		this.unset_session_user();
+	}
+
 	unset_session_user() {
 		this.user_manager.unset_session_user();
 	}

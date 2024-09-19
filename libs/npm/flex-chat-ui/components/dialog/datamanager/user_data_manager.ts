@@ -16,7 +16,7 @@ import type { UserSession } from "@phisyx/flex-chat/user/session";
 // -------------- //
 
 export class DialogUserManager {
-	constructor(public store: UserStore) {}
+	constructor(private store: UserStore) {}
 
 	patch_account(user_id: UserSession["id"], form_data: FormData) {
 		this.store.patch(user_id, form_data);

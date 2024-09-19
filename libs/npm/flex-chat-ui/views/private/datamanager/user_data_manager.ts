@@ -14,10 +14,10 @@ import type { UserStore } from "@phisyx/flex-chat/store";
 // Implémentation //
 // -------------- //
 
-export class MenuUserManager {
+export class PrivateUserManager {
 	constructor(private store: UserStore) {}
 
-	user_session() {
-		return this.store.session();
+	is_current_client_authenticated() {
+		return this.store.session().is_some();
 	}
 }

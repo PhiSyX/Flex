@@ -14,11 +14,13 @@ import type {
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
+	UserStore,
 } from "@phisyx/flex-chat/store";
 
 import { PrivateChatManager } from "./datamanager/chat_data_manager";
 import { PrivateOverlayerManager } from "./datamanager/overlayer_data_manager";
 import { PrivateSettingsManager } from "./datamanager/settings_data_manager";
+import { PrivateUserManager } from "./datamanager/user_data_manager";
 import { PrivateInteractor } from "./interactor";
 import { PrivatePresenter } from "./presenter";
 import { PrivateView } from "./view";
@@ -33,6 +35,7 @@ export class PrivateWireframe {
 		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store: OverlayerStore,
 		settings_store: SettingsStore,
+		user_store: UserStore,
 	) {
 		let interactor = new PrivateInteractor(
 			new PrivatePresenter(router_acl, new PrivateView()),
@@ -40,6 +43,7 @@ export class PrivateWireframe {
 				new PrivateChatManager(chat_store),
 				new PrivateOverlayerManager(overlayer_store),
 				new PrivateSettingsManager(settings_store),
+				new PrivateUserManager(user_store),
 			],
 		);
 

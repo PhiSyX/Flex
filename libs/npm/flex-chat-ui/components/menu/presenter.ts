@@ -9,11 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
-import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
+import type { Room } from "@phisyx/flex-chat/room";
 import type { Option } from "@phisyx/flex-safety";
 import type { MenuInteractor } from "./interactor";
 import type { MenuView } from "./view";
 
+import { is_channel_room } from "@phisyx/flex-chat/asserts/room";
 import { assert_non_null, None } from "@phisyx/flex-safety";
 
 // -------------- //
@@ -69,8 +70,12 @@ export class MenuPresenter {
 	}
 
 	close_room() {
-		let room: ChannelRoom = this.view.data.room;
-		this.interactor.close_room(room.name);
+		let room: Room = this.view.data.room;
+		let room_nameid = room.id();
+		if (is_channel_room(room)) {
+			room_nameid = room.name;
+		}
+		this.interactor.close_room(room_nameid);
 	}
 
 	get_current_member(): Option<ChannelMember> {
@@ -89,5 +94,10 @@ export class MenuPresenter {
 		};
 
 		this.interactor.create_channel_settings_dialog(channel_settings_record);
+	}
+
+	open_update_account_dialog() {
+		assert_non_null(this.view.data);
+		this.interactor.create_update_account_dialog();
 	}
 }

@@ -50,4 +50,16 @@ export class DialogChatManager {
 			.expect("Récupération du module `TOPIC`");
 		module.send({ channel: channel_name, topic });
 	}
+
+	is_connected() {
+		return this.store.is_connected();
+	}
+
+	send_logout() {
+		let module = this.store
+			.module_manager()
+			.get("LOGOUT")
+			.expect("Récupération du module `LOGOUT`");
+		module.send({});
+	}
 }

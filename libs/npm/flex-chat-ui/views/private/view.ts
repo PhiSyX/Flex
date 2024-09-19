@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
@@ -56,6 +57,13 @@ export class PrivateView {
 	/**
 	 * Est-ce que le participant est bloqué?
 	 */
+	get is_current_client_authenticated() {
+		return this.presenter.is_current_client_authenticated();
+	}
+
+	/**
+	 * Est-ce que le participant est bloqué?
+	 */
 	get is_recipient_blocked() {
 		return this.presenter.is_recipient_blocked();
 	}
@@ -70,7 +78,7 @@ export class PrivateView {
 	/**
 	 * Participant de la chambre.
 	 */
-	get recipient() {
+	get maybe_recipient() {
 		return this.presenter.recipient();
 	}
 
@@ -161,5 +169,17 @@ export class PrivateView {
 	 */
 	send_unignore_user_command_handler = (origin: Origin) => {
 		this.presenter.unignore(origin.nickname);
+	};
+
+	show_private_menu_handler = (
+		event: MouseEvent,
+		recipient: PrivateParticipant,
+	) => {
+		this.presenter.open_private_options_menu(event, {
+			room: this.priv,
+			currentClient: this.current_client_user,
+			isClientAuthenticated: this.is_current_client_authenticated,
+			recipient,
+		});
 	};
 }

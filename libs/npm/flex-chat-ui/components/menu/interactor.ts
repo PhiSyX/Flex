@@ -84,4 +84,9 @@ export class MenuInteractor {
 	create_channel_settings_dialog(record: ChannelSettingsRecordDialog) {
 		this.overlayer_manager.create_channel_settings_dialog(record);
 	}
+
+	create_update_account_dialog() {
+		let user_session = this.user_manager.user_session().unwrap();
+		this.overlayer_manager.create_update_account_dialog(user_session);
+	}
 }

@@ -22,6 +22,7 @@ import {
 import { ClientErrorLayer } from "@phisyx/flex-chat/layers/client_error";
 import { LoadAllModulesLayer } from "@phisyx/flex-chat/layers/load_all_modules";
 import { ChannelOptionsMenu } from "@phisyx/flex-chat/menu/channel_options";
+import { PrivateOptionsMenu } from "@phisyx/flex-chat/menu/private_options";
 import { OverlayerData, OverlayerStore } from "@phisyx/flex-chat/store";
 
 // -------------- //
@@ -77,6 +78,9 @@ class OverlayerStoreVue extends OverlayerStore {
 		const ChannelOptionsMenuComponent = defineAsyncComponent(
 			() => import("~/components/menu/ChannelOptionsMenu.vue"),
 		);
+		const PrivateOptionsMenuComponent = defineAsyncComponent(
+			() => import("~/components/menu/PrivateOptionsMenu.vue"),
+		);
 		const ClientErrorComponent = defineAsyncComponent(
 			() => import("~/components/error/ClientError.vue"),
 		);
@@ -110,6 +114,8 @@ class OverlayerStoreVue extends OverlayerStore {
 
 				case ChannelOptionsMenu.ID:
 					return ChannelOptionsMenuComponent;
+				case PrivateOptionsMenu.ID:
+					return PrivateOptionsMenuComponent;
 
 				// General
 				case ClientErrorLayer.ID:

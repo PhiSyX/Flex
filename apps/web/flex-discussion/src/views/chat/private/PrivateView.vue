@@ -5,6 +5,7 @@ import type {
 	ChatStoreInterfaceExt,
 	OverlayerStore,
 	SettingsStore,
+	UserStore,
 } from "@phisyx/flex-chat/store";
 
 import { PrivateWireframe } from "@phisyx/flex-chat-ui/views/private";
@@ -15,6 +16,7 @@ import {
 	use_chat_store,
 	use_overlayer_store,
 	use_settings_store,
+	use_user_store,
 } from "~/store";
 
 // --------- //
@@ -24,6 +26,7 @@ import {
 let chat_store = use_chat_store().store;
 let overlayer_store = use_overlayer_store().store;
 let settings_store = use_settings_store().store;
+let user_store = use_user_store().store;
 
 let view = reactive(
 	PrivateWireframe.create(
@@ -31,6 +34,7 @@ let view = reactive(
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store as OverlayerStore,
 		settings_store as SettingsStore,
+		user_store as UserStore,
 	),
 ) as PrivateView;
 

@@ -63,7 +63,6 @@ export class PrivateRoom extends Room<UserID, "private"> {
 			super.clear_messages();
 		}
 	}
-
 	// ------- //
 	// Méthode //
 	// ------- //
@@ -111,5 +110,9 @@ export class PrivateRoom extends Room<UserID, "private"> {
 
 	set_pending(bool: boolean) {
 		this.pending = bool;
+	}
+
+	partial_eq($1: PrivateParticipant): boolean {
+		return $1.nickname.toLowerCase() === this.name.toLowerCase();
 	}
 }

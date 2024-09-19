@@ -112,4 +112,16 @@ export class MenuView {
 		this.presenter.close_room();
 		this.close_menu();
 	};
+
+	// TODO: à déplacer das une class à part
+	close_room_handler = () => {
+		this.presenter.close_room();
+		this.close_menu();
+	};
+
+	// TODO: à déplacer das une class à part
+	open_update_account_dialog_handler = () => {
+		this.presenter.open_update_account_dialog();
+		this.close_menu();
+	};
 }

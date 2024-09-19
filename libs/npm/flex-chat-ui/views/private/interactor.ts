@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { PrivateOptionsRecordMenu } from "@phisyx/flex-chat/menu/private_options";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import type { Layer } from "@phisyx/flex-chat/store";
@@ -15,6 +16,7 @@ import type { Option } from "@phisyx/flex-safety";
 import type { PrivateChatManager } from "./datamanager/chat_data_manager";
 import type { PrivateOverlayerManager } from "./datamanager/overlayer_data_manager";
 import type { PrivateSettingsManager } from "./datamanager/settings_data_manager";
+import type { PrivateUserManager } from "./datamanager/user_data_manager";
 import type { PrivatePresenter } from "./presenter";
 
 import { None } from "@phisyx/flex-safety";
@@ -30,6 +32,7 @@ export class PrivateInteractor {
 			chat: PrivateChatManager,
 			overlayer: PrivateOverlayerManager,
 			settings: PrivateSettingsManager,
+			users: PrivateUserManager,
 		],
 	) {
 		this.presenter = presenter;
@@ -38,6 +41,7 @@ export class PrivateInteractor {
 		this.chat_manager = datamanager[0];
 		this.overlayer_manager = datamanager[1];
 		this.settings_manager = datamanager[2];
+		this.user_manager = datamanager[3];
 	}
 
 	// --------- //
@@ -48,6 +52,7 @@ export class PrivateInteractor {
 	private chat_manager!: PrivateChatManager;
 	private overlayer_manager!: PrivateOverlayerManager;
 	private settings_manager!: PrivateSettingsManager;
+	private user_manager!: PrivateUserManager;
 
 	// --------------- //
 	// Getter | Setter //
@@ -81,6 +86,13 @@ export class PrivateInteractor {
 		this.overlayer_manager.create_user_change_nickname_dialog(event);
 	}
 
+	create_private_options_menu(
+		evt: Required<Layer["event"]>,
+		record: PrivateOptionsRecordMenu,
+	) {
+		this.overlayer_manager.create_private_options_menu(evt, record);
+	}
+
 	close(id: UserID) {
 		this.chat_manager.close(id);
 	}
@@ -103,6 +115,10 @@ export class PrivateInteractor {
 
 	get_current_client_nickname(): string {
 		return this.chat_manager.get_current_client_nickname();
+	}
+
+	is_current_client_authenticated() {
+		return this.user_manager.is_current_client_authenticated();
 	}
 
 	layout_settings() {

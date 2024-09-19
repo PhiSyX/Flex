@@ -183,6 +183,6 @@ export class DialogView {
 	};
 
 	logout_handler = () => {
-		this.presenter.unset_session_user();
+		this.presenter.logout_user();
 	};
 }

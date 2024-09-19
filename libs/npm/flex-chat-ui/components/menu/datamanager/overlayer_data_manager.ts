@@ -8,10 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs";
+import type {
+	ChannelSettingsRecordDialog,
+	UpdateAccountRecordDialog,
+} from "@phisyx/flex-chat/dialogs";
 import type { OverlayerStore } from "@phisyx/flex-chat/store";
 
-import { ChannelSettingsDialog } from "@phisyx/flex-chat/dialogs";
+import {
+	ChannelSettingsDialog,
+	UpdateAccountDialog,
+} from "@phisyx/flex-chat/dialogs";
 
 // -------------- //
 // Implémentation //
@@ -44,6 +50,14 @@ export class MenuOverlayerManager {
 		this.store.create({
 			id: ChannelSettingsDialog.ID,
 			destroyable: "manual",
+			centered: true,
+			data: record,
+		});
+	}
+
+	create_update_account_dialog(record: UpdateAccountRecordDialog) {
+		this.store.create({
+			id: UpdateAccountDialog.ID,
 			centered: true,
 			data: record,
 		});
