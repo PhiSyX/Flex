@@ -22,6 +22,10 @@ export class ListCommand implements CommandInterface<"LIST"> {
 
 	send(payload: Command<"LIST">) {
 		this.store.emit("LIST", payload);
-		this.store.router().goto(View.ChannelList);
+		this.store.router().goto(View.ChannelList, {
+			params: {
+				servername: this.store.network_name(),
+			},
+		});
 	}
 }
