@@ -34,6 +34,7 @@ const {
 	contentCenter = false,
 	placeholderCenter = true,
 	withLayer = false,
+	locked,
 } = defineProps<Props>();
 const emit = defineEmits<Emits>();
 let input_model = defineModel<string>();
@@ -56,6 +57,10 @@ function submit_handler(evt: Event) {
 }
 
 function open_layer(evt: Event) {
+	if (locked) {
+		return;
+	}
+
 	state.value = true;
 
 	if (withLayer) {
