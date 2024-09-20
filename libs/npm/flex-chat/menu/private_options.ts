@@ -28,6 +28,8 @@ export interface PrivateOptionsRecordMenu {
 	isClientAuthenticated: boolean;
 	// Participant destinataire de la conversation
 	recipient: PrivateParticipant;
+	// Est-ce que le participant est bloqué?
+	isRecipientBlocked: boolean;
 }
 
 // -------------- //

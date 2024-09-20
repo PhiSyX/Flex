@@ -2,15 +2,7 @@
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
-import { computed } from "vue";
-
-import {
-	ActionBar,
-	Alert,
-	ButtonIcon,
-	UiButton,
-	UiImage,
-} from "@phisyx/flex-vue-uikit";
+import { ActionBar, Alert, ButtonIcon, UiImage } from "@phisyx/flex-vue-uikit";
 
 import Room from "#/sys/room/Room.template.vue";
 
@@ -50,20 +42,9 @@ interface Slots {
 // Composant //
 // --------- //
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits<Emits>();
 defineSlots<Slots>();
-
-// Est-ce que le client courant est le participant lui-même?
-let is_current_client_participant_himself = computed(() =>
-	props.currentClientUser.partial_eq(props.recipient)
-);
-
-let ignore_btn_title_attribute = computed(() =>
-	props.isRecipientBlocked
-		? `Ne plus ignorer ${props.recipient.nickname}`
-		: `Ignorer ${props.recipient.nickname}`
-);
 
 // ------- //
 // Handler //
@@ -75,14 +56,6 @@ const open_colors_box_handler = (event: MouseEvent) =>
 	emit("open-colors-box", event);
 const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 const send_message_handler = (message: string) => emit("send-message", message);
-
-function toggle_ignore_user_handler() {
-	if (props.isRecipientBlocked) {
-		emit("unignore-user", props.recipient);
-	} else {
-		emit("ignore-user", props.recipient);
-	}
-}
 </script>
 
 <template>
@@ -119,15 +92,6 @@ function toggle_ignore_user_handler() {
 							/>
 						</slot>
 
-						<UiButton
-							v-if="!is_current_client_participant_himself"
-							icon="user-block"
-							:selected="isRecipientBlocked"
-							:false-value="false"
-							:true-value="true"
-							:title="ignore_btn_title_attribute"
-							@click="toggle_ignore_user_handler"
-						/>
 						<ButtonIcon
 							icon="close"
 							title="Fermer la chambre active"

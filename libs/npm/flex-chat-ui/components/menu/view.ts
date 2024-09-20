@@ -10,6 +10,7 @@
 
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { MenuClass, MenuInterface } from "@phisyx/flex-chat/menu";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 import type { MenuPresenter } from "./presenter";
@@ -122,6 +123,15 @@ export class MenuView {
 	// TODO: à déplacer das une class à part
 	open_update_account_dialog_handler = () => {
 		this.presenter.open_update_account_dialog();
+		this.close_menu();
+	};
+
+	ignore_user_handler = (recipient: PrivateParticipant) => {
+		this.presenter.ignore_user(recipient);
+		this.close_menu();
+	};
+	unignore_user_handler = (recipient: PrivateParticipant) => {
+		this.presenter.unignore_user(recipient);
 		this.close_menu();
 	};
 }

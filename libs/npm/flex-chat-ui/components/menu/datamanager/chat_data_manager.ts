@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
@@ -26,5 +27,12 @@ export class MenuChatManager {
 
 	get_current_client_id(): UserID {
 		return this.store.client_id();
+	}
+
+	ignore_user(recipient: PrivateParticipant) {
+		this.store.ignore_user(recipient.nickname);
+	}
+	unignore_user(recipient: PrivateParticipant) {
+		this.store.unignore_user(recipient.nickname);
 	}
 }

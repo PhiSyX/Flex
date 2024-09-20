@@ -180,6 +180,7 @@ export class PrivateView {
 			currentClient: this.current_client_user,
 			isClientAuthenticated: this.is_current_client_authenticated,
 			recipient,
+			isRecipientBlocked: this.is_recipient_blocked,
 		});
 	};
 }

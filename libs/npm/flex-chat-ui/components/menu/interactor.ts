@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { MenuChatManager } from "./datamanager/chat_data_manager";
 import type { MenuOverlayerManager } from "./datamanager/overlayer_data_manager";
 import type { MenuSettingsManager } from "./datamanager/settings_data_manager";
@@ -88,5 +89,12 @@ export class MenuInteractor {
 	create_update_account_dialog() {
 		let user_session = this.user_manager.user_session().unwrap();
 		this.overlayer_manager.create_update_account_dialog(user_session);
+	}
+
+	ignore_user(recipient: PrivateParticipant) {
+		this.chat_manager.ignore_user(recipient);
+	}
+	unignore_user(recipient: PrivateParticipant) {
+		this.chat_manager.unignore_user(recipient);
 	}
 }

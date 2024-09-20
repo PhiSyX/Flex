@@ -55,6 +55,8 @@ let data: ComputedRef<PrivateOptionsRecordMenu> = computed(() => view.data);
 			:layer-name="layer_name"
 			v-bind="data"
 			@open-update-account="view.open_update_account_dialog_handler"
+			@ignore-user="view.ignore_user_handler"
+			@unignore-user="view.unignore_user_handler"
 			@close="view.close_room_handler"
 		/>
 	</Teleport>

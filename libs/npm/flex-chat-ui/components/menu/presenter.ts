@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
+import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { Room } from "@phisyx/flex-chat/room";
 import type { Option } from "@phisyx/flex-safety";
 import type { MenuInteractor } from "./interactor";
@@ -99,5 +100,12 @@ export class MenuPresenter {
 	open_update_account_dialog() {
 		assert_non_null(this.view.data);
 		this.interactor.create_update_account_dialog();
+	}
+
+	ignore_user(recipient: PrivateParticipant) {
+		this.interactor.ignore_user(recipient);
+	}
+	unignore_user(recipient: PrivateParticipant) {
+		this.interactor.unignore_user(recipient);
 	}
 }

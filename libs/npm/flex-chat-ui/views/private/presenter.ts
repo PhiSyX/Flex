@@ -56,7 +56,7 @@ export class PrivatePresenter {
 
 	is_recipient_blocked(): boolean {
 		return this.recipient()
-			.map(this.interactor.is_recipient_blocked)
+			.map((r) => this.interactor.is_recipient_blocked(r))
 			.unwrap_or(false);
 	}
 
