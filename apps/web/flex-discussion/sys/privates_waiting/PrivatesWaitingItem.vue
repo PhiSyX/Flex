@@ -60,7 +60,7 @@ const open_private_handler = (priv: Origin) => emit("open-private", priv);
 			@click.prevent="open_private_handler(user)"
 			:id="user.id"
 			:title="open_private_title_attribute"
-			class="[ pos-a:full ]"
+			class="[ pos-a:full select:none cursor:pointer ]"
 		>
 			{{ open_private_title_attribute }}
 		</a>
@@ -87,7 +87,5 @@ p {
 
 a {
 	color: transparent;
-	user-select: none;
-	cursor: pointer;
 }
 </style>

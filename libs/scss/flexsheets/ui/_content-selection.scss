@@ -3,17 +3,21 @@
 @mixin use-ui-content-selection($options...) {
 	$classes: (
 		"select:none": (
+			-webkit-user-select: none,
 			user-select: none,
 		),
 		"select:disabled": (
+			-webkit-user-select: none,
 			user-select: none,
 			cursor: default,
 			color: var(--disabled-color),
 		),
 		"select:text": (
+			-webkit-user-select: text,
 			user-select: text,
 		),
 		"select:all": (
+			-webkit-user-select: all,
 			user-select: all,
 		),
 	);

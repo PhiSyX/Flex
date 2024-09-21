@@ -49,8 +49,8 @@ let inputAttrIDNo = `${inputAttrID}_n`;
 	<div class="input@radio/switch">
 		<slot />
 
-		<ol>
-			<li>
+		<ol class="[ pos-r i-flex ]">
+			<li class="[ pos-r display-ib ]">
 				<input
 					:id="inputAttrIDYes"
 					v-model="inputModel"
@@ -60,12 +60,15 @@ let inputAttrIDNo = `${inputAttrID}_n`;
 					type="radio"
 				/>
 
-				<label :for="inputAttrIDYes">
+				<label
+					:for="inputAttrIDYes"
+					class="[ pos-r display-b f-size=14px align-t:center cursor:pointer select:none ]"
+				>
 					{{ labelY || InputRadioLabelDefault.Yes }}
 				</label>
 			</li>
 
-			<li>
+			<li class="[ pos-r display-ib ]">
 				<input
 					:id="inputAttrIDNo"
 					v-model="inputModel"
@@ -75,7 +78,10 @@ let inputAttrIDNo = `${inputAttrID}_n`;
 					type="radio"
 				/>
 
-				<label :for="inputAttrIDNo">
+				<label
+					:for="inputAttrIDNo"
+					class="[ pos-r display-b f-size=14px align-t:center cursor:pointer select:none ]"
+				>
 					{{ labelN || InputRadioLabelDefault.No }}
 				</label>
 
@@ -93,9 +99,6 @@ ol {
 	--h: #{fx.space(40)};
 	--p: calc(#{fx.space(1)} / 2);
 	--r: 50em;
-
-	position: relative;
-	display: inline-flex;
 
 	padding: var(--p);
 	border-radius: var(--r);
@@ -121,11 +124,17 @@ ol {
 }
 
 li {
-	position: relative;
-	display: inline-block;
 	height: calc(var(--h) - 2 * var(--p));
 	width: calc(var(--w) * 0.5 - var(--p));
 }
+
+label[for] {
+	z-index: 2;
+	transition: all 0.3s;
+	border-radius: var(--r);
+	line-height: calc(var(--h) - 2 * var(--p));
+}
+
 input {
 	overflow: hidden;
 
@@ -140,24 +149,6 @@ input {
 	border: 0;
 
 	clip: rect(0, 0, 0, 0);
-}
-
-label[for] {
-	z-index: 2;
-
-	position: relative;
-	display: block;
-
-	transition: all 0.3s;
-
-	text-align: center;
-	border-radius: var(--r);
-
-	font-size: 14px;
-	line-height: calc(var(--h) - 2 * var(--p));
-
-	cursor: pointer;
-	user-select: none;
 }
 
 input:checked ~ label[for] {

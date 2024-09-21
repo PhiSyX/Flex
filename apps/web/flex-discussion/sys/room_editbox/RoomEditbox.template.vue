@@ -125,15 +125,15 @@ function submit_handler() {
 			</UiButton>
 
 			<ButtonIcon
-				
+
 				icon="text-color"
-				:disabled="disableInput" 
+				:disabled="disableInput"
 				:class="{
 					[`fg-color${foreground}`]: foreground && foreground >= 0,
 					[`fshadow-color${background}`]: background != null,
 				}"
 				@click="open_colors_box_handler"
-				
+
 			/>
 
 			<ButtonIcon
@@ -153,6 +153,7 @@ form {
 	&[disabled],
 	&[disabled] * {
 		cursor: not-allowed !important;
+		-webkit-user-select: none;
 		user-select: none;
 	}
 }

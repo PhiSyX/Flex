@@ -82,7 +82,7 @@ watch_effect(() => {
 			></span>
 		</span>
 
-		<p class="input@radio/switch:label [ p:reset ]">
+		<p class="input@radio/switch:label [ p:reset select:none ]">
 			<slot />
 		</p>
 	</label>
@@ -172,9 +172,5 @@ watch_effect(() => {
 			}
 		}
 	}
-}
-
-p {
-	user-select: none;
 }
 </style>
