@@ -65,7 +65,7 @@ impl ViewInterface for HomeView
 				vite!("http://localhost:5173#🆔")
 			}
 		} else {
-			vite!("apps/flex-chat-webapp")
+			vite!("apps/web/flex-discussion")
 		}
 	}
 }
