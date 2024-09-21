@@ -13,6 +13,7 @@ import DropDownList from "../dropdown/DropDownList.vue";
 interface Props {
 	name: string;
 	list: Array<{ label: string; value: string }>;
+	openOnInput?: boolean;
 	placeholder?: string;
 	prependEmpty?: boolean;
 	sync?: boolean;
@@ -25,6 +26,7 @@ interface Props {
 const {
 	list,
 	name,
+	openOnInput = true,
 	prependEmpty = false,
 	sync = false,
 } = defineProps<Props>();
@@ -50,7 +52,6 @@ watch(
 	inmodel,
 	(ininput) => {
 		let outinput = outmodel.value;
-
 		let ininput_l = ininput.toLowerCase();
 		let plist = list;
 
@@ -110,6 +111,12 @@ function on_select_handler(
 	inmodel.value = selected_item.value;
 
 	opened.value = false;
+}
+
+function input_handler() {
+	if (openOnInput) {
+		opened.value = true;
+	}
 }
 
 function escape_handler(evt: Event) {
@@ -199,6 +206,7 @@ function to_end_list() {
 				type="text"
 				class="[ flex:full ]"
 				:placeholder="placeholder"
+				@input="input_handler"
 				@keydown.esc="escape_handler"
 				@keydown.enter="enter_handler"
 				@keydown.end="to_end_list"
