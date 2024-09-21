@@ -36,6 +36,7 @@ export { default as Alert, AlertButtonFlag } from "./src/alert/Alert.vue";
 export { default as AudioSound } from "./src/audio-sound/AudioSound.vue";
 export { default as Badge } from "./src/badge/Badge.vue";
 export { default as UiButton } from "./src/button/Button.vue";
+export { default as ComboBox } from "./src/combobox/ComboBox.vue";
 export { default as Dialog } from "./src/dialog/Dialog.vue";
 export { default as DropDownList } from "./src/dropdown/DropDownList.vue";
 export { default as FormLink } from "./src/form/FormLink.vue";
