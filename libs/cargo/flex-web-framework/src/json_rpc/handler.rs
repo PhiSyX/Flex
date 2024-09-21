@@ -12,11 +12,13 @@ use std::sync::Arc;
 
 use axum::extract::State;
 use axum::response::IntoResponse;
-use axum::{Extension, Json};
+use axum::Json;
 use rpc_router::{resources_builder, Request};
 use serde_json::{json, Value};
 
-use crate::http::{HttpContext, HttpContextError, HttpContextInterface};
+use crate::http::{HttpAuthContext, HttpContext, HttpContextInterface};
+use crate::query_builder::SQLQueryBuilder;
+use crate::{DatabaseService, PostgreSQLDatabase};
 
 // --------- //
 // Structure //
@@ -38,11 +40,10 @@ pub struct JsonRpcMetadata
 
 impl JsonRpcHandler
 {
-	// https://www.jsonrpc.org/specification
-	pub async fn handle(
-		ctx: HttpContext<Self>,
+	async fn _handle(
 		State(json_rpc_router): State<rpc_router::Router>,
 		Json(json_rpc): Json<Value>,
+		resource: impl FnOnce() -> rpc_router::Resources,
 	) -> impl IntoResponse
 	{
 		let req = match Request::try_from(json_rpc) {
@@ -126,8 +127,7 @@ impl JsonRpcHandler
 			method: req.method.clone(),
 		};
 
-		let resources = resources_builder![ctx].build();
-		let output = json_rpc_router.call_with_resources(req, resources).await;
+		let output = json_rpc_router.call_with_resources(req, resource()).await;
 
 		let response_object = output
 			.map(|response| {
@@ -191,6 +191,25 @@ impl JsonRpcHandler
 		let mut out = response_object.into_response();
 		out.extensions_mut().insert(Arc::new(meta));
 		out.into_response()
+	}
+
+	// https://www.jsonrpc.org/specification
+	pub async fn handle(
+		ctx: HttpContext<Self>,
+		state: State<rpc_router::Router>,
+		json: Json<Value>,
+	) -> impl IntoResponse
+	{
+		Self::_handle(state, json, || {
+			let pg_query_builder = ctx
+				.ext
+				.get::<DatabaseService<PostgreSQLDatabase>>()
+				.cloned()
+				.map(SQLQueryBuilder::new);
+
+			resources_builder![ctx, pg_query_builder].build()
+		})
+		.await
 	}
 }
 

@@ -57,8 +57,10 @@ pub struct HttpContext<T>
 	pub response: HttpResponse<T>,
 	pub cookies: Cookies,
 	pub session: Session,
+	pub ext: Extensions,
 }
 
+#[derive(Clone)]
 pub struct HttpAuthContext<T, U>
 {
 	pub(crate) context: Arc<T>,
@@ -66,6 +68,7 @@ pub struct HttpAuthContext<T, U>
 	pub response: HttpResponse<T>,
 	pub cookies: Cookies,
 	pub session: Session,
+	pub ext: Extensions,
 	pub user: U,
 }
 
@@ -350,6 +353,7 @@ where
 			response,
 			cookies,
 			session,
+			ext: parts.extensions.clone(),
 		})
 	}
 }
@@ -549,6 +553,7 @@ where
 			response,
 			cookies,
 			session,
+			ext: parts.extensions.clone(),
 			user: current_user,
 		})
 	}

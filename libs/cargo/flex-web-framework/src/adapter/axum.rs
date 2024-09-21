@@ -444,9 +444,7 @@ where
 
 		let scoped_router = axum::Router::<AxumState<S>>::new().route(
 			F::ENDPOINT,
-			axum::routing::post(
-				crate::json_rpc::handler::JsonRpcHandler::handle,
-			),
+			axum::routing::post(crate::json_rpc::JsonRpcHandler::handle),
 		);
 
 		self.application_adapter.router.merge(
