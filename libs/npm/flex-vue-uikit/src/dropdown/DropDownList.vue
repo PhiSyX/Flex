@@ -61,7 +61,11 @@ function updated($1: any, idx: number) {
 					@click="select(item)"
 					@vue:updated="($1: any) => updated($1, idx)"
 				>
-					{{ item.label }}
+					<span>
+						{{ item.label }}
+						<em v-if="item.label.length === 0">vide </em>
+					</span>
+
 					<em v-if="item.selected" class="flex:shrink=0">
 						(sélectionné)
 					</em>

@@ -14,6 +14,7 @@ interface Props {
 	name: string;
 	list: Array<{ label: string; value: string }>;
 	placeholder?: string;
+	prependEmpty?: boolean;
 	sync?: boolean;
 }
 
@@ -21,7 +22,12 @@ interface Props {
 // Composant //
 // --------- //
 
-const { list, name, sync } = defineProps<Props>();
+const {
+	list,
+	name,
+	prependEmpty = false,
+	sync = false,
+} = defineProps<Props>();
 
 let outmodel = defineModel<string>({ required: true });
 
@@ -46,17 +52,32 @@ watch(
 		let outinput = outmodel.value;
 
 		let ininput_l = ininput.toLowerCase();
+		let plist = list;
+
+		if (prependEmpty) {
+			plist = [
+				{
+					value: "",
+					label: "",
+				},
+				...list,
+			];
+		}
 
 		if (ininput_l.length === 0) {
-			filtered_list.value = list.map((item, idx) => ({
+			filtered_list.value = plist.map((item, idx) => ({
 				...item,
 				selected: outinput === item.value || outinput === item.label,
 				position: idx,
 			}));
+
+			if (sync) {
+				outmodel.value = ininput;
+			}
 			return;
 		}
 
-		filtered_list.value = list
+		filtered_list.value = plist
 			.map((item, idx) => ({
 				...item,
 				selected: outinput === item.value || outinput === item.label,
