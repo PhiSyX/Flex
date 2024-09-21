@@ -6,6 +6,7 @@ import type { Option } from "@phisyx/flex-safety";
 import { computed, ref, watch } from "vue";
 
 import {
+	ComboBox,
 	Dialog,
 	InputCounter,
 	InputSwitchV2,
@@ -86,7 +87,14 @@ let key_settings = ref(
 let limit_settings = ref(props.room.limit);
 
 // Appliquer un nouveau sujet de salon, par défaut le dernier dans l'historique.
-let topic_model = ref(Array.from(props.room.topic.history).at(-1));
+let topic_model = ref(Array.from(props.room.topic.history).at(-1) || "");
+
+let topic_history = computed(() =>
+	Array.from(props.room.topic.history, (item) => ({
+		label: item,
+		value: item,
+	}))
+);
 
 let selected_access_control_list = ref<Array<string>>([]);
 
@@ -229,17 +237,13 @@ function delete_selected_masks_handler() {
 		>
 			<h2 class="[ mt=0 ]">Historique des sujets</h2>
 
-			<input
+			<ComboBox
 				v-model="topic_model"
-				list="topics"
-				type="text"
-				class="[ w:full ]"
+				:list="topic_history"
 				:disabled="!is_current_client_channel_member_can_edit_topic"
+				sync
+				name="channel_topic"
 			/>
-			<datalist id="topics">
-				<option value=""></option>
-				<option v-for="topic in room.topic.history" :value="topic" />
-			</datalist>
 
 			<section class="[ flex! gap=1 ]">
 				<h2>{{ active_title_access_control }}</h2>

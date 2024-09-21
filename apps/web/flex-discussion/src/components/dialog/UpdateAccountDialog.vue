@@ -58,12 +58,16 @@ const { data: raw_countries_list, isError } = useQuery(
 	view.query_api_countries(),
 );
 
-watch(raw_countries_list, (new_data) => {
-	if (isError.value) {
-		return;
-	}
-	view.set_response_from_api_countries({ data: new_data });
-});
+watch(
+	raw_countries_list,
+	(new_data) => {
+		if (isError.value || !new_data) {
+			return;
+		}
+		view.set_response_from_api_countries({ data: new_data });
+	},
+	{ immediate: true }
+);
 </script>
 
 <template>

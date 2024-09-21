@@ -2,7 +2,7 @@
 import { iso_to_country_flag } from "@phisyx/flex-helpers";
 import { computed, ref } from "vue";
 
-import { Dialog, FormLink, UiButton } from "@phisyx/flex-vue-uikit";
+import { ComboBox, Dialog, FormLink, UiButton } from "@phisyx/flex-vue-uikit";
 
 import Avatar from "#/api/avatar/Avatar.vue";
 
@@ -40,6 +40,13 @@ let selected_country = ref(props.country || "");
 let form = computed(() => `${props.layerName}_form`);
 
 let flag_country = computed(() => iso_to_country_flag(selected_country.value));
+
+let countries_list_combobox = computed(() =>
+	props.countriesList.map((c) => ({
+		label: c.country,
+		value: c.code,
+	}))
+);
 
 // ------- //
 // Handler //
@@ -125,26 +132,16 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 				</div>
 			</fieldset>
 
-			<fieldset class="[ flex gap=2 ]" data-group="city">
+			<fieldset class="[ flex gap=2 ]" data-group="country-city">
 				<div class="[ flex! gap=1 ]">
 					<label for="country">Pays : {{ flag_country }}</label>
 
-					<input
+					<ComboBox
 						v-model="selected_country"
-						type="text"
-						list="countries-list"
+						:list="countries_list_combobox"
 						name="country"
-						id="country"
+						placeholder="Filtrer les pays..."
 					/>
-
-					<datalist id="countries-list">
-						<option
-							v-for="country of countriesList"
-							:value="country.code"
-						>
-							{{ country.country }}
-						</option>
-					</datalist>
 				</div>
 
 				<div class="[ flex! gap=1 ]">
@@ -210,8 +207,8 @@ input[type="email"],
 input[type="text"],
 input[type="text"] {
 	--default-placeholder-color: var(--color-grey900);
-	background: var(--color-ultra-white);
-	color: var(--color-black);
+	// background: var(--color-ultra-white);
+	// color: var(--color-black);
 	border: 1px solid var(--default-border-color);
 	border-radius: 4px;
 	padding: 4px;
