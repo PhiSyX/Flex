@@ -75,11 +75,11 @@ export class ReplyNotopicHandler
 		assert_channel_room(channel);
 
 		if (channel.topic.get().length !== 0) {
-			channel.unset_topic();
-
 			let event = channel.create_event(data);
 			// @ts-expect-error - à corriger
 			channel.add_event("event:no_topic", event);
 		}
+
+		channel.unset_topic();
 	}
 }

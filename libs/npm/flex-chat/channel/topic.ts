@@ -75,6 +75,8 @@ export class ChannelTopic {
 	 */
 	unset(options?: { force: boolean }) {
 		if (this.editable || options?.force) {
+			this.history.delete("");
+			this.history.add("");
 			this.text = None();
 		}
 	}
