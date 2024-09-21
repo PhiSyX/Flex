@@ -10,6 +10,7 @@
 
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { UserSession } from "@phisyx/flex-chat/user/session";
+import type { DialogApiManager } from "./datamanager/api_data_manager";
 import type { DialogChatManager } from "./datamanager/chat_data_manager";
 import type { DialogOverlayerManager } from "./datamanager/overlayer_data_manager";
 import type { DialogSettingsManager } from "./datamanager/settings_data_manager";
@@ -28,6 +29,7 @@ export class DialogInteractor {
 			overlayer: DialogOverlayerManager,
 			settings: DialogSettingsManager,
 			user: DialogUserManager,
+			api: DialogApiManager,
 		],
 	) {
 		this.presenter = presenter;
@@ -37,6 +39,7 @@ export class DialogInteractor {
 		this.overlayer_manager = datamanager[1];
 		this.settings_manager = datamanager[2];
 		this.user_manager = datamanager[3];
+		this.api_manager = datamanager[4];
 	}
 
 	// --------- //
@@ -45,6 +48,7 @@ export class DialogInteractor {
 
 	presenter: DialogPresenter;
 
+	private api_manager!: DialogApiManager;
 	private chat_manager!: DialogChatManager;
 	private overlayer_manager!: DialogOverlayerManager;
 	private settings_manager!: DialogSettingsManager;
@@ -121,5 +125,9 @@ export class DialogInteractor {
 
 	unset_session_user() {
 		this.user_manager.unset_session_user();
+	}
+
+	fetch_countries() {
+		return this.api_manager.fetch_countries();
 	}
 }

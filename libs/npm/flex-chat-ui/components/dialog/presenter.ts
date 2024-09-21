@@ -16,6 +16,9 @@ import type { DialogView } from "./view";
 
 import { None } from "@phisyx/flex-safety";
 
+// @ts-expect-error - Vit env
+const CACHE_MINUTE = import.meta.env.DEV ? 60 : 1440;
+
 // -------------- //
 // Implémentation //
 // -------------- //
@@ -108,5 +111,14 @@ export class DialogPresenter {
 
 	logout_user() {
 		this.interactor.logout_user();
+	}
+
+	fetch_countries() {
+		return {
+			queryKey: ["countries"],
+			queryFn: () => this.interactor.fetch_countries(),
+			staleTime: CACHE_MINUTE * 6e4,
+			refetchInterval: CACHE_MINUTE * 6e4 + 1,
+		};
 	}
 }

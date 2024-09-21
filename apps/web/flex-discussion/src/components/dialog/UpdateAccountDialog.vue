@@ -12,7 +12,7 @@ import type { ComputedRef } from "vue";
 
 import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
 import { UpdateAccountDialog } from "@phisyx/flex-chat/dialogs/update_account";
-import { computed, onMounted, reactive } from "vue";
+import { computed, reactive, watch } from "vue";
 import {
 	use_chat_store,
 	use_overlayer_store,
@@ -21,6 +21,7 @@ import {
 } from "~/store";
 
 import UpdateAccountDialogComponent from "#/sys/dialog_update_account/UpdateAccountDialog.template.vue";
+import { useQuery } from "@tanstack/vue-query";
 
 // --------- //
 // Composant //
@@ -53,8 +54,15 @@ let countries_list = computed(() => view.countries_list);
 // Lifecycle //
 // --------- //
 
-onMounted(() => {
-	view.fetch_countries();
+const { data: raw_countries_list, isError } = useQuery(
+	view.query_api_countries(),
+);
+
+watch(raw_countries_list, (new_data) => {
+	if (isError.value) {
+		return;
+	}
+	view.set_response_from_api_countries({ data: new_data });
 });
 </script>
 

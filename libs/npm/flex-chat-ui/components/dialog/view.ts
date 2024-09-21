@@ -14,6 +14,7 @@ import type { Option } from "@phisyx/flex-safety";
 import type { DialogPresenter } from "./presenter";
 
 import { None } from "@phisyx/flex-safety";
+import { Countries } from "./entities/countries";
 
 // ---- //
 // Type //
@@ -34,8 +35,7 @@ export class DialogView {
 	private presenter_ref: Option<DialogPresenter> = None();
 	declare dialog: DialogClass<DialogInterface>;
 
-	maybe_countries_list: Option<Array<{ code: string; country: string }>> =
-		None();
+	maybe_countries_list: Option<Countries> = None();
 	private uploaded_file: Option<File> = None();
 
 	// --------------- //
@@ -81,7 +81,7 @@ export class DialogView {
 	}
 
 	get countries_list() {
-		return this.maybe_countries_list.unwrap_or([]);
+		return this.maybe_countries_list.map((c) => c.data()).unwrap_or([]);
 	}
 
 	// ------- //
@@ -93,12 +93,21 @@ export class DialogView {
 	}
 
 	// TODO: à déplacer dans créer une classe à part
-	fetch_countries() {
-		fetch("/public/geo/countries.json")
-			.then((res) => res.json())
-			.then((res) => {
-				this.maybe_countries_list.replace(res);
-			});
+	query_api_countries() {
+		return this.presenter.fetch_countries();
+	}
+
+	set_response_from_api_countries(response: {
+		data: Array<{ code: string; country: string }> | undefined;
+	}) {
+		let maybe_data = Countries.parse(response.data);
+
+		if (maybe_data.is_err()) {
+			console.error(maybe_data.unwrap_err());
+			return;
+		}
+
+		this.maybe_countries_list = maybe_data.ok();
 	}
 
 	// ------- //

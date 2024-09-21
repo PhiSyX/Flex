@@ -8,45 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type {
-	ChatStoreInterface,
-	ChatStoreInterfaceExt,
-	OverlayerStore,
-	SettingsStore,
-	UserStore,
-} from "@phisyx/flex-chat/store";
-import { DialogApiManager } from "./datamanager/api_data_manager";
-import { DialogChatManager } from "./datamanager/chat_data_manager";
-import { DialogOverlayerManager } from "./datamanager/overlayer_data_manager";
-import { DialogSettingsManager } from "./datamanager/settings_data_manager";
-import { DialogUserManager } from "./datamanager/user_data_manager";
-import { DialogInteractor } from "./interactor";
-import { DialogPresenter } from "./presenter";
-import { DialogView } from "./view";
-
 // -------------- //
 // Implémentation //
 // -------------- //
 
-export class DialogWireframe {
-	static create(
-		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
-		overlayer_store: OverlayerStore,
-		settings_store: SettingsStore,
-		user_store: UserStore,
-	) {
-		let interactor = new DialogInteractor(
-			new DialogPresenter(new DialogView()),
-			[
-				new DialogChatManager(chat_store),
-				new DialogOverlayerManager(overlayer_store),
-				new DialogSettingsManager(settings_store),
-				new DialogUserManager(user_store),
-				new DialogApiManager(),
-			],
-		);
-		return interactor.presenter.view;
+export class DialogApiManager {
+	fetch_countries(): Promise<Array<{ code: string; country: string }>> {
+		return fetch("/public/geo/countries.json").then((res) => res.json());
 	}
-
-	declare _: number;
 }
