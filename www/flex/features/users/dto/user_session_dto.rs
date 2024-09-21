@@ -16,6 +16,7 @@ use crate::features::users::entities::UserRole;
 // Structure //
 // --------- //
 
+#[derive(Clone)]
 #[derive(Debug)]
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct UserSessionDTO
