@@ -190,10 +190,13 @@ export class DirectAccessChatManager {
 			}
 
 			for (let [module_name, module_constructor] of modules) {
-				console.info(
-					"Le module « %s » est maintenant en écoute.",
-					module_name,
-				);
+				// @ts-expect-error - Vite env
+				if (import.meta.env.DEV) {
+					console.info(
+						"Le module « %s » est maintenant en écoute.",
+						module_name,
+					);
+				}
 				this.store
 					.module_manager()
 					.set(

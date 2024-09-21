@@ -39,8 +39,8 @@ export class ReplyTopicHandler implements SocketEventInterface<"RPL_TOPIC"> {
 		assert_channel_room(channel);
 		channel.set_topic(data.topic);
 
-		// @ts-expect-error : type à corriger
 		channel.add_event(
+			// @ts-expect-error : type à corriger
 			"event:topic",
 			channel.create_event(
 				data,
@@ -73,10 +73,13 @@ export class ReplyNotopicHandler
 		}
 		let channel = maybe_channel.unwrap();
 		assert_channel_room(channel);
-		channel.unset_topic();
 
-		let event = channel.create_event(data);
-		// @ts-expect-error - à corriger
-		channel.add_event("event:no_topic", event);
+		if (channel.topic.get().length !== 0) {
+			channel.unset_topic();
+
+			let event = channel.create_event(data);
+			// @ts-expect-error - à corriger
+			channel.add_event("event:no_topic", event);
+		}
 	}
 }

@@ -64,7 +64,7 @@ impl JoinChannelsSessionInterface for ChannelsSession
 		if channel.modes_settings.has_limit_flag()
 			&& !channel
 				.modes_settings
-				.compare_limit(channel.members().len())
+				.compare_gt_limit(channel.members().len())
 		{
 			return Err(JoinChannelPermissionError::ERR_CHANNELISFULL);
 		}

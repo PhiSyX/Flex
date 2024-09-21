@@ -79,12 +79,23 @@ pub enum SettingsFlag
 
 impl ChannelModes<SettingsFlag>
 {
-	/// Vérifie que le drapeau +l <limit> contienne la bonne limite.
-	pub fn compare_limit(&self, limit: usize) -> bool
+	/// Vérifie que le drapeau +l <limit> contienne la limite ou plus.
+	pub fn compare_gt_limit(&self, limit: usize) -> bool
 	{
 		self.modes.values().any(|mode| {
 			if let SettingsFlag::Limit(current_limit) = mode.flag {
 				return current_limit > limit as u16;
+			}
+			false
+		})
+	}
+
+	/// Vérifie que le drapeau +l <limit> contienne la bonne limite.
+	pub fn compare_eq_limit(&self, limit: usize) -> bool
+	{
+		self.modes.values().any(|mode| {
+			if let SettingsFlag::Limit(current_limit) = mode.flag {
+				return current_limit == limit as u16;
 			}
 			false
 		})
@@ -220,12 +231,31 @@ impl ChannelModes<SettingsFlag>
 	{
 		let mode: ApplyMode<SettingsFlag> = mode.into();
 		let letter = mode.letter().to_string();
-		if !["k", "l"].contains(&letter.as_str())
-			&& self.modes.contains_key(&letter)
-		{
-			return None;
+
+		match &mode.flag {
+			| SettingsFlag::Key(key) => {
+				if self.contains_key_flag(key) {
+					return None;
+				} else if self.has_key_flag() {
+					self.modes.remove(&letter);
+				}
+			}
+			| SettingsFlag::Limit(limit) => {
+				if self.compare_eq_limit(*limit as _) {
+					return None;
+				} else if self.has_limit_flag() {
+					self.modes.remove(&letter);
+				}
+			}
+			| _ => {
+				if self.modes.contains_key(&letter) {
+					return None;
+				}
+			}
 		}
+
 		self.modes.insert(letter, mode.clone());
+
 		Some(mode)
 	}
 
@@ -236,11 +266,11 @@ impl ChannelModes<SettingsFlag>
 	{
 		let mode: ApplyMode<SettingsFlag> = mode.into();
 		let letter = mode.letter().to_string();
-		if !["k", "l"].contains(&letter.as_str())
-			&& !self.modes.contains_key(&letter)
-		{
+
+		if !self.modes.contains_key(&letter) {
 			return None;
 		}
+
 		self.modes.remove(&letter);
 		Some(mode)
 	}
