@@ -34,5 +34,25 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     1.  Un fichier `config/flex/.env` DOIT être crée. Se referer au fichier
         `config/flex/.env.example`.
 
-    2.  Les fichiers de configuration finissant par `.example.yml` DOIVENT être renommés, sans `.example`.  
+    2.  Les fichiers de configuration finissant par `.example.yml` DOIVENT être renommés, sans `.example`.
         Exemple: `chat.example.yml` -> `chat.yml`.
+
+## UI Kit
+
+-   [x] Composant ActionBar
+-   [x] Composant Alert
+-   [ ] Composant AlertDialog
+-   [x] Composant Badge
+-   [x] Composant ComboBox
+-   [ ] Composant DataGrid
+-   [x] Composant Dialog
+-   [x] Composant DropDownList
+-   [ ] Composant DropDownMenu
+-   [x] Composant FormLink
+-   [x] Composant Image
+-   [x] Composant InputCounter
+-   [x] Composant InputSWitch
+-   [x] Composant Menu
+-   [x] Composant MenuItem
+-   [x] Composant TextEditable
+-   [x] Composant TextInput
