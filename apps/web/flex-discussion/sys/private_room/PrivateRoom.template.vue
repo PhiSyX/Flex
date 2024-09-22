@@ -2,10 +2,11 @@
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
-import { ActionBar, UiButton, UiImage } from "@phisyx/flex-vue-uikit";
+import ActionBar from "@phisyx/flex-uikit-vue/actionbar/ActionBar.vue";
+import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
+import { UiButton, UiImage } from "@phisyx/flex-vue-uikit";
 
 import Room from "#/sys/room/Room.template.vue";
-import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 
 // ---- //
 // Type //

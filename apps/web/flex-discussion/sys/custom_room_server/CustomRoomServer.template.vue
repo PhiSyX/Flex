@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
 
-import { ActionBar } from "@phisyx/flex-vue-uikit";
+import ActionBar from "@phisyx/flex-uikit-vue/actionbar/ActionBar.vue";
 
 import Room from "#/sys/room/Room.template.vue";
 

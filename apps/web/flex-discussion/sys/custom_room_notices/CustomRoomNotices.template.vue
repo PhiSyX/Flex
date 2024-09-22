@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { NoticesCustomRoom } from "@phisyx/flex-chat/custom_room/notices";
 
-import { ActionBar, ButtonIcon } from "@phisyx/flex-vue-uikit";
+import ActionBar from "@phisyx/flex-uikit-vue/actionbar/ActionBar.vue";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 import Room from "#/sys/room/Room.template.vue";
 
@@ -39,7 +40,7 @@ const emit = defineEmits<Emits>();
 					</p>
 
 					<template #actions>
-						<ButtonIcon
+						<UiButton
 							icon="close"
 							title="Fermer la chambre active"
 							@click="emit('close')"

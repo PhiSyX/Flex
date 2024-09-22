@@ -1,0 +1,46 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use(
+	"align-i:center",
+	"flex",
+	"flex:full",
+	"min-w:fit",
+	"ov:y h:full"
+);
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+			2,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: padding,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: min-height,
+		values: (
+			8,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: font-size,
+		values: (
+			14px,
+		),
+	)
+);
