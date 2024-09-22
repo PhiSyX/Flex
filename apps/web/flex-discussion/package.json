@@ -28,16 +28,16 @@
 		"@tanstack/vue-query": "^5.56.2",
 		"country-flag-emoji-polyfill": "^0.1.8",
 		"pinia": "^2.2.2",
-		"socket.io-client": "^4.7.5",
+		"socket.io-client": "^4.8.0",
 		"vue": "catalog:",
-		"vue-router": "catalog:"
+		"vue-router": "^4.4.5"
 	},
 	"devDependencies": {
 		"@histoire/plugin-vue": "^0.17.17",
-		"@playwright/test": "^1.47.1",
+		"@playwright/test": "^1.47.2",
 		"@tsconfig/node22": "^22.0.0",
-		"@types/node": "^22.5.4",
-		"@vitejs/plugin-vue": "^5.1.3",
+		"@types/node": "^22.5.5",
+		"@vitejs/plugin-vue": "^5.1.4",
 		"histoire": "^0.17.17",
 		"sass": "catalog:",
 		"typescript": "catalog:",

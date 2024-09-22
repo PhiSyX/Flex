@@ -8,9 +8,9 @@ workspace = true
 
 [dependencies]
 argon2 = { version = "0.5.3", features = ["rand"] }
-axum = { version = "0.7.5", features = ["multipart"] }
+axum = { version = "0.7.6", features = ["multipart"] }
 axum-server = { version = "0.6.0", features = ["tls-rustls"] }
-axum-extra = { version = "0.9.3", features = ["typed-header"] }
+axum-extra = { version = "0.9.4", features = ["typed-header"] }
 axum-client-ip = { version = "0.6.0" }
 chrono = { workspace = true }
 console = { workspace = true }
@@ -36,7 +36,7 @@ thiserror = { workspace = true }
 time = { version = "0.3.36", features = ["serde"] }
 tokio = { workspace = true }
 tower-cookies = { version = "0.10.0", features = ["private", "signed"] }
-tower-http = { version = "0.5.2", features = ["cors", "fs"] }
+tower-http = { version = "0.6.0", features = ["cors", "fs"] }
 tower-layer = { version = "0.3.3" }
 tower-service = { version = "0.3.3" }
 tower-sessions = { version = "0.13.0" }

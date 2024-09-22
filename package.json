@@ -16,6 +16,6 @@
 		"test:e2e": "pnpm run -r test:e2e"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.0"
+		"@biomejs/biome": "^1.9.2"
 	}
 }

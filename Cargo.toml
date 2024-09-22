@@ -19,7 +19,7 @@ too_long_first_doc_paragraph = "allow"
 [workspace.dependencies]
 async-trait = "0.1.82"
 chrono = { version = "0.4.38", features = ["clock", "serde"] }
-clap = { version = "4.5.17", features = ["derive"] }
+clap = { version = "4.5.18", features = ["derive"] }
 console = { version = "0.15.8" }
 dashmap = { version = "6.1.0", features = ["serde"] }
 dns-lookup = "2.0.4"
