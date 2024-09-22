@@ -1,0 +1,136 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use(
+	"align-ji:center",
+	"align-t:left",
+	"align-t:center",
+	"align-t:right",
+	"cursor:pointer",
+	"flex",
+	"flex:full",
+	"flex:shrink=0",
+	"flex",
+	"ov:c",
+	"p:reset",
+	"select:none"
+);
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: padding,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: font-size,
+		values: (
+			13px,
+		),
+	)
+);
+
+@include fx.class("fx:alert") {
+	--fx-alert-bg: Canvas;
+	--fx-alert-button-bg: ButtonFace;
+	--fx-alert-button-color: ButtonText;
+	--fx-alert-border-color: ButtonBorder;
+
+	background: var(--fx-alert-bg);
+	border: 1px solid var(--fx-alert-border-color);
+	color: var(--fx-alert-color);
+}
+
+@include fx.class("fx:alert/error") {
+	@include fx.scheme using ($name) {
+		@if $name == light {
+			--fx-alert-color: var(--color-red700);
+			--fx-alert-bg: var(--color-red200);
+			--fx-alert-border-color: var(--color-red600);
+			--fx-alert-button-bg: var(--color-ultra-white);
+			--fx-alert-button-color: var(--color-ultra-black);
+		} @else if $name == ice {
+			--fx-alert-color: var(--color-white);
+			--fx-alert-bg: var(--color-red400);
+			--fx-alert-border-color: var(--color-red300);
+			--fx-alert-button-bg: var(--color-ultra-white);
+			--fx-alert-button-color: var(--color-ultra-black);
+		} @else if $name == dark {
+			--fx-alert-color: var(--color-white);
+			--fx-alert-bg: var(--color-red400);
+			--fx-alert-border-color: var(--color-red300);
+			--fx-alert-button-bg: var(--color-ultra-white);
+			--fx-alert-button-color: var(--color-ultra-black);
+		}
+	}
+}
+
+@include fx.class("fx:alert/info") {
+	--fx-alert-color: var(--color-white);
+	--fx-alert-bg: var(--color-blue400);
+	--fx-alert-border-color: var(--color-blue700);
+	--fx-alert-button-bg: var(--color-ultra-black);
+	--fx-alert-button-color: var(--color-ultra-white);
+}
+
+@include fx.class("fx:alert/success") {
+	--fx-alert-color: var(--color-white);
+	--fx-alert-bg: var(--color-green400);
+	--fx-alert-border-color: var(--color-green700);
+	--fx-alert-button-bg: var(--color-green700);
+}
+
+@include fx.class("fx:alert/warning") {
+	@include fx.scheme using ($name) {
+		@if $name == light {
+			--fx-alert-bg: #ffffcb;
+			--fx-alert-color: #a27718;
+			--fx-alert-border-color: #ffd133;
+			--fx-alert-button-bg: var(--color-ultra-black);
+			--fx-alert-button-color: var(--color-ultra-white);
+		} @else if $name == ice {
+			--fx-alert-bg: #ccfff9;
+			--fx-alert-color: #50a097;
+			--fx-alert-border-color: #50a097;
+			--fx-alert-button-bg: var(--color-ultra-black);
+			--fx-alert-button-color: var(--color-ultra-white);
+		} @else if $name == dark {
+			--fx-alert-bg: #ffffcb;
+			--fx-alert-color: #a27718;
+			--fx-alert-border-color: #ffd133;
+			--fx-alert-button-bg: var(--color-ultra-black);
+			--fx-alert-button-color: var(--color-ultra-white);
+		}
+	}
+}
+
+@include fx.class("fx:alert/close") {
+	color: currentColor;
+}
+
+@include fx.class("fx:alert/button") {
+	padding-block: 4px;
+	padding-inline: fx.space(1);
+
+	border: 1px outset var(--fx-alert-border-color);
+	border-radius: 4px;
+	background: var(--fx-alert-button-bg);
+	color: var(--fx-alert-button-color);
+}
+
+@include fx.class("fx:alert/panel") {
+	--panel-bg: var(--fx-alert-bg);
+	--panel-color: currentColor;
+}

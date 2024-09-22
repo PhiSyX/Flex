@@ -23,6 +23,7 @@
 		"@phisyx/flex-helpers": "workspace:",
 		"@phisyx/flex-safety": "workspace:",
 		"@phisyx/flex-search": "workspace:",
+		"@phisyx/flex-uikit-vue": "workspace:",
 		"@phisyx/flex-vue-directives": "workspace:",
 		"@phisyx/flex-vue-uikit": "workspace:",
 		"@tanstack/vue-query": "^5.56.2",

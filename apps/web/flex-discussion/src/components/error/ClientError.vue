@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Panel } from "@phisyx/flex-vue-uikit";
+import Panel from "@phisyx/flex-uikit-vue/panel/Panel.vue";
 
 import { use_chat_store } from "~/store";
 
@@ -17,9 +17,8 @@ let chat_store = use_chat_store();
 		<template #some="{ data: error }">
 			<Teleport defer :to="`#${error.id}_teleport`">
 				<Panel
-					type="error"
 					class="problem [ max-w=56 f-size=14px ]"
-					:with-padding="false"
+					:base-padding="false"
 				>
 					<template #heading>
 						<h1 class="[ align-t:left m=0 f-size=24px ]">

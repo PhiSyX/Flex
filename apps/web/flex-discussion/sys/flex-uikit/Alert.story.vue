@@ -1,16 +1,10 @@
 <script lang="ts" setup>
-import { Alert } from "@phisyx/flex-vue-uikit";
-
-// const types = {
-// 	warning: "Warning",
-// 	error: "Error",
-// };
+import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 
 function default_state() {
 	return {
 		content:
 			"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt esse cumque enim modi dolorum, ex recusandae asperiores facilis! In adipisci maiores suscipit eum velit neque dolore dolorem veniam, odit deleniti.",
-		type: "warning",
 	};
 }
 
@@ -19,16 +13,16 @@ function lockable_state() {
 		content:
 			"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt esse cumque enim modi dolorum, ex recusandae asperiores facilis! In adipisci maiores suscipit eum velit neque dolore dolorem veniam, odit deleniti.",
 		type: "warning",
-		can_close: false,
+		closable: false,
 	};
 }
 
-function left_content_state() {
+function content_center_state() {
 	return {
 		content:
 			"Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt esse cumque enim modi dolorum, ex recusandae asperiores facilis! In adipisci maiores suscipit eum velit neque dolore dolorem veniam, odit deleniti.",
 		type: "warning",
-		left_content: true,
+		content_center: "center",
 	};
 }
 
@@ -46,23 +40,32 @@ function delay_state() {
 	<Story title="Molecules/Alert" responsive-disabled>
 		<Variant title="Default" :init-state="default_state">
 			<template #default="{ state }">
-				<Alert :type="state.type">
-					{{ state.content }}
+				<Alert type="error">
+					Type Error: {{ state.content }}
+				</Alert>
+				<Alert type="info">
+					Type Info: {{ state.content }}
+				</Alert>
+				<Alert type="success">
+					Type Success: {{ state.content }}
+				</Alert>
+				<Alert type="warning">
+					Type Warning: {{ state.content }}
 				</Alert>
 			</template>
 		</Variant>
 
 		<Variant title="Lockable" :init-state="lockable_state">
 			<template #default="{ state }" >
-				<Alert :type="state.type" :can-close="state.can_close">
+				<Alert :type="state.type" :closable="state.closable">
 					{{ state.content }}
 				</Alert>
 			</template>
 		</Variant>
 
-		<Variant title="Left Content" :init-state="left_content_state">
+		<Variant title="Left Content" :init-state="content_center_state">
 			<template #default="{ state }" >
-				<Alert :type="state.type" :content-center="!state.left_content">
+				<Alert :type="state.type" :content-align="state.content_center">
 					{{ state.content }}
 				</Alert>
 			</template>

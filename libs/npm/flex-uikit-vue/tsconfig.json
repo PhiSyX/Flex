@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"allowUnreachableCode": false,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strict": true,
+		"allowImportingTsExtensions": true,
+		"baseUrl": ".",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"noEmit": true,
+		"isolatedModules": true,
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"target": "ESNext",
+		"useDefineForClassFields": true,
+		"skipLibCheck": true,
+		"jsx": "preserve",
+		"jsxFactory": "h",
+		"jsxImportSource": "vue"
+	},
+	"include": ["./**/*.vue"],
+	"exclude": ["node_modules"]
+}

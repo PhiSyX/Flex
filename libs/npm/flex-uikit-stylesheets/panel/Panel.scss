@@ -1,0 +1,46 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use(
+	"flex",
+	"flex!",
+	"align-jc:start",
+	"align-jc:center",
+	"align-jc:end"
+);
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: padding,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.class("fx:panel") {
+	background: var(--panel-bg, var(--color-white));
+	color: var(--panel-color, var(--default-text-color_alt));
+
+	min-width: fx.space(250);
+}
+@include fx.class("fx:panel/title") {
+	background: var(--panel-heading-bg, var(--panel-bg));
+	color: var(--panel-color, var(--default-text-color_alt));
+}
+@include fx.class("fx:panel/body") {
+	background: var(--panel-body-bg, var(--panel-bg));
+	color: var(--panel-color, var(--default-text-color_alt));
+}
+@include fx.class("fx:panel/footer") {
+	background: var(--panel-footer-bg, var(--panel-bg));
+	color: var(--panel-color, var(--default-text-color_alt));
+}

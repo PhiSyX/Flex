@@ -8,13 +8,9 @@ import type { Option } from "@phisyx/flex-safety";
 
 import { computed, ref } from "vue";
 
-import {
-	ActionBar,
-	Alert,
-	ButtonIcon,
-	TextEditable,
-	UiButton,
-} from "@phisyx/flex-vue-uikit";
+import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
+
+import { ActionBar, TextEditable, UiButton } from "@phisyx/flex-vue-uikit";
 
 import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
 import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue";
@@ -205,7 +201,7 @@ const enable_topic_edit_mode_handler = (payload: {
 					/>
 
 					<template #actions>
-						<ButtonIcon
+						<UiButton
 							icon="ellipsis"
 							title="Ouvrir le menu d'options du salon..."
 							@click="open_menu_channel_options_handler"
@@ -219,7 +215,7 @@ const enable_topic_edit_mode_handler = (payload: {
 							:title="toggle_nicklist_title_attribute"
 						/>
 
-						<ButtonIcon
+						<UiButton
 							class="close"
 							icon="close"
 							title="Fermer la chambre active"
@@ -228,7 +224,11 @@ const enable_topic_edit_mode_handler = (payload: {
 					</template>
 				</ActionBar>
 
-				<Alert type="warning" :close-after-seconds="15">
+				<Alert
+					:close-after-seconds="15"
+					type="warning"
+					content-align="center"
+				>
 					Ne communique <strong>jamais</strong> tes coordonnées
 					personnelles (nom, adresse, n° de téléphone...), ni tes
 					identifiants de connexion.

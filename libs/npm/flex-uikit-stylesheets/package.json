@@ -1,0 +1,10 @@
+{
+	"name": "@phisyx/flex-uikit-stylesheets",
+	"description": "Flex UIKIT (stylesheets)",
+	"version": "0.1.0",
+	"author": "Mike 'PhiSyX' S.",
+	"devDependencies": {
+		"@phisyx/flex-code-quality": "workspace:",
+		"@phisyx/flexsheets": "workspace:"
+	}
+}

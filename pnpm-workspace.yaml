@@ -1,6 +1,7 @@
 packages:
   - "apps/**"
   - "libs/npm/**"
+  - "libs/scss/flexsheets"
   - "tools/**"
 
 catalog:

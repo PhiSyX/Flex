@@ -2,9 +2,10 @@
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
-import { ActionBar, Alert, ButtonIcon, UiImage } from "@phisyx/flex-vue-uikit";
+import { ActionBar, UiButton, UiImage } from "@phisyx/flex-vue-uikit";
 
 import Room from "#/sys/room/Room.template.vue";
+import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 
 // ---- //
 // Type //
@@ -92,7 +93,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 							/>
 						</slot>
 
-						<ButtonIcon
+						<UiButton
 							icon="close"
 							title="Fermer la chambre active"
 							@click="emit('close')"

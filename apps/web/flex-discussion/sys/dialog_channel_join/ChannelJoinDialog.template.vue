@@ -2,7 +2,9 @@
 import { cast_to_channel_id } from "@phisyx/flex-chat/asserts/room";
 import { ref } from "vue";
 
-import { Alert, Dialog, UiButton } from "@phisyx/flex-vue-uikit";
+import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
+
+import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -67,12 +69,7 @@ function create_channel_handler() {
 		</template>
 
 		<section class="[ flex! gap=1 ]">
-			<Alert
-				v-if="withNotice"
-				type="warning"
-				:can-close="false"
-				:content-center="false"
-			>
+			<Alert v-if="withNotice" type="warning" :closable="false">
 				Tu es sur le point de rejoindre un salon OU de le créer.
 
 				<br />
@@ -89,12 +86,7 @@ function create_channel_handler() {
 				te suffira de le donner avec le nom du salon à tes contacts.
 			</Alert>
 
-			<Alert
-				v-if="marksKeysFieldAsError"
-				type="error"
-				:can-close="false"
-				:content-center="false"
-			>
+			<Alert v-if="marksKeysFieldAsError" type="error" :closable="false">
 				Une clé d'accès est requise pour pouvoir entrer sur ce salon (
 				<em>{{ names }}</em>
 				).

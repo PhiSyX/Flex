@@ -1,0 +1,18 @@
+{
+	"name": "@phisyx/flex-uikit-vue",
+	"version": "0.1.0",
+	"description": "Flex UIKIT (Vue)",
+	"author": "Mike 'PhiSyX' S.",
+	"type": "module",
+	"license": "MPL-2.0",
+	"dependencies": {
+		"@phisyx/flex-code-quality": "workspace:",
+		"@phisyx/flex-asserts": "workspace:",
+		"@phisyx/flex-uikit": "workspace:",
+		"@phisyx/flex-uikit-stylesheets": "workspace:",
+		"vue": "catalog:"
+	},
+	"devDependencies": {
+		"vite": "catalog:"
+	}
+}

@@ -32,7 +32,6 @@ let icons_components = Object.entries(icons_imports).map(
 );
 
 export { default as ActionBar } from "./src/actionbar/ActionBar.vue";
-export { default as Alert, AlertButtonFlag } from "./src/alert/Alert.vue";
 export { default as AudioSound } from "./src/audio-sound/AudioSound.vue";
 export { default as Badge } from "./src/badge/Badge.vue";
 export { default as UiButton } from "./src/button/Button.vue";
@@ -47,7 +46,6 @@ export { default as InputSwitchV2 } from "./src/inputswitch/InputSwitchV2.vue";
 export { default as Match } from "./src/match/Match.vue";
 export { default as UiMenu } from "./src/menu/Menu.vue";
 export { default as UiMenuItem } from "./src/menu/MenuItem.vue";
-export { default as Panel, PanelFooterPosition } from "./src/panel/Panel.vue";
 export { default as TextEditable } from "./src/texteditable/TextEditable.vue";
 export { default as TextInput } from "./src/textinput/TextInput.vue";
 
