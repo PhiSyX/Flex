@@ -88,6 +88,14 @@ export default define_config({
 		open: open_to_browser_url,
 	},
 
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: "modern-compiler",
+			},
+		},
+	},
+
 	resolve: {
 		alias: [
 			// Application

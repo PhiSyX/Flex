@@ -1,4 +1,5 @@
 @use "sass:map";
+@use "sass:color";
 
 @mixin use-scrollbars($options) {
 	$background: map.get($options, background);
@@ -6,11 +7,11 @@
 	$backgroundActive: map.get($options, background-active);
 
 	@if not map.has-key($options, background-hover) {
-		$backgroundHover: lighten($background, 10%);
+		$backgroundHover: color.adjust($background, $lightness: 10%);
 	}
 
 	@if not map.has-key($options, background-active) {
-		$backgroundActive: lighten($background, 32%);
+		$backgroundActive: color.adjust($background, $lightness: 32%);
 	}
 
 	:root {
