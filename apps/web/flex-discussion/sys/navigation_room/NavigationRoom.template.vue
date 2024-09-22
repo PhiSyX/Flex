@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { Badge, ButtonIcon } from "@phisyx/flex-vue-uikit";
+import Badge from "@phisyx/flex-uikit-vue/badge/Badge.vue";
+import { UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -131,7 +132,7 @@ const close_room_handler = () => emit("close-room", props.id);
 				{{ total_unread }}
 			</Badge>
 
-			<ButtonIcon
+			<UiButton
 				v-show="!folded"
 				icon="close"
 				class="close"

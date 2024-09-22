@@ -32,7 +32,6 @@ let icons_components = Object.entries(icons_imports).map(
 );
 
 export { default as AudioSound } from "./src/audio-sound/AudioSound.vue";
-export { default as Badge } from "./src/badge/Badge.vue";
 export { default as UiButton } from "./src/button/Button.vue";
 export { default as ComboBox } from "./src/combobox/ComboBox.vue";
 export { default as Dialog } from "./src/dialog/Dialog.vue";

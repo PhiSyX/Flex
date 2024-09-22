@@ -1,0 +1,16 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use("di-b", "align-t:center");
+
+@include fx.use(
+	(
+		className: border-radius,
+		values: (
+			3,
+		),
+	)
+);
+
+.badge {
+	padding: calc(#{fx.space(1)} / 2) fx.space(1);
+}
