@@ -240,6 +240,10 @@ function to_end_list() {
 <style lang="scss" scoped>
 @use "scss:~/flexsheets" as fx;
 
+.combobox {
+	width: inherit;
+}
+
 .combobox[open="true"] {
 	box-shadow: 2px 3px 4px var(--color-grey700);
 }
@@ -256,12 +260,14 @@ function to_end_list() {
 }
 
 @include fx.class("combobox/dropdown") {
+	z-index: 1;
 	position: fixed;
+	width: inherit;
+
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	border-top: 0;
 	box-shadow: 2px 3px 4px var(--color-grey700);
-	width: 210px;
 }
 
 input {

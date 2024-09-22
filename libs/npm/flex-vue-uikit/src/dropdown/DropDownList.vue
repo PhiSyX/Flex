@@ -46,7 +46,7 @@ function updated($1: any, idx: number) {
 <template>
 	<div class="dropdown-list [ ov:c ]">
 		<div class="dropdown-list/container [ ov:y ]">
-			<ul class="[ list:reset ov:h h:full ]">
+			<ul class="[ list:reset flex! ov:h h:full ]">
 				<li v-if="!list.length">Aucun élément trouvé</li>
 
 				<li
@@ -57,16 +57,14 @@ function updated($1: any, idx: number) {
 						'is-hover': position_model === idx,
 						'is-selected': item.selected,
 					}"
-					class="[ cursor:pointer flex align-jc:sb ]"
+					class="[ cursor:pointer flex gap=2 align-jc:sb ]"
 					@click="select(item)"
 					@vue:updated="($1: any) => updated($1, idx)"
 				>
-					<span>
-						{{ item.label }}
-						<em v-if="item.label.length === 0">vide </em>
-					</span>
+					<span v-if="item.label.length > 0">{{ item.label }}</span>
+					<em v-else>vide</em>
 
-					<em v-if="item.selected" class="flex:shrink=0">
+					<em v-if="item.selected" class="[ flex:shrink=0 ]">
 						(sélectionné)
 					</em>
 				</li>
@@ -87,14 +85,21 @@ function updated($1: any, idx: number) {
 }
 
 @include fx.class("dropdown-list/container") {
-	max-width: fx.space(210);
+	width: 100%;
+	min-width: fx.space(210);
+	max-width: fx.space(338);
 	max-height: fx.space(210);
 	padding: 4px;
+}
+
+ul {
+	gap: 2px;
 }
 
 li {
 	padding: 4px;
 	border-radius: 4px;
+	word-wrap: break-word;
 }
 
 .is-hover,
