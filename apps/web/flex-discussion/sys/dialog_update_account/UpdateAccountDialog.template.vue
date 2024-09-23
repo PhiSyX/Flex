@@ -68,7 +68,7 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 	<Dialog @close="close_dialog_handler">
 		<template #left-content>
 			<div class="[ flex! py=2 ]">
-				<div class="[ flex:full flex:shrink=0 ]">
+				<div class="[ flex:full flex:shrink=0 mt=8 ]">
 					<Avatar
 						:form="form"
 						:id="userId"
@@ -76,7 +76,6 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 						editable
 						:size="14"
 						name="avatar"
-						class="[ mt=8 ]"
 						@upload="upload_file_handler"
 					/>
 				</div>

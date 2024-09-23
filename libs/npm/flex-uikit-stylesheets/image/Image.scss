@@ -1,0 +1,11 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.class("fx:image/vertical") {
+	display: inline-grid;
+
+	figure {
+		display: grid;
+		grid-template-rows: auto auto;
+		justify-items: center;
+	}
+}

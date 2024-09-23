@@ -6,7 +6,7 @@ const API_V1_AVATAR_ENDPOINT = "/api/v1/avatars/:userid";
 <script setup lang="ts">
 import { computed, ref, shallowRef } from "vue";
 
-import { UiImage } from "@phisyx/flex-vue-uikit";
+import Image from "@phisyx/flex-uikit-vue/image/Image.vue";
 
 // ---- //
 // Type //
@@ -81,7 +81,7 @@ function on_upload_image_handler(evt: Event) {
 </script>
 
 <template>
-	<UiImage
+	<Image
 		:src="image_url"
 		:file="uploaded_file"
 		:alt="image_alt"
@@ -115,7 +115,7 @@ function on_upload_image_handler(evt: Event) {
 		</strong>
 
 		<slot />
-	</UiImage>
+	</Image>
 </template>
 
 <style lang="scss" scoped>

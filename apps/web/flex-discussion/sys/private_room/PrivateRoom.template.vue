@@ -5,7 +5,7 @@ import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import ActionBar from "@phisyx/flex-uikit-vue/actionbar/ActionBar.vue";
 import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
-import { UiImage } from "@phisyx/flex-vue-uikit";
+import Image from "@phisyx/flex-uikit-vue/image/Image.vue";
 
 import Room from "#/sys/room/Room.template.vue";
 
@@ -89,7 +89,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 
 					<template #actions>
 						<slot name="avatar" :recipient="recipient">
-							<UiImage
+							<Image
 								src="/img/default-avatar.png"
 								:title="`Avatar du compte de ${recipient.nickname}.`"
 							/>
