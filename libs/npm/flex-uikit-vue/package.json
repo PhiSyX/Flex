@@ -12,6 +12,7 @@
 		"@phisyx/flex-uikit": "workspace:",
 		"@phisyx/flex-uikit-stylesheets": "workspace:",
 		"@phisyx/flex-vue-directives": "workspace:",
+		"@phisyx/flexsheets": "workspace:",
 		"vue": "catalog:"
 	},
 	"devDependencies": {
