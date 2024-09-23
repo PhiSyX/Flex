@@ -100,6 +100,13 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 -   [ ] Composant DataGrid
 -   [x] Composant Dialog
+
+    Un composant `Dialog` permet de créer une [boite de dialogue](https://developer.mozilla.org/fr/docs/Web/HTML/Element/dialog).
+
+    L'image suivante montre le composant `Dialog`, intégré au composant `ChannelSettingsDialog` de l'application :
+
+    ![Dialog](docs/flex-uikit/dialog.png)
+
 -   [x] Composant DropDownList
 -   [ ] Composant DropDownMenu
 -   [x] Composant FormLink

@@ -200,7 +200,7 @@ function delete_selected_masks_handler() {
 </script>
 
 <template>
-	<Dialog :without-close="true">
+	<Dialog class="channel-settings-dialog" :without-close="true">
 		<template #label>
 			Paramètres {{ room.name }}<span v-if="settings_str">: (modes: +{{ settings_str }})</span>
 		</template>
@@ -440,7 +440,7 @@ function delete_selected_masks_handler() {
 <style scoped lang="scss">
 @use "scss:~/flexsheets" as fx;
 
-dialog {
+.channel-settings-dialog {
 	@media (max-height: 530px) {
 		justify-content: center;
 	}

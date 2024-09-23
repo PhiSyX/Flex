@@ -23,7 +23,7 @@ defineSlots<DialogChildren>();
 <template>
 	<dialog
 		:open="open"
-		class="fx:dialog [ border/radius=1 flex size:full f-size=13px select:none ]"
+		class="fx:dialog [ border/radius=1 flex size:full f-size=13px select:none p=1 ]"
 	>
 		<slot name="left-content" />
 
