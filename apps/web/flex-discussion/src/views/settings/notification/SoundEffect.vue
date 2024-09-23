@@ -3,7 +3,7 @@ import type { SettingsView } from "@phisyx/flex-chat-ui/views/settings";
 
 import { computed } from "vue";
 
-import { InputSwitchV2 } from "@phisyx/flex-vue-uikit";
+import InputSwitch from "@phisyx/flex-uikit-vue/input/InputSwitch.vue";
 
 import SettingsNotificationSoundEffect from "#/sys/settings_notification_sounds_effect/SettingsNotificationSoundEffect.template.vue";
 
@@ -26,13 +26,13 @@ let sounds_effect_enabled = computed(() => view.sounds_effect_enabled);
 
 <template>
 	<h2>
-		<InputSwitchV2
+		<InputSwitch
 			v-model="view.sounds_effect_enabled_mut"
 			name="enabled_sounds_effects"
 			position="right"
 		>
 			Effets sonores
-		</InputSwitchV2>
+		</InputSwitch>
 	</h2>
 
 	<SettingsNotificationSoundEffect

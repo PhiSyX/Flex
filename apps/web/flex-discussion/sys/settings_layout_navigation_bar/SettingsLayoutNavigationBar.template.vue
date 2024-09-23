@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { InputSwitch } from "@phisyx/flex-vue-uikit";
+import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
 
 // --------- //
 // Composant //
@@ -17,7 +17,7 @@ let navigation_bar_position = defineModel<"left" | "right">();
 		<div class="[ flex align-jc:sb align-ji:center gap=2 ]">
 			<label>Position</label>
 
-			<InputSwitch
+			<InputLabelSwitch
 				name="navigation-bar"
 				label-y="Gauche"
 				value-y="left"

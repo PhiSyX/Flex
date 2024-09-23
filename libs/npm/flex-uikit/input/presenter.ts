@@ -8,33 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { AlignX } from "align";
+export const DEFAULT_LABEL_NO = "Non";
+export const DEFAULT_LABEL_YES = "Oui";
 
-// ---- //
-// Type //
-// ---- //
-
-export interface InputCounterProps {
-	name: string;
-	disabled?: boolean;
-	form?: string;
-	max?: number;
-	min?: number;
-	step?: number;
-	stepX10WithShift?: boolean;
-}
-
-export interface InputLabelSwitchProps {
-	name: string;
-	form?: string;
-	labelN?: string;
-	labelY?: string;
-	valueN?: string | boolean;
-	valueY?: string | boolean;
-}
-
-export interface InputSwitchProps {
-	name: string;
-	disabled?: boolean;
-	position?: AlignX;
+export function input_switch_state(input: unknown, disabled: boolean) {
+	let state = input ? "Activé" : "Désactivé";
+	if (disabled) {
+		return `${state} (verrouillé)`;
+	}
+	return state;
 }

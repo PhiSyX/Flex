@@ -1,97 +1,61 @@
-<script setup lang="ts">
-import { computed, watchEffect as watch_effect } from "vue";
+@use "@phisyx/flexsheets" as fx;
 
-// ---- //
-// Type //
-// ---- //
+@include fx.use(
+	"align-i:center",
+	"align-v:middle",
+	"cursor:default",
+	"flex/center:full",
+	"i-flex",
+	"i-flex",
+	"p:reset",
+	"pos-r",
+	"pos-r",
+	"select:none",
+	"vis:h"
+);
 
-interface Props {
-	name: string;
-	disabled?: boolean;
-	position?: "left" | "right";
-}
+@include fx.use(
+	(
+		className: border-radius,
+		values: (
+			1,
+			50,
+		),
+	)
+);
 
-interface Emits {
-	(event_name: "on"): void;
-	(event_name: "off"): void;
-}
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			2,
+		),
+	)
+);
 
-interface Slots {
-	default: unknown;
-}
+@include fx.use(
+	(
+		className: size,
+		values: (
+			0,
+			3,
+		),
+	),
+	(
+		className: width,
+		values: (
+			5,
+		),
+	),
+	(
+		className: height,
+		values: (
+			2,
+		),
+	)
+);
 
-// --------- //
-// Composant //
-// --------- //
-
-const props = withDefaults(defineProps<Props>(), { position: "left" });
-const emit = defineEmits<Emits>();
-defineSlots<Slots>();
-
-let input_model = defineModel();
-
-let title_attribute = computed(() => {
-	let state = input_model.value ? "Activé" : "Désactivé";
-	if (props.disabled) {
-		return `${state} (verrouillé)`;
-	}
-	return state;
-});
-
-// --------- //
-// Lifecycle //
-// --------- //
-
-watch_effect(() => {
-	if (input_model.value) {
-		emit("on");
-	} else {
-		emit("off");
-	}
-});
-</script>
-
-<template>
-	<label
-		:for="name"
-		class="input@radio/switch [ pos-r i-flex align-i:center align-v:middle gap=2 ]"
-		:class="{
-			'cursor:default': disabled,
-		}"
-		:title="title_attribute"
-	>
-		<input
-			:id="name"
-			v-model="input_model"
-			:name="name"
-			role="switch"
-			type="checkbox"
-			class="[ size=0 vis:h ]"
-			style="position: absolute;"
-			:disabled="disabled"
-		/>
-
-		<span
-			class="input@radio/switch:control [ pos-r i-flex flex/center:full w=5 h=2 border/radius=1 ]"
-			:style="{
-				order: position === 'right' ? 1 : undefined,
-			}"
-		>
-			<span
-				class="input@radio/switch:thumb [ size=3 border/radius=50 ]"
-			></span>
-		</span>
-
-		<p class="input@radio/switch:label [ p:reset select:none ]">
-			<slot />
-		</p>
-	</label>
-</template>
-
-<style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
-
-@include fx.class("input@radio/switch:control") {
+@include fx.class("fx:inputswitch:control") {
 	input[type="checkbox"] ~ & {
 		border: 1px solid var(--color-grey200);
 		background: linear-gradient(
@@ -142,7 +106,7 @@ watch_effect(() => {
 	}
 }
 
-@include fx.class("input@radio/switch:thumb") {
+@include fx.class("fx:inputswitch:thumb") {
 	border: 1px solid var(--color-grey200);
 	background: var(--color-grey300);
 
@@ -173,4 +137,3 @@ watch_effect(() => {
 		}
 	}
 }
-</style>

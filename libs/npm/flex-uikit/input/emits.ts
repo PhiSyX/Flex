@@ -8,33 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { AlignX } from "align";
-
 // ---- //
 // Type //
 // ---- //
 
-export interface InputCounterProps {
-	name: string;
-	disabled?: boolean;
-	form?: string;
-	max?: number;
-	min?: number;
-	step?: number;
-	stepX10WithShift?: boolean;
-}
-
-export interface InputLabelSwitchProps {
-	name: string;
-	form?: string;
-	labelN?: string;
-	labelY?: string;
-	valueN?: string | boolean;
-	valueY?: string | boolean;
-}
-
-export interface InputSwitchProps {
-	name: string;
-	disabled?: boolean;
-	position?: AlignX;
+export interface InputSwitchEmits {
+	(event_name: "on"): void;
+	(event_name: "off"): void;
 }

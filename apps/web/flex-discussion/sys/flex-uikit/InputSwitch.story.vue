@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { InputSwitch, InputSwitchV2 } from "@phisyx/flex-vue-uikit";
+import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
+import InputSwitch from "@phisyx/flex-uikit-vue/input/InputSwitch.vue";
+
 import { ref } from "vue";
 
 let model = ref();
@@ -8,7 +10,7 @@ let model = ref();
 <template>
 	<Story title="Atoms/InputSwitch" responsive-disabled>
 		<Variant title="Version 1">
-			<InputSwitch
+			<InputLabelSwitch
 				v-model="model"
 				label-n="Non"
 				label-y="Oui"
@@ -18,7 +20,7 @@ let model = ref();
 
 		<Variant title="Version 2">
 			<div style="margin: 40px">
-				<InputSwitchV2
+				<InputSwitch
 					v-model="model"
 					name="remember_me"
 				/>

@@ -51,6 +51,7 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 -   [x] Composant FormLink
 -   [x] Composant Image
 -   [x] Composant InputCounter
+-   [x] Composant InputLabelSWitch
 -   [x] Composant InputSWitch
 -   [x] Composant Menu
 -   [x] Composant MenuItem

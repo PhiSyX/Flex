@@ -13,13 +13,14 @@ import {
 import { HANDLERS } from "@phisyx/flex-chat/handlers";
 import { RememberMeStorage } from "@phisyx/flex-chat/localstorage/remember_me";
 import { MODULES_REPLIES_HANDLERS } from "@phisyx/flex-chat/modules";
-import { InputSwitch, Match } from "@phisyx/flex-vue-uikit";
+import { Match } from "@phisyx/flex-vue-uikit";
 import { computed, onMounted, reactive, watch } from "vue";
 import { VueRouter } from "~/router";
 import { use_chat_store, use_overlayer_store, use_user_store } from "~/store";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import Image from "@phisyx/flex-uikit-vue/image/Image.vue";
+import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
 import TextInput from "@phisyx/flex-uikit-vue/textinput/TextInput.vue";
 
 // --------- //
@@ -38,8 +39,8 @@ let view = reactive(
 		user_store as unknown as UserStore,
 		overlayer_store as unknown as OverlayerStore,
 		HANDLERS,
-		MODULES_REPLIES_HANDLERS,
-	),
+		MODULES_REPLIES_HANDLERS
+	)
 );
 
 let user_session = computed(() => view.user_session);
@@ -208,7 +209,7 @@ watch(user_session, () => {
 					Connexion automatique lors de tes prochaines sessions :
 				</label>
 
-				<InputSwitch
+				<InputLabelSwitch
 					v-model="view.form_data.remember_me.value"
 					label-n="Non"
 					label-y="Oui"

@@ -32,8 +32,6 @@ let icons_components = Object.entries(icons_imports).map(
 );
 
 export { default as AudioSound } from "./src/audio-sound/AudioSound.vue";
-export { default as InputSwitch } from "./src/inputswitch/InputSwitch.vue";
-export { default as InputSwitchV2 } from "./src/inputswitch/InputSwitchV2.vue";
 export { default as Match } from "./src/match/Match.vue";
 export { default as UiMenu } from "./src/menu/Menu.vue";
 export { default as UiMenuItem } from "./src/menu/MenuItem.vue";

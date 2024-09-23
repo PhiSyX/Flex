@@ -8,10 +8,8 @@ import { computed, ref, watch } from "vue";
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import ComboBox from "@phisyx/flex-uikit-vue/combobox/ComboBox.vue";
 import Dialog from "@phisyx/flex-uikit-vue/dialog/Dialog.vue";
-import {
-	InputCounter,
-	InputSwitchV2,
-} from "@phisyx/flex-vue-uikit";
+import InputCounter from "@phisyx/flex-uikit-vue/input/InputCounter.vue";
+import InputSwitch from "@phisyx/flex-uikit-vue/input/InputSwitch.vue";
 
 // ---- //
 // Type //
@@ -309,7 +307,7 @@ function delete_selected_masks_handler() {
 
 			<ul class="[ list:reset flex! gap=2 px=1 ]">
 				<li>
-					<InputSwitchV2
+					<InputSwitch
 						v-model="invite_only_settings"
 						name="invite-only-settings"
 						:disabled="
@@ -318,11 +316,11 @@ function delete_selected_masks_handler() {
 						"
 					>
 						Salon accessible sur invitation uniquement (+i)
-					</InputSwitchV2>
+					</InputSwitch>
 				</li>
 
 				<li>
-					<InputSwitchV2
+					<InputSwitch
 						v-model="enabled_key_settings"
 						name="key-settings"
 						:disabled="
@@ -331,7 +329,7 @@ function delete_selected_masks_handler() {
 						"
 					>
 						Définir une clé (+k)
-					</InputSwitchV2>
+					</InputSwitch>
 
 					<input
 						v-if="enabled_key_settings"
@@ -371,7 +369,7 @@ function delete_selected_masks_handler() {
 				</li>
 
 				<li>
-					<InputSwitchV2
+					<InputSwitch
 						v-model="moderate_settings"
 						name="moderate-settings"
 						:disabled="
@@ -380,11 +378,11 @@ function delete_selected_masks_handler() {
 						"
 					>
 						Salon en modéré (+m)
-					</InputSwitchV2>
+					</InputSwitch>
 				</li>
 
 				<li>
-					<InputSwitchV2
+					<InputSwitch
 						v-model="no_external_messages_settings"
 						name="no-external-messages-settings"
 						:disabled="
@@ -393,11 +391,11 @@ function delete_selected_masks_handler() {
 						"
 					>
 						Pas de messages à partir de l'extérieur (+n)
-					</InputSwitchV2>
+					</InputSwitch>
 				</li>
 
 				<li>
-					<InputSwitchV2
+					<InputSwitch
 						v-model="secret_settings"
 						name="secret-settings"
 						:disabled="
@@ -406,11 +404,11 @@ function delete_selected_masks_handler() {
 						"
 					>
 						Salon secret (+s)
-					</InputSwitchV2>
+					</InputSwitch>
 				</li>
 
 				<li>
-					<InputSwitchV2
+					<InputSwitch
 						v-model="topic_settings"
 						name="topic-settings"
 						:disabled="
@@ -419,11 +417,11 @@ function delete_selected_masks_handler() {
 						"
 					>
 						Seuls les opérateurs peuvent définir un topic (+t)
-					</InputSwitchV2>
+					</InputSwitch>
 				</li>
 
 				<li v-if="is_current_client_global_operator">
-					<InputSwitchV2
+					<InputSwitch
 						v-model="operators_only_settings"
 						name="operators-only-settings"
 						:disabled="
@@ -432,7 +430,7 @@ function delete_selected_masks_handler() {
 						"
 					>
 						Salon accessible uniquement pour les opérateurs (+O)
-					</InputSwitchV2>
+					</InputSwitch>
 				</li>
 			</ul>
 		</form>

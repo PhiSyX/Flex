@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { InputSwitch } from "@phisyx/flex-vue-uikit";
+import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
 
 // --------- //
 // Composant //
@@ -18,7 +18,7 @@ let userlist_position = defineModel<"left" | "right">("position");
 		<div class="flex align-jc:sb align-ji:center gap=2">
 			<label>Afficher la liste par défaut</label>
 
-			<InputSwitch
+			<InputLabelSwitch
 				name="channel-userlist2"
 				label-y="Oui"
 				label-n="Non"
@@ -29,7 +29,7 @@ let userlist_position = defineModel<"left" | "right">("position");
 		<div class="flex align-jc:sb align-ji:center gap=2">
 			<label>Position</label>
 
-			<InputSwitch
+			<InputLabelSwitch
 				name="channel-userlist"
 				label-y="Gauche"
 				value-y="left"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { InputSwitch } from "@phisyx/flex-vue-uikit";
+import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
 
 // ---- //
 // Type //
@@ -25,7 +25,7 @@ let waitingPrivateList = defineModel<boolean>("waitingList", {
 		<div class="[ flex align-jc:sb align-ji:center gap=2 ]">
 			<label>Mettre en attente les nouveaux privés?</label>
 
-			<InputSwitch
+			<InputLabelSwitch
 				name="waiting-private-list"
 				label-y="Oui"
 				label-n="Non"
