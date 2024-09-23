@@ -3,8 +3,9 @@ import { cast_to_channel_id } from "@phisyx/flex-chat/asserts/room";
 import { ref } from "vue";
 
 import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
-import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
+import { Dialog } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -57,7 +58,7 @@ function create_channel_handler() {
 				obligatoires.
 			</em>
 
-			<UiButton
+			<Button
 				type="submit"
 				variant="primary"
 				class="[ ml=1 mt=1 ]"
@@ -65,7 +66,7 @@ function create_channel_handler() {
 				@click="create_channel_handler"
 			>
 				Rejoindre maintenant
-			</UiButton>
+			</Button>
 		</template>
 
 		<section class="[ flex! gap=1 ]">

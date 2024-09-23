@@ -7,10 +7,11 @@ import type {
 } from "@phisyx/flex-chat/store";
 
 import { SettingsWireframe } from "@phisyx/flex-chat-ui/views/settings";
-import { UiButton } from "@phisyx/flex-vue-uikit";
 import { reactive } from "vue";
 import { VueRouter } from "~/router";
 import { use_chat_store, use_settings_store } from "~/store";
+
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 import SettingsLayoutChannelUserlist from "./layout/ChannelUserlist.vue";
 import SettingsLayoutNavigationBar from "./layout/NavigationBar.vue";
@@ -37,9 +38,9 @@ let view = reactive(
 <template>
 	<main id="settings-view" class="[ flex w:full h:full ]">
 		<div class="sidebar [ p=1 ]">
-			<UiButton icon="arrow-left" @click="view.save_and_exit_handler">
+			<Button icon="arrow-left" @click="view.save_and_exit_handler">
 				Retour
-			</UiButton>
+			</Button>
 		</div>
 
 		<div class="content [ flex! gap=1 w:full scroll:y p=1 ]">

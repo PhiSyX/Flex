@@ -2,7 +2,8 @@
 import { computed, ref } from "vue";
 
 import { fuzzy_search } from "@phisyx/flex-search";
-import { UiButton } from "@phisyx/flex-vue-uikit";
+
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 // ---- //
 // Type //
@@ -67,23 +68,23 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 		/>
 
 		<div class="[ flex gap=1 align-jc:end ]">
-			<UiButton
+			<Button
 				id="channel-join-layer_btn"
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
 				@click="create_channel_dialog_handler"
 			>
 				Créer un salon
-			</UiButton>
+			</Button>
 
-			<UiButton
+			<Button
 				class="[ px=2 py=1 border/radius=0.6 ]"
 				variant="primary"
 				:disabled="selected_channels.size === 0"
 				@click="join_selected_channels"
 			>
 				Rejoindre les salons sélectionnés
-			</UiButton>
+			</Button>
 		</div>
 
 		<div class="table [ ov:h border/radius=1 scroll:y ]">

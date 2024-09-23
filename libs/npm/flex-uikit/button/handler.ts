@@ -8,10 +8,31 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ----------- //
-// Énumération //
-// ----------- //
+export function change_selected(
+	selects: { selected: unknown; is_selected: boolean },
+	values: { value: unknown; falseValue: unknown; trueValue: unknown },
+): unknown {
+	if (values.value == null && selects.selected == null) {
+		return;
+	}
 
-export type Align = "start" | "center" | "end";
-export type AlignX = "left" | "right";
-export type TextAlign = "left" | "center" | "right";
+	if (selects.is_selected) {
+		if (values.falseValue != null) {
+			return values.falseValue;
+			// biome-ignore lint/style/noUselessElse: <explanation>
+		} else {
+			return values.value;
+		}
+		// biome-ignore lint/style/noUselessElse: <explanation>
+	} else {
+		if (values.trueValue != null) {
+			return values.trueValue;
+			// biome-ignore lint/style/noUselessElse: <explanation>
+		} else if (values.falseValue != null) {
+			return values.falseValue;
+			// biome-ignore lint/style/noUselessElse: <explanation>
+		} else {
+			return values.value;
+		}
+	}
+}

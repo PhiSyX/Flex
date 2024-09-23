@@ -2,7 +2,7 @@
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelMembers } from "@phisyx/flex-chat/channel/member/list";
 
-import { UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 import {
 	UserlistModeView,
@@ -61,7 +61,7 @@ const select_channel_member_handler = (origin: Origin) =>
 		/>
 
 		<div class="room/userlist:filter-view [ flex flex/center:full gap=1 ]">
-			<UiButton
+			<Button
 				v-model:selected="filter_view"
 				:value="UserlistModeView.Default"
 				icon="view-list"

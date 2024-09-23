@@ -10,7 +10,8 @@ import { computed, ref } from "vue";
 
 import ActionBar from "@phisyx/flex-uikit-vue/actionbar/ActionBar.vue";
 import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
-import { TextEditable, UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import { TextEditable } from "@phisyx/flex-vue-uikit";
 
 import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
 import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue";
@@ -201,13 +202,13 @@ const enable_topic_edit_mode_handler = (payload: {
 					/>
 
 					<template #actions>
-						<UiButton
+						<Button
 							icon="ellipsis"
 							title="Ouvrir le menu d'options du salon..."
 							@click="open_menu_channel_options_handler"
 						/>
 
-						<UiButton
+						<Button
 							v-model:selected="display_userlist"
 							:true-value="true"
 							:false-value="false"
@@ -215,7 +216,7 @@ const enable_topic_edit_mode_handler = (payload: {
 							:title="toggle_nicklist_title_attribute"
 						/>
 
-						<UiButton
+						<Button
 							class="close"
 							icon="close"
 							title="Fermer la chambre active"

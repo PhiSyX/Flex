@@ -2,9 +2,9 @@
 import type { Emits } from "./RoomEditbox.handlers";
 import type { Props } from "./RoomEditbox.state";
 
-import { computed, onActivated as on_activated } from "vue";
+import { computed, onActivated } from "vue";
 
-import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 import {
 	change_nick,
@@ -44,7 +44,7 @@ const {
 	suggestion_input: suggestionInput,
 } = use_autocompletion(props);
 
-on_activated(() => {
+onActivated(() => {
 	$input.value?.focus();
 });
 
@@ -73,14 +73,14 @@ function submit_handler() {
 		<input type="hidden" name="target" :value="room.name" />
 
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
-			<UiButton
+			<Button
 				variant="primary"
 				class="btn-change-nick [ max-w=12 display-i align-jc:stretch my=1 px=1 py=1 f-size=14px border/radius=1 ... ]"
 				:title="currentClientNickname"
 				@click="change_nick_handler"
 			>
 				{{ currentClientNickname }}
-			</UiButton>
+			</Button>
 
 			<div class="[ pos-r flex:full ]">
 				<input
@@ -116,15 +116,15 @@ function submit_handler() {
 				/>
 			</div>
 
-			<UiButton
+			<Button
 				v-if="suggestionInput"
 				class="btn-suggestion [ f-size=14px ]"
 				@click="apply_suggestion_handler"
 			>
 				↹ Tab
-			</UiButton>
+			</Button>
 
-			<ButtonIcon
+			<Button
 
 				icon="text-color"
 				:disabled="disableInput"
@@ -136,7 +136,7 @@ function submit_handler() {
 
 			/>
 
-			<ButtonIcon
+			<Button
 				icon="send"
 				type="submit"
 				:disabled="disableInput"

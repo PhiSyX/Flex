@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ----------- //
-// Énumération //
-// ----------- //
+// ---- //
+// Type //
+// ---- //
 
-export type Align = "start" | "center" | "end";
-export type AlignX = "left" | "right";
-export type TextAlign = "left" | "center" | "right";
+export interface ButtonChildren {
+	default: unknown;
+}

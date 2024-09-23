@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 
-import { UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 import ChangeColorPreset from "./ChangeColorPreset.vue";
 import ChangeFormat from "./ChangeFormat.vue";
@@ -24,7 +24,7 @@ let reveal_icon = computed(() =>
 </script>
 
 <template>
-	<dialog 
+	<dialog
 		:class="{
 			'pb=0': !reveal_background_box,
 		}"
@@ -40,7 +40,7 @@ let reveal_icon = computed(() =>
 			<ChangeFormat v-model="italic_selected" value="italic">
 				Italique
 			</ChangeFormat>
-			
+
 			<ChangeFormat v-model="underline_selected" value="underline">
 				Souligné
 			</ChangeFormat>
@@ -59,12 +59,12 @@ let reveal_icon = computed(() =>
 		</div>
 
 		<div class="[ align-t:center ]">
-			<UiButton 
+			<Button
 				v-model:selected="reveal_background_box"
 				:true-value="true" :false-value="false"
 			>
 				<component :is="reveal_icon" variant="chevron" />
-			</UiButton>
+			</Button>
 		</div>
 
 		<template v-if="reveal_background_box">

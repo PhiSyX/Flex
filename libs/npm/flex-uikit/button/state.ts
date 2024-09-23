@@ -8,10 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-// ----------- //
-// Énumération //
-// ----------- //
-
-export type Align = "start" | "center" | "end";
-export type AlignX = "left" | "right";
-export type TextAlign = "left" | "center" | "right";
+export function is_selected_button(value: unknown, selected: unknown) {
+	if (value == null && selected == null) {
+		return false;
+	}
+	return value === selected;
+}

@@ -2,7 +2,8 @@
 import { iso_to_country_flag } from "@phisyx/flex-helpers";
 import { computed, ref } from "vue";
 
-import { ComboBox, Dialog, FormLink, UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import { ComboBox, Dialog, FormLink } from "@phisyx/flex-vue-uikit";
 
 import Avatar from "#/api/avatar/Avatar.vue";
 
@@ -157,16 +158,16 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 				obligatoires.
 			</em>
 
-			<UiButton
+			<Button
 				:form="form"
 				type="submit"
 				variant="primary"
 				class="[ ml=1 mt=1 ]"
 			>
 				OK
-			</UiButton>
+			</Button>
 
-			<UiButton
+			<Button
 				:form="form"
 				type="reset"
 				variant="secondary"
@@ -174,7 +175,7 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 				@click="close_dialog_handler"
 			>
 				Annuler
-			</UiButton>
+			</Button>
 		</template>
 	</Dialog>
 </template>

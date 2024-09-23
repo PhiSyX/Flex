@@ -4,8 +4,9 @@ import type { Room } from "@phisyx/flex-chat/room";
 import { vResize } from "@phisyx/flex-vue-directives";
 import { ref } from "vue";
 
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+
 import NavigationServer from "#/sys/navigation_server/NavigationServer.template.vue";
-import { ButtonIcon, UiButton } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -109,7 +110,7 @@ function resize_handler(entries: Array<ResizeObserverEntry>) {
 		</nav>
 
 		<footer class="[ flex gap=1 p=1 h=6 ]">
-			<ButtonIcon
+			<Button
 				:icon="folded ? 'arrow-right' : 'arrow-left'"
 				:title="(folded ? 'Élargir' : 'Réduire') + ' la barre de navigation'"
 				@click="toggle_navigation_handler"
@@ -120,16 +121,16 @@ function resize_handler(entries: Array<ResizeObserverEntry>) {
 				class="[ flex:full flex flex/center:full gap=1 flex:shrink=0 ]"
 				dir="ltr"
 			>
-				<ButtonIcon
+				<Button
 					v-if="totalPrivatesWaiting"
 					id="goto-private-list"
 					icon="messages"
-					:iconAttrs="{ unread: totalPrivatesWaiting }"
+					:attributes="{ unread: totalPrivatesWaiting }"
 					@click="open_private_list_handler"
 					title="Liste des privés en attente"
 				/>
 
-				<UiButton
+				<Button
 					id="goto-channel-list"
 					icon="channel-list"
 					:with-opacity="false"
@@ -137,7 +138,7 @@ function resize_handler(entries: Array<ResizeObserverEntry>) {
 					@click="open_channel_list_handler"
 				/>
 
-				<ButtonIcon
+				<Button
 					icon="settings"
 					title="Paramètres globaux du Chat"
 					@click="open_settings_view_handler"

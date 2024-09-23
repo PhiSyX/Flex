@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 
-import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import { Dialog } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -28,23 +29,23 @@ const emit = defineEmits<Emits>();
 <template>
 	<Dialog :without-close="true">
 		<template #footer>
-			<UiButton
+			<Button
 				type="submit"
 				variant="primary"
 				class="[ ml=1 mt=1 ]"
 				@click="emit('submit')"
 			>
 				Accepter
-			</UiButton>
+			</Button>
 
-			<UiButton
+			<Button
 				type="cancel"
 				variant="secondary"
 				class="[ ml=1 mt=1 ]"
 				@click="emit('close')"
 			>
 				Décliner
-			</UiButton>
+			</Button>
 		</template>
 
 		<div>

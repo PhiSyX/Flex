@@ -5,12 +5,12 @@ import type { Option } from "@phisyx/flex-safety";
 
 import { computed, ref, watch } from "vue";
 
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import {
 	ComboBox,
 	Dialog,
 	InputCounter,
 	InputSwitchV2,
-	UiButton,
 } from "@phisyx/flex-vue-uikit";
 
 // ---- //
@@ -208,16 +208,16 @@ function delete_selected_masks_handler() {
 		</template>
 
 		<template #footer>
-			<UiButton
+			<Button
 				type="submit"
 				variant="primary"
 				class="[ ml=1 ]"
 				:form="`${layerName}_form`"
 			>
 				Ok
-			</UiButton>
+			</Button>
 
-			<UiButton
+			<Button
 				type="button"
 				formmethod="dialog"
 				variant="secondary"
@@ -226,7 +226,7 @@ function delete_selected_masks_handler() {
 				@click="emit('close')"
 			>
 				Annuler
-			</UiButton>
+			</Button>
 		</template>
 
 		<form
@@ -267,42 +267,42 @@ function delete_selected_masks_handler() {
 				</select>
 
 				<div class="[ flex align-jc:sb gap=1 ]">
-					<UiButton
+					<Button
 						type="button"
 						variant="secondary"
 						v-model:selected="active_access_control"
 						:value="AccessControl.BanList"
 					>
 						Bans (+b)
-					</UiButton>
+					</Button>
 
-					<UiButton
+					<Button
 						type="button"
 						variant="secondary"
 						v-model:selected="active_access_control"
 						:value="AccessControl.BanListException"
 					>
 						Exceptions (+e)
-					</UiButton>
+					</Button>
 
-					<UiButton
+					<Button
 						type="button"
 						variant="secondary"
 						v-model:selected="active_access_control"
 						:value="AccessControl.InviteList"
 					>
 						Invitations (+I)
-					</UiButton>
+					</Button>
 				</div>
 
-				<UiButton
+				<Button
 					type="button"
 					variant="secondary"
 					:disabled="selected_access_control_list.length === 0"
 					@click="delete_selected_masks_handler"
 				>
 					Supprimer
-				</UiButton>
+				</Button>
 			</section>
 
 			<h2>Paramètres du salon</h2>

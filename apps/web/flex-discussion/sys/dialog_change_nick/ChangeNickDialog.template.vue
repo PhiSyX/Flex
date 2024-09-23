@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { Dialog, UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import { Dialog } from "@phisyx/flex-vue-uikit";
 
 // ---- //
 // Type //
@@ -47,7 +48,7 @@ function change_nickname_handler() {
 				Les champs ayant un <strong>*</strong>asterisk sont obligatoires.
 			</em>
 
-			<UiButton
+			<Button
 				type="submit"
 				variant="primary"
 				class="[ ml=1 mt=1 ]"
@@ -55,7 +56,7 @@ function change_nickname_handler() {
 				@click="change_nickname_handler"
 			>
 				Changer maintenant
-			</UiButton>
+			</Button>
 		</template>
 
 		<form

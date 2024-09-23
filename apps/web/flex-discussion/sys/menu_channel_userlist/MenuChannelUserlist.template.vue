@@ -5,7 +5,8 @@ import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/sel
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
 import { computed } from "vue";
 
-import { UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+
 import ChannelUserlistAdminOperatorMenu from "./MenuChannelUserlistAccessLevelAOP.vue";
 import ChannelUserlistHalfOperatorMenu from "./MenuChannelUserlistAccessLevelHOP.vue";
 import ChannelUserlistOperatorMenu from "./MenuChannelUserlistAccessLevelOP.vue";
@@ -100,32 +101,32 @@ const unset_access_level_handler = (
 		</li>
 
 		<li>
-			<UiButton
+			<Button
 				icon="user"
-				position="right"
+				icon-position="right"
 				title="Commande /query"
 				variant="primary"
 				@click="open_private_handler"
 			>
 				<span v-if="!is_same_member">Discuter en privé</span>
 				<span v-else>Ouvrir mon privé</span>
-			</UiButton>
+			</Button>
 		</li>
 		<li v-if="!is_same_member">
-			<UiButton
+			<Button
 				v-if="!selectedMember.is_blocked"
 				icon="user-block"
-				position="right"
+				icon-position="right"
 				title="Commande /ignore <nickname>"
 				variant="primary"
 				@click="ignore_user_handler"
 			>
 				<span>Ignorer</span>
-			</UiButton>
-			<UiButton
+			</Button>
+			<Button
 				v-else
 				icon="user-block"
-				position="right"
+				icon-position="right"
 				title="Commande /unignore <nickname>"
 				variant="primary"
 				:selected="selectedMember.is_blocked"
@@ -134,7 +135,7 @@ const unset_access_level_handler = (
 				@click="unignore_user_handler"
 			>
 				<span>Ne plus ignorer</span>
-			</UiButton>
+			</Button>
 		</li>
 
 		<li
@@ -144,16 +145,16 @@ const unset_access_level_handler = (
 				!is_same_member
 			"
 		>
-			<UiButton
+			<Button
 				:disabled="disabled"
 				variant="secondary"
 				title="Commande /kick"
 				@click="kick_member_handler"
 			>
 				Expulser
-			</UiButton>
+			</Button>
 
-			<UiButton
+			<Button
 				v-if="!selectedMember.is_banned"
 				:disabled="disabled"
 				variant="secondary"
@@ -161,8 +162,8 @@ const unset_access_level_handler = (
 				@click="ban_member_handler"
 			>
 				Bannir
-			</UiButton>
-			<UiButton
+			</Button>
+			<Button
 				v-else
 				:disabled="disabled"
 				variant="secondary"
@@ -170,9 +171,9 @@ const unset_access_level_handler = (
 				@click="unban_member_handler"
 			>
 				Débannir
-			</UiButton>
+			</Button>
 
-			<UiButton
+			<Button
 				v-if="!selectedMember.is_nick_banned"
 				:disabled="disabled"
 				variant="secondary"
@@ -180,8 +181,8 @@ const unset_access_level_handler = (
 				@click="ban_nick_handler"
 			>
 				Bannir pseudo
-			</UiButton>
-			<UiButton
+			</Button>
+			<Button
 				v-else
 				:disabled="disabled"
 				variant="secondary"
@@ -189,7 +190,7 @@ const unset_access_level_handler = (
 				@click="unban_nick_handler"
 			>
 				Débannir pseudo
-			</UiButton>
+			</Button>
 		</li>
 
 		<li
@@ -234,15 +235,15 @@ const unset_access_level_handler = (
 		</li>
 
 		<li v-if="!is_same_member" title="TODO">
-			<UiButton
+			<Button
 				disabled
 				icon="report"
-				position="right"
+				icon-position="right"
 				:with-opacity="true"
 				variant="danger"
 			>
 				Signaler
-			</UiButton>
+			</Button>
 		</li>
 	</menu>
 </template>

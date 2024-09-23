@@ -2,7 +2,7 @@
 import type { NoticesCustomRoom } from "@phisyx/flex-chat/custom_room/notices";
 
 import ActionBar from "@phisyx/flex-uikit-vue/actionbar/ActionBar.vue";
-import { UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 import Room from "#/sys/room/Room.template.vue";
 
@@ -40,7 +40,7 @@ const emit = defineEmits<Emits>();
 					</p>
 
 					<template #actions>
-						<UiButton
+						<Button
 							icon="close"
 							title="Fermer la chambre active"
 							@click="emit('close')"

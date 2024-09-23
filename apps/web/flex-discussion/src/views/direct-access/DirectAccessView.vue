@@ -13,17 +13,12 @@ import {
 import { HANDLERS } from "@phisyx/flex-chat/handlers";
 import { RememberMeStorage } from "@phisyx/flex-chat/localstorage/remember_me";
 import { MODULES_REPLIES_HANDLERS } from "@phisyx/flex-chat/modules";
-import {
-	ButtonIcon,
-	InputSwitch,
-	Match,
-	TextInput,
-	UiButton,
-	UiImage,
-} from "@phisyx/flex-vue-uikit";
+import { InputSwitch, Match, TextInput, UiImage } from "@phisyx/flex-vue-uikit";
 import { computed, onMounted, reactive, watch } from "vue";
 import { VueRouter } from "~/router";
 import { use_chat_store, use_overlayer_store, use_user_store } from "~/store";
+
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 // --------- //
 // Composant //
@@ -199,7 +194,7 @@ watch(user_session, () => {
 			</form>
 
 			<div class="[ align-t:center ]" v-if="!view.advanced_form">
-				<ButtonIcon
+				<Button
 					icon="plus"
 					title="Afficher les champs avancés"
 					@click="view.display_more_fields()"
@@ -219,18 +214,18 @@ watch(user_session, () => {
 				/>
 			</div>
 
-			<UiButton
+			<Button
 				:icon="view.loader ? 'loader' : undefined"
-				position="right"
+				icon-position="right"
 				type="submit"
 				form="chat-login-form"
 				class="[ flex align-jc:se p=2 b:none cursor:pointer ]"
 			>
 				<span class="[ flex:full ]">Accéder au Chat</span>
-			</UiButton>
+			</Button>
 		</section>
 
-		<UiButton
+		<Button
 			icon="settings"
 			class="settings-btn"
 			@click="view.goto_settings_view_handler()"

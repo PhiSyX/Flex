@@ -5,7 +5,7 @@ import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/sel
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
 import { computed } from "vue";
 
-import { UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 // ---- //
 // Type //
@@ -78,14 +78,14 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 
 <template>
 	<template v-if="isSameMember && is_current_client_member_half_operator">
-		<UiButton
+		<Button
 			:disabled="disabled"
 			variant="secondary"
 			title="Commande /dehop"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
 			-h
-		</UiButton>
+		</Button>
 	</template>
 
 	<template
@@ -94,7 +94,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 			is_current_client_member_global_operator
 		"
 	>
-		<UiButton
+		<Button
 			v-if="!is_selected_member_half_operator"
 			:disabled="disabled"
 			variant="secondary"
@@ -103,8 +103,8 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 			@click="set_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
 			+h
-		</UiButton>
-		<UiButton
+		</Button>
+		<Button
 			v-else-if="!isSameMember"
 			:disabled="disabled"
 			variant="secondary"
@@ -112,7 +112,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
 			-h
-		</UiButton>
+		</Button>
 	</template>
 	<template
 		v-if="
@@ -120,7 +120,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 			is_current_client_member_global_operator
 		"
 	>
-		<UiButton
+		<Button
 			v-if="!is_selected_member_vip_rights"
 			:disabled="disabled"
 			variant="secondary"
@@ -129,8 +129,8 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 			@click="set_access_level_handler(ChannelAccessLevelFlag.Vip)"
 		>
 			+v
-		</UiButton>
-		<UiButton
+		</Button>
+		<Button
 			v-else
 			:disabled="disabled"
 			variant="secondary"
@@ -138,6 +138,6 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.Vip)"
 		>
 			-v
-		</UiButton>
+		</Button>
 	</template>
 </template>

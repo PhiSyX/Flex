@@ -5,7 +5,7 @@ import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/sel
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
 import { computed } from "vue";
 
-import { UiButton } from "@phisyx/flex-vue-uikit";
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 
 // ---- //
 // Type //
@@ -67,7 +67,7 @@ const unset_access_level_handler = (flag: ChannelAccessLevelFlag) =>
 
 <template>
 	<template v-if="isSameMember && is_current_client_member_admin">
-		<UiButton
+		<Button
 			:disabled="disabled"
 			class="btn/secondary"
 			title="Commande /deaop"
@@ -76,7 +76,7 @@ const unset_access_level_handler = (flag: ChannelAccessLevelFlag) =>
 			"
 		>
 			-a
-		</UiButton>
+		</Button>
 	</template>
 	<template
 		v-else-if="
@@ -84,7 +84,7 @@ const unset_access_level_handler = (flag: ChannelAccessLevelFlag) =>
 			is_current_client_member_global_operator
 		"
 	>
-		<UiButton
+		<Button
 			v-if="!is_selected_member_admin"
 			:disabled="disabled"
 			class="btn/secondary is-admin-operator"
@@ -94,8 +94,8 @@ const unset_access_level_handler = (flag: ChannelAccessLevelFlag) =>
 			"
 		>
 			+a
-		</UiButton>
-		<UiButton
+		</Button>
+		<Button
 			v-else
 			:disabled="disabled"
 			class="btn/secondary"
@@ -105,6 +105,6 @@ const unset_access_level_handler = (flag: ChannelAccessLevelFlag) =>
 			"
 		>
 			-a
-		</UiButton>
+		</Button>
 	</template>
 </template>
