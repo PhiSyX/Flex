@@ -89,6 +89,11 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     ![Badge](docs/flex-uikit/badge1.png)
     ![Badge](docs/flex-uikit/badge2.png)
 
+-   [x] Composant Button
+
+    Un composant `Button` permet de créer un bouton transparent de la manière d'un élément
+    [`<button>`](https://developer.mozilla.org/fr/docs/Web/HTML/Element/button)
+
 -   [x] Composant ComboBox
 
     Un composant `ComboBox` est simplement un composant `DropDownList` avec un
@@ -161,4 +166,9 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 -   [x] Composant TextEdit
 
+    Un composant `TextEdit` est semblable à un comportement d'un élément avec `contenteditable`.
+
 -   [x] Composant TextInput
+
+    Un composant `TextInput` permet de créer un champ de saisie de la manière d'un élément
+    [`<input>`](https://developer.mozilla.org/fr/docs/Web/HTML/Element/input)
