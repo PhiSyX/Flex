@@ -1,0 +1,16 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use("button:reset", "cursor:pointer");
+
+@include fx.use(
+	(
+		className: padding-inline,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.class("fx:form-link") {
+	color: var(--fx-form-link-color, LinkText);
+}
