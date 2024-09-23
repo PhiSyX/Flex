@@ -41,7 +41,7 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 -   [x] Composant ActionBar
 
-    Un composant `ActionBar` inclut un titre, et des actions. Il fournit une zone standard pour les contrôles d'action. Il permet de définir des contrôles qui peuvent être utilisés spécifiques à une vue.
+    Un composant `ActionBar` inclut un titre, et des actions. Il fournit une zone standard pour les contrôles d'action. Il permet de définir des contrôles qui peuvent être utilisés de spécifiquement à une vue.
 
     Notre composant `ActionBar` définit deux zones distinctes :
 
@@ -62,6 +62,26 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     ![ActionBar en action](docs/flex-uikit/actionbar.png)
 
 -   [x] Composant Alert
+
+    Un composant `Alert` indique une information qu'un utilisateur DOIT lire.
+
+    Un composant `Alert` peut avoir un bouton de fermeture. Il peut également s'auto-détruire si la propriété
+    `closeAfterSeconds` lui est donné.
+
+    Il peut avoir une apparence différence en fonction du thème choisi par l'utilisateur ou celui par défaut de l'application et du niveau d'importance de l'information.
+
+    **Les types d'alertes** :
+
+    1.  `error`
+    2.  `info`
+    3.  `success`
+    4.  `warning`
+
+    L'image suivante montre le composant `Alert` de type `info` sur l'habillage du thème `ice`, intégré au composant
+    `ChannelJoinDialog` de l'application :
+
+    ![Alert](docs/flex-uikit/alert.png)
+
 -   [ ] Composant AlertDialog
 -   [x] Composant Badge
 -   [x] Composant ComboBox
