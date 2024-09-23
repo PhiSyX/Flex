@@ -16,8 +16,9 @@ import {
 	use_settings_store,
 } from "~/store";
 
-import { Match } from "@phisyx/flex-vue-uikit";
 import ChannelRoomComponent from "~/components/channel/ChannelRoom.vue";
+
+import Match from "#/sys/match/Match.vue";
 
 // --------- //
 // Composant //
@@ -32,8 +33,8 @@ let view = reactive(
 		new VueRouter(),
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store as OverlayerStore,
-		settings_store as SettingsStore,
-	),
+		settings_store as SettingsStore
+	)
 ) as ChannelView;
 
 let maybe_channel = computed(() => view.maybe_channel);

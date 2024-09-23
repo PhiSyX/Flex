@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { defineSetupVue3 as define_setup_vue3 } from "@histoire/plugin-vue";
-import use_flex_uikit from "@phisyx/flex-vue-uikit";
+import use_flex_uikit from "@phisyx/flex-uikit-vue";
 
 import "#/assets/scss/style.scss";
 

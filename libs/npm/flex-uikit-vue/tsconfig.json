@@ -22,6 +22,6 @@
 		"jsxFactory": "h",
 		"jsxImportSource": "vue"
 	},
-	"include": ["./**/*.vue"],
+	"include": ["index.ts", "./**/*.vue"],
 	"exclude": ["node_modules"]
 }

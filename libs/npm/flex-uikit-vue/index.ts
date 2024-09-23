@@ -8,25 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { App } from "vue";
 
+import { defineAsyncComponent } from "vue";
 
-// ---- //
-// Type //
-// ---- //
+// @ts-expect-error Vite glob
+// biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
+const icons_imports = import.meta.glob<{ default: any }>("./icons/Icon*.vue");
 
-// interface LabelProps {
-// 	for: string;
-// 	icon: Icons;
-// 	iconAttrs?: object;
-// }
+let icons_components = Object.entries(icons_imports).map(
+	([icon_component_filepath, icon_component]) => {
+		let icon_component_name = icon_component_filepath.slice(
+			"./icons/".length,
+			0 - ".vue".length,
+		);
+		return [icon_component_name, icon_component] as unknown as [
+			string,
+			// biome-ignore lint/suspicious/noExplicitAny: OSEF
+			() => Promise<{ default: any }>,
+		];
+	},
+);
 
-// export function LabelIcon(props: LabelProps): JSX.Element {
-// 	const IconName = resolveComponent(`icon-${props.icon}`);
-// 	assert_icon(IconName);
-// 	const { iconAttrs, ...attrs } = props;
-// 	return (
-// 		<label {...attrs}>
-// 			<IconName {...iconAttrs} />
-// 		</label>
-// 	);
-// }
+// NOTE(phisyx): plugin Vue.
+export default {
+	install(app: App<Element>) {
+		for (let [icon_component_name, icon_component] of icons_components) {
+			app.component(
+				icon_component_name,
+				defineAsyncComponent(icon_component),
+			);
+		}
+	},
+};

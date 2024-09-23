@@ -6,12 +6,12 @@ import type {
 } from "@phisyx/flex-chat/store";
 
 import { ChannelListWireframe } from "@phisyx/flex-chat-ui/views/channel_list";
-import { Match } from "@phisyx/flex-vue-uikit";
 import { computed, onMounted, reactive } from "vue";
 import { VueRouter } from "~/router";
 import { use_chat_store, use_overlayer_store } from "~/store";
 
 import ChannelList from "#/sys/custom_room_channel_list/CustomRoomChannelList.template.vue";
+import Match from "#/sys/match/Match.vue";
 
 // --------- //
 // Composant //
