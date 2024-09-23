@@ -115,6 +115,12 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 -   [ ] Composant DropDownMenu
 
 -   [x] Composant FormLink
+
+    Un composant `FormLink` permet de créer un [lien classique](https://developer.mozilla.org/fr/docs/Web/HTML/Element/a)
+    sans rediriger l'utilisateur vers l'URL lors du clique.
+
+    Ce composant effectue une requête `XHR` via `fetch` vers l'URL donnée.
+
 -   [x] Composant Image
 -   [x] Composant InputCounter
 -   [x] Composant InputLabelSWitch
