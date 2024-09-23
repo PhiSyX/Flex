@@ -21,50 +21,53 @@
 		),
 	)
 );
-
-@include fx.class("fx:dropdown-list") {
-	background-color: Canvas;
-	color: CanvasText;
-	border: 1px inset ButtonBorder;
-	border-radius: 4px;
-	padding-block: 4px;
-}
-
-@include fx.class("fx:dropdown-list/container") {
-	min-width: fx.space(210);
-	max-width: fx.space(338);
-	max-height: fx.space(210);
-	width: 100%;
-
-	padding: 4px;
-}
-
-ul {
-	gap: 2px;
-}
-
-li {
-	padding: 4px;
-
-	border-radius: 4px;
-	word-wrap: break-word;
-}
-
-.is-hover,
-li:hover {
-	background-color: AccentColor;
-	color: AccentColorText;
-
-	em {
-		color: SelectedItem;
+@layer flex-uikit {
+	@include fx.class("fx:dropdown-list") {
+		background-color: Canvas;
+		color: CanvasText;
+		border: 1px inset ButtonBorder;
+		border-radius: 4px;
+		padding-block: 4px;
 	}
-}
 
-.is-selected {
-	background-color: SelectedItem;
-	color: SelectedItemText;
+	@include fx.class("fx:dropdown-list/container") {
+		min-width: fx.space(210);
+		max-width: fx.space(338);
+		max-height: fx.space(210);
+		width: 100%;
 
-	em {
-		color: AccentColor;
+		padding: 4px;
+	}
+
+	@include fx.class("fx:dropdown-list/container") {
+		ul {
+			gap: 2px;
+		}
+
+		li {
+			padding: 4px;
+
+			border-radius: 4px;
+			word-wrap: break-word;
+		}
+
+		li.is-hover,
+		li:hover {
+			background-color: AccentColor;
+			color: AccentColorText;
+
+			em {
+				color: SelectedItem;
+			}
+		}
+
+		li.is-selected {
+			background-color: SelectedItem;
+			color: SelectedItemText;
+
+			em {
+				color: AccentColor;
+			}
+		}
 	}
 }

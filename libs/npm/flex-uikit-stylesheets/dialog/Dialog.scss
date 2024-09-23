@@ -56,26 +56,28 @@
 	)
 );
 
-@include fx.class("fx:dialog") {
-	box-shadow: var(--box-shadow);
-	background: var(--dialog-bg, canvas);
-	color: var(--dialog-color, var(--default-text-color_alt));
-	border-color: var(--dialog-border-color);
+@layer flex-uikit {
+	@include fx.class("fx:dialog") {
+		box-shadow: var(--box-shadow);
+		background: var(--dialog-bg, canvas);
+		color: var(--dialog-color, var(--default-text-color_alt));
+		border-color: var(--dialog-border-color);
 
-	@media (min-width: 530px) and (min-height: 530px) {
-		width: max-content;
-		height: max-content;
-		max-height: fx.space(500);
-		max-width: fx.space(400);
+		@media (min-width: 530px) and (min-height: 530px) {
+			width: max-content;
+			height: max-content;
+			max-height: fx.space(500);
+			max-width: fx.space(400);
+		}
 	}
-}
 
-@include fx.class("fx:dialog/close/label") {
-	padding: 2px;
-	border: 1px solid;
-	border-radius: 3px;
-}
+	@include fx.class("fx:dialog/close/label") {
+		padding: 2px;
+		border: 1px solid;
+		border-radius: 3px;
+	}
 
-@include fx.class("fx:dialog/title") {
-	font-weight: 500;
+	@include fx.class("fx:dialog/title") {
+		font-weight: 500;
+	}
 }

@@ -5,7 +5,9 @@ defineSlots<BadgeChildren>();
 </script>
 
 <template>
-	<span class="badge [ di-b align-t:center border/radius=3 ]"><slot /></span>
+	<span class="fx:badge [ di-b align-t:center border/radius=3 ]">
+		<slot />
+	</span>
 </template>
 
 <style scoped lang="scss">

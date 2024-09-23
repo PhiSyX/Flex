@@ -5,7 +5,7 @@
 	"cursor:pointer",
 	"flex:shrink=0",
 	"flex",
-	"flex/center:full",
+	"flex/center:full"
 );
 
 @include fx.use(
@@ -49,31 +49,33 @@
 	)
 );
 
-@include fx.class("fx:inputcounter") {
-	border: 1px solid ButtonBorder;
-	box-shadow: 2px 2px 4px var(--color-blue-grey700);
+@layer flex-uikit {
+	@include fx.class("fx:inputcounter") {
+		border: 1px solid ButtonBorder;
+		box-shadow: 2px 2px 4px var(--color-blue-grey700);
 
-	@include fx.scheme using ($name) {
-		@if $name == light {
-			border-color: #d8af20;
-			background: linear-gradient(90deg, #b69a36 0%, #d8af20 100%);
-		} @else if $name == ice {
-			border-color: var(--color-blue-grey200);
-			background: linear-gradient(
-				90deg,
-				var(--color-blue-grey400) 0%,
-				var(--color-blue-grey200) 100%
-			);
-		} @else if $name == dark {
-			border-color: #d8af20;
-			background: linear-gradient(90deg, #b69a36 0%, #d8af20 100%);
+		@include fx.scheme using ($name) {
+			@if $name == light {
+				border-color: #d8af20;
+				background: linear-gradient(90deg, #b69a36 0%, #d8af20 100%);
+			} @else if $name == ice {
+				border-color: var(--color-blue-grey200);
+				background: linear-gradient(
+					90deg,
+					var(--color-blue-grey400) 0%,
+					var(--color-blue-grey200) 100%
+				);
+			} @else if $name == dark {
+				border-color: #d8af20;
+				background: linear-gradient(90deg, #b69a36 0%, #d8af20 100%);
+			}
+		}
+
+		div[disabled],
+		output[disabled],
+		button[disabled] {
+			opacity: 0.75;
+			pointer-events: none;
 		}
 	}
-}
-
-div[disabled],
-output[disabled],
-button[disabled] {
-	opacity: 0.75;
-	pointer-events: none;
 }

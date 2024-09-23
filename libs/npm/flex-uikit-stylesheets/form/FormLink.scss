@@ -11,6 +11,8 @@
 	)
 );
 
-@include fx.class("fx:form-link") {
-	color: var(--fx-form-link-color, LinkText);
+@layer flex-uikit {
+	@include fx.class("fx:form-link") {
+		color: var(--fx-form-link-color, LinkText);
+	}
 }

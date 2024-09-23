@@ -29,9 +29,11 @@
 	)
 );
 
-@include fx.class("fx:menu") {
-	min-width: fx.space(250);
-	max-width: fx.space(250);
-	background: var(--menu-bg);
-	box-shadow: 2px 2px 4px var(--color-black);
+@layer flex-uikit {
+	@include fx.class("fx:menu") {
+		min-width: fx.space(250);
+		max-width: fx.space(250);
+		background: var(--menu-bg);
+		box-shadow: 2px 2px 4px var(--color-black);
+	}
 }

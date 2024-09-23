@@ -33,12 +33,14 @@
 	)
 );
 
-@include fx.class("fx:textinput") {
-	border: 1px dashed transparent;
+@layer flex-uikit {
+	@include fx.class("fx:textinput") {
+		border: 1px dashed transparent;
 
-	&.error {
-		border-radius: 4px;
-		color: var(--fx-textinput-color-error, ActiveText);
-		border-color: currentColor;
+		&.error {
+			border-radius: 4px;
+			color: var(--fx-textinput-color-error, ActiveText);
+			border-color: currentColor;
+		}
 	}
 }

@@ -11,6 +11,8 @@
 	)
 );
 
-.badge {
-	padding: calc(#{fx.space(1)} / 2) fx.space(1);
+@layer flex-uikit {
+	@include fx.class("fx:badge") {
+		padding: calc(#{fx.space(1)} / 2) fx.space(1);
+	}
 }

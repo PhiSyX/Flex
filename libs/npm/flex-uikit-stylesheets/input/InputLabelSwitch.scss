@@ -19,98 +19,102 @@
 	)
 );
 
-ol {
-	--w: #{fx.space(160)};
-	--h: #{fx.space(40)};
-	--p: calc(#{fx.space(1)} / 2);
-	--r: 50em;
+@layer flex-uikit {
+	@include fx.class("fx:inputlabelswitch") {
+		ol {
+			--w: #{fx.space(160)};
+			--h: #{fx.space(40)};
+			--p: calc(#{fx.space(1)} / 2);
+			--r: 50em;
 
-	padding: var(--p);
-	border-radius: var(--r);
-	border: 2px solid var(--bc);
+			padding: var(--p);
+			border-radius: var(--r);
+			border: 2px solid var(--bc);
 
-	@include fx.scheme using ($name) {
-		@if $name == light {
-			--bc: var(--color-black);
-			--bg: var(--color-black);
-		} @else if $name == ice {
-			--bc: var(--color-grey50);
-			--bg: var(--color-black);
-		} @else if $name == dark {
-			--bc: var(--color-grey50);
-			--bg: var(--color-black);
+			@include fx.scheme using ($name) {
+				@if $name == light {
+					--bc: var(--color-black);
+					--bg: var(--color-black);
+				} @else if $name == ice {
+					--bc: var(--color-grey50);
+					--bg: var(--color-black);
+				} @else if $name == dark {
+					--bc: var(--color-grey50);
+					--bg: var(--color-black);
+				}
+			}
+
+			&:focus-within,
+			&:active {
+				box-shadow: 0 0 0 3px var(--bc);
+			}
+		}
+
+		li {
+			height: calc(var(--h) - 2 * var(--p));
+			width: calc(var(--w) * 0.5 - var(--p));
+		}
+
+		label[for] {
+			z-index: 2;
+			transition: all 0.3s;
+			border-radius: var(--r);
+			line-height: calc(var(--h) - 2 * var(--p));
+		}
+
+		input {
+			overflow: hidden;
+
+			position: absolute !important;
+
+			width: 1px;
+			height: 1px;
+
+			margin: -1px;
+			padding: 0;
+
+			border: 0;
+
+			clip: rect(0, 0, 0, 0);
+		}
+
+		input:checked ~ label[for] {
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			@include fx.scheme using ($name) {
+				@if $name == light {
+					color: var(--color-white);
+				} @else if $name == ice {
+					color: var(--color-white);
+				} @else if $name == dark {
+					color: var(--color-white);
+				}
+			}
+		}
+
+		:not(*):focus-within,
+		input:focus ~ label[for] {
+			background-color: transparent;
 		}
 	}
 
-	&:focus-within,
-	&:active {
-		box-shadow: 0 0 0 3px var(--bc);
-	}
-}
+	@include fx.class("fx:inputlabelswitch/marker") {
+		z-index: 1;
 
-li {
-	height: calc(var(--h) - 2 * var(--p));
-	width: calc(var(--w) * 0.5 - var(--p));
-}
+		position: absolute;
+		top: 0;
+		left: -100%;
 
-label[for] {
-	z-index: 2;
-	transition: all 0.3s;
-	border-radius: var(--r);
-	line-height: calc(var(--h) - 2 * var(--p));
-}
+		height: calc(var(--h) - 2 * var(--p));
+		width: calc(var(--w) * 0.5 - var(--p));
 
-input {
-	overflow: hidden;
+		transition: transform 0.3s;
 
-	position: absolute !important;
+		border-radius: var(--r);
+		background-color: var(--bg);
 
-	width: 1px;
-	height: 1px;
-
-	margin: -1px;
-	padding: 0;
-
-	border: 0;
-
-	clip: rect(0, 0, 0, 0);
-}
-
-input:checked ~ label[for] {
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	@include fx.scheme using ($name) {
-		@if $name == light {
-			color: var(--color-white);
-		} @else if $name == ice {
-			color: var(--color-white);
-		} @else if $name == dark {
-			color: var(--color-white);
+		input:checked ~ & {
+			transform: translateX(100%);
 		}
-	}
-}
-
-:not(*):focus-within,
-input:focus ~ label[for] {
-	background-color: transparent;
-}
-
-@include fx.class("fx:inputlabelswitch/marker") {
-	z-index: 1;
-
-	position: absolute;
-	top: 0;
-	left: -100%;
-
-	height: calc(var(--h) - 2 * var(--p));
-	width: calc(var(--w) * 0.5 - var(--p));
-
-	transition: transform 0.3s;
-
-	border-radius: var(--r);
-	background-color: var(--bg);
-
-	input:checked ~ & {
-		transform: translateX(100%);
 	}
 }
