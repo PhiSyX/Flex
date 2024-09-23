@@ -122,6 +122,10 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     Ce composant effectue une requête `XHR` via `fetch` vers l'URL donnée.
 
 -   [x] Composant Image
+
+    Un composant `Image` permet de créer une [image classique](https://developer.mozilla.org/fr/docs/Web/HTML/Element/img)
+    avec la possibilité de mettre en cache les appels réseaux côté applicatif.
+
 -   [x] Composant InputCounter
 -   [x] Composant InputLabelSWitch
 -   [x] Composant InputSWitch
