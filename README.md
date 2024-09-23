@@ -108,7 +108,12 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     ![Dialog](docs/flex-uikit/dialog.png)
 
 -   [x] Composant DropDownList
+
+    Un composant `DropDownList` est simplement un composant `ComboBox` SANS le
+    champ de filtre du composant `ComboBox`. Voir l'image du `ComboBox`.
+
 -   [ ] Composant DropDownMenu
+
 -   [x] Composant FormLink
 -   [x] Composant Image
 -   [x] Composant InputCounter
