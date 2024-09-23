@@ -1,42 +1,16 @@
 <script setup lang="ts">
+import type { TextEditEmits } from "@phisyx/flex-uikit/textedit/emits";
+import type { TextEditProps } from "@phisyx/flex-uikit/textedit/props";
+
 import { nextTick, ref, useTemplateRef } from "vue";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	content: string;
-	contentCenter?: boolean;
-	placeholder?: string;
-	placeholderCenter?: boolean;
-	locked: boolean;
-	withLayer?: boolean;
-}
-
-interface Emits {
-	(
-		evt_name: "layer",
-		_: {
-			event: Event;
-			linked_element: HTMLInputElement;
-			mode: boolean;
-		}
-	): void;
-	(evt_name: "submit"): void;
-}
-
-// --------- //
-// Composant //
-// --------- //
 
 const {
 	contentCenter = false,
 	placeholderCenter = true,
 	withLayer = false,
 	locked,
-} = defineProps<Props>();
-const emit = defineEmits<Emits>();
+} = defineProps<TextEditProps>();
+const emit = defineEmits<TextEditEmits>();
 let input_model = defineModel<string>();
 
 let state = ref(false);
@@ -86,10 +60,10 @@ function toggle_layer(evt: Event) {
 		v-if="state"
 		ref="$input"
 		v-model="input_model"
-		class="[ input:reset size:full ]"
 		:class="{
 			'align-t:center': contentCenter,
 		}"
+		class="fx:text-edit [ input:reset size:full ]"
 		type="text"
 		@blur="submit_handler"
 		@keydown.enter="submit_handler"
@@ -97,25 +71,29 @@ function toggle_layer(evt: Event) {
 	/>
 	<output
 		v-else-if="content.length > 0"
-		class="[ display-ib size:full p=1 select:none ]"
 		:class="{
 			'cursor:default': locked,
 			'cursor:pointer': !locked,
 		}"
+		class="[ display-ib size:full p=1 select:none ]"
 		@dblclick="open_layer"
 	>
 		{{ content }}
 	</output>
 	<p
 		v-else-if="placeholder"
-		class="[ flex h:full my=0 select:none ]"
 		:class="{
 			'cursor:default': locked,
 			'cursor:pointer': !locked,
 			'flex/center:full': placeholderCenter,
 		}"
+		class="[ flex h:full my=0 select:none ]"
 		@dblclick="open_layer"
 	>
 		{{ placeholder }}
 	</p>
 </template>
+
+<style scoped lang="scss">
+@import "@phisyx/flex-uikit-stylesheets/textedit/TextEdit.scss";
+</style>

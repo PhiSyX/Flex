@@ -11,7 +11,7 @@ import { computed, ref } from "vue";
 import ActionBar from "@phisyx/flex-uikit-vue/actionbar/ActionBar.vue";
 import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
-import { TextEditable } from "@phisyx/flex-vue-uikit";
+import TextEdit from "@phisyx/flex-uikit-vue/textedit/TextEdit.vue";
 
 import ChannelActivities from "#/sys/channel_activities/ChannelActivities.template.vue";
 import ChannelUserlist from "#/sys/channel_userlist/ChannelUserlist.template.vue";
@@ -191,7 +191,7 @@ const enable_topic_edit_mode_handler = (payload: {
 		>
 			<template #before-main>
 				<ActionBar class="room/topic">
-					<TextEditable
+					<TextEdit
 						v-model="topic_input"
 						:content="room.topic.get()"
 						:locked="!current_client_member_can_edit_topic"

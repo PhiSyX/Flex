@@ -55,5 +55,5 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 -   [x] Composant InputSWitch
 -   [x] Composant Menu
 -   [x] Composant MenuItem
--   [x] Composant TextEditable
+-   [x] Composant TextEdit
 -   [x] Composant TextInput

@@ -1,0 +1,29 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use(
+	"align-t:center",
+	"cursor:default",
+	"cursor:pointer",
+	"display-ib",
+	"flex",
+	"flex/center:full",
+	"h:full,",
+	"input:reset",
+	"select:none",
+	"size:full",
+);
+
+@include fx.use(
+	(
+		className: margin-block,
+		values: (
+			0,
+		),
+	),
+	(
+		className: padding,
+		values: (
+			1,
+		),
+	)
+);
