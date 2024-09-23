@@ -3,7 +3,8 @@ import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Option } from "@phisyx/flex-safety";
 
-import { UiMenu, UiMenuItem } from "@phisyx/flex-vue-uikit";
+import UiMenu from "@phisyx/flex-uikit-vue/menu/Menu.vue";
+import UiMenuItem from "@phisyx/flex-uikit-vue/menu/MenuItem.vue";
 
 // ---- //
 // Type //

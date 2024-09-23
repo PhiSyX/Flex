@@ -1,0 +1,28 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use("flex", "flex:full", "flex:shrink=0", "flex/center:full");
+
+@include fx.use(
+	(
+		className: margin,
+		values: (
+			2px,
+		),
+	)
+);
+
+@include fx.class("fx:menuitem") {
+	&:first-of-type {
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+	}
+
+	&:last-of-type {
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
+	}
+
+	&:hover {
+		background: var(--menu-item-bg-hover);
+	}
+}

@@ -5,7 +5,7 @@ import type { InputLabelSwitchProps } from "@phisyx/flex-uikit/input/props";
 import {
 	DEFAULT_LABEL_NO,
 	DEFAULT_LABEL_YES,
-} from "@phisyx/flex-uikit/input/label";
+} from "@phisyx/flex-uikit/input/presenter";
 import { computed } from "vue";
 
 // --------- //

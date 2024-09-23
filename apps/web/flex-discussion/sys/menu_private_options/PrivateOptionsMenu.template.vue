@@ -2,8 +2,10 @@
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
-import { UiMenu, UiMenuItem } from "@phisyx/flex-vue-uikit";
 import { computed } from "vue";
+
+import UiMenu from "@phisyx/flex-uikit-vue/menu/Menu.vue";
+import UiMenuItem from "@phisyx/flex-uikit-vue/menu/MenuItem.vue";
 
 // ---- //
 // Type //

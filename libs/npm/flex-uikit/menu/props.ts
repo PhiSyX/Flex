@@ -8,41 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { App } from "vue";
+import type { Icons } from "../icons";
 
-import { defineAsyncComponent } from "vue";
+// ---- //
+// Type //
+// ---- //
 
-// biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const icons_imports = import.meta.glob<{ default: any }>(
-	"./src/icons/Icon*.vue",
-);
-
-let icons_components = Object.entries(icons_imports).map(
-	([icon_component_filepath, icon_component]) => {
-		let icon_component_name = icon_component_filepath.slice(
-			"./src/icons/".length,
-			0 - ".vue".length,
-		);
-		return [icon_component_name, icon_component] as unknown as [
-			string,
-			// biome-ignore lint/suspicious/noExplicitAny: OSEF
-			() => Promise<{ default: any }>,
-		];
-	},
-);
-
-export { default as AudioSound } from "./src/audio-sound/AudioSound.vue";
-export { default as Match } from "./src/match/Match.vue";
-export { default as TextEditable } from "./src/texteditable/TextEditable.vue";
-
-// NOTE(phisyx): plugin Vue.
-export default {
-	install(app: App<Element>) {
-		for (let [icon_component_name, icon_component] of icons_components) {
-			app.component(
-				icon_component_name,
-				defineAsyncComponent(icon_component),
-			);
-		}
-	},
-};
+export interface MenuItemProps {
+	icon?: Icons;
+}

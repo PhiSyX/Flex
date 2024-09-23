@@ -1,0 +1,37 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use("pos-r", "ov:h");
+
+@include fx.use(
+	(
+		className: font-size,
+		values: (
+			13px,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: border-radius,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: padding,
+		values: (
+			0,
+		),
+	)
+);
+
+@include fx.class("fx:menu") {
+	min-width: fx.space(250);
+	max-width: fx.space(250);
+	background: var(--menu-bg);
+	box-shadow: 2px 2px 4px var(--color-black);
+}
