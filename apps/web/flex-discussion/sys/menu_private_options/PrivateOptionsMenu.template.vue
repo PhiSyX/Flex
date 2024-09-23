@@ -4,8 +4,8 @@ import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
 import { computed } from "vue";
 
-import UiMenu from "@phisyx/flex-uikit-vue/menu/Menu.vue";
-import UiMenuItem from "@phisyx/flex-uikit-vue/menu/MenuItem.vue";
+import Menu from "@phisyx/flex-uikit-vue/menu/Menu.vue";
+import MenuItem from "@phisyx/flex-uikit-vue/menu/MenuItem.vue";
 
 // ---- //
 // Type //
@@ -48,39 +48,39 @@ const unignore_user_handler = () => emit("unignore-user", recipient);
 </script>
 
 <template>
-	<UiMenu class="menu/private-options">
-		<UiMenuItem
+	<Menu class="menu/private-options">
+		<MenuItem
 			v-if="is_current_client_private_and_authenticated"
 			icon="user"
 			@click="emit('open-update-account')"
 		>
 			Mettre à jour mon profil
-		</UiMenuItem>
+		</MenuItem>
 
-		<UiMenuItem
+		<MenuItem
 			v-if="!is_current_client_private && !isRecipientBlocked"
 			icon="user-block"
 			@click="ignore_user_handler"
 		>
 			Ignorer
-		</UiMenuItem>
+		</MenuItem>
 
-		<UiMenuItem
+		<MenuItem
 			v-if="!is_current_client_private && isRecipientBlocked"
 			icon="user-block"
 			@click="unignore_user_handler"
 		>
 			Ne plus ignorer
-		</UiMenuItem>
+		</MenuItem>
 
-		<UiMenuItem
+		<MenuItem
 			icon="close"
 			style="background: var(--color-red500)"
 			@click="emit('close')"
 		>
 			Fermer le privé
-		</UiMenuItem>
-	</UiMenu>
+		</MenuItem>
+	</Menu>
 </template>
 
 <style scoped>

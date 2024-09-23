@@ -155,7 +155,9 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 -   [x] Composant Menu
 
--   [x] Composant MenuItem
+    Un composant `Menu` permet de créer un [menu classique](https://developer.mozilla.org/fr/docs/Web/HTML/Element/menu).
+
+    ![Menu](docs/flex-uikit/menu.png)
 
 -   [x] Composant TextEdit
 
