@@ -135,8 +135,28 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     ![InputCounter](docs/flex-uikit/inputcounter.png)
 
 -   [x] Composant InputLabelSWitch
+
+    Un composant `InputLabelSWitch` donne deux choix à l'utilisateur, activé ou désactivé.
+
+    1.  Activé labellisé par défaut sous "Oui".
+    2.  Désactivé labellisé par défaut sous "Non".
+
+    L'image suivante montre le composant `InputLabelSWitch`, intégré au composant `DirectAccessView` de l'application :
+
+    ![InputLabelSWitch](docs/flex-uikit/inputlabelswitch.png)
+
 -   [x] Composant InputSWitch
+
+    Un composant `InputSWitch` donne deux choix à l'utilisateur, activé ou désactivé.
+
+    L'image suivante montre le composant `InputSWitch`, intégré au composant `DirectAccessView` de l'application :
+
+    ![InputSWitch](docs/flex-uikit/inputswitch.png)
+
 -   [x] Composant Menu
+
 -   [x] Composant MenuItem
+
 -   [x] Composant TextEdit
+
 -   [x] Composant TextInput
