@@ -6,8 +6,8 @@ import type { Option } from "@phisyx/flex-safety";
 import { computed, ref, watch } from "vue";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import ComboBox from "@phisyx/flex-uikit-vue/combobox/ComboBox.vue";
 import {
-	ComboBox,
 	Dialog,
 	InputCounter,
 	InputSwitchV2,

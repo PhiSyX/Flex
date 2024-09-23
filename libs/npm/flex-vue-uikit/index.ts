@@ -33,9 +33,7 @@ let icons_components = Object.entries(icons_imports).map(
 
 export { default as AudioSound } from "./src/audio-sound/AudioSound.vue";
 export { default as UiButton } from "./src/button/Button.vue";
-export { default as ComboBox } from "./src/combobox/ComboBox.vue";
 export { default as Dialog } from "./src/dialog/Dialog.vue";
-export { default as DropDownList } from "./src/dropdown/DropDownList.vue";
 export { default as FormLink } from "./src/form/FormLink.vue";
 export { default as UiImage } from "./src/image/Image.vue";
 export { default as InputCounter } from "./src/inputcounter/InputCounter.vue";

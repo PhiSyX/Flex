@@ -1,0 +1,70 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use(
+	"align-jc:sb",
+	"cursor:pointer",
+	"flex!",
+	"flex",
+	"flex:shrink=0",
+	"h:full",
+	"list:reset",
+	"ov:c",
+	"ov:h",
+	"ov:y"
+);
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			2,
+		),
+	)
+);
+
+@include fx.class("fx:dropdown-list") {
+	background-color: Canvas;
+	color: CanvasText;
+	border: 1px inset ButtonBorder;
+	border-radius: 4px;
+	padding-block: 4px;
+}
+
+@include fx.class("fx:dropdown-list/container") {
+	min-width: fx.space(210);
+	max-width: fx.space(338);
+	max-height: fx.space(210);
+	width: 100%;
+
+	padding: 4px;
+}
+
+ul {
+	gap: 2px;
+}
+
+li {
+	padding: 4px;
+
+	border-radius: 4px;
+	word-wrap: break-word;
+}
+
+.is-hover,
+li:hover {
+	background-color: AccentColor;
+	color: AccentColorText;
+
+	em {
+		color: SelectedItem;
+	}
+}
+
+.is-selected {
+	background-color: SelectedItem;
+	color: SelectedItemText;
+
+	em {
+		color: AccentColor;
+	}
+}

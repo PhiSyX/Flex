@@ -1,23 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, useTemplateRef, watch } from "vue";
+import type { ComboBoxProps } from "@phisyx/flex-uikit/combobox/props";
+import type { DropDownListItem } from "@phisyx/flex-uikit/dropdown/props";
 
 import { minmax } from "@phisyx/flex-helpers";
+import { filter_list } from "@phisyx/flex-uikit/combobox/handler";
+import { computed, ref, useTemplateRef, watch } from "vue";
 
 import UiButton from "../button/Button.vue";
 import DropDownList from "../dropdown/DropDownList.vue";
-
-// ---- //
-// Type //
-// ---- //
-
-interface Props {
-	name: string;
-	list: Array<{ label: string; value: string }>;
-	openOnInput?: boolean;
-	placeholder?: string;
-	prependEmpty?: boolean;
-	sync?: boolean;
-}
 
 // --------- //
 // Composant //
@@ -29,7 +19,7 @@ const {
 	openOnInput = true,
 	prependEmpty = false,
 	sync = false,
-} = defineProps<Props>();
+} = defineProps<ComboBoxProps>();
 
 let outmodel = defineModel<string>({ required: true });
 
@@ -38,61 +28,22 @@ let inmodel = ref(outmodel.value);
 let opened = ref(false);
 let position_index = ref(-1);
 
-let filtered_list = ref<
-	Array<{
-		label: string;
-		value: string;
-		position: number;
-		selected: boolean;
-	}>
->([]);
+let filtered_list = ref<Array<DropDownListItem>>([]);
 let id_list = computed(() => `${name}_list`);
 
 watch(
 	inmodel,
-	(ininput) => {
-		let outinput = outmodel.value;
-		let ininput_l = ininput.toLowerCase();
-		let plist = list;
-
-		if (prependEmpty) {
-			plist = [
-				{
-					value: "",
-					label: "",
-				},
-				...list,
-			];
-		}
-
-		if (ininput_l.length === 0) {
-			filtered_list.value = plist.map((item, idx) => ({
-				...item,
-				selected: outinput === item.value || outinput === item.label,
-				position: idx,
-			}));
-
-			if (sync) {
-				outmodel.value = ininput;
-			}
-			return;
-		}
-
-		filtered_list.value = plist
-			.map((item, idx) => ({
-				...item,
-				selected: outinput === item.value || outinput === item.label,
-				position: idx,
-			}))
-			.filter((item) => {
-				return (
-					item.value.toLowerCase().startsWith(ininput_l) ||
-					item.label.toLowerCase().startsWith(ininput_l)
-				);
-			});
+	() => {
+		filtered_list.value = filter_list(
+			{
+				in: inmodel.value,
+				out: outmodel.value,
+			},
+			prependEmpty ? [{ value: "", label: "" }, ...list] : list
+		);
 
 		if (sync) {
-			outmodel.value = ininput;
+			outmodel.value = inmodel.value;
 		}
 	},
 	{ immediate: true }
@@ -103,7 +54,7 @@ function toggle_list() {
 }
 
 function on_select_handler(
-	selected_item: Props["list"][number] & { position: number }
+	selected_item: ComboBoxProps["list"][number] & { position: number }
 ) {
 	position_index.value = selected_item.position;
 
@@ -195,7 +146,7 @@ function to_end_list() {
 </script>
 
 <template>
-	<div class="combobox [ pos-r ]" :open="opened">
+	<div class="fx:combobox [ pos-r ]" :open="opened">
 		<div class="[ flex ]">
 			<input
 				ref="$input"
@@ -216,7 +167,7 @@ function to_end_list() {
 				@keydown.ctrl.space="toggle_list"
 			/>
 			<UiButton
-				class="combobox/activator"
+				class="fx:combobox/activator"
 				icon="arrow-down"
 				type="button"
 				v-model:selected="opened"
@@ -231,60 +182,12 @@ function to_end_list() {
 			v-model:position="position_index"
 			:id="id_list"
 			:list="filtered_list"
-			class="combobox/dropdown"
+			class="fx:combobox/dropdown"
 			@select="on_select_handler"
 		/>
 	</div>
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
-
-.combobox {
-	width: inherit;
-}
-
-.combobox[open="true"] {
-	box-shadow: 2px 3px 4px var(--color-grey700);
-}
-
-.combobox[open="true"] .combobox\/activator {
-	border-bottom-color: transparent;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-.combobox[open="true"] input {
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-@include fx.class("combobox/dropdown") {
-	z-index: 1;
-	position: fixed;
-	width: inherit;
-
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
-	border-top: 0;
-	box-shadow: 2px 3px 4px var(--color-grey700);
-}
-
-input {
-	width: fx.space(180);
-	padding: 3px;
-
-	border: 1px inset ButtonBorder;
-	border-right-color: transparent;
-	border-radius: 4px;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-@include fx.class("combobox/activator") {
-	border: 1px inset ButtonBorder;
-
-	border-top-right-radius: 4px;
-	border-bottom-right-radius: 4px;
-}
+@import "@phisyx/flex-uikit-stylesheets/combobox/ComboBox.scss";
 </style>
