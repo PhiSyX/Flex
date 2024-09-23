@@ -127,6 +127,13 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     avec la possibilité de mettre en cache les appels réseaux côté applicatif.
 
 -   [x] Composant InputCounter
+
+    Un composant `InputCounter` permet de créer un compteur sur un bouton.
+
+    L'image suivante montre le composant `InputCounter`, intégré au composant `ChannelSettingsDialog` de l'application :
+
+    ![InputCounter](docs/flex-uikit/inputcounter.png)
+
 -   [x] Composant InputLabelSWitch
 -   [x] Composant InputSWitch
 -   [x] Composant Menu
