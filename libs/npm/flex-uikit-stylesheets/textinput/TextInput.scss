@@ -1,0 +1,44 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use("flex", "flex!", "align-ji:center", "p:reset");
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+		),
+	)
+);
+@include fx.use(
+	(
+		className: margin-left,
+		values: (
+			4,
+		),
+	),
+	(
+		className: padding-block,
+		values: (
+			1,
+		),
+	)
+);
+@include fx.use(
+	(
+		className: font-size,
+		values: (
+			13px,
+		),
+	)
+);
+
+@include fx.class("fx:textinput") {
+	border: 1px dashed transparent;
+
+	&.error {
+		border-radius: 4px;
+		color: var(--fx-textinput-color-error, ActiveText);
+		border-color: currentColor;
+	}
+}

@@ -8,25 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-
-
 // ---- //
 // Type //
 // ---- //
 
-// interface LabelProps {
-// 	for: string;
-// 	icon: Icons;
-// 	iconAttrs?: object;
-// }
-
-// export function LabelIcon(props: LabelProps): JSX.Element {
-// 	const IconName = resolveComponent(`icon-${props.icon}`);
-// 	assert_icon(IconName);
-// 	const { iconAttrs, ...attrs } = props;
-// 	return (
-// 		<label {...attrs}>
-// 			<IconName {...iconAttrs} />
-// 		</label>
-// 	);
-// }
+export interface TextInputChildren {
+	default: unknown;
+	icon: unknown;
+}

@@ -13,12 +13,13 @@ import {
 import { HANDLERS } from "@phisyx/flex-chat/handlers";
 import { RememberMeStorage } from "@phisyx/flex-chat/localstorage/remember_me";
 import { MODULES_REPLIES_HANDLERS } from "@phisyx/flex-chat/modules";
-import { InputSwitch, Match, TextInput, UiImage } from "@phisyx/flex-vue-uikit";
+import { InputSwitch, Match, UiImage } from "@phisyx/flex-vue-uikit";
 import { computed, onMounted, reactive, watch } from "vue";
 import { VueRouter } from "~/router";
 import { use_chat_store, use_overlayer_store, use_user_store } from "~/store";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import TextInput from "@phisyx/flex-uikit-vue/textinput/TextInput.vue";
 
 // --------- //
 // Composant //
