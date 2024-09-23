@@ -125,7 +125,7 @@ function resize_handler(entries: Array<ResizeObserverEntry>) {
 					v-if="totalPrivatesWaiting"
 					id="goto-private-list"
 					icon="messages"
-					:attributes="{ unread: totalPrivatesWaiting }"
+					:icon-attrs="{ unread: totalPrivatesWaiting }"
 					@click="open_private_list_handler"
 					title="Liste des privés en attente"
 				/>

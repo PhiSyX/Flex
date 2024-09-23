@@ -51,13 +51,11 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
     2.  **Zone d'action**
 
-    Cette zone contient des composants qui définissent les actions que
-    l'application peut effectuer dans une vue.
+    Cette zone contient des composants qui définissent les actions que l'application peut effectuer dans une vue.
 
-    Par exemple, notre application peut définir un bouton de recherche et/ou
-    d'actualisation dans la zone d'action.
+    Par exemple, notre application peut définir un bouton de recherche et/ou d'actualisation dans la zone d'action.
 
-    L'image suivante montre le composant `ActionBar` intégré au composant `PrivateRoom` de l'application avec un avatar qui va ouvrir un menu et un bouton de fermeture de privé :
+    L'image suivante montre le composant `ActionBar` intégré au composant `PrivateRoom` de l'application avec un avatar ouvre un menu et un bouton de fermeture de privé :
 
     ![ActionBar en action](docs/flex-uikit/actionbar.png)
 
@@ -66,7 +64,7 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     Un composant `Alert` indique une information qu'un utilisateur DOIT lire.
 
     Un composant `Alert` peut avoir un bouton de fermeture. Il peut également s'auto-détruire si la propriété
-    `closeAfterSeconds` lui est donné.
+    `closeAfterSeconds` lui est donnée.
 
     Il peut avoir une apparence différence en fonction du thème choisi par l'utilisateur ou celui par défaut de l'application et du niveau d'importance de l'information.
 
@@ -84,6 +82,13 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
 -   [ ] Composant AlertDialog
 -   [x] Composant Badge
+
+	L'image suivante montre le composant `Badge`, intégré aux composants `NavigationArea` et `NavigationRoom` de
+	l'application :
+
+    ![Alert](docs/flex-uikit/badge1.png)
+    ![Alert](docs/flex-uikit/badge2.png)
+
 -   [x] Composant ComboBox
 -   [ ] Composant DataGrid
 -   [x] Composant Dialog

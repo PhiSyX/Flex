@@ -17,7 +17,7 @@ import type { Icons } from "../icons";
 
 export interface ButtonIconProps {
 	icon: Icons;
-	attributes?: object;
+	attrs?: object;
 }
 
 export interface ButtonProps {
@@ -26,6 +26,10 @@ export interface ButtonProps {
 	 * @default undefined
 	 */
 	icon?: Icons;
+	/**
+	 * Attributs de l'icône.
+	 */
+	iconAttrs?: object;
 	/**
 	 * Position de l'icône.
 	 * @default left

@@ -56,11 +56,11 @@ const click_handler = () => {
 		@click="click_handler"
 	>
 		<template v-if="icon && iconPosition === 'left'">
-			<component :is="`icon-${icon}`" />
+			<component :is="`icon-${icon}`" v-bind="iconAttrs" />
 		</template>
 		<slot />
 		<template v-if="icon && iconPosition === 'right'">
-			<component :is="`icon-${icon}`" />
+			<component :is="`icon-${icon}`" v-bind="iconAttrs" />
 		</template>
 	</button>
 </template>
