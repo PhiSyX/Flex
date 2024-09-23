@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useRoute as use_route } from "vue-router";
 
-import { AudioSound } from "@phisyx/flex-vue-uikit";
+import AudioSound from "@phisyx/flex-uikit-vue/audiosound/AudioSound.vue";
 
 import { use_chat_store, use_settings_store } from "~/store";
 

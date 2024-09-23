@@ -8,39 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { App } from "vue";
+// ---- //
+// Type //
+// ---- //
 
-import { defineAsyncComponent } from "vue";
-
-// biome-ignore lint/suspicious/noExplicitAny: C'est moche? Je fais ce que je veux.
-const icons_imports = import.meta.glob<{ default: any }>(
-	"./src/icons/Icon*.vue",
-);
-
-let icons_components = Object.entries(icons_imports).map(
-	([icon_component_filepath, icon_component]) => {
-		let icon_component_name = icon_component_filepath.slice(
-			"./src/icons/".length,
-			0 - ".vue".length,
-		);
-		return [icon_component_name, icon_component] as unknown as [
-			string,
-			// biome-ignore lint/suspicious/noExplicitAny: OSEF
-			() => Promise<{ default: any }>,
-		];
-	},
-);
-
-export { default as Match } from "./src/match/Match.vue";
-
-// NOTE(phisyx): plugin Vue.
-export default {
-	install(app: App<Element>) {
-		for (let [icon_component_name, icon_component] of icons_components) {
-			app.component(
-				icon_component_name,
-				defineAsyncComponent(icon_component),
-			);
-		}
-	},
-};
+export interface AudioSoundEmits {
+	// biome-ignore lint/style/useShorthandFunctionType: ;-)
+	(event_name: "ended"): void;
+}
