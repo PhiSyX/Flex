@@ -40,6 +40,27 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 ## UI Kit
 
 -   [x] Composant ActionBar
+
+    Un composant `ActionBar` inclut un titre, et des actions. Il fournit une zone standard pour les contrôles d'action. Il permet de définir des contrôles qui peuvent être utilisés spécifiques à une vue.
+
+    Notre composant `ActionBar` définit deux zones distinctes :
+
+    1.  **Zone de titre**
+
+    Cette zone contient soit une chaîne de caractères contenant le texte du titre, soit des balises HTML.
+
+    2.  **Zone d'action**
+
+    Cette zone contient des composants qui définissent les actions que
+    l'application peut effectuer dans une vue.
+
+    Par exemple, notre application peut définir un bouton de recherche et/ou
+    d'actualisation dans la zone d'action.
+
+    L'image suivante montre le composant `ActionBar` intégré au composant `PrivateRoom` de l'application avec un avatar qui va ouvrir un menu et un bouton de fermeture de privé :
+
+    ![ActionBar en action](docs/flex-uikit/actionbar.png)
+
 -   [x] Composant Alert
 -   [ ] Composant AlertDialog
 -   [x] Composant Badge

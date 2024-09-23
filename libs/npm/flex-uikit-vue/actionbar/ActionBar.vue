@@ -12,7 +12,7 @@ defineSlots<ActionBarChildren>();
 			<slot />
 		</div>
 
-		<div class="fx:action-bar/actions [ flex gap=2 min-w:fit ]">
+		<div class="fx:action-bar/actions [ flex gap=1 min-w:fit ]">
 			<slot name="actions" />
 		</div>
 	</div>
