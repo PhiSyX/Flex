@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Dialog } from "@phisyx/flex-vue-uikit";
+import Dialog from "@phisyx/flex-uikit-vue/dialog/Dialog.vue";
 </script>
 
 <template>

@@ -1,0 +1,81 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use(
+	"align-t:right",
+	"flex:full",
+	"flex:shrink=0",
+	"flex!",
+	"flex",
+	"flex/center:full",
+	"ov:a",
+	"select:none",
+	"size:full"
+);
+
+@include fx.use(
+	(
+		className: border-radius,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: margin,
+		values: (
+			0,
+		),
+	),
+	(
+		className: padding,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: font-size,
+		values: (
+			10px,
+			13px,
+			20px,
+		),
+	)
+);
+
+@include fx.class("fx:dialog") {
+	box-shadow: var(--box-shadow);
+	background: var(--dialog-bg, canvas);
+	color: var(--dialog-color, var(--default-text-color_alt));
+	border-color: var(--dialog-border-color);
+
+	@media (min-width: 530px) and (min-height: 530px) {
+		width: max-content;
+		height: max-content;
+		max-height: fx.space(500);
+		max-width: fx.space(400);
+	}
+}
+
+@include fx.class("fx:dialog/close:label") {
+	padding: 2px;
+	border: 1px solid;
+	border-radius: 3px;
+}
+
+@include fx.class("fx:dialog/title") {
+	font-weight: 500;
+}

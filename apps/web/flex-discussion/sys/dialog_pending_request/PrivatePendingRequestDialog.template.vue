@@ -2,7 +2,7 @@
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
-import { Dialog } from "@phisyx/flex-vue-uikit";
+import Dialog from "@phisyx/flex-uikit-vue/dialog/Dialog.vue";
 
 // ---- //
 // Type //

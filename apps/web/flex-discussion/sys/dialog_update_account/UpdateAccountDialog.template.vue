@@ -4,7 +4,8 @@ import { computed, ref } from "vue";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import ComboBox from "@phisyx/flex-uikit-vue/combobox/ComboBox.vue";
-import { Dialog, FormLink } from "@phisyx/flex-vue-uikit";
+import Dialog from "@phisyx/flex-uikit-vue/dialog/Dialog.vue";
+import { FormLink } from "@phisyx/flex-vue-uikit";
 
 import Avatar from "#/api/avatar/Avatar.vue";
 

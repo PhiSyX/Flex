@@ -2,7 +2,7 @@
 import { ref } from "vue";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
-import { Dialog } from "@phisyx/flex-vue-uikit";
+import Dialog from "@phisyx/flex-uikit-vue/dialog/Dialog.vue";
 
 // ---- //
 // Type //
@@ -45,7 +45,8 @@ function change_nickname_handler() {
 
 		<template #footer>
 			<em class="[ f-size=12px ]">
-				Les champs ayant un <strong>*</strong>asterisk sont obligatoires.
+				Les champs ayant un <strong>*</strong>asterisk sont
+				obligatoires.
 			</em>
 
 			<Button

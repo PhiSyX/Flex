@@ -7,8 +7,8 @@ import { computed, ref, watch } from "vue";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import ComboBox from "@phisyx/flex-uikit-vue/combobox/ComboBox.vue";
+import Dialog from "@phisyx/flex-uikit-vue/dialog/Dialog.vue";
 import {
-	Dialog,
 	InputCounter,
 	InputSwitchV2,
 } from "@phisyx/flex-vue-uikit";

@@ -6,7 +6,7 @@ import { minmax } from "@phisyx/flex-helpers";
 import { filter_list } from "@phisyx/flex-uikit/combobox/handler";
 import { computed, ref, useTemplateRef, watch } from "vue";
 
-import UiButton from "../button/Button.vue";
+import Button from "../button/Button.vue";
 import DropDownList from "../dropdown/DropDownList.vue";
 
 // --------- //
@@ -166,7 +166,7 @@ function to_end_list() {
 				@keydown.up="decrement_list"
 				@keydown.ctrl.space="toggle_list"
 			/>
-			<UiButton
+			<Button
 				class="fx:combobox/activator"
 				icon="arrow-down"
 				type="button"
