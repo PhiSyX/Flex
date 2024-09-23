@@ -132,7 +132,7 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("channel/list") {
 	@include fx.scheme using($name) {

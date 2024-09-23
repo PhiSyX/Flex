@@ -90,7 +90,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/custom:server") {
 	background: var(--room-bg);

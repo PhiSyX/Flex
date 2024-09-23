@@ -26,7 +26,7 @@ defineProps<Props<"SILENCE">>();
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 p {
 	color: var(--color-grey400);

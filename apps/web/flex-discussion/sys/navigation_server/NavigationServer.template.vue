@@ -167,7 +167,7 @@ function toggle_fold_handler() {
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 .is-active {
 	cursor: default;

@@ -182,7 +182,7 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 dialog {
 	max-width: max-content !important;

@@ -48,7 +48,7 @@ let variant = computed(() => (props.type === "foreground" ? "fg" : "bg"));
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 label {
 	border: inset 2px transparent;

@@ -69,7 +69,7 @@ const join_channel_handler = () =>
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("channel/kicked") {
 	background: var(--room-kicked-bg);

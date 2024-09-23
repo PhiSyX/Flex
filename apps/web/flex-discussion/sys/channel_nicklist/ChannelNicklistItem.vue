@@ -80,7 +80,7 @@ const select_user_handler = (member: ChannelMember) =>
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 details[open] > summary {
 	margin-top: fx.space(-1);

@@ -76,7 +76,7 @@ function update_all_layers() {
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 .overlay {
 	z-index: 1000;

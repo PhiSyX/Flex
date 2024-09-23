@@ -56,7 +56,7 @@ const emit = defineEmits<Emits>();
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 input {
 	--default-placeholder-color: var(--color-grey900);

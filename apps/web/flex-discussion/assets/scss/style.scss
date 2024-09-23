@@ -10,16 +10,15 @@
 
 @use "./variables" as var;
 
-@use "scss:~/flexsheets" as fx with($spacing: var.$spacing);
+@use "@phisyx/flexsheets" as fx with($spacing: var.$spacing);
+@use "@phisyx/normalizer";
 
 @use "./colors" as colors;
 @use "./schemes/ice" as ice;
 @use "./schemes/dark" as darkMode;
 @use "./schemes/light" as lightMode;
 
-@layer flexsheets, userland;
-
-@import "scss:~/normalizer.css" layer(reset);
+@layer reset, flexsheets, flex-uikit, userland;
 
 @include fx.use-reset;
 
@@ -193,7 +192,7 @@
 		values: (
 			1,
 		),
-	),
+	)
 );
 
 @include fx.use(
@@ -254,7 +253,7 @@
 			1,
 			2,
 		),
-	),
+	)
 );
 
 @include fx.use(

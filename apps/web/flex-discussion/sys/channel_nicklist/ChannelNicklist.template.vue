@@ -154,7 +154,7 @@ const select_user_handler = (member: Origin) => emit("select-member", member);
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 fieldset {
 	border: none;

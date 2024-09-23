@@ -50,7 +50,7 @@ defineEmits<Emits>();
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 .themes {
 	display: grid;

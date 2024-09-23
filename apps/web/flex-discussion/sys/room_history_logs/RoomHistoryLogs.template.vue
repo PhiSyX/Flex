@@ -83,7 +83,7 @@ function scroll() {
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 div {
 	border-radius: 4px;

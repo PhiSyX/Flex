@@ -149,7 +149,7 @@ function resize_handler(entries: Array<ResizeObserverEntry>) {
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 section {
 	min-width: fx.space(42);

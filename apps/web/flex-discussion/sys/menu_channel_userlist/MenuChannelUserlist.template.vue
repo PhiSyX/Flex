@@ -250,7 +250,7 @@ const unset_access_level_handler = (
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/userlist:menu") {
 	li {

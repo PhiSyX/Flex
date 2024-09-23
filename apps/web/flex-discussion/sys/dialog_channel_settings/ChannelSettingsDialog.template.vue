@@ -438,7 +438,7 @@ function delete_selected_masks_handler() {
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 .channel-settings-dialog {
 	@media (max-height: 530px) {

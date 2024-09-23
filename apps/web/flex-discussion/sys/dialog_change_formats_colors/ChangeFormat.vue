@@ -43,7 +43,7 @@ let model = defineModel<boolean | null>();
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 label {
 	padding-block: 6px;

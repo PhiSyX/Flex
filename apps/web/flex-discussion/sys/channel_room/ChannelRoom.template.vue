@@ -294,7 +294,7 @@ const enable_topic_edit_mode_handler = (payload: {
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/channel") {
 	@include fx.class("room/topic") {

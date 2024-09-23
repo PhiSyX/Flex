@@ -26,6 +26,8 @@
 		"@phisyx/flex-uikit-vue": "workspace:",
 		"@phisyx/flex-uikit": "workspace:",
 		"@phisyx/flex-vue-directives": "workspace:",
+		"@phisyx/flexsheets": "workspace:",
+		"@phisyx/normalizer": "workspace:",
 		"@tanstack/vue-query": "^5.56.2",
 		"country-flag-emoji-polyfill": "^0.1.8",
 		"pinia": "^2.2.2",

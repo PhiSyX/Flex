@@ -31,7 +31,7 @@ let symbol = computed(() => highestAccessLevel?.symbol);
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("channel/name") {
 	color: var(--room-target-color, var(--default-text-color_alt));

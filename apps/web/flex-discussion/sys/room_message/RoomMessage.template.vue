@@ -195,7 +195,7 @@ const open_room_handler = (room_id: RoomID) => emit("open-room", room_id);
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/echo") {
 	&[data-type="action"] {

@@ -79,7 +79,7 @@ let audio = ref({
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 select {
 	border: 0;

@@ -88,7 +88,7 @@ ul[data-event^="notice"] {
 </style>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/channel:activities") {
 	&:not(.is-expanded) {

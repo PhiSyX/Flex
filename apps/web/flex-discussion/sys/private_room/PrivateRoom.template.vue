@@ -103,7 +103,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 					</template>
 				</ActionBar>
 
-				<Alert type="warning" :close-after-seconds="15">
+				<Alert type="warning" :close-after-seconds="15" content-align="center">
 					Ne communique <strong>jamais</strong> tes coordonnées
 					personnelles (nom, adresse, n° de téléphone...), ni tes
 					identifiants de connexion.
@@ -114,7 +114,7 @@ const send_message_handler = (message: string) => emit("send-message", message);
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/private") {
 	@include fx.class("room/main") {

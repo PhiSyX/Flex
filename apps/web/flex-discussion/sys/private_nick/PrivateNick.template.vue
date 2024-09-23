@@ -28,7 +28,7 @@ withDefaults(defineProps<Props>(), { tag: "span" });
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 bdo {
 	color: var(--room-target-color);

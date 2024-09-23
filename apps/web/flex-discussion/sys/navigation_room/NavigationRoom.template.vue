@@ -146,7 +146,7 @@ const close_room_handler = () => emit("close-room", props.id);
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 li {
 	display: grid;

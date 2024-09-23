@@ -72,7 +72,7 @@ let chat_store = use_chat_store();
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 .problem {
 	--panel-heading-bg: var(--color-red400);

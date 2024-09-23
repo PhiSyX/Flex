@@ -1,4 +1,4 @@
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 body:has(#chat-login-view) {
 	--body-bg: var(--login-page-bg);

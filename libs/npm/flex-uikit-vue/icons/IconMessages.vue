@@ -46,7 +46,7 @@ let title = computed(() =>
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 strong {
     position: absolute;

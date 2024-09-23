@@ -45,11 +45,7 @@ export default define_config({
 				find: /^assets:~/,
 				replacement: resolve_paths_from_flex("assets"),
 			},
-			// SCSS Libs
-			{
-				find: /^scss:~/,
-				replacement: resolve_paths_from_flex("libs", "scss"),
-			},
+
 		],
 	},
 });

@@ -80,7 +80,7 @@ function shrink_panel_handler() {
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/channel:activities") {
 	border: 2px solid var(--color-red200);

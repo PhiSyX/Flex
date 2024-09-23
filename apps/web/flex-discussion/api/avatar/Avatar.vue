@@ -119,7 +119,7 @@ function on_upload_image_handler(evt: Event) {
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 span {
 	position: absolute;

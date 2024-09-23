@@ -81,7 +81,7 @@ defineProps<Props>();
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("activities@activity") {
 	display: grid;

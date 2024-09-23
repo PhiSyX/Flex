@@ -73,7 +73,7 @@ let view = reactive(
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 #settings-view {
 	.content {

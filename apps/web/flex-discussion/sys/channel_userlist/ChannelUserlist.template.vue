@@ -97,7 +97,7 @@ const select_channel_member_handler = (origin: Origin) =>
 </template>
 
 <style scoped lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/userlist") {
 	background-color: var(--room-userlist-bg);

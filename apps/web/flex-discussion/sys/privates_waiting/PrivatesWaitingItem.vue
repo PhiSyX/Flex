@@ -68,7 +68,7 @@ const open_private_handler = (priv: Origin) => emit("open-private", priv);
 </template>
 
 <style lang="scss" scoped>
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 li {
 	display: grid;

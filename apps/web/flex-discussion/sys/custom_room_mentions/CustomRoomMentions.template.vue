@@ -53,7 +53,7 @@ const emit = defineEmits<Emits>();
 </template>
 
 <style lang="scss">
-@use "scss:~/flexsheets" as fx;
+@use "@phisyx/flexsheets" as fx;
 
 @include fx.class("room/custom:mentions") {
 	background: var(--room-bg);
