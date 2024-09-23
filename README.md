@@ -83,13 +83,21 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 -   [ ] Composant AlertDialog
 -   [x] Composant Badge
 
-	L'image suivante montre le composant `Badge`, intégré aux composants `NavigationArea` et `NavigationRoom` de
-	l'application :
+    L'image suivante montre le composant `Badge`, intégré aux composants `NavigationArea` et `NavigationRoom` de
+    l'application :
 
-    ![Alert](docs/flex-uikit/badge1.png)
-    ![Alert](docs/flex-uikit/badge2.png)
+    ![Badge](docs/flex-uikit/badge1.png)
+    ![Badge](docs/flex-uikit/badge2.png)
 
 -   [x] Composant ComboBox
+
+    Un composant `ComboBox` est simplement un composant `DropDownList` avec un
+    champ de filtre.
+
+    L'image suivante montre le composant `ComboBox`, intégré au composant `UpdateAccountDialog` de l'application :
+
+    ![ComboBox](docs/flex-uikit/combobox.png)
+
 -   [ ] Composant DataGrid
 -   [x] Composant Dialog
 -   [x] Composant DropDownList
