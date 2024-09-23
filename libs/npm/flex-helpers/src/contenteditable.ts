@@ -12,7 +12,7 @@
 // Interface //
 // --------- //
 
-interface CaretPosition {
+export interface CaretPosition {
 	start: number;
 	end: number;
 	selected_text: string;

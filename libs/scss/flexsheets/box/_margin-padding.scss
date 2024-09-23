@@ -1,3 +1,5 @@
+@use "sass:string";
+
 @use "../functions/space" as fn;
 @use "../mixins/class" as class;
 
@@ -22,7 +24,11 @@
 
 	@include class.generate-dynamic($options, $classes) using
 		($user_value, $user_className) {
-		#{$user_className}: fn.space($user_value, $bypass: true);
+		@if string.length(unit($user_value)) != 0 {
+			#{$user_className}: $user_value;
+		} @else {
+			#{$user_className}: fn.space($user_value, $bypass: true);
+		}
 	}
 }
 

@@ -61,7 +61,7 @@ interface AlertButton {
 export const DEFAULT_LABEL_CANCEL = "Annuler";
 export const DEFAULT_LABEL_NO = "Non";
 export const DEFAULT_LABEL_OK = "Ok";
-export const DEFAULT_LABEL_YES = "Ok";
+export const DEFAULT_LABEL_YES = "Oui";
 
 // -------- //
 // Fonction //
