@@ -48,7 +48,7 @@ let countries_list_combobox = computed(() =>
 	props.countriesList.map((c) => ({
 		label: c.country,
 		value: c.code,
-	}))
+	})),
 );
 
 // ------- //

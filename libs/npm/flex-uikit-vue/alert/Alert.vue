@@ -37,8 +37,8 @@ let $buttons = computed(() =>
 	make_alert_buttons(
 		buttons,
 		buttonLabels as Required<NonNullable<AlertProps["buttonLabels"]>>,
-		emit
-	)
+		emit,
+	),
 );
 
 let alert_type = computed(() => make_alert_type(type));

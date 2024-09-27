@@ -33,8 +33,8 @@ let view = reactive(
 		new VueRouter(),
 		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store as OverlayerStore,
-		settings_store as SettingsStore
-	)
+		settings_store as SettingsStore,
+	),
 ) as ChannelView;
 
 let maybe_channel = computed(() => view.maybe_channel);

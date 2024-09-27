@@ -91,7 +91,7 @@ let topic_history = computed(() =>
 	Array.from(props.room.topic.history, (item) => ({
 		label: item,
 		value: item,
-	}))
+	})),
 );
 
 let selected_access_control_list = ref<Array<string>>([]);

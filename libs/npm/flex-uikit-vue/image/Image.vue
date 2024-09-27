@@ -45,7 +45,7 @@ let _source = ref(
 		refresh_source: refreshSrc,
 		refresh_time: refreshTime,
 		refresh_timeout: refresh_timeout.value,
-	})
+	}),
 );
 
 let sized = computed(() => parse_image_size(size));
@@ -92,7 +92,7 @@ watch(
 	(file) => {
 		let url = URL.createObjectURL(file as File);
 		source.value = url;
-	}
+	},
 );
 
 // ------- //
@@ -109,7 +109,7 @@ function error_fallback_handler(_: Event) {
 
 function intersect_handler(
 	this: IntersectionObserver,
-	entries: Array<IntersectionObserverEntry>
+	entries: Array<IntersectionObserverEntry>,
 ) {
 	let [image] = entries;
 	if (image.isIntersecting) {

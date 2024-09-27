@@ -50,7 +50,7 @@ export interface Emits {
 			event: Event;
 			linked_element: HTMLInputElement | undefined;
 			mode: boolean;
-		}
+		},
 	): void;
 	(event_name: "ignore-user", origin: Origin): void;
 	(event_name: "kick-member", member: ChannelMember): void;
@@ -64,7 +64,7 @@ export interface Emits {
 	(
 		event_name: "set-access-level",
 		member: ChannelMember,
-		access_level_flag: ChannelAccessLevelFlag
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(event_name: "unban-member", member: ChannelMemberSelected): void;
 	(event_name: "unban-nick", member: ChannelMemberSelected): void;
@@ -72,7 +72,7 @@ export interface Emits {
 	(
 		event_name: "unset-access-level",
 		member: ChannelMember,
-		access_level_flag: ChannelAccessLevelFlag
+		access_level_flag: ChannelAccessLevelFlag,
 	): void;
 	(event_name: "update-topic", topic: string): void;
 }
@@ -95,7 +95,7 @@ let topic_input = ref(props.room.topic.get());
 let current_client_member_can_edit_topic = computed(() =>
 	props.currentClientMember
 		.map((member) => props.room.can_edit_topic(member))
-		.unwrap_or(false)
+		.unwrap_or(false),
 );
 
 let display_userlist = ref(props.userlistDisplayedByDefault);
@@ -151,11 +151,11 @@ const select_channel_member_handler = (origin: Origin) =>
 const send_message_handler = (message: string) => emit("send-message", message);
 const set_access_level_handler = (
 	member: ChannelMember,
-	flag: ChannelAccessLevelFlag
+	flag: ChannelAccessLevelFlag,
 ) => emit("set-access-level", member, flag);
 const unset_access_level_handler = (
 	member: ChannelMember,
-	flag: ChannelAccessLevelFlag
+	flag: ChannelAccessLevelFlag,
 ) => emit("unset-access-level", member, flag);
 
 const submit_topic_handler = () => {

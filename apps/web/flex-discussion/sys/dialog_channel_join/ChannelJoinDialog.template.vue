@@ -6,7 +6,6 @@ import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import Dialog from "@phisyx/flex-uikit-vue/dialog/Dialog.vue";
 
-
 // ---- //
 // Type //
 // ---- //

@@ -39,14 +39,14 @@ watch(
 				in: inmodel.value,
 				out: outmodel.value,
 			},
-			prependEmpty ? [{ value: "", label: "" }, ...list] : list
+			prependEmpty ? [{ value: "", label: "" }, ...list] : list,
 		);
 
 		if (sync) {
 			outmodel.value = inmodel.value;
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function toggle_list() {
@@ -54,7 +54,7 @@ function toggle_list() {
 }
 
 function on_select_handler(
-	selected_item: ComboBoxProps["list"][number] & { position: number }
+	selected_item: ComboBoxProps["list"][number] & { position: number },
 ) {
 	position_index.value = selected_item.position;
 
@@ -104,7 +104,7 @@ function decrement_list() {
 	position_index.value = minmax(
 		position_index.value - 1,
 		-1,
-		filtered_list.value.length
+		filtered_list.value.length,
 	);
 
 	if (position_index.value === -1) {
@@ -120,7 +120,7 @@ function increment_list() {
 	position_index.value = minmax(
 		position_index.value + 1,
 		-1,
-		filtered_list.value.length
+		filtered_list.value.length,
 	);
 
 	if (position_index.value === filtered_list.value.length) {

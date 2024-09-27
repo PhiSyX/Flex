@@ -66,7 +66,7 @@ watch(
 		}
 		view.set_response_from_api_countries({ data: new_data });
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 </script>
 

@@ -67,7 +67,7 @@ function input_handler(evt: Event) {
 	nextTick(() => {
 		set_caret_contenteditable(
 			evt.target as HTMLOutputElement,
-			maybe_output.pos
+			maybe_output.pos,
 		);
 	});
 }

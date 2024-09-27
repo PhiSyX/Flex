@@ -33,7 +33,7 @@ let is_selected = computed(() => is_selected_button(value$.value, selected));
 const click_handler = () => {
 	let select = change_selected(
 		{ selected, is_selected: is_selected.value },
-		{ value: value$.value, falseValue, trueValue }
+		{ value: value$.value, falseValue, trueValue },
 	);
 
 	if (select === undefined) {

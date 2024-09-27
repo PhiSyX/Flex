@@ -45,7 +45,6 @@ export default define_config({
 				find: /^assets:~/,
 				replacement: resolve_paths_from_flex("assets"),
 			},
-
 		],
 	},
 });

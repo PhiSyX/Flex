@@ -2,7 +2,7 @@
 	"extends": "@phisyx/flex-code-quality/tsconfig.base.json",
 	"compilerOptions": {
 		"outDir": "dist",
-		"baseUrl": ".",
+		"baseUrl": "."
 	},
 	"include": ["**/*.ts"],
 	"exclude": ["dist", "node_modules/**"]

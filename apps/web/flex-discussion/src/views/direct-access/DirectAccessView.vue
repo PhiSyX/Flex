@@ -39,8 +39,8 @@ let view = reactive(
 		user_store as unknown as UserStore,
 		overlayer_store as unknown as OverlayerStore,
 		HANDLERS,
-		MODULES_REPLIES_HANDLERS
-	)
+		MODULES_REPLIES_HANDLERS,
+	),
 );
 
 let user_session = computed(() => view.user_session);

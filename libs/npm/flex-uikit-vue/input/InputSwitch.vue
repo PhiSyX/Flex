@@ -13,7 +13,7 @@ defineSlots<InputSwitchChildren>();
 let input_model = defineModel();
 
 let title_attribute = computed(() =>
-	input_switch_state(input_model.value, disabled)
+	input_switch_state(input_model.value, disabled),
 );
 
 watchEffect(() => {
