@@ -38,7 +38,7 @@ use lib_flex::{
 	ChatApplication,
 	Flex,
 	GenerateApplication,
-	HelloWorldApplication,
+	// HelloWorldApplication,
 	UsersApplication,
 };
 
@@ -85,8 +85,8 @@ async fn main() -> impl process::Termination
 			.feature::<UsersApplication>()
 			.feature::<AccountsApplication>()
 			.feature::<AvatarsApplication>()
-			.feature::<HelloWorldApplication>()
-			.feature_json_rpc::<HelloWorldApplication>()
+			// .feature::<HelloWorldApplication>()
+			// .feature_json_rpc::<HelloWorldApplication>()
 			.feature_ws::<ChatApplication>()
 	};
 

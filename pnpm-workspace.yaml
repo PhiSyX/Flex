@@ -3,6 +3,7 @@ packages:
   - "libs/npm/**"
   - "libs/scss/**"
   - "tools/**"
+  - "www/**"
 
 catalog:
   sass: ^1.79.3

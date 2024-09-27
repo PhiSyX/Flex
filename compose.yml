@@ -1,5 +1,5 @@
 services:
-  database:
+  postgres_database:
     image: postgres:16-alpine3.19
     ports:
       - 5432:5432
@@ -9,5 +9,54 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
+  flex_rust:
+    build:
+      context: config/infra/rust
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres_database
+    ports:
+      - 8888:8888
+    volumes:
+      - .:/app:cached
+      - cargo-deps:/app/target
+    working_dir: /app
+    environment:
+      - DOCKER=1
+    command: bash -c 'cargo run'
+
+  flex_discussion_vite:
+    build:
+      context: config/infra/node
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    volumes:
+      - .:/app:cached
+      - npm-deps:/app/node_modules
+    environment:
+      - DOCKER=1
+    working_dir: /app
+    command: bash -c 'pnpm install -s && pnpm chat:discussion --host'
+
+  caddy:
+    image: caddy:latest
+    links:
+      - flex_discussion_vite
+      - flex_rust
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    volumes:
+      - ./config/infra/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./www/adonai:/srv
+      - caddy-data:/data
+      - caddy-config:/config
+
 volumes:
+  caddy-data:
+  caddy-config:
+  cargo-deps:
+  npm-deps:
   psql-data:

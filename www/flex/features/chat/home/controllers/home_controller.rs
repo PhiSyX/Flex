@@ -34,7 +34,14 @@ impl HomeController
 	) -> Html<HomeView>
 	{
 		let mut vite_url = server_settings.url();
-		_ = vite_url.set_port(Some(5173));
+
+		if std::env::var("DOCKER").is_ok() {
+			// NOTE: redirige vers Caddy
+			_ = vite_url.set_scheme("https");
+			_ = vite_url.set_port(Some(443));
+		} else {
+			_ = vite_url.set_port(Some(5173));
+		}
 		http.response.html(HomeView { vite_url })
 	}
 }

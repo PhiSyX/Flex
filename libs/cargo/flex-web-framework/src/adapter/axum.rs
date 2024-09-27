@@ -15,7 +15,7 @@ use tower_http::cors::CorsLayer;
 use tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
 
 use crate::http::routing::HttpRouterInterface;
-use crate::json_rpc::routing::JsonRpcHandlersInterface;
+// use crate::json_rpc::routing::JsonRpcHandlersInterface;
 use crate::{
 	server,
 	ApplicationCookieLayerInterface,
@@ -33,7 +33,7 @@ use crate::{
 	ExtensionInterface,
 	Feature,
 	FeatureConfig,
-	JsonRpcFeature,
+	// JsonRpcFeature,
 	WebSocketAsyncFeature,
 	WebSocketFeature,
 	WebSocketHandlers2Interface,
@@ -425,6 +425,7 @@ where
 		self
 	}
 
+	/*
 	fn feature_json_rpc<F>(mut self) -> Self
 	where
 		F: JsonRpcFeature<S>,
@@ -453,6 +454,7 @@ where
 
 		self
 	}
+	*/
 }
 
 impl<S, E, C> AsyncApplicationFeatureInterface<S> for AxumApplication<S, E, C>

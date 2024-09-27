@@ -69,7 +69,8 @@ impl Settings
 		if self.ip == std::net::Ipv4Addr::LOCALHOST {
 			String::from("localhost")
 		} else {
-			dns_lookup::lookup_addr(&self.ip).unwrap()
+			dns_lookup::lookup_addr(&self.ip)
+				.unwrap_or(String::from("localhost"))
 		}
 	}
 

@@ -13,9 +13,10 @@ import type { ServerSettings } from "./server.config";
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import * as process from "node:process";
 
 import vue from "@vitejs/plugin-vue";
-import { defineConfig as define_config } from "vite";
+import { defineConfig } from "vite";
 import yaml from "yaml";
 
 /**
@@ -29,7 +30,13 @@ function resolve_paths_from_flex(...paths: Array<string>) {
  * Récupère les paramètres du serveur backend.
  */
 async function get_flex_server_settings(): Promise<ServerSettings> {
-	let filepath = resolve_paths_from_flex("config", "flex", "server.yml");
+	let mode = process.env.DOCKER ? "dev" : "";
+	let filepath = resolve_paths_from_flex(
+		"config",
+		"flex",
+		mode,
+		"server.yml",
+	);
 	let raw_content = await fs.readFile(filepath);
 	let settings = yaml.parse(raw_content.toString("utf8"));
 	return settings satisfies ServerSettings;
@@ -64,10 +71,12 @@ const vite_server_proxy_config: CommonServerOptions["proxy"] = {
 };
 */
 
-let open_to_browser_url = `${vite_server_url_protocol}://localhost:${flex_server_settings.port}/chat`;
+let open_to_browser_url =
+	!process.env.DOCKER &&
+	`${vite_server_url_protocol}://localhost:${flex_server_settings.port}/chat`;
 
 // https://vitejs.dev/config/
-export default define_config({
+export default defineConfig({
 	plugins: [vue()],
 
 	build: {

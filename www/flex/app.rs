@@ -25,7 +25,7 @@ mod features
 	mod avatars;
 	mod chat;
 	mod generate;
-	mod hello_world;
+	// mod hello_world;
 	mod users;
 
 	pub use self::accounts::AccountsApplication;
@@ -33,7 +33,7 @@ mod features
 	pub use self::avatars::AvatarsApplication;
 	pub use self::chat::ChatApplication;
 	pub use self::generate::GenerateApplication;
-	pub use self::hello_world::HelloWorldApplication;
+	// pub use self::hello_world::HelloWorldApplication;
 	pub use self::users::UsersApplication;
 }
 

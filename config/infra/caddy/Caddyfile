@@ -1,0 +1,43 @@
+{
+	servers {
+		protocols h1 h2 h3
+	}
+}
+
+localhost {
+	handle /api/v1/* {
+		reverse_proxy https://flex_rust:8888 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+
+	handle /chat* {
+		reverse_proxy https://flex_rust:8888 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+
+	handle /gen* {
+		reverse_proxy https://flex_rust:8888 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+
+	handle {
+		reverse_proxy https://flex_discussion_vite:5173 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+}
+
+http://localhost {
+	redir https://{host}{uri}
+}
