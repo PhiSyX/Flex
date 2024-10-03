@@ -37,6 +37,12 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
     2.  Les fichiers de configuration finissant par `.example.yml` DOIVENT être renommés, sans `.example`.
         Exemple: `chat.example.yml` -> `chat.yml`.
 
+## Prévisualisation du client web
+
+| Ice                                     | Dark                                      | Light                                       |
+| --------------------------------------- | ----------------------------------------- | ------------------------------------------- |
+| ![ice theme](./docs/chat/theme-ice.png) | ![dark theme](./docs/chat/theme-dark.png) | ![light theme](./docs/chat/theme-light.png) |
+
 ## UI Kit
 
 -   [x] Composant ActionBar
