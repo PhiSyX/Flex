@@ -18,13 +18,14 @@
 @use "./schemes/dark" as darkMode;
 @use "./schemes/light" as lightMode;
 
+@use "./fonts";
+@use "./input";
+@use "./access-level";
+@use "./base";
+
 @layer reset, flexsheets, flex-uikit, userland;
 
 @include fx.use-reset;
-
-@import "./fonts";
-@import "./input";
-@import "./access-level";
 
 :root {
 	@include fx.define-colors;
@@ -34,8 +35,6 @@
 @include lightMode.use-light-scheme;
 @include darkMode.use-dark-scheme;
 @include colors.use-colors-preset;
-
-@import "./base";
 
 @include fx.use(
 	"...",

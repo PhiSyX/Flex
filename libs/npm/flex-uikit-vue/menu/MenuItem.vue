@@ -31,5 +31,5 @@ const action_handler = (evt: Event) => emit("click", evt);
 </template>
 
 <style lang="scss" scoped>
-@import "@phisyx/flex-uikit-stylesheets/menu/MenuItem.scss";
+@use "@phisyx/flex-uikit-stylesheets/menu/MenuItem.scss";
 </style>

@@ -189,5 +189,5 @@ function to_end_list() {
 </template>
 
 <style lang="scss" scoped>
-@import "@phisyx/flex-uikit-stylesheets/combobox/ComboBox.scss";
+@use "@phisyx/flex-uikit-stylesheets/combobox/ComboBox.scss";
 </style>

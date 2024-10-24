@@ -120,5 +120,5 @@ if (closeAfterSeconds) {
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/alert/Alert.scss";
+@use "@phisyx/flex-uikit-stylesheets/alert/Alert.scss";
 </style>

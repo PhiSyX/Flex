@@ -95,5 +95,5 @@ function toggle_layer(evt: Event) {
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/textedit/TextEdit.scss";
+@use "@phisyx/flex-uikit-stylesheets/textedit/TextEdit.scss";
 </style>

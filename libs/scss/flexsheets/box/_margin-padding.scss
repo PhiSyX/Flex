@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "sass:string";
 
 @use "../functions/space" as fn;
@@ -24,7 +25,7 @@
 
 	@include class.generate-dynamic($options, $classes) using
 		($user_value, $user_className) {
-		@if string.length(unit($user_value)) != 0 {
+		@if string.length(math.unit($user_value)) != 0 {
 			#{$user_className}: $user_value;
 		} @else {
 			#{$user_className}: fn.space($user_value, $bypass: true);

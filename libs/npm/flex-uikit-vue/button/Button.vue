@@ -66,5 +66,5 @@ const click_handler = () => {
 </template>
 
 <style lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/button/Button.scss";
+@use "@phisyx/flex-uikit-stylesheets/button/Button.scss";
 </style>

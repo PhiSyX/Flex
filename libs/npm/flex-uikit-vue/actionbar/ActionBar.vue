@@ -19,5 +19,5 @@ defineSlots<ActionBarChildren>();
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/actionbar/ActionBar.scss";
+@use "@phisyx/flex-uikit-stylesheets/actionbar/ActionBar.scss";
 </style>

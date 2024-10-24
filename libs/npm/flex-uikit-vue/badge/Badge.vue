@@ -11,5 +11,5 @@ defineSlots<BadgeChildren>();
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/badge/Badge.scss";
+@use "@phisyx/flex-uikit-stylesheets/badge/Badge.scss";
 </style>

@@ -1,9 +1,11 @@
+@use "sass:string";
+
 @function str_replace($string, $search, $replace) {
-	$index: str-index($string, $search);
+	$index: string.index($string, $search);
 	@if $index {
-		@return str-slice($string, 1, $index - 1) + $replace +
+		@return string.slice($string, 1, $index - 1) + $replace +
 			str_replace(
-				str-slice($string, $index + str-length($search)),
+				string.slice($string, $index + string.length($search)),
 				$search,
 				$replace
 			);

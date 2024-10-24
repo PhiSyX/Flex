@@ -14,5 +14,5 @@ defineSlots<MenuChildren>();
 </template>
 
 <style lang="scss" scoped>
-@import "@phisyx/flex-uikit-stylesheets/menu/Menu.scss";
+@use "@phisyx/flex-uikit-stylesheets/menu/Menu.scss";
 </style>

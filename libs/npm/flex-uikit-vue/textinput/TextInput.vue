@@ -36,5 +36,5 @@ let input_model = defineModel<string>();
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/textinput/TextInput.scss";
+@use "@phisyx/flex-uikit-stylesheets/textinput/TextInput.scss";
 </style>

@@ -8,37 +8,56 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-@import "./functions/space";
-@import "./mixins/breakpoint";
-@import "./mixins/breakpoint-preset";
-@import "./mixins/colors";
-@import "./mixins/scheme";
-@import "./mixins/selector";
+@use "sass:meta";
 
-@import "./reset/reset";
+@forward "./functions/space";
+@forward "./mixins/breakpoint";
+@forward "./mixins/breakpoint-preset";
+@forward "./mixins/colors";
+@forward "./mixins/scheme";
+@forward "./mixins/selector";
+@forward "./reset/reset";
+@forward "./alignment/module";
+@forward "./backgrounds/module";
+@forward "./box/module";
+@forward "./color/module";
+@forward "./css-level/module";
+@forward "./display/module";
+@forward "./elements/module";
+@forward "./filter-effects-2/module";
+@forward "./flexbox/module";
+@forward "./images/module";
+@forward "./fonts/module";
+@forward "./overflow/module";
+@forward "./position/module";
+@forward "./scrollbars/module";
+@forward "./sizing/module";
+@forward "./text/module";
+@forward "./ui/module";
+@forward "./webkit/module";
 
-@import "./alignment/module";
-@import "./backgrounds/module";
-@import "./box/module";
-@import "./color/module";
-@import "./css-level/module";
-@import "./display/module";
-@import "./elements/module";
-@import "./filter-effects-2/module";
-@import "./flexbox/module";
-@import "./images/module";
-@import "./fonts/module";
-@import "./overflow/module";
-@import "./position/module";
-@import "./scrollbars/module";
-@import "./sizing/module";
-@import "./text/module";
-@import "./ui/module";
-@import "./webkit/module";
+@use "./alignment/module" as *;
+@use "./backgrounds/module" as *;
+@use "./box/module" as *;
+@use "./color/module" as *;
+@use "./css-level/module" as *;
+@use "./display/module" as *;
+@use "./elements/module" as *;
+@use "./filter-effects-2/module" as *;
+@use "./flexbox/module" as *;
+@use "./images/module" as *;
+@use "./fonts/module" as *;
+@use "./overflow/module" as *;
+@use "./position/module" as *;
+@use "./scrollbars/module" as *;
+@use "./sizing/module" as *;
+@use "./text/module" as *;
+@use "./ui/module" as *;
+@use "./webkit/module" as *;
 
 @mixin use($clsx...) {
 	@each $cls in $clsx {
-		@if type-of($cls) == string {
+		@if meta.type-of($cls) == string {
 			@include use-alignment(
 				(
 					className: $cls,

@@ -158,5 +158,5 @@ function intersect_handler(
 </template>
 
 <style lang="scss" scoped>
-@import "@phisyx/flex-uikit-stylesheets/image/Image.scss";
+@use "@phisyx/flex-uikit-stylesheets/image/Image.scss";
 </style>

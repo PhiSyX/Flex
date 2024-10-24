@@ -50,5 +50,5 @@ const submit_handler = (evt: Event) =>
 </template>
 
 <style lang="scss" scoped>
-@import "@phisyx/flex-uikit-stylesheets/form/FormLink.scss";
+@use "@phisyx/flex-uikit-stylesheets/form/FormLink.scss";
 </style>

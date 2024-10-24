@@ -107,5 +107,5 @@ function input_handler(evt: Event) {
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/input/InputCounter.scss";
+@use "@phisyx/flex-uikit-stylesheets/input/InputCounter.scss";
 </style>

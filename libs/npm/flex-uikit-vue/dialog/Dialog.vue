@@ -73,5 +73,5 @@ defineSlots<DialogChildren>();
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/dialog/Dialog.scss";
+@use "@phisyx/flex-uikit-stylesheets/dialog/Dialog.scss";
 </style>

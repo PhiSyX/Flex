@@ -63,5 +63,5 @@ watchEffect(() => {
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/input/InputSwitch.scss";
+@use "@phisyx/flex-uikit-stylesheets/input/InputSwitch.scss";
 </style>

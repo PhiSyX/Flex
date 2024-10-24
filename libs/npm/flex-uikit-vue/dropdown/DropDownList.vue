@@ -62,5 +62,5 @@ function updated($1: { el: HTMLLIElement }, idx: number) {
 </template>
 
 <style lang="scss" scoped>
-@import "@phisyx/flex-uikit-stylesheets/dropdown/DropDownList.scss";
+@use "@phisyx/flex-uikit-stylesheets/dropdown/DropDownList.scss";
 </style>

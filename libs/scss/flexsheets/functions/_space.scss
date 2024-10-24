@@ -1,9 +1,10 @@
 @use "sass:math";
+@use "sass:meta";
 
 $spacing: 0.5rem !default;
 
 @function space($space, $max-space: 20, $bypass: false) {
-	@if (type-of($space) == "string" or $space <= $max-space) or $bypass == true
+	@if (meta.type-of($space) == "string" or $space <= $max-space) or $bypass == true
 	{
 		@return calc(var(--space, $spacing) * $space);
 	}

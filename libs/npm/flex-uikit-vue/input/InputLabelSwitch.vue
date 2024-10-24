@@ -76,5 +76,5 @@ let input_attr_id_no = computed(() => `${input_attr_id}_n`);
 </template>
 
 <style scoped lang="scss">
-@import "@phisyx/flex-uikit-stylesheets/input/InputLabelSwitch.scss";
+@use "@phisyx/flex-uikit-stylesheets/input/InputLabelSwitch.scss";
 </style>
