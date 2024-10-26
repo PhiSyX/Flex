@@ -4,6 +4,7 @@ import { computed, ref } from "vue";
 import { fuzzy_search } from "@phisyx/flex-search";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import DataGrid from "@phisyx/flex-uikit-vue/datagrid/DataGrid.vue";
 
 // ---- //
 // Type //
@@ -33,9 +34,8 @@ let filtered_channels = computed(() => {
 	if (filtered_channel_input.value.length === 0) {
 		return props.channels;
 	}
-
-	return props.channels.filter((channel) =>
-		fuzzy_search(filtered_channel_input.value, channel.channel).is_some(),
+	return props.channels.filter((data) =>
+		fuzzy_search(filtered_channel_input.value, data.channel).is_some()
 	);
 });
 
@@ -57,8 +57,10 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 </script>
 
 <template>
-	<div class="channel/list [ flex! gap=2 p=1 ]">
-		<h1 class="[ align-t:center ]">Liste des salons du serveur {{ servername }}</h1>
+	<div class="channel/list [ flex! gap=2 p=1 mx:a ]">
+		<h1 class="[ align-t:center ]">
+			Liste des salons du serveur {{ servername }}
+		</h1>
 
 		<input
 			v-model.trim="filtered_channel_input"
@@ -87,47 +89,25 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 			</Button>
 		</div>
 
-		<div class="table [ ov:h border/radius=1 scroll:y ]">
-			<div class="thead thead:bg [ pos-s ]" style="z-index: 2;">
-				<div><input type="checkbox" disabled /></div>
-				<div>Nom du salon</div>
-				<div>Paramètres</div>
-				<div>Sujet du salon</div>
-				<div>Utilisateurs</div>
-			</div>
-
-			<div
-				class="tbody"
-				v-for="(channel_data, idx) of filtered_channels"
-			>
-				<span>#</span>
-				<span>Nom du salon</span>
-				<span>Paramètres</span>
-				<span>Sujet du salon</span>
-				<span>Utilisateurs</span>
-
-				<div>
-					<label
-						:for="`chan-${idx}`"
-						@dblclick="join_channel_handler(channel_data.channel)"
-					/>
-					<input
-						:id="`chan-${idx}`"
-						type="checkbox"
-						v-model="selected_channels"
-						:value="channel_data.channel"
-					/>
-				</div>
-				<div>{{ channel_data.channel }}</div>
-				<div>+{{ channel_data.modes_settings }}</div>
-				<div class="channel/list:topic">{{ channel_data.topic }}</div>
-				<div>{{ channel_data.total_members }}</div>
-			</div>
-
-			<div class="tbody" v-if="filtered_channels.length === 0">
-				<p class="[ align-t:center f-size=14px ]">Il n'y a aucun salon</p>
-			</div>
-		</div>
+		<DataGrid
+			:caption="
+				filtered_channels.length === 0 ? 'Il n\'y a aucun salon' : null
+			"
+			:titles="{
+				channel: 'Nom du salon',
+				modes_settings: 'Paramètres',
+				topic: 'Sujet du salon',
+				total_members: 'Utilisateurs',
+			}"
+			:list="filtered_channels"
+			:can-select="true"
+			selected-key="channel"
+			v-model:selected-items="selected_channels"
+			class="channel/list:datagrid"
+			@itemclick="() => {}"
+			@itemdblclick="(item) => join_channel_handler(item.channel)"
+		>
+		</DataGrid>
 	</div>
 </template>
 
@@ -135,6 +115,8 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 @use "@phisyx/flexsheets" as fx;
 
 @include fx.class("channel/list") {
+	max-width: 80ch;
+
 	@include fx.scheme using($name) {
 		@if $name == ice {
 			--btn-primary-bg: var(--color-blue-grey700);
@@ -153,66 +135,23 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 input {
 	background: var(--channel-list-filter-input-bg);
 }
+</style>
 
-.tbody,
-.thead {
-	display: grid;
-	grid-template-columns:
-		fx.space(3) fx.space(150) fx.space(100)
-		1fr fx.space(100);
+<style lang="scss">
+@use "@phisyx/flexsheets" as fx;
 
-	gap: 0 fx.space(1);
-
-	padding: fx.space(1);
-
-	transition: background 200ms;
-
-	> span {
-		visibility: hidden;
-		height: 0;
-	}
-}
-
-.thead {
-	padding: fx.space(2) fx.space(1);
-	font-variant: small-caps;
-}
-
-@include fx.class("thead:bg") {
-	background: var(--thead-bg);
-}
-
-.tbody {
-	position: relative;
-
-	background: var(--tbody-bg);
-	color: var(--color-black);
-
-	&:hover {
-		background: var(--tbody-bg-hover);
+@include fx.class("channel/list:datagrid") {
+	tbody td[data-key="channel"] {
+		overflow: auto;
+		display: block;
+		max-width: 75px;
 	}
 
-	> div {
-		overflow-y: auto;
-		max-height: fx.space(5);
+	tbody td[data-key="topic"] {
+		overflow: auto;
+		position: relative;
+		display: block;
+		max-width: 25vw;
 	}
-
-	label {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		cursor: pointer;
-	}
-
-	p {
-		grid-column: 1 / end;
-		color: var(--color-grey600);
-	}
-}
-
-@include fx.class("channel/list:topic") {
-	z-index: 1;
 }
 </style>
