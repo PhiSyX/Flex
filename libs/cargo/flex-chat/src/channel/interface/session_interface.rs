@@ -40,7 +40,15 @@ pub trait ChannelsSessionInterface
 		channel: Self::Channel,
 	) -> bool;
 
+	/// Ajoute un nouveau membre de salon.
 	fn add_member(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		member: <Self::Channel as ChannelMemberInterface>::Member,
+	) -> Option<RefMut<'_, String, Self::Channel>>;
+
+	/// Ajoute un nouveau membre de salon.
+	fn add_member_id(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		member_id: <
@@ -137,5 +145,13 @@ pub trait ChannelsSessionInterface
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>;
+
+	/// Met à jour l'ID d'un membre d'un salon.
+	fn update_member_id(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		current_member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+		new_member_id: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
 	) -> Option<()>;
 }

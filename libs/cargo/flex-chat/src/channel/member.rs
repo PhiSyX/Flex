@@ -99,6 +99,11 @@ where
 		self.access_level.remove(&access_level)
 	}
 
+	fn set_id(&mut self, id: Self::ID)
+	{
+		self.member_id = id;
+	}
+
 	#[rustfmt::skip]
 	fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
 	{

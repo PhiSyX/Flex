@@ -140,7 +140,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 			self.channels.create(channel_name, channel_key.cloned());
 			let mut channel = self
 				.channels
-				.add_member(channel_name, *client_socket.cid())
+				.add_member_id(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
 			_ = client_socket
@@ -170,7 +170,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		if can_join.is_ok() {
 			let mut channel = self
 				.channels
-				.add_member(channel_name, *client_socket.cid())
+				.add_member_id(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, false);
 			return Ok(());
@@ -194,7 +194,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 			self.channels.create(channel_name, None);
 			let mut channel = self
 				.channels
-				.add_member(channel_name, *client_socket.cid())
+				.add_member_id(channel_name, *client_socket.cid())
 				.expect("Le salon que le client a rejoint");
 			self.join_channel(client_socket, &mut channel, true);
 			return Ok(());
@@ -211,7 +211,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 
 		let mut channel = self
 			.channels
-			.add_member(channel_name, *client_socket.cid())
+			.add_member_id(channel_name, *client_socket.cid())
 			.expect("Le salon que le client a rejoint");
 		self.join_channel(client_socket, &mut channel, true);
 

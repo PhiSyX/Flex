@@ -98,6 +98,17 @@ impl ChannelsSessionInterface for ChannelsSession
 	fn add_member(
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		member: <Self::Channel as ChannelMemberInterface>::Member,
+	) -> Option<RefMut<'_, String, Channel>>
+	{
+		let mut channel_entity = self.get_mut(channel_id)?;
+		channel_entity.add_member(*member.id(), member);
+		Some(channel_entity)
+	}
+
+	fn add_member_id(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		member_id: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
 	) -> Option<RefMut<'_, String, Channel>>
 	{
@@ -249,10 +260,22 @@ impl ChannelsSessionInterface for ChannelsSession
 		&self,
 		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
-	) -> Option<()>
+	) -> Option<<Self::Channel as ChannelMemberInterface>::Member>
 	{
 		let mut channel_entity = self.get_mut(channel_id)?;
-		channel_entity.members_mut().remove(member_id);
+		channel_entity.members_mut().remove(member_id)
+	}
+
+	fn update_member_id(
+		&self,
+		channel_id: &<Self::Channel as ChannelInterface>::RefID<'_>,
+		current_member_id: &<<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+		new_member_id: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
+	) -> Option<()>
+	{
+		let mut current_member = self.remove_member(channel_id, current_member_id)?;
+		current_member.set_id(new_member_id);
+		self.add_member(channel_id, current_member);
 		Some(())
 	}
 }

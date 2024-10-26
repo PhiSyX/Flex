@@ -61,8 +61,7 @@ impl AuthChatApplicationInterface for ChatApplication
 	{
 		for channel_room in client_socket.channels_rooms() {
 			let channel_id = &channel_room["channel:".len()..];
-			self.channels.remove_member(channel_id, client_socket.cid());
-			self.channels.add_member(channel_id, id);
+			self.channels.update_member_id(channel_id, client_socket.cid(), id);
 		}
 
 		self.clients.change_client_id(client_socket.cid(), id);

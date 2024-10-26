@@ -69,6 +69,9 @@ pub trait MemberInterface
 	#[rustfmt::skip]
 	fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool;
 
+	/// Définit un ID d'un membre.
+	fn set_id(&mut self, id: Self::ID);
+
 	/// Met à jour le niveau d'accès du membre.
 	#[rustfmt::skip]
 	fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool;
