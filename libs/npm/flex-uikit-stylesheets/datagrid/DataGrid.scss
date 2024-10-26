@@ -1,0 +1,83 @@
+@use "@phisyx/flexsheets" as fx;
+
+@layer flex-uikit {
+	@include fx.class("fx:datagrid") {
+		border: 1px solid var(--default-border-color);
+		color: var(--default-text-color);
+		background: var(--thead-bg);
+		box-shadow: var(--box-shadow-s);
+	}
+
+	table {
+		width: 100%;
+
+		font-size: 14px;
+
+		border-collapse: collapse;
+		user-select: none;
+	}
+
+	table caption {
+		caption-side: bottom;
+		padding-block: fx.space(3);
+		background-color: var(--tbody-bg);
+		@include fx.scheme using($name) {
+			color: var(--default-text-color_alt);
+
+			@if $name == light {
+				color: var(--default-text-color);
+			}
+		}
+	}
+
+	thead {
+		font-size: 12px;
+		font-variant: small-caps;
+
+		line-height: 16px;
+	}
+
+	thead tr {
+		position: sticky;
+		top: 0;
+		background: var(--thead-bg);
+		z-index: 1;
+	}
+
+	th,
+	td {
+		text-align: start;
+		padding: fx.space(1);
+	}
+
+	tbody {
+		position: relative;
+		line-height: 16px;
+		background: var(--tbody-bg);
+
+		@include fx.scheme using($name) {
+			color: var(--default-text-color_alt);
+
+			@if $name == light {
+				color: var(--default-text-color);
+			}
+		}
+	}
+
+	tbody tr {
+		position: relative;
+	}
+
+	tbody tr:hover {
+		background: var(--tbody-bg-hover);
+	}
+
+	tbody label {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		cursor: pointer;
+	}
+}

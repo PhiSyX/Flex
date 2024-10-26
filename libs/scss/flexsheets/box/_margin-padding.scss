@@ -9,6 +9,12 @@
 		"m:a": (
 			margin: auto,
 		),
+		"mx:a": (
+			margin-inline: auto,
+		),
+		"my:a": (
+			margin-block: auto,
+		),
 	);
 
 	@include class.generate($options, $classes);
