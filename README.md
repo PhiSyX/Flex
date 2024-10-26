@@ -109,7 +109,14 @@ de code, en suivant les [règles de qualité de code](docs/code-quality/) qui on
 
     ![ComboBox](docs/flex-uikit/combobox.png)
 
--   [ ] Composant DataGrid
+-   [x] Composant DataGrid
+
+    Un composant `DataGrid` permet de lister des données sous forme de tableau de manière automatique.
+
+    L'image suivante montre le composant `DataGrid`, intégré au composant `CustomRoomChannelList` de l'application :
+
+    ![DataGrid](docs/flex-uikit/datagrid.png)
+
 -   [x] Composant Dialog
 
     Un composant `Dialog` permet de créer une [boite de dialogue](https://developer.mozilla.org/fr/docs/Web/HTML/Element/dialog).
