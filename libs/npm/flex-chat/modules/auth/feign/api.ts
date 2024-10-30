@@ -25,32 +25,31 @@ const DEFAULT_FETCH_OPTIONS: RequestInit = {
 // -------------- //
 
 class HTTPClient {
-	fetch<T>(endpoint: string, options: RequestInit): Promise<T> {
+	async fetch<T>(endpoint: string, options: RequestInit): Promise<T> {
 		let fetch_options: RequestInit = {
 			...DEFAULT_FETCH_OPTIONS,
 			...options,
 		};
 
-		return fetch(endpoint, fetch_options).then(async (res) => {
-			let content_type = res.headers.get("Content-Type");
-			let is_json_content_type =
-				(content_type?.indexOf("json") ?? -1) > 0;
+		let response = await fetch(endpoint, fetch_options);
 
-			if (res.ok) {
-				if (is_json_content_type) {
-					return res.json();
-				}
-				return res.text();
+		let content_type = response.headers.get("Content-Type");
+		let is_json_content_type = (content_type?.indexOf("json") ?? -1) > 0;
+
+		if (response.ok) {
+			if (is_json_content_type) {
+				return response.json();
 			}
+			return response.text() as T;
+		}
 
-			let is_error = res.status >= 400 && res.status < 600;
+		let is_error = response.status >= 400 && response.status < 600;
 
-			if (is_json_content_type || is_error) {
-				return Promise.reject(await res.json());
-			}
+		if (is_json_content_type || is_error) {
+			return Promise.reject(await response.json());
+		}
 
-			return Promise.reject(res);
-		});
+		return Promise.reject(response);
 	}
 
 	post<T>(endpoint: string, data: object): Promise<T> {

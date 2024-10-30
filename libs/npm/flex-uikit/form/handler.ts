@@ -37,24 +37,25 @@ export async function submit_form_link(
 	let form_data = new FormData(form.el);
 	let form_json = Object.fromEntries(form_data);
 
-	fetch(form.action, {
-		headers: fetch_headers,
-		redirect: "follow",
-		method: form.method,
-		body: JSON.stringify(form_json),
-	})
-		// TODO: valider les données ou les erreurs via Zod
-		.then((response) => {
-			if (response.redirected === true) {
-				emit("redirect", response.url);
-			}
+	try {
+		let response = await fetch(form.action, {
+			headers: fetch_headers,
+			redirect: "follow",
+			method: form.method,
+			body: JSON.stringify(form_json),
+		});
 
-			if (response.ok) {
-				emit("success", response);
-				return;
-			}
+		if (response.redirected === true) {
+			emit("redirect", response.url);
+		}
 
-			return Promise.reject(response);
-		})
-		.catch((err) => emit("error", err));
+		if (response.ok) {
+			emit("success", response);
+			return;
+		}
+
+		return Promise.reject(response);
+	} catch (err) {
+		emit("error", err);
+	}
 }

@@ -55,7 +55,7 @@ export class AuthCommand {
 		private auth_api_http_client: AuthApiHTTPClient,
 	) {}
 
-	send_identify(payload: AuthIdentifyFormData) {
+	async send_identify(payload: AuthIdentifyFormData) {
 		payload.remember_me ??= false;
 
 		const on_success = (response: AuthIdentifyHttpResponse) => {
@@ -73,7 +73,7 @@ export class AuthCommand {
 				.add_connect_event(connect_data, message);
 		};
 
-		const on_failure = async (problem: HttpProblemErrorResponse) => {
+		const on_failure = (problem: HttpProblemErrorResponse) => {
 			let detail = problem.detail;
 			let message = `-AuthServ- ${detail}`;
 			let [random_uuid] = this.store.uuid(7).take(1);
@@ -88,13 +88,20 @@ export class AuthCommand {
 				.add_error_event(connect_data, message);
 		};
 
-		this.auth_api_http_client
-			.identify(payload)
-			.then(on_success)
-			.catch(on_failure);
+		try {
+			on_success(await this.auth_api_http_client.identify(payload));
+		} catch (err) {
+			function assert_type(
+				_: unknown,
+			): asserts _ is HttpProblemErrorResponse {}
+
+			assert_type(err);
+
+			on_failure(err);
+		}
 	}
 
-	send_register(payload: AuthRegisterFormData) {
+	async send_register(payload: AuthRegisterFormData) {
 		const on_success = (response: AuthRegisterHttpResponse) => {
 			// FIXME: type à corriger
 			if (!response.message) {
@@ -160,10 +167,16 @@ export class AuthCommand {
 				.add_error_event(connect_data, message);
 		};
 
-		this.auth_api_http_client
-			.register(payload)
-			.then(on_success)
-			.catch(on_failure);
+		try {
+			on_success(await this.auth_api_http_client.register(payload));
+		} catch (err) {
+			function assert_type(
+				_: unknown,
+			): asserts _ is HttpProblemErrorResponse {}
+			assert_type(err);
+
+			on_failure(err);
+		}
 	}
 
 	send_logout(f: boolean) {

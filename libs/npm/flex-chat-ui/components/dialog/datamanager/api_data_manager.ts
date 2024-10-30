@@ -13,7 +13,8 @@
 // -------------- //
 
 export class DialogApiManager {
-	fetch_countries(): Promise<Array<{ code: string; country: string }>> {
-		return fetch("/public/geo/countries.json").then((res) => res.json());
+	async fetch_countries(): Promise<Array<{ code: string; country: string }>> {
+		let response = await fetch("/public/geo/countries.json");
+		return response.json();
 	}
 }

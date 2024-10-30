@@ -133,14 +133,16 @@ export class UserStore {
 			}
 		}
 
-		let data = (await fetch(`/api/v1/accounts/${user_id}`, {
+		let response = await fetch(`/api/v1/accounts/${user_id}`, {
 			...FETCH_OPTIONS,
 			headers: {
 				"Content-type": "application/json",
 			},
 			method: "PUT",
 			body: JSON.stringify(Object.fromEntries(form_data.entries())),
-		}).then((res) => res.json())) as {
+		});
+
+		let data = (await response.json()) as {
 			city?: string;
 			country?: string;
 			firstname?: string;

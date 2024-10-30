@@ -112,7 +112,7 @@ export class UUIDStore {
 	// Méthode //
 	// ------- //
 
-	populate() {
+	async populate() {
 		let UUID_URL_searchParams = new URLSearchParams();
 		UUID_URL_searchParams.set("ntimes", this.data.ntimes.toString());
 
@@ -121,9 +121,8 @@ export class UUIDStore {
 
 		let generate_UUID_URL = `/generate/uuid/${variant}?${queries}`;
 
-		fetch(generate_UUID_URL).then(async (response) => {
-			this.data.uuids.push(...(await response.json()));
-		});
+		let response = await fetch(generate_UUID_URL);
+		this.data.uuids.push(...(await response.json()));
 	}
 
 	take(n?: u8r25): Array<UUID> {
