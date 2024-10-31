@@ -8,7 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { InferSharedProps } from "@adonisjs/inertia/types";
 
+import { defineConfig } from "@adonisjs/inertia";
+
+const inertiaConfig = defineConfig({
+	rootView: "inertia_layout",
+
+	sharedData: {
+		errors: (ctx) => ctx.session.flashMessages.get("errors"),
+	},
+
+	ssr: {
+		enabled: true,
+		entrypoint: "ui/renderer/ssr.ts",
+	},
+});
+
+export default inertiaConfig;
+
+declare module "@adonisjs/inertia/types" {
+	export interface SharedProps
+		extends InferSharedProps<typeof inertiaConfig> {}
+}

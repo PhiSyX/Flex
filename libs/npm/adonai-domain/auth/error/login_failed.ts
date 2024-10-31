@@ -8,7 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+export enum AuthLoginFailedError {
+	InvalidIdentifier = "InvalidIdentifier",
+	InvalidCredentials = "InvalidCredentials",
+}
 
+export class AuthLoginFailedException extends Error {
+	constructor(
+		public kind: AuthLoginFailedError,
+		cause: Error,
+	) {
+		super(`Authentification échouée: ${cause}`);
+		this.cause = cause;
+		this.name = "AuthLoginFailedException";
+	}
+}

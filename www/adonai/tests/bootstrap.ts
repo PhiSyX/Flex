@@ -8,7 +8,23 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { Config } from "@japa/runner/types";
 
+import app from "@adonisjs/core/services/app";
+import testUtils from "@adonisjs/core/services/test_utils";
+
+import { assert } from "@japa/assert";
+import { pluginAdonisJS } from "@japa/plugin-adonisjs";
+
+export const plugins: Config["plugins"] = [assert(), pluginAdonisJS(app)];
+
+export const runnerHooks: Required<Pick<Config, "setup" | "teardown">> = {
+	setup: [],
+	teardown: [],
+};
+
+export const configureSuite: Config["configureSuite"] = (suite) => {
+	if (["browser", "functional", "e2e"].includes(suite.name)) {
+		return suite.setup(() => testUtils.httpServer().start());
+	}
+};

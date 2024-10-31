@@ -8,7 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { DateTime } from "luxon";
 
+import { withAuthFinder } from "@adonisjs/auth/mixins/lucid";
+import { compose } from "@adonisjs/core/helpers";
+import { BaseModel, column } from "@adonisjs/lucid/orm";
+
+import hash from "@adonisjs/core/services/hash";
+
+const AuthFinder = withAuthFinder(() => hash.use("argon2"), {
+	uids: ["name", "email"],
+	passwordColumnName: "password",
+});
+
+export default class User extends compose(BaseModel, AuthFinder) {
+	@column({ isPrimary: true })
+	declare id: number;
+
+
+	@column()
+	declare email: string;
+
+	@column({ serializeAs: null })
+	declare password: string;
+
+	@column.dateTime({ autoCreate: true })
+	declare createdAt: DateTime;
+
+	@column.dateTime({ autoCreate: true, autoUpdate: true })
+	declare updatedAt: DateTime | null;
+}

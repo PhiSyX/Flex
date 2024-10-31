@@ -8,7 +8,41 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository.js";
+import type { DB, Users } from "@phisyx/adonai-domain/types/database.js";
 
+import { inject } from "@adonisjs/core";
+import {
+	UserRepositoryError,
+	UserRepositoryException,
+} from "@phisyx/adonai-domain/auth/error/user_repository.js";
+import { Result } from "@phisyx/flex-safety";
+// biome-ignore lint/style/useImportType: Utilisé par le décorateur @inject
+import { Kysely } from "kysely";
+
+@inject()
+export class PgUserRepository implements UserRepository {
+	constructor(private database: Kysely<DB>) {}
+
+	async find_by_identifier(
+		identifier: string,
+	): Promise<Result<Users, UserRepositoryException>> {
+		return Result.from(
+			await this.database
+				.selectFrom("users")
+				.selectAll()
+				.where((eb) =>
+					eb.or([
+						eb("name", "=", identifier),
+						eb("email", "=", identifier),
+					]),
+				)
+				.executeTakeFirst(),
+			new UserRepositoryException(UserRepositoryError.NoIdentifierFound),
+		).as<Users, UserRepositoryException>();
+	}
+
+	async insert(user: Users): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
+}

@@ -8,7 +8,34 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+/// <reference path="../../adonisrc.ts" />
+/// <reference path="../../config/inertia.ts" />
 
+import type { DefineComponent } from "vue";
+
+import { resolvePageComponent } from "@adonisjs/inertia/helpers";
+import { createInertiaApp } from "@inertiajs/vue3";
+import { createSSRApp, h } from "vue";
+
+import "../css/app.css";
+
+const appName = import.meta.env.VITE_APP_NAME || "Flex";
+
+createInertiaApp({
+	progress: { color: "#5468FF" },
+
+	title: (title) => `${title} - ${appName}`,
+
+	resolve: (name) => {
+		return resolvePageComponent(
+			`../pages/${name}.vue`,
+			import.meta.glob<DefineComponent>("../pages/**/*.vue"),
+		);
+	},
+
+	setup({ el, App, props, plugin }) {
+		createSSRApp({ render: () => h(App, props) })
+			.use(plugin)
+			.mount(el);
+	},
+});

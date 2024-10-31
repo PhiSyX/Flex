@@ -8,7 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import { defineConfig } from "@adonisjs/vite";
 
+const viteBackendConfig = defineConfig({
+	buildDirectory: "public/assets",
+	manifestFile: "public/assets/.vite/manifest.json",
+	assetsUrl: "/assets",
+	scriptAttributes: {
+		defer: true,
+	},
+});
+
+export default viteBackendConfig;

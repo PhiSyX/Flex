@@ -8,7 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+export enum AuthRouteWebID {
+	Login = "/auth",
+	Logout = "/auth/logout",
+}
 
+export enum AuthRouteApiID {
+	Logout = "/api/v2/auth/logout",
+}

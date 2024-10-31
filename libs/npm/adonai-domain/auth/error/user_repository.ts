@@ -8,7 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+export enum UserRepositoryError {
+	NoIdentifierFound = "Aucun identifiant n'a été trouvé",
+}
 
+export class UserRepositoryException extends Error {
+	constructor(public error: UserRepositoryError) {
+		super(error);
+		this.name = "UserRepositoryException";
+	}
+}

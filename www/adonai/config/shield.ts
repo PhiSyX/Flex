@@ -8,7 +8,35 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import { defineConfig } from "@adonisjs/shield";
 
+const shieldConfig = defineConfig({
+	csp: {
+		enabled: false,
+		directives: {},
+		reportOnly: false,
+	},
+
+	csrf: {
+		enabled: true,
+		exceptRoutes: [],
+		enableXsrfCookie: true,
+		methods: ["POST", "PUT", "PATCH", "DELETE"],
+	},
+
+	xFrame: {
+		enabled: true,
+		action: "DENY",
+	},
+
+	hsts: {
+		enabled: true,
+		maxAge: "180 days",
+	},
+
+	contentTypeSniffing: {
+		enabled: true,
+	},
+});
+
+export default shieldConfig;

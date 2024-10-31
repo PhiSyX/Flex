@@ -8,7 +8,36 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { Authenticators, InferAuthEvents } from "@adonisjs/auth/types";
+import type { DB } from "@phisyx/adonai-domain/types/database.js";
 
+import { defineConfig } from "@adonisjs/auth";
+import { sessionGuard } from "@adonisjs/auth/session";
+import { configProvider } from "@adonisjs/core";
+import { Kysely } from "kysely";
+
+const authConfig = defineConfig({
+	default: "web",
+	guards: {
+		web: sessionGuard({
+			useRememberMeTokens: false,
+			provider: configProvider.create(async (app) => {
+				let db = await app.container.make(Kysely<DB>);
+				const { SessionUserProvider } = await import(
+					"#infrastructure/auth/provider/session"
+				);
+				return new SessionUserProvider(db);
+			}),
+		}),
+	},
+});
+
+export default authConfig;
+
+declare module "@adonisjs/auth/types" {
+	export interface Authenticators
+		extends InferAuthenticators<typeof authConfig> {}
+}
+declare module "@adonisjs/core/types" {
+	interface EventsList extends InferAuthEvents<Authenticators> {}
+}

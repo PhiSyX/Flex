@@ -8,7 +8,29 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { DefineComponent } from "vue";
 
+import { createInertiaApp } from "@inertiajs/vue3";
+import { renderToString } from "@vue/server-renderer";
+import { createSSRApp, h } from "vue";
+
+// biome-ignore lint/suspicious/noExplicitAny: adonisjs - @inertiajs/vue
+export default function render(page: any) {
+	return createInertiaApp({
+		page,
+		render: renderToString,
+		resolve: (name) => {
+			const pages = import.meta.glob<DefineComponent>(
+				"../pages/**/*.vue",
+				{ eager: true },
+			);
+			return pages[`../pages/${name}.vue`];
+		},
+
+		setup({ App, props, plugin }) {
+			let app = createSSRApp({ render: () => h(App, props) });
+			app.use(plugin);
+			return app;
+		},
+	});
+}

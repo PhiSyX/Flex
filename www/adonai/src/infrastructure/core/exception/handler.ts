@@ -8,7 +8,34 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { HttpContext } from "@adonisjs/core/http";
+import type {
+	StatusPageRange,
+	StatusPageRenderer,
+} from "@adonisjs/core/types/http";
 
+import { ExceptionHandler } from "@adonisjs/core/http";
+
+import app from "@adonisjs/core/services/app";
+
+export default class HttpExceptionHandler extends ExceptionHandler {
+	protected debug = !app.inProduction;
+
+	protected renderStatusPages = app.inProduction;
+
+	protected statusPages: Record<StatusPageRange, StatusPageRenderer> = {
+		"404": (error, { inertia }) =>
+			inertia.render("errors/NotFound", { error }),
+		"500..599": (error, { inertia }) =>
+			inertia.render("errors/ServerError", { error }),
+	};
+
+	async handle(error: unknown, ctx: HttpContext) {
+		// console.error(error);
+		return super.handle(error, ctx);
+	}
+
+	async report(error: unknown, ctx: HttpContext) {
+		return super.report(error, ctx);
+	}
+}

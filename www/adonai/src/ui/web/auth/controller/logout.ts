@@ -8,7 +8,28 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { HttpContext } from "@adonisjs/core/http";
 
+import { AuthLogoutDTO } from "@phisyx/adonai-domain/auth/dto/logout.js";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+
+export default class AuthLogoutWebController {
+	public async view(ctx: HttpContext) {
+		// NOTE(phisyx): cette route est protégée par le middleware
+		// d'authentification, par conséquent, l'utilisateur est forcément en
+		// session dans ce context.
+		// biome-ignore lint/style/noNonNullAssertion: lire la note ci-haut.
+		let user = AuthLogoutDTO.from(ctx.auth.user!);
+		return ctx.inertia.render("auth/Logout", { user });
+	}
+
+	public async handle(ctx: HttpContext) {
+		await ctx.auth.use("web").logout();
+
+		if (ctx.request.header("x-inertia")) {
+			return ctx.inertia.location(AuthRouteWebID.Logout);
+		}
+
+		return ctx.response.redirect(AuthRouteWebID.Logout);
+	}
+}

@@ -8,7 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { UserRepository } from "#auth/contract/user_repository";
+import type { Users } from "#types/database";
 
+import { Result } from "@phisyx/flex-safety";
+
+import {
+	UserRepositoryError,
+	UserRepositoryException,
+} from "#auth/error/user_repository";
+
+export class FakeUserRepository implements UserRepository {
+	private users: Map<Users["id"], Users> = new Map();
+
+	async find_by_identifier(
+		identifier: string,
+	): Promise<Result<Users, UserRepositoryException>> {
+		return Result.from(
+			Array.from(this.users.values()).find((user) => {
+				return (
+					user.name === identifier || user.email === identifier
+				);
+			}),
+			new UserRepositoryException(UserRepositoryError.NoIdentifierFound),
+		).as<Users, UserRepositoryException>();
+	}
+
+	async insert(user: Users): Promise<void> {
+		this.users.set(user.id, user);
+	}
+}

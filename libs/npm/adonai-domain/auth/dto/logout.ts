@@ -8,7 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { Users } from "#types/database";
 
+/**
+ * Crée pour éviter de renvoyer les données sensibles telles que le mots de
+ * passes dans la Vue.
+ */
+export class AuthLogoutDTO {
+	static from(user: Users): AuthLogoutDTO {
+		return new AuthLogoutDTO(
+			user.avatar,
+			user.email,
+			user.id,
+			user.name,
+		);
+	}
+
+	constructor(
+		public avatar: string | null,
+		public email: string,
+		public id: string,
+		public name: string,
+	) {}
+}

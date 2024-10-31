@@ -8,7 +8,27 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import router from "@adonisjs/core/services/router";
 
+import { middleware } from "#start/kernel";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+
+const AuthLoginWebController = () => import("#ui/web/auth/controller/login");
+const AuthLogoutWebController = () => import("#ui/web/auth/controller/logout");
+
+/** Api Router */
+
+/** Web Router */
+
+router
+	.get(AuthRouteWebID.Login, [AuthLoginWebController, "view"])
+	.as("web.auth.login");
+router.post(AuthRouteWebID.Login, [AuthLoginWebController]);
+
+router
+	.get(AuthRouteWebID.Logout, [AuthLogoutWebController, "view"])
+	.use(middleware.auth())
+	.as("web.auth.logout");
+router
+	.delete(AuthRouteWebID.Logout, [AuthLogoutWebController])
+	.use(middleware.auth());

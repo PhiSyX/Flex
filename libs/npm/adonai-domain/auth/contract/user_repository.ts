@@ -8,7 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { Result } from "@phisyx/flex-safety";
 
+import type { UserRepositoryException } from "#auth/error/user_repository";
+import type { Users } from "#types/database";
+
+export abstract class UserRepository {
+	abstract find_by_identifier(
+		identifier: string,
+	): Promise<Result<Users, UserRepositoryException>>;
+
+	abstract insert(user: Users): Promise<void>;
+}

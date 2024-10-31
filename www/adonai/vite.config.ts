@@ -8,7 +8,39 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { CommonServerOptions } from "vite";
 
+import { getDirname } from "@adonisjs/core/helpers";
+import { resolve } from "node:path";
+import { defineConfig } from "vite";
+
+import inertia from "@adonisjs/inertia/client";
+import adonisjs from "@adonisjs/vite/client";
+import vue from "@vitejs/plugin-vue";
+
+let vite_server_https_config: CommonServerOptions["https"] = {
+	cert: resolve("..", "..", "config", "certs", "flex.cer"),
+	key: resolve("..", "..", "config", "certs", "flex.pvk"),
+};
+
+export default defineConfig({
+	plugins: [
+		inertia({ ssr: { enabled: true, entrypoint: "ui/renderer/ssr.ts" } }),
+		vue(),
+		adonisjs({
+			entrypoints: ["ui/renderer/csr.ts"],
+			reload: ["resources/views/**/*.edge"],
+		}),
+	],
+
+	cacheDir: "node_modules/.vite_adonis/",
+	server: {
+		https: vite_server_https_config,
+	},
+
+	resolve: {
+		alias: {
+			"~/": `${getDirname(import.meta.url)}/ui`,
+		},
+	},
+});

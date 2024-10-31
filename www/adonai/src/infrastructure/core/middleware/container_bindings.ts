@@ -8,7 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type { NextFn } from "@adonisjs/core/types/http";
 
+import { HttpContext } from "@adonisjs/core/http";
+import { Logger } from "@adonisjs/core/logger";
+
+export default class ContainerBindingsMiddleware {
+	handle(ctx: HttpContext, next: NextFn) {
+		ctx.containerResolver.bindValue(HttpContext, ctx);
+		ctx.containerResolver.bindValue(Logger, ctx.logger);
+
+		return next();
+	}
+}

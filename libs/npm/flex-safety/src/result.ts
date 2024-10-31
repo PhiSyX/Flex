@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, type Option, Some } from "./option";
+import { None, type Option, Some } from "./option.js";
 
 // ---- //
 // Type //
@@ -46,9 +46,9 @@ class Result<T, E extends Error> {
 		return new Result<T, never>(ResultVariant.Ok, value);
 	};
 
-	static from = <T>(value: T) => {
+	static from = <T, E extends Error>(value: T, err: E) => {
 		if (value == null) {
-			return this.Err(Error("null value"));
+			return this.Err(err);
 		}
 		return this.Ok(value);
 	};
@@ -62,6 +62,10 @@ class Result<T, E extends Error> {
 		private value?: unsafe<T>,
 		private error?: E,
 	) {}
+
+	as<Ok, Err extends Error>(): Result<Ok, Err> {
+		return this as unknown as Result<Ok, Err>;
+	}
 
 	expect(msg: string): safe<T> {
 		if (this.is_ok()) {

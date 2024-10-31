@@ -8,7 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import hash from "@adonisjs/core/services/hash";
+import type { PasswordChecker } from "@phisyx/adonai-domain/auth/contract/password_checker.js";
 
+export class AdonisPasswordChecker implements PasswordChecker {
+	verify(hashed_password: string, raw_password: string): Promise<boolean> {
+		return hash.use("argon2").verify(hashed_password, raw_password);
+	}
+}

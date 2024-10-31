@@ -8,7 +8,42 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import type {
+	SessionGuardUser,
+	SessionUserProviderContract,
+} from "@adonisjs/auth/types/session";
+import type { DB, Users } from "@phisyx/adonai-domain/types/database.js";
+import type { Kysely } from "kysely";
 
+import { symbols } from "@adonisjs/auth";
+
+export class SessionUserProvider implements SessionUserProviderContract<Users> {
+	constructor(private db: Kysely<DB>) {}
+
+	declare [symbols.PROVIDER_REAL_USER]: Users;
+
+	async createUserForGuard(user: Users): Promise<SessionGuardUser<Users>> {
+		return {
+			getId() {
+				return user.id;
+			},
+			getOriginal() {
+				return user;
+			},
+		};
+	}
+
+	async findById(id: string): Promise<SessionGuardUser<Users> | null> {
+		const user = (await this.db
+			.selectFrom("users")
+			.selectAll()
+			.where("id", "=", id)
+			.executeTakeFirst()) as unknown as Users | undefined;
+
+		if (!user) {
+			return null;
+		}
+
+		return this.createUserForGuard(user);
+	}
+}

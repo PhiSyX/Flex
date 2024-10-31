@@ -8,7 +8,33 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/camelcase.js";
-export * from "./src/kebabcase.js";
-export * from "./src/snakecase.js";
+import { defineConfig, drivers } from "@adonisjs/core/hash";
 
+const hashConfig = defineConfig({
+	default: "argon2",
+
+	list: {
+		argon2: drivers.argon2({
+			variant: "id",
+			version: 0x13,
+			iterations: 3,
+			parallelism: 4,
+			memory: 1 << 16,
+			saltSize: 1 << 4,
+			hashLength: 2 << 4,
+		}),
+
+		scrypt: drivers.scrypt({
+			cost: 64 << 8,
+			blockSize: 8,
+			parallelization: 1,
+			maxMemory: 33554432,
+		}),
+	},
+});
+
+export default hashConfig;
+
+declare module "@adonisjs/core/types" {
+	export interface HashersList extends InferHashers<typeof hashConfig> {}
+}
