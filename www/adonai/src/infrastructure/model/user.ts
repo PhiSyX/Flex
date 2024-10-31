@@ -9,6 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { DateTime } from "luxon";
+import type { UsersAccountStatus, UsersAvatarDisplayFor, UsersRole } from "@phisyx/adonai-domain/types/database.js";
 
 import { withAuthFinder } from "@adonisjs/auth/mixins/lucid";
 import { compose } from "@adonisjs/core/helpers";
@@ -25,12 +26,44 @@ export default class User extends compose(BaseModel, AuthFinder) {
 	@column({ isPrimary: true })
 	declare id: number;
 
+	@column()
+	declare name: string;
 
 	@column()
 	declare email: string;
 
 	@column({ serializeAs: null })
 	declare password: string;
+
+	@column()
+	declare role: UsersRole | null;
+
+	@column()
+	declare avatar: string | null;
+
+	@column()
+	declare avatar_display_for: UsersAvatarDisplayFor | null;
+
+	@column()
+	declare firstname: string | null;
+
+	@column()
+	declare lastname: string | null;
+
+	@column()
+	declare gender: string | null;
+
+	@column.date()
+	declare birthday: DateTime | null;
+
+	@column()
+	declare country: string | null;
+
+	@column()
+	declare city: string | null;
+
+	@column()
+	declare account_status: UsersAccountStatus | null;
 
 	@column.dateTime({ autoCreate: true })
 	declare createdAt: DateTime;
