@@ -16,10 +16,9 @@ export enum AuthLoginFailedError {
 export class AuthLoginFailedException extends Error {
 	constructor(
 		public kind: AuthLoginFailedError,
-		cause: Error,
+		public cause: Error,
 	) {
-		super(`Authentification échouée: ${cause}`);
-		this.cause = cause;
+		super(`Authentification échouée: ${cause.message ?? cause}`);
 		this.name = "AuthLoginFailedException";
 	}
 }

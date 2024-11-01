@@ -11,12 +11,14 @@
 import type { HttpContext } from "@adonisjs/core/http";
 
 import { inject } from "@adonisjs/core";
+import hash from "@adonisjs/core/services/hash";
+import logger from "@adonisjs/core/services/logger";
+import vine from "@vinejs/vine";
+
 // biome-ignore lint/style/useImportType: utilisé via le décorateur @inject
 import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login.js";
 import { AuthLoginFailedError } from "@phisyx/adonai-domain/auth/error/login_failed.js";
-
-import hash from "@adonisjs/core/services/hash";
-import vine from "@vinejs/vine";
+import { AccountRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
 
 export default class AuthLoginWebController {
 	public async view(ctx: HttpContext) {
@@ -42,20 +44,21 @@ export default class AuthLoginWebController {
 		if (maybe_user.is_err()) {
 			let err = maybe_user.unwrap_err();
 
-			switch (err.kind) {
-				case AuthLoginFailedError.InvalidIdentifier:
-					{
-						await hash.use("argon2").make("0123456789");
+			logger.warn(login_form, err.message);
 
-						ctx.session.flash("errors", {
-							global: "Authentification échouée.",
-						});
-					}
-					break;
+			switch (err.kind) {
+				// NOTE: C'est voulu qu'il n'y ait pas de `break` après cette
+				//       clause switch.
+				// biome-ignore lint/suspicious/noFallthroughSwitchClause: ^^^^
+				case AuthLoginFailedError.InvalidIdentifier: {
+					await hash.use("argon2").make("0123456789");
+				}
 
 				case AuthLoginFailedError.InvalidCredentials:
 					{
-						ctx.session.flash("errors", { global: err.message });
+						ctx.session.flash("errors", {
+							global: "Authentification échouée.",
+						});
 					}
 					break;
 			}
@@ -71,10 +74,18 @@ export default class AuthLoginWebController {
 
 		await ctx.auth.use("web").login(user, login_form.remember_me);
 
-		if (ctx.request.header("x-inertia")) {
-			return ctx.inertia.location("/chat");
+		let redirect_url: string = ctx.request.input(
+			"r",
+			AccountRouteWebID.Self,
+		);
+
+		if (
+			ctx.request.header("x-inertia") &&
+			redirect_url.indexOf("http") >= 0
+		) {
+			return ctx.inertia.location(redirect_url);
 		}
 
-		return ctx.response.redirect("/chat");
+		return ctx.response.redirect(redirect_url);
 	}
 }

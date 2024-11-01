@@ -16,3 +16,7 @@ export enum AuthRouteWebID {
 export enum AuthRouteApiID {
 	Logout = "/api/v2/auth/logout",
 }
+
+export enum AccountRouteWebID {
+	Self = "/@me",
+}

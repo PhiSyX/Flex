@@ -15,7 +15,7 @@ import type { NextFn } from "@adonisjs/core/types/http";
 import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
 
 export default class AuthMiddleware {
-	redirectTo = AuthRouteWebID.Login;
+	redirect_to = AuthRouteWebID.Login;
 
 	async handle(
 		ctx: HttpContext,
@@ -24,9 +24,17 @@ export default class AuthMiddleware {
 			guards?: (keyof Authenticators)[];
 		} = {},
 	) {
+		let to_url = encodeURIComponent(ctx.request.url(true));
+		let redirect_qs = `?r=${to_url}`;
+
+		if (ctx.request.url().indexOf("/auth") >= 0) {
+			redirect_qs = "";
+		}
+
 		await ctx.auth.authenticateUsing(options.guards, {
-			loginRoute: this.redirectTo,
+			loginRoute: `${this.redirect_to}${redirect_qs}`,
 		});
+
 		return next();
 	}
 }

@@ -8,26 +8,26 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Users } from "#types/database";
+import type { HttpContext } from "@adonisjs/core/http";
 
-/**
- * Crée pour éviter de renvoyer les données sensibles telles que le mots de
- * passes dans la Vue.
- */
-export class AuthLogoutOutputDTO {
-	static from(user: Users): AuthLogoutOutputDTO {
-		return new AuthLogoutOutputDTO(
-			user.avatar,
-			user.email,
-			user.id,
-			user.name,
-		);
+import { AccountSelfOutputDTO } from "@phisyx/adonai-domain/account/dto/self.js";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+
+export default class AccountSelfWebController {
+	public async view(ctx: HttpContext) {
+		// NOTE(phisyx): cette route est protégée par le middleware
+		// d'authentification, par conséquent, l'utilisateur est forcément en
+		// session dans ce context.
+		// biome-ignore lint/style/noNonNullAssertion: lire la note ci-haut.
+		let user = AccountSelfOutputDTO.from(ctx.auth.user!);
+		return ctx.inertia.render("account/Self", {
+			user,
+			links: {
+				logout: {
+					href: AuthRouteWebID.Logout,
+					type: "delete" as const,
+				},
+			},
+		});
 	}
-
-	constructor(
-		public avatar: string | null,
-		public email: string,
-		public id: string,
-		public name: string,
-	) {}
 }

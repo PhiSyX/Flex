@@ -10,7 +10,7 @@
 
 import type { PasswordChecker } from "#auth/contract/password_checker";
 import type { UserRepository } from "#auth/contract/user_repository";
-import type { AuthLoginDTO } from "#auth/dto/login";
+import type { AuthLoginInputDTO } from "#auth/dto/login";
 import type { Users } from "#types/database";
 import type { Result } from "@phisyx/flex-safety";
 
@@ -29,7 +29,7 @@ export class AuthLoginAction {
 	) {}
 
 	public async connect(
-		login_dto: AuthLoginDTO,
+		login_dto: AuthLoginInputDTO,
 	): Promise<Result<Users, AuthLoginFailedException>> {
 		let maybe_user = await this.user_repository.find_by_identifier(
 			login_dto.identifier,

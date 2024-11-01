@@ -21,14 +21,19 @@ const AuthLogoutWebController = () => import("#ui/web/auth/controller/logout");
 /** Web Router */
 
 router
-	.get(AuthRouteWebID.Login, [AuthLoginWebController, "view"])
-	.as("web.auth.login");
-router.post(AuthRouteWebID.Login, [AuthLoginWebController]);
+	.group(() => {
+		router
+			.get(AuthRouteWebID.Login, [AuthLoginWebController, "view"])
+			.as("web.auth.login");
+		router.post(AuthRouteWebID.Login, [AuthLoginWebController]);
+	})
+	.middleware(middleware.guest());
 
 router
-	.get(AuthRouteWebID.Logout, [AuthLogoutWebController, "view"])
-	.use(middleware.auth())
-	.as("web.auth.logout");
-router
-	.delete(AuthRouteWebID.Logout, [AuthLogoutWebController])
+	.group(() => {
+		router
+			.get(AuthRouteWebID.Logout, [AuthLogoutWebController, "view"])
+			.as("web.auth.logout");
+		router.delete(AuthRouteWebID.Logout, [AuthLogoutWebController]);
+	})
 	.use(middleware.auth());

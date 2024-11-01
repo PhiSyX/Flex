@@ -81,3 +81,7 @@ let form = useForm({
 <style lang="scss">
 @use "../../assets/scss/pages/auth/login.scss";
 </style>
+
+<style lang="scss" scoped>
+@use "../../assets/scss/pages/auth/login.scoped.scss";
+</style>
