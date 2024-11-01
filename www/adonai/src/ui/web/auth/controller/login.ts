@@ -34,7 +34,6 @@ export default class AuthLoginWebController {
 
 	@inject()
 	public async handle(ctx: HttpContext, auth_login_action: AuthLoginAction) {
-		console.log(ctx.request.params());
 		let login_form = await ctx.request.validateUsing(
 			AuthLoginWebController.validator,
 		);

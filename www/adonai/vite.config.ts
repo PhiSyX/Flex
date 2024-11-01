@@ -38,6 +38,14 @@ export default defineConfig({
 		https: vite_server_https_config,
 	},
 
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: "modern-compiler",
+			},
+		},
+	},
+
 	resolve: {
 		alias: {
 			"~/": `${getDirname(import.meta.url)}/ui`,

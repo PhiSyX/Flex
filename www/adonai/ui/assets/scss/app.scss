@@ -8,32 +8,37 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { DefineComponent } from "vue";
+@use "@phisyx/flexsheets" as fx with($spacing: .5rem);
+@use "@phisyx/css-normalizer";
+@use "@phisyx/flex-assets/fonts";
 
-import { createInertiaApp } from "@inertiajs/vue3";
-import { renderToString } from "@vue/server-renderer";
-import { createSSRApp, h } from "vue";
+@use "./colors" as colors;
 
-import flex_uikit from "@phisyx/flex-uikit-vue";
+@use "./schemes/ice" as ice;
+@use "./schemes/dark" as darkMode;
+@use "./schemes/light" as lightMode;
 
-// biome-ignore lint/suspicious/noExplicitAny: adonisjs - @inertiajs/vue
-export default function render(page: any) {
-	return createInertiaApp({
-		page,
-		render: renderToString,
-		resolve: (name) => {
-			const pages = import.meta.glob<DefineComponent>(
-				"../pages/**/*.vue",
-				{ eager: true },
-			);
-			return pages[`../pages/${name}.vue`];
-		},
+@use "./input";
+@use "./base";
 
-		setup({ App, props, plugin }) {
-			let app = createSSRApp({ render: () => h(App, props) });
-			app.use(plugin);
-			app.use(flex_uikit);
-			return app;
-		},
-	});
+@layer reset, flexsheets, flex-uikit, userland;
+
+@include fx.use-reset;
+
+:root {
+	@include fx.define-colors;
 }
+
+@include colors.use-colors-preset;
+
+@include ice.use-ice-scheme;
+@include lightMode.use-light-scheme;
+@include darkMode.use-dark-scheme;
+
+@include fx.use-scrollbars(
+	(
+		background: #1c6a97,
+	)
+);
+
+@include fx.use-webkit();

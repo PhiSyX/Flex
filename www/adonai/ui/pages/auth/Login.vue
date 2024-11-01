@@ -1,71 +1,83 @@
 <script setup lang="ts">
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 
+import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
+import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
+import TextInput from "@phisyx/flex-uikit-vue/textinput/TextInput.vue";
+
 let page = usePage();
 let form = useForm({
 	identifier: "",
 	password: "",
 	remember_me: false,
 });
-
 </script>
 
 <template>
 	<Head title="Connexion" />
 
-	<main id="login-page">
-		<div v-if="page.props.errors?.global">
-			{{ page.props.errors.global }}
-		</div>
+	<main
+		id="login-page"
+		class="[ scroll:y flex! flex/center:full mx:a pos-r ]"
+	>
+		<section class="[ flex! gap=3 min-w=43 ]">
+			<div v-if="page.props.errors?.global">
+				{{ page.props.errors.global }}
+			</div>
 
-		<h1>Hello World</h1>
+			<h1 class="[ f-size=24px ]">Se connecter</h1>
 
-		<form
-			method="post"
-			:action="page.url"
-			@submit.prevent="form.post(page.url)"
-		>
-			<div
-				:class="{
-					'is-error': page.props.errors?.identifier,
-				}"
+			<form
+				:action="page.url"
+				id="login-form"
+				method="POST"
+				class="[ ov:h flex! border/radius=1 ]"
+				@submit.prevent="form.post(page.url)"
 			>
-				<label for="identifier">Identifiant :</label>
-				<input
+				<TextInput
 					v-model="form.identifier"
-					type="text"
+					:error="page.props.errors?.identifier?.[0]"
+					label="user"
 					name="identifier"
-					id="identifier"
+					placeholder="Nom d'utilisateur ou adresse mail"
 				/>
-				<span>{{ page.props.errors?.identifier }}</span>
-			</div>
 
-			<div
-				:class="{
-					'is-error': page.props.errors?.password,
-				}"
-			>
-				<label for="password">Mot de passe :</label>
-				<input
+				<TextInput
 					v-model="form.password"
-					type="password"
+					:error="page.props.errors?.password?.[0]"
+					label="password"
 					name="password"
-					id="password"
+					type="password"
+					placeholder="Mot de passe"
 				/>
-				<span>{{ page.props.errors?.password }}</span>
-			</div>
+			</form>
 
-			<div>
-				<label for="remember_me">Se souvenir de moi :</label>
-				<input
+			<div class="remember-me [ mx:a align-t:center f-size=14px w=35 ]">
+				<label>
+					Connexion automatique lors de tes prochaines sessions :
+				</label>
+
+				<InputLabelSwitch
 					v-model="form.remember_me"
-					type="checkbox"
+					label-n="Non"
+					label-y="Oui"
 					name="remember_me"
-					id="remember_me"
+					form="login-form"
 				/>
 			</div>
 
-			<button type="submit">Envoyer</button>
-		</form>
+			<Button
+				icon-position="right"
+				type="submit"
+				form="login-form"
+				class="[ flex align-jc:se p=2 b:none cursor:pointer ]"
+			>
+				<span class="[ flex:full ]">Se connecter</span>
+			</Button>
+		</section>
 	</main>
 </template>
+
+<style lang="scss">
+@use "../../assets/scss/pages/auth/login.scss";
+</style>

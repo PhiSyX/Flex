@@ -5,14 +5,14 @@ $marquee: (
 	text-overflow: ellipsis clip,
 );
 
-@keyframes marquee {
-	50% {
-		text-indent: var(--marquee-end, -85%);
-		text-overflow: ellipsis clip;
-	}
-}
-
 @mixin use-overflow-marquee($options...) {
+	@keyframes marquee {
+		50% {
+			text-indent: var(--marquee-end, -85%);
+			text-overflow: ellipsis clip;
+		}
+	}
+
 	$classes: (
 		"scroll:marquee": (
 			--marquee-end: -85%,

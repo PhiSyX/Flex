@@ -17,7 +17,7 @@ import { resolvePageComponent } from "@adonisjs/inertia/helpers";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { createSSRApp, h } from "vue";
 
-import "../css/app.css";
+import flex_uikit from "@phisyx/flex-uikit-vue";
 
 const appName = import.meta.env.VITE_APP_NAME || "Flex";
 
@@ -34,8 +34,10 @@ createInertiaApp({
 	},
 
 	setup({ el, App, props, plugin }) {
-		createSSRApp({ render: () => h(App, props) })
-			.use(plugin)
-			.mount(el);
+		let app = createSSRApp({ render: () => h(App, props) });
+		app.use(plugin);
+		app.use(flex_uikit);
+		app.mount(el);
+		return app;
 	},
 });
