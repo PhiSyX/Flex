@@ -1,221 +1,158 @@
-diff --git a/build/src/ignitor/http2.d.ts b/build/src/ignitor/http2.d.ts
-new file mode 100644
-index 0000000000000000000000000000000000000000..b2e9c25cb8fcbfc87df1d6cb97744f7de3f3c735
---- /dev/null
-+++ b/build/src/ignitor/http2.d.ts
-@@ -0,0 +1,19 @@
-+import type {
-+	Server as NodeHttpsServer,
-+	Http2ServerRequest,
-+	Http2ServerResponse,
-+	SecureServerOptions,
-+} from 'node:http2';
-+import { Ignitor } from './main.js';
-+/**
-+ * The HTTP server process is used to start the application in the
-+ * web environment.
-+ */
-+export declare class Http2ServerProcess {
-+    #private;
-+    constructor(ignitor: Ignitor, options: SecureServerOptions);
-+    /**
-+     * Start the HTTP server by wiring up the application
-+     */
-+    start(serverCallback?: (handler: (req: Http2ServerRequest, res: Http2ServerResponse) => any) => NodeHttpsServer): Promise<void>;
-+}
-diff --git a/build/src/ignitor/http2.js b/build/src/ignitor/http2.js
-new file mode 100644
-index 0000000000000000000000000000000000000000..5d6f4da1e8a4597468250fbb0d4b7f972c58f8e8
---- /dev/null
-+++ b/build/src/ignitor/http2.js
-@@ -0,0 +1,139 @@
-+/*
-+ * @adonisjs/core
-+ *
-+ * (c) AdonisJS
-+ *
-+ * For the full copyright and license information, please view the LICENSE
-+ * file that was distributed with this source code.
-+ */
-+import { createSecureServer } from 'node:http2';
-+import debug from '../debug.js';
-+/**
-+ * The HTTP server process is used to start the application in the
-+ * web environment.
-+ */
-+export class Http2ServerProcess {
-+    /**
-+     * Ignitor reference
-+     */
-+    #ignitor;
-+	/**
-+	 * Option HTTP2
-+	 */
-+	#options;
-+
+diff --git a/build/modules/ace/codemods.d.ts b/build/modules/ace/codemods.d.ts
+index c2d2b9f7dc8b3c10f75b561c8a341d33a716f59f..579dd7734576f38c61f2bc863b407b0b23918c72 100644
+--- a/build/modules/ace/codemods.d.ts
++++ b/build/modules/ace/codemods.d.ts
+@@ -88,7 +88,7 @@ export declare class Codemods extends EventEmitter {
+      * name like :
+      *
+      * ```
+-     * this.installPackages(['@adonisjs/lucid@next', '@adonisjs/auth@3.0.0'])
++     * this.installPackages([{ name: '@adonisjs/lucid@next', isDevDependency: false }])
+      * ```
+      */
+     installPackages(packages: {
+diff --git a/build/modules/ace/codemods.js b/build/modules/ace/codemods.js
+index 68bcafdf69b96578d1809ddc8a0e394eceb6c056..6aa5ab01042d6ac085b8a6ac63202f9b3f534b61 100644
+--- a/build/modules/ace/codemods.js
++++ b/build/modules/ace/codemods.js
+@@ -241,7 +241,7 @@ export class Codemods extends EventEmitter {
+      * name like :
+      *
+      * ```
+-     * this.installPackages(['@adonisjs/lucid@next', '@adonisjs/auth@3.0.0'])
++     * this.installPackages([{ name: '@adonisjs/lucid@next', isDevDependency: false }])
+      * ```
+      */
+     async installPackages(packages) {
+diff --git a/build/modules/http/request_validator.js b/build/modules/http/request_validator.js
+index 06064a5fddfd02dc8ed442802b1e28d08c35f6b5..0a00f8fd8bb6459ae2e1df0ffce1bc04b3a9efad 100644
+--- a/build/modules/http/request_validator.js
++++ b/build/modules/http/request_validator.js
+@@ -56,6 +56,7 @@ export class RequestValidator {
+          */
+         const data = validatorOptions.data || {
+             ...this.#ctx.request.all(),
++            // @ts-expect-error petit problème?
+             ...this.#ctx.request.allFiles(),
+             params: this.#ctx.request.params(),
+             headers: this.#ctx.request.headers(),
+diff --git a/build/src/ignitor/http.d.ts b/build/src/ignitor/http.d.ts
+index 27bc224ce101a061f2cb801c02d598765926cfc1..0a0d5c68485bca81a46339a00663485f8dfa9b75 100644
+--- a/build/src/ignitor/http.d.ts
++++ b/build/src/ignitor/http.d.ts
+@@ -1,15 +1,22 @@
+-import type { Server as NodeHttpsServer } from 'node:https';
+-import { IncomingMessage, ServerResponse, Server as NodeHttpServer } from 'node:http';
++import { type SecureServerOptions, type Http2SecureServer as NodeHttps2Server, type Http2ServerResponse, type Http2ServerRequest } from 'node:http2';
++import type { ServerOptions as HttpsServerOptions, Server as NodeHttpsServer } from 'node:https';
++import type { ServerOptions as HttpServerOptions, IncomingMessage, ServerResponse, Server as NodeHttpServer } from 'node:http';
+ import { Ignitor } from './main.js';
++type HttpServer = NodeHttpsServer | NodeHttpServer | NodeHttps2Server;
++type HttpServerRequest = IncomingMessage | Http2ServerRequest;
++type HttpServerResponse = ServerResponse | Http2ServerResponse;
+ /**
+  * The HTTP server process is used to start the application in the
+  * web environment.
+  */
+ export declare class HttpServerProcess {
+     #private;
+-    constructor(ignitor: Ignitor);
++    constructor(ignitor: Ignitor, options?: {
++        https: boolean | 2;
++    } & (HttpServerOptions | HttpsServerOptions | SecureServerOptions));
+     /**
+      * Start the HTTP server by wiring up the application
+      */
+-    start(serverCallback?: (handler: (req: IncomingMessage, res: ServerResponse) => any) => NodeHttpsServer | NodeHttpServer): Promise<void>;
++    start(serverCallback?: (handler: (req: HttpServerRequest, res: HttpServerResponse) => any) => HttpServer): Promise<void>;
+ }
++export {};
+diff --git a/build/src/ignitor/http.js b/build/src/ignitor/http.js
+index 13245704fcf30edc50be781ad7904a3923693c29..678c99e1f3ea782abcfe10a758149cb8f1fa5e48 100644
+--- a/build/src/ignitor/http.js
++++ b/build/src/ignitor/http.js
+@@ -6,7 +6,9 @@
+  * For the full copyright and license information, please view the LICENSE
+  * file that was distributed with this source code.
+  */
+-import { createServer } from 'node:http';
++import { createSecureServer, } from 'node:http2';
++import { createServer as createHttpsServer } from 'node:https';
++import { createServer as createHttpServer } from 'node:http';
+ import debug from '../debug.js';
+ /**
+  * The HTTP server process is used to start the application in the
+@@ -17,8 +19,10 @@ export class HttpServerProcess {
+      * Ignitor reference
+      */
+     #ignitor;
+-    constructor(ignitor) {
++    #httpOptions;
 +    constructor(ignitor, options) {
-+        this.#ignitor = ignitor;
-+		this.#options = options;
-+    }
-+    /**
-+     * Calling this method closes the underlying HTTP server
-+     */
-+    #close(nodeHttpServer) {
-+        return new Promise((resolve) => {
-+            debug('closing http server process');
-+            nodeHttpServer.close(() => resolve());
-+        });
-+    }
-+    /**
-+     * Monitors the app and the server to close the HTTP server when
-+     * either one of them goes down
-+     */
-+    #monitorAppAndServer(nodeHttpServer, app, logger) {
-+        /**
-+         * Close the HTTP server when the application begins to
-+         * terminate
-+         */
-+        app.terminating(async () => {
-+            debug('terminating signal received');
-+            await this.#close(nodeHttpServer);
-+        });
-+        /**
-+         * Terminate the app when the HTTP server crashes
-+         */
-+        nodeHttpServer.once('error', (error) => {
-+            debug('http2 server crashed with error "%O"', error);
-+            logger.fatal({ err: error }, error.message);
-+            process.exitCode = 1;
-+            app.terminate();
-+        });
-+    }
-+    /**
-+     * Starts the http server a given host and port
-+     */
-+    #listen(nodeHttpServer) {
-+        return new Promise((resolve, reject) => {
-+            const host = process.env.HOST || '0.0.0.0';
-+            const port = Number(process.env.PORT || '3333');
-+            nodeHttpServer.listen(port, host);
-+            nodeHttpServer.once('listening', () => {
-+                debug('listening to http server, host :%s, port: %s', host, port);
-+                resolve({ port, host });
-+            });
-+            nodeHttpServer.once('error', (error) => {
-+                reject(error);
-+            });
-+        });
-+    }
-+    /**
-+     * Notifies the app and the parent process that the
-+     * HTTP server is ready
-+     */
-+    #notifyServerHasStarted(app, logger, emitter, payload) {
-+        /**
-+         * Notify parent process
-+         */
-+        app.notify({ isAdonisJS: true, environment: 'web', ...payload });
-+        /**
-+         * Visual notification
-+         */
-+        logger.info('started HTTPS server on %s:%s', payload.host, payload.port);
-+        /**
-+         * Notify app
-+         */
-+        emitter.emit('http:server_ready', payload);
-+    }
-+    /**
-+     * Start the HTTP server by wiring up the application
-+     */
-+    async start(serverCallback) {
-+        const startTime = process.hrtime();
-+        /**
-+         * Method to create the HTTP server
-+         */
-+        const createHTTP2Server = serverCallback || createSecureServer;
-+        const app = this.#ignitor.createApp('web');
-+        await app.init();
-+        await app.boot();
-+        await app.start(async () => {
-+            /**
-+             * Resolve and boot the AdonisJS HTTP server
-+             */
-+            const server = await app.container.make('server');
-+            await server.boot();
-+            /**
-+             * Create Node.js HTTP server instance and share it with the
-+             * AdonisJS HTTP server
-+             */
-+            const http2Server = createHTTP2Server(this.#options, server.handle.bind(server));
-+            server.setNodeServer(http2Server);
-+            const logger = await app.container.make('logger');
-+            const emitter = await app.container.make('emitter');
-+            /**
-+             * Start the server by listening on a port of host
-+             */
-+            const payload = await this.#listen(http2Server);
-+            /**
-+             * Notify
-+             */
-+            this.#notifyServerHasStarted(app, logger, emitter, {
-+                ...payload,
-+                duration: process.hrtime(startTime),
-+            });
-+            /**
-+             * Monitor app and the server (after the server is listening)
-+             */
-+            this.#monitorAppAndServer(http2Server, app, logger);
-+        });
-+    }
-+}
+         this.#ignitor = ignitor;
++        this.#httpOptions = options;
+     }
+     /**
+      * Calling this method closes the underlying HTTP server
+@@ -95,7 +99,13 @@ export class HttpServerProcess {
+         /**
+          * Method to create the HTTP server
+          */
+-        const createHTTPServer = serverCallback || createServer;
++        let createHTTPServer = serverCallback || createHttpServer;
++        if (this.#httpOptions?.https === 2) {
++            createHTTPServer = createSecureServer;
++        }
++        else if (this.#httpOptions?.https) {
++            createHTTPServer = createHttpsServer;
++        }
+         const app = this.#ignitor.createApp('web');
+         await app.init();
+         await app.boot();
+@@ -109,7 +119,8 @@ export class HttpServerProcess {
+              * Create Node.js HTTP server instance and share it with the
+              * AdonisJS HTTP server
+              */
+-            const httpServer = createHTTPServer(server.handle.bind(server));
++            // @ts-expect-error type à corriger
++            const httpServer = createHTTPServer(this.#httpOptions, server.handle.bind(server));
+             server.setNodeServer(httpServer);
+             const logger = await app.container.make('logger');
+             const emitter = await app.container.make('emitter');
 diff --git a/build/src/ignitor/main.d.ts b/build/src/ignitor/main.d.ts
-index 6b2596de4b2e9d71b0c2f747ab2e9a5547dae721..0a3417e680f1a1cbb2cf3368ce1e2668af652a72 100644
+index 6b2596de4b2e9d71b0c2f747ab2e9a5547dae721..d0d6dbb5d540978888ff0f4f7ac7929993f501da 100644
 --- a/build/src/ignitor/main.d.ts
 +++ b/build/src/ignitor/main.d.ts
-@@ -1,8 +1,10 @@
+@@ -1,3 +1,6 @@
++import type { ServerOptions as HttpServerOptions } from 'node:http';
++import type { ServerOptions as HttpsServerOptions } from 'node:https';
++import type { SecureServerOptions } from 'node:http2';
  import { AceProcess } from './ace.js';
  import { TestRunnerProcess } from './test.js';
  import { HttpServerProcess } from './http.js';
-+import { Http2ServerProcess } from './http2.js';
- import type { AppEnvironments } from '../../types/app.js';
- import type { ApplicationService, IgnitorOptions } from '../types.js';
-+import { SecureServerOptions } from 'http2';
- /**
-  * Ignitor is used to instantiate an AdonisJS application in different
-  * known environments.
-@@ -28,6 +30,10 @@ export declare class Ignitor {
+@@ -27,7 +30,9 @@ export declare class Ignitor {
+     /**
       * Get instance of the HTTPServerProcess
       */
-     httpServer(): HttpServerProcess;
-+	/**
-+     * Get instance of the HTTPSServerProcess
-+     */
-+    http2Server(options: SecureServerOptions): Http2ServerProcess;
+-    httpServer(): HttpServerProcess;
++    httpServer(options?: {
++        https: boolean | 2;
++    } & (HttpServerOptions | HttpsServerOptions | SecureServerOptions)): HttpServerProcess;
      /**
       * Get an instance of the AceProcess class
       */
 diff --git a/build/src/ignitor/main.js b/build/src/ignitor/main.js
-index bd71182de15adc1fdf6a3b7e8db0b5ed50140eb1..de895e2327dc87c131dbbf3d2386824fede12baa 100644
+index bd71182de15adc1fdf6a3b7e8db0b5ed50140eb1..538e62a9d27daca1c848a772ede2e81f702e07cd 100644
 --- a/build/src/ignitor/main.js
 +++ b/build/src/ignitor/main.js
-@@ -10,6 +10,7 @@ import debug from '../debug.js';
- import { AceProcess } from './ace.js';
- import { TestRunnerProcess } from './test.js';
- import { HttpServerProcess } from './http.js';
-+import { Http2ServerProcess } from './http2.js';
- import { setApp } from '../../services/app.js';
- import { Application } from '../../modules/app.js';
- /**
-@@ -79,6 +80,12 @@ export class Ignitor {
-     httpServer() {
-         return new HttpServerProcess(this);
+@@ -76,8 +76,8 @@ export class Ignitor {
+     /**
+      * Get instance of the HTTPServerProcess
+      */
+-    httpServer() {
+-        return new HttpServerProcess(this);
++    httpServer(options) {
++        return new HttpServerProcess(this, options);
      }
-+    /**
-+     * Get instance of the HTTPServerProcess
-+     */
-+    http2Server(options) {
-+        return new Http2ServerProcess(this, options);
-+    }
      /**
       * Get an instance of the AceProcess class
-      */

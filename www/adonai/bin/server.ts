@@ -31,7 +31,8 @@ new Ignitor(APP_ROOT, { importer })
 		app.listen("SIGTERM", () => app.terminate());
 		app.listenIf(app.managedByPm2, "SIGINT", () => app.terminate());
 	})
-	.http2Server({
+	.httpServer({
+		https: 2,
 		cert: readFileSync(resolve("..", "..", "config", "certs", "flex.cer")),
 		key: readFileSync(resolve("..", "..", "config", "certs", "flex.pvk")),
 	})
