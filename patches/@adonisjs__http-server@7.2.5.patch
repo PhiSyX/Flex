@@ -1,10 +1,13 @@
-diff --git a/build/chunk-GCLM3D4C.js b/build/chunk-CSWXTLV3.js
+diff --git a/build/chunk-GCLM3D4C.js.map b/build/chunk-GCLM3D4C.js.map
+deleted file mode 100644
+index 8910453ebe9a057fad0f2a113b3d27c230d80ec1..0000000000000000000000000000000000000000
+diff --git a/build/chunk-GCLM3D4C.js b/build/chunk-O7A2JE6V.js
 similarity index 99%
 rename from build/chunk-GCLM3D4C.js
-rename to build/chunk-CSWXTLV3.js
-index ada3f8bd8ec3e458f2c265c7db1f1e7366d809d8..81ff24c021d48eac868bfd54bdc2df5ab2f91792 100644
+rename to build/chunk-O7A2JE6V.js
+index ada3f8bd8ec3e458f2c265c7db1f1e7366d809d8..d53fd83d3ca643c7ae9cd437a9aacd9619553b52 100644
 --- a/build/chunk-GCLM3D4C.js
-+++ b/build/chunk-CSWXTLV3.js
++++ b/build/chunk-O7A2JE6V.js
 @@ -1491,6 +1491,9 @@ var Request = class extends Macroable5 {
     */
    host() {
@@ -47,13 +50,10 @@ index ada3f8bd8ec3e458f2c265c7db1f1e7366d809d8..81ff24c021d48eac868bfd54bdc2df5a
  };
 -//# sourceMappingURL=chunk-GCLM3D4C.js.map
 \ No newline at end of file
-+//# sourceMappingURL=chunk-CSWXTLV3.js.map
++//# sourceMappingURL=chunk-O7A2JE6V.js.map
 \ No newline at end of file
-diff --git a/build/chunk-GCLM3D4C.js.map b/build/chunk-GCLM3D4C.js.map
-deleted file mode 100644
-index 8910453ebe9a057fad0f2a113b3d27c230d80ec1..0000000000000000000000000000000000000000
 diff --git a/build/factories/main.js b/build/factories/main.js
-index 24efc28d3397cdacdb0b257f058c56a30b033c41..f7ec82a8a8c3a59e7f5a44f17a71b34042c38634 100644
+index 24efc28d3397cdacdb0b257f058c56a30b033c41..d5c1e7ab4aa4aa19efdb2d31dba39e20c79d05a3 100644
 --- a/build/factories/main.js
 +++ b/build/factories/main.js
 @@ -6,7 +6,7 @@ import {
@@ -61,12 +61,12 @@ index 24efc28d3397cdacdb0b257f058c56a30b033c41..f7ec82a8a8c3a59e7f5a44f17a71b340
    Server,
    defineConfig
 -} from "../chunk-GCLM3D4C.js";
-+} from "../chunk-CSWXTLV3.js";
++} from "../chunk-O7A2JE6V.js";
  
  // factories/http_context.ts
  import { Container } from "@adonisjs/fold";
 diff --git a/build/index.js b/build/index.js
-index b305ba3d7aec46ce9f45d9319264e686d16eb8a9..87425e33b4356bb5dcc11e98e4d3ee02ba7817ef 100644
+index b305ba3d7aec46ce9f45d9319264e686d16eb8a9..1df7942daf10ed42b2686512aba737f5227fe0a3 100644
 --- a/build/index.js
 +++ b/build/index.js
 @@ -18,7 +18,7 @@ import {
@@ -74,19 +74,21 @@ index b305ba3d7aec46ce9f45d9319264e686d16eb8a9..87425e33b4356bb5dcc11e98e4d3ee02
    exceptions_exports,
    parseRange
 -} from "./chunk-GCLM3D4C.js";
-+} from "./chunk-CSWXTLV3.js";
++} from "./chunk-O7A2JE6V.js";
  
  // src/exception_handler.ts
  import is from "@sindresorhus/is";
 diff --git a/build/src/redirect.d.ts b/build/src/redirect.d.ts
-index 29c79b435e3eef04793b0a5288dc67856a915903..204b25ede544e06f3ad56bdec1f679d94822fd0d 100644
+index 29c79b435e3eef04793b0a5288dc67856a915903..3ea1dc7f1b529658bc32f9ee52eb79e33a0e3945 100644
 --- a/build/src/redirect.d.ts
 +++ b/build/src/redirect.d.ts
-@@ -3,12 +3,14 @@ import type { Qs } from './qs.js';
+@@ -1,14 +1,16 @@
++import type { Http2ServerRequest } from 'node:http2';
+ import type { IncomingMessage } from 'node:http';
+ import type { Qs } from './qs.js';
  import type { Response } from './response.js';
  import type { Router } from './router/main.js';
  import type { MakeUrlOptions } from './types/route.js';
-+import type { Http2ServerRequest } from 'node:http2';
 +type HttpServerRequest = IncomingMessage | Http2ServerRequest;
  /**
   * Exposes the API to construct redirect routes
@@ -104,15 +106,16 @@ index 29c79b435e3eef04793b0a5288dc67856a915903..204b25ede544e06f3ad56bdec1f679d9
  }
 +export {};
 diff --git a/build/src/request.d.ts b/build/src/request.d.ts
-index 7536f69ad2db8d23c5b63ac621e4d4232987a1a5..44fe4cac2250ed59bf1b815a9563d5dec55f4a03 100644
+index 7536f69ad2db8d23c5b63ac621e4d4232987a1a5..ae0b8a2b6367244b27c0b89ea0785a61ed6e6312 100644
 --- a/build/src/request.d.ts
 +++ b/build/src/request.d.ts
 @@ -1,10 +1,13 @@
  import Macroable from '@poppinss/macroable';
  import { UrlWithStringQuery } from 'node:url';
  import type { Encryption } from '@adonisjs/encryption';
-+import { Http2ServerRequest, Http2ServerResponse } from 'node:http2';
- import { ServerResponse, IncomingMessage, IncomingHttpHeaders } from 'node:http';
+-import { ServerResponse, IncomingMessage, IncomingHttpHeaders } from 'node:http';
++import type { Http2ServerRequest, Http2ServerResponse } from 'node:http2';
++import type { ServerResponse, IncomingMessage, IncomingHttpHeaders } from 'node:http';
  import type { Qs } from './qs.js';
  import { RequestConfig } from './types/request.js';
  import type { HttpContext } from './http_context/main.js';
@@ -147,53 +150,56 @@ index 7536f69ad2db8d23c5b63ac621e4d4232987a1a5..44fe4cac2250ed59bf1b815a9563d5de
  }
 +export {};
 diff --git a/build/src/response.d.ts b/build/src/response.d.ts
-index 83f2f7327eeb26ea3b401cff802c3ac7d6777811..bb5e57e45e118278fd80b491b805dfbe0d41086c 100644
+index 83f2f7327eeb26ea3b401cff802c3ac7d6777811..bebec5af63b06f42be109c21949f6592081063c2 100644
 --- a/build/src/response.d.ts
 +++ b/build/src/response.d.ts
-@@ -1,19 +1,22 @@
+@@ -1,6 +1,6 @@
  import Macroable from '@poppinss/macroable';
  import type { Encryption } from '@adonisjs/encryption';
+-import { ServerResponse, IncomingMessage } from 'node:http';
 +import type { Http2ServerRequest, Http2ServerResponse } from 'node:http2';
- import { ServerResponse, IncomingMessage } from 'node:http';
  import type { Qs } from './qs.js';
  import { Redirect } from './redirect.js';
  import type { Router } from './router/main.js';
- import type { HttpContext } from './http_context/main.js';
- import type { CastableHeader, CookieOptions, ResponseConfig, ResponseStream } from './types/response.js';
-+type HttpServerRequest = IncomingMessage | Http2ServerRequest;
-+type HttpServerResponse = ServerResponse | Http2ServerResponse;
- /**
-  * The response is a wrapper over [ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse)
-  * streamlining the process of writing response body and automatically setting up appropriate headers.
+@@ -12,8 +12,8 @@ import type { CastableHeader, CookieOptions, ResponseConfig, ResponseStream } fr
   */
  export declare class Response extends Macroable {
      #private;
 -    request: IncomingMessage;
 -    response: ServerResponse;
-+    request: HttpServerRequest;
-+    response: HttpServerResponse;
++    request: Http2ServerRequest;
++    response: Http2ServerResponse;
      /**
       * Does response has body set that will written to the
       * response socket at the end of the request
-@@ -66,7 +69,7 @@ export declare class Response extends Macroable {
+@@ -66,7 +66,7 @@ export declare class Response extends Macroable {
       * reference
       */
      ctx?: HttpContext;
 -    constructor(request: IncomingMessage, response: ServerResponse, encryption: Encryption, config: ResponseConfig, router: Router, qs: Qs);
-+    constructor(request: HttpServerRequest, response: HttpServerResponse, encryption: Encryption, config: ResponseConfig, router: Router, qs: Qs);
++    constructor(request: Http2ServerRequest, response: Http2ServerResponse, encryption: Encryption, config: ResponseConfig, router: Router, qs: Qs);
      /**
       * Returns a boolean telling if response is finished or not.
       * Any more attempts to update headers or body will result
-@@ -107,7 +110,7 @@ export declare class Response extends Macroable {
+@@ -107,7 +107,7 @@ export declare class Response extends Macroable {
       * Under the hood the callback is registered with
       * the "https://github.com/jshttp/on-finished" package
       */
 -    onFinish(callback: (err: Error | null, response: ServerResponse) => void): void;
-+    onFinish(callback: (err: Error | null, response: HttpServerResponse) => void): void;
++    onFinish(callback: (err: Error | null, response: Http2ServerResponse) => void): void;
      /**
       * Writes headers with the Node.js res object using the
       * response.setHeader method
-@@ -154,6 +157,7 @@ export declare class Response extends Macroable {
+@@ -121,7 +121,7 @@ export declare class Response extends Macroable {
+      * Returns the existing value for a given HTTP response
+      * header.
+      */
+-    getHeader(key: string): import("http").OutgoingHttpHeader | undefined;
++    getHeader(key: string): import("http").OutgoingHttpHeader;
+     /**
+      * Get response headers
+      */
+@@ -154,6 +154,7 @@ export declare class Response extends Macroable {
          "content-range"?: string | undefined;
          "content-security-policy"?: string | undefined;
          "content-security-policy-report-only"?: string | undefined;
@@ -201,23 +207,21 @@ index 83f2f7327eeb26ea3b401cff802c3ac7d6777811..bb5e57e45e118278fd80b491b805dfbe
          cookie?: string | string[] | undefined;
          dav?: string | string[] | undefined;
          dnt?: string | undefined;
-@@ -623,3 +627,4 @@ export declare class Response extends Macroable {
-      */
-     httpVersionNotSupported(body?: any, generateEtag?: boolean): void;
- }
-+export {};
 diff --git a/build/src/server/main.d.ts b/build/src/server/main.d.ts
-index aaeaf0ecba8813db8a98e15858f2b2751915377f..cd939195ff5fb4e59a445592b042fa1e18a5e0d9 100644
+index aaeaf0ecba8813db8a98e15858f2b2751915377f..2b881a63cecc21953baf9f35bc8c001cfaf85c04 100644
 --- a/build/src/server/main.d.ts
 +++ b/build/src/server/main.d.ts
-@@ -3,8 +3,9 @@ import type { Encryption } from '@adonisjs/encryption';
- import type { Server as HttpsServer } from 'node:https';
+@@ -1,10 +1,11 @@
+ import type { Logger } from '@adonisjs/logger';
+ import type { Encryption } from '@adonisjs/encryption';
+-import type { Server as HttpsServer } from 'node:https';
  import type { Application } from '@adonisjs/application';
  import type { EmitterLike } from '@adonisjs/events/types';
--import { ContainerResolver } from '@adonisjs/fold';
- import type { ServerResponse, IncomingMessage, Server as HttpServer } from 'node:http';
+ import { ContainerResolver } from '@adonisjs/fold';
+-import type { ServerResponse, IncomingMessage, Server as HttpServer } from 'node:http';
++import type { Server as HttpsServer } from 'node:https';
 +import type { Http2SecureServer, Http2ServerRequest, Http2ServerResponse } from 'node:http2';
-+import { ContainerResolver } from '@adonisjs/fold';
++import type { ServerResponse, IncomingMessage, Server as Http1Server } from 'node:http';
  import type { LazyImport } from '../types/base.js';
  import type { MiddlewareAsClass } from '../types/middleware.js';
  import type { ServerConfig, HttpServerEvents, ErrorHandlerAsAClass, TestingMiddlewarePipeline } from '../types/server.js';
@@ -225,7 +229,7 @@ index aaeaf0ecba8813db8a98e15858f2b2751915377f..cd939195ff5fb4e59a445592b042fa1e
  import { Response } from '../response.js';
  import { Router } from '../router/main.js';
  import { HttpContext } from '../http_context/main.js';
-+type NodeHttpServer = HttpServer | HttpsServer | Http2SecureServer;
++type HttpServer = Http1Server | HttpsServer | Http2SecureServer;
 +type HttpServerRequest = IncomingMessage | Http2ServerRequest;
 +type HttpServerResponse = ServerResponse | Http2ServerResponse;
  /**
@@ -236,13 +240,13 @@ index aaeaf0ecba8813db8a98e15858f2b2751915377f..cd939195ff5fb4e59a445592b042fa1e
       * Set the HTTP server instance used to listen for requests.
       */
 -    setNodeServer(server: HttpServer | HttpsServer): void;
-+    setNodeServer(server: NodeHttpServer): void;
++    setNodeServer(server: HttpServer): void;
      /**
       * Returns reference to the underlying HTTP server
       * in use
       */
 -    getNodeServer(): HttpServer<typeof IncomingMessage, typeof ServerResponse> | HttpsServer<typeof IncomingMessage, typeof ServerResponse> | undefined;
-+    getNodeServer(): NodeHttpServer | undefined;
++    getNodeServer(): HttpServer | undefined;
      /**
       * Returns reference to the router instance used
       * by the server.

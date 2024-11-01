@@ -24,32 +24,28 @@ index 68bcafdf69b96578d1809ddc8a0e394eceb6c056..6aa5ab01042d6ac085b8a6ac63202f9b
       * ```
       */
      async installPackages(packages) {
-diff --git a/build/modules/http/request_validator.js b/build/modules/http/request_validator.js
-index 06064a5fddfd02dc8ed442802b1e28d08c35f6b5..0a00f8fd8bb6459ae2e1df0ffce1bc04b3a9efad 100644
---- a/build/modules/http/request_validator.js
-+++ b/build/modules/http/request_validator.js
-@@ -56,6 +56,7 @@ export class RequestValidator {
-          */
-         const data = validatorOptions.data || {
-             ...this.#ctx.request.all(),
-+            // @ts-expect-error petit problème?
-             ...this.#ctx.request.allFiles(),
-             params: this.#ctx.request.params(),
-             headers: this.#ctx.request.headers(),
 diff --git a/build/src/ignitor/http.d.ts b/build/src/ignitor/http.d.ts
-index 27bc224ce101a061f2cb801c02d598765926cfc1..0a0d5c68485bca81a46339a00663485f8dfa9b75 100644
+index 27bc224ce101a061f2cb801c02d598765926cfc1..fad1211591c277121b8c481983ecad955b3dda5b 100644
 --- a/build/src/ignitor/http.d.ts
 +++ b/build/src/ignitor/http.d.ts
-@@ -1,15 +1,22 @@
+@@ -1,15 +1,28 @@
 -import type { Server as NodeHttpsServer } from 'node:https';
 -import { IncomingMessage, ServerResponse, Server as NodeHttpServer } from 'node:http';
-+import { type SecureServerOptions, type Http2SecureServer as NodeHttps2Server, type Http2ServerResponse, type Http2ServerRequest } from 'node:http2';
-+import type { ServerOptions as HttpsServerOptions, Server as NodeHttpsServer } from 'node:https';
-+import type { ServerOptions as HttpServerOptions, IncomingMessage, ServerResponse, Server as NodeHttpServer } from 'node:http';
++import type { SecureServerOptions as Http2ServerOptions, Http2Server, Http2ServerRequest, Http2ServerResponse } from 'node:http2';
++import type { Server as HttpsServer, ServerOptions as HttpsServerOptions } from 'node:https';
++import type { IncomingMessage, ServerResponse, Server as Http1Server, ServerOptions as Http1ServerOptions } from 'node:http';
  import { Ignitor } from './main.js';
-+type HttpServer = NodeHttpsServer | NodeHttpServer | NodeHttps2Server;
++type HttpServer = Http1Server | HttpsServer | Http2Server;
++interface HttpServerOptions extends Http1ServerOptions, HttpsServerOptions, Http2ServerOptions {
++}
 +type HttpServerRequest = IncomingMessage | Http2ServerRequest;
 +type HttpServerResponse = ServerResponse | Http2ServerResponse;
++export interface HttpServerProcessCtorOptions extends HttpServerOptions {
++    /**
++     * Activer l'HTTPS
++     */
++    https: 1 | 2;
++}
  /**
   * The HTTP server process is used to start the application in the
   * web environment.
@@ -57,9 +53,7 @@ index 27bc224ce101a061f2cb801c02d598765926cfc1..0a0d5c68485bca81a46339a00663485f
  export declare class HttpServerProcess {
      #private;
 -    constructor(ignitor: Ignitor);
-+    constructor(ignitor: Ignitor, options?: {
-+        https: boolean | 2;
-+    } & (HttpServerOptions | HttpsServerOptions | SecureServerOptions));
++    constructor(ignitor: Ignitor, options?: HttpServerProcessCtorOptions);
      /**
       * Start the HTTP server by wiring up the application
       */
@@ -68,7 +62,7 @@ index 27bc224ce101a061f2cb801c02d598765926cfc1..0a0d5c68485bca81a46339a00663485f
  }
 +export {};
 diff --git a/build/src/ignitor/http.js b/build/src/ignitor/http.js
-index 13245704fcf30edc50be781ad7904a3923693c29..678c99e1f3ea782abcfe10a758149cb8f1fa5e48 100644
+index 13245704fcf30edc50be781ad7904a3923693c29..6723df5fa8d2a600cd62b02d76f46b50ba0b0f3a 100644
 --- a/build/src/ignitor/http.js
 +++ b/build/src/ignitor/http.js
 @@ -6,7 +6,9 @@
@@ -76,17 +70,20 @@ index 13245704fcf30edc50be781ad7904a3923693c29..678c99e1f3ea782abcfe10a758149cb8
   * file that was distributed with this source code.
   */
 -import { createServer } from 'node:http';
-+import { createSecureServer, } from 'node:http2';
++import { createSecureServer as createHttp2Server } from 'node:http2';
 +import { createServer as createHttpsServer } from 'node:https';
-+import { createServer as createHttpServer } from 'node:http';
++import { createServer as createHttp1Server } from 'node:http';
  import debug from '../debug.js';
  /**
   * The HTTP server process is used to start the application in the
-@@ -17,8 +19,10 @@ export class HttpServerProcess {
+@@ -17,8 +19,13 @@ export class HttpServerProcess {
       * Ignitor reference
       */
      #ignitor;
 -    constructor(ignitor) {
++    /**
++     * Les options du serveur HTTP(s).
++     */
 +    #httpOptions;
 +    constructor(ignitor, options) {
          this.#ignitor = ignitor;
@@ -94,50 +91,56 @@ index 13245704fcf30edc50be781ad7904a3923693c29..678c99e1f3ea782abcfe10a758149cb8
      }
      /**
       * Calling this method closes the underlying HTTP server
-@@ -95,7 +99,13 @@ export class HttpServerProcess {
+@@ -95,7 +102,19 @@ export class HttpServerProcess {
          /**
           * Method to create the HTTP server
           */
 -        const createHTTPServer = serverCallback || createServer;
-+        let createHTTPServer = serverCallback || createHttpServer;
-+        if (this.#httpOptions?.https === 2) {
-+            createHTTPServer = createSecureServer;
-+        }
-+        else if (this.#httpOptions?.https) {
-+            createHTTPServer = createHttpsServer;
++        let createHTTPServer = serverCallback || createHttp1Server;
++        switch (this.#httpOptions?.https) {
++            case 1:
++                {
++                    createHTTPServer = createHttpsServer;
++                }
++                break;
++            case 2:
++                {
++                    createHTTPServer = createHttp2Server;
++                }
++                break;
 +        }
          const app = this.#ignitor.createApp('web');
          await app.init();
          await app.boot();
-@@ -109,7 +119,8 @@ export class HttpServerProcess {
+@@ -109,7 +128,9 @@ export class HttpServerProcess {
               * Create Node.js HTTP server instance and share it with the
               * AdonisJS HTTP server
               */
 -            const httpServer = createHTTPServer(server.handle.bind(server));
-+            // @ts-expect-error type à corriger
++            // @ts-expect-error -- type à améliorer.
 +            const httpServer = createHTTPServer(this.#httpOptions, server.handle.bind(server));
++            // @ts-expect-error -- type à améliorer.
              server.setNodeServer(httpServer);
              const logger = await app.container.make('logger');
              const emitter = await app.container.make('emitter');
 diff --git a/build/src/ignitor/main.d.ts b/build/src/ignitor/main.d.ts
-index 6b2596de4b2e9d71b0c2f747ab2e9a5547dae721..d0d6dbb5d540978888ff0f4f7ac7929993f501da 100644
+index 6b2596de4b2e9d71b0c2f747ab2e9a5547dae721..cca1fbbe750b014ce93ea26f2669dd0dd2f5c644 100644
 --- a/build/src/ignitor/main.d.ts
 +++ b/build/src/ignitor/main.d.ts
-@@ -1,3 +1,6 @@
-+import type { ServerOptions as HttpServerOptions } from 'node:http';
-+import type { ServerOptions as HttpsServerOptions } from 'node:https';
-+import type { SecureServerOptions } from 'node:http2';
+@@ -1,6 +1,6 @@
  import { AceProcess } from './ace.js';
  import { TestRunnerProcess } from './test.js';
- import { HttpServerProcess } from './http.js';
-@@ -27,7 +30,9 @@ export declare class Ignitor {
+-import { HttpServerProcess } from './http.js';
++import { HttpServerProcess, HttpServerProcessCtorOptions } from './http.js';
+ import type { AppEnvironments } from '../../types/app.js';
+ import type { ApplicationService, IgnitorOptions } from '../types.js';
+ /**
+@@ -27,7 +27,7 @@ export declare class Ignitor {
      /**
       * Get instance of the HTTPServerProcess
       */
 -    httpServer(): HttpServerProcess;
-+    httpServer(options?: {
-+        https: boolean | 2;
-+    } & (HttpServerOptions | HttpsServerOptions | SecureServerOptions)): HttpServerProcess;
++    httpServer(options?: HttpServerProcessCtorOptions): HttpServerProcess;
      /**
       * Get an instance of the AceProcess class
       */
