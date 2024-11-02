@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, useForm, usePage } from "@inertiajs/vue3";
+import { watch } from "vue";
 
+import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
 import TextInput from "@phisyx/flex-uikit-vue/textinput/TextInput.vue";
@@ -11,6 +13,19 @@ let form = useForm({
 	password: "",
 	remember_me: false,
 });
+
+function try_auth() {
+	form.post(page.url);
+}
+
+watch(
+	() => page.props.errors?.global,
+	(is_err) => {
+		if (is_err) {
+			form.reset();
+		}
+	}
+);
 </script>
 
 <template>
@@ -21,18 +36,23 @@ let form = useForm({
 		class="[ scroll:y flex! flex/center:full mx:a pos-r ]"
 	>
 		<section class="[ flex! gap=3 min-w=43 ]">
-			<div v-if="page.props.errors?.global">
-				{{ page.props.errors.global }}
-			</div>
-
 			<h1 class="[ f-size=24px ]">Se connecter</h1>
+
+			<Alert
+				v-if="page.props.errors?.global"
+				:closable="false"
+				:close-after-seconds="10"
+				type="error"
+			>
+				{{ page.props.errors.global }}
+			</Alert>
 
 			<form
 				:action="page.url"
 				id="login-form"
 				method="POST"
 				class="[ ov:h flex! border/radius=1 ]"
-				@submit.prevent="form.post(page.url)"
+				@submit.prevent="try_auth"
 			>
 				<TextInput
 					v-model="form.identifier"

@@ -20,7 +20,7 @@ export default class AuthLogoutWebController {
 		// session dans ce context.
 		// biome-ignore lint/style/noNonNullAssertion: lire la note ci-haut.
 		let user = AuthLogoutOutputDTO.from(ctx.auth.user!);
-		return ctx.inertia.render("auth/Logout", { user });
+		return ctx.inertia.render("auth/logout", { user });
 	}
 
 	public async handle(ctx: HttpContext) {

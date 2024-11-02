@@ -22,7 +22,7 @@ import { AccountRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
 
 export default class AuthLoginWebController {
 	public async view(ctx: HttpContext) {
-		return ctx.inertia.render("auth/Login");
+		return ctx.inertia.render("auth/login");
 	}
 
 	// TODO: à séparer
@@ -61,10 +61,6 @@ export default class AuthLoginWebController {
 						});
 					}
 					break;
-			}
-
-			if (ctx.request.header("x-inertia")) {
-				return ctx.inertia.location(ctx.request.url());
 			}
 
 			return ctx.response.redirect().back();

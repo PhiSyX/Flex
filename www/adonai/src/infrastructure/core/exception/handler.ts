@@ -25,9 +25,9 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
 	protected statusPages: Record<StatusPageRange, StatusPageRenderer> = {
 		"404": (error, { inertia }) =>
-			inertia.render("errors/NotFound", { error }),
+			inertia.render("errors/not_found", { error }),
 		"500..599": (error, { inertia }) =>
-			inertia.render("errors/ServerError", { error }),
+			inertia.render("errors/server", { error }),
 	};
 
 	async handle(error: unknown, ctx: HttpContext) {

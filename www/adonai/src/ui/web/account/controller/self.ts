@@ -20,7 +20,7 @@ export default class AccountSelfWebController {
 		// session dans ce context.
 		// biome-ignore lint/style/noNonNullAssertion: lire la note ci-haut.
 		let user = AccountSelfOutputDTO.from(ctx.auth.user!);
-		return ctx.inertia.render("account/Self", {
+		return ctx.inertia.render("account/self", {
 			user,
 			links: {
 				logout: {

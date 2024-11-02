@@ -13,7 +13,7 @@ defineProps<{ user: User; links: Links }>();
 <template>
 	<Head title="Mon compte" />
 
-	<div>
+	<div class="[ mx:a ]">
 		<h1>Mon compte</h1>
 
 		<pre>{{ user }}</pre>
@@ -23,3 +23,11 @@ defineProps<{ user: User; links: Links }>();
 		</Link>
 	</div>
 </template>
+
+<style lang="scss">
+@use "../../assets/scss/pages/account/self.scss";
+</style>
+
+<style lang="scss" scoped>
+@use "../../assets/scss/pages/account/self.scoped.scss";
+</style>
