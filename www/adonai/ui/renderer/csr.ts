@@ -17,26 +17,36 @@ import { resolvePageComponent } from "@adonisjs/inertia/helpers";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { createSSRApp, h } from "vue";
 
-import flex_uikit from "@phisyx/flex-uikit-vue";
+import { use_app, use_layout } from "./app";
 
-const appName = import.meta.env.VITE_APP_NAME || "Flex";
+const APPLICATION_NAME = import.meta.env.VITE_APP_NAME || "Flex";
 
 createInertiaApp({
 	progress: { color: "#5468FF" },
 
-	title: (title) => `${title} - ${appName}`,
+	title(title) {
+		return `${title} - ${APPLICATION_NAME}`;
+	},
 
-	resolve: (name) => {
-		return resolvePageComponent(
+	async resolve(name) {
+		let page_component = await resolvePageComponent(
 			`../pages/${name}.vue`,
 			import.meta.glob<DefineComponent>("../pages/**/*.vue"),
 		);
+		use_layout(name, page_component);
+		return page_component;
 	},
 
 	setup({ el, App, props, plugin }) {
-		let app = createSSRApp({ render: () => h(App, props) });
-		app.use(plugin);
-		app.use(flex_uikit);
+		let root_component = {
+			render: () => h(App, props),
+		};
+		let app = use_app(
+			// TODO: utiliser `createApp` pour l'application de Chat, car il n'a
+			// pas besoin d'être rendu côté serveur.
+			createSSRApp(root_component),
+			plugin,
+		);
 		app.mount(el);
 		return app;
 	},

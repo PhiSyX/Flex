@@ -45,10 +45,4 @@ export default defineConfig({
 			},
 		},
 	},
-
-	resolve: {
-		alias: {
-			"~/": `${getDirname(import.meta.url)}/ui`,
-		},
-	},
 });

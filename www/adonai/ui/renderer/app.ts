@@ -8,35 +8,32 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { DefineComponent } from "vue";
+import type { App, DefineComponent, Plugin } from "vue";
 
-import { createInertiaApp } from "@inertiajs/vue3";
-import { renderToString } from "@vue/server-renderer";
-import { createSSRApp, h } from "vue";
+import flex_uikit from "@phisyx/flex-uikit-vue";
 
-import { use_app, use_layout } from "./app";
+import SiteLayout from "../layouts/site.vue";
 
-// biome-ignore lint/suspicious/noExplicitAny: adonisjs - @inertiajs/vue
-export default function render(page: any) {
-	return createInertiaApp({
-		page,
-		render: renderToString,
+export function use_app(app: App, plugin: Plugin<[]>) {
+	return app.use(plugin).use(flex_uikit);
+}
 
-		resolve(name) {
-			let pages = import.meta.glob<DefineComponent>("../pages/**/*.vue", {
-				eager: true,
-			});
-			let page_component = pages[`../pages/${name}.vue`];
-			use_layout(name, page_component);
-			return page_component;
-		},
+export function use_layout(name: string, /*mut*/ page: DefineComponent) {
+	if (!page.default) {
+		throw new Error(`La page ${name} ne fournit pas un export par défaut`);
+	}
 
-		setup({ App, props, plugin }) {
-			let root_component = {
-				render: () => h(App, props),
-			};
-			let app = use_app(createSSRApp(root_component), plugin);
-			return app;
-		},
-	});
+	if (page.default.layout) {
+		return;
+	}
+
+	switch (name) {
+		// TODO: gérer les autres layouts ici
+		//
+		// Clause par défaut.
+		default:
+		{
+			page.default.layout = SiteLayout;
+		} break;
+	}
 }
