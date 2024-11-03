@@ -10,7 +10,7 @@ import type {
 
 import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
 import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat/dialogs/change_formats_colors";
-import { vMutation } from "@phisyx/flex-vue-directives";
+import vMutation from "@phisyx/flex-vue-directives/v-mutation";
 import { computed, reactive } from "vue";
 import {
 	use_chat_store,

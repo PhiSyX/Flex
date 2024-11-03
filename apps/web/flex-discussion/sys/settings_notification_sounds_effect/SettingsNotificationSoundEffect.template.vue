@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { vModelSelect } from "@phisyx/flex-vue-directives";
+import vModelSelect from "@phisyx/flex-vue-directives/v-model-select";
 import { ref } from "vue";
 
 import AudioSound from "@phisyx/flex-uikit-vue/audiosound/AudioSound.vue";
