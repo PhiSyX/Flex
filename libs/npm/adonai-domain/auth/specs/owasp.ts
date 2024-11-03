@@ -8,19 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Result } from "@phisyx/flex-safety";
+// -------- //
+// Constant //
+// -------- //
 
-import type { UserRepositoryException } from "#auth/error/user_repository";
-import type { Users } from "#types/database";
-import type { User } from "#auth/user";
+/// La longueur maximale du mot de passe ne doit pas être trop basse, car
+/// cela empêchera les utilisateurs de créer des mots de passe. Une longueur
+/// maximale courante est de 64 caractères en raison des limitations de
+/// certains algorithmes de hachage.
+export const PASSWORD_LENGTH_MAX: number = 64;
 
-export abstract class UserRepository {
-	abstract find_by_identifier(
-		identifier: string,
-	): Promise<Result<Users, UserRepositoryException>>;
-
-	abstract is_name_exists(name: string): Promise<boolean>;
-	abstract is_email_exists(email: string): Promise<boolean>;
-
-	abstract insert(user: User): Promise<boolean>;
-}
+/// Les mots de passe de moins de 8 caractères sont considérés comme faibles
+/// d'après les recommendations de l'OWASP.
+export const PASSWORD_LENGTH_MIN: number = 8;

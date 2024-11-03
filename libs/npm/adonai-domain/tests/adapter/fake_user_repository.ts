@@ -35,6 +35,14 @@ export class FakeUserRepository implements UserRepository {
 		).as<Users, UserRepositoryException>();
 	}
 
+	async is_email_exists(email: string) {
+		return false;
+	}
+
+	async is_name_exists(email: string) {
+		return false;
+	}
+
 	async insert(user: User): Promise<boolean> {
 		this.users.set(user.id, user as unknown as Users);
 		return true;

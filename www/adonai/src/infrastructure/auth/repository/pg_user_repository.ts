@@ -43,6 +43,24 @@ export class PgUserRepository implements UserRepository {
 		).as<Users, UserRepositoryException>();
 	}
 
+	async is_email_exists(email: string) {
+		let record = await this.database
+			.selectFrom("users")
+			.select("email")
+			.where("email", "=", email)
+			.executeTakeFirst();
+		return (record && record.email === email) ?? false;
+	}
+
+	async is_name_exists(name: string) {
+		let record = await this.database
+			.selectFrom("users")
+			.select("name")
+			.where("name", "=", name)
+			.executeTakeFirst();
+		return (record && record.name === name) ?? false;
+	}
+
 	async insert(user: User): Promise<boolean> {
 		await this.database.insertInto("users").values(user).execute();
 		return true;

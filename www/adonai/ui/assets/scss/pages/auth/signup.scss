@@ -9,6 +9,7 @@ body:has(#signup-page) {
 		gap: 1px;
 		border: fx.space(1) solid var(--login-form-bg);
 		box-shadow: 2px 2px 4px var(--login-form-shadow);
+		max-width: 400px;
 	}
 
 	form div {

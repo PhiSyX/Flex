@@ -20,6 +20,12 @@ import { AccountRouteWebID } from "@phisyx/adonai-domain/account/http.js";
 import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login.js";
 import { AuthLoginFailedError } from "@phisyx/adonai-domain/auth/error/login_failed.js";
 import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+import {
+	PASSWORD_LENGTH_MAX,
+	PASSWORD_LENGTH_MIN,
+} from "@phisyx/adonai-domain/auth/specs/owasp.js";
+// biome-ignore lint/style/useImportType: utilisé via le décorateur @inject
+import { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher.js";
 
 export default class AuthLoginWebController {
 	public async view(ctx: HttpContext) {
@@ -33,14 +39,21 @@ export default class AuthLoginWebController {
 	// TODO: à séparer
 	static validator = vine.compile(
 		vine.object({
-			identifier: vine.string().minLength(3).maxLength(30),
-			password: vine.string().minLength(8).maxLength(64),
+			identifier: vine.string().alphaNumeric().minLength(3).maxLength(30),
+			password: vine
+				.string()
+				.minLength(PASSWORD_LENGTH_MIN)
+				.maxLength(PASSWORD_LENGTH_MAX),
 			remember_me: vine.boolean().optional(),
 		}),
 	);
 
 	@inject()
-	public async handle(ctx: HttpContext, auth_login_action: AuthLoginAction) {
+	public async handle(
+		ctx: HttpContext,
+		auth_login_action: AuthLoginAction,
+		password_hasher: PasswordHasher,
+	) {
 		let login_form = await ctx.request.validateUsing(
 			AuthLoginWebController.validator,
 		);
@@ -52,11 +65,14 @@ export default class AuthLoginWebController {
 			logger.use("app").warn(login_form, err.message);
 
 			switch (err.kind) {
-				// NOTE: C'est voulu qu'il n'y ait pas de `break` après cette
-				//       clause switch.
+				// NOTE(lint): C'est voulu qu'il n'y ait pas de `break` après
+				// cette clause switch.
+				//
 				// biome-ignore lint/suspicious/noFallthroughSwitchClause: ^^^^
 				case AuthLoginFailedError.InvalidIdentifier: {
-					await hash.use("argon2").make("0123456789");
+					// NOTE(security): Il s'agit d'une mesure de sécurité visant
+					// à prévenir les attaques temporelles.
+					await password_hasher.hash("0123456789");
 				}
 
 				case AuthLoginFailedError.InvalidCredentials:
