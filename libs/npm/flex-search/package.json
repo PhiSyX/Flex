@@ -3,6 +3,7 @@
 	"description": "Utilitaires liés à la recherche",
 	"authors": "Mike 'PhiSyX' S.",
 	"version": "0.1.0",
+	"type": "module",
 	"scripts": {
 		"build": "tsc",
 		"test:unit": "vitest run"

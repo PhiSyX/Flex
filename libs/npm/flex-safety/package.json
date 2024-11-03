@@ -3,6 +3,7 @@
 	"description": "Utilitaires de safety",
 	"authors": "Mike 'PhiSyX' S.",
 	"version": "0.1.0",
+	"type": "module",
 	"devDependencies": {
 		"@phisyx/flex-code-quality": "workspace:",
 		"typescript": "catalog:",

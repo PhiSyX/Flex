@@ -3,6 +3,7 @@
 	"description": "Flex Helpers",
 	"version": "0.1.0",
 	"author": "Mike 'PhiSyX' S.",
+	"type": "module",
 	"devDependencies": {
 		"@phisyx/flex-code-quality": "workspace:"
 	}
