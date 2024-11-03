@@ -21,7 +21,11 @@ import type {
  * passes dans la Vue.
  */
 export class AccountSelfOutputDTO {
-	static from(user: Users): AccountSelfOutputDTO {
+	static from(user?: Users): AccountSelfOutputDTO | null {
+		if (!user) {
+			return null;
+		}
+
 		return new AccountSelfOutputDTO(
 			user.account_status as unknown as UsersAccountStatus,
 			user.avatar,

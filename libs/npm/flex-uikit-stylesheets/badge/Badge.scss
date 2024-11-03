@@ -6,6 +6,7 @@
 	(
 		className: border-radius,
 		values: (
+			1,
 			3,
 		),
 	)
@@ -14,5 +15,38 @@
 @layer flex-uikit {
 	@include fx.class("fx:badge") {
 		padding: calc(#{fx.space(1)} / 2) fx.space(1);
+		text-transform: uppercase;
+		background: var(--badge-bg) !important;
+		color: var(--badge-color, var(--default-text-color)) !important;
+
+		&:is(small) {
+			font-size: 12px;
+		}
+	}
+
+	@include fx.class("fx:badge/shadowed") {
+		box-shadow: var(--box-shadow-s);
+	}
+
+	@include fx.class("fx:badge/red") {
+		--badge-bg: var(--color-red300);
+	}
+
+	@include fx.class("fx:badge/green") {
+		--badge-bg: var(--color-green500);
+	}
+
+	@include fx.class("fx:badge/blue") {
+		--badge-bg: var(--color-blue400);
+	}
+
+	@include fx.class("fx:badge/black") {
+		--badge-bg: var(--color-black);
+		--badge-color: var(--color-white);
+	}
+
+	@include fx.class("fx:badge/white") {
+		--badge-bg: var(--color-white);
+		--badge-color: var(--color-black);
 	}
 }

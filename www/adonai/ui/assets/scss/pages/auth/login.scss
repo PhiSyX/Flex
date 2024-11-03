@@ -28,12 +28,14 @@ body:has(#login-page) {
 		}
 	}
 
-	form[id] ~ button[form][type="submit"] {
+	form[id] ~ button {
 		border-radius: 4px;
 		background: var(--login-button-submit-bg);
 		transition: background-color 200ms;
 		color: var(--login-button-submit-color);
+	}
 
+	form[id] ~ button[form][type="submit"] {
 		svg {
 			max-width: fx.space(3);
 		}
@@ -58,6 +60,6 @@ body:has(#login-page) {
 	}
 }
 
-.remember-me {
+#login-page .remember-me {
 	line-height: 1.2;
 }

@@ -2,6 +2,7 @@
 
 @include fx.use(
 	"align-jc:se",
+	"align-t:right",
 	"align-t:center",
 	"b:none",
 	"cursor:pointer",
@@ -11,7 +12,8 @@
 	"mx:a",
 	"pos-r",
 	"ov:h",
-	"scroll:y"
+	"scroll:y",
+	"w:full"
 );
 
 @include fx.use(

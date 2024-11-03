@@ -12,14 +12,17 @@ import type { ApplicationService } from "@adonisjs/core/types";
 
 import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login.js";
 import { PasswordChecker } from "@phisyx/adonai-domain/auth/contract/password_checker.js";
+import { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher.js";
 import { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository.js";
 import { AdonisPasswordChecker } from "../password_checker.js";
+import { AdonisPasswordHasher } from "../password_hasher.js";
 import { PgUserRepository } from "../repository/pg_user_repository.js";
 
 export default class AuthManagementProvider {
 	static maps = [
 		[UserRepository, PgUserRepository],
 		[PasswordChecker, AdonisPasswordChecker],
+		[PasswordHasher, AdonisPasswordHasher],
 	];
 
 	constructor(protected app: ApplicationService) {}

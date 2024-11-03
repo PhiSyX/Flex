@@ -11,11 +11,13 @@
 import type { InferSharedProps } from "@adonisjs/inertia/types";
 
 import { defineConfig } from "@adonisjs/inertia";
+import { AccountSelfOutputDTO } from "@phisyx/adonai-domain/account/dto/self.js";
 
 const inertiaConfig = defineConfig({
 	rootView: "inertia_layout",
 
 	sharedData: {
+		current_user: (ctx) => AccountSelfOutputDTO.from(ctx.auth.user),
 		errors: (ctx) => ctx.session.flashMessages.get("errors"),
 	},
 

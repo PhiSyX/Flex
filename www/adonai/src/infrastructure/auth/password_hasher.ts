@@ -8,19 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { HttpContext } from "@adonisjs/core/http";
+import hash from "@adonisjs/core/services/hash";
+import type { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher.js";
 
-import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
-
-export default class AccountSelfWebController {
-	public async view(ctx: HttpContext) {
-		return ctx.inertia.render("account/self", {
-			links: {
-				logout: {
-					href: AuthRouteWebID.Logout,
-					type: "delete" as const,
-				},
-			},
-		});
+export class AdonisPasswordHasher implements PasswordHasher {
+	hash(raw_password: string): Promise<string> {
+		return hash.use("argon2").make(raw_password);
 	}
 }

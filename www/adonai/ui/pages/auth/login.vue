@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { InferPageProps } from "@adonisjs/inertia/types";
+import type AuthLoginWebController from "#ui/web/auth/controller/login";
+
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import { watch } from "vue";
 
@@ -6,6 +9,9 @@ import Alert from "@phisyx/flex-uikit-vue/alert/Alert.vue";
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import InputLabelSwitch from "@phisyx/flex-uikit-vue/input/InputLabelSwitch.vue";
 import TextInput from "@phisyx/flex-uikit-vue/textinput/TextInput.vue";
+import InertiaLink from "../../components/link/InertiaLink.vue";
+
+type Links = InferPageProps<AuthLoginWebController, "view">["links"];
 
 let page = usePage();
 let form = useForm({
@@ -13,6 +19,8 @@ let form = useForm({
 	password: "",
 	remember_me: false,
 });
+
+defineProps<{ links: Links }>();
 
 function try_auth() {
 	form.post(page.url);
@@ -36,7 +44,7 @@ watch(
 		class="[ scroll:y flex! flex/center:full mx:a pos-r ]"
 	>
 		<section class="[ flex! gap=3 min-w=43 ]">
-			<h1 class="[ f-size=24px ]">Se connecter</h1>
+			<h1 class="[ f-size=24px ]">Connexion</h1>
 
 			<Alert
 				v-if="page.props.errors?.global"
@@ -94,6 +102,12 @@ watch(
 			>
 				<span class="[ flex:full ]">Se connecter</span>
 			</Button>
+
+			<hr class="w:full" text="OU">
+
+			<InertiaLink :href="links.register.href" as="button" class="[ p=2 ]">
+				Je n'ai pas de compte
+			</InertiaLink>
 		</section>
 	</main>
 </template>
