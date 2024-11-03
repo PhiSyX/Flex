@@ -1,0 +1,24 @@
+diff --git a/build/index.js b/build/index.js
+index 3b91dbd3cbca8bd0181e7285dcf6c8dd78df5033..11da75ccc31bdd683e080042fbf7ffff6eff2d58 100644
+--- a/build/index.js
++++ b/build/index.js
+@@ -346,7 +346,7 @@ var Bundler = class {
+     `
+     );
+     await fs.writeFile(aceFileLocation, aceFileContent);
+-    this.#logger.info("rewrited ace file", { suffix: this.#getRelativeName(aceFileLocation) });
++    this.#logger.info("created ace file", { suffix: this.#getRelativeName(aceFileLocation) });
+   }
+   /**
+    * Set a custom CLI UI logger
+@@ -644,8 +644,9 @@ var DevServer = class {
+         }
+       }
+       if (this.#isAdonisJSReadyMessage(message)) {
++        const protocol = message.protocol;
+         const host = message.host === "0.0.0.0" ? "127.0.0.1" : message.host;
+-        const displayMessage = ui3.sticker().useColors(this.#colors).useRenderer(this.#logger.getRenderer()).add(`Server address: ${this.#colors.cyan(`http://${host}:${message.port}`)}`);
++        const displayMessage = ui3.sticker().useColors(this.#colors).useRenderer(this.#logger.getRenderer()).add(`Server address: ${this.#colors.cyan(`${protocol}://${host}:${message.port}`)}`);
+         const watchMode = this.#options.hmr ? "HMR" : this.#isWatching ? "Legacy" : "None";
+         displayMessage.add(`Watch Mode: ${this.#colors.cyan(watchMode)}`);
+         if (message.duration) {

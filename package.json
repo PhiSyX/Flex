@@ -24,7 +24,8 @@
 		"patchedDependencies": {
 			"knex@3.1.0": "patches/knex@3.1.0.patch",
 			"@adonisjs/core@6.14.1": "patches/@adonisjs__core@6.14.1.patch",
-			"@adonisjs/http-server@7.2.5": "patches/@adonisjs__http-server@7.2.5.patch"
+			"@adonisjs/http-server@7.2.5": "patches/@adonisjs__http-server@7.2.5.patch",
+			"@adonisjs/assembler@7.8.2": "patches/@adonisjs__assembler@7.8.2.patch"
 		}
 	}
 }
