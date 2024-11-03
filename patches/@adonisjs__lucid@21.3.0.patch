@@ -1,0 +1,107 @@
+diff --git a/build/providers/database_provider.d.ts b/build/providers/database_provider.d.ts
+index d6f6d9d7596869d87bcc7e62452539dc1ff3906b..ff7ac6c5fd55aed8aafc35c970d461bb993f193a 100644
+--- a/build/providers/database_provider.d.ts
++++ b/build/providers/database_provider.d.ts
+@@ -1,5 +1,6 @@
+ import type { FieldContext } from '@vinejs/vine/types';
+-import type { ApplicationService } from '@adonisjs/core/types';
++import type { ApplicationService, ContainerBindings } from '@adonisjs/core/types';
++import type { Container } from '@adonisjs/core/container';
+ import { Database } from '../src/database/main.js';
+ import { DatabaseTestUtils } from '../src/test_utils/database.js';
+ import type { DbQueryEventNode } from '../src/types/database.js';
+@@ -31,7 +32,7 @@ declare module '@vinejs/vine' {
+          * - The callback must return "true", if the value is unique (does not exist).
+          * - The callback must return "false", if the value is not unique (already exists).
+          */
+-        unique(callback: (db: Database, value: string, field: FieldContext) => Promise<boolean>): this;
++        unique(callback: (db: Database, value: string, field: FieldContext, container: Container<ContainerBindings>) => Promise<boolean>): this;
+         /**
+          * Ensure the value is exists inside the database by self
+          * executing a query.
+@@ -39,7 +40,7 @@ declare module '@vinejs/vine' {
+          * - The callback must return "false", if the value exists.
+          * - The callback must return "true", if the value does not exist.
+          */
+-        exists(callback: (db: Database, value: string, field: FieldContext) => Promise<boolean>): this;
++        exists(callback: (db: Database, value: string, field: FieldContext, container: Container<ContainerBindings>) => Promise<boolean>): this;
+     }
+     interface VineNumber extends VineLucidBindings {
+     }
+@@ -60,7 +61,7 @@ export default class DatabaseServiceProvider {
+     /**
+      * Registers validation rules for VineJS
+      */
+-    protected registerVineJSRules(db: Database): Promise<void>;
++    protected registerVineJSRules(db: Database, container: Container<ContainerBindings>): Promise<void>;
+     /**
+      * Register TestUtils database macro
+      */
+diff --git a/build/providers/database_provider.js b/build/providers/database_provider.js
+index 665e165a6a29a2338a0b46b9e7ecaee75c867d81..e212b25e079342262000d7f0d8d4a55209e22ee9 100644
+--- a/build/providers/database_provider.js
++++ b/build/providers/database_provider.js
+@@ -32,10 +32,10 @@ export default class DatabaseServiceProvider {
+     /**
+      * Registers validation rules for VineJS
+      */
+-    async registerVineJSRules(db) {
++    async registerVineJSRules(db, container) {
+         if (this.app.usingVineJS) {
+             const { defineValidationRules } = await import('../src/bindings/vinejs.js');
+-            defineValidationRules(db);
++            defineValidationRules(db, container);
+         }
+     }
+     /**
+@@ -85,7 +85,7 @@ export default class DatabaseServiceProvider {
+         await this.prettyPrintDebugQueries(db);
+         await this.registerTestUtils();
+         await this.registerReplBindings();
+-        await this.registerVineJSRules(db);
++        await this.registerVineJSRules(db, this.app.container);
+     }
+     /**
+      * Gracefully close connections during shutdown
+diff --git a/build/src/bindings/vinejs.d.ts b/build/src/bindings/vinejs.d.ts
+index 6695fe0a3bf29ecc2fc23938b0ad33f4d6c1126f..955227288a09b66d566e3ea027540c6f71017d02 100644
+--- a/build/src/bindings/vinejs.d.ts
++++ b/build/src/bindings/vinejs.d.ts
+@@ -1,6 +1,8 @@
+ import type { Database } from '../database/main.js';
++import type { ContainerBindings } from '@adonisjs/core/types';
++import type { Container } from '@adonisjs/core/container';
+ /**
+  * Defines the "unique" and "exists" validation rules with
+  * VineJS.
+  */
+-export declare function defineValidationRules(db: Database): void;
++export declare function defineValidationRules(db: Database, container: Container<ContainerBindings>): void;
+diff --git a/build/src/bindings/vinejs.js b/build/src/bindings/vinejs.js
+index aae07fe3dfe3035b9b2a85d410f5c10d10207cfb..ded22f961e2a3494963a2354df99e92330f9adc2 100644
+--- a/build/src/bindings/vinejs.js
++++ b/build/src/bindings/vinejs.js
+@@ -11,12 +11,12 @@ import vine, { VineNumber, VineString } from '@vinejs/vine';
+  * Defines the "unique" and "exists" validation rules with
+  * VineJS.
+  */
+-export function defineValidationRules(db) {
++export function defineValidationRules(db, container) {
+     const uniqueRule = vine.createRule(async (value, checker, field) => {
+         if (!field.isValid) {
+             return;
+         }
+-        const isUnique = await checker(db, value, field);
++        const isUnique = await checker(db, value, field, container);
+         if (!isUnique) {
+             field.report('The {{ field }} has already been taken', 'database.unique', field);
+         }
+@@ -25,7 +25,7 @@ export function defineValidationRules(db) {
+         if (!field.isValid) {
+             return;
+         }
+-        const exists = await checker(db, value, field);
++        const exists = await checker(db, value, field, container);
+         if (!exists) {
+             field.report('The selected {{ field }} is invalid', 'database.exists', field);
+         }
