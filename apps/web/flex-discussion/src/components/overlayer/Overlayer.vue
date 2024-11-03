@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CSSProperties, HTMLAttributes } from "vue";
 
-import { vTrap } from "@phisyx/flex-vue-directives";
+import vTrap from "@phisyx/flex-vue-directives/v-trap";
 import { computed, shallowRef } from "vue";
 import { use_overlayer_store } from "~/store";
 import { use_overlayer } from "./Overlayer.hooks";

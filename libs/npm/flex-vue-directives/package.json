@@ -5,6 +5,16 @@
 	"author": "Mike 'PhiSyX' S.",
 	"type": "module",
 	"license": "MPL-2.0",
+	"exports": {
+		"./v-intersection": "./src/intersection.ts",
+		"./v-mutation": "./src/mutation.ts",
+		"./v-resize": "./src/resize.ts",
+		"./v-model-select": "./src/select_multiple_model_object.ts",
+		"./v-trap": "./src/trap.ts"
+	},
+	"scripts": {
+		"build": "vue-tsc && vite build"
+	},
 	"dependencies": {
 		"@phisyx/flex-asserts": "workspace:",
 		"@phisyx/flex-safety": "workspace:",
@@ -17,8 +27,5 @@
 		"sass": "catalog:",
 		"typescript": "catalog:",
 		"vue-tsc": "catalog:"
-	},
-	"scripts": {
-		"build": "vue-tsc && vite build"
 	}
 }

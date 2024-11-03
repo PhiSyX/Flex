@@ -8,7 +8,7 @@ import {
 } from "@phisyx/flex-uikit/image/cache";
 import { error_fallback, load_image } from "@phisyx/flex-uikit/image/handler";
 import { get_img_src, parse_image_size } from "@phisyx/flex-uikit/image/view";
-import { vIntersection } from "@phisyx/flex-vue-directives";
+import vIntersection from "@phisyx/flex-vue-directives/v-intersection";
 import {
 	computed,
 	onMounted,

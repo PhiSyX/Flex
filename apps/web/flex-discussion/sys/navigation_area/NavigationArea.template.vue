@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Room } from "@phisyx/flex-chat/room";
 
-import { vResize } from "@phisyx/flex-vue-directives";
+import vResize from "@phisyx/flex-vue-directives/v-resize";
 import { ref } from "vue";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
