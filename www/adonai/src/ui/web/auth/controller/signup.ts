@@ -8,48 +8,76 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { DB } from "@phisyx/adonai-domain/types/database.js";
 import type { HttpContext } from "@adonisjs/core/http";
 
 import { inject } from "@adonisjs/core";
-import hash from "@adonisjs/core/services/hash";
-import logger from "@adonisjs/core/services/logger";
 import vine from "@vinejs/vine";
 
-import { AccountRouteWebID } from "@phisyx/adonai-domain/account/http.js";
 // biome-ignore lint/style/useImportType: utilisé via le décorateur @inject
-import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login.js";
-import { AuthLoginFailedError } from "@phisyx/adonai-domain/auth/error/login_failed.js";
+import { AuthSignupAction } from "@phisyx/adonai-domain/auth/action/signup.js";
 import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+import { Kysely } from "kysely";
 
-export default class AuthLoginWebController {
+export default class AuthSignupWebController {
 	public async view(ctx: HttpContext) {
-		return ctx.inertia.render("auth/login", {
+		return ctx.inertia.render("auth/signup", {
 			links: {
-				register: { href: AuthRouteWebID.Signup },
+				login: { href: AuthRouteWebID.Login },
 			},
 		});
 	}
 
-	// TODO: à séparer
+	// TODO: à améliorer, à séparer
 	static validator = vine.compile(
 		vine.object({
-			identifier: vine.string().minLength(3).maxLength(30),
+			username: vine
+				.string()
+				.minLength(3)
+				.maxLength(30)
+				.unique(async (_lucid, username, __fields, container) => {
+					let db = await container.make(Kysely<DB>);
+					let rec = await db
+						.selectFrom("users")
+						.select("name")
+						.where("name", "=", username)
+						.executeTakeFirst();
+					return rec?.name !== username;
+				}),
+			email: vine
+				.string()
+				.email()
+				.unique(async (_lucid, email, __fields, container) => {
+					let db = await container.make(Kysely<DB>);
+					let rec = await db
+						.selectFrom("users")
+						.select("email")
+						.where("email", "=", email)
+						.executeTakeFirst();
+					return rec?.email !== email;
+				}),
 			password: vine.string().minLength(8).maxLength(64),
+			password_confirmation: vine
+				.string()
+				.confirmed({ confirmationField: "password" }),
 			remember_me: vine.boolean().optional(),
 		}),
 	);
 
 	@inject()
-	public async handle(ctx: HttpContext, auth_login_action: AuthLoginAction) {
-		let login_form = await ctx.request.validateUsing(
-			AuthLoginWebController.validator,
+	public async handle(ctx: HttpContext, auth_signup_action: AuthSignupAction) {
+		let signup_form = await ctx.request.validateUsing(
+			AuthSignupWebController.validator,
 		);
-		let maybe_user = await auth_login_action.connect(login_form);
 
+		let is_registered = await auth_signup_action.register(signup_form);
+		return ctx.response.redirect(AuthRouteWebID.Login);
+
+		/*
 		if (maybe_user.is_err()) {
 			let err = maybe_user.unwrap_err();
 
-			logger.use("app").warn(login_form, err.message);
+			logger.use("app").warn(signup_form, err.message);
 
 			switch (err.kind) {
 				// NOTE: C'est voulu qu'il n'y ait pas de `break` après cette
@@ -73,7 +101,7 @@ export default class AuthLoginWebController {
 
 		let user = maybe_user.unwrap();
 
-		await ctx.auth.use("web").login(user, login_form.remember_me);
+		await ctx.auth.use("web").login(user, signup_form.remember_me);
 
 		let redirect_url: string = ctx.request.input(
 			"r",
@@ -88,5 +116,6 @@ export default class AuthLoginWebController {
 		}
 
 		return ctx.response.redirect(redirect_url);
+		*/
 	}
 }

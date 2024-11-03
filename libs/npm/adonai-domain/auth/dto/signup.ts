@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export enum AuthRouteWebID {
-	Login = "/auth",
-	Logout = "/auth/logout",
-	Signup = "/auth/signup",
+export interface AuthSignupInputDTO {
+	username: string;
+	email: string;
+	password: string;
 }

@@ -10,6 +10,7 @@
 
 import type { UserRepository } from "#auth/contract/user_repository";
 import type { Users } from "#types/database";
+import type { User } from "#auth/user";
 
 import { Result } from "@phisyx/flex-safety";
 
@@ -34,7 +35,8 @@ export class FakeUserRepository implements UserRepository {
 		).as<Users, UserRepositoryException>();
 	}
 
-	async insert(user: Users): Promise<void> {
-		this.users.set(user.id, user);
+	async insert(user: User): Promise<boolean> {
+		this.users.set(user.id, user as unknown as Users);
+		return true;
 	}
 }

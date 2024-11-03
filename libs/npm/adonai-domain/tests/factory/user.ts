@@ -8,14 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { IdGenerator } from "../../shared/id_generator";
+import { User } from "#auth/user";
+import { IdGenerator } from "#shared/id_generator";
 
 import type { Users } from "#types/database";
 
 let id_generator = new IdGenerator();
 
-export const users: Array<Users> = [
-	{
+export const users: Array<User> = [
+	User.from_database({
 		account_status: "private" as unknown as Users["account_status"],
 		avatar: null,
 		avatar_display_for: "public" as unknown as Users["avatar_display_for"],
@@ -32,8 +33,8 @@ export const users: Array<Users> = [
 		password: "abcdefghijklmnopqrstuvwxyz",
 		role: "user" as unknown as Users["role"],
 		updated_at: new Date() as unknown as Users["updated_at"],
-	},
-	{
+	}),
+	User.from_database({
 		account_status: "private" as unknown as Users["account_status"],
 		avatar: null,
 		avatar_display_for: "public" as unknown as Users["avatar_display_for"],
@@ -50,5 +51,5 @@ export const users: Array<Users> = [
 		password: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 		role: "user" as unknown as Users["role"],
 		updated_at: new Date() as unknown as Users["updated_at"],
-	}
+	}),
 ];

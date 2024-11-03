@@ -12,6 +12,7 @@ import router from "@adonisjs/core/services/router";
 
 import { middleware } from "#start/kernel";
 import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+import AuthSignupWebController from "#ui/web/auth/controller/signup";
 
 const AuthLoginWebController = () => import("#ui/web/auth/controller/login");
 const AuthLogoutWebController = () => import("#ui/web/auth/controller/logout");
@@ -26,6 +27,11 @@ router
 			.get(AuthRouteWebID.Login, [AuthLoginWebController, "view"])
 			.as("web.auth.login");
 		router.post(AuthRouteWebID.Login, [AuthLoginWebController]);
+
+		router
+			.get(AuthRouteWebID.Signup, [AuthSignupWebController, "view"])
+			.as("web.auth.signup");
+		router.post(AuthRouteWebID.Signup, [AuthSignupWebController]);
 	})
 	.middleware(middleware.guest());
 

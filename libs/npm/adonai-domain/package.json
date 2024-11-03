@@ -10,7 +10,9 @@
 		"codegen": "kysely-codegen --out-file=types/database.ts"
 	},
 	"imports": {
+		"#account/*": "./account/*.js",
 		"#auth/*": "./auth/*.js",
+		"#shared/*": "./shared/*.js",
 		"#types/*": "./types/*.js"
 	},
 	"dependencies": {

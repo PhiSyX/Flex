@@ -11,6 +11,7 @@
 import type { ApplicationService } from "@adonisjs/core/types";
 
 import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login.js";
+import { AuthSignupAction } from "@phisyx/adonai-domain/auth/action/signup.js";
 import { PasswordChecker } from "@phisyx/adonai-domain/auth/contract/password_checker.js";
 import { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher.js";
 import { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository.js";
@@ -39,6 +40,13 @@ export default class AuthManagementProvider {
 			let password_checker = await resolver.make(PasswordChecker);
 
 			return new AuthLoginAction(user_repository, password_checker);
+		});
+
+		this.app.container.bind(AuthSignupAction, async (resolver) => {
+			let user_repository = await resolver.make(UserRepository);
+			let password_hasher = await resolver.make(PasswordHasher);
+
+			return new AuthSignupAction(user_repository, password_hasher);
 		});
 	}
 

@@ -8,8 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export enum AuthRouteWebID {
-	Login = "/auth",
-	Logout = "/auth/logout",
-	Signup = "/auth/signup",
+import type { PasswordHasher } from "#auth/contract/password_hasher";
+
+export class FakePasswordHasher implements PasswordHasher {
+	constructor(private to_be: string) {}
+
+	async hash(): Promise<string> {
+		return this.to_be;
+	}
 }

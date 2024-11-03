@@ -10,6 +10,7 @@
 
 import type { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository.js";
 import type { DB, Users } from "@phisyx/adonai-domain/types/database.js";
+import type { User } from "@phisyx/adonai-domain/auth/user.js";
 
 import { inject } from "@adonisjs/core";
 import {
@@ -42,7 +43,8 @@ export class PgUserRepository implements UserRepository {
 		).as<Users, UserRepositoryException>();
 	}
 
-	async insert(user: Users): Promise<void> {
-		throw new Error("Method not implemented.");
+	async insert(user: User): Promise<boolean> {
+		await this.database.insertInto("users").values(user).execute();
+		return true;
 	}
 }

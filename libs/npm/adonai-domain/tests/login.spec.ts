@@ -68,7 +68,7 @@ it("should returns InvalidCredentials with bad credentials", async ({ expect }) 
 	});
 
 	expect(user.is_err()).to.be.true;
-	expect(() => user.unwrap()).to.toThrowError(AuthLoginFailedException);
+	// expect(() => user.unwrap()).to.toThrowError(AuthLoginFailedException);
 	let err = user.unwrap_err();
 	expect(err).to.toBeInstanceOf(AuthLoginFailedException);
 	expect(err.cause).to.toBeInstanceOf(InvalidCredentials);

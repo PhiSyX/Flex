@@ -12,11 +12,12 @@ import type { Result } from "@phisyx/flex-safety";
 
 import type { UserRepositoryException } from "#auth/error/user_repository";
 import type { Users } from "#types/database";
+import type { User } from "#auth/user";
 
 export abstract class UserRepository {
 	abstract find_by_identifier(
 		identifier: string,
 	): Promise<Result<Users, UserRepositoryException>>;
 
-	abstract insert(user: Users): Promise<void>;
+	abstract insert(user: User): Promise<boolean>;
 }

@@ -50,6 +50,7 @@
 		"@adonisjs/static": "^1.1.1",
 		"@adonisjs/vite": "^3.0.0",
 		"@inertiajs/vue3": "^1.2.0",
+		"@phisyx/flex-uikit": "workspace:",
 		"@phisyx/flex-uikit-vue": "workspace:",
 		"@phisyx/adonai-domain": "workspace:",
 		"@phisyx/flex-assets": "workspace:",

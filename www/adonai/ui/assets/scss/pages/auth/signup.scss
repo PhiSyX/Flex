@@ -1,0 +1,65 @@
+@use "@phisyx/flexsheets" as fx;
+
+body:has(#signup-page) {
+	--body-bg: var(--login-page-bg);
+}
+
+#signup-page {
+	form {
+		gap: 1px;
+		border: fx.space(1) solid var(--login-form-bg);
+		box-shadow: 2px 2px 4px var(--login-form-shadow);
+	}
+
+	form div {
+		background: var(--login-form-bg);
+	}
+
+	form input {
+		flex-grow: 1;
+
+		background: transparent;
+		border: 0;
+		outline: 0;
+		color: var(--login-form-color);
+
+		&:focus {
+			color: var(--login-form-hover-color);
+		}
+	}
+
+	form[id] ~ button {
+		border-radius: 4px;
+		background: var(--login-button-submit-bg);
+		transition: background-color 200ms;
+		color: var(--login-button-submit-color);
+	}
+
+	form[id] ~ button[form][type="submit"] {
+		svg {
+			max-width: fx.space(3);
+		}
+
+		&:focus-visible {
+			outline: 3px inset var(--login-button-submit-outline-color);
+		}
+
+		&:active {
+			outline: 3px outset var(--login-button-submit-outline-color);
+		}
+
+		&:hover {
+			--login-button-submit-bg: var(--login-button-submit-bg-hover);
+		}
+
+		&:disabled {
+			background: var(--disabled-bg);
+			color: var(--disabled-color);
+			pointer-events: none;
+		}
+	}
+}
+
+#signup-page .remember-me {
+	line-height: 1.2;
+}
