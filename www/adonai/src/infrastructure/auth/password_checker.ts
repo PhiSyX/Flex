@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import hash from "@adonisjs/core/services/hash";
-import type { PasswordChecker } from "@phisyx/adonai-domain/auth/contract/password_checker.js";
+import type { PasswordChecker } from "@phisyx/adonai-domain/auth/contract/password_checker";
 
 export class AdonisPasswordChecker implements PasswordChecker {
 	verify(hashed_password: string, raw_password: string): Promise<boolean> {

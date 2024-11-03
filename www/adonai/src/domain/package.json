@@ -15,6 +15,12 @@
 		"#shared/*": "./shared/*.js",
 		"#types/*": "./types/*.js"
 	},
+	"exports": {
+		"./account/*": "./account/*.ts",
+		"./auth/*": "./auth/*.ts",
+		"./shared/*": "./shared/*.ts",
+		"./types/*": "./types/*.ts"
+	},
 	"dependencies": {
 		"@phisyx/flex-safety": "workspace:",
 		"kysely": "^0.27.4"

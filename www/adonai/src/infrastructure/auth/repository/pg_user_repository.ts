@@ -8,15 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository.js";
-import type { DB, Users } from "@phisyx/adonai-domain/types/database.js";
-import type { User } from "@phisyx/adonai-domain/auth/user.js";
+import type { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository";
+import type { DB, Users } from "@phisyx/adonai-domain/types/database";
+import type { User } from "@phisyx/adonai-domain/auth/user";
 
 import { inject } from "@adonisjs/core";
 import {
 	UserRepositoryError,
 	UserRepositoryException,
-} from "@phisyx/adonai-domain/auth/error/user_repository.js";
+} from "@phisyx/adonai-domain/auth/error/user_repository";
 import { Result } from "@phisyx/flex-safety";
 // biome-ignore lint/style/useImportType: Utilisé par le décorateur @inject
 import { Kysely } from "kysely";

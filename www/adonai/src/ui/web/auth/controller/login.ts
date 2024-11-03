@@ -11,21 +11,20 @@
 import type { HttpContext } from "@adonisjs/core/http";
 
 import { inject } from "@adonisjs/core";
-import hash from "@adonisjs/core/services/hash";
 import logger from "@adonisjs/core/services/logger";
 import vine from "@vinejs/vine";
 
-import { AccountRouteWebID } from "@phisyx/adonai-domain/account/http.js";
+import { AccountRouteWebID } from "@phisyx/adonai-domain/account/http";
 // biome-ignore lint/style/useImportType: utilisé via le décorateur @inject
-import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login.js";
-import { AuthLoginFailedError } from "@phisyx/adonai-domain/auth/error/login_failed.js";
-import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login";
+import { AuthLoginFailedError } from "@phisyx/adonai-domain/auth/error/login_failed";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http";
 import {
 	PASSWORD_LENGTH_MAX,
 	PASSWORD_LENGTH_MIN,
-} from "@phisyx/adonai-domain/auth/specs/owasp.js";
+} from "@phisyx/adonai-domain/auth/specs/owasp";
 // biome-ignore lint/style/useImportType: utilisé via le décorateur @inject
-import { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher.js";
+import { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher";
 
 export default class AuthLoginWebController {
 	public async view(ctx: HttpContext) {

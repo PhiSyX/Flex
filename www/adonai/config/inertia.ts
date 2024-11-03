@@ -11,7 +11,7 @@
 import type { InferSharedProps } from "@adonisjs/inertia/types";
 
 import { defineConfig } from "@adonisjs/inertia";
-import { AccountSelfOutputDTO } from "@phisyx/adonai-domain/account/dto/self.js";
+import { AccountSelfOutputDTO } from "@phisyx/adonai-domain/account/dto/self";
 
 const inertiaConfig = defineConfig({
 	rootView: "inertia_layout",

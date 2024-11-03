@@ -10,8 +10,8 @@
 
 import type { HttpContext } from "@adonisjs/core/http";
 
-import { AuthLogoutOutputDTO } from "@phisyx/adonai-domain/auth/dto/logout.js";
-import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+import { AuthLogoutOutputDTO } from "@phisyx/adonai-domain/auth/dto/logout";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http";
 
 export default class AuthLogoutWebController {
 	public async view(ctx: HttpContext) {

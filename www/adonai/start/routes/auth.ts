@@ -10,8 +10,10 @@
 
 import router from "@adonisjs/core/services/router";
 
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http";
+
 import { middleware } from "#start/kernel";
-import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+
 import AuthSignupWebController from "#ui/web/auth/controller/signup";
 
 const AuthLoginWebController = () => import("#ui/web/auth/controller/login");

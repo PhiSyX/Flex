@@ -10,7 +10,7 @@
 
 import type { HttpContext } from "@adonisjs/core/http";
 
-import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http";
 
 export default class AccountSelfWebController {
 	public async view(ctx: HttpContext) {

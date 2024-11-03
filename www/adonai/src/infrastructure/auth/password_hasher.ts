@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import hash from "@adonisjs/core/services/hash";
-import type { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher.js";
+import type { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher";
 
 export class AdonisPasswordHasher implements PasswordHasher {
 	hash(raw_password: string): Promise<string> {

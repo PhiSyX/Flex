@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { DateTime } from "luxon";
-import type { UsersAccountStatus, UsersAvatarDisplayFor, UsersRole } from "@phisyx/adonai-domain/types/database.js";
+import type { UsersAccountStatus, UsersAvatarDisplayFor, UsersRole } from "@phisyx/adonai-domain/types/database";
 
 import { withAuthFinder } from "@adonisjs/auth/mixins/lucid";
 import { compose } from "@adonisjs/core/helpers";

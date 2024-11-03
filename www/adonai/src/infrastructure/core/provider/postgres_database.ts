@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { DB } from "@phisyx/adonai-domain/types/database.js";
+import type { DB } from "@phisyx/adonai-domain/types/database";
 
 import { Kysely, PostgresDialect } from "kysely";
 

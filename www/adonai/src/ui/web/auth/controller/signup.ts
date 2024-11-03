@@ -14,13 +14,13 @@ import { inject } from "@adonisjs/core";
 import vine from "@vinejs/vine";
 
 // biome-ignore lint/style/useImportType: utilisé via le décorateur @inject
-import { AuthSignupAction } from "@phisyx/adonai-domain/auth/action/signup.js";
-import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
-import { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository.js";
+import { AuthSignupAction } from "@phisyx/adonai-domain/auth/action/signup";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http";
+import { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository";
 import {
 	PASSWORD_LENGTH_MAX,
 	PASSWORD_LENGTH_MIN,
-} from "@phisyx/adonai-domain/auth/specs/owasp.js";
+} from "@phisyx/adonai-domain/auth/specs/owasp";
 
 export default class AuthSignupWebController {
 	public async view(ctx: HttpContext) {

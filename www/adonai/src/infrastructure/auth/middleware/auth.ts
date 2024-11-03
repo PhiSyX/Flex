@@ -12,7 +12,7 @@ import type { Authenticators } from "@adonisjs/auth/types";
 import type { HttpContext } from "@adonisjs/core/http";
 import type { NextFn } from "@adonisjs/core/types/http";
 
-import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http.js";
+import { AuthRouteWebID } from "@phisyx/adonai-domain/auth/http";
 
 export default class AuthMiddleware {
 	redirect_to = AuthRouteWebID.Login;

@@ -12,7 +12,7 @@ import type {
 	SessionGuardUser,
 	SessionUserProviderContract,
 } from "@adonisjs/auth/types/session";
-import type { DB, Users } from "@phisyx/adonai-domain/types/database.js";
+import type { DB, Users } from "@phisyx/adonai-domain/types/database";
 import type { Kysely } from "kysely";
 
 import { symbols } from "@adonisjs/auth";

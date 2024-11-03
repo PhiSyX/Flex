@@ -10,11 +10,11 @@
 
 import type { ApplicationService } from "@adonisjs/core/types";
 
-import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login.js";
-import { AuthSignupAction } from "@phisyx/adonai-domain/auth/action/signup.js";
-import { PasswordChecker } from "@phisyx/adonai-domain/auth/contract/password_checker.js";
-import { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher.js";
-import { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository.js";
+import { AuthLoginAction } from "@phisyx/adonai-domain/auth/action/login";
+import { AuthSignupAction } from "@phisyx/adonai-domain/auth/action/signup";
+import { PasswordChecker } from "@phisyx/adonai-domain/auth/contract/password_checker";
+import { PasswordHasher } from "@phisyx/adonai-domain/auth/contract/password_hasher";
+import { UserRepository } from "@phisyx/adonai-domain/auth/contract/user_repository";
 import { AdonisPasswordChecker } from "../password_checker.js";
 import { AdonisPasswordHasher } from "../password_hasher.js";
 import { PgUserRepository } from "../repository/pg_user_repository.js";
