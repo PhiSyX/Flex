@@ -37,7 +37,11 @@ export default defineConfig({
 		() => import("#infrastructure/auth/provider/auth"),
 	],
 
-	preloads: [() => import("#start/routes"), () => import("#start/kernel")],
+	preloads: [
+		() => import("#start/routes"),
+		() => import("#start/kernel"),
+		() => import("#start/validator"),
+	],
 
 	tests: {
 		suites: [
