@@ -3,6 +3,7 @@
 	"description": "Flex Chat",
 	"authors": "Mike 'PhiSyX' S.",
 	"version": "0.1.0",
+	"type": "module",
 	"scripts": {
 		"build": "tsc"
 	},
