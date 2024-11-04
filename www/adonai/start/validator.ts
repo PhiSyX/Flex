@@ -11,27 +11,25 @@
 import vine, { SimpleMessagesProvider } from "@vinejs/vine";
 
 vine.messagesProvider = new SimpleMessagesProvider({
-	required: "Le champ « {{ field }} » est obligatoire.",
+	required: "Ce champ est obligatoire.",
 
-	string: "Le champ « {{ field }} » DOIT être une chaîne de caractères",
-	email: "Le champ « {{ field }} » DOIT être une adresse e-mail valide",
-	mobile: "Le champ « {{ field }} » DOIT être un numéro de téléphone valide",
-	postalCode: "Le champ « {{ field }} » DOIT avoir un code postale valide",
+	string: "Ce champ DOIT être une chaîne de caractères",
+	email: "Ce champ DOIT être une adresse e-mail valide",
+	mobile: "Ce champ DOIT être un numéro de téléphone valide",
+	postalCode: "Ce champ DOIT avoir un code postale valide",
 
-	url: "Le champ « {{ field }} » DOIT être une URL valide",
-	alpha: "Le champ « {{ field }} » DOIT contenir uniquement des lettres",
+	url: "Ce champ DOIT être une URL valide",
+	alpha: "Ce champ DOIT contenir uniquement des lettres",
 	alphaNumeric:
-		"Le champ « {{ field }} » DOIT contenir uniquement des caractères alphanumérique, de A à Z et de 0 à 9.",
-	minLength:
-		"Le champ « {{ field }} » DOIT avoir au moins {{ min }} caractères",
-	maxLength:
-		"Le champ « {{ field }} » DOIT avoir au maximum {{ min }} caractères",
+		"Ce champ DOIT contenir uniquement des caractères alphanumérique.",
+	minLength: "Ce champ DOIT avoir au moins {{ min }} caractères",
+	maxLength: "Ce champ DOIT avoir au maximum {{ max }} caractères",
 	confirmed:
-		"Les champs « {{ field }} » & « {{ otherField }} » DOIVENT avoir la même valeur",
+		"Ce champ DOIT avoir la même valeur que le champ « {{ otherField }} »",
 
-	range: "Le champ « {{ field }} » DOIT être entre {{ min }} et {{ max }} caractères.",
+	range: "Ce champ DOIT être entre {{ min }} et {{ max }} caractères.",
 
-	"database.unique": "La valeur du champ « {{ field }} » existe déjà.",
+	"database.unique": "La valeur de ce champ existe déjà en base de données.",
 
 	/*
   'required': 'The {{ field }} field must be defined',

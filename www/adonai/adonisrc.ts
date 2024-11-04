@@ -14,6 +14,7 @@ export default defineConfig({
 	commands: [
 		() => import("@adonisjs/core/commands"),
 		() => import("@adonisjs/lucid/commands"),
+		() => import("@adonisjs/mail/commands"),
 	],
 
 	providers: [
@@ -35,6 +36,7 @@ export default defineConfig({
 		() => import("@adonisjs/auth/auth_provider"),
 		() => import("@adonisjs/inertia/inertia_provider"),
 		() => import("#infrastructure/auth/provider/auth"),
+		() => import("@adonisjs/mail/mail_provider"),
 	],
 
 	preloads: [

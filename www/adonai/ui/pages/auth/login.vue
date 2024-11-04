@@ -13,6 +13,8 @@ import InertiaLink from "../../components/link/InertiaLink.vue";
 
 type Links = InferPageProps<AuthLoginWebController, "view">["links"];
 
+let is_dev_mode = import.meta.env.DEV;
+
 let page = usePage();
 let form = useForm({
 	identifier: "",
@@ -49,7 +51,7 @@ watch(
 			<Alert
 				v-if="page.props.errors?.global"
 				:closable="false"
-				:close-after-seconds="10"
+				:close-after-seconds="30"
 				type="error"
 			>
 				{{ page.props.errors.global }}
@@ -57,6 +59,7 @@ watch(
 
 			<form
 				:action="page.url"
+				:novalidate="is_dev_mode"
 				id="login-form"
 				method="POST"
 				class="[ ov:h flex! border/radius=1 ]"
@@ -68,6 +71,7 @@ watch(
 					label="user"
 					name="identifier"
 					placeholder="Nom d'utilisateur ou adresse mail"
+					required
 				/>
 
 				<TextInput
@@ -77,6 +81,7 @@ watch(
 					name="password"
 					type="password"
 					placeholder="Mot de passe"
+					required
 				/>
 			</form>
 

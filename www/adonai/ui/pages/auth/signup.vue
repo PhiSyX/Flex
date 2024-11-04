@@ -13,6 +13,8 @@ import InertiaLink from "../../components/link/InertiaLink.vue";
 type Links = InferPageProps<AuthSignupWebController, "view">["links"];
 defineProps<{ links: Links }>();
 
+let is_dev_mode = import.meta.env.DEV;
+
 let page = usePage();
 let form = useForm({
 	username: "",
@@ -49,14 +51,23 @@ watch(
 			<Alert
 				v-if="page.props.errors?.global"
 				:closable="false"
-				:close-after-seconds="10"
+				:close-after-seconds="30"
 				type="error"
 			>
-				{{ page.props.errors.global }}
+				<template
+					v-if="Array.isArray(page.props.errors.global)"
+					v-for="error of page.props.errors.global"
+				>
+					{{ error }}
+				</template>
+				<template v-else>
+					{{ page.props.errors.global }}
+				</template>
 			</Alert>
 
 			<form
 				:action="page.url"
+				:novalidate="is_dev_mode"
 				id="signup-form"
 				method="POST"
 				class="[ ov:h flex! border/radius=1 ]"
@@ -68,6 +79,7 @@ watch(
 					label="user"
 					name="username"
 					placeholder="Nom d'utilisateur"
+					required
 				/>
 
 				<TextInput
@@ -76,6 +88,7 @@ watch(
 					label="email"
 					name="email"
 					placeholder="Adresse mail"
+					required
 				/>
 
 				<TextInput
@@ -85,6 +98,7 @@ watch(
 					name="password"
 					type="password"
 					placeholder="Mot de passe"
+					required
 				/>
 
 				<TextInput
@@ -94,6 +108,7 @@ watch(
 					name="password_confirmation"
 					type="password"
 					placeholder="Confirmation du mot de passe"
+					required
 				/>
 			</form>
 
@@ -106,7 +121,7 @@ watch(
 				<span class="[ flex:full ]">S'inscrire</span>
 			</Button>
 
-			<hr class="[ w:full ]" text="ou">
+			<hr class="[ w:full ]" text="ou" />
 
 			<InertiaLink :href="links.login.href" class="[ p=2 ]" as="button">
 				<span class="[ flex:full ]">Aller à la page de connexion</span>
