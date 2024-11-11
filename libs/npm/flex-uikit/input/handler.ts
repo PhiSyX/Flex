@@ -10,9 +10,9 @@
 
 import {
 	get_caret_contenteditable,
-	minmax,
 	set_caret_contenteditable,
-} from "@phisyx/flex-helpers";
+} from "@phisyx/flex-helpers/contenteditable";
+import { minmax } from "@phisyx/flex-helpers/minmax";
 
 // -------- //
 // Fonction //

@@ -12,7 +12,7 @@ import type { Result } from "@phisyx/flex-safety";
 import type { ZodError } from "zod";
 
 import { calculate_age } from "@phisyx/flex-date/calculate_age";
-import { iso_to_country_flag } from "@phisyx/flex-helpers";
+import { iso_to_country_flag } from "@phisyx/flex-helpers/iso_to_country_flag";
 import { Err, Ok, Option } from "@phisyx/flex-safety";
 import { z } from "zod";
 

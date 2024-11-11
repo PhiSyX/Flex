@@ -2,7 +2,7 @@
 import type { ComboBoxProps } from "@phisyx/flex-uikit/combobox/props";
 import type { DropDownListItem } from "@phisyx/flex-uikit/dropdown/props";
 
-import { minmax } from "@phisyx/flex-helpers";
+import { minmax } from "@phisyx/flex-helpers/minmax";
 import { filter_list } from "@phisyx/flex-uikit/combobox/handler";
 import { computed, ref, useTemplateRef, watch } from "vue";
 

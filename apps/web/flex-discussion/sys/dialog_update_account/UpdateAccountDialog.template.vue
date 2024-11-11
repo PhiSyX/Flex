@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { iso_to_country_flag } from "@phisyx/flex-helpers";
+import { iso_to_country_flag } from "@phisyx/flex-helpers/iso_to_country_flag";
 import { computed, ref } from "vue";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";

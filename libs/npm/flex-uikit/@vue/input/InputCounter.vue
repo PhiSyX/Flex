@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { InputCounterProps } from "@phisyx/flex-uikit/input/props";
 
-import { set_caret_contenteditable } from "@phisyx/flex-helpers";
+import { set_caret_contenteditable } from "@phisyx/flex-helpers/contenteditable";
 import {
 	decrement_input_counter,
 	increment_input_counter,
