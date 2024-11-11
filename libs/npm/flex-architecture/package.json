@@ -4,6 +4,9 @@
 	"authors": "Mike 'PhiSyX' S.",
 	"version": "0.1.0",
 	"type": "module",
+	"exports": {
+		"./*": "./src/*.ts"
+	},
 	"scripts": {
 		"build": "tsc"
 	},

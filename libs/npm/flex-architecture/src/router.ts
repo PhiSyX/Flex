@@ -8,4 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/router_acl";
+import type { Option } from "@phisyx/flex-safety";
+
+export abstract class RouterContract {
+	abstract back(): void;
+	abstract forward(): void;
+	abstract goto(name: string, params?: object): void;
+	abstract param(name: string): Option<string>;
+}

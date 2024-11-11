@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
@@ -27,7 +27,7 @@ import { ChannelRouter } from "./router";
 // -------------- //
 
 export class ChannelPresenter {
-	constructor(router_acl: RouterAntiCorruptionLayer, view: ChannelView) {
+	constructor(router_acl: RouterContract, view: ChannelView) {
 		this.router = new ChannelRouter(router_acl);
 		this.view = view;
 		this.view.presenter = this;

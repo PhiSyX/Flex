@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 
 import { Option } from "@phisyx/flex-safety";
 import { useRoute, useRouter } from "vue-router";
@@ -17,7 +17,7 @@ import { useRoute, useRouter } from "vue-router";
 // Implémentation // -> Interface
 // -------------- //
 
-export class VueRouter implements RouterAntiCorruptionLayer {
+export class VueRouter implements RouterContract {
 	public inner = useRouter();
 	public current = useRoute();
 

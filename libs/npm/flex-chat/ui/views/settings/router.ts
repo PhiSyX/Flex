@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type { View } from "@phisyx/flex-chat/view";
 
 // -------------- //
@@ -16,7 +16,7 @@ import type { View } from "@phisyx/flex-chat/view";
 // -------------- //
 
 export class SettingsRouter {
-	constructor(private router_acl: RouterAntiCorruptionLayer) {}
+	constructor(private router_acl: RouterContract) {}
 
 	back() {
 		this.router_acl.back();

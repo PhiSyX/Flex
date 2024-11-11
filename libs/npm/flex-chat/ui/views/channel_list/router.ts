@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 
 // -------------- //
 // Implémentation //
@@ -17,7 +17,7 @@ import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
 export class ChannelListRouter {
 	static PARAM_SERVERNAME = "servername";
 
-	constructor(private router_acl: RouterAntiCorruptionLayer) {}
+	constructor(private router_acl: RouterContract) {}
 
 	servername_param() {
 		return this.router_acl

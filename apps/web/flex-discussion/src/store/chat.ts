@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 import type {
 	ChatStoreInterfaceExt,
@@ -306,7 +306,7 @@ export class ChatStoreVue
 		return this._overlayer;
 	}
 
-	router(): RouterAntiCorruptionLayer {
+	router(): RouterContract {
 		return this._router;
 	}
 

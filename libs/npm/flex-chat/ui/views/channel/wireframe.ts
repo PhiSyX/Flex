@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
@@ -29,7 +29,7 @@ import { ChannelView } from "./view";
 
 export class ChannelWireframe {
 	static create(
-		router_acl: RouterAntiCorruptionLayer,
+		router_acl: RouterContract,
 		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
 		overlayer_store: OverlayerStore,
 		settings_store: SettingsStore,

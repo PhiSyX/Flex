@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type {
 	ChatStoreInterface,
 	SettingsStore,
@@ -27,7 +27,7 @@ import { SettingsView } from "./view";
 
 export class SettingsWireframe {
 	static create(
-		router_acl: RouterAntiCorruptionLayer,
+		router_acl: RouterContract,
 		chat_store: ChatStoreInterface,
 		settings_store: SettingsStore,
 	) {

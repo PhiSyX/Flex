@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
@@ -29,7 +29,7 @@ import { DirectAccessView } from "./view";
 
 export class DirectAccessWireframe {
 	static create(
-		router_acl: RouterAntiCorruptionLayer,
+		router_acl: RouterContract,
 		chat_store: ChatStoreInterface & ChatStoreInterfaceExt,
 		user_store: UserStore,
 		overlayer_store: OverlayerStore,

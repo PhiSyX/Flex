@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type { PrivateOptionsRecordMenu } from "@phisyx/flex-chat/menu/private_options";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
@@ -25,7 +25,7 @@ import { PrivateRouter } from "./router";
 // -------------- //
 
 export class PrivatePresenter {
-	constructor(router_acl: RouterAntiCorruptionLayer, view: PrivateView) {
+	constructor(router_acl: RouterContract, view: PrivateView) {
 		this.router = new PrivateRouter(router_acl);
 		this.view = view;
 		this.view.presenter = this;

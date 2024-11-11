@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type { UserSession } from "@phisyx/flex-chat/user/session";
 import type { Option } from "@phisyx/flex-safety";
 import type { DirectAccessPresenter } from "./presenter";
@@ -93,7 +93,7 @@ respecter, un format précis, les conditions suivantes :
 		return this;
 	}
 
-	with_router(router_acl: RouterAntiCorruptionLayer): this {
+	with_router(router_acl: RouterContract): this {
 		this.presenter.router = new DirectAccessRouter(router_acl);
 		return this;
 	}

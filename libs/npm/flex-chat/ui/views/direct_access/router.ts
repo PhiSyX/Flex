@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { RouterAntiCorruptionLayer } from "@phisyx/flex-architecture";
+import type { RouterContract } from "@phisyx/flex-architecture/router";
 
 // -------------- //
 // Implémentation //
 // -------------- //
 
 export class DirectAccessRouter {
-	constructor(private router_acl: RouterAntiCorruptionLayer) {}
+	constructor(private router_acl: RouterContract) {}
 
 	goto(opt: { name: string }) {
 		this.router_acl.goto(opt.name);
