@@ -3,7 +3,7 @@ import type { MenuItemChildren } from "@phisyx/flex-uikit/menu/children";
 import type { MenuItemEmits } from "@phisyx/flex-uikit/menu/emits";
 import type { MenuItemProps } from "@phisyx/flex-uikit/menu/props";
 
-defineProps<MenuItemProps>();
+const { description } = defineProps<MenuItemProps>();
 const emit = defineEmits<MenuItemEmits>();
 defineSlots<MenuItemChildren>();
 
@@ -12,13 +12,16 @@ const action_handler = (evt: Event) => emit("click", evt);
 
 <template>
 	<li
-		class="fx:menuitem [ flex flex/center:full m=2px p=1 ]"
+		class="fx:menuitem [ flex flex/center:full m=2px p=1 cursor:pointer ]"
 		tabindex="0"
 		@click="action_handler"
 		@keydown.space="action_handler"
 		@keydown.enter="action_handler"
 	>
-		<label class="[ flex:full ]"><slot /></label>
+		<div class="[ flex:full flex! ]">
+			<label><slot /></label>
+			<small v-if="description">{{ description }}</small>
+		</div>
 
 		<component
 			v-if="icon"

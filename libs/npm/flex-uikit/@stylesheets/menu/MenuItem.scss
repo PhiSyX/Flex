@@ -1,6 +1,12 @@
 @use "@phisyx/flexsheets" as fx;
 
-@include fx.use("flex", "flex:full", "flex:shrink=0", "flex/center:full");
+@include fx.use(
+	"cursor:pointer",
+	"flex",
+	"flex:full",
+	"flex:shrink=0",
+	"flex/center:full"
+);
 
 @include fx.use(
 	(
@@ -25,6 +31,14 @@
 
 		&:hover {
 			background: var(--menu-item-bg-hover);
+		}
+
+		> div {
+			gap: 4px;
+		}
+
+		small {
+			color: var(--color-grey500);
 		}
 	}
 }

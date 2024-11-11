@@ -15,5 +15,6 @@ import type { Icons } from "../icons";
 // ---- //
 
 export interface MenuItemProps {
+	description?: string;
 	icon?: Icons;
 }
