@@ -1,0 +1,69 @@
+@use "@phisyx/flexsheets" as fx;
+
+@include fx.use(
+	"align-jc:se",
+	"align-t:right",
+	"align-t:center",
+	"b:none",
+	"cursor:pointer",
+	"flex",
+	"flex!",
+	"flex/center:full",
+	"mx:a",
+	"pos-r",
+	"ov:h",
+	"scroll:y",
+	"w:full"
+);
+
+@include fx.use(
+	(
+		className: font-size,
+		values: (
+			14px,
+			24px,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: border-radius,
+		values: (
+			1,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			3,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: padding,
+		values: (
+			2,
+		),
+	)
+);
+
+@include fx.use(
+	(
+		className: width,
+		values: (
+			35,
+		),
+	),
+	(
+		className: min-width,
+		values: (
+			43,
+		),
+	)
+);

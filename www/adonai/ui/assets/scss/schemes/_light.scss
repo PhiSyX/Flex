@@ -1,0 +1,141 @@
+@use "@phisyx/flexsheets" as fx;
+
+@mixin use-light-scheme {
+	:root {
+		@include fx.scheme(true) using ($name) {
+			@if $name == light {
+				--default-border-color: var(--color-white);
+				--default-text-color: var(--color-grey900);
+				--default-text-color_hsl: var(--color-grey900_hsl);
+				--default-text-color_alt: var(--color-white);
+				--default-text-color_alt_hsl: var(--color-white_hsl);
+				--default-placeholder-color: var(--color-grey800);
+				--box-shadow: 2px 2px 4px var(--color-grey400);
+				--box-shadow-s: 1px 1px 2px var(--color-grey400);
+
+				--disabled-bg: var(--color-grey400);
+				--disabled-color: var(--color-grey500);
+
+				--body-bg: var(--color-ultra-white);
+				--body-bg_alt: var(--color-grey400);
+
+				--dialog-bg: var(--color-black);
+				--dialog-color: var(--default-text-color_alt);
+				--dialog-border-color: var(--color-white);
+				--dialog-change-formats-colors-bg: var(--body-bg);
+				--dialog-change-formats-colors-color: var(--color-grey300);
+
+				--menu-bg: var(--body-bg);
+				--menu-item-bg-hover: var(--body-bg_alt);
+
+				--fx-textinput-color-error: #4dd2d4;
+
+				--login-page-bg: var(--color-grey50);
+				--login-form-bg: var(--color-ultra-white);
+				--login-form-shadow: var(--color-grey400);
+				--login-form-color: inherit;
+				--login-form-hover-color: var(--color-indigoa200);
+				--login-button-submit-bg: var(--color-black);
+				--login-button-submit-bg-hover: var(--color-grey800);
+				--login-button-submit-color: var(--default-text-color_alt);
+				--login-button-submit-outline-color: var(--color-blue-grey600);
+
+				--navigation-room-focus-color: var(--color-grey300);
+				--navigation-room-border-left-color: var(--color-grey300);
+
+				--room-bg: var(--color-grey100);
+				--room-kicked-bg: var(--color-red50);
+				--room-kicked-button-bg: var(--color-grey900);
+				--room-kicked-button-color: var(--color-grey50);
+				--room-editbox-bg: var(--room-bg);
+				--room-event-color: var(--color-blue300);
+				--room-event-join-color: var(--color-green500);
+				--room-event-kick-color: var(--color-red500);
+				--room-event-nick-color: var(--color-blue800);
+				--room-event-mode-color: var(--color-blue800);
+				--room-event-notice-color: var(--color-red500);
+				--room-event-query-color: var(--color-red800);
+				--room-message-time-color: var(--color-grey500);
+				--room-message-action-color: var(--color-orange400);
+				--room-message-error-color: var(--color-red600);
+				--room-message-mention-color: var(--color-red300);
+				--room-message-mention-target-color: var(--color-green400);
+				--room-topic-placeholder-color: var(--color-grey500);
+
+				--room-target-myself-color: var(--color-blue500);
+
+				--room-userlist-bg: var(--body-bg);
+				--room-userlist-search-bg: var(--room-bg);
+				// --room-userlist-search-outline-focus: #009DFF;
+				--room-userlist-filter-bg_hsl: var(--color-cyan300_hsl);
+
+				--thead-bg: var(--color-grey200);
+				--tbody-bg: var(--color-ultra-white);
+				--tbody-bg-hover: var(--color-grey100);
+
+				--channel-list-filter-input-bg: var(--color-grey300);
+
+				--channel-activities-bg: #31363a;
+				--channel-activities-color: var(--default-text-color_alt);
+			}
+		}
+	}
+
+	.has-events {
+		@include fx.scheme using($name) {
+			@if $name == light {
+				--navigation-room-events-color: var(--color-blue700);
+				--navigation-room-border-left-color: var(--color-blue100);
+			}
+		}
+	}
+
+	.has-messages {
+		@include fx.scheme using($name) {
+			@if $name == light {
+				--navigation-room-messages-color: var(--color-red500);
+				--navigation-room-border-left-color: var(--color-red300);
+			}
+		}
+	}
+
+	.is-highlight {
+		@include fx.scheme using ($name) {
+			@if $name == light {
+				--navigation-room-highlight-color: var(--color-green500);
+				--navigation-room-border-left-color: var(--color-green400);
+			}
+		}
+	}
+
+	.total-unread {
+		@include fx.scheme using ($name) {
+			@if $name == light {
+				--navigation-total-unread-bg: var(--color-black);
+				--navigation-total-unread-color: var(--color-grey400);
+			}
+		}
+	}
+
+	bdo.is-away {
+		@include fx.scheme using ($name) {
+			@if $name == light {
+				--room-target-color: var(--color-grey400);
+			}
+		}
+	}
+
+	@include fx.class("room/userlist:menu") {
+		@include fx.scheme using ($name) {
+			@if $name == light {
+				--btn-primary-bg: var(--room-bg);
+				--btn-primary-bg-hover: var(--color-grey200);
+				--btn-secondary-bg: var(--color-black);
+				--btn-secondary-bg-hover: var(--color-grey800);
+				--btn-secondary-color: var(--default-text-color_alt);
+				--btn-danger-bg: var(--color-blue-grey100);
+				--btn-danger-bg-hover: var(--color-blue-grey200);
+			}
+		}
+	}
+}

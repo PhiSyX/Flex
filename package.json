@@ -8,7 +8,9 @@
 	"scripts": {
 		"chat:discussion": "pnpm --filter @phisyx/flex-discussion dev",
 		"story:discussion": "pnpm --filter @phisyx/flex-discussion story:dev",
+		"adonai": "pnpm --filter @phisyx/adonai dev",
 		"build": "pnpm run -r build",
+		"codegen": "pnpm run -r codegen",
 		"lint": "biome lint --config-path=tools/code-quality . && pnpm run -r lint",
 		"fmt": "biome format --config-path=tools/code-quality . --write && pnpm run -r fmt",
 		"fix": "biome check --config-path=tools/code-quality --apply . && pnpm run -r fix",
@@ -17,5 +19,14 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4"
+	},
+	"pnpm": {
+		"patchedDependencies": {
+			"knex@3.1.0": "patches/knex@3.1.0.patch",
+			"@adonisjs/core@6.14.1": "patches/@adonisjs__core@6.14.1.patch",
+			"@adonisjs/http-server@7.2.5": "patches/@adonisjs__http-server@7.2.5.patch",
+			"@adonisjs/assembler@7.8.2": "patches/@adonisjs__assembler@7.8.2.patch",
+			"@adonisjs/lucid@21.3.0": "patches/@adonisjs__lucid@21.3.0.patch"
+		}
 	}
 }

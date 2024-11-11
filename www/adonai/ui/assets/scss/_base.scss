@@ -1,0 +1,69 @@
+@use "@phisyx/flexsheets" as fx;
+
+*:not(input, textarea, .teleport):focus-visible {
+	outline: 3px solid var(--color-blue200);
+}
+
+html,
+body {
+	width: 100svw;
+	height: 100svh;
+
+	font-family: Roboto, Nunito, sans-serif;
+	font-size: 16px;
+}
+
+#🆔,
+#app {
+	width: 100%;
+	height: 100%;
+
+	overflow: hidden;
+
+	container: app / size;
+}
+
+#🆔 {
+	transition: box-shadow 0.2s;
+
+	color: var(--default-text-color);
+}
+
+#app {
+	padding: fx.space(1);
+
+	background: var(--body-bg);
+
+	box-shadow: inset 0 0 0 fx.space(1) var(--default-border-color),
+		inset 5px 5px 5px var(--default-border-color);
+
+	display: flex;
+}
+
+hr {
+	border: 0;
+	height: 1.5em;
+	opacity: 0.5;
+	position: relative;
+	text-align: center;
+}
+
+hr::before {
+	background: linear-gradient(to right, transparent, #cccccc, transparent);
+	content: "";
+	height: 1px;
+	left: 0;
+	position: absolute;
+	top: 50%;
+	width: 100%;
+}
+
+hr::after {
+	background-color: var(--body-bg);
+	color: var(--body-color);
+	content: attr(text);
+	display: inline-block;
+	padding-inline: fx.space(1);
+	position: relative;
+	vertical-align: middle;
+}

@@ -1,0 +1,44 @@
+// ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+// ┃ Copyright: (c) 2024, Mike 'PhiSyX' S. (https://github.com/PhiSyX)         ┃
+// ┃ SPDX-License-Identifier: MPL-2.0                                          ┃
+// ┃ ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ ┃
+// ┃                                                                           ┃
+// ┃  This Source Code Form is subject to the terms of the Mozilla Public      ┃
+// ┃  License, v. 2.0. If a copy of the MPL was not distributed with this      ┃
+// ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
+// ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+@use "@phisyx/flexsheets" as fx with($spacing: .5rem);
+@use "@phisyx/css-normalizer";
+@use "@phisyx/flex-assets/fonts";
+
+@use "./colors" as colors;
+
+@use "./schemes/ice" as ice;
+@use "./schemes/dark" as darkMode;
+@use "./schemes/light" as lightMode;
+
+@use "./input";
+@use "./base";
+
+@layer reset, flexsheets, flex-uikit, userland;
+
+@include fx.use-reset;
+
+:root {
+	@include fx.define-colors;
+}
+
+@include colors.use-colors-preset;
+
+@include ice.use-ice-scheme;
+@include lightMode.use-light-scheme;
+@include darkMode.use-dark-scheme;
+
+@include fx.use-scrollbars(
+	(
+		background: #1c6a97,
+	)
+);
+
+@include fx.use-webkit();

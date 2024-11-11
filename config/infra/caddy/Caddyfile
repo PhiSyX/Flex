@@ -5,6 +5,8 @@
 }
 
 localhost {
+	# Rust
+
 	handle /api/v1/* {
 		reverse_proxy https://flex_rust:8888 {
 			transport http {
@@ -28,6 +30,41 @@ localhost {
 			}
 		}
 	}
+
+	# Adonis
+
+	handle /api/v2/* {
+		reverse_proxy https://adonai_node:3333 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+
+	handle /auth* {
+		reverse_proxy https://adonai_node:3333 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+
+	handle /ui/* {
+		reverse_proxy https://adonai_node:3333 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+	handle /node_modules/.vite_adonis/* {
+		reverse_proxy https://adonai_node:3333 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
+
+	# Default
 
 	handle {
 		reverse_proxy https://flex_discussion_vite:5173 {

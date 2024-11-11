@@ -1,0 +1,38 @@
+@use "@phisyx/flexsheets" as fx;
+
+#dashboard-page {
+	width: 50svw;
+}
+
+#dashboard-page h2 small {
+	color: var(--color-grey500);
+}
+
+.table {
+	padding: fx.space(1);
+	border-radius: 8px;
+	background: var(--body-bg_alt);
+}
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+tbody tr > td:first-child {
+	font-weight: bold;
+}
+
+tbody td {
+	padding: fx.space(1);
+}
+
+@include fx.use("align-i:center", "flex", "mx:a");
+
+@include fx.use(
+	(
+		className: gap,
+		values: (
+			1,
+		),
+	)
+);

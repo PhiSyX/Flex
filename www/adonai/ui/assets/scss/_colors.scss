@@ -1,0 +1,966 @@
+@use "@phisyx/flexsheets" as fx;
+
+@mixin use-colors-preset {
+	:root {
+		@include fx.scheme(true) using ($name) {
+			@if $name == light {
+				--preset-bg-color0: 0, 0%, 100%;
+				--preset-bg-color1: 0, 0%, 31%;
+				--preset-bg-color2: 221, 45%, 51%;
+				--preset-bg-color3: 120, 58%, 56%;
+				--preset-bg-color4: 0, 47%, 67%;
+				--preset-bg-color5: 0, 58%, 56%;
+				--preset-bg-color6: 300, 58%, 56%;
+				--preset-bg-color7: 44, 100%, 66%;
+				--preset-bg-color8: 60, 96%, 50%;
+				--preset-bg-color9: 120, 50%, 64%;
+				--preset-bg-color10: 180, 58%, 56%;
+				--preset-bg-color11: 180, 44%, 66%;
+				--preset-bg-color12: 240, 100%, 66%;
+				--preset-bg-color13: 300, 98%, 79%;
+				--preset-bg-color14: 0, 0%, 82%;
+				--preset-bg-color15: 0, 0%, 100%;
+
+				--preset-fg-color0: 0, 0%, 100%;
+				--preset-fg-color1: 0, 0%, 0%;
+				--preset-fg-color2: 240, 100%, 31%;
+				--preset-fg-color3: 120, 100%, 25%;
+				--preset-fg-color4: 0, 100%, 50%;
+				--preset-fg-color5: 0, 100%, 25%;
+				--preset-fg-color6: 300, 100%, 25%;
+				--preset-fg-color7: 30, 100%, 50%;
+				--preset-fg-color8: 60, 100%, 43%;
+				--preset-fg-color9: 120, 100%, 50%;
+				--preset-fg-color10: 180, 100%, 25%;
+				--preset-fg-color11: 180, 100%, 50%;
+				--preset-fg-color12: 240, 100%, 50%;
+				--preset-fg-color13: 300, 100%, 50%;
+				--preset-fg-color14: 0, 0%, 50%;
+				--preset-fg-color15: 0, 0%, 75%;
+			} @else if $name == dark {
+				--preset-bg-color0: var(--color-ultra-white_hsl);
+				--preset-bg-color1: var(--color-ultra-black_hsl);
+				--preset-bg-color2: var(--color-blue900_hsl);
+				--preset-bg-color3: var(--color-green900_hsl);
+				--preset-bg-color4: var(--color-reda200_hsl);
+				--preset-bg-color5: var(--color-red900_hsl);
+				--preset-bg-color6: var(--color-indigo800_hsl);
+				--preset-bg-color7: var(--color-orange800_hsl);
+				--preset-bg-color8: var(--color-yellow400_hsl);
+				--preset-bg-color9: var(--color-limea400_hsl);
+				--preset-bg-color10: var(--color-cyan600_hsl);
+				--preset-bg-color11: var(--color-cyan400_hsl);
+				--preset-bg-color12: var(--color-bluea400_hsl);
+				--preset-bg-color13: var(--color-pinka100_hsl);
+				--preset-bg-color14: var(--color-grey600_hsl);
+				--preset-bg-color15: var(--color-grey400_hsl);
+
+				--preset-fg-color0: var(--color-ultra-black_hsl);
+				--preset-fg-color1: var(--color-ultra-white_hsl);
+				--preset-fg-color2: var(--color-blue800_hsl);
+				--preset-fg-color3: var(--color-green400_hsl);
+				--preset-fg-color4: var(--color-red700_hsl);
+				--preset-fg-color5: var(--color-red300_hsl);
+				--preset-fg-color6: var(--color-indigoa200_hsl);
+				--preset-fg-color7: var(--color-orange300_hsl);
+				--preset-fg-color8: var(--color-yellow400_hsl);
+				--preset-fg-color9: var(--color-lime600_hsl);
+				--preset-fg-color10: var(--color-cyan300_hsl);
+				--preset-fg-color11: var(--color-cyana100_hsl);
+				--preset-fg-color12: var(--color-blue300_hsl);
+				--preset-fg-color13: var(--color-pink100_hsl);
+				--preset-fg-color14: var(--color-grey400_hsl);
+				--preset-fg-color15: var(--color-grey100_hsl);
+			} @else {
+				--preset-bg-color0: var(--color-ultra-white_hsl);
+				--preset-bg-color1: var(--color-ultra-black_hsl);
+				--preset-bg-color2: var(--color-blue900_hsl);
+				--preset-bg-color3: var(--color-green900_hsl);
+				--preset-bg-color4: var(--color-reda200_hsl);
+				--preset-bg-color5: var(--color-red900_hsl);
+				--preset-bg-color6: var(--color-indigo800_hsl);
+				--preset-bg-color7: var(--color-orange800_hsl);
+				--preset-bg-color8: var(--color-yellow300_hsl);
+				--preset-bg-color9: var(--color-limea400_hsl);
+				--preset-bg-color10: var(--color-cyan600_hsl);
+				--preset-bg-color11: var(--color-cyan400_hsl);
+				--preset-bg-color12: var(--color-bluea400_hsl);
+				--preset-bg-color13: var(--color-pinka100_hsl);
+				--preset-bg-color14: var(--color-grey600_hsl);
+				--preset-bg-color15: var(--color-grey400_hsl);
+
+				--preset-fg-color0: var(--color-ultra-black_hsl);
+				--preset-fg-color1: var(--color-ultra-white_hsl);
+				--preset-fg-color2: var(--color-blue700_hsl);
+				--preset-fg-color3: var(--color-green400_hsl);
+				--preset-fg-color4: var(--color-red700_hsl);
+				--preset-fg-color5: var(--color-red300_hsl);
+				--preset-fg-color6: var(--color-indigoa200_hsl);
+				--preset-fg-color7: var(--color-orange500_hsl);
+				--preset-fg-color8: var(--color-yellow600_hsl);
+				--preset-fg-color9: var(--color-lime600_hsl);
+				--preset-fg-color10: var(--color-cyan300_hsl);
+				--preset-fg-color11: var(--color-cyana100_hsl);
+				--preset-fg-color12: var(--color-blue300_hsl);
+				--preset-fg-color13: var(--color-pink100_hsl);
+				--preset-fg-color14: var(--color-grey400_hsl);
+				--preset-fg-color15: var(--color-grey100_hsl);
+			}
+		}
+	}
+
+	.bg-color0 {
+		background-color: hsl(var(--preset-bg-color0)) !important;
+
+		&.fg-color0,
+		&.fg-color1 {
+			color: hsl(var(--preset-fg-color0)) !important;
+		}
+
+		&.fg-color11 {
+			color: hsl(var(--color-cyan200_hsl)) !important;
+		}
+
+		&.fg-color15 {
+			color: hsl(var(--color-grey300_hsl)) !important;
+		}
+	}
+	.bg-color1 {
+		background-color: hsl(var(--preset-bg-color1)) !important;
+
+		&.fg-color0,
+		&.fg-color1 {
+			color: hsl(var(--preset-fg-color1)) !important;
+		}
+	}
+	.bg-color2 {
+		background-color: hsl(var(--preset-bg-color2)) !important;
+	}
+	.bg-color3 {
+		background-color: hsl(var(--preset-bg-color3)) !important;
+
+		&.fg-color2 {
+			color: hsl(var(--color-blue600_hsl)) !important;
+		}
+	}
+	.bg-color4 {
+		background-color: hsl(var(--preset-bg-color4)) !important;
+
+		&.fg-color5 {
+			color: hsl(var(--color-red900_hsl)) !important;
+		}
+
+		&.fg-color7 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-orange100_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color5 {
+		background-color: hsl(var(--preset-bg-color5)) !important;
+
+		&.fg-color2 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-blue300_hsl)) !important;
+				} @else if ($name == dark) {
+					color: hsl(var(--color-blue500_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color4 {
+			color: hsl(var(--color-red300_hsl)) !important;
+		}
+
+		&.fg-color13 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-pinka100_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color14 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-grey800_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color6 {
+		background-color: hsl(var(--preset-bg-color6)) !important;
+
+		&.fg-color4 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-red800_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color13 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-pink800_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color14 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-grey700_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color7 {
+		background-color: hsl(var(--preset-bg-color7)) !important;
+
+		&.fg-color5 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-red800_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color8 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-yellow800_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color8 {
+		background-color: hsl(var(--preset-bg-color8)) !important;
+
+		&.fg-color0 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-black_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color1 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-black_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color8 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-yellow600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color9 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-yellow700_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color11 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-cyan400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color14 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-grey600_hsl)) !important;
+				}
+			}
+		}
+		&.fg-color15 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-grey500_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color9 {
+		background-color: hsl(var(--preset-bg-color9)) !important;
+
+		&.fg-color1 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-black_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color11 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-cyan400_hsl)) !important;
+				} @else if ($name == light) {
+					color: hsl(var(--color-cyan600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color14 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-grey500_hsl)) !important;
+				} @else if ($name == light) {
+					color: hsl(var(--color-grey600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color15 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-grey400_hsl)) !important;
+				} @else if ($name == light) {
+					color: hsl(var(--color-grey500_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color10 {
+		background-color: hsl(var(--preset-bg-color10)) !important;
+
+		&.fg-color3 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-green700_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color5 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-red800_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color12 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-bluea400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color15 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-grey500_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color11 {
+		background-color: hsl(var(--preset-bg-color11)) !important;
+
+		&.fg-color3 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-green600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color7 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-orange500_hsl)) !important;
+				} @else if ($name == ice) {
+					color: hsl(var(--color-orange600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color8 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-yellow600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color9 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-lime400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color10 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-cyan700_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color12 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-blue500_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color14 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-grey600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color15 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-grey300_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color12 {
+		background-color: hsl(var(--preset-bg-color12)) !important;
+
+		&.fg-color2 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-blue900_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color3 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-green600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color6 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-indigo600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color10 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-cyan600_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color13 {
+		background-color: hsl(var(--preset-bg-color13)) !important;
+
+		&.fg-color3 {
+			@include fx.scheme using ($name) {
+				@if ($name == ice) {
+					color: hsl(var(--color-green500_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color5 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-red900_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color7 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-orange200_hsl)) !important;
+				} @else if ($name == light) {
+					color: hsl(var(--color-orange100_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color8 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-yellow200_hsl)) !important;
+				} @else if ($name == light) {
+					color: hsl(var(--color-yellow300_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color9 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-lime300_hsl)) !important;
+				} @else if ($name == light) {
+					color: hsl(var(--color-lime400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color12 {
+			@include fx.scheme using ($name) {
+				@if ($name == ice) {
+					color: hsl(var(--color-blue500_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color14 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-grey600_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color15 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-grey200_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color14 {
+		background-color: hsl(var(--preset-bg-color14)) !important;
+
+		&.fg-color4 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-reda100_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color5 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-red300_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color6 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-indigoa100_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color8 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-yellow300_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color9 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-limea200_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color11 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-cyana100_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color15 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-grey500_hsl)) !important;
+				}
+			}
+		}
+	}
+	.bg-color15 {
+		background-color: hsl(var(--preset-bg-color15)) !important;
+
+		&.fg-color7 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-orangea400_hsl)) !important;
+				} @else if ($name == ice) {
+					color: hsl(var(--color-orange800_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color8 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-yellowa400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color9 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-limea400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color10 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-cyana400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color11 {
+			@include fx.scheme using ($name) {
+				@if ($name == light) {
+					color: hsl(var(--color-cyana400_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color12 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-bluea200_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color13 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-pink300_hsl)) !important;
+				}
+			}
+		}
+
+		&.fg-color14 {
+			@include fx.scheme using ($name) {
+				@if ($name == dark) {
+					color: hsl(var(--color-grey700_hsl)) !important;
+				}
+			}
+		}
+	}
+
+	.bgo-color0 {
+		background-color: hsl(var(--preset-bg-color0), 25%) !important;
+	}
+	.bgo-color1 {
+		background-color: hsl(var(--preset-bg-color1), 25%) !important;
+	}
+	.bgo-color2 {
+		background-color: hsl(var(--preset-bg-color2), 25%) !important;
+	}
+	.bgo-color3 {
+		background-color: hsl(var(--preset-bg-color3), 25%) !important;
+	}
+	.bgo-color4 {
+		background-color: hsl(var(--preset-bg-color4), 25%) !important;
+	}
+	.bgo-color5 {
+		background-color: hsl(var(--preset-bg-color5), 25%) !important;
+	}
+	.bgo-color6 {
+		background-color: hsl(var(--preset-bg-color6), 25%) !important;
+	}
+	.bgo-color7 {
+		background-color: hsl(var(--preset-bg-color7), 25%) !important;
+	}
+	.bgo-color8 {
+		background-color: hsl(var(--preset-bg-color8), 25%) !important;
+	}
+	.bgo-color9 {
+		background-color: hsl(var(--preset-bg-color9), 25%) !important;
+	}
+	.bgo-color10 {
+		background-color: hsl(var(--preset-bg-color10), 25%) !important;
+	}
+	.bgo-color11 {
+		background-color: hsl(var(--preset-bg-color11), 25%) !important;
+	}
+	.bgo-color12 {
+		background-color: hsl(var(--preset-bg-color12), 25%) !important;
+	}
+	.bgo-color13 {
+		background-color: hsl(var(--preset-bg-color13), 25%) !important;
+	}
+	.bgo-color14 {
+		background-color: hsl(var(--preset-bg-color14), 25%) !important;
+	}
+	.bgo-color15 {
+		background-color: hsl(var(--preset-bg-color15), 25%) !important;
+	}
+
+	.fg-color0 {
+		color: hsl(var(--preset-fg-color0)) !important;
+	}
+	.fg-color1 {
+		color: hsl(var(--preset-fg-color1)) !important;
+	}
+	.fg-color2 {
+		color: hsl(var(--preset-fg-color2)) !important;
+	}
+	.fg-color3 {
+		color: hsl(var(--preset-fg-color3)) !important;
+	}
+	.fg-color4 {
+		color: hsl(var(--preset-fg-color4)) !important;
+	}
+	.fg-color5 {
+		color: hsl(var(--preset-fg-color5)) !important;
+	}
+	.fg-color6 {
+		color: hsl(var(--preset-fg-color6)) !important;
+	}
+	.fg-color7 {
+		color: hsl(var(--preset-fg-color7)) !important;
+	}
+	.fg-color8 {
+		color: hsl(var(--preset-fg-color8)) !important;
+	}
+	.fg-color9 {
+		color: hsl(var(--preset-fg-color9)) !important;
+	}
+	.fg-color10 {
+		color: hsl(var(--preset-fg-color10)) !important;
+	}
+	.fg-color11 {
+		color: hsl(var(--preset-fg-color11)) !important;
+	}
+	.fg-color12 {
+		color: hsl(var(--preset-fg-color12)) !important;
+	}
+	.fg-color13 {
+		color: hsl(var(--preset-fg-color13)) !important;
+	}
+	.fg-color14 {
+		color: hsl(var(--preset-fg-color14)) !important;
+	}
+	.fg-color15 {
+		color: hsl(var(--preset-fg-color15)) !important;
+	}
+
+	.stroke-color0 {
+		stroke: hsl(var(--preset-bg-color0)) !important;
+	}
+	.stroke-color1 {
+		stroke: hsl(var(--preset-bg-color1)) !important;
+	}
+	.stroke-color2 {
+		stroke: hsl(var(--preset-bg-color2)) !important;
+	}
+	.stroke-color3 {
+		stroke: hsl(var(--preset-bg-color3)) !important;
+	}
+	.stroke-color4 {
+		stroke: hsl(var(--preset-bg-color4)) !important;
+	}
+	.stroke-color5 {
+		stroke: hsl(var(--preset-bg-color5)) !important;
+	}
+	.stroke-color6 {
+		stroke: hsl(var(--preset-bg-color6)) !important;
+	}
+	.stroke-color7 {
+		stroke: hsl(var(--preset-bg-color7)) !important;
+	}
+	.stroke-color8 {
+		stroke: hsl(var(--preset-bg-color8)) !important;
+	}
+	.stroke-color9 {
+		stroke: hsl(var(--preset-bg-color9)) !important;
+	}
+	.stroke-color10 {
+		stroke: hsl(var(--preset-bg-color10)) !important;
+	}
+	.stroke-color11 {
+		stroke: hsl(var(--preset-bg-color11)) !important;
+	}
+	.stroke-color12 {
+		stroke: hsl(var(--preset-bg-color12)) !important;
+	}
+	.stroke-color13 {
+		stroke: hsl(var(--preset-bg-color13)) !important;
+	}
+	.stroke-color14 {
+		stroke: hsl(var(--preset-bg-color14)) !important;
+	}
+	.stroke-color15 {
+		stroke: hsl(var(--preset-bg-color15)) !important;
+	}
+
+	.fshadow-color0 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color0))
+		) !important;
+	}
+	.fshadow-color1 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color1))
+		) !important;
+	}
+	.fshadow-color2 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color2))
+		) !important;
+	}
+	.fshadow-color3 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color3))
+		) !important;
+	}
+	.fshadow-color4 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color4))
+		) !important;
+	}
+	.fshadow-color5 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color5))
+		) !important;
+	}
+	.fshadow-color6 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color6))
+		) !important;
+	}
+	.fshadow-color7 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color7))
+		) !important;
+	}
+	.fshadow-color8 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color8))
+		) !important;
+	}
+	.fshadow-color9 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color9))
+		) !important;
+	}
+	.fshadow-color10 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color10))
+		) !important;
+	}
+	.fshadow-color11 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color11))
+		) !important;
+	}
+	.fshadow-color12 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color12))
+		) !important;
+	}
+	.fshadow-color13 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color13))
+		) !important;
+	}
+	.fshadow-color14 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color14))
+		) !important;
+	}
+	.fshadow-color15 {
+		filter: drop-shadow(
+			0px 0px 4.5px hsl(var(--preset-bg-color15))
+		) !important;
+	}
+
+	.tshadow-color0 {
+		text-shadow: hsl(var(--preset-fg-color0)) 1px 0 5px !important;
+	}
+	.tshadow-color1 {
+		text-shadow: hsl(var(--preset-fg-color1)) 1px 0 5px !important;
+	}
+	.tshadow-color2 {
+		text-shadow: hsl(var(--preset-fg-color2)) 1px 0 5px !important;
+	}
+	.tshadow-color3 {
+		text-shadow: hsl(var(--preset-fg-color3)) 1px 0 5px !important;
+	}
+	.tshadow-color4 {
+		text-shadow: hsl(var(--preset-fg-color4)) 1px 0 5px !important;
+	}
+	.tshadow-color5 {
+		text-shadow: hsl(var(--preset-fg-color5)) 1px 0 5px !important;
+	}
+	.tshadow-color6 {
+		text-shadow: hsl(var(--preset-fg-color6)) 1px 0 5px !important;
+	}
+	.tshadow-color7 {
+		text-shadow: hsl(var(--preset-fg-color7)) 1px 0 5px !important;
+	}
+	.tshadow-color8 {
+		text-shadow: hsl(var(--preset-fg-color8)) 1px 0 5px !important;
+	}
+	.tshadow-color9 {
+		text-shadow: hsl(var(--preset-fg-color9)) 1px 0 5px !important;
+	}
+	.tshadow-color10 {
+		text-shadow: hsl(var(--preset-fg-color10)) 1px 0 5px !important;
+	}
+	.tshadow-color11 {
+		text-shadow: hsl(var(--preset-fg-color11)) 1px 0 5px !important;
+	}
+	.tshadow-color12 {
+		text-shadow: hsl(var(--preset-fg-color12)) 1px 0 5px !important;
+	}
+	.tshadow-color13 {
+		text-shadow: hsl(var(--preset-fg-color13)) 1px 0 5px !important;
+	}
+	.tshadow-color14 {
+		text-shadow: hsl(var(--preset-fg-color14)) 1px 0 5px !important;
+	}
+	.tshadow-color15 {
+		text-shadow: hsl(var(--preset-fg-color15)) 1px 0 5px !important;
+	}
+
+	.text-bold {
+		font-weight: bold;
+	}
+	.text-italic {
+		font-style: italic;
+	}
+	.text-underline {
+		text-decoration: underline;
+	}
+}

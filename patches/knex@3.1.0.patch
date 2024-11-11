@@ -1,0 +1,34 @@
+diff --git a/lib/formatter/formatterUtils.js b/lib/formatter/formatterUtils.js
+index d6e54af543dab15d170bc6e6a9e92bb03a64452b..3d42a79d3ce623181329d485d3213482c2e25105 100644
+--- a/lib/formatter/formatterUtils.js
++++ b/lib/formatter/formatterUtils.js
+@@ -1,3 +1,4 @@
++const FunctionHelper = require("../knex-builder/FunctionHelper.js");
+ const { isObject } = require('../util/is');
+ 
+ // Compiles a callback using the query builder.
+@@ -19,6 +20,10 @@ function wrapAsIdentifier(value, builder, client) {
+ }
+ 
+ function formatDefault(value, type, client) {
++  if (typeof value === "function") {
++	let helpers = new FunctionHelper(client);
++	value = value(helpers);
++  }
+   if (value === void 0) {
+     return '';
+   } else if (value === null) {
+diff --git a/types/index.d.ts b/types/index.d.ts
+index d191bd47649a4408615a0a8c94fa4f87234fac9a..2f630b5bcfda92077d2dd8933e550ddb1544a7e9 100644
+--- a/types/index.d.ts
++++ b/types/index.d.ts
+@@ -504,7 +504,8 @@ declare namespace Knex {
+     | Array<boolean>
+     | Buffer
+     | object
+-    | Knex.Raw;
++    | Knex.Raw
++	| ((fn_helper: Knex.FunctionHelper) => Value);
+ 
+   interface ValueDict extends Dict<Value | Knex.QueryBuilder> {}
+   interface AliasDict extends Dict<string> {}

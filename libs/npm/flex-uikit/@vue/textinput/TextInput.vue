@@ -16,7 +16,7 @@ let input_model = defineModel<string>();
 </script>
 
 <template>
-	<div class="fx:textinput [ flex! py=1 ]" :class="{ error: error }">
+	<div class="fx:textinput [ flex! gap=1 py=1 ]" :class="{ error: error }">
 		<div class="[ flex align-ji:center gap=1 ]">
 			<slot name="icon">
 				<LabelIcon :for="name" :icon="label" />

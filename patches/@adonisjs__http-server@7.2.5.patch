@@ -1,0 +1,274 @@
+diff --git a/build/chunk-GCLM3D4C.js.map b/build/chunk-GCLM3D4C.js.map
+deleted file mode 100644
+index 8910453ebe9a057fad0f2a113b3d27c230d80ec1..0000000000000000000000000000000000000000
+diff --git a/build/chunk-GCLM3D4C.js b/build/chunk-O7A2JE6V.js
+similarity index 99%
+rename from build/chunk-GCLM3D4C.js
+rename to build/chunk-O7A2JE6V.js
+index ada3f8bd8ec3e458f2c265c7db1f1e7366d809d8..d53fd83d3ca643c7ae9cd437a9aacd9619553b52 100644
+--- a/build/chunk-GCLM3D4C.js
++++ b/build/chunk-O7A2JE6V.js
+@@ -1491,6 +1491,9 @@ var Request = class extends Macroable5 {
+    */
+   host() {
+     let host = this.header("host");
++    if (this.secure() && !host) {
++      host = this.header(":authority");
++    }
+     if (trustProxy(this.request.socket.remoteAddress, this.#config.trustProxy)) {
+       host = this.header("X-Forwarded-Host") || host;
+     }
+@@ -2117,6 +2120,7 @@ var ResponseStatus = {
+ };
+ 
+ // src/response.ts
++import { Buffer as Buffer2 } from "node:buffer";
+ import etag from "etag";
+ import vary from "vary";
+ import fresh2 from "fresh";
+@@ -2339,7 +2343,7 @@ var Response = class extends Macroable6 {
+    * - Buffer
+    */
+   #getDataType(content) {
+-    if (Buffer.isBuffer(content)) {
++    if (Buffer2.isBuffer(content)) {
+       return "buffer";
+     }
+     if (content instanceof Date) {
+@@ -2403,7 +2407,7 @@ var Response = class extends Macroable6 {
+       this.#endResponse(null, ResponseStatus.NotModified);
+       return;
+     }
+-    this.header("Content-Length", Buffer.byteLength(content));
++    this.header("Content-Length", Buffer2.byteLength(content));
+     if (jsonpCallbackName) {
+       this.header("X-Content-Type-Options", "nosniff");
+       this.safeHeader("Content-Type", "text/javascript; charset=utf-8");
+@@ -4549,4 +4553,4 @@ export {
+   Server,
+   defineConfig
+ };
+-//# sourceMappingURL=chunk-GCLM3D4C.js.map
+\ No newline at end of file
++//# sourceMappingURL=chunk-O7A2JE6V.js.map
+\ No newline at end of file
+diff --git a/build/factories/main.js b/build/factories/main.js
+index 24efc28d3397cdacdb0b257f058c56a30b033c41..d5c1e7ab4aa4aa19efdb2d31dba39e20c79d05a3 100644
+--- a/build/factories/main.js
++++ b/build/factories/main.js
+@@ -6,7 +6,7 @@ import {
+   Router,
+   Server,
+   defineConfig
+-} from "../chunk-GCLM3D4C.js";
++} from "../chunk-O7A2JE6V.js";
+ 
+ // factories/http_context.ts
+ import { Container } from "@adonisjs/fold";
+diff --git a/build/index.js b/build/index.js
+index b305ba3d7aec46ce9f45d9319264e686d16eb8a9..1df7942daf10ed42b2686512aba737f5227fe0a3 100644
+--- a/build/index.js
++++ b/build/index.js
+@@ -18,7 +18,7 @@ import {
+   defineConfig,
+   exceptions_exports,
+   parseRange
+-} from "./chunk-GCLM3D4C.js";
++} from "./chunk-O7A2JE6V.js";
+ 
+ // src/exception_handler.ts
+ import is from "@sindresorhus/is";
+diff --git a/build/src/redirect.d.ts b/build/src/redirect.d.ts
+index 29c79b435e3eef04793b0a5288dc67856a915903..3ea1dc7f1b529658bc32f9ee52eb79e33a0e3945 100644
+--- a/build/src/redirect.d.ts
++++ b/build/src/redirect.d.ts
+@@ -1,14 +1,16 @@
++import type { Http2ServerRequest } from 'node:http2';
+ import type { IncomingMessage } from 'node:http';
+ import type { Qs } from './qs.js';
+ import type { Response } from './response.js';
+ import type { Router } from './router/main.js';
+ import type { MakeUrlOptions } from './types/route.js';
++type HttpServerRequest = IncomingMessage | Http2ServerRequest;
+ /**
+  * Exposes the API to construct redirect routes
+  */
+ export declare class Redirect {
+     #private;
+-    constructor(request: IncomingMessage, response: Response, router: Router, qs: Qs);
++    constructor(request: HttpServerRequest, response: Response, router: Router, qs: Qs);
+     /**
+      * Set a custom status code.
+      */
+@@ -39,3 +41,4 @@ export declare class Redirect {
+      */
+     toPath(url: string): void;
+ }
++export {};
+diff --git a/build/src/request.d.ts b/build/src/request.d.ts
+index 7536f69ad2db8d23c5b63ac621e4d4232987a1a5..ae0b8a2b6367244b27c0b89ea0785a61ed6e6312 100644
+--- a/build/src/request.d.ts
++++ b/build/src/request.d.ts
+@@ -1,10 +1,13 @@
+ import Macroable from '@poppinss/macroable';
+ import { UrlWithStringQuery } from 'node:url';
+ import type { Encryption } from '@adonisjs/encryption';
+-import { ServerResponse, IncomingMessage, IncomingHttpHeaders } from 'node:http';
++import type { Http2ServerRequest, Http2ServerResponse } from 'node:http2';
++import type { ServerResponse, IncomingMessage, IncomingHttpHeaders } from 'node:http';
+ import type { Qs } from './qs.js';
+ import { RequestConfig } from './types/request.js';
+ import type { HttpContext } from './http_context/main.js';
++type HttpServerRequest = IncomingMessage | Http2ServerRequest;
++type HttpServerResponse = ServerResponse | Http2ServerResponse;
+ /**
+  * HTTP Request class exposes the interface to consistently read values
+  * related to a given HTTP request. The class is wrapper over
+@@ -16,8 +19,8 @@ import type { HttpContext } from './http_context/main.js';
+  */
+ export declare class Request extends Macroable {
+     #private;
+-    request: IncomingMessage;
+-    response: ServerResponse;
++    request: HttpServerRequest;
++    response: HttpServerResponse;
+     /**
+      * Parses copy of the URL with query string as a string and not
+      * object. This is done to build URL's with query string without
+@@ -29,7 +32,7 @@ export declare class Request extends Macroable {
+      * reference
+      */
+     ctx?: HttpContext;
+-    constructor(request: IncomingMessage, response: ServerResponse, encryption: Encryption, config: RequestConfig, qsParser: Qs);
++    constructor(request: HttpServerRequest, response: HttpServerResponse, encryption: Encryption, config: RequestConfig, qsParser: Qs);
+     /**
+      * Returns the request id from the `x-request-id` header. The
+      * header is untouched, if it already exists.
+@@ -561,3 +564,4 @@ export declare class Request extends Macroable {
+         subdomains: Record<string, any>;
+     };
+ }
++export {};
+diff --git a/build/src/response.d.ts b/build/src/response.d.ts
+index 83f2f7327eeb26ea3b401cff802c3ac7d6777811..bebec5af63b06f42be109c21949f6592081063c2 100644
+--- a/build/src/response.d.ts
++++ b/build/src/response.d.ts
+@@ -1,6 +1,6 @@
+ import Macroable from '@poppinss/macroable';
+ import type { Encryption } from '@adonisjs/encryption';
+-import { ServerResponse, IncomingMessage } from 'node:http';
++import type { Http2ServerRequest, Http2ServerResponse } from 'node:http2';
+ import type { Qs } from './qs.js';
+ import { Redirect } from './redirect.js';
+ import type { Router } from './router/main.js';
+@@ -12,8 +12,8 @@ import type { CastableHeader, CookieOptions, ResponseConfig, ResponseStream } fr
+  */
+ export declare class Response extends Macroable {
+     #private;
+-    request: IncomingMessage;
+-    response: ServerResponse;
++    request: Http2ServerRequest;
++    response: Http2ServerResponse;
+     /**
+      * Does response has body set that will written to the
+      * response socket at the end of the request
+@@ -66,7 +66,7 @@ export declare class Response extends Macroable {
+      * reference
+      */
+     ctx?: HttpContext;
+-    constructor(request: IncomingMessage, response: ServerResponse, encryption: Encryption, config: ResponseConfig, router: Router, qs: Qs);
++    constructor(request: Http2ServerRequest, response: Http2ServerResponse, encryption: Encryption, config: ResponseConfig, router: Router, qs: Qs);
+     /**
+      * Returns a boolean telling if response is finished or not.
+      * Any more attempts to update headers or body will result
+@@ -107,7 +107,7 @@ export declare class Response extends Macroable {
+      * Under the hood the callback is registered with
+      * the "https://github.com/jshttp/on-finished" package
+      */
+-    onFinish(callback: (err: Error | null, response: ServerResponse) => void): void;
++    onFinish(callback: (err: Error | null, response: Http2ServerResponse) => void): void;
+     /**
+      * Writes headers with the Node.js res object using the
+      * response.setHeader method
+@@ -121,7 +121,7 @@ export declare class Response extends Macroable {
+      * Returns the existing value for a given HTTP response
+      * header.
+      */
+-    getHeader(key: string): import("http").OutgoingHttpHeader | undefined;
++    getHeader(key: string): import("http").OutgoingHttpHeader;
+     /**
+      * Get response headers
+      */
+@@ -154,6 +154,7 @@ export declare class Response extends Macroable {
+         "content-range"?: string | undefined;
+         "content-security-policy"?: string | undefined;
+         "content-security-policy-report-only"?: string | undefined;
++        "content-type"?: string | undefined;
+         cookie?: string | string[] | undefined;
+         dav?: string | string[] | undefined;
+         dnt?: string | undefined;
+diff --git a/build/src/server/main.d.ts b/build/src/server/main.d.ts
+index aaeaf0ecba8813db8a98e15858f2b2751915377f..2b881a63cecc21953baf9f35bc8c001cfaf85c04 100644
+--- a/build/src/server/main.d.ts
++++ b/build/src/server/main.d.ts
+@@ -1,10 +1,11 @@
+ import type { Logger } from '@adonisjs/logger';
+ import type { Encryption } from '@adonisjs/encryption';
+-import type { Server as HttpsServer } from 'node:https';
+ import type { Application } from '@adonisjs/application';
+ import type { EmitterLike } from '@adonisjs/events/types';
+ import { ContainerResolver } from '@adonisjs/fold';
+-import type { ServerResponse, IncomingMessage, Server as HttpServer } from 'node:http';
++import type { Server as HttpsServer } from 'node:https';
++import type { Http2SecureServer, Http2ServerRequest, Http2ServerResponse } from 'node:http2';
++import type { ServerResponse, IncomingMessage, Server as Http1Server } from 'node:http';
+ import type { LazyImport } from '../types/base.js';
+ import type { MiddlewareAsClass } from '../types/middleware.js';
+ import type { ServerConfig, HttpServerEvents, ErrorHandlerAsAClass, TestingMiddlewarePipeline } from '../types/server.js';
+@@ -12,6 +13,9 @@ import { Request } from '../request.js';
+ import { Response } from '../response.js';
+ import { Router } from '../router/main.js';
+ import { HttpContext } from '../http_context/main.js';
++type HttpServer = Http1Server | HttpsServer | Http2SecureServer;
++type HttpServerRequest = IncomingMessage | Http2ServerRequest;
++type HttpServerResponse = ServerResponse | Http2ServerResponse;
+ /**
+  * The HTTP server implementation to handle incoming requests and respond using the
+  * registered routes.
+@@ -52,12 +56,12 @@ export declare class Server {
+     /**
+      * Set the HTTP server instance used to listen for requests.
+      */
+-    setNodeServer(server: HttpServer | HttpsServer): void;
++    setNodeServer(server: HttpServer): void;
+     /**
+      * Returns reference to the underlying HTTP server
+      * in use
+      */
+-    getNodeServer(): HttpServer<typeof IncomingMessage, typeof ServerResponse> | HttpsServer<typeof IncomingMessage, typeof ServerResponse> | undefined;
++    getNodeServer(): HttpServer | undefined;
+     /**
+      * Returns reference to the router instance used
+      * by the server.
+@@ -66,11 +70,11 @@ export declare class Server {
+     /**
+      * Creates an instance of the [[Request]] class
+      */
+-    createRequest(req: IncomingMessage, res: ServerResponse): Request;
++    createRequest(req: HttpServerRequest, res: HttpServerResponse): Request;
+     /**
+      * Creates an instance of the [[Response]] class
+      */
+-    createResponse(req: IncomingMessage, res: ServerResponse): Response;
++    createResponse(req: HttpServerRequest, res: HttpServerResponse): Response;
+     /**
+      * Creates an instance of the [[HttpContext]] class
+      */
+@@ -78,5 +82,6 @@ export declare class Server {
+     /**
+      * Handle request
+      */
+-    handle(req: IncomingMessage, res: ServerResponse): Promise<any>;
++    handle(req: HttpServerRequest, res: HttpServerResponse): Promise<any>;
+ }
++export {};

@@ -39,9 +39,30 @@ services:
     working_dir: /app
     command: bash -c 'pnpm install -s && pnpm chat:discussion --host'
 
+  adonai_node:
+    build:
+      context: config/infra/node
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres_database
+    ports:
+      - 3333:3333
+      - 24678:24678
+    volumes:
+      - .:/app:cached
+      - npm-deps:/app/node_modules
+    environment:
+      - DOCKER=1
+      - HOST=0.0.0.0
+      - DATABASE_URL=postgresql://root:root@postgres_database:5432/flex
+      - DB_HOST=postgres_database
+    working_dir: /app
+    command: bash -c "pnpm install -s && pnpm adonai"
+
   caddy:
     image: caddy:latest
     links:
+      - adonai_node
       - flex_discussion_vite
       - flex_rust
     ports:
@@ -50,7 +71,6 @@ services:
       - 443:443/udp
     volumes:
       - ./config/infra/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./www/adonai:/srv
       - caddy-data:/data
       - caddy-config:/config
 
