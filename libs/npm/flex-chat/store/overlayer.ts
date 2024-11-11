@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { CSSHoudiniUnitValue } from "@phisyx/flex-css";
+import type { CSSHoudiniUnitValue } from "@phisyx/flex-css/houdini/unit";
 
-import { to_px } from "@phisyx/flex-css";
+import { to_px } from "@phisyx/flex-css/houdini/unit";
 import { minmax } from "@phisyx/flex-helpers";
 import { Option } from "@phisyx/flex-safety";
 
