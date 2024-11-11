@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
 
-import { format_date } from "@phisyx/flex-date";
+import { format_date } from "@phisyx/flex-date/format";
 import { computed } from "vue";
 
 import Avatar from "#/api/avatar/Avatar.vue";

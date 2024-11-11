@@ -5,7 +5,7 @@ import type { Option } from "@phisyx/flex-safety";
 import { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import { RoomMessage } from "@phisyx/flex-chat/room/message";
-import { format_date } from "@phisyx/flex-date";
+import { format_date } from "@phisyx/flex-date/format";
 import { None, Some } from "@phisyx/flex-safety";
 
 import ChannelActivities from "./ChannelActivities.template.vue";

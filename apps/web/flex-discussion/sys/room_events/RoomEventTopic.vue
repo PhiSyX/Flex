@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format_date } from "@phisyx/flex-date";
+import { format_date } from "@phisyx/flex-date/format";
 import { computed } from "vue";
 
 import type { Props } from "./RoomEvent.state";

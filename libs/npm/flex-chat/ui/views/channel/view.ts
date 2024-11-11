@@ -23,7 +23,7 @@ import type { Layer } from "@phisyx/flex-chat/store";
 import type { Option } from "@phisyx/flex-safety";
 import type { ChannelPresenter } from "./presenter";
 
-import { format_date } from "@phisyx/flex-date";
+import { format_date } from "@phisyx/flex-date/format";
 import { assert_non_null, None } from "@phisyx/flex-safety";
 
 // -------------- //
