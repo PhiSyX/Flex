@@ -162,7 +162,7 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 			<Button
 				:form="form"
 				type="submit"
-				variant="primary"
+				appearance="primary"
 				class="[ ml=1 mt=1 ]"
 			>
 				OK
@@ -171,7 +171,7 @@ const submit_handler = (evt: Event) => emit("submit", evt);
 			<Button
 				:form="form"
 				type="reset"
-				variant="secondary"
+				appearance="secondary"
 				class="[ ml=1 mt=1 ]"
 				@click="close_dialog_handler"
 			>

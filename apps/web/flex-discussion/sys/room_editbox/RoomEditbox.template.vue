@@ -74,7 +74,7 @@ function submit_handler() {
 
 		<div class="[ flex align-i:center h:full gap=2 px=1 ]">
 			<Button
-				variant="primary"
+				appearance="primary"
 				class="btn-change-nick [ max-w=12 display-i align-jc:stretch my=1 px=1 py=1 f-size=14px border/radius=1 ... ]"
 				:title="currentClientNickname"
 				@click="change_nick_handler"
@@ -101,7 +101,8 @@ function submit_handler() {
 					:disabled="disableInput"
 					:placeholder="placeholder"
 					:class="{
-						[`fg-color${foreground}`]: foreground && foreground >= 0,
+						[`fg-color${foreground}`]:
+							foreground && foreground >= 0,
 						[`fshadow-color${background}`]: background != null,
 						'text-bold': bold,
 						'text-italic': italic,
@@ -125,7 +126,6 @@ function submit_handler() {
 			</Button>
 
 			<Button
-
 				icon="text-color"
 				:disabled="disableInput"
 				:class="{
@@ -133,7 +133,6 @@ function submit_handler() {
 					[`fshadow-color${background}`]: background != null,
 				}"
 				@click="open_colors_box_handler"
-
 			/>
 
 			<Button

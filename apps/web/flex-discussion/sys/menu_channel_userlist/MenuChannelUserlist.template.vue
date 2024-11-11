@@ -106,7 +106,7 @@ const unset_access_level_handler = (
 				icon="user"
 				icon-position="right"
 				title="Commande /query"
-				variant="primary"
+				appearance="primary"
 				@click="open_private_handler"
 			>
 				<span v-if="!is_same_member">Discuter en privé</span>
@@ -119,7 +119,7 @@ const unset_access_level_handler = (
 				icon="user-block"
 				icon-position="right"
 				title="Commande /ignore <nickname>"
-				variant="primary"
+				appearance="primary"
 				@click="ignore_user_handler"
 			>
 				<span>Ignorer</span>
@@ -129,7 +129,7 @@ const unset_access_level_handler = (
 				icon="user-block"
 				icon-position="right"
 				title="Commande /unignore <nickname>"
-				variant="primary"
+				appearance="primary"
 				:selected="selectedMember.is_blocked"
 				:true-value="true"
 				:false-value="false"
@@ -148,7 +148,7 @@ const unset_access_level_handler = (
 		>
 			<Button
 				:disabled="disabled"
-				variant="secondary"
+				appearance="secondary"
 				title="Commande /kick"
 				@click="kick_member_handler"
 			>
@@ -158,7 +158,7 @@ const unset_access_level_handler = (
 			<Button
 				v-if="!selectedMember.is_banned"
 				:disabled="disabled"
-				variant="secondary"
+				appearance="secondary"
 				title="Commande /ban"
 				@click="ban_member_handler"
 			>
@@ -167,7 +167,7 @@ const unset_access_level_handler = (
 			<Button
 				v-else
 				:disabled="disabled"
-				variant="secondary"
+				appearance="secondary"
 				title="Commande /unban"
 				@click="unban_member_handler"
 			>
@@ -177,7 +177,7 @@ const unset_access_level_handler = (
 			<Button
 				v-if="!selectedMember.is_nick_banned"
 				:disabled="disabled"
-				variant="secondary"
+				appearance="secondary"
 				title="Commande /bannick"
 				@click="ban_nick_handler"
 			>
@@ -186,7 +186,7 @@ const unset_access_level_handler = (
 			<Button
 				v-else
 				:disabled="disabled"
-				variant="secondary"
+				appearance="secondary"
 				title="Commande /unbannick"
 				@click="unban_nick_handler"
 			>
@@ -241,7 +241,7 @@ const unset_access_level_handler = (
 				icon="report"
 				icon-position="right"
 				:with-opacity="true"
-				variant="danger"
+				appearance="danger"
 			>
 				Signaler
 			</Button>

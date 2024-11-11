@@ -208,7 +208,7 @@ function delete_selected_masks_handler() {
 		<template #footer>
 			<Button
 				type="submit"
-				variant="primary"
+				appearance="primary"
 				class="[ ml=1 ]"
 				:form="`${layerName}_form`"
 			>
@@ -218,7 +218,7 @@ function delete_selected_masks_handler() {
 			<Button
 				type="button"
 				formmethod="dialog"
-				variant="secondary"
+				appearance="secondary"
 				class="[ ml=1 ]"
 				:form="`${layerName}_form`"
 				@click="emit('close')"
@@ -267,7 +267,7 @@ function delete_selected_masks_handler() {
 				<div class="[ flex align-jc:sb gap=1 ]">
 					<Button
 						type="button"
-						variant="secondary"
+						appearance="secondary"
 						v-model:selected="active_access_control"
 						:value="AccessControl.BanList"
 					>
@@ -276,7 +276,7 @@ function delete_selected_masks_handler() {
 
 					<Button
 						type="button"
-						variant="secondary"
+						appearance="secondary"
 						v-model:selected="active_access_control"
 						:value="AccessControl.BanListException"
 					>
@@ -285,7 +285,7 @@ function delete_selected_masks_handler() {
 
 					<Button
 						type="button"
-						variant="secondary"
+						appearance="secondary"
 						v-model:selected="active_access_control"
 						:value="AccessControl.InviteList"
 					>
@@ -295,7 +295,7 @@ function delete_selected_masks_handler() {
 
 				<Button
 					type="button"
-					variant="secondary"
+					appearance="secondary"
 					:disabled="selected_access_control_list.length === 0"
 					@click="delete_selected_masks_handler"
 				>

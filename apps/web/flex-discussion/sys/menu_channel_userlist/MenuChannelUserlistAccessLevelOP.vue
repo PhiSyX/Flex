@@ -68,7 +68,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 	<template v-if="isSameMember && is_current_client_member_operator">
 		<Button
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			title="Commande /deop"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.Operator)"
 		>
@@ -84,7 +84,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-if="!is_selected_member_operator"
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			class="is-operator"
 			title="Commande /op"
 			@click="set_access_level_handler(ChannelAccessLevelFlag.Operator)"
@@ -94,7 +94,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-else
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			title="Commande /deop"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.Operator)"
 		>

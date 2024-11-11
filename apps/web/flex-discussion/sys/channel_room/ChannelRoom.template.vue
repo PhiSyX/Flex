@@ -227,7 +227,7 @@ const enable_topic_edit_mode_handler = (payload: {
 
 				<Alert
 					:close-after-seconds="15"
-					type="warning"
+					appearance="warning"
 					content-align="center"
 				>
 					Ne communique <strong>jamais</strong> tes coordonnées

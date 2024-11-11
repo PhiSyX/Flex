@@ -62,7 +62,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 	<template v-if="isSameMember && is_current_client_member_owner">
 		<Button
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			title="Commande /deqop"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.Owner)"
 		>
@@ -77,7 +77,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-if="!is_selected_member_owner"
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			class="is-owner"
 			title="Commande /qop"
 			@click="set_access_level_handler(ChannelAccessLevelFlag.Owner)"
@@ -87,7 +87,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-else
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			title="Commande /deqop"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.Owner)"
 		>

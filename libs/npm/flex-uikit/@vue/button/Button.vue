@@ -49,7 +49,7 @@ const click_handler = () => {
 		:class="{
 			'btn(:active)': is_selected,
 			'btn/without-opacity': withOpacity === false,
-			[`btn/${variant}`]: variant,
+			[`btn/${appearance}`]: appearance,
 		}"
 		:type="(type as HTMLButtonElement['type'])"
 		class="btn [ flex:shrink=0 ]"

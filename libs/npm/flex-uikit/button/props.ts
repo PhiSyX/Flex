@@ -22,6 +22,12 @@ export interface ButtonIconProps {
 
 export interface ButtonProps {
 	/**
+	 * Apparence du bouton.
+	 * @default undefined
+	 */
+	appearance?: "primary" | "secondary" | "danger";
+
+	/**
 	 * Icône associé au bouton.
 	 * @default undefined
 	 */
@@ -63,12 +69,6 @@ export interface ButtonProps {
 	 * @default undefined
 	 */
 	selected?: unknown;
-
-	/**
-	 * Variante du bouton.
-	 * @default undefined
-	 */
-	variant?: "primary" | "secondary" | "danger";
 
 	/**
 	 * Type de bouton.

@@ -73,7 +73,7 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 			<Button
 				id="channel-join-layer_btn"
 				class="[ px=2 py=1 border/radius=0.6 ]"
-				variant="primary"
+				appearance="primary"
 				@click="create_channel_dialog_handler"
 			>
 				Créer un salon
@@ -81,7 +81,7 @@ const create_channel_dialog_handler = (event: MouseEvent) =>
 
 			<Button
 				class="[ px=2 py=1 border/radius=0.6 ]"
-				variant="primary"
+				appearance="primary"
 				:disabled="selected_channels.size === 0"
 				@click="join_selected_channels"
 			>

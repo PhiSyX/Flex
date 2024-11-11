@@ -9,13 +9,14 @@ import {
 	DEFAULT_LABEL_YES,
 	make_alert_buttons,
 } from "@phisyx/flex-uikit/alert/buttons";
-import { make_alert_type } from "@phisyx/flex-uikit/alert/types";
+import { make_alert_appearance } from "@phisyx/flex-uikit/alert/appearance";
 import { computed, onBeforeUnmount, onMounted, shallowRef } from "vue";
 
 import ButtonIcon from "../button/ButtonIcon.vue";
 import Panel from "../panel/Panel.vue";
 
 const {
+	appearance,
 	closable = true,
 	closeAfterSeconds,
 	contentAlign = "left",
@@ -27,7 +28,6 @@ const {
 		ok: DEFAULT_LABEL_OK,
 		yes: DEFAULT_LABEL_YES,
 	},
-	type,
 } = defineProps<AlertProps>();
 const emit = defineEmits<AlertEmits>();
 
@@ -41,7 +41,7 @@ let $buttons = computed(() =>
 	),
 );
 
-let alert_type = computed(() => make_alert_type(type));
+let alert_appearence = computed(() => make_alert_appearance(appearance));
 
 // ------- //
 // Handler //
@@ -75,7 +75,7 @@ if (closeAfterSeconds) {
 	<div
 		v-if="auto_destroyed"
 		:class="{
-			[`fx:alert/${alert_type}`]: alert_type,
+			[`fx:alert/${alert_appearence}`]: alert_appearence,
 			[`align-t:${contentAlign}`]: contentAlign,
 		}"
 		class="fx:alert"

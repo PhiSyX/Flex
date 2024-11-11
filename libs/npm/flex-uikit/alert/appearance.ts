@@ -14,17 +14,17 @@ import type { ColorScheme, Theme } from "@phisyx/flex-uikit-stylesheets";
 // Type //
 // ---- //
 
-export type AlertType = "error" | "info" | "success" | "warning";
-export type AlertTypes =
-	| AlertType
-	| `${ColorScheme}:${AlertType}`
-	| `${Theme}:${AlertType}`;
+export type AlertAppearance = "error" | "info" | "success" | "warning";
+export type AlertAppearances =
+	| AlertAppearance
+	| `${ColorScheme}:${AlertAppearance}`
+	| `${Theme}:${AlertAppearance}`;
 
 // -------- //
 // Fonction //
 // -------- //
 
-export function make_alert_type(type: AlertTypes) {
+export function make_alert_appearance(type: AlertAppearances) {
 	let [ty, maybe_ty = ty] = type.split(":");
 	return maybe_ty;
 }

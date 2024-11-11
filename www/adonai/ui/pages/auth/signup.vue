@@ -52,7 +52,7 @@ watch(
 				v-if="page.props.errors?.global"
 				:closable="false"
 				:close-after-seconds="30"
-				type="error"
+				appearance="error"
 			>
 				<template
 					v-if="Array.isArray(page.props.errors.global)"

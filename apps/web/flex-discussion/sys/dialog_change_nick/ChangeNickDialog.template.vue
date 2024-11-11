@@ -51,7 +51,7 @@ function change_nickname_handler() {
 
 			<Button
 				type="submit"
-				variant="primary"
+				appearance="primary"
 				class="[ ml=1 mt=1 ]"
 				:form="`${layerName}_form`"
 				@click="change_nickname_handler"

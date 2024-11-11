@@ -59,7 +59,7 @@ function create_channel_handler() {
 
 			<Button
 				type="submit"
-				variant="primary"
+				appearance="primary"
 				class="[ ml=1 mt=1 ]"
 				:form="`${layerName}_form`"
 				@click="create_channel_handler"
@@ -69,7 +69,7 @@ function create_channel_handler() {
 		</template>
 
 		<section class="[ flex! gap=1 ]">
-			<Alert v-if="withNotice" type="warning" :closable="false">
+			<Alert v-if="withNotice" appearance="warning" :closable="false">
 				Tu es sur le point de rejoindre un salon OU de le créer.
 
 				<br />
@@ -86,7 +86,11 @@ function create_channel_handler() {
 				te suffira de le donner avec le nom du salon à tes contacts.
 			</Alert>
 
-			<Alert v-if="marksKeysFieldAsError" type="error" :closable="false">
+			<Alert
+				v-if="marksKeysFieldAsError"
+				appearance="error"
+				:closable="false"
+			>
 				Une clé d'accès est requise pour pouvoir entrer sur ce salon (
 				<em>{{ names }}</em>
 				).

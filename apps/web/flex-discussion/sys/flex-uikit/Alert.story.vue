@@ -40,40 +40,46 @@ function delay_state() {
 	<Story title="Molecules/Alert" responsive-disabled>
 		<Variant title="Default" :init-state="default_state">
 			<template #default="{ state }">
-				<Alert type="error">
+				<Alert appearance="error">
 					Type Error: {{ state.content }}
 				</Alert>
-				<Alert type="info">
+				<Alert appearance="info">
 					Type Info: {{ state.content }}
 				</Alert>
-				<Alert type="success">
+				<Alert appearance="success">
 					Type Success: {{ state.content }}
 				</Alert>
-				<Alert type="warning">
+				<Alert appearance="warning">
 					Type Warning: {{ state.content }}
 				</Alert>
 			</template>
 		</Variant>
 
 		<Variant title="Lockable" :init-state="lockable_state">
-			<template #default="{ state }" >
-				<Alert :type="state.type" :closable="state.closable">
+			<template #default="{ state }">
+				<Alert :appearance="state.type" :closable="state.closable">
 					{{ state.content }}
 				</Alert>
 			</template>
 		</Variant>
 
 		<Variant title="Left Content" :init-state="content_center_state">
-			<template #default="{ state }" >
-				<Alert :type="state.type" :content-align="state.content_center">
+			<template #default="{ state }">
+				<Alert
+					:appearance="state.type"
+					:content-align="state.content_center"
+				>
 					{{ state.content }}
 				</Alert>
 			</template>
 		</Variant>
 
 		<Variant title="Close with delay" :init-state="delay_state">
-			<template #default="{ state }" >
-				<Alert :type="state.type" :close-after-seconds="state.delay">
+			<template #default="{ state }">
+				<Alert
+					:appearance="state.type"
+					:close-after-seconds="state.delay"
+				>
 					{{ state.content }}
 				</Alert>
 			</template>

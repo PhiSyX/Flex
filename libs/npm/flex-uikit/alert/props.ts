@@ -10,9 +10,14 @@
 
 import type { TextAlign } from "../align";
 import type { AlertButtonFlags, AlertLabelButtons } from "./buttons";
-import type { AlertTypes } from "./types";
+import type { AlertAppearances } from "./appearance";
 
 export interface AlertProps {
+	/**
+	 * Apparence de l'alerte
+	 */
+	appearance: AlertAppearances;
+
 	/**
 	 * Boutons à afficher en dessous du contenu.
 	 * @default undefined
@@ -45,9 +50,4 @@ export interface AlertProps {
 	 * @default "left"
 	 */
 	contentAlign?: TextAlign;
-
-	/**
-	 * Le type de l'alerte
-	 */
-	type: AlertTypes;
 }

@@ -80,7 +80,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 	<template v-if="isSameMember && is_current_client_member_half_operator">
 		<Button
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			title="Commande /dehop"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
@@ -97,7 +97,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-if="!is_selected_member_half_operator"
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			class="is-half-operator"
 			title="Commande /hop"
 			@click="set_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
@@ -107,7 +107,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-else-if="!isSameMember"
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			title="Commande /dehop"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.HalfOperator)"
 		>
@@ -123,7 +123,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-if="!is_selected_member_vip_rights"
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			class="is-vip"
 			title="Commande /vip"
 			@click="set_access_level_handler(ChannelAccessLevelFlag.Vip)"
@@ -133,7 +133,7 @@ const unset_access_level_handler = (access_level: ChannelAccessLevelFlag) =>
 		<Button
 			v-else
 			:disabled="disabled"
-			variant="secondary"
+			appearance="secondary"
 			title="Commande /devip"
 			@click="unset_access_level_handler(ChannelAccessLevelFlag.Vip)"
 		>

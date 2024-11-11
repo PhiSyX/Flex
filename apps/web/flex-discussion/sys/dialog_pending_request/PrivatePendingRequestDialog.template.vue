@@ -31,7 +31,7 @@ const emit = defineEmits<Emits>();
 		<template #footer>
 			<Button
 				type="submit"
-				variant="primary"
+				appearance="primary"
 				class="[ ml=1 mt=1 ]"
 				@click="emit('submit')"
 			>
@@ -40,7 +40,7 @@ const emit = defineEmits<Emits>();
 
 			<Button
 				type="cancel"
-				variant="secondary"
+				appearance="secondary"
 				class="[ ml=1 mt=1 ]"
 				@click="emit('close')"
 			>

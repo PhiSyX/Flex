@@ -103,7 +103,11 @@ const send_message_handler = (message: string) => emit("send-message", message);
 					</template>
 				</ActionBar>
 
-				<Alert type="warning" :close-after-seconds="15" content-align="center">
+				<Alert
+					appearance="warning"
+					:close-after-seconds="15"
+					content-align="center"
+				>
 					Ne communique <strong>jamais</strong> tes coordonnées
 					personnelles (nom, adresse, n° de téléphone...), ni tes
 					identifiants de connexion.
