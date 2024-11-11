@@ -17,7 +17,8 @@ import type { Option } from "@phisyx/flex-safety/option";
 import type { PrivateInteractor } from "./interactor";
 import type { PrivateView } from "./view";
 
-import { assert_non_null, None } from "@phisyx/flex-safety/option";
+import { assert_non_null } from "@phisyx/flex-safety/asserts";
+import { None } from "@phisyx/flex-safety/option";
 import { PrivateRouter } from "./router";
 
 // -------------- //

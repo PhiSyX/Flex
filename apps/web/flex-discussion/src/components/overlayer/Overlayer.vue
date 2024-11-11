@@ -20,12 +20,10 @@ const layers = computed(() => overlayer_store.get_dyn_components());
 
 function update_all_layers() {
 	if ($overlayer.value) {
-		// @ts-expect-error - Pinia casse les yeuks.
 		overlayer_store.$overlayer_mut = $overlayer.value;
 	}
 
 	if ($teleport.value && $teleport.value.length > 0) {
-		// @ts-expect-error - Pinia casse les yeuks.
 		// biome-ignore lint/style/noNonNullAssertion: ;-)
 		overlayer_store.$teleport_mut = $teleport.value.pop()!
 			.firstElementChild as HTMLDivElement;

@@ -20,6 +20,6 @@ export interface DropDownListProps {
 export interface DropDownListItem {
 	value: string;
 	label: string;
-	position: number;
-	selected: boolean;
+	position?: number;
+	selected?: boolean;
 }

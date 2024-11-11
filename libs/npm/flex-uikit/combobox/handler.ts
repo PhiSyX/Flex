@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { DropDownListProps } from "dropdown/props";
+import type { DropDownListProps } from "../dropdown/props";
 
 export function filter_list(
 	models: { in: string; out: string },

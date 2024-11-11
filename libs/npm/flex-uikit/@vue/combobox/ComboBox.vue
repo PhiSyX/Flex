@@ -54,9 +54,9 @@ function toggle_list() {
 }
 
 function on_select_handler(
-	selected_item: ComboBoxProps["list"][number] & { position: number },
+	selected_item: ComboBoxProps["list"][number] & { position?: number },
 ) {
-	position_index.value = selected_item.position;
+	position_index.value = selected_item.position ?? 0;
 
 	outmodel.value = selected_item.value;
 	inmodel.value = selected_item.value;
