@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { is_string } from "@phisyx/flex-asserts";
+import { is_string } from "@phisyx/flex-asserts/primitive";
 import { None, Option, Some } from "@phisyx/flex-safety";
 
 import { MESSAGES_LIMIT, RoomMessage, RoomMessageEvent } from "./message";

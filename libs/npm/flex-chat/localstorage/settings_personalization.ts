@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { is_boolean, is_number } from "@phisyx/flex-asserts";
+import { is_boolean, is_number } from "@phisyx/flex-asserts/primitive";
 
 import { ALL_THEMES, type Theme } from "../theme";
 import { AppLocalStorage } from "./storage";

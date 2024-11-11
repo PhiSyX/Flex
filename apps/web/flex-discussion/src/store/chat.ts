@@ -20,7 +20,7 @@ import type {
 } from "@phisyx/flex-chat/store";
 import type { ComputedRef } from "vue";
 
-import { is_string } from "@phisyx/flex-asserts";
+import { is_string } from "@phisyx/flex-asserts/primitive";
 import { is_channel, is_private_room } from "@phisyx/flex-chat/asserts/room";
 import { ClientErrorLayer } from "@phisyx/flex-chat/layers/client_error";
 import { ChatStore } from "@phisyx/flex-chat/store";

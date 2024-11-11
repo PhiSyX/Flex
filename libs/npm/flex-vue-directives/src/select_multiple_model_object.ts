@@ -10,7 +10,7 @@
 
 import type { Directive, VNode } from "vue";
 
-import { is_object } from "@phisyx/flex-asserts";
+import { is_object } from "@phisyx/flex-asserts/object";
 
 import { nextTick, warn } from "vue";
 

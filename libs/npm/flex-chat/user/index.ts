@@ -10,7 +10,7 @@
 
 import type { Option } from "@phisyx/flex-safety";
 
-import { is_string } from "@phisyx/flex-asserts";
+import { is_string } from "@phisyx/flex-asserts/primitive";
 import { None, Some } from "@phisyx/flex-safety";
 
 import { is_user } from "../asserts/user";

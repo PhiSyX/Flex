@@ -10,7 +10,7 @@
 
 import type { Room } from "../room";
 
-import { is_string } from "@phisyx/flex-asserts";
+import { is_string } from "@phisyx/flex-asserts/primitive";
 
 import { ChannelMember } from "../channel/member";
 import { ChannelRoom } from "../channel/room";

@@ -17,7 +17,7 @@ import type { OverlayerStore } from "./overlayer";
 import type { SettingsStore } from "./settings";
 import type { UserStore } from "./user";
 
-import { is_string } from "@phisyx/flex-asserts";
+import { is_string } from "@phisyx/flex-asserts/primitive";
 import { None } from "@phisyx/flex-safety";
 
 import {
