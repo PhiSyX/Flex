@@ -4,7 +4,7 @@ import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Option } from "@phisyx/flex-safety";
 
-import { camelcase } from "@phisyx/flex-capitalization";
+import { camelcase } from "@phisyx/flex-capitalization/camelcase";
 import { computed, inject } from "vue";
 
 import ChannelName from "../channel_name/ChannelName.template.vue";

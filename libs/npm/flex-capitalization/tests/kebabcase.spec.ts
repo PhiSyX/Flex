@@ -10,7 +10,7 @@
 
 import { expect, it } from "vitest";
 
-import { kebabcase } from "../index";
+import { kebabcase } from "#src/kebabcase";
 
 it("kebab-case: vide", () => {
 	expect(kebabcase("")).toEqual("");

@@ -10,7 +10,7 @@
 
 import { expect, it } from "vitest";
 
-import { camelcase } from "../index";
+import { camelcase } from "#src/camelcase";
 
 it("camelCase: vide", () => {
 	expect(camelcase("")).toEqual("");

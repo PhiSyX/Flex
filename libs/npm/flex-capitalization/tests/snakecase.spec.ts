@@ -10,7 +10,7 @@
 
 import { expect, it } from "vitest";
 
-import { snakecase } from "../index";
+import { snakecase } from "#src/snakecase";
 
 it("snakecase: vide", () => {
 	expect(snakecase("")).toEqual("");

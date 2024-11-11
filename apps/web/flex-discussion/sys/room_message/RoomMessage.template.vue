@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { RoomMessage } from "@phisyx/flex-chat/room/message";
 
-import { camelcase, kebabcase } from "@phisyx/flex-capitalization";
+import { camelcase } from "@phisyx/flex-capitalization/camelcase";
+import { kebabcase } from "@phisyx/flex-capitalization/kebabcase";
 import { is_channel } from "@phisyx/flex-chat/asserts/room";
 import { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
