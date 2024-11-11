@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 import { computed, ref, watch } from "vue";
 

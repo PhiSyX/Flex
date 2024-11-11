@@ -20,11 +20,12 @@ import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Room } from "@phisyx/flex-chat/room";
 import type { RoomMessage } from "@phisyx/flex-chat/room/message";
 import type { Layer } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { ChannelPresenter } from "./presenter";
 
 import { format_date } from "@phisyx/flex-date/format";
-import { assert_non_null, None } from "@phisyx/flex-safety";
+import { assert_non_null } from "@phisyx/flex-safety/asserts";
+import { None } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

@@ -2,7 +2,7 @@
 import type { ChannelActivitiesView } from "@phisyx/flex-chat/channel/activity";
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 import { camelcase } from "@phisyx/flex-capitalization/camelcase";
 import { computed, inject } from "vue";

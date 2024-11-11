@@ -16,10 +16,10 @@ import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

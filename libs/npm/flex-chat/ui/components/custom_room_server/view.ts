@@ -10,10 +10,10 @@
 
 import type { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
 import type { Layer } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { CustomRoomServerPresenter } from "./presenter";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 // ---- //
 // Type //

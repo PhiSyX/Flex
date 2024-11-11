@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 import Menu from "@phisyx/flex-uikit-vue/menu/Menu.vue";
 import MenuItem from "@phisyx/flex-uikit-vue/menu/MenuItem.vue";

@@ -8,12 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Result } from "@phisyx/flex-safety";
+import type { Result } from "@phisyx/flex-safety/result";
 import type { ZodError } from "zod";
 
 import { calculate_age } from "@phisyx/flex-date/calculate_age";
 import { iso_to_country_flag } from "@phisyx/flex-helpers/iso_to_country_flag";
-import { Err, Ok, Option } from "@phisyx/flex-safety";
+import { Option } from "@phisyx/flex-safety/option";
+import { Err, Ok } from "@phisyx/flex-safety/result";
 import { z } from "zod";
 
 export interface UserInfoResponse {

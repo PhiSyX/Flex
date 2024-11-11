@@ -8,14 +8,14 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { ChannelUserlistUserInfoInteractor } from "./interactor";
 import type {
 	ChannelUserlistUserInfoView,
 	ChannelUserlistUserInfoViewProps,
 } from "./view";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 // @ts-expect-error - Vit env
 const CACHE_MINUTE = import.meta.env.DEV ? 5 : 60;

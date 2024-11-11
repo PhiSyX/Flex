@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 import { is_string } from "@phisyx/flex-asserts/primitive";
-import { None, Some } from "@phisyx/flex-safety";
+import { None, Some } from "@phisyx/flex-safety/option";
 
 import { is_user } from "../asserts/user";
 

@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Result } from "@phisyx/flex-safety";
+import type { Result } from "@phisyx/flex-safety/result";
 import type { ZodError } from "zod";
 
-import { Err, Ok } from "@phisyx/flex-safety";
+import { Err, Ok } from "@phisyx/flex-safety/result";
 import { z } from "zod";
 
 export type CountriesResponse = Array<{ code: string; country: string }>;

@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 // ---- //
 // Type //

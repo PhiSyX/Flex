@@ -12,7 +12,7 @@ import type { CSSHoudiniUnitValue } from "@phisyx/flex-css/houdini/unit";
 
 import { to_px } from "@phisyx/flex-css/houdini/unit";
 import { minmax } from "@phisyx/flex-helpers/minmax";
-import { Option } from "@phisyx/flex-safety";
+import { Option } from "@phisyx/flex-safety/option";
 
 // ---- //
 // Type //

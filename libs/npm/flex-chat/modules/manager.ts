@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { Option } from "@phisyx/flex-safety";
+import { Option } from "@phisyx/flex-safety/option";
 import type { CommandInterface, ModuleInterface } from "./interface";
 
 export class ModuleManager {

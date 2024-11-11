@@ -14,12 +14,13 @@ import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Layer } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { ChannelInteractor } from "./interactor";
 import type { ChannelView } from "./view";
 
 import { NoticesCustomRoom } from "@phisyx/flex-chat/custom_room/notices";
-import { assert_non_null, None } from "@phisyx/flex-safety";
+import { assert_non_null } from "@phisyx/flex-safety/asserts";
+import { None } from "@phisyx/flex-safety/option";
 import { ChannelRouter } from "./router";
 
 // -------------- //

@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterContract } from "@phisyx/flex-architecture/router";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { ChannelRoom } from "../channel/room";
 import type { ClientErrorRecordLayer } from "../layers/client_error";
 import type { Room } from "../room";
@@ -18,7 +18,7 @@ import type { SettingsStore } from "./settings";
 import type { UserStore } from "./user";
 
 import { is_string } from "@phisyx/flex-asserts/primitive";
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 import {
 	assert_channel_room,

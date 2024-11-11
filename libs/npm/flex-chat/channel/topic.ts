@@ -8,7 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, type Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
+
+import { None } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

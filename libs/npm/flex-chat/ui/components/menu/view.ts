@@ -12,10 +12,10 @@ import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { MenuClass, MenuInterface } from "@phisyx/flex-chat/menu";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { Layer } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { MenuPresenter } from "./presenter";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 // ---- //
 // Type //

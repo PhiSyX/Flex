@@ -8,11 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { UserInfoResponse } from "./entities/user_info";
 import type { ChannelUserlistUserInfoPresenter } from "./presenter";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 import { ChannelUserlistUserInfoAPIManager } from "./datamanager/api_data_manager";
 import { UserInfo } from "./entities/user_info";
 

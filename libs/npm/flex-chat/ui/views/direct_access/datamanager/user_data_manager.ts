@@ -10,7 +10,7 @@
 
 import type { UserStore } from "@phisyx/flex-chat/store";
 import type { UserSession } from "@phisyx/flex-chat/user/session";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

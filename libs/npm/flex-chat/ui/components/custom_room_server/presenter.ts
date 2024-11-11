@@ -9,11 +9,12 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Layer } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { CustomRoomServerInteractor } from "./interactor";
 import type { CustomRoomServerView } from "./view";
 
-import { assert_non_null, None } from "@phisyx/flex-safety";
+import { assert_non_null}  from "@phisyx/flex-safety/asserts";
+import { None } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

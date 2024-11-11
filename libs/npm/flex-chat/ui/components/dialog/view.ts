@@ -10,10 +10,10 @@
 
 import type { DialogClass, DialogInterface } from "@phisyx/flex-chat/dialogs";
 import type { Layer } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { DialogPresenter } from "./presenter";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 import { Countries } from "./entities/countries";
 
 // ---- //

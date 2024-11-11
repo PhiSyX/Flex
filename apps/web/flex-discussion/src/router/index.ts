@@ -10,7 +10,7 @@
 
 import type { RouterContract } from "@phisyx/flex-architecture/router";
 
-import { Option } from "@phisyx/flex-safety";
+import { Option } from "@phisyx/flex-safety/option";
 import { useRoute, useRouter } from "vue-router";
 
 // -------------- //

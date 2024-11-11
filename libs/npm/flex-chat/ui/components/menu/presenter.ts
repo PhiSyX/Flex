@@ -11,12 +11,13 @@
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { Room } from "@phisyx/flex-chat/room";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { MenuInteractor } from "./interactor";
 import type { MenuView } from "./view";
 
 import { is_channel_room } from "@phisyx/flex-chat/asserts/room";
-import { assert_non_null, None } from "@phisyx/flex-safety";
+import { assert_non_null } from "@phisyx/flex-safety/asserts";
+import { None } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

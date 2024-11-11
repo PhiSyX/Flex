@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import { None, Option } from "@phisyx/flex-safety";
+import { None, Option } from "@phisyx/flex-safety/option";
 
 import type { Room } from "./index";
 

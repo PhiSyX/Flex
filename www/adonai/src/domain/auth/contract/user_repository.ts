@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { Result } from "@phisyx/flex-safety";
+import type { Result } from "@phisyx/flex-safety/result";
 
 import type { UserRepositoryException } from "#auth/error/user_repository";
 import type { Users } from "#types/database";

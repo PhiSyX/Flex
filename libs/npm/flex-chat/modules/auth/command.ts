@@ -8,6 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import type { Result } from "@phisyx/flex-safety/result";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
@@ -15,7 +16,8 @@ import type {
 } from "../../store";
 import type { AuthApiHTTPClient } from "./feign/api";
 
-import { Err, None, Ok, type Result } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
+import { Err, Ok } from "@phisyx/flex-safety/result";
 
 import { ClientErrorLayer } from "../../layers/client_error";
 import { AuthSubCommand } from "./subcommand";

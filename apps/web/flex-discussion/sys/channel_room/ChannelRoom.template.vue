@@ -4,7 +4,7 @@ import type { ChannelActivitiesView } from "@phisyx/flex-chat/channel/activity";
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 
 import { computed, ref } from "vue";
 

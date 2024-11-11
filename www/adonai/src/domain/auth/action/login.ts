@@ -12,7 +12,7 @@ import type { PasswordChecker } from "#auth/contract/password_checker";
 import type { UserRepository } from "#auth/contract/user_repository";
 import type { AuthLoginInputDTO } from "#auth/dto/login";
 import type { Users } from "#types/database";
-import type { Result } from "@phisyx/flex-safety";
+import type { Result } from "@phisyx/flex-safety/result";
 
 import { InvalidCredentials } from "#auth/error/invalid_identifier";
 import {
@@ -20,7 +20,7 @@ import {
 	AuthLoginFailedException,
 } from "#auth/error/login_failed";
 
-import { Err, Ok } from "@phisyx/flex-safety";
+import { Err, Ok } from "@phisyx/flex-safety/result";
 
 export class AuthLoginAction {
 	constructor(

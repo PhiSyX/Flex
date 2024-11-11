@@ -12,12 +12,12 @@ import type { LayoutData } from "@phisyx/flex-chat/localstorage/settings_layout"
 import type { NotificationData } from "@phisyx/flex-chat/localstorage/settings_notification";
 import type { PrivateData } from "@phisyx/flex-chat/localstorage/settings_private";
 import type { Theme, ThemeRecord } from "@phisyx/flex-chat/theme";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { SettingsInteractor } from "./interactor";
 import type { SettingsRouter } from "./router";
 import type { SettingsView } from "./view";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

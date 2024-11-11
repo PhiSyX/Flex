@@ -10,7 +10,7 @@
 
 import type { User } from "../user";
 
-import { None, Option } from "@phisyx/flex-safety";
+import { None, Option } from "@phisyx/flex-safety/option";
 
 import { is_user } from "../asserts/user";
 import { Room } from "../room";

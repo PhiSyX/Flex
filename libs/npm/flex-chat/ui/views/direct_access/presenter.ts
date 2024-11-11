@@ -10,11 +10,11 @@
 
 import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type { UserSession } from "@phisyx/flex-chat/user/session";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { DirectAccessInteractor } from "./interactor";
 import type { DirectAccessView } from "./view";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 import { DirectAccessRouter } from "./router";
 
 // -------------- //

@@ -10,11 +10,11 @@
 
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { UserSession } from "@phisyx/flex-chat/user/session";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { DialogInteractor } from "./interactor";
 import type { DialogView } from "./view";
 
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 // @ts-expect-error - Vit env
 const CACHE_MINUTE = import.meta.env.DEV ? 60 : 1440;

@@ -16,12 +16,12 @@ import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
 } from "@phisyx/flex-chat/store";
-import type { Option } from "@phisyx/flex-safety";
+import type { Option } from "@phisyx/flex-safety/option";
 import type { DirectAccessFormData } from "../formdata";
 import type { DirectAccessInteractor } from "../interactor";
 
 import { HandlerManager } from "@phisyx/flex-chat/handlers/manager";
-import { None } from "@phisyx/flex-safety";
+import { None } from "@phisyx/flex-safety/option";
 
 // -------------- //
 // Implémentation //

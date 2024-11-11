@@ -12,7 +12,7 @@ import type { UserRepository } from "#auth/contract/user_repository";
 import type { Users } from "#types/database";
 import type { User } from "#auth/user";
 
-import { Result } from "@phisyx/flex-safety";
+import { Result } from "@phisyx/flex-safety/result";
 
 import {
 	UserRepositoryError,

@@ -17,7 +17,7 @@ import {
 	UserRepositoryError,
 	UserRepositoryException,
 } from "@phisyx/adonai-domain/auth/error/user_repository";
-import { Result } from "@phisyx/flex-safety";
+import { Result } from "@phisyx/flex-safety/result";
 // biome-ignore lint/style/useImportType: Utilisé par le décorateur @inject
 import { Kysely } from "kysely";
 

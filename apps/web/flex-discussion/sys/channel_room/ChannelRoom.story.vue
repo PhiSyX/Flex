@@ -5,7 +5,7 @@ import { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import { RoomMessage } from "@phisyx/flex-chat/room/message";
 import { User } from "@phisyx/flex-chat/user";
-import { None, Some } from "@phisyx/flex-safety";
+import { None, Some } from "@phisyx/flex-safety/option";
 
 import ChannelRoomKicked from "#/sys/channel_room/ChannelRoomKicked.vue";
 import ChannelRoomComponent from "./ChannelRoom.template.vue";

@@ -6,7 +6,7 @@ import { kebabcase } from "@phisyx/flex-capitalization/kebabcase";
 import { is_channel } from "@phisyx/flex-chat/asserts/room";
 import { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
-import { None, Some } from "@phisyx/flex-safety";
+import { None, Some } from "@phisyx/flex-safety/option";
 import { computed, inject } from "vue";
 
 import ChannelNick from "#/sys/channel_nick/ChannelNick.template.vue";

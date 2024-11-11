@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { is_string } from "@phisyx/flex-asserts/primitive";
-import { None, Option, Some } from "@phisyx/flex-safety";
+import { None, Option, Some } from "@phisyx/flex-safety/option";
 
 import { MESSAGES_LIMIT, RoomMessage, RoomMessageEvent } from "./message";
 
