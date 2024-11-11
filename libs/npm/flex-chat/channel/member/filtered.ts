@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { FuzzySearchType } from "@phisyx/flex-search";
+import type { FuzzySearchType } from "@phisyx/flex-search/fuzzy_search";
 
 import { ChannelMember } from "../member";
 

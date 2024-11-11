@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import { None, Some } from "@phisyx/flex-safety/option";
-import { FuzzySearchType, fuzzy_search } from "../index";
+import { FuzzySearchType, fuzzy_search } from "#src/fuzzy_search";
 
 import { expect, it } from "vitest";
 

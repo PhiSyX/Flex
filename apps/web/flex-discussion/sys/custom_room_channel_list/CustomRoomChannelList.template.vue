@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-import { fuzzy_search } from "@phisyx/flex-search";
+import { fuzzy_search } from "@phisyx/flex-search/fuzzy_search";
 
 import Button from "@phisyx/flex-uikit-vue/button/Button.vue";
 import DataGrid from "@phisyx/flex-uikit-vue/datagrid/DataGrid.vue";
