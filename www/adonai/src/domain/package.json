@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
-		"test:unit": "vitest",
+		"test:unit": "vitest run",
 		"codegen": "kysely-codegen --out-file=types/database.ts"
 	},
 	"imports": {

@@ -8,7 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export type CSSHoudiniUnitValue =
+// ---- //
+// Type //
+// ---- //
+
+type CSSHoudiniUnitValue =
 	| { value: number; unit: string }
 	| `${string}px`;
 
@@ -29,5 +33,7 @@ function to_px(n: number): CSSHoudiniUnitValue {
 // ------ //
 // Export //
 // ------ //
+
+export type { CSSHoudiniUnitValue };
 
 export { to_px };

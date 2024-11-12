@@ -10,9 +10,19 @@
 
 import type { Option } from "@phisyx/flex-safety/option";
 
-export abstract class RouterContract {
+// --------- //
+// Interface //
+// --------- //
+
+abstract class RouterContract {
 	abstract back(): void;
 	abstract forward(): void;
 	abstract goto(name: string, params?: object): void;
 	abstract param(name: string): Option<string>;
 }
+
+// ------ //
+// Export //
+// ------ //
+
+export { RouterContract };

@@ -8,6 +8,16 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function is_object<O>(value: unknown): value is object & O {
+// -------- //
+// Fonction //
+// -------- //
+
+function is_object<O>(value: unknown): value is object & O {
 	return typeof value === "object";
 }
+
+// ------ //
+// Export //
+// ------ //
+
+export { is_object };

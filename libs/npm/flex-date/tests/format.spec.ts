@@ -8,12 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function is_class<O>(value: unknown): value is object & O {
-	return typeof value === "function";
-}
+import { format_date } from "#src/format";
+import { expect, it } from "vitest";
 
-export function is_function<O, A = unknown>(
-	value: unknown,
-): value is (...args: Array<A>) => O {
-	return typeof value === "function";
-}
+it("format_date: base", () => {
+	expect(format_date("[H:i:s]", new Date("11-12-2024 12:31:03"))).toEqual(
+		"[12:31:03]",
+	);
+});

@@ -9,23 +9,20 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 // -------- //
-// Constant //
-// -------- //
-
-const UNIX_EPOCH_YEAR: number = 1970;
-
-// -------- //
 // Fonction //
 // -------- //
 
 /**
  * Retourne un âge en fonction d'une date.
  */
-function calculate_age(nsd: number | string | Date): number {
-	let date = new Date(nsd);
-	let diff = Date.now() - date.getTime();
-	let age = new Date(diff);
-	return Math.abs(age.getUTCFullYear() - UNIX_EPOCH_YEAR);
+function calculate_age(birth_date: Date, current_date = new Date()): number {
+	let diff_y = current_date.getFullYear() - birth_date.getFullYear();
+	let diff_m = current_date.getMonth() - birth_date.getMonth();
+	let diff_d = current_date.getDate() - birth_date.getDate();
+	if (diff_m <= 0 || diff_d < 0) {
+		diff_y -= 1;
+	}
+	return diff_y;
 }
 
 // ------ //

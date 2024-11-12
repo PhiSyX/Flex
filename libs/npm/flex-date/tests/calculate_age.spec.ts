@@ -8,23 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export function is_dom_element(value: unknown): value is HTMLElement {
-	return value instanceof HTMLElement;
-}
+import { expect, it } from "vitest";
 
-export function is_dom_fragment(value: unknown): value is DocumentFragment {
-	return value instanceof DocumentFragment;
-}
+import { calculate_age } from "#src/calculate_age";
 
-export function is_dom_node(value: unknown): value is Node {
-	return value instanceof Node;
-}
-
-export function is_dom_input<T extends HTMLElement>(
-	el: unknown,
-): el is T & { value: string } {
-	return (
-		is_dom_element(el) &&
-		["input", "select"].includes(el.localName.toLowerCase())
-	);
-}
+it("calculate_age: base", () => {
+	expect(
+		calculate_age(new Date("12-07-1991"), new Date("11-12-2024")),
+	).toEqual(32);
+});

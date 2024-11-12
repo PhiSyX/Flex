@@ -68,7 +68,9 @@ export class UserInfo implements UserInfoResponse {
 	 * Calcule l'âge en fonction de la date de naissance.
 	 */
 	age(): Option<number> {
-		return Option.from(this.birthday).map(calculate_age);
+		return Option.from(this.birthday).map((b) =>
+			calculate_age(new Date(b)),
+		);
 	}
 
 	/**

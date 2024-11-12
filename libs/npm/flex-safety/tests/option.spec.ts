@@ -10,7 +10,7 @@
 
 import { expect, it } from "vitest";
 
-import { None, Option, Some } from "../index";
+import { None, Option, Some } from "#src/option";
 
 it("Option: Some", () => {
 	expect(Some("")).toEqual(Some(""));

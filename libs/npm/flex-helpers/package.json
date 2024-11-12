@@ -4,10 +4,17 @@
 	"version": "0.1.0",
 	"author": "Mike 'PhiSyX' S.",
 	"type": "module",
+	"imports": {
+		"#src/*": "./src/*.ts"
+	},
 	"exports": {
 		"./*": "./src/*.ts"
 	},
+	"scripts": {
+		"test:unit": "vitest run"
+	},
 	"devDependencies": {
-		"@phisyx/flex-code-quality": "workspace:"
+		"@phisyx/flex-code-quality": "workspace:",
+		"vitest": "catalog:"
 	}
 }

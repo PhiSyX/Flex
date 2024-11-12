@@ -8,9 +8,11 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-export * from "./src/array";
-export * from "./src/dom";
-export * from "./src/fn";
-export * from "./src/object";
-export * from "./src/primitive";
-export * from "./src/promise";
+import { iso_to_country_flag } from "#src/iso_to_country_flag";
+import { expect, it } from "vitest";
+
+it("iso_to_country_flag: base", () => {
+	expect(iso_to_country_flag("IT")).toEqual("🇮🇹");
+	expect(iso_to_country_flag("US")).toEqual("🇺🇸");
+	expect(iso_to_country_flag("MX")).toEqual("🇲🇽");
+});
