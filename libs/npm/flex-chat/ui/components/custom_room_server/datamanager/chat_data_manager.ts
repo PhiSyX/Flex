@@ -12,7 +12,7 @@ import type { Room } from "@phisyx/flex-chat/room";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
 
 // -------------- //
 // Implémentation //

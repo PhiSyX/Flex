@@ -10,13 +10,11 @@
 
 import type { PrivateOptionsRecordMenu } from "@phisyx/flex-chat/menu/private_options";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
-import type { Layer, OverlayerStore } from "@phisyx/flex-chat/store";
+import type { Layer, OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 
-import {
-	ChangeFormatsColorsDialog,
-	PrivatePendingRequestDialog,
-	UserChangeNicknameDialog,
-} from "@phisyx/flex-chat/dialogs";
+import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat/dialogs/change_formats_colors";
+import { PrivatePendingRequestDialog } from "@phisyx/flex-chat/dialogs/private_pending_request";
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat/dialogs/user_change_nickname";
 import { PrivateOptionsMenu } from "@phisyx/flex-chat/menu/private_options";
 
 // -------------- //

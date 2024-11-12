@@ -13,7 +13,7 @@ import type { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_le
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
-import type { Layer } from "@phisyx/flex-chat/store";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 import type { Option } from "@phisyx/flex-safety/option";
 import type { ChannelInteractor } from "./interactor";
 import type { ChannelView } from "./view";

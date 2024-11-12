@@ -12,7 +12,7 @@ import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
 
 // -------------- //
 // Implémentation //

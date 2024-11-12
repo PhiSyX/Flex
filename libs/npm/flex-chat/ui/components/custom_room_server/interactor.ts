@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { Room } from "@phisyx/flex-chat/room";
-import type { Layer } from "@phisyx/flex-chat/store";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 import type { CustomRoomServerChatManager } from "./datamanager/chat_data_manager";
 import type { CustomRoomServerOverlayerManager } from "./datamanager/overlayer_data_manager";
 import type { CustomRoomServerSettingsManager } from "./datamanager/settings_data_manager";

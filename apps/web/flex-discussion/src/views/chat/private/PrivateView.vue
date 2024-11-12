@@ -3,10 +3,10 @@ import type { PrivateView } from "@phisyx/flex-chat-ui/views/private";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	OverlayerStore,
-	SettingsStore,
-	UserStore,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
 
 import { PrivateWireframe } from "@phisyx/flex-chat-ui/views/private";
 import { computed, onActivated, onDeactivated, onMounted, reactive } from "vue";

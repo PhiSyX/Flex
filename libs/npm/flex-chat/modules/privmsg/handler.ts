@@ -10,10 +10,10 @@
 
 import type { Room } from "../../room";
 import type { RoomMessageEvent } from "../../room/message";
-import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store";
+import type { ChatStoreInterface, ChatStoreInterfaceExt } from "../../store/chat";
 
 import { assert_private_room } from "../../asserts/room";
-import { MentionsCustomRoom } from "../../custom_room";
+import { MentionsCustomRoom } from "../../custom_room/mentions";
 import { PrivateParticipant } from "../../private/participant";
 import { PrivateRoom } from "../../private/room";
 import { RoomMessage } from "../../room/message";

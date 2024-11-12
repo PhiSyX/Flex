@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { UserStore } from "@phisyx/flex-chat/store";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
 import type { UserSession } from "@phisyx/flex-chat/user/session";
 
 // -------------- //

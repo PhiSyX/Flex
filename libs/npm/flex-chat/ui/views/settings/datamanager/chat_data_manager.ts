@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChatStoreInterface } from "@phisyx/flex-chat/store";
+import type { ChatStoreInterface } from "@phisyx/flex-chat/store/chat";
 
-import { ServerCustomRoom } from "@phisyx/flex-chat/custom_room";
+import { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
 
 // -------------- //
 // Implémentation //

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { SettingsStore } from "@phisyx/flex-chat/store";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
 
 // -------------- //
 // Implémentation //

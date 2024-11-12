@@ -12,9 +12,9 @@ import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	OverlayerStore,
-	UserStore,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
 
 import { DirectAccessChatManager } from "./datamanager/chat_data_manager";
 import { DirectAccessOverlayerManager } from "./datamanager/overlay_data_manager";

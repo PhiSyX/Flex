@@ -12,7 +12,7 @@ import type { Option } from "@phisyx/flex-safety/option";
 
 import type { ChannelMember } from "../channel/member";
 import type { ChannelRoom } from "../channel/room";
-import type { Layer, OverlayerStore } from "../store";
+import type { Layer, OverlayerStore } from "../store/overlayer";
 import type { MenuInterface } from "./interface";
 
 // ---- //

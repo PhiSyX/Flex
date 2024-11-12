@@ -14,7 +14,7 @@ import {
 } from "pinia";
 import { reactive } from "vue";
 
-import { UserStore, UserStoreData } from "@phisyx/flex-chat/store";
+import { UserStore, UserStoreData } from "@phisyx/flex-chat/store/user";
 
 // ----- //
 // Store //

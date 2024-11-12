@@ -10,7 +10,7 @@
 
 import type { Option } from "@phisyx/flex-safety/option";
 
-import type { Layer, OverlayerStore } from "../store";
+import type { Layer, OverlayerStore } from "../store/overlayer";
 import type { DialogInterface } from "./interface";
 
 // ---- //

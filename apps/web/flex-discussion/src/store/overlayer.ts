@@ -11,19 +11,17 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, defineAsyncComponent, reactive, readonly } from "vue";
 
-import {
-	ChangeFormatsColorsDialog,
-	ChannelJoinDialog,
-	ChannelSettingsDialog,
-	PrivatePendingRequestDialog,
-	UpdateAccountDialog,
-	UserChangeNicknameDialog,
-} from "@phisyx/flex-chat/dialogs";
+import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat/dialogs/change_formats_colors";
+import { OverlayerData, OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat/dialogs/user_change_nickname";
+import { ChannelJoinDialog } from "@phisyx/flex-chat/dialogs/channel_join";
+import { ChannelSettingsDialog } from "@phisyx/flex-chat/dialogs/channel_settings";
+import { PrivatePendingRequestDialog } from "@phisyx/flex-chat/dialogs/private_pending_request";
+import { UpdateAccountDialog } from "@phisyx/flex-chat/dialogs/update_account";
 import { ClientErrorLayer } from "@phisyx/flex-chat/layers/client_error";
 import { LoadAllModulesLayer } from "@phisyx/flex-chat/layers/load_all_modules";
 import { ChannelOptionsMenu } from "@phisyx/flex-chat/menu/channel_options";
 import { PrivateOptionsMenu } from "@phisyx/flex-chat/menu/private_options";
-import { OverlayerData, OverlayerStore } from "@phisyx/flex-chat/store";
 
 // -------------- //
 // Implémentation //

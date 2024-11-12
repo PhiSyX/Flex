@@ -15,7 +15,7 @@ import type {
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
 import type { Option } from "@phisyx/flex-safety/option";
 import type { DirectAccessFormData } from "../formdata";
 import type { DirectAccessInteractor } from "../interactor";

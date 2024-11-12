@@ -3,8 +3,8 @@ import type { SettingsView } from "@phisyx/flex-chat-ui/views/settings";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	SettingsStore,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
 
 import { SettingsWireframe } from "@phisyx/flex-chat-ui/views/settings";
 import { reactive } from "vue";

@@ -10,20 +10,20 @@
 
 import type { RouterContract } from "@phisyx/flex-architecture/router";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
+import type { ChatStoreInterfaceExt } from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 import type {
-	ChatStoreInterfaceExt,
-	ChatStoreUUIDExt,
-	OverlayerStore,
 	UUIDStore,
 	UUIDVariant,
-	UserStore,
-} from "@phisyx/flex-chat/store";
+	ChatStoreUUIDExt,
+} from "@phisyx/flex-chat/store/uuid";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
 import type { ComputedRef } from "vue";
 
 import { is_string } from "@phisyx/flex-asserts/primitive";
 import { is_channel, is_private_room } from "@phisyx/flex-chat/asserts/room";
 import { ClientErrorLayer } from "@phisyx/flex-chat/layers/client_error";
-import { ChatStore } from "@phisyx/flex-chat/store";
+import { ChatStore } from "@phisyx/flex-chat/store/chat";
 import { View } from "@phisyx/flex-chat/view";
 import { None } from "@phisyx/flex-safety/option";
 import {

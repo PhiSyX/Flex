@@ -9,9 +9,9 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
-import type { MenuClass, MenuInterface } from "@phisyx/flex-chat/menu";
+import type { MenuClass, MenuInterface } from "@phisyx/flex-chat/menu/interface";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
-import type { Layer } from "@phisyx/flex-chat/store";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 import type { Option } from "@phisyx/flex-safety/option";
 import type { MenuPresenter } from "./presenter";
 

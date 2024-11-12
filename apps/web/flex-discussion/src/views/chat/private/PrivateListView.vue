@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PrivateListView } from "@phisyx/flex-chat-ui/views/private_list";
-import type { ChatStoreInterface } from "@phisyx/flex-chat/store";
+import type { ChatStoreInterface } from "@phisyx/flex-chat/store/chat";
 
 import { PrivateListWireframe } from "@phisyx/flex-chat-ui/views/private_list";
 import { computed, reactive } from "vue";

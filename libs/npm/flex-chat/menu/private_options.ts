@@ -12,7 +12,7 @@ import type { Option } from "@phisyx/flex-safety/option";
 
 import type { PrivateParticipant } from "../private/participant";
 import type { PrivateRoom } from "../private/room";
-import type { Layer, OverlayerStore } from "../store";
+import type { Layer, OverlayerStore } from "../store/overlayer";
 import type { MenuInterface } from "./interface";
 
 // ---- //

@@ -3,9 +3,9 @@ import type { ChannelView } from "@phisyx/flex-chat-ui/views/channel";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	OverlayerStore,
-	SettingsStore,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
 
 import { ChannelWireframe } from "@phisyx/flex-chat-ui/views/channel";
 import { computed, onMounted, reactive } from "vue";

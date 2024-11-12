@@ -11,7 +11,7 @@
 import type { PrivateOptionsRecordMenu } from "@phisyx/flex-chat/menu/private_options";
 import type { PrivateParticipant } from "@phisyx/flex-chat/private/participant";
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
-import type { Layer } from "@phisyx/flex-chat/store";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 import type { Option } from "@phisyx/flex-safety/option";
 import type { PrivateChatManager } from "./datamanager/chat_data_manager";
 import type { PrivateOverlayerManager } from "./datamanager/overlayer_data_manager";

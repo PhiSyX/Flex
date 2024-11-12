@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
-import type { Layer } from "@phisyx/flex-chat/store";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 import type { Option } from "@phisyx/flex-safety/option";
 import type { CustomRoomServerPresenter } from "./presenter";
 

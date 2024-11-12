@@ -9,10 +9,10 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { LoadAllModulesRecordLayer } from "@phisyx/flex-chat/layers/load_all_modules";
-import type { OverlayerStore } from "@phisyx/flex-chat/store";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 import type { UserSession } from "@phisyx/flex-chat/user/session";
 
-import { UpdateAccountDialog } from "@phisyx/flex-chat/dialogs";
+import { UpdateAccountDialog } from "@phisyx/flex-chat/dialogs/update_account";
 import { LoadAllModulesLayer } from "@phisyx/flex-chat/layers/load_all_modules";
 
 // -------------- //

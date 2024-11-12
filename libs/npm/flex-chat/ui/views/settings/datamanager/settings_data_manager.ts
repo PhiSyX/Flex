@@ -12,7 +12,7 @@ import type { LayoutData } from "@phisyx/flex-chat/localstorage/settings_layout"
 import type { NotificationData } from "@phisyx/flex-chat/localstorage/settings_notification";
 import type { PersonalizationData } from "@phisyx/flex-chat/localstorage/settings_personalization";
 import type { PrivateData } from "@phisyx/flex-chat/localstorage/settings_private";
-import type { SettingsStore } from "@phisyx/flex-chat/store";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
 import type { Theme } from "@phisyx/flex-chat/theme";
 
 // -------------- //

@@ -10,7 +10,7 @@
 
 import type { LayoutData } from "@phisyx/flex-chat/localstorage/settings_layout";
 import type { PersonalizationData } from "@phisyx/flex-chat/localstorage/settings_personalization";
-import type { SettingsStore } from "@phisyx/flex-chat/store";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
 
 // -------------- //
 // Implémentation //

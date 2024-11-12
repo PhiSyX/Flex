@@ -3,14 +3,12 @@ import type { ChatView } from "@phisyx/flex-chat-ui/views/chat";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
 
 import { ChatWireframe } from "@phisyx/flex-chat-ui/views/chat";
-import {
-	MentionsCustomRoom,
-	NoticesCustomRoom,
-	ServerCustomRoom,
-} from "@phisyx/flex-chat/custom_room";
+import { MentionsCustomRoom } from "@phisyx/flex-chat/custom_room/mentions";
+import { NoticesCustomRoom } from "@phisyx/flex-chat/custom_room/notices";
+import { ServerCustomRoom } from "@phisyx/flex-chat/custom_room/server";
 import { computed, reactive, shallowRef } from "vue";
 
 import { use_chat_store } from "~/store";
@@ -27,8 +25,8 @@ let chat_store = use_chat_store().store;
 
 let view = reactive(
 	ChatWireframe.create(
-		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt,
-	),
+		chat_store as unknown as ChatStoreInterface & ChatStoreInterfaceExt
+	)
 ) as ChatView;
 
 let custom_rooms_components = shallowRef({

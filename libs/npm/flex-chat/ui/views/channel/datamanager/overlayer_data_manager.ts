@@ -8,17 +8,15 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs";
-import type { ChannelOptionsRecordMenu } from "@phisyx/flex-chat/menu";
-import type { Layer, OverlayerStore } from "@phisyx/flex-chat/store";
+import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs/channel_settings";
+import type { ChannelOptionsRecordMenu } from "@phisyx/flex-chat/menu/channel_options";
+import type { Layer, OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 
-import {
-	ChangeFormatsColorsDialog,
-	ChannelSettingsDialog,
-	UserChangeNicknameDialog,
-} from "@phisyx/flex-chat/dialogs";
+import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat/dialogs/change_formats_colors";
+import { ChannelSettingsDialog } from "@phisyx/flex-chat/dialogs/channel_settings";
+import { UserChangeNicknameDialog } from "@phisyx/flex-chat/dialogs/user_change_nickname";
 import { ChannelChangeTopicLayer } from "@phisyx/flex-chat/layers/channel_change_topic";
-import { ChannelOptionsMenu } from "@phisyx/flex-chat/menu";
+import { ChannelOptionsMenu } from "@phisyx/flex-chat/menu/channel_options";
 
 // -------------- //
 // Implémentation //

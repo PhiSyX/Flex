@@ -9,10 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterContract } from "@phisyx/flex-architecture/router";
-import type {
-	ChatStoreInterface,
-	SettingsStore,
-} from "@phisyx/flex-chat/store";
+import type { ChatStoreInterface } from "@phisyx/flex-chat/store/chat";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
 
 import { SettingsChatManager } from "./datamanager/chat_data_manager";
 import { SettingsSettingsManager } from "./datamanager/settings_data_manager";

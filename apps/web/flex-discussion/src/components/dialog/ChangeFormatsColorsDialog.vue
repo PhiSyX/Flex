@@ -3,10 +3,10 @@ import type { DialogView } from "@phisyx/flex-chat-ui/components/dialog";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	OverlayerStore,
-	SettingsStore,
-	UserStore,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
 
 import { DialogWireframe } from "@phisyx/flex-chat-ui/components/dialog";
 import { ChangeFormatsColorsDialog } from "@phisyx/flex-chat/dialogs/change_formats_colors";

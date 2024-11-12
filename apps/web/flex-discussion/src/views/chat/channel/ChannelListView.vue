@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { ChannelListView } from "@phisyx/flex-chat-ui/views/channel_list";
-import type {
-	ChatStoreInterface,
-	OverlayerStore,
-} from "@phisyx/flex-chat/store";
+import type { ChatStoreInterface } from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 
 import { ChannelListWireframe } from "@phisyx/flex-chat-ui/views/channel_list";
 import { computed, onMounted, reactive } from "vue";

@@ -9,10 +9,8 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { RouterContract } from "@phisyx/flex-architecture/router";
-import type {
-	ChatStoreInterface,
-	OverlayerStore,
-} from "@phisyx/flex-chat/store";
+import type { ChatStoreInterface } from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 
 import { ChannelListChatManager } from "./datamanager/chat_data_manager";
 import { ChannelListOverlayerManager } from "./datamanager/overlayer_data_manager";

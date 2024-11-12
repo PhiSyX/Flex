@@ -8,9 +8,9 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-import type { OverlayerStore } from "@phisyx/flex-chat/store";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
 
-import { ChannelJoinDialog } from "@phisyx/flex-chat/dialogs";
+import { ChannelJoinDialog } from "@phisyx/flex-chat/dialogs/channel_join";
 
 // -------------- //
 // Implémentation //

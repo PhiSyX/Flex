@@ -12,9 +12,9 @@ import type { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_le
 import type { ChannelMember } from "@phisyx/flex-chat/channel/member";
 import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/selected";
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
-import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs";
-import type { ChannelOptionsRecordMenu } from "@phisyx/flex-chat/menu";
-import type { Layer } from "@phisyx/flex-chat/store";
+import type { ChannelSettingsRecordDialog } from "@phisyx/flex-chat/dialogs/channel_settings";
+import type { ChannelOptionsRecordMenu } from "@phisyx/flex-chat/menu/channel_options";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 import type { Option } from "@phisyx/flex-safety/option";
 import type { ChannelChatManager } from "./datamanager/chat_data_manager";
 import type { ChannelOverlayerManager } from "./datamanager/overlayer_data_manager";

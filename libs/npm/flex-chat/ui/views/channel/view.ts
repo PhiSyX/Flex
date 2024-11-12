@@ -19,7 +19,7 @@ import type { ChannelMemberSelected } from "@phisyx/flex-chat/channel/member/sel
 import type { ChannelRoom } from "@phisyx/flex-chat/channel/room";
 import type { Room } from "@phisyx/flex-chat/room";
 import type { RoomMessage } from "@phisyx/flex-chat/room/message";
-import type { Layer } from "@phisyx/flex-chat/store";
+import type { Layer } from "@phisyx/flex-chat/store/overlayer";
 import type { Option } from "@phisyx/flex-safety/option";
 import type { ChannelPresenter } from "./presenter";
 

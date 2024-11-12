@@ -2,9 +2,9 @@
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	OverlayerStore,
-	UserStore,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
 
 import {
 	DirectAccessView,

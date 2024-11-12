@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 import type { PrivateRoom } from "@phisyx/flex-chat/private/room";
-import type { ChatStoreInterface } from "@phisyx/flex-chat/store";
+import type { ChatStoreInterface } from "@phisyx/flex-chat/store/chat";
 
 import { is_private_room } from "@phisyx/flex-chat/asserts/room";
 

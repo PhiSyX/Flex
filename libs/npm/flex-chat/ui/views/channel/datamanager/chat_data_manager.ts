@@ -15,7 +15,7 @@ import type { CommandInterface } from "@phisyx/flex-chat/modules/interface";
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
 import type { Option } from "@phisyx/flex-safety/option";
 
 import { ChannelAccessLevelFlag } from "@phisyx/flex-chat/channel/access_level";

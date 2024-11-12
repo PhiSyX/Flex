@@ -11,10 +11,10 @@
 import type {
 	ChatStoreInterface,
 	ChatStoreInterfaceExt,
-	OverlayerStore,
-	SettingsStore,
-	UserStore,
-} from "@phisyx/flex-chat/store";
+} from "@phisyx/flex-chat/store/chat";
+import type { OverlayerStore } from "@phisyx/flex-chat/store/overlayer";
+import type { SettingsStore } from "@phisyx/flex-chat/store/settings";
+import type { UserStore } from "@phisyx/flex-chat/store/user";
 import { MenuChatManager } from "./datamanager/chat_data_manager";
 import { MenuOverlayerManager } from "./datamanager/overlayer_data_manager";
 import { MenuSettingsManager } from "./datamanager/settings_data_manager";
