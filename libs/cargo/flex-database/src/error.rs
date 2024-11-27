@@ -17,8 +17,8 @@ use std::any;
 #[derive(Debug)]
 #[derive(thiserror::Error)]
 #[error(
-	"\n\t[{}]: erreur liée à la base de données. Raison: {0}",
-	any::type_name::<Self>()
+	"\n\t[{name}]: erreur liée à la base de données. Raison: {name}",
+	name = any::type_name::<Self>()
 )]
 pub enum Error
 {

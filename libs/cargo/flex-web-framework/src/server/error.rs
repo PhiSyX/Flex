@@ -14,7 +14,7 @@
 
 #[derive(Debug)]
 #[derive(thiserror::Error)]
-#[error("\n\t[{}]: {0}", std::any::type_name::<Self>())]
+#[error("\n\t[{name}]: {name}", name = std::any::type_name::<Self>())]
 pub enum Error
 {
 	Boxed(#[from] Box<dyn std::error::Error + Send + Sync>),

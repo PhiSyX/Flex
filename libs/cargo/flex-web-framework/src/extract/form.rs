@@ -45,7 +45,7 @@ struct ProblemChildrenError
 
 #[derive(Debug)]
 #[derive(thiserror::Error)]
-#[error("\n\t{}: {0}", std::any::type_name::<Self>())]
+#[error("\n\t{name}: {name}", name = std::any::type_name::<Self>())]
 pub enum MissingFormError
 {
 	FormRejection(#[from] axum::extract::rejection::FormRejection),
