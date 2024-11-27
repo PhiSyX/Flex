@@ -1,0 +1,278 @@
+diff --git a/build/providers/database_provider.d.ts b/build/providers/database_provider.d.ts
+index d6f6d9d7596869d87bcc7e62452539dc1ff3906b..ff7ac6c5fd55aed8aafc35c970d461bb993f193a 100644
+--- a/build/providers/database_provider.d.ts
++++ b/build/providers/database_provider.d.ts
+@@ -1,5 +1,6 @@
+ import type { FieldContext } from '@vinejs/vine/types';
+-import type { ApplicationService } from '@adonisjs/core/types';
++import type { ApplicationService, ContainerBindings } from '@adonisjs/core/types';
++import type { Container } from '@adonisjs/core/container';
+ import { Database } from '../src/database/main.js';
+ import { DatabaseTestUtils } from '../src/test_utils/database.js';
+ import type { DbQueryEventNode } from '../src/types/database.js';
+@@ -31,7 +32,7 @@ declare module '@vinejs/vine' {
+          * - The callback must return "true", if the value is unique (does not exist).
+          * - The callback must return "false", if the value is not unique (already exists).
+          */
+-        unique(callback: (db: Database, value: string, field: FieldContext) => Promise<boolean>): this;
++        unique(callback: (db: Database, value: string, field: FieldContext, container: Container<ContainerBindings>) => Promise<boolean>): this;
+         /**
+          * Ensure the value is exists inside the database by self
+          * executing a query.
+@@ -39,7 +40,7 @@ declare module '@vinejs/vine' {
+          * - The callback must return "false", if the value exists.
+          * - The callback must return "true", if the value does not exist.
+          */
+-        exists(callback: (db: Database, value: string, field: FieldContext) => Promise<boolean>): this;
++        exists(callback: (db: Database, value: string, field: FieldContext, container: Container<ContainerBindings>) => Promise<boolean>): this;
+     }
+     interface VineNumber extends VineLucidBindings {
+     }
+@@ -60,7 +61,7 @@ export default class DatabaseServiceProvider {
+     /**
+      * Registers validation rules for VineJS
+      */
+-    protected registerVineJSRules(db: Database): Promise<void>;
++    protected registerVineJSRules(db: Database, container: Container<ContainerBindings>): Promise<void>;
+     /**
+      * Register TestUtils database macro
+      */
+diff --git a/build/providers/database_provider.js b/build/providers/database_provider.js
+index 665e165a6a29a2338a0b46b9e7ecaee75c867d81..e212b25e079342262000d7f0d8d4a55209e22ee9 100644
+--- a/build/providers/database_provider.js
++++ b/build/providers/database_provider.js
+@@ -32,10 +32,10 @@ export default class DatabaseServiceProvider {
+     /**
+      * Registers validation rules for VineJS
+      */
+-    async registerVineJSRules(db) {
++    async registerVineJSRules(db, container) {
+         if (this.app.usingVineJS) {
+             const { defineValidationRules } = await import('../src/bindings/vinejs.js');
+-            defineValidationRules(db);
++            defineValidationRules(db, container);
+         }
+     }
+     /**
+@@ -85,7 +85,7 @@ export default class DatabaseServiceProvider {
+         await this.prettyPrintDebugQueries(db);
+         await this.registerTestUtils();
+         await this.registerReplBindings();
+-        await this.registerVineJSRules(db);
++        await this.registerVineJSRules(db, this.app.container);
+     }
+     /**
+      * Gracefully close connections during shutdown
+diff --git a/build/src/bindings/vinejs.d.ts b/build/src/bindings/vinejs.d.ts
+index 6695fe0a3bf29ecc2fc23938b0ad33f4d6c1126f..955227288a09b66d566e3ea027540c6f71017d02 100644
+--- a/build/src/bindings/vinejs.d.ts
++++ b/build/src/bindings/vinejs.d.ts
+@@ -1,6 +1,8 @@
+ import type { Database } from '../database/main.js';
++import type { ContainerBindings } from '@adonisjs/core/types';
++import type { Container } from '@adonisjs/core/container';
+ /**
+  * Defines the "unique" and "exists" validation rules with
+  * VineJS.
+  */
+-export declare function defineValidationRules(db: Database): void;
++export declare function defineValidationRules(db: Database, container: Container<ContainerBindings>): void;
+diff --git a/build/src/bindings/vinejs.js b/build/src/bindings/vinejs.js
+index aae07fe3dfe3035b9b2a85d410f5c10d10207cfb..ded22f961e2a3494963a2354df99e92330f9adc2 100644
+--- a/build/src/bindings/vinejs.js
++++ b/build/src/bindings/vinejs.js
+@@ -11,12 +11,12 @@ import vine, { VineNumber, VineString } from '@vinejs/vine';
+  * Defines the "unique" and "exists" validation rules with
+  * VineJS.
+  */
+-export function defineValidationRules(db) {
++export function defineValidationRules(db, container) {
+     const uniqueRule = vine.createRule(async (value, checker, field) => {
+         if (!field.isValid) {
+             return;
+         }
+-        const isUnique = await checker(db, value, field);
++        const isUnique = await checker(db, value, field, container);
+         if (!isUnique) {
+             field.report('The {{ field }} has already been taken', 'database.unique', field);
+         }
+@@ -25,7 +25,7 @@ export function defineValidationRules(db) {
+         if (!field.isValid) {
+             return;
+         }
+-        const exists = await checker(db, value, field);
++        const exists = await checker(db, value, field, container);
+         if (!exists) {
+             field.report('The selected {{ field }} is invalid', 'database.exists', field);
+         }
+diff --git a/build/src/orm/base_model/index.js b/build/src/orm/base_model/index.js
+index 82cf317bacc4eff451f03e86c5cd5d81109bcc3d..0f09c7b0fb803ae6b281f3d0c5bded980e4a9703 100644
+--- a/build/src/orm/base_model/index.js
++++ b/build/src/orm/base_model/index.js
+@@ -1565,7 +1565,8 @@ let BaseModelImpl = class BaseModelImpl {
+      */
+     $getQueryFor(action, client) {
+         const modelConstructor = this.constructor;
+-        const primaryKeyColumn = modelConstructor.$keys.attributesToColumns.get(modelConstructor.primaryKey, modelConstructor.primaryKey);
++        const primaryKey = modelConstructor.primaryKey;
++        const primaryKeyColumn = modelConstructor.$keys.attributesToColumns.get(primaryKey, primaryKey);
+         /**
+          * Returning insert query for the inserts
+          */
+@@ -1580,7 +1581,7 @@ let BaseModelImpl = class BaseModelImpl {
+          * updating primary key itself
+          */
+         const primaryKeyValue = modelConstructor.selfAssignPrimaryKey
+-            ? this.$original[primaryKeyColumn]
++            ? this.$original[primaryKey]
+             : this.$primaryKeyValue;
+         /**
+          * Returning generic query builder for rest of the queries
+diff --git a/build/src/orm/relations/belongs_to/index.d.ts b/build/src/orm/relations/belongs_to/index.d.ts
+index 4bcdb8c3657a0ce870d967a0f2aeca5dcb5cdcdd..2805ccba1cf8a8f1e2cedce00270a03418f985a1 100644
+--- a/build/src/orm/relations/belongs_to/index.d.ts
++++ b/build/src/orm/relations/belongs_to/index.d.ts
+@@ -38,6 +38,7 @@ export declare class BelongsTo implements BelongsToRelationContract<LucidModel,
+      * Reference to the onQuery hook defined by the user
+      */
+     onQueryHook: ((query: import("../../../types/relations.js").RelationQueryBuilderContract<LucidModel, any> | import("../../../types/relations.js").RelationSubQueryBuilderContract<LucidModel>) => void) | undefined;
++    meta?: any;
+     constructor(relationName: string, relatedModel: () => LucidModel, options: RelationOptions<LucidModel, LucidModel, ModelBelongsTo<LucidModel>>, model: LucidModel);
+     /**
+      * Clone relationship instance
+diff --git a/build/src/orm/relations/belongs_to/index.js b/build/src/orm/relations/belongs_to/index.js
+index c91a2ff1e9b74a3ee25a519baed2a698d3e6af68..6e730fd0b6fa6380d3ef30d74f8a46a32ce397a4 100644
+--- a/build/src/orm/relations/belongs_to/index.js
++++ b/build/src/orm/relations/belongs_to/index.js
+@@ -41,6 +41,7 @@ export class BelongsTo {
+         this.onQueryHook = this.options.onQuery;
+         this.serializeAs =
+             this.options.serializeAs === undefined ? this.relationName : this.options.serializeAs;
++        this.meta = this.options.meta;
+     }
+     /**
+      * Clone relationship instance
+diff --git a/build/src/orm/relations/has_many/index.d.ts b/build/src/orm/relations/has_many/index.d.ts
+index 37f5e8e4a8956e0caa5811479c73f56042dd86dd..065aa2bcb79e3aa938a81518538cf417247f2736 100644
+--- a/build/src/orm/relations/has_many/index.d.ts
++++ b/build/src/orm/relations/has_many/index.d.ts
+@@ -39,6 +39,7 @@ export declare class HasMany implements HasManyRelationContract<LucidModel, Luci
+      * Reference to the onQuery hook defined by the user
+      */
+     onQueryHook: ((query: import("../../../types/relations.js").RelationSubQueryBuilderContract<LucidModel> | import("../../../types/relations.js").HasManyQueryBuilderContract<LucidModel, any>) => void) | undefined;
++    meta?: any;
+     constructor(relationName: string, relatedModel: () => LucidModel, options: RelationOptions<LucidModel, LucidModel, ModelHasMany<LucidModel>>, model: LucidModel);
+     /**
+      * Returns a boolean saving related row belongs to the parent
+diff --git a/build/src/orm/relations/has_many/index.js b/build/src/orm/relations/has_many/index.js
+index 94e66a1955427d78d22664607b15be85a3cae2c9..f3375c8ceea47e8a6ed3fff4a4478edeaf5afc36 100644
+--- a/build/src/orm/relations/has_many/index.js
++++ b/build/src/orm/relations/has_many/index.js
+@@ -42,6 +42,7 @@ export class HasMany {
+         this.serializeAs =
+             this.options.serializeAs === undefined ? this.relationName : this.options.serializeAs;
+         this.onQueryHook = this.options.onQuery;
++        this.meta = this.options.meta;
+     }
+     /**
+      * Returns a boolean saving related row belongs to the parent
+diff --git a/build/src/orm/relations/has_many_through/index.d.ts b/build/src/orm/relations/has_many_through/index.d.ts
+index d8d34abe6e9539e662692ec0ecb80c7f6a0fcc52..0cd3f52ace9f11566c6f6736f93384f4f1f4bcc8 100644
+--- a/build/src/orm/relations/has_many_through/index.d.ts
++++ b/build/src/orm/relations/has_many_through/index.d.ts
+@@ -38,6 +38,7 @@ export declare class HasManyThrough implements HasManyThroughRelationContract<Lu
+      */
+     throughForeignKey: string;
+     throughForeignKeyColumnName: string;
++    meta?: any;
+     constructor(relationName: string, relatedModel: () => LucidModel, options: ThroughRelationOptions<LucidModel, LucidModel, ModelHasManyThrough<LucidModel>> & {
+         throughModel: () => LucidModel;
+     }, model: LucidModel);
+diff --git a/build/src/orm/relations/has_many_through/index.js b/build/src/orm/relations/has_many_through/index.js
+index 5852504e0492fbf39c1cf2ea38ba39bb9583bcf7..90058acec15015dff2510165941c6e438a5c3291 100644
+--- a/build/src/orm/relations/has_many_through/index.js
++++ b/build/src/orm/relations/has_many_through/index.js
+@@ -34,6 +34,7 @@ export class HasManyThrough {
+         this.throughModel = this.options.throughModel;
+         this.serializeAs =
+             this.options.serializeAs === undefined ? this.relationName : this.options.serializeAs;
++        this.meta = this.options.meta;
+     }
+     /**
+      * Clone relationship instance
+diff --git a/build/src/orm/relations/has_one/index.d.ts b/build/src/orm/relations/has_one/index.d.ts
+index 62c1a83c3173d39c7945a7469f5c31434308726a..ae21e9f7fc31eb7a879c8946d57217cec219cc1a 100644
+--- a/build/src/orm/relations/has_one/index.d.ts
++++ b/build/src/orm/relations/has_one/index.d.ts
+@@ -29,6 +29,7 @@ export declare class HasOne implements HasOneRelationContract<LucidModel, LucidM
+      * Reference to the onQuery hook defined by the user
+      */
+     onQueryHook: ((query: import("../../../types/relations.js").RelationQueryBuilderContract<LucidModel, any> | import("../../../types/relations.js").RelationSubQueryBuilderContract<LucidModel>) => void) | undefined;
++    meta?: any;
+     constructor(relationName: string, relatedModel: () => LucidModel, options: RelationOptions<LucidModel, LucidModel, ModelHasOne<LucidModel>>, model: LucidModel);
+     /**
+      * Clone relationship instance
+diff --git a/build/src/orm/relations/has_one/index.js b/build/src/orm/relations/has_one/index.js
+index 3e475a1ebf18c592323a3cdef13a517244b2a498..120a5300f3404e98124ea25aaa6fabefd46044ba 100644
+--- a/build/src/orm/relations/has_one/index.js
++++ b/build/src/orm/relations/has_one/index.js
+@@ -32,6 +32,7 @@ export class HasOne {
+         this.onQueryHook = this.options.onQuery;
+         this.serializeAs =
+             this.options.serializeAs === undefined ? this.relationName : this.options.serializeAs;
++        this.meta = this.options.meta;
+     }
+     /**
+      * Clone relationship instance
+diff --git a/build/src/orm/relations/many_to_many/index.d.ts b/build/src/orm/relations/many_to_many/index.d.ts
+index 0a32ae0db410f75a727f1d4f6afbf77b6a03eb18..32cd65c30434ee722b21b18586481fa8b6c79144 100644
+--- a/build/src/orm/relations/many_to_many/index.d.ts
++++ b/build/src/orm/relations/many_to_many/index.d.ts
+@@ -33,6 +33,7 @@ export declare class ManyToMany implements ManyToManyRelationContract<LucidModel
+      * Reference to the onQuery hook defined by the user
+      */
+     onQueryHook: ((query: import("../../../types/relations.js").ManyToManyQueryBuilderContract<LucidModel, any> | import("../../../types/relations.js").ManyToManySubQueryBuilderContract<LucidModel>) => void) | undefined;
++    meta?: any;
+     /**
+      * Computes the created at timestamps column name
+      * for the pivot table
+diff --git a/build/src/orm/relations/many_to_many/index.js b/build/src/orm/relations/many_to_many/index.js
+index a18640446ae6e0e82135e1f21cdeca0080f3287e..94bc07afd66af3601c515456fff2d2e4f01b8f8c 100644
+--- a/build/src/orm/relations/many_to_many/index.js
++++ b/build/src/orm/relations/many_to_many/index.js
+@@ -80,6 +80,7 @@ export class ManyToMany {
+             this.options.serializeAs === undefined ? this.relationName : this.options.serializeAs;
+         this.pivotColumns = this.options.pivotColumns || [];
+         this.onQueryHook = this.options.onQuery;
++        this.meta = this.options.meta;
+     }
+     /**
+      * Returns the alias for the pivot key
+diff --git a/build/src/types/relations.d.ts b/build/src/types/relations.d.ts
+index 45f0aa67813c0ea4dc5dc270e24948d4fc0eddbd..0ce18778f5dfe67da82ce38b52b502bdff775a7d 100644
+--- a/build/src/types/relations.d.ts
++++ b/build/src/types/relations.d.ts
+@@ -31,6 +31,7 @@ export type RelationOptions<RelatedModel extends LucidModel, ParentModel extends
+     foreignKey?: string;
+     serializeAs?: string | null;
+     onQuery?(query: Related['builder'] | Related['subQuery']): void;
++    meta?: any;
+ };
+ /**
+  * Options accepted by many to many relationship
+@@ -48,6 +49,7 @@ export type ManyToManyRelationOptions<Related extends ModelRelations<LucidModel,
+     };
+     serializeAs?: string | null;
+     onQuery?(query: Related['builder'] | Related['subQuery']): void;
++    meta?: any;
+ };
+ /**
+  * Options accepted by through relationships
+@@ -56,6 +58,7 @@ export type ThroughRelationOptions<RelatedModel extends LucidModel, ParentModel
+     throughLocalKey?: string;
+     throughForeignKey?: string;
+     throughModel: () => LucidModel;
++    meta?: any;
+ };
+ /**
+  * ------------------------------------------------------

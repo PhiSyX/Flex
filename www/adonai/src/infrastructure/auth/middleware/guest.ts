@@ -8,12 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+import { AccountRouteWebID } from "#domain/account/http";
 import type { Authenticators } from "@adonisjs/auth/types";
 import type { HttpContext } from "@adonisjs/core/http";
 import type { NextFn } from "@adonisjs/core/types/http";
 
 export default class GuestMiddleware {
-	redirectTo = "/";
+	redirect_to = AccountRouteWebID.Self;
 
 	async handle(
 		ctx: HttpContext,
@@ -22,7 +23,7 @@ export default class GuestMiddleware {
 	) {
 		for (let guard of options.guards || [ctx.auth.defaultGuard]) {
 			if (await ctx.auth.use(guard).check()) {
-				return ctx.response.redirect(this.redirectTo, true);
+				return ctx.response.redirect(this.redirect_to, true);
 			}
 		}
 

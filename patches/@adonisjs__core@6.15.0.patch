@@ -1,29 +1,3 @@
-diff --git a/build/modules/ace/codemods.d.ts b/build/modules/ace/codemods.d.ts
-index c2d2b9f7dc8b3c10f75b561c8a341d33a716f59f..579dd7734576f38c61f2bc863b407b0b23918c72 100644
---- a/build/modules/ace/codemods.d.ts
-+++ b/build/modules/ace/codemods.d.ts
-@@ -88,7 +88,7 @@ export declare class Codemods extends EventEmitter {
-      * name like :
-      *
-      * ```
--     * this.installPackages(['@adonisjs/lucid@next', '@adonisjs/auth@3.0.0'])
-+     * this.installPackages([{ name: '@adonisjs/lucid@next', isDevDependency: false }])
-      * ```
-      */
-     installPackages(packages: {
-diff --git a/build/modules/ace/codemods.js b/build/modules/ace/codemods.js
-index 68bcafdf69b96578d1809ddc8a0e394eceb6c056..6aa5ab01042d6ac085b8a6ac63202f9b3f534b61 100644
---- a/build/modules/ace/codemods.js
-+++ b/build/modules/ace/codemods.js
-@@ -241,7 +241,7 @@ export class Codemods extends EventEmitter {
-      * name like :
-      *
-      * ```
--     * this.installPackages(['@adonisjs/lucid@next', '@adonisjs/auth@3.0.0'])
-+     * this.installPackages([{ name: '@adonisjs/lucid@next', isDevDependency: false }])
-      * ```
-      */
-     async installPackages(packages) {
 diff --git a/build/src/ignitor/http.d.ts b/build/src/ignitor/http.d.ts
 index 27bc224ce101a061f2cb801c02d598765926cfc1..289c558a03c911fafd7606d0b5a8673a508c0dcc 100644
 --- a/build/src/ignitor/http.d.ts
@@ -174,3 +148,13 @@ index bd71182de15adc1fdf6a3b7e8db0b5ed50140eb1..538e62a9d27daca1c848a772ede2e81f
      }
      /**
       * Get an instance of the AceProcess class
+diff --git a/build/stubs/make/service/main.stub b/build/stubs/make/service/main.stub
+index cf9fe163ee41ddbfcf6f0bd45ff5653e081301ce..1f149ba9607789132e8f2d946b7abef8529f19b7 100644
+--- a/build/stubs/make/service/main.stub
++++ b/build/stubs/make/service/main.stub
+@@ -1,4 +1,4 @@
+-{{#var serviceName = string(entity.name).pascalCase().suffix('Service')}}
++{{#var serviceName = generators.serviceName(entity.name)}}
+ {{#var serviceFileName = generators.serviceFileName(entity.name)}}
+ {{{
+   exports({
