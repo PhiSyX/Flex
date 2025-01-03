@@ -109,7 +109,7 @@ function resize_handler(entries: Array<ResizeObserverEntry>) {
 			/>
 		</nav>
 
-		<footer class="[ flex gap=1 p=1 h=6 ]">
+		<footer class="[ flex gap=1 p=1 ]">
 			<Button
 				:icon="folded ? 'arrow-right' : 'arrow-left'"
 				:title="(folded ? 'Élargir' : 'Réduire') + ' la barre de navigation'"

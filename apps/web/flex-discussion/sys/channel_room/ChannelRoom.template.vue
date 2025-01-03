@@ -298,6 +298,8 @@ const enable_topic_edit_mode_handler = (payload: {
 
 @include fx.class("room/channel") {
 	@include fx.class("room/topic") {
+		padding-block: 0;
+
 		p {
 			color: var(--room-topic-placeholder-color);
 		}
