@@ -29,24 +29,24 @@
 		"@phisyx/flex-assets": "workspace:",
 		"@phisyx/flexsheets": "workspace:",
 		"@phisyx/css-normalizer": "workspace:",
-		"@tanstack/vue-query": "^5.61.5",
+		"@tanstack/vue-query": "^5.62.9",
 		"country-flag-emoji-polyfill": "^0.1.8",
-		"pinia": "^2.2.7",
+		"pinia": "^2.3.0",
 		"socket.io-client": "^4.8.1",
 		"vue": "catalog:",
 		"vue-router": "^4.5.0"
 	},
 	"devDependencies": {
 		"@histoire/plugin-vue": "^0.17.17",
-		"@playwright/test": "^1.49.0",
+		"@playwright/test": "^1.49.1",
 		"@tsconfig/node22": "^22.0.0",
-		"@types/node": "^22.10.0",
+		"@types/node": "^22.10.5",
 		"@vitejs/plugin-vue": "^5.2.1",
 		"histoire": "^0.17.17",
 		"sass": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
 		"vue-tsc": "catalog:",
-		"yaml": "^2.6.1"
+		"yaml": "^2.7.0"
 	}
 }

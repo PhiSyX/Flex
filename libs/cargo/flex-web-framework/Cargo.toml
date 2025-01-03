@@ -11,7 +11,7 @@ argon2 = { version = "0.5.3", features = ["rand"] }
 axum = { version = "0.7.7", features = ["multipart"] }
 axum-server = { version = "0.6.0", features = ["tls-rustls"] }
 axum-extra = { version = "0.9.4", features = ["typed-header"] }
-axum-client-ip = { version = "0.6.0" }
+axum-client-ip = { version = "0.7.0" }
 chrono = { workspace = true }
 console = { workspace = true }
 dashmap = { workspace = true }
@@ -23,7 +23,7 @@ flex-kernel = { workspace = true }
 flex-secret = { path = "../flex-secret" }
 flex-web-framework-macro = { path = "macro" }
 html-escape = "0.2.13"
-hyper = { version = "1.5.0" }
+hyper = { version = "1.5.2" }
 log = { workspace = true }
 mime = "0.3.17"
 rpc-router = { workspace = true }
@@ -33,12 +33,12 @@ socketioxide = { workspace = true }
 sqlx = { workspace = true }
 tracing = { workspace = true }
 thiserror = { workspace = true }
-time = { version = "0.3.36", features = ["serde"] }
+time = { version = "0.3.37", features = ["serde"] }
 tokio = { workspace = true }
-tower-cookies = { version = "0.10.0", features = ["private", "signed"] }
-tower-http = { version = "0.6.1", features = ["cors", "fs"] }
+tower-cookies = { version = "0.11.0", features = ["private", "signed"] }
+tower-http = { version = "0.6.2", features = ["cors", "fs"] }
 tower-layer = { version = "0.3.3" }
 tower-service = { version = "0.3.3" }
-tower-sessions = { version = "0.13.0" }
-url = { version = "2.5.2", features = ["serde"] }
+tower-sessions = { version = "0.14.0" }
+url = { version = "2.5.4", features = ["serde"] }
 uuid = { workspace = true }
