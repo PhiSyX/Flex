@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::http::request::Query;
+use flex_web_framework::http::request::OptionalQuery;
 use flex_web_framework::http::response::Json;
 use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
 use flex_web_framework::types::uuid;
@@ -48,12 +48,12 @@ impl UuidController
 {
 	pub async fn uuid_v4(
 		http: HttpContext<Self>,
-		maybe_query: Option<Query<UuidQueryParams>>,
+		maybe_query: OptionalQuery<UuidQueryParams>,
 	) -> Json<Vec<impl serde::Serialize>>
 	{
 		let mut ntimes = 1;
 
-		if let Some(Query(query)) = maybe_query {
+		if let Some(query) = maybe_query.0 {
 			ntimes = query.ntimes.filter(|&n| n > 0 && n <= 25).unwrap_or(1);
 
 			match query.variant {
@@ -75,7 +75,7 @@ impl UuidController
 
 	pub async fn uuid_v7(
 		http: HttpContext<Self>,
-		maybe_query: Option<Query<UuidQueryParams>>,
+		maybe_query: OptionalQuery<UuidQueryParams>,
 	) -> Json<Vec<impl serde::Serialize>>
 	{
 		let mut ntimes = 1;
@@ -83,7 +83,7 @@ impl UuidController
 		let ctx = uuid::ContextV7::new();
 		let ts = uuid::Timestamp::now(ctx);
 
-		if let Some(Query(query)) = maybe_query {
+		if let Some(query) = maybe_query.0 {
 			ntimes = query.ntimes.filter(|&n| n > 0 && n <= 25).unwrap_or(1);
 
 			match query.variant {

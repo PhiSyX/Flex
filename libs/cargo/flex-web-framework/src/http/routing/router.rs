@@ -169,12 +169,12 @@ where
 			L: tower_layer::Layer<axum::routing::Route>
 				+ 'static
 				+ Clone
-				+ Send
+				+ Send + Sync
 			,
 			L::Service: tower_service::Service<axum::extract::Request, Error = core::convert::Infallible>
 				+ 'static
 				+ Clone
-				+ Send
+				+ Send + Sync
 			,
 			<L::Service as tower_service::Service<axum::extract::Request>>::Response:
 				'static

@@ -56,7 +56,6 @@ pub enum MissingFormError
 // Implémentation // -> Interface
 // -------------- //
 
-#[axum::async_trait]
 impl<F, S> axum::extract::FromRequest<S> for Form<F>
 where
 	F: serde::de::DeserializeOwned,
@@ -147,7 +146,7 @@ fn json_content_type(headers: &hyper::HeaderMap) -> bool
 	#[rustfmt::skip]
 	let is_json_content_type = mime.type_() == "application" && (
 		mime.subtype() == "json" ||
-		mime.suffix().map_or(false, |name| name == "json")
+		mime.suffix().is_some_and(|name| name == "json")
 	);
 
 	is_json_content_type

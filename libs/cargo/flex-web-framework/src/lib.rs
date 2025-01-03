@@ -21,7 +21,8 @@ pub mod settings;
 pub mod types;
 pub mod view;
 
-pub use axum::{async_trait, middleware, Extension};
+pub use async_trait::async_trait;
+pub use axum::{middleware, Extension};
 pub use flex_web_framework_macro::{html, vite, View};
 pub use tower_sessions as sessions;
 

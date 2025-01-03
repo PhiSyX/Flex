@@ -56,7 +56,7 @@ impl HttpRouterInterface<FlexState> for UsersApi_V1_Router
 		Self::group()
 			.add(
 				HttpRouter::path(UsersApi_V1_RouteID::Info {
-					user_id: ":userid",
+					user_id: "{user_id}",
 				})
 				.get(UsersController::get_user_info),
 			)

@@ -55,7 +55,7 @@ impl HttpRouterInterface<FlexState> for AccountsApi_V1_Router
 	fn routes(_: &FlexApplicationState) -> HttpRouterCollection<FlexState>
 	{
 		Self::group().add(
-			HttpRouter::path(AccountsApi_V1_RouteID::Update { id: ":userid" })
+			HttpRouter::path(AccountsApi_V1_RouteID::Update { id: "{user_id}" })
 				.put(AccountsController::update)
 				.middleware(middleware::from_fn(AuthMiddleware::required)),
 		)

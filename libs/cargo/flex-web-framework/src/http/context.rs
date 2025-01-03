@@ -11,8 +11,9 @@
 use std::ops;
 use std::sync::Arc;
 
-use axum::extract::*;
+use axum::extract::{FromRef, FromRequestParts, OriginalUri, RawQuery, State};
 use axum::http::{self, Extensions, HeaderValue};
+use axum::Json;
 use axum_client_ip::InsecureClientIp;
 use axum_extra::headers::Referer;
 use hyper::{header, HeaderMap, StatusCode};
@@ -270,7 +271,6 @@ impl<T> HttpContextError<T>
 // Implémentation // -> Interface
 // -------------- //
 
-#[axum::async_trait]
 impl<T, S> FromRequestParts<AxumState<S>> for HttpContext<T>
 where
 	T: 'static,
@@ -465,7 +465,6 @@ impl<T> axum::response::IntoResponse for HttpContextError<T>
 	}
 }
 
-#[axum::async_trait]
 impl<T, U, S> FromRequestParts<AxumState<S>> for HttpAuthContext<T, U>
 where
 	T: 'static,

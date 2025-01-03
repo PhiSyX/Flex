@@ -323,7 +323,6 @@ where
 	}
 }
 
-#[axum::async_trait]
 impl<S> axum::extract::FromRequestParts<AxumState<S>> for Cookies
 where
 	S: Send + Sync + 'static,

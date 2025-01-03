@@ -8,9 +8,10 @@ workspace = true
 
 [dependencies]
 argon2 = { version = "0.5.3", features = ["rand"] }
-axum = { version = "0.7.7", features = ["multipart"] }
+async-trait = { workspace = true }
+axum = { version = "0.8.1", features = ["multipart"] }
 axum-server = { version = "0.6.0", features = ["tls-rustls"] }
-axum-extra = { version = "0.9.4", features = ["typed-header"] }
+axum-extra = { version = "0.10.0", features = ["query", "typed-header"] }
 axum-client-ip = { version = "0.7.0" }
 chrono = { workspace = true }
 console = { workspace = true }

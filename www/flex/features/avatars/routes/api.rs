@@ -59,13 +59,13 @@ impl HttpRouterInterface<FlexState> for AvatarsApi_V1_Router
 		Self::group()
 			.add(
 				HttpRouter::path(AvatarsApi_V1_RouteID::Show {
-					user_id: ":user_id",
+					user_id: "{user_id}",
 				})
 				.get(AvatarsController::show),
 			)
 			.add(
 				HttpRouter::path(AvatarsApi_V1_RouteID::Update {
-					user_id: ":user_id",
+					user_id: "{user_id}",
 				})
 				.put(AvatarsController::update),
 			)
