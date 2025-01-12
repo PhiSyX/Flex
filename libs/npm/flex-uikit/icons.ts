@@ -17,6 +17,7 @@ export const ICON_NAMES = [
 	"arrow-left",
 	"arrow-right",
 	"arrow-up",
+	"block-resize",
 	"channel",
 	"channel-list",
 	"chat",
