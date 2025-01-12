@@ -18,12 +18,12 @@
 	"dependencies": {
 		"@phisyx/flex-asserts": "workspace:",
 		"@phisyx/flex-safety": "workspace:",
-		"focus-trap": "^7.6.0",
+		"focus-trap": "^7.6.4",
 		"vue": "catalog:"
 	},
 	"devDependencies": {
-		"@types/node": "^22.5.5",
-		"@vitejs/plugin-vue": "^5.1.4",
+		"@types/node": "^22.10.5",
+		"@vitejs/plugin-vue": "^5.2.1",
 		"sass": "catalog:",
 		"typescript": "catalog:",
 		"vue-tsc": "catalog:"

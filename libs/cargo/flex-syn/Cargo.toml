@@ -1,7 +1,7 @@
 [package]
 name = "flex-syn"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 description = "Utilitaires pour la crate syn (proc-macro)."
 
 [lints]

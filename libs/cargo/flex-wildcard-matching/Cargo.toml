@@ -1,7 +1,7 @@
 [package]
 name = "flex-wildcard-matching"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 description = "Correspondance de caractères génériques sur les chaînes de caractères."
 
 [lints]

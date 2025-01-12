@@ -29,7 +29,7 @@
 		"@phisyx/flex-assets": "workspace:",
 		"@phisyx/flexsheets": "workspace:",
 		"@phisyx/css-normalizer": "workspace:",
-		"@tanstack/vue-query": "^5.62.9",
+		"@tanstack/vue-query": "^5.64.0",
 		"country-flag-emoji-polyfill": "^0.1.8",
 		"pinia": "^2.3.0",
 		"socket.io-client": "^4.8.1",

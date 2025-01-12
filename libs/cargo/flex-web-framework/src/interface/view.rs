@@ -90,7 +90,7 @@ pub trait ViewInterface
 	/// Définit des variables d'environnement pour la mise en page?
 	fn with_env(&self, key: impl ToString, value: impl ToString)
 	{
-		std::env::set_var(key.to_string(), value.to_string());
+		unsafe { std::env::set_var(key.to_string(), value.to_string()); }
 	}
 
 	/// Passe la session dans la vue.

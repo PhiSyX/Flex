@@ -12,7 +12,7 @@
 		"@phisyx/flex-date": "workspace:",
 		"@phisyx/flex-helpers": "workspace:",
 		"@phisyx/flex-safety": "workspace:",
-		"zod": "^3.23.8"
+		"zod": "^3.24.1"
 	},
 	"devDependencies": {
 		"@phisyx/flex-code-quality": "workspace:",

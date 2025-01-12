@@ -26,7 +26,7 @@ where
 
 	for decl in declarations {
 		let declaration::Declaration(decl_key, decl_value) = decl;
-		std::env::set_var(decl_key, decl_value);
+		unsafe { std::env::set_var(decl_key, decl_value); }
 	}
 
 	// NOTE: La crate `serde_env` n'a pas exporté son type d'erreur 🤦‍♂️.
