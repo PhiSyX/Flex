@@ -24,7 +24,7 @@ flex-kernel = { workspace = true }
 flex-secret = { path = "../flex-secret" }
 flex-web-framework-macro = { path = "macro" }
 html-escape = "0.2.13"
-hyper = { version = "1.5.2" }
+hyper = { version = "1.6.0" }
 log = { workspace = true }
 mime = "0.3.17"
 rpc-router = { workspace = true }
