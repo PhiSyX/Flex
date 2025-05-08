@@ -35,3 +35,9 @@ it("minmax: ===", () => {
 	expect(minmax(0, 0, 0)).toEqual(0);
 	expect(minmax(91, 91, 91)).toEqual(91);
 });
+
+it("minmax: nombres négatifs", () => {
+	expect(minmax(-10, -20, -5)).toEqual(-10);
+	expect(minmax(-30, -20, -5)).toEqual(-20);
+	expect(minmax(-2, -20, -5)).toEqual(-5);
+});
