@@ -19,7 +19,10 @@ let form = useForm({
 <template>
 	<Head title="Déconnexion" />
 
-	<main id="logout-page">
+	<main
+		id="logout-page"
+		class="[ scroll:y flex! flex/center:full mx:a pos-r ]"
+	>
 		<p>
 			Connecté en tant que
 			<strong>{{ user.name }}</strong> <em>({{ user.email }})</em>
@@ -33,10 +36,18 @@ let form = useForm({
 			<input type="hidden" name="_user_id" :value="user.id" />
 
 			<div class="form-group">
-				<button class="btn-submit" type="submit">
+				<button class="btn-submit p=1" type="submit">
 					Se déconnecter maintenant
 				</button>
 			</div>
 		</form>
 	</main>
 </template>
+
+<style lang="scss">
+@use "../../assets/scss/pages/auth/logout.scss";
+</style>
+
+<style lang="scss" scoped>
+@use "../../assets/scss/pages/auth/logout.scoped.scss";
+</style>

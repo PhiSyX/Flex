@@ -1,0 +1,40 @@
+@use "@phisyx/flexsheets" as fx;
+
+body:has(#logout-page) {
+	--body-bg: var(--login-page-bg);
+}
+
+#logout-page {
+	max-width: 400px;
+
+	form button {
+		border-radius: 4px;
+		background: var(--login-button-submit-bg);
+		transition: background-color 200ms;
+		color: var(--login-button-submit-color);
+
+		&:focus-visible {
+			outline: 3px inset var(--login-button-submit-outline-color);
+		}
+
+		&:active {
+			outline: 3px outset var(--login-button-submit-outline-color);
+		}
+
+		&:hover {
+			--login-button-submit-bg: var(--login-button-submit-bg-hover);
+		}
+
+		&:disabled {
+			background: var(--disabled-bg);
+			color: var(--disabled-color);
+			pointer-events: none;
+		}
+	}
+
+	form button {
+		svg {
+			max-width: fx.space(3);
+		}
+	}
+}

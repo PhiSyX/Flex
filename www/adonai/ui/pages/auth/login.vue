@@ -67,7 +67,7 @@ watch(
 			>
 				<TextInput
 					v-model="form.identifier"
-					:error="page.props.errors?.identifier?.[0]"
+					:error="page.props.errors?.identifier"
 					label="user"
 					name="identifier"
 					placeholder="Nom d'utilisateur ou adresse mail"
@@ -76,7 +76,7 @@ watch(
 
 				<TextInput
 					v-model="form.password"
-					:error="page.props.errors?.password?.[0]"
+					:error="page.props.errors?.password"
 					label="password"
 					name="password"
 					type="password"
