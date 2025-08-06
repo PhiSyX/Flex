@@ -21,4 +21,4 @@ tracing-subscriber = { version = "0.3.19", optional = true, features = [
 ] }
 serde = { workspace = true, optional = true }
 regex = { workspace = true }
-unicode-width = { version = "0.2.0" }
+unicode-width = { version = "^0.2.1" }

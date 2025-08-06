@@ -20,4 +20,4 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 open = { version = "5.3.2", optional = true }
 serde_yaml = { version = "0.9.33" } # DEPRECATED: chercher une nouvelle crate
-serde_toml = { version = "0.8.20", package = "toml" }
+serde_toml = { version = "0.9.5", package = "toml" }

@@ -22,9 +22,9 @@
 		"vue": "catalog:"
 	},
 	"devDependencies": {
-		"@types/node": "^22.14.0",
-		"@vitejs/plugin-vue": "^5.2.3",
-		"sass": "catalog:",
+		"@types/node": "^24.2.0",
+		"@vitejs/plugin-vue": "^6.0.1",
+		"sass-embedded": "catalog:",
 		"typescript": "catalog:",
 		"vue-tsc": "catalog:"
 	}
