@@ -156,7 +156,10 @@ impl ImportMacro
 
 impl Parser for ImportMacro
 {
-	type Err<'err> = ImportMacroError where Self: 'err;
+	type Err<'err>
+		= ImportMacroError
+	where
+		Self: 'err;
 	type Input = ImportMacroInput;
 
 	fn new(input: Self::Input) -> Self

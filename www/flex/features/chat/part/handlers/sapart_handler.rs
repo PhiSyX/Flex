@@ -12,11 +12,11 @@ use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::part::{
 	PartChannelApplicationInterface,
 	SapartCommandFormData,
 };
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

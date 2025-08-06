@@ -11,8 +11,8 @@
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
 
-use super::wheres::{Where, WhereAnd, WhereOr};
 use super::SQLQuerySelectAllFields;
+use super::wheres::{Where, WhereAnd, WhereOr};
 
 // --------- //
 // Structure //
@@ -41,8 +41,7 @@ impl<D, R> SQLQueryUpdateBuilder<D, R>
 	where
 		R: SQLQuerySelectAllFields,
 	{
-		self.returning
-			.extend(R::fields().into_iter().map(Into::into));
+		self.returning.extend(R::fields().into_iter().map(Into::into));
 		self
 	}
 

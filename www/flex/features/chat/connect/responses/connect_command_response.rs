@@ -23,8 +23,8 @@ use super::{RplCreatedReply, RplWelcomeReply, RplYourhostReply};
 // Interface //
 // --------- //
 
-pub trait ConnectClientSocketCommandResponseInterface
-	: ClientSocketInterface
+pub trait ConnectClientSocketCommandResponseInterface:
+	ClientSocketInterface
 {
 	/// Émet au client les réponses de connexion. 3) RPL_CREATED
 	fn send_rpl_created(&self, created_at: time::DateTime<time::Utc>)

@@ -22,7 +22,7 @@ pub use flex_prompt_macro::Prompt;
 pub use inquire::validator::Validation;
 
 pub use self::choice::choice;
-pub use self::confirm::{confirm, Bool};
+pub use self::confirm::{Bool, confirm};
 pub use self::default::{default, default_with_validator};
 pub use self::error::Error;
 pub use self::for_loop::{for_loop, for_loop2};

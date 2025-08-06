@@ -22,8 +22,8 @@ use super::{RplListReply, RplListendReply, RplListstartReply};
 // Interface //
 // --------- //
 
-pub trait ListChannelClientSocketCommandResponseInterface
-	: ClientSocketInterface
+pub trait ListChannelClientSocketCommandResponseInterface:
+	ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

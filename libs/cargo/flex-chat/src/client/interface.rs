@@ -27,21 +27,14 @@ use crate::user::{UserFlagInterface, UserInterface};
 pub trait ClientInterface: fmt::Debug
 {
 	/// Type représentant l'ID d'un client.
-	#[rustfmt::skip]
-	type ClientID
-		: serde::Serialize
+	type ClientID: serde::Serialize
 		+ fmt::Debug
 		+ fmt::Display
 		+ ToString
-		+ Clone
-		;
+		+ Clone;
 
 	/// Type représentant l'ID de la socket du client.
-	#[rustfmt::skip]
-	type SocketID
-		: fmt::Debug
-		+ fmt::Display
-		;
+	type SocketID: fmt::Debug + fmt::Display;
 
 	/// Type représentant l'utilisateur d'un client.
 	type User: UserInterface;

@@ -10,16 +10,16 @@
 
 use flex_chat::client::ClientSocketInterface;
 use flex_chat::user::UserInterface;
-use flex_web_framework::types::uuid::Uuid;
 use flex_web_framework::WebSocketHandler;
+use flex_web_framework::types::uuid::Uuid;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::ChatApplication;
 use crate::features::chat::auth::{
 	AuthChatApplicationInterface,
 	AuthLogoutFormData,
 	IdentifyCommandResponseInterface,
 };
-use crate::ChatApplication;
 
 // --------- //
 // Structure //

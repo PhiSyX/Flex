@@ -42,9 +42,7 @@ impl FieldExt for syn::Field
 		attr_name: impl AsRef<str>,
 	) -> Option<&syn::Attribute>
 	{
-		self.attrs
-			.iter()
-			.find(|attr| attr.path().is_ident(attr_name.as_ref()))
+		self.attrs.iter().find(|attr| attr.path().is_ident(attr_name.as_ref()))
 	}
 }
 

@@ -21,10 +21,11 @@ use flex_chat::client::{
 };
 use flex_chat::mode::ApplyMode;
 use flex_chat::user::UserInterface;
-use flex_web_framework::types::time;
 use flex_web_framework::WebSocketHandler2;
+use flex_web_framework::types::time;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::mode::{
 	AccessLevelAdminOperatorCommandFormData,
 	AccessLevelHalfOperatorCommandFormData,
@@ -36,7 +37,6 @@ use crate::features::chat::mode::{
 	ModeChannelAccessLevelApplicationInterface,
 };
 use crate::features::chat::oper::OperApplicationInterface;
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

@@ -21,8 +21,8 @@ use flex_chat::client::{
 };
 use flex_chat::user::{UserInterface, UserOperatorInterface};
 
-use crate::features::chat::oper::OperClientSocketErrorRepliesInterface;
 use crate::features::ChatApplication;
+use crate::features::chat::oper::OperClientSocketErrorRepliesInterface;
 
 // ---- //
 // Type //
@@ -87,9 +87,8 @@ impl ChatApplication
 		socket: &'a socketioxide::extract::SocketRef,
 	) -> Socket<'a>
 	{
-		let client: socketioxide::extensions::RefMut<'a, Client> = {
-			socket.extensions.get_mut()
-		}.unwrap();
+		let client: socketioxide::extensions::RefMut<'a, Client> =
+			{ socket.extensions.get_mut() }.unwrap();
 		Socket::BorrowedMut { socket, client }
 	}
 
@@ -117,7 +116,6 @@ impl ChatApplication
 		self.clients.get_mut(client_id)
 	}
 
-	
 	/// Supprime un client à partir de son ID.
 	pub fn remove_client_by_id(
 		&self,
@@ -205,9 +203,10 @@ impl ClientsSessionInterface for ClientsSession
 		session_client.set_registered();
 	}
 
-	fn remove(&self, client_id: &<Self::Client as ClientInterface>::ClientID) -> Option<
-		(<Self::Client as ClientInterface>::ClientID, Self::Client)
-	> 
+	fn remove(
+		&self,
+		client_id: &<Self::Client as ClientInterface>::ClientID,
+	) -> Option<(<Self::Client as ClientInterface>::ClientID, Self::Client)>
 	{
 		self.clients.remove(client_id)
 	}

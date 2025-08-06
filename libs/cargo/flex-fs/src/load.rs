@@ -10,8 +10,8 @@
 
 use std::{fmt, fs, io, path};
 
-use crate::error::mapped_to_io_invalid_data_err;
 use crate::Extension;
+use crate::error::mapped_to_io_invalid_data_err;
 
 // -------- //
 // Fonction //

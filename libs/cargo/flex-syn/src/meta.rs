@@ -68,10 +68,10 @@ impl MetaSplittedByCommaExt for MetaSplittedByCommaToken
 	{
 		self.iter().find_map(|meta| {
 			let namevalue = meta.require_name_value().ok()?;
-			if namevalue.path.is_ident(name.as_ref()) {
-				if let syn::Expr::Lit(expr) = &namevalue.value {
-					return Some(&expr.lit);
-				}
+			if namevalue.path.is_ident(name.as_ref())
+				&& let syn::Expr::Lit(expr) = &namevalue.value
+			{
+				return Some(&expr.lit);
 			}
 			None
 		})

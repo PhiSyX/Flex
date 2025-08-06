@@ -24,8 +24,8 @@ pub use self::topic_interface::*;
 // Interface //
 // --------- //
 
-pub trait ChannelInterface
-	: ChannelAccessControlInterface
+pub trait ChannelInterface:
+	ChannelAccessControlInterface
 	+ ChannelMemberInterface
 	+ ChannelSettingsInterface
 	+ ChannelTopicInterface
@@ -33,10 +33,7 @@ pub trait ChannelInterface
 	/// Type représentant l'ID d'un salon.
 	type OwnedID: ToString + Clone;
 
-	#[rustfmt::skip]
-	type RefID<'a>
-		: ?Sized + 'a
-		+ ToOwned<Owned = Self::OwnedID>
+	type RefID<'a>: ?Sized + 'a + ToOwned<Owned = Self::OwnedID>
 	where
 		Self: 'a;
 

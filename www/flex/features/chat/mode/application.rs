@@ -11,8 +11,8 @@
 use flex_chat::channel::{
 	AccessControlMask,
 	Channel,
-	ChannelAccessControlBanInterface,
 	ChannelAccessControlBanExceptInterface,
+	ChannelAccessControlBanInterface,
 	ChannelAccessControlInviteExceptInterface,
 	ChannelAccessLevel,
 	ChannelInterface,
@@ -52,7 +52,7 @@ pub trait ModeChannelAccessControlApplicationInterface
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
 	) -> Option<ApplyMode<AccessControlMask>>;
-	
+
 	/// Applique une exception d'invite sur un salon.
 	fn apply_invite_except_on_channel(
 		&self,
@@ -207,7 +207,8 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		client_socket: &Self::ClientSocket<'_>,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
-	) -> Option<ApplyMode<AccessControlMask>> {
+	) -> Option<ApplyMode<AccessControlMask>>
+	{
 		let Some(mut channel) = self.channels.get_mut(channel_name) else {
 			client_socket.send_err_nosuchchannel(channel_name);
 			return None;
@@ -248,14 +249,15 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		client_socket: &Self::ClientSocket<'_>,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
-	) -> Option<ApplyMode<AccessControlMask>> {
+	) -> Option<ApplyMode<AccessControlMask>>
+	{
 		let Some(mut channel) = self.channels.get_mut(channel_name) else {
 			client_socket.send_err_nosuchchannel(channel_name);
 			return None;
 		};
 		channel.remove_invite_except(client_socket.user(), mask)
 	}
-	
+
 	fn has_banmask_on_channel(
 		&self,
 		client_socket: &Self::ClientSocket<'_>,
@@ -291,7 +293,8 @@ impl ModeChannelAccessControlApplicationInterface for ChatApplication
 		client_socket: &Self::ClientSocket<'_>,
 		channel_name: &<Self::Channel as ChannelInterface>::RefID<'_>,
 		mask: impl Into<Mask>,
-	) -> bool {
+	) -> bool
+	{
 		let Some(channel) = self.channels.get(channel_name) else {
 			client_socket.send_err_nosuchchannel(channel_name);
 			return false;

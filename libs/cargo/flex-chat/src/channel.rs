@@ -99,7 +99,10 @@ where
 {
 	type Key = String;
 	type OwnedID = ChannelName;
-	type RefID<'a> = ChannelNameRef where ID: 'a;
+	type RefID<'a>
+		= ChannelNameRef
+	where
+		ID: 'a;
 
 	/// ID du salon.
 	fn id(&self) -> Self::OwnedID

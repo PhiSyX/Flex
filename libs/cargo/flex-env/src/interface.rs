@@ -15,12 +15,8 @@ use std::path;
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait EnvInterface
-	: Debug
-	+ Clone
-	+ Send + Sync
-	+ serde::de::DeserializeOwned
+pub trait EnvInterface:
+	Debug + Clone + Send + Sync + serde::de::DeserializeOwned
 {
 	type Settings;
 

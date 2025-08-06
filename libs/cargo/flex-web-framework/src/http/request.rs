@@ -22,10 +22,10 @@ pub use axum::extract::{
 	Request,
 	State,
 };
-pub use axum_extra::extract::OptionalQuery;
 use axum::http::HeaderValue;
-use hyper::header::ACCEPT;
+pub use axum_extra::extract::OptionalQuery;
 use hyper::HeaderMap;
+use hyper::header::ACCEPT;
 
 // --------- //
 // Structure //

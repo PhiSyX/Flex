@@ -27,9 +27,7 @@ use crate::features::chat::topic::ChannelTopicError;
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait TopicChannelsSessionInterface
-	: ChannelsSessionInterface
+pub trait TopicChannelsSessionInterface: ChannelsSessionInterface
 {
 	type Client: ClientInterface;
 
@@ -90,10 +88,8 @@ impl TopicChannelsSessionInterface for ChannelsSession
 		// NOTE(phisyx): seuls les utilisateurs avec un niveau d'accès minimal à
 		// 				 HalfOperator peuvent éditer le sujet du salon.
 
-		let level_access = member
-			.access_level()
-			.iter()
-			.fold(0, |acc, mode| mode.flag() | acc);
+		let level_access =
+			member.access_level().iter().fold(0, |acc, mode| mode.flag() | acc);
 
 		if level_access <= ChannelAccessLevel::Vip.flag() {
 			return Err(ChannelTopicError::ERR_CHANOPRIVSNEEDED);

@@ -10,8 +10,8 @@
 
 use std::borrow::Cow;
 
-use dashmap::mapref::one::{Ref, RefMut};
 use dashmap::DashMap;
+use dashmap::mapref::one::{Ref, RefMut};
 use flex_chat::channel::{
 	Channel,
 	ChannelAccessLevel,
@@ -273,7 +273,8 @@ impl ChannelsSessionInterface for ChannelsSession
 		new_member_id: <<Self::Channel as ChannelMemberInterface>::Member as MemberInterface>::ID,
 	) -> Option<()>
 	{
-		let mut current_member = self.remove_member(channel_id, current_member_id)?;
+		let mut current_member =
+			self.remove_member(channel_id, current_member_id)?;
 		current_member.set_id(new_member_id);
 		self.add_member(channel_id, current_member);
 		Some(())

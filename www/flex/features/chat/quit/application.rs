@@ -11,8 +11,8 @@
 use flex_chat::client::{ClientInterface, ClientSocketInterface, Socket};
 
 use super::QuitClientSocketInterface;
-use crate::features::chat::part::PartChannelsSessionInterface;
 use crate::features::ChatApplication;
+use crate::features::chat::part::PartChannelsSessionInterface;
 
 // --------- //
 // Interface //
@@ -54,8 +54,7 @@ impl QuitApplicationInterface for ChatApplication
 			client_socket.emit_quit(channel_name, reason.to_string());
 		}
 
-		self.channels
-			.remove_client_from_all_his_channels(&session_client);
+		self.channels.remove_client_from_all_his_channels(&session_client);
 
 		session_client.channels.clear();
 		session_client.disconnect();

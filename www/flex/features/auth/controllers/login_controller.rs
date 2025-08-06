@@ -27,6 +27,7 @@ use flex_web_framework::{
 	SessionFlashExtension,
 };
 
+use crate::FlexState;
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;
 use crate::features::auth::services::AuthService;
@@ -37,7 +38,6 @@ use crate::features::users::repositories::{
 	UserRepositoryPostgreSQL,
 };
 use crate::features::users::sessions::constant::USER_SESSION;
-use crate::FlexState;
 
 // --------- //
 // Structure //
@@ -86,9 +86,7 @@ impl LoginController
 			}
 		};
 
-		http.cookies
-			.signed()
-			.add((Self::COOKIE_NAME, user.id.to_string()));
+		http.cookies.signed().add((Self::COOKIE_NAME, user.id.to_string()));
 		_ = http.session.insert(USER_SESSION, &user).await;
 
 		if http.request.accept().json() {

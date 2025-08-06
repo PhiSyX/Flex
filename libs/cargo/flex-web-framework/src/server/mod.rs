@@ -33,7 +33,7 @@ pub use self::error::Error as ServerError;
 pub use self::state::ServerState;
 use crate::http::routing::HttpRouterCollection;
 use crate::settings::ServerSettings;
-use crate::{server, settings, AxumState};
+use crate::{AxumState, server, settings};
 
 // --------- //
 // Structure //

@@ -18,8 +18,8 @@ use super::{
 	TopicChannelsSessionInterface,
 	TopicClientSocketInterface,
 };
-use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
+use crate::features::chat::oper::OperApplicationInterface;
 
 // --------- //
 // Interface //

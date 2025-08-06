@@ -11,19 +11,19 @@
 use std::ops;
 use std::sync::Arc;
 
+use axum::Json;
 use axum::extract::{FromRef, FromRequestParts, OriginalUri, RawQuery, State};
 use axum::http::{self, Extensions, HeaderValue};
-use axum::Json;
 use axum_client_ip::InsecureClientIp;
 use axum_extra::headers::Referer;
-use hyper::{header, HeaderMap, StatusCode};
+use hyper::{HeaderMap, StatusCode, header};
 use serde_json::json;
 use tower_sessions::Session;
 use tracing::instrument;
 
+use super::Cookies;
 use super::request::HttpRequest;
 use super::response::HttpResponse;
-use super::Cookies;
 use crate::AxumState;
 
 // --------- //
@@ -303,17 +303,13 @@ where
 
 		// Cookie / Session
 		let cookies =
-			Cookies::from_request_parts(parts, state)
-				.await
-				.map_err(|err| {
-					HttpContextError::with_status_code(err.0, err.1.to_owned())
-				})?;
+			Cookies::from_request_parts(parts, state).await.map_err(|err| {
+				HttpContextError::with_status_code(err.0, err.1.to_owned())
+			})?;
 		let session =
-			Session::from_request_parts(parts, state)
-				.await
-				.map_err(|err| {
-					HttpContextError::with_status_code(err.0, err.1.to_owned())
-				})?;
+			Session::from_request_parts(parts, state).await.map_err(|err| {
+				HttpContextError::with_status_code(err.0, err.1.to_owned())
+			})?;
 
 		// Request
 		let InsecureClientIp(ip) =
@@ -498,17 +494,13 @@ where
 
 		// Cookie / Session
 		let cookies =
-			Cookies::from_request_parts(parts, state)
-				.await
-				.map_err(|err| {
-					HttpContextError::with_status_code(err.0, err.1.to_owned())
-				})?;
+			Cookies::from_request_parts(parts, state).await.map_err(|err| {
+				HttpContextError::with_status_code(err.0, err.1.to_owned())
+			})?;
 		let session =
-			Session::from_request_parts(parts, state)
-				.await
-				.map_err(|err| {
-					HttpContextError::with_status_code(err.0, err.1.to_owned())
-				})?;
+			Session::from_request_parts(parts, state).await.map_err(|err| {
+				HttpContextError::with_status_code(err.0, err.1.to_owned())
+			})?;
 
 		// Request
 		let InsecureClientIp(ip) =

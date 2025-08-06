@@ -26,6 +26,7 @@ use flex_web_framework::{
 	SessionFlashExtension,
 };
 
+use crate::FlexState;
 use crate::features::auth::forms::RegistrationFormData;
 use crate::features::auth::responses::CreationAccountReply;
 use crate::features::auth::routes::web::AuthRouteID;
@@ -36,7 +37,6 @@ use crate::features::users::repositories::{
 	UserRepository,
 	UserRepositoryPostgreSQL,
 };
-use crate::FlexState;
 
 // --------- //
 // Structure //
@@ -60,7 +60,6 @@ impl SignupController
 	}
 
 	/// Gestion du formulaire d'inscription au site.
-
 	pub async fn handle(
 		ctx: HttpContext<Self>,
 		Form(form): Form<RegistrationFormData>,
@@ -74,9 +73,7 @@ impl SignupController
 		}
 
 		if ctx.request.accept().json() {
-			ctx.response
-				.json(CreationAccountReply.json())
-				.into_response()
+			ctx.response.json(CreationAccountReply.json()).into_response()
 		} else {
 			ctx.session
 				.flash(CreationAccountReply::KEY, CreationAccountReply)

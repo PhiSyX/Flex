@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::{declaration, Error, Result};
+use crate::{Error, Result, declaration};
 
 // -------- //
 // Fonction //
@@ -26,7 +26,9 @@ where
 
 	for decl in declarations {
 		let declaration::Declaration(decl_key, decl_value) = decl;
-		unsafe { std::env::set_var(decl_key, decl_value); }
+		unsafe {
+			std::env::set_var(decl_key, decl_value);
+		}
 	}
 
 	// NOTE: La crate `serde_env` n'a pas exporté son type d'erreur 🤦‍♂️.
@@ -35,8 +37,8 @@ where
 
 #[inline]
 fn parse(
-	source_env: &str,
-) -> impl Iterator<Item = declaration::Declaration> + '_
+	source_env: &'_ str,
+) -> impl Iterator<Item = declaration::Declaration<'_>> + '_
 {
 	#[rustfmt::skip]
 	let parse_decl = |declaration_raw| {

@@ -10,8 +10,8 @@
 
 use std::collections::HashSet;
 
-use crate::channel::mode::ChannelAccessLevel;
 use crate::channel::MemberInterface;
+use crate::channel::mode::ChannelAccessLevel;
 
 // --------- //
 // Structure //
@@ -83,20 +83,16 @@ where
 
 		let last = self.access_level.iter().last();
 
-		let highest =
-			self.access_level.iter().fold(last, |maybe_level, level| {
-				(level.flag() >= maybe_level?.flag())
-					.then_some(level)
-					.or(maybe_level)
-			});
-
-		highest
+		self.access_level.iter().fold(last, |maybe_level, level| {
+			(level.flag() >= maybe_level?.flag())
+				.then_some(level)
+				.or(maybe_level)
+		})
 	}
 
-	#[rustfmt::skip]
-	fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
+	fn remove_access_level(&mut self, cal: ChannelAccessLevel) -> bool
 	{
-		self.access_level.remove(&access_level)
+		self.access_level.remove(&cal)
 	}
 
 	fn set_id(&mut self, id: Self::ID)
@@ -104,9 +100,8 @@ where
 		self.member_id = id;
 	}
 
-	#[rustfmt::skip]
-	fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool
+	fn update_access_level(&mut self, cal: ChannelAccessLevel) -> bool
 	{
-		self.access_level.insert(access_level)
+		self.access_level.insert(cal)
 	}
 }

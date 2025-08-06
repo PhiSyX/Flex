@@ -13,20 +13,20 @@ use flex_chat::channel::{
 	ChannelInterface,
 	ChannelMemberInterface,
 };
+use flex_chat::client::ClientSocketInterface;
 use flex_chat::client::channel::responses::ChannelClientSocketErrorReplies;
 use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
-use flex_chat::client::ClientSocketInterface;
 use flex_chat::user::UserInterface;
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::invite::{
 	InviteApplicationInterface,
 	InviteClientSocketCommandResponseInterface,
 	InviteCommandFormData,
 };
 use crate::features::chat::mode::ModeChannelAccessLevelApplicationInterface;
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

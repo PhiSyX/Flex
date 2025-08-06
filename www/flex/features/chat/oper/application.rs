@@ -28,6 +28,7 @@ use super::{
 	OperClientSocketCommandResponse,
 	OperClientSocketErrorRepliesInterface,
 };
+use crate::ChatApplication;
 use crate::config::chat::{
 	FlexChatConfigOperatorAuth,
 	FlexChatConfigOperatorFlags,
@@ -42,7 +43,6 @@ use crate::features::chat::join::{
 	JoinErrorResponseInterface,
 };
 use crate::features::chat::mode::ModeAccessControlClientSocketErrorRepliesInterface;
-use crate::ChatApplication;
 
 // --------- //
 // Interface //
@@ -160,8 +160,7 @@ impl OperApplicationInterface for ChatApplication
 		oper: &FlexChatConfigOperatorAuth,
 	)
 	{
-		self.clients
-			.marks_client_as_operator(client_socket.cid(), oper);
+		self.clients.marks_client_as_operator(client_socket.cid(), oper);
 
 		if let Some(vhost) = oper.virtual_host.as_deref() {
 			client_socket.user_mut().set_vhost(vhost);
@@ -186,7 +185,6 @@ impl OperApplicationInterface for ChatApplication
 
 impl From<FlexChatConfigOperatorType> for flex_chat::user::Flag
 {
-	#[rustfmt::skip]
 	fn from(ty: FlexChatConfigOperatorType) -> Self
 	{
 		match ty {

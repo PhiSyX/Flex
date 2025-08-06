@@ -23,11 +23,11 @@ pub trait ViewInterface
 	type Styles: Default;
 
 	type Layout: ViewLayoutInterface<
-		Metadata = Self::Metadata,
-		Scripts = Self::Scripts,
-		Styles = Self::Styles,
-		View = Self::View,
-	>;
+			Metadata = Self::Metadata,
+			Scripts = Self::Scripts,
+			Styles = Self::Styles,
+			View = Self::View,
+		>;
 
 	type View;
 
@@ -90,7 +90,9 @@ pub trait ViewInterface
 	/// Définit des variables d'environnement pour la mise en page?
 	fn with_env(&self, key: impl ToString, value: impl ToString)
 	{
-		unsafe { std::env::set_var(key.to_string(), value.to_string()); }
+		unsafe {
+			std::env::set_var(key.to_string(), value.to_string());
+		}
 	}
 
 	/// Passe la session dans la vue.

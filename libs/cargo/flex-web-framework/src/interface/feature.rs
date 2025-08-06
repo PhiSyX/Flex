@@ -162,13 +162,8 @@ pub trait AsyncFeature
 	}
 }
 
-#[rustfmt::skip]
-pub trait FeatureConfig
-	: 'static
-	+ Send + Sync
-	+ Clone
-	+ std::fmt::Debug
-	+ serde::de::DeserializeOwned
+pub trait FeatureConfig:
+	'static + Send + Sync + Clone + std::fmt::Debug + serde::de::DeserializeOwned
 {
 	/// Nom du fichier de configuration de la feature à dé-sérialiser.
 	///

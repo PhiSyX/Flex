@@ -27,9 +27,7 @@ pub fn copy_dir(
 			"L'argument `dir` « {} » ne semble pas être un répertoire.",
 			dir.display(),
 		);
-		// FIXME: utiliser la variante [io::ErrorKind::NotADirectory] lorsque ce
-		// sera stable.
-		return Err(io::Error::new(io::ErrorKind::Other, err));
+		return Err(io::Error::new(io::ErrorKind::NotADirectory, err));
 	}
 
 	let dest = dest.as_ref();

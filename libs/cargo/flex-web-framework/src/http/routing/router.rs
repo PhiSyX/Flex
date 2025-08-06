@@ -15,7 +15,7 @@ use axum::response::IntoResponse;
 
 use super::HttpRouterBuilder;
 use crate::http::routing::HttpRouteIDInterface;
-use crate::{http, AxumState};
+use crate::{AxumState, http};
 
 // --------- //
 // Structure //

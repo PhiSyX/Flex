@@ -17,9 +17,8 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait UserStatusAwayClientsSessionInterface
-	: ClientsSessionInterface
+pub trait UserStatusAwayClientsSessionInterface:
+	ClientsSessionInterface
 {
 	/// Vérifie si un client en session est absent.
 	fn is_client_away(

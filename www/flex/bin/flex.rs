@@ -56,8 +56,7 @@ async fn main() -> impl process::Termination
 		.define_project_directory(PROJECT_DIR)
 		.define_config_directory(FLEX_CONFIGURATION_DIR)
 		.define_env_directory(FLEX_ENV_VARS_DIR)
-		.initialize_logger()
-	;
+		.initialize_logger();
 
 	let application = application.include_env_vars().include_cli_args();
 

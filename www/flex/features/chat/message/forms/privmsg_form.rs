@@ -11,7 +11,11 @@
 use std::sync::Arc;
 
 use flex_chat::macros::command_formdata;
-use flex_chat::user::{do_nickname_with_config, DoNicknameFnOptions, NICK_MAX_SIZE};
+use flex_chat::user::{
+	DoNicknameFnOptions,
+	NICK_MAX_SIZE,
+	do_nickname_with_config,
+};
 use flex_serde_validation::array::validate_vec_string_filter;
 use flex_serde_validation::string::validate_string_filter;
 
@@ -45,7 +49,9 @@ command_formdata! {
 }
 
 /// Valide la valeur utilisateur: filtre une valeur de type String.
-pub fn validate_targets<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
+pub fn validate_targets<'de, D>(
+	deserializer: D,
+) -> Result<Vec<String>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {

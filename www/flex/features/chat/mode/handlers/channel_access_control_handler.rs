@@ -9,15 +9,16 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat::channel::{
-	ChannelAccessLevel,
 	CHANNEL_MODE_LIST_BAN,
 	CHANNEL_MODE_LIST_BAN_EXCEPT,
 	CHANNEL_MODE_LIST_INVITE_EXCEPT,
+	ChannelAccessLevel,
 };
 use flex_chat::client::channel::responses::ChannelClientSocketErrorReplies;
 use flex_web_framework::WebSocketHandler2;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::mode::{
 	BanCommandFormData,
 	ModeAccessControlClientSocketCommandResponseInterface,
@@ -26,7 +27,6 @@ use crate::features::chat::mode::{
 	UnbanCommandFormData,
 };
 use crate::features::chat::oper::OperApplicationInterface;
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

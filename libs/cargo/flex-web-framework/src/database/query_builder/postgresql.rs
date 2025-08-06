@@ -13,11 +13,11 @@ use std::marker::PhantomData;
 use flex_database::SGBD;
 use sqlx::postgres::PgRow;
 
+use super::SQLQueryBuilder;
 use super::insert::SQLQueryInsertBuilder;
 use super::select::SQLQuerySelectBuilder;
 use super::table::SQLQueryBuilderTable;
 use super::update::SQLQueryUpdateBuilder;
-use super::SQLQueryBuilder;
 use crate::{DatabaseService, PostgreSQLDatabase};
 
 // -------------- //

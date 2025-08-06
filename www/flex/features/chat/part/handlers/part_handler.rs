@@ -11,11 +11,11 @@
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::part::{
 	PartChannelApplicationInterface,
 	PartCommandFormData,
 };
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

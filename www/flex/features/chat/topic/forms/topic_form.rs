@@ -26,7 +26,9 @@ command_formdata! {
 }
 
 /// Valide la valeur utilisateur d'un topic.
-pub fn validate_topic<'de, D>(deserializer: D) -> Result<Option<Arc<str>>, D::Error>
+pub fn validate_topic<'de, D>(
+	deserializer: D,
+) -> Result<Option<Arc<str>>, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {

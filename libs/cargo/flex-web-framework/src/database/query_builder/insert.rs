@@ -11,8 +11,8 @@
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
 
-use super::wheres::{Where, WhereAnd, WhereOr};
 use super::SQLQuerySelectAllFields;
+use super::wheres::{Where, WhereAnd, WhereOr};
 
 // --------- //
 // Structure //

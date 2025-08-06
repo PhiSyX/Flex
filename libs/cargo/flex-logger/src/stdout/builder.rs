@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::extension::LoggerStdoutBuilderExtension;
 use super::LoggerFilter;
+use super::extension::LoggerStdoutBuilderExtension;
 use crate::builder::LoggerFormatFn;
 use crate::{LoggerBuilder, LoggerStdout};
 

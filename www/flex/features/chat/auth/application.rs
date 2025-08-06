@@ -13,8 +13,8 @@ use flex_chat::client::{ClientInterface, ClientSocketInterface, Socket};
 use flex_chat::user::UserInterface;
 
 use super::sessions::AuthClientSessionInterface;
-use crate::features::chat::nick::NickClientSessionInterface;
 use crate::ChatApplication;
+use crate::features::chat::nick::NickClientSessionInterface;
 
 // --------- //
 // Interface //

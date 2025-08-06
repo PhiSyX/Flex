@@ -77,8 +77,8 @@ impl<'de> serde::Deserialize<'de> for RegistrationFormData
 		{
 			let reason = format!(
 				"Un mot de passe valide DOIT être compris entre « {} » et « \
-				 {} » caractères. La taille du mot de passe que tu as \
-				 envoyé est de « {} ».",
+				 {} » caractères. La taille du mot de passe que tu as envoyé \
+				 est de « {} ».",
 				PASSWORD_LENGTH_MIN, PASSWORD_LENGTH_MAX, password_size,
 			);
 			errors.push(json!({

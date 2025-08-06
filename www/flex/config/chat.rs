@@ -11,8 +11,8 @@
 use std::collections::HashSet;
 use std::sync::Arc;
 
-use flex_web_framework::types::{email, secret};
 use flex_web_framework::FeatureConfig;
+use flex_web_framework::types::{email, secret};
 
 // --------- //
 // Structure //

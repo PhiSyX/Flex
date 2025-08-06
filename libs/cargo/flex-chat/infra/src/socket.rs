@@ -153,10 +153,7 @@ impl<'s> ClientSocketInterface for Socket<'s>
 			sid = ?self.client().sid(),
 			"Emission des données au client de la socket courante"
 		);
-		_ = self
-			.socket()
-			.to(to.to_string())
-			.emit(event.to_string(), data);
+		_ = self.socket().to(to.to_string()).emit(event.to_string(), data);
 	}
 
 	#[instrument(name = "ClientSocketInterface::emit_within", skip(self))]
@@ -171,10 +168,7 @@ impl<'s> ClientSocketInterface for Socket<'s>
 			sid = ?self.client().sid(),
 			"Emission des données au client de la socket courante"
 		);
-		_ = self
-			.socket()
-			.within(to.to_string())
-			.emit(event.to_string(), data);
+		_ = self.socket().within(to.to_string()).emit(event.to_string(), data);
 	}
 
 	fn client(&self) -> &Self::Client

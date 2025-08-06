@@ -27,9 +27,8 @@ pub trait WildcardMatching: AsRef<str>
 	#[inline]
 	fn iswm(&self, pattern: &str) -> bool
 	{
-		let build_regexp = regex::escape(pattern)
-			.replace(r"\?", ".")
-			.replace(r"\*", ".*");
+		let build_regexp =
+			regex::escape(pattern).replace(r"\?", ".").replace(r"\*", ".*");
 
 		let regexp = regex::RegexBuilder::new(&build_regexp)
 			.case_insensitive(true)
@@ -53,9 +52,8 @@ pub trait WildcardMatching: AsRef<str>
 	#[inline]
 	fn iswmcs(&self, pattern: &str) -> bool
 	{
-		let build_regexp = regex::escape(pattern)
-			.replace(r"\?", ".")
-			.replace(r"\*", ".*");
+		let build_regexp =
+			regex::escape(pattern).replace(r"\?", ".").replace(r"\*", ".*");
 
 		let regexp = regex::RegexBuilder::new(&build_regexp)
 			.case_insensitive(false)
@@ -78,9 +76,8 @@ pub trait WildcardMatching: AsRef<str>
 	#[inline]
 	fn wildcard_match<'a>(&'a self, pattern: &str) -> Option<&'a str>
 	{
-		let build_regexp = regex::escape(pattern)
-			.replace(r"\?", ".")
-			.replace(r"\*", ".*");
+		let build_regexp =
+			regex::escape(pattern).replace(r"\?", ".").replace(r"\*", ".*");
 
 		let regexp = regex::RegexBuilder::new(&build_regexp)
 			.case_insensitive(true)
@@ -105,9 +102,8 @@ pub trait WildcardMatching: AsRef<str>
 		pattern: &str,
 	) -> Option<&'a str>
 	{
-		let build_regexp = regex::escape(pattern)
-			.replace(r"\?", ".")
-			.replace(r"\*", ".*");
+		let build_regexp =
+			regex::escape(pattern).replace(r"\?", ".").replace(r"\*", ".*");
 
 		let regexp = regex::RegexBuilder::new(&build_regexp)
 			.case_insensitive(false)

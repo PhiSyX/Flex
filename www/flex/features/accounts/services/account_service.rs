@@ -37,9 +37,7 @@ impl<Database> AccountService<Database>
 		data: AccountUpdateFormData,
 	) -> Result<UpdateAccountDTO, sqlx::Error>
 	{
-		self.user_repository
-			.update_account_info(user_id, data)
-			.await
+		self.user_repository.update_account_info(user_id, data).await
 	}
 
 	pub fn shared(self) -> Arc<Self>

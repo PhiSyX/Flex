@@ -8,10 +8,10 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use syn::__private::quote::quote;
 use syn::__private::TokenStream2;
+use syn::__private::quote::quote;
 
-use crate::functions::html::{tmp, HTMLMacro, Result};
+use crate::functions::html::{HTMLMacro, Result, tmp};
 
 // -------------- //
 // Implémentation //

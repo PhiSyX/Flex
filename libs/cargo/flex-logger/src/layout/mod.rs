@@ -19,9 +19,9 @@ pub use self::row::Row;
 pub use self::style::{
 	Alignment,
 	CornerStyle,
-	Style,
 	STYLE_BLANK,
 	STYLE_ROUNDED,
 	STYLE_SIMPLE,
 	STYLE_THIN,
+	Style,
 };

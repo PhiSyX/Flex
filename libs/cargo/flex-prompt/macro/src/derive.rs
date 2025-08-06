@@ -66,8 +66,10 @@ impl PromptDerive
 {
 	pub const ATTRIBUTE_NAME: &'static str = "prompt";
 
-	#[rustfmt::skip]
-	fn parse_field<'a>(&'a self, field: &'a syn::Field) -> Result<'a, TokenStream2>
+	fn parse_field<'a>(
+		&'a self,
+		field: &'a syn::Field,
+	) -> Result<'a, TokenStream2>
 	{
 		let Some(attribute) = field.find_attribute(Self::ATTRIBUTE_NAME) else {
 			let field_name = &field.ident;
@@ -78,7 +80,8 @@ impl PromptDerive
 			});
 		};
 
-		let has_meta = matches!(attribute.meta, syn::Meta::Path(_) | syn::Meta::List(_));
+		let has_meta =
+			matches!(attribute.meta, syn::Meta::Path(_) | syn::Meta::List(_));
 		if !has_meta {
 			return Err(PromptDeriveParserError {
 				span: attribute.span(),

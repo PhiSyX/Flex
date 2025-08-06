@@ -16,4 +16,4 @@ pub mod variant;
 
 mod parser;
 
-pub use self::parser::{parse, Parser, ParserError};
+pub use self::parser::{Parser, ParserError, parse};

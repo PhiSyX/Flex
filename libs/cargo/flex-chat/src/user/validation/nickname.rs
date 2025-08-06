@@ -9,10 +9,10 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use crate::user::{
-	do_nickname,
-	do_nickname_with_config,
 	DoNicknameFnOptions,
 	NICK_MAX_SIZE,
+	do_nickname,
+	do_nickname_with_config,
 };
 
 // -------- //
@@ -51,10 +51,8 @@ where
 
 	let v = Vec::<String>::deserialize(de)?;
 
-	let nicks = v
-		.iter()
-		.filter_map(|n| do_nickname(n).map(Into::into).ok())
-		.collect();
+	let nicks =
+		v.iter().filter_map(|n| do_nickname(n).map(Into::into).ok()).collect();
 
 	Ok(nicks)
 }

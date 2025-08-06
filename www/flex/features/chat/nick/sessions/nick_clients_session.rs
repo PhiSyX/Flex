@@ -17,9 +17,7 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait NickClientSessionInterface
-	: ClientsSessionInterface
+pub trait NickClientSessionInterface: ClientsSessionInterface
 {
 	/// Peut-on localiser un client par son pseudonyme.
 	fn can_locate_by_nickname(&self, nickname: impl AsRef<str>) -> bool;

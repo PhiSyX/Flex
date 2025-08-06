@@ -26,7 +26,6 @@ command_response! {
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
 pub trait NoticeClientSocketCommandResponseInterface
 	: ClientSocketInterface
 {

@@ -9,7 +9,11 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_chat::macros::command_formdata;
-use flex_chat::user::{do_nickname_with_config, DoNicknameFnOptions, NICK_MAX_SIZE};
+use flex_chat::user::{
+	DoNicknameFnOptions,
+	NICK_MAX_SIZE,
+	do_nickname_with_config,
+};
 
 command_formdata! {
 	struct SILENCE
@@ -20,7 +24,9 @@ command_formdata! {
 	}
 }
 
-pub fn validate_nickname_with_prefix<'de, D>(deserializer: D) -> Result<String, D::Error>
+pub fn validate_nickname_with_prefix<'de, D>(
+	deserializer: D,
+) -> Result<String, D::Error>
 where
 	D: serde::Deserializer<'de>,
 {
@@ -42,5 +48,10 @@ where
 		},
 	)
 	.map(|_| s.to_owned())
-	.map_err(|_| serde::de::Error::custom(format!("Le nom « {} » est incorrect", &s[1..])))
+	.map_err(|_| {
+		serde::de::Error::custom(format!(
+			"Le nom « {} » est incorrect",
+			&s[1..]
+		))
+	})
 }

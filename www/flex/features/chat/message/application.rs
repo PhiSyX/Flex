@@ -20,8 +20,8 @@ use flex_chat::channel::{
 };
 use flex_chat::client::{ClientSocketInterface, Socket};
 
-use crate::features::chat::oper::OperApplicationInterface;
 use crate::features::ChatApplication;
+use crate::features::chat::oper::OperApplicationInterface;
 
 pub trait MessageApplicationInterface
 {

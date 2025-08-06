@@ -8,12 +8,12 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::Error404HTMLView;
 use flex_web_framework::http::request::Request;
 use flex_web_framework::http::response::{Html, Json, Redirect};
-use flex_web_framework::http::{header, IntoResponse, Response, StatusCode};
+use flex_web_framework::http::{IntoResponse, Response, StatusCode, header};
 use flex_web_framework::middleware::Next;
 use flex_web_framework::sessions::Session;
-use flex_web_framework::Error404HTMLView;
 use serde_json::json;
 
 use crate::features::auth::routes::web::AuthRouteID;
@@ -48,19 +48,18 @@ impl AuthMiddleware
 					.headers()
 					.get(header::ACCEPT)
 					.and_then(|a| a.to_str().ok())
+					&& accept.contains("application/json")
 				{
-					if accept.contains("application/json") {
-						return (
-							StatusCode::NOT_FOUND,
-							Json(serde_json::json!({
-								"code": 404,
-								"error": "La page demandée n'existe pas.",
-								"uri": req.uri().to_string(),
-								"method": req.method().to_string(),
-							})),
-						)
-							.into_response();
-					}
+					return (
+						StatusCode::NOT_FOUND,
+						Json(serde_json::json!({
+							"code": 404,
+							"error": "La page demandée n'existe pas.",
+							"uri": req.uri().to_string(),
+							"method": req.method().to_string(),
+						})),
+					)
+						.into_response();
 				}
 
 				(
@@ -93,19 +92,18 @@ impl AuthMiddleware
 					.headers()
 					.get(header::ACCEPT)
 					.and_then(|a| a.to_str().ok())
+					&& accept.contains("application/json")
 				{
-					if accept.contains("application/json") {
-						return (
-							StatusCode::NOT_FOUND,
-							Json(serde_json::json!({
-								"code": 404,
-								"error": "La page demandée n'existe pas.",
-								"uri": req.uri().to_string(),
-								"method": req.method().to_string(),
-							})),
-						)
-							.into_response();
-					}
+					return (
+						StatusCode::NOT_FOUND,
+						Json(serde_json::json!({
+							"code": 404,
+							"error": "La page demandée n'existe pas.",
+							"uri": req.uri().to_string(),
+							"method": req.method().to_string(),
+						})),
+					)
+						.into_response();
 				}
 
 				(
@@ -134,15 +132,14 @@ impl AuthMiddleware
 					.headers()
 					.get(header::ACCEPT)
 					.and_then(|a| a.to_str().ok())
+					&& accept.contains("application/json")
 				{
-					if accept.contains("application/json") {
-						return Json(json!({
-							"error": "Vous devez être authentifié pour pouvoir \
-									  accéder à cette ressource.",
-							"redirect_to": Self::REDIRECT_TO.to_string(),
-						}))
-						.into_response();
-					}
+					return Json(json!({
+						"error": "Vous devez être authentifié pour pouvoir \
+								  accéder à cette ressource.",
+						"redirect_to": Self::REDIRECT_TO.to_string(),
+					}))
+					.into_response();
 				}
 				Redirect::to(&Self::REDIRECT_TO.to_string()).into_response()
 			}

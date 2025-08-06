@@ -77,20 +77,20 @@ impl<'de> serde::Deserialize<'de> for Settings
 	{
 		let mut this = Self::deserialize(deserializer)?;
 
-		if let Some(SettingsSameSite::None) = this.same_site {
-			if this.secure.filter(|b| *b).is_none() {
-				return Err(serde::de::Error::custom(
-					"[SettingsSameSite::None]: le paramètre `secure` DOIT \
-					 être à `true` lorsque le paramètre `same_site` équivaut \
-					 à la valeur `None`.",
-				));
-			}
+		if let Some(SettingsSameSite::None) = this.same_site
+			&& this.secure.filter(|b| *b).is_none()
+		{
+			return Err(serde::de::Error::custom(
+				"[SettingsSameSite::None]: le paramètre `secure` DOIT être à \
+				 `true` lorsque le paramètre `same_site` équivaut à la valeur \
+				 `None`.",
+			));
 		}
 
-		if let Some(max_age) = this.max_age {
-			if max_age < 3600 {
-				this.max_age.replace(3600);
-			}
+		if let Some(max_age) = this.max_age
+			&& max_age < 3600
+		{
+			this.max_age.replace(3600);
 		}
 
 		Ok(this)

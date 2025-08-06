@@ -22,8 +22,7 @@ use super::{RplNotopicReply, RplTopicReply};
 // Interface //
 // --------- //
 
-pub trait TopicClientSocketInterface
-	: ClientSocketInterface
+pub trait TopicClientSocketInterface: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

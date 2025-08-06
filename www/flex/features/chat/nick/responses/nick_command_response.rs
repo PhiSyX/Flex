@@ -32,7 +32,6 @@ command_response! {
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
 pub trait NickClientSocketCommandResponseInterface
 	: ClientSocketInterface
 {
@@ -48,7 +47,6 @@ impl<'s> NickClientSocketCommandResponseInterface for Socket<'s>
 {
 	fn emit_nick(&self)
 	{
-		#[rustfmt::skip]
 		let (old_nickname, new_nickname): (&str, &str) = (
 			self.user().old_nickname(),
 			self.user().nickname(),

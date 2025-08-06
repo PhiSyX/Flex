@@ -25,6 +25,7 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::types::uuid::Uuid;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
+use crate::FlexState;
 use crate::features::avatars::dto::UpdateAvatarDTO;
 use crate::features::avatars::services::{AvatarErrorService, AvatarService};
 use crate::features::users::dto::UserSessionDTO;
@@ -35,7 +36,6 @@ use crate::features::users::repositories::{
 };
 use crate::features::users::services::UserService;
 use crate::features::users::sessions::constant::USER_SESSION;
-use crate::FlexState;
 
 // --------- //
 // Structure //
@@ -94,13 +94,13 @@ impl AvatarsController
 		// NOTE: L'ID reçu correspond à l'ID de l'utilisateur en session
 		type U = UserSessionDTO;
 		let session_user = http.session.get::<U>(USER_SESSION).await;
-		if let Ok(Some(user)) = session_user.as_ref() {
-			if user_id == user.id {
-				if let Some(avatar) = user.avatar.as_deref() {
-					return Ok(http.response.redirect_temporary(avatar));
-				} else {
-					return fallback();
-				}
+		if let Ok(Some(user)) = session_user.as_ref()
+			&& user_id == user.id
+		{
+			if let Some(avatar) = user.avatar.as_deref() {
+				return Ok(http.response.redirect_temporary(avatar));
+			} else {
+				return fallback();
 			}
 		}
 
@@ -117,10 +117,10 @@ impl AvatarsController
 			return fallback();
 		};
 
-		if user.avatar_display_for.is_member_only() {
-			if let Ok(None) = session_user {
-				return fallback();
-			}
+		if user.avatar_display_for.is_member_only()
+			&& let Ok(None) = session_user
+		{
+			return fallback();
 		}
 
 		Ok(http.response.redirect_temporary(avatar))

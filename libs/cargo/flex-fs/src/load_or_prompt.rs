@@ -13,8 +13,8 @@ use std::{fmt, io, path};
 
 use console::style;
 
-use crate::error::mapped_to_io_other_err;
 use crate::Extension;
+use crate::error::mapped_to_io_other_err;
 
 // -------- //
 // Fonction //

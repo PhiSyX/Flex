@@ -17,8 +17,8 @@ use crate::features::chat::mode::ErrBannedfromchanError;
 // Interface //
 // --------- //
 
-pub trait ModeAccessControlClientSocketErrorRepliesInterface
-	: ClientSocketInterface
+pub trait ModeAccessControlClientSocketErrorRepliesInterface:
+	ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

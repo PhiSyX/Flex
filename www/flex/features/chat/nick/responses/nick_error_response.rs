@@ -19,8 +19,7 @@ use crate::features::chat::nick::{
 // Interface //
 // --------- //
 
-pub trait NickClientSocketErrorRepliesInterface
-	: ClientSocketInterface
+pub trait NickClientSocketErrorRepliesInterface: ClientSocketInterface
 {
 	/// Émet au client l'erreur [ErrNicknameinuseError].
 	fn send_err_nicknameinuse(&self, nickname: impl AsRef<str>)

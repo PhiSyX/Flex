@@ -16,8 +16,8 @@ use crate::features::chat::connect::errors::ErrAlreadyregisteredError;
 // Interface //
 // --------- //
 
-pub trait ConnectClientSocketErrorRepliesInterface
-	: ClientSocketInterface
+pub trait ConnectClientSocketErrorRepliesInterface:
+	ClientSocketInterface
 {
 	/// Émet au client l'erreur [ErrAlreadyregisteredError].
 	fn send_err_alreadyregistered(&self)

@@ -8,13 +8,13 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+use flex_web_framework::ServerSettings;
 use flex_web_framework::http::request::State;
 use flex_web_framework::http::response::Html;
 use flex_web_framework::http::{Extensions, HttpContext, HttpContextInterface};
-use flex_web_framework::ServerSettings;
 
-use crate::features::chat::home::HomeView;
 use crate::FlexState;
+use crate::features::chat::home::HomeView;
 
 // --------- //
 // Structure //

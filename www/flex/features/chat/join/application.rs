@@ -33,13 +33,13 @@ use super::{
 	JoinCommandResponseInterface,
 	JoinErrorResponseInterface,
 };
+use crate::ChatApplication;
 use crate::features::chat::mode::{
 	ChannelMemberDTO,
 	ModeAccessControlClientSocketCommandResponseInterface,
 	ModeChannelSettingsClientSocketCommandResponseInterface,
 };
 use crate::features::chat::topic::TopicClientSocketInterface;
-use crate::ChatApplication;
 
 // --------- //
 // Interface //
@@ -101,8 +101,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		forced: bool,
 	)
 	{
-		self.clients
-			.add_channel_on_client(client_socket.cid(), &channel.id());
+		self.clients.add_channel_on_client(client_socket.cid(), &channel.id());
 
 		client_socket.emit_join(channel, forced);
 
@@ -164,8 +163,7 @@ impl<'a> JoinApplicationInterface<'a> for ChatApplication
 		let client_session =
 			self.get_client_by_id(client_socket.cid()).unwrap();
 		let can_join =
-			self.channels
-				.can_join(&client_session, channel_name, channel_key);
+			self.channels.can_join(&client_session, channel_name, channel_key);
 
 		if can_join.is_ok() {
 			let mut channel = self

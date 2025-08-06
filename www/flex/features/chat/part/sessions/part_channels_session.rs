@@ -17,8 +17,7 @@ use crate::features::chat::sessions::ChannelsSession;
 // Interface //
 // --------- //
 
-pub trait PartChannelsSessionInterface
-	: ChannelsSessionInterface
+pub trait PartChannelsSessionInterface: ChannelsSessionInterface
 {
 	type Client: ClientInterface;
 

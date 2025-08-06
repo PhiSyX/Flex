@@ -83,10 +83,8 @@ impl<'d> Cell<'d>
 
 	pub(crate) fn min_width(&self) -> usize
 	{
-		let max_char_width = self
-			.data
-			.chars()
-			.fold(0, |max, ch| cmp::max(max, ch.len_utf8()));
+		let max_char_width =
+			self.data.chars().fold(0, |max, ch| cmp::max(max, ch.len_utf8()));
 
 		if self.padding {
 			max_char_width + ' '.len_utf8() * 2

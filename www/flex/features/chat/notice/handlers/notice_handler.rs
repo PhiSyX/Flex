@@ -17,6 +17,7 @@ use flex_chat::client::{ClientSocketInterface, Origin};
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::mode::ChannelMemberDTO;
 use crate::features::chat::notice::{
 	NoticeApplicationInterface,
@@ -24,7 +25,6 @@ use crate::features::chat::notice::{
 	NoticeCommandFormData,
 };
 use crate::features::chat::silence::SilenceApplicationInterface;
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

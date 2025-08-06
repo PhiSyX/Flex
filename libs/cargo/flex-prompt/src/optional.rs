@@ -10,8 +10,8 @@
 
 use std::{error, fmt, str};
 
-use inquire::validator::Validation;
 use inquire::CustomUserError;
+use inquire::validator::Validation;
 
 // -------- //
 // Fonction //

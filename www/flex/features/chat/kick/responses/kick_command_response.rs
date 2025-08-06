@@ -28,8 +28,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait KickChannelClientSocketCommandResponseInterface
-	: ClientSocketInterface
+pub trait KickChannelClientSocketCommandResponseInterface:
+	ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

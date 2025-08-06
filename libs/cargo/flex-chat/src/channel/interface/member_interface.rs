@@ -66,13 +66,11 @@ pub trait MemberInterface
 	fn highest_access_level(&self) -> Option<&ChannelAccessLevel>;
 
 	/// Supprime le niveau d'accès du membre.
-	#[rustfmt::skip]
-	fn remove_access_level(&mut self, access_level: ChannelAccessLevel) -> bool;
+	fn remove_access_level(&mut self, cal: ChannelAccessLevel) -> bool;
 
 	/// Définit un ID d'un membre.
 	fn set_id(&mut self, id: Self::ID);
 
 	/// Met à jour le niveau d'accès du membre.
-	#[rustfmt::skip]
-	fn update_access_level(&mut self, access_level: ChannelAccessLevel) -> bool;
+	fn update_access_level(&mut self, cal: ChannelAccessLevel) -> bool;
 }

@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::{html, Node, ViewInterface};
+use flex_web_framework::{Node, ViewInterface, html};
 
 use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::users::dto::UserSessionDTO;

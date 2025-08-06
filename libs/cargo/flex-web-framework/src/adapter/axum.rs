@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use console::style;
-use socketioxide::{extract, SocketIo};
+use socketioxide::{SocketIo, extract};
 use time::Duration;
 use tower_http::cors::CorsLayer;
 use tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
@@ -17,7 +17,6 @@ use tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
 use crate::http::routing::HttpRouterInterface;
 // use crate::json_rpc::routing::JsonRpcHandlersInterface;
 use crate::{
-	server,
 	ApplicationCookieLayerInterface,
 	ApplicationCorsLayerInterface,
 	ApplicationExtensionInterface,
@@ -38,6 +37,7 @@ use crate::{
 	WebSocketFeature,
 	WebSocketHandlers2Interface,
 	WebSocketHandlersInterface,
+	server,
 };
 
 // ---- //
@@ -246,9 +246,7 @@ where
 		};
 
 		if let Some(cookie) = config.cookie.as_ref() {
-			self.application_adapter
-				.state
-				.set_cookie_settings(cookie.clone());
+			self.application_adapter.state.set_cookie_settings(cookie.clone());
 		}
 
 		scoped_router = F::register_services(
@@ -348,9 +346,7 @@ where
 		};
 
 		if let Some(cookie) = config.cookie.as_ref() {
-			self.application_adapter
-				.state
-				.set_cookie_settings(cookie.clone());
+			self.application_adapter.state.set_cookie_settings(cookie.clone());
 		}
 
 		scoped_router = F::register_services(
@@ -510,9 +506,7 @@ where
 		};
 
 		if let Some(cookie) = config.cookie.as_ref() {
-			self.application_adapter
-				.state
-				.set_cookie_settings(cookie.clone());
+			self.application_adapter.state.set_cookie_settings(cookie.clone());
 		}
 
 		scoped_router = F::register_services(
@@ -616,9 +610,7 @@ where
 		};
 
 		if let Some(cookie) = config.cookie.as_ref() {
-			self.application_adapter
-				.state
-				.set_cookie_settings(cookie.clone());
+			self.application_adapter.state.set_cookie_settings(cookie.clone());
 		}
 
 		scoped_router = F::register_services(

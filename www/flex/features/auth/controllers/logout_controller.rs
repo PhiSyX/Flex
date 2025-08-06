@@ -16,12 +16,12 @@ use flex_web_framework::http::{
 	IntoResponse,
 };
 
+use crate::FlexState;
 use crate::features::auth::routes::web::AuthRouteID;
 use crate::features::auth::views::LogoutView;
 use crate::features::chat::connect::TokenController;
 use crate::features::users::dto::UserSessionDTO;
 use crate::features::users::sessions::constant::USER_SESSION;
-use crate::FlexState;
 
 // --------- //
 // Structure //
@@ -53,9 +53,7 @@ impl LogoutController
 	pub async fn handle(ctx: HttpContext<Self>) -> impl IntoResponse
 	{
 		ctx.cookies.signed().remove(Self::COOKIE_NAME);
-		ctx.cookies
-			.signed()
-			.remove(TokenController::COOKIE_TOKEN_KEY);
+		ctx.cookies.signed().remove(TokenController::COOKIE_TOKEN_KEY);
 		_ = ctx.session.remove::<()>(USER_SESSION).await;
 		ctx.response.redirect_to(AuthRouteID::Login)
 	}

@@ -18,8 +18,8 @@ use flex_web_framework::http::{
 };
 use flex_web_framework::types::time;
 
-use crate::features::chat::connect::forms::TokenFormData;
 use crate::FlexState;
+use crate::features::chat::connect::forms::TokenFormData;
 
 // --------- //
 // Structure //

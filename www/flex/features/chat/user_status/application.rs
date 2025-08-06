@@ -62,8 +62,7 @@ impl UserStatusAwayApplicationInterface for ChatApplication
 	)
 	{
 		if self.clients.is_client_away(client_socket.cid()) {
-			self.clients
-				.marks_client_as_no_longer_away(client_socket.cid());
+			self.clients.marks_client_as_no_longer_away(client_socket.cid());
 			client_socket.send_rpl_unaway();
 		} else {
 			let away_message = "Je suis absent.";

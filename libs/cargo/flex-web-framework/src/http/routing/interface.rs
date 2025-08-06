@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::http::routing::HttpRouterCollection;
 use crate::AxumState;
+use crate::http::routing::HttpRouterCollection;
 
 // ----- //
 // Macro //

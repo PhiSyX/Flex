@@ -28,7 +28,8 @@ impl<S> JsonRpcHandlerCollection<S>
 {
 	/// Ajoute un router à la liste des routeurs.
 	#[allow(clippy::should_implement_trait)]
-	pub fn add(mut self, builder: impl JsonRpcRouterBuilder<State = S>) -> Self
+	pub fn add(mut self, builder: impl JsonRpcRouterBuilder<State = S>)
+	-> Self
 	{
 		let route = builder.build();
 		self.routers.push(route);

@@ -13,7 +13,10 @@ use flex_chat::client::{ClientInterface, ClientSocketInterface, Socket};
 use flex_chat::macros::command_response;
 use serde_json::json;
 
-use crate::features::chat::message::format_color::{MessageColors, MessageFormats};
+use crate::features::chat::message::format_color::{
+	MessageColors,
+	MessageFormats,
+};
 
 command_response! {
 	struct PUBMSG<'channel, 'text>
@@ -31,8 +34,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait PubmsgClientSocketCommandResponseInterface
-	: ClientSocketInterface
+pub trait PubmsgClientSocketCommandResponseInterface:
+	ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 
@@ -76,14 +79,29 @@ impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s>
 		MemberDTO: serde::Serialize,
 	{
 		let mut tags = PubmsgCommandResponse::default_tags();
-		
-		if let Some((formats, colors)) = formats_colors {
-			tags.insert(String::from("format_bold"), json!(formats.format_bold));
-			tags.insert(String::from("format_italic"), json!(formats.format_italic));
-			tags.insert(String::from("format_underline"), json!(formats.format_underline));
 
-			tags.insert(String::from("color_background"), json!(colors.color_background));
-			tags.insert(String::from("color_foreground"), json!(colors.color_foreground));
+		if let Some((formats, colors)) = formats_colors {
+			tags.insert(
+				String::from("format_bold"),
+				json!(formats.format_bold),
+			);
+			tags.insert(
+				String::from("format_italic"),
+				json!(formats.format_italic),
+			);
+			tags.insert(
+				String::from("format_underline"),
+				json!(formats.format_underline),
+			);
+
+			tags.insert(
+				String::from("color_background"),
+				json!(colors.color_background),
+			);
+			tags.insert(
+				String::from("color_foreground"),
+				json!(colors.color_foreground),
+			);
 		}
 
 		let pubmsg_command = PubmsgCommandResponse {
@@ -98,7 +116,8 @@ impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s>
 
 		let target_room = format!("channel:{}", channel_name.to_lowercase());
 
-		_ = self.socket()
+		_ = self
+			.socket()
 			.except(self.useless_people_room())
 			.to(target_room)
 			.emit(pubmsg_command.name(), pubmsg_command);
@@ -113,14 +132,29 @@ impl<'s> PubmsgClientSocketCommandResponseInterface for Socket<'s>
 	)
 	{
 		let mut tags = PubmsgCommandResponse::default_tags();
-		
-		if let Some((formats, colors)) = formats_colors {
-			tags.insert(String::from("format_bold"), json!(formats.format_bold));
-			tags.insert(String::from("format_italic"), json!(formats.format_italic));
-			tags.insert(String::from("format_underline"), json!(formats.format_underline));
 
-			tags.insert(String::from("color_background"), json!(colors.color_background));
-			tags.insert(String::from("color_foreground"), json!(colors.color_foreground));
+		if let Some((formats, colors)) = formats_colors {
+			tags.insert(
+				String::from("format_bold"),
+				json!(formats.format_bold),
+			);
+			tags.insert(
+				String::from("format_italic"),
+				json!(formats.format_italic),
+			);
+			tags.insert(
+				String::from("format_underline"),
+				json!(formats.format_underline),
+			);
+
+			tags.insert(
+				String::from("color_background"),
+				json!(colors.color_background),
+			);
+			tags.insert(
+				String::from("color_foreground"),
+				json!(colors.color_foreground),
+			);
 		}
 
 		let pubmsg_command = PubmsgCommandResponse {

@@ -9,17 +9,17 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use rstml::node;
-use syn::__private::quote::quote;
 use syn::__private::TokenStream2;
+use syn::__private::quote::quote;
 use syn::spanned::Spanned;
 
 use crate::functions::html::{
-	tmp,
 	HTMLCustomAttribute,
 	HTMLMacro,
 	HTMLMacroParserError,
 	HTMLMacroParserErrorKind,
 	Result,
+	tmp,
 };
 
 // -------------- //

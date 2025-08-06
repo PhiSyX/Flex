@@ -18,11 +18,7 @@ use crate::mode::ApplyMode;
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait SettingsFlagInterface
-	: Clone
-	+ fmt::Debug
-	+ serde::Serialize
+pub trait SettingsFlagInterface: Clone + fmt::Debug + serde::Serialize
 {
 	/// Lettre associée au paramètre.
 	fn letter(&self) -> char;
@@ -319,7 +315,6 @@ impl std::fmt::Display for SettingsFlag
 
 impl SettingsFlagInterface for SettingsFlag
 {
-	#[rustfmt::skip]
 	fn letter(&self) -> char
 	{
 		match self {
@@ -327,7 +322,9 @@ impl SettingsFlagInterface for SettingsFlag
 			| Self::Limit(_) => CHANNEL_MODE_SETTINGS_LIMIT_MEMBERS,
 			| Self::InviteOnly => CHANNEL_MODE_SETTINGS_INVITE_ONLY,
 			| Self::Moderate => CHANNEL_MODE_SETTINGS_MODERATE,
-			| Self::NoExternalMessages => CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES,
+			| Self::NoExternalMessages => {
+				CHANNEL_MODE_SETTINGS_NO_EXTERNAL_MESSAGES
+			}
 			| Self::NoTopic => CHANNEL_MODE_SETTINGS_NOTOPIC,
 			| Self::OperOnly => CHANNEL_MODE_SETTINGS_OPERONLY,
 			| Self::Secret => CHANNEL_MODE_SETTINGS_SECRET,

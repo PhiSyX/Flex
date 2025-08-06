@@ -15,13 +15,12 @@ use crate::{LoggerBuilder, LoggerStdout};
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait LoggerStdoutBuilderExtension
-	: Sized
-	+ LoggerBuilder<LoggerStdout>
+pub trait LoggerStdoutBuilderExtension:
+	Sized + LoggerBuilder<LoggerStdout>
 {
 	fn initialize(self)
 	{
-		LoggerInitiator::stdout(self).expect("L'initialisation du logger (stdout)");
+		LoggerInitiator::stdout(self)
+			.expect("L'initialisation du logger (stdout)");
 	}
 }

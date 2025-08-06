@@ -11,14 +11,16 @@
 use flex_chat::channel::{Channel, ChannelInterface};
 use flex_chat::client::{ClientSocketInterface, Origin, Socket};
 
-use crate::features::chat::join::{ErrBadchannelkeyError, ErrChannelisfullError};
+use crate::features::chat::join::{
+	ErrBadchannelkeyError,
+	ErrChannelisfullError,
+};
 
 // --------- //
 // Interface //
 // --------- //
 
-pub trait JoinErrorResponseInterface
-	: ClientSocketInterface
+pub trait JoinErrorResponseInterface: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

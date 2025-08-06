@@ -25,8 +25,7 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait SilenceClientSocketInterface
-	: ClientSocketInterface
+pub trait SilenceClientSocketInterface: ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /SILENCE.
 	fn emit_silence(

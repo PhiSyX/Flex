@@ -27,11 +27,7 @@ use crate::mode::ApplyMode;
 pub trait ChannelsSessionInterface
 {
 	/// Type représentant un salon.
-	#[rustfmt::skip]
-	type Channel
-		: ChannelInterface
-		+ ChannelMemberInterface
-		;
+	type Channel: ChannelInterface + ChannelMemberInterface;
 
 	/// Ajoute un nouveau salon.
 	fn add(

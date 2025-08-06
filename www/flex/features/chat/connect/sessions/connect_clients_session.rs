@@ -19,8 +19,7 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
-pub trait ConnectClientsSessionInterface
-	: ClientsSessionInterface
+pub trait ConnectClientsSessionInterface: ClientsSessionInterface
 {
 	/// Crée une nouvelle session d'un client.
 	fn create(

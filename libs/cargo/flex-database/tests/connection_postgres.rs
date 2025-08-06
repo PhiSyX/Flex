@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_database::sgbd::postgres::PostgresSGBD;
 use flex_database::SGBD;
+use flex_database::sgbd::postgres::PostgresSGBD;
 
 #[tokio::test]
 async fn test_good_connect()

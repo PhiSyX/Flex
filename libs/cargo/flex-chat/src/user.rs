@@ -159,8 +159,8 @@ impl UserInterface for User
 	}
 
 	/// Définit le pseudonyme de l'[utilisateur](Self).
-	#[rustfmt::skip]
-	fn set_nickname(&mut self, nickname: impl ToString) -> Result<String, Error>
+	fn set_nickname(&mut self, nickname: impl ToString)
+	-> Result<String, Error>
 	{
 		let new_nick = nickname.to_string();
 		self.old_nickname.replace(self.nickname.to_owned());
@@ -169,10 +169,10 @@ impl UserInterface for User
 
 		if self.old_nickname.is_none() {
 			self.old_nickname.replace(new_nick.to_owned());
-		} else if let Some(old_nick) = self.old_nickname.as_deref() {
-			if old_nick.is_empty() {
-				self.old_nickname.replace(new_nick.to_owned());
-			}
+		} else if let Some(old_nick) = self.old_nickname.as_deref()
+			&& old_nick.is_empty()
+		{
+			self.old_nickname.replace(new_nick.to_owned());
 		}
 
 		new_nick.clone_into(&mut self.nickname);

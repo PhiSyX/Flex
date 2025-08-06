@@ -23,6 +23,7 @@ use flex_web_framework::query_builder::SQLQueryBuilder;
 use flex_web_framework::types::uuid::Uuid;
 use flex_web_framework::{DatabaseService, PostgreSQLDatabase};
 
+use crate::FlexState;
 use crate::features::accounts::forms::AccountUpdateFormData;
 use crate::features::accounts::services::AccountService;
 use crate::features::users::dto::UserSessionDTO;
@@ -31,7 +32,6 @@ use crate::features::users::repositories::{
 	UserRepositoryPostgreSQL,
 };
 use crate::features::users::sessions::constant::USER_SESSION;
-use crate::FlexState;
 
 // --------- //
 // Structure //

@@ -60,8 +60,7 @@ impl SilenceApplicationInterface for ChatApplication
 		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool
 	{
-		self.clients
-			.add_to_block(client.cid(), to_ignore_client.cid())
+		self.clients.add_to_block(client.cid(), to_ignore_client.cid())
 	}
 
 	fn client_isin_blocklist(
@@ -80,7 +79,6 @@ impl SilenceApplicationInterface for ChatApplication
 		to_ignore_client: &Self::ClientSocket<'_>,
 	) -> bool
 	{
-		self.clients
-			.remove_to_block(client.cid(), to_ignore_client.cid())
+		self.clients.remove_to_block(client.cid(), to_ignore_client.cid())
 	}
 }

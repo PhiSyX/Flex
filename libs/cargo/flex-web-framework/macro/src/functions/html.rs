@@ -24,8 +24,8 @@ use std::{error, fmt};
 use diagnostics::SpanDiagnosticExt;
 use syn::__private::quote::{quote, quote_spanned};
 use syn::__private::{Span, TokenStream, TokenStream2};
-use syn::parse::Parse;
 use syn::Token;
+use syn::parse::Parse;
 
 // -------- //
 // Constant //
@@ -520,10 +520,8 @@ impl flex_syn::Parser for HTMLMacro
 
 	fn analyze(&self) -> Result<'_, TokenStream>
 	{
-		let (nodes, mut diags) = self
-			.parser
-			.parse_recoverable(self.tokens.clone())
-			.split_vec();
+		let (nodes, mut diags) =
+			self.parser.parse_recoverable(self.tokens.clone()).split_vec();
 
 		let maybe_html_nodes = self.parse(&nodes);
 
@@ -536,9 +534,8 @@ impl flex_syn::Parser for HTMLMacro
 			}
 		};
 
-		let errors = diags
-			.into_iter()
-			.map(diagnostics::Diagnostic::emit_as_expr_tokens);
+		let errors =
+			diags.into_iter().map(diagnostics::Diagnostic::emit_as_expr_tokens);
 
 		let output = quote! {
 			{

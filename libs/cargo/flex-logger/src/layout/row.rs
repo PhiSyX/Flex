@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use super::cell::{str_len, Cell};
+use super::cell::{Cell, str_len};
 use super::style::{Alignment, Position, Style};
 
 // --------- //
@@ -30,16 +30,14 @@ pub struct Row<'d>
 impl<'d> Row<'d>
 {
 	pub fn new(cells: impl IntoIterator<Item = impl Into<Cell<'d>>>)
-		-> Row<'d>
+	-> Row<'d>
 	{
 		let mut row = Row {
 			cells: vec![],
 			separator: true,
 		};
 
-		cells
-			.into_iter()
-			.for_each(|entry| row.cells.push(entry.into()));
+		cells.into_iter().for_each(|entry| row.cells.push(entry.into()));
 
 		row
 	}
@@ -228,9 +226,7 @@ impl<'d> Row<'d>
 			output
 		};
 
-		let output = self.cells.iter().fold(Vec::default(), callback_fn);
-
-		output
+		self.cells.iter().fold(Vec::default(), callback_fn)
 	}
 
 	pub(crate) fn total_columns(&self) -> usize

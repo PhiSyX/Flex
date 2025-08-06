@@ -14,9 +14,7 @@ use crate::Result;
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait Prompt
-	: Sized
+pub trait Prompt: Sized
 {
 	fn prompt() -> Result<Self>;
 }

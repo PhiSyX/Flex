@@ -10,13 +10,13 @@
 
 use std::ops;
 
-use hyper::{http, StatusCode};
+use hyper::{StatusCode, http};
 use tower_cookies::cookie::CookieBuilder;
 pub use tower_cookies::cookie::SameSite;
 pub use tower_cookies::{Cookie as TowerCookie, Cookies as TowerCookies, Key};
 
-use crate::settings::CookieSettings;
 use crate::AxumState;
+use crate::settings::CookieSettings;
 
 // --------- //
 // Structure //
@@ -98,24 +98,20 @@ impl<'s> PrivateCookies<'s>
 			cookie_builder = cookie_builder.domain(domain.clone());
 		}
 
-		if !has_max_age {
-			if let Some(expires) = self.settings.expires {
-				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc()
-						.checked_add(time::Duration::seconds(expires)),
-				);
-			}
+		if !has_max_age && let Some(expires) = self.settings.expires {
+			cookie_builder = cookie_builder.expires(
+				time::OffsetDateTime::now_utc()
+					.checked_add(time::Duration::seconds(expires)),
+			);
 		}
 
 		if let Some(http_only) = self.settings.http_only {
 			cookie_builder = cookie_builder.http_only(http_only);
 		}
 
-		if !has_max_age {
-			if let Some(max_age) = self.settings.max_age {
-				cookie_builder =
-					cookie_builder.max_age(time::Duration::seconds(max_age));
-			}
+		if !has_max_age && let Some(max_age) = self.settings.max_age {
+			cookie_builder =
+				cookie_builder.max_age(time::Duration::seconds(max_age));
 		}
 
 		if let Some(same_site) = self.settings.same_site {
@@ -157,24 +153,20 @@ impl<'s> SignedCookies<'s>
 			cookie_builder = cookie_builder.domain(domain.clone());
 		}
 
-		if !has_max_age {
-			if let Some(expires) = self.settings.expires {
-				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc()
-						.checked_add(time::Duration::seconds(expires)),
-				);
-			}
+		if !has_max_age && let Some(expires) = self.settings.expires {
+			cookie_builder = cookie_builder.expires(
+				time::OffsetDateTime::now_utc()
+					.checked_add(time::Duration::seconds(expires)),
+			);
 		}
 
 		if let Some(http_only) = self.settings.http_only {
 			cookie_builder = cookie_builder.http_only(http_only);
 		}
 
-		if !has_max_age {
-			if let Some(max_age) = self.settings.max_age {
-				cookie_builder =
-					cookie_builder.max_age(time::Duration::seconds(max_age));
-			}
+		if !has_max_age && let Some(max_age) = self.settings.max_age {
+			cookie_builder =
+				cookie_builder.max_age(time::Duration::seconds(max_age));
 		}
 
 		if let Some(same_site) = self.settings.same_site {
@@ -209,24 +201,20 @@ impl<'s> SignedCookies<'s>
 			cookie_builder = cookie_builder.domain(domain.clone());
 		}
 
-		if !has_max_age {
-			if let Some(expires) = self.settings.expires {
-				cookie_builder = cookie_builder.expires(
-					time::OffsetDateTime::now_utc()
-						.checked_add(time::Duration::seconds(expires)),
-				);
-			}
+		if !has_max_age && let Some(expires) = self.settings.expires {
+			cookie_builder = cookie_builder.expires(
+				time::OffsetDateTime::now_utc()
+					.checked_add(time::Duration::seconds(expires)),
+			);
 		}
 
 		if let Some(http_only) = self.settings.http_only {
 			cookie_builder = cookie_builder.http_only(http_only);
 		}
 
-		if !has_max_age {
-			if let Some(max_age) = self.settings.max_age {
-				cookie_builder =
-					cookie_builder.max_age(time::Duration::seconds(max_age));
-			}
+		if !has_max_age && let Some(max_age) = self.settings.max_age {
+			cookie_builder =
+				cookie_builder.max_age(time::Duration::seconds(max_age));
 		}
 
 		if let Some(same_site) = self.settings.same_site {
@@ -334,14 +322,13 @@ where
 		state: &AxumState<S>,
 	) -> Result<Self, Self::Rejection>
 	{
-		let cm = parts
-			.extensions
-			.get::<tower_cookies::Cookies>()
-			.cloned()
-			.ok_or((
-				StatusCode::INTERNAL_SERVER_ERROR,
-				"Impossible d'extraire les cookies",
-			))?;
+		let cm =
+			parts.extensions.get::<tower_cookies::Cookies>().cloned().ok_or(
+				(
+					StatusCode::INTERNAL_SERVER_ERROR,
+					"Impossible d'extraire les cookies",
+				),
+			)?;
 		let cookie_key = state.cookie_key().cloned().ok_or((
 			StatusCode::INTERNAL_SERVER_ERROR,
 			"Impossible de récupérer la clé de cookie",

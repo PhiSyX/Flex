@@ -17,8 +17,7 @@ use crate::features::chat::invite::ErrInviteonlychanError;
 // Interface //
 // --------- //
 
-pub trait InviteChannelClientSocketErrorReplies
-	: ClientSocketInterface
+pub trait InviteChannelClientSocketErrorReplies: ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

@@ -29,8 +29,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait InviteClientSocketCommandResponseInterface
-	: ClientSocketInterface
+pub trait InviteClientSocketCommandResponseInterface:
+	ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

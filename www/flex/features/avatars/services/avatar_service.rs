@@ -10,7 +10,7 @@
 
 use std::sync::Arc;
 
-use flex_web_framework::types::{time, Bytes};
+use flex_web_framework::types::{Bytes, time};
 use sqlx::types::Uuid;
 
 use crate::features::avatars::dto::UpdateAvatarDTO;

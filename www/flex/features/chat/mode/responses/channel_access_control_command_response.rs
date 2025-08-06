@@ -23,8 +23,8 @@ use super::ModeCommandResponse;
 // Interface //
 // --------- //
 
-pub trait ModeAccessControlClientSocketCommandResponseInterface
-	: ClientSocketInterface
+pub trait ModeAccessControlClientSocketCommandResponseInterface:
+	ClientSocketInterface
 {
 	type Channel: ChannelInterface;
 

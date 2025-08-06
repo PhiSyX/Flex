@@ -13,7 +13,7 @@ use std::fmt;
 
 use super::cell::Cell;
 use super::row::Row;
-use super::style::{Alignment, Position, Style, STYLE_BLANK};
+use super::style::{Alignment, Position, STYLE_BLANK, Style};
 
 // --------- //
 // Structure //

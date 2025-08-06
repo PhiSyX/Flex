@@ -76,11 +76,7 @@ impl Settings
 
 	pub fn protocol(&self) -> &str
 	{
-		if self.tls.is_some() {
-			"https"
-		} else {
-			"http"
-		}
+		if self.tls.is_some() { "https" } else { "http" }
 	}
 
 	pub fn http_url(&self) -> String

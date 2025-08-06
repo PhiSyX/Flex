@@ -8,7 +8,7 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_web_framework::{html, Node, SessionFlashExtension, ViewInterface};
+use flex_web_framework::{Node, SessionFlashExtension, ViewInterface, html};
 
 use crate::features::auth::errors::LoginError;
 use crate::features::auth::forms::LoginFormData;

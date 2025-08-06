@@ -10,17 +10,17 @@
 
 use flex_chat::client::ClientSocketInterface;
 use flex_crypto::Hasher;
-use flex_web_framework::security::Argon2Password;
 use flex_web_framework::WebSocketHandler;
+use flex_web_framework::security::Argon2Password;
 use socketioxide::extract::{Data, SocketRef, State};
 
 use crate::config::chat::FlexChatConfig;
+use crate::features::ChatApplication;
 use crate::features::chat::oper::{
 	OperApplicationInterface,
 	OperClientSocketErrorRepliesInterface,
 	OperCommandFormData,
 };
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

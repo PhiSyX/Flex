@@ -433,9 +433,9 @@ fn to_header_name<MaybeHeader>(
 ) -> Result<axum::http::HeaderName, hyper::header::InvalidHeaderName>
 where
 	MaybeHeader: TryInto<
-		axum::http::HeaderName,
-		Error = hyper::header::InvalidHeaderName,
-	>,
+			axum::http::HeaderName,
+			Error = hyper::header::InvalidHeaderName,
+		>,
 {
 	header.try_into()
 }

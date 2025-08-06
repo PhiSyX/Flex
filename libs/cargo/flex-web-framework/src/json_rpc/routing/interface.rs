@@ -8,8 +8,8 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use crate::json_rpc::routing::JsonRpcHandlerCollection;
 use crate::AxumState;
+use crate::json_rpc::routing::JsonRpcHandlerCollection;
 
 // ----- //
 // Macro //

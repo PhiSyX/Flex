@@ -103,9 +103,7 @@ impl KernelSettingsDirectory
 	/// paniquer si aucun répertoire n'est trouvé.
 	pub fn config_sudo(&self) -> &path::Path
 	{
-		self.config
-			.as_deref()
-			.expect("Répertoire de la configuration")
+		self.config.as_deref().expect("Répertoire de la configuration")
 	}
 
 	/// Répertoire des variables d'environnement de l'application.
@@ -118,9 +116,7 @@ impl KernelSettingsDirectory
 	/// fonction PEUT paniquer si aucun répertoire n'est trouvé.
 	pub fn env_sudo(&self) -> &path::Path
 	{
-		self.env
-			.as_deref()
-			.expect("Répertoire de variables d'environnement")
+		self.env.as_deref().expect("Répertoire de variables d'environnement")
 	}
 }
 

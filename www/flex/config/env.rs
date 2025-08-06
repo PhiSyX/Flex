@@ -11,7 +11,7 @@
 use std::sync::Arc;
 
 use flex_kernel::settings::KernelSettings;
-use flex_kernel::{process, UserApplicationEnvInterface};
+use flex_kernel::{UserApplicationEnvInterface, process};
 use flex_web_framework::types::{secret, url};
 
 // --------- //

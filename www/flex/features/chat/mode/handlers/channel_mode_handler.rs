@@ -12,17 +12,18 @@ use std::sync::Arc;
 
 use flex_chat::channel::{
 	AccessControlMask,
-	ChannelAccessLevel,
-	SettingsFlag,
 	CHANNEL_MODE_LIST_BAN,
 	CHANNEL_MODE_LIST_BAN_EXCEPT,
 	CHANNEL_MODE_LIST_INVITE_EXCEPT,
+	ChannelAccessLevel,
+	SettingsFlag,
 };
 use flex_chat::client::Socket;
 use flex_chat::mode::ApplyMode;
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::mode::{
 	ChannelModeCommandFormData,
 	ModeAccessControlClientSocketCommandResponseInterface,
@@ -32,7 +33,6 @@ use crate::features::chat::mode::{
 	ModeChannelSettingsClientSocketCommandResponseInterface,
 };
 use crate::features::chat::oper::OperApplicationInterface;
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

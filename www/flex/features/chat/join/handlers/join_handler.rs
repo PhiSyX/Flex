@@ -11,6 +11,7 @@
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::invite::InviteChannelClientSocketErrorReplies;
 use crate::features::chat::join::{
 	JoinApplicationInterface,
@@ -20,7 +21,6 @@ use crate::features::chat::join::{
 };
 use crate::features::chat::mode::ModeAccessControlClientSocketErrorRepliesInterface;
 use crate::features::chat::oper::OperClientSocketErrorRepliesInterface;
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

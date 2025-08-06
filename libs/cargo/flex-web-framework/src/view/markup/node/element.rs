@@ -10,7 +10,7 @@
 
 use std::fmt;
 
-use super::{with_children, Node};
+use super::{Node, with_children};
 
 // --------- //
 // Structure //

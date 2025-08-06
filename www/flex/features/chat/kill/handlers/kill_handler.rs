@@ -8,18 +8,18 @@
 // ┃  file, You can obtain one at https://mozilla.org/MPL/2.0/.                ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
 use flex_chat::client::ClientSocketInterface;
+use flex_chat::client::nick::responses::NickClientSocketErrorReplies;
 use flex_chat::user::UserInterface;
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::kill::{
 	KillApplicationInterface,
 	KillClientSocketCommandResponseInterface,
 	KillCommandFormData,
 };
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

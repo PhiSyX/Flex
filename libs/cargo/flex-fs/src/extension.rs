@@ -50,7 +50,7 @@ impl str::FromStr for Extension
 			| _ => {
 				return Err(format!(
 					"L'extension de fichier « {extension} » n'est pas valide"
-				))
+				));
 			}
 		})
 	}

@@ -17,9 +17,7 @@ use crate::features::chat::sessions::ClientsSession;
 // Interface //
 // --------- //
 
-#[rustfmt::skip]
-pub trait OperClientSessionInterface
-	: ClientsSessionInterface
+pub trait OperClientSessionInterface: ClientsSessionInterface
 {
 	/// Marque un client comme étant un opérateur.
 	fn marks_client_as_operator(

@@ -10,8 +10,8 @@
 
 use std::{error, fmt, str};
 
-use inquire::validator::Validation;
 use inquire::CustomUserError;
+use inquire::validator::Validation;
 
 use crate::Result;
 
@@ -29,10 +29,8 @@ where
 	let validator = |input: &str| {
 		if input.trim().is_empty() {
 			let msg = "L'entrée NE PEUT PAS être vide.";
-			#[rustfmt::skip]
-			let custom_msg = <_ as Into<inquire::validator::ErrorMessage>>::into(
-				msg
-			);
+			let custom_msg =
+				<_ as Into<inquire::validator::ErrorMessage>>::into(msg);
 			Ok(crate::Validation::Invalid(custom_msg))
 		} else {
 			Ok(crate::Validation::Valid)
@@ -53,10 +51,11 @@ where
 {
 	let msg = format!("{message}:");
 
-	let input = inquire::Text::new(&msg)
-		.with_validator(validator)
-		.prompt()
-		.map(|value| Output::from_str(&value).map_err(|e| e.into()))??;
+	let input =
+		inquire::Text::new(&msg)
+			.with_validator(validator)
+			.prompt()
+			.map(|value| Output::from_str(&value).map_err(|e| e.into()))??;
 
 	Ok(input)
 }

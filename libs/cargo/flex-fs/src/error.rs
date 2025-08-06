@@ -27,5 +27,5 @@ pub(crate) fn mapped_to_io_other_err(
 	err: impl std::error::Error + Send + Sync + 'static,
 ) -> io::Error
 {
-	io::Error::new(io::ErrorKind::Other, err)
+	io::Error::other(err)
 }

@@ -14,12 +14,12 @@ use flex_chat::user::UserOperatorInterface;
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::list::{
 	ListApplicationInterface,
 	ListChannelClientSocketCommandResponseInterface,
 	ListCommandFormData,
 };
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

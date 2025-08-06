@@ -9,7 +9,7 @@
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 use flex_web_framework::view::Node;
-use flex_web_framework::{html, ViewInterface};
+use flex_web_framework::{ViewInterface, html};
 
 use crate::features::auth::forms::RegistrationFormData;
 use crate::features::auth::routes::web::AuthRouteID;

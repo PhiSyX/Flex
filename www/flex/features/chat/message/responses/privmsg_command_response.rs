@@ -12,7 +12,10 @@ use flex_chat::client::{ClientSocketInterface, Socket};
 use flex_chat::macros::command_response;
 use serde_json::json;
 
-use crate::features::chat::message::format_color::{MessageColors, MessageFormats};
+use crate::features::chat::message::format_color::{
+	MessageColors,
+	MessageFormats,
+};
 
 command_response! {
 	struct PRIVMSG<'target, 'text>
@@ -28,8 +31,8 @@ command_response! {
 // Interface //
 // --------- //
 
-pub trait PrivmsgClientSocketCommandResponseInterface
-	: ClientSocketInterface
+pub trait PrivmsgClientSocketCommandResponseInterface:
+	ClientSocketInterface
 {
 	/// Émet au client les réponses liées à la commande /PRIVMSG <nickname>
 	fn emit_privmsg(
@@ -37,7 +40,7 @@ pub trait PrivmsgClientSocketCommandResponseInterface
 		target: &str,
 		formats_colors: Option<(&MessageFormats, &MessageColors)>,
 		text: &str,
-		by: impl serde::Serialize
+		by: impl serde::Serialize,
 	);
 }
 
@@ -48,22 +51,37 @@ pub trait PrivmsgClientSocketCommandResponseInterface
 impl<'s> PrivmsgClientSocketCommandResponseInterface for Socket<'s>
 {
 	fn emit_privmsg(
-		&self, 
-		target: &str, 
+		&self,
+		target: &str,
 		formats_colors: Option<(&MessageFormats, &MessageColors)>,
 		text: &str,
-		by: impl serde::Serialize
+		by: impl serde::Serialize,
 	)
 	{
 		let mut tags = PrivmsgCommandResponse::default_tags();
 
 		if let Some((formats, colors)) = formats_colors {
-			tags.insert(String::from("format_bold"), json!(formats.format_bold));
-			tags.insert(String::from("format_italic"), json!(formats.format_italic));
-			tags.insert(String::from("format_underline"), json!(formats.format_underline));
+			tags.insert(
+				String::from("format_bold"),
+				json!(formats.format_bold),
+			);
+			tags.insert(
+				String::from("format_italic"),
+				json!(formats.format_italic),
+			);
+			tags.insert(
+				String::from("format_underline"),
+				json!(formats.format_underline),
+			);
 
-			tags.insert(String::from("color_background"), json!(colors.color_background));
-			tags.insert(String::from("color_foreground"), json!(colors.color_foreground));
+			tags.insert(
+				String::from("color_background"),
+				json!(colors.color_background),
+			);
+			tags.insert(
+				String::from("color_foreground"),
+				json!(colors.color_foreground),
+			);
 		}
 
 		let privmsg_command = PrivmsgCommandResponse {

@@ -14,13 +14,13 @@ use flex_chat::user::UserAwayInterface;
 use flex_web_framework::WebSocketHandler;
 use socketioxide::extract::{Data, SocketRef, State};
 
+use crate::features::ChatApplication;
 use crate::features::chat::message::{
 	PrivmsgClientSocketCommandResponseInterface,
 	PrivmsgCommandFormData,
 };
 use crate::features::chat::silence::SilenceApplicationInterface;
 use crate::features::chat::user_status::UserStatusClientSocketInterface;
-use crate::features::ChatApplication;
 
 // --------- //
 // Structure //

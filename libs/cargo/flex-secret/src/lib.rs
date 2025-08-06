@@ -138,8 +138,7 @@ impl<T> serde::Serialize for Secret<T>
 	where
 		S: serde::Serializer,
 	{
-		let serde_str = S::serialize_str(serializer, self.redacted());
-		serde_str
+		S::serialize_str(serializer, self.redacted())
 	}
 }
 

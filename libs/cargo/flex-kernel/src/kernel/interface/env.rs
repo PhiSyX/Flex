@@ -58,11 +58,8 @@ pub trait ApplicationAdapterEnvInterface
 }
 
 /// Interface pour la récupération des variables d'environnement.
-#[rustfmt::skip]
-pub trait UserApplicationEnvInterface
-	: Clone
-	+ Debug
-	+ serde::de::DeserializeOwned
+pub trait UserApplicationEnvInterface:
+	Clone + Debug + serde::de::DeserializeOwned
 {
 	/// Nom du fichier d'environnement. Ce fichier DOIT se trouver dans le
 	/// répertoire des fichiers des variables d'environnement.
