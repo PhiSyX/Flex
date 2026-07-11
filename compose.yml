@@ -1,11 +1,12 @@
 services:
   postgres_database:
-    image: postgres:16-alpine3.19
+    image: postgres:latest
     ports:
       - 5432:5432
     volumes:
       - psql-data:/var/lib/postgresql/data
     environment:
+      - POSTGRES_DB=flex
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
