@@ -80,79 +80,30 @@ pnpm test:unit
 pnpm --filter @phisyx/flex-<package-name> test:unit
 ```
 
-2. **Écrire un test unitaire**:
-
-    - Placer les fichiers de test dans un répertoire `tests` au sein du package
-    - Nommer les fichiers de test avec une extension `.spec.ts`
-
-    Exemple:
-
-    ```typescript
-    import { it } from "vitest";
-    import { myFunction } from "#src/myFile";
-
-    it("myFunction: test case description", ({ expect }) => {
-    	expect(myFunction(input)).toEqual(expectedOutput);
-    });
-    ```
-
 #### End-to-End Testing
 
 **Flex** utilise [Playwright](https://playwright.dev/) pour les tests end-to-end de l'application web **Flex Discussion**.
 
 1. **Exécution des tests E2E**:
 
-    ```bash
-    # Démarrer tous les tests e2e
-    pnpm test:e2e
-    # Afficher le report
-    pnpm test:e2e:report
-    ```
-
-2. **Écrire un test E2E**:
-
-    - Placer les fichiers de test dans un répertoire `tests/e2e` au sein du package
-    - Nommer les fichiers de test avec une extension `.spec.ts`
-    - Utiliser la classe utilitaire `ChatPageContext` pour simplifier les opérations communes
-
-    Exemple:
-
-    ```typescript
-    import { test } from "@playwright/test";
-    import { ChatPageContext } from "./helpers/context.js";
-
-    test("Test description", async ({ page }) => {
-    	let chat_ctx = await ChatPageContext.connect(page);
-    	// Test actions and assertions
-    });
-    ```
+```bash
+# Démarrer tous les tests e2e
+pnpm test:e2e
+# Afficher le report
+pnpm test:e2e:report
+```
 
 ### Test avec Rust
 
 1. **Exécution des tests Rust**:
 
-    ```bash
-    # Lancer tous les tests
-    cargo test
+```bash
+# Lancer tous les tests
+cargo test
 
-    # Lancer tous les tests d'un package spécifiqu
-    cargo test -p flex-package-name
-    ```
-
-2. **Écrire un test Rust**:
-
-    - Placer les fichiers de test dans un répertoire `tests` au sein du package ou directement dans un module avec
-      `#[cfg(test)]`
-
-    Exemple:
-
-    ```rust
-    #[test]
-    fn test_function_name() {
-        let result = function_to_test();
-        assert_eq!(result, expected_value);
-    }
-    ```
+# Lancer tous les tests d'un package spécifiqu
+cargo test -p flex-package-name
+```
 
 ## Structure du project
 
